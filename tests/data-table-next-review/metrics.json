@@ -1,0 +1,64 @@
+[
+  {
+    "mode": "light",
+    "file": "light.png",
+    "metrics": {
+      "groups": [],
+      "groupHeight": null,
+      "rowHeight": 29,
+      "viewportHeight": 290,
+      "frameHeight": 321,
+      "cell": {
+        "font-family": "\"DM Sans\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+        "font-size": "12px",
+        "line-height": "28px",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "color": "rgb(0, 0, 0)",
+        "padding-left": "8px",
+        "padding-right": "8px",
+        "border-bottom-width": "0px"
+      },
+      "header": {
+        "font-family": "\"DM Sans\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+        "font-size": "12px",
+        "line-height": "18px",
+        "background-color": "rgb(243, 243, 243)",
+        "color": "rgb(86, 88, 94)",
+        "padding-left": "0px",
+        "padding-right": "0px",
+        "border-bottom-width": "0px"
+      }
+    }
+  },
+  {
+    "mode": "dark",
+    "file": "dark.png",
+    "metrics": {
+      "groups": [],
+      "groupHeight": null,
+      "rowHeight": 29,
+      "viewportHeight": 290,
+      "frameHeight": 321,
+      "cell": {
+        "font-family": "\"DM Sans\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+        "font-size": "12px",
+        "line-height": "28px",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "color": "rgb(232, 233, 236)",
+        "padding-left": "8px",
+        "padding-right": "8px",
+        "border-bottom-width": "0px"
+      },
+      "header": {
+        "font-family": "\"DM Sans\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+        "font-size": "12px",
+        "line-height": "18px",
+        "background-color": "rgb(52, 54, 59)",
+        "color": "rgb(163, 166, 173)",
+        "padding-left": "0px",
+        "padding-right": "0px",
+        "border-bottom-width": "0px"
+      }
+    }
+  }
+]

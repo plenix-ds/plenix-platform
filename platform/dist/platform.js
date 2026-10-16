@@ -12464,6 +12464,9265 @@ function Tabs({
   }, t.value === current ? t.content : null)) : null);
 }
   } },
+  "platform/components/DataTableNext/scrollbars.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Scrollbars = Scrollbars;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DataTableNext scrollbars
+   Summary: Floating pointer scroll controls for the React-owned viewport.
+   Usage: <Scrollbars holder={holderRef}/>
+   Props: A scrollable element ref.
+   Behavior: CSS scroll timelines position the token-sized thumbs; pointer dragging writes native scroll offsets.
+   Notes: Browsers without timeline and anchor support retain their native scrollbars. */
+
+function Scrollbars({
+  holder,
+  viewportId
+}) {
+  const thumbs = _react.default.useRef({});
+  const [sizes, setSizes] = _react.default.useState({}),
+    [drag, setDrag] = _react.default.useState(null);
+  _react.default.useLayoutEffect(() => {
+    const el = holder.current;
+    if (!el) return;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const ratio = (size, total) => total > size ? Math.max(10, Math.min(95, Math.round(size / total * 20) * 5)) : null;
+      setSizes(old => {
+        const next = {
+          x: ratio(el.clientWidth, el.scrollWidth),
+          y: ratio(el.clientHeight, el.scrollHeight)
+        };
+        return next.x === old.x && next.y === old.y ? old : next;
+      });
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+    const position = () => {
+      for (const axis of ['x', 'y']) {
+        const total = axis === 'y' ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth,
+          offset = axis === 'y' ? el.scrollTop : Math.abs(el.scrollLeft);
+        thumbs.current[axis]?.setAttribute('aria-valuenow', String(total ? Math.round(offset / total * 100) : 0));
+      }
+    };
+    el.addEventListener('scroll', position, {
+      passive: true
+    });
+    const observer = new ResizeObserver(schedule);
+    observer.observe(el);
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
+    const mutation = new MutationObserver(schedule);
+    mutation.observe(el, {
+      childList: true,
+      subtree: true
+    });
+    read();
+    return () => {
+      observer.disconnect();
+      mutation.disconnect();
+      el.removeEventListener('scroll', position);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [holder]);
+  const start = (event, axis) => {
+    if (event.button !== 0) return;
+    const el = holder.current,
+      track = event.currentTarget.classList.contains('plx-data-table__thumb') ? event.currentTarget.parentElement : event.currentTarget,
+      box = track.getBoundingClientRect(),
+      vertical = axis === 'y',
+      total = vertical ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth,
+      travel = (vertical ? box.height : box.width) * (1 - sizes[axis] / 100),
+      at = vertical ? event.clientY : event.clientX,
+      initial = vertical ? el.scrollTop : Math.abs(el.scrollLeft),
+      pointer = event.pointerId;
+    let origin = initial;
+    if (travel <= 0 || total <= 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.currentTarget === track) {
+      const point = vertical ? event.clientY - box.top : (0, _direction.isRtl)(el) ? box.right - event.clientX : event.clientX - box.left,
+        thumb = (vertical ? box.height : box.width) - travel;
+      origin = Math.max(0, Math.min(total, (point - thumb / 2) / travel * total));
+      if (vertical) el.scrollTop = origin;else el.scrollLeft = (0, _direction.isRtl)(el) ? -origin : origin;
+    }
+    event.currentTarget.setPointerCapture(pointer);
+    setDrag(axis);
+    const node = event.currentTarget;
+    const move = e => {
+      const value = Math.max(0, Math.min(total, origin + ((vertical ? e.clientY : e.clientX) - at) / travel * total * (vertical || !(0, _direction.isRtl)(el) ? 1 : -1)));
+      if (vertical) el.scrollTop = value;else el.scrollLeft = (0, _direction.isRtl)(el) ? -value : value;
+    };
+    const end = () => {
+      setDrag(null);
+      node.removeEventListener('pointermove', move);
+      node.removeEventListener('pointerup', end);
+      node.removeEventListener('pointercancel', end);
+    };
+    node.addEventListener('pointermove', move);
+    node.addEventListener('pointerup', end);
+    node.addEventListener('pointercancel', end);
+  };
+  return ['x', 'y'].map(axis => /*#__PURE__*/_react.default.createElement("div", {
+    key: axis,
+    className: 'plx-data-table__scroll plx-data-table__scroll--' + axis,
+    "aria-hidden": "true",
+    onPointerDown: event => start(event, axis),
+    "data-plx-thumb": sizes[axis] || undefined,
+    "data-plx-dragging": drag === axis ? '' : undefined
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: node => {
+      thumbs.current[axis] = node;
+    },
+    className: "plx-data-table__thumb",
+    "data-plx-scroll-viewport": viewportId,
+    onPointerDown: event => start(event, axis)
+  })));
+}
+  } },
+  "platform/components/DragHandle/DragHandle.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DragHandle = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _dnd = require("../../utils/dnd.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DragHandle
+   Summary: The grip an item is moved by (13 Interaction › Interaction foundations › Drag handle): a small button with the
+     drag icon (six dots) that the drag-and-drop engine (utils/dnd.js) turns into a drag for the pointer and a pick-up
+     for the keyboard. Vertical (the dots stand) for rows that move up and down; horizontal (the dots lie) for columns,
+     tabs and cards that move sideways.
+   Usage:
+     const s = useSortable({ items, onReorder: setItems });
+     <DragHandle dnd={s.handleProps(i)} />                                    // the engine names it ("Move Hero banner")
+     <DragHandle label="Move column Status" orientation="horizontal" dnd={…} />
+     <Menu label="Move Hero banner" trigger={<DragHandle dnd={s.handleProps(i)} />}>…Move up, Move down…</Menu>
+   Props:
+     label: the accessible name, a verb and the item ("Move Hero banner"); default the engine's (dnd["aria-label"])
+     orientation: "vertical" (default) | "horizontal"
+     dnd: the engine's handle props (useSortable().handleProps(i), useDraggable().handleProps): the pointer, the keys, the
+       instructions (aria-describedby) and aria-pressed while the item is picked up
+     disabled: the item cannot move now (default false)
+     className: more classes on the handle
+     ref: the button (forwarded), so the handle can be a Menu's trigger
+   Behavior:
+     Pointer: press and move past the slop to drag the item; the handle shows the grab pointer, grabbing while it drags.
+       A click without moving does what the handle's other props say (a Menu's trigger opens its menu of moves).
+     Keyboard: Space or Enter picks the item up (aria-pressed true, the selected fill); the arrow keys move it; Space or
+       Enter drops it; Escape puts it back. The engine's handlers run first, so while the item is picked up the arrow
+       keys move it rather than open a menu.
+     Touch: the handle takes the finger itself (touch-action none), so the page still scrolls everywhere else.
+   Notes:
+     Every drag has a way without dragging (WCAG 2.5.7): a menu of moves on the handle (SortableList), move buttons, or
+       the keyboard. The handle is at least the inline control size (24px; larger with touch), WCAG 2.5.8.
+     Other props pass through to the <button>.
+*/
+const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(function DragHandle({
+  label,
+  orientation = 'vertical',
+  dnd,
+  disabled = false,
+  className,
+  ...rest
+}, ref) {
+  const props = (0, _dnd.mergeDndProps)(dnd || {}, rest);
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: "button"
+  }, props, {
+    "aria-label": label || props['aria-label'],
+    disabled: disabled || props.disabled || undefined,
+    className: (0, _cx.cx)('plx-drag-handle', 'plx-drag-handle--' + (orientation === 'horizontal' ? 'horizontal' : 'vertical'), className)
+  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "drag",
+    className: "plx-drag-handle__icon"
+  }));
+});
+  } },
+  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+// type Person = {
+//   firstName: string
+//   lastName: string
+//   age: number
+//   visits: number
+//   status: string
+//   progress: number
+//   createdAt: Date
+//   nested: {
+//     foo: [
+//       {
+//         bar: 'bar'
+//       }
+//     ]
+//     bar: { subBar: boolean }[]
+//     baz: {
+//       foo: 'foo'
+//       bar: {
+//         baz: 'baz'
+//       }
+//     }
+//   }
+// }
+
+// const test: DeepKeys<Person> = 'nested.foo.0.bar'
+// const test2: DeepKeys<Person> = 'nested.bar'
+
+// const helper = createColumnHelper<Person>()
+
+// helper.accessor('nested.foo', {
+//   cell: info => info.getValue(),
+// })
+
+// helper.accessor('nested.foo.0.bar', {
+//   cell: info => info.getValue(),
+// })
+
+// helper.accessor('nested.bar', {
+//   cell: info => info.getValue(),
+// })
+function createColumnHelper() {
+  return {
+    accessor: (accessor, column) => {
+      return typeof accessor === 'function' ? {
+        ...column,
+        accessorFn: accessor
+      } : {
+        ...column,
+        accessorKey: accessor
+      };
+    },
+    display: column => column,
+    group: column => column
+  };
+}
+exports.createColumnHelper = createColumnHelper;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+// Is this type a tuple?
+
+// If this type is a tuple, what indices are allowed?
+
+///
+function functionalUpdate(updater, input) {
+  return typeof updater === 'function' ? updater(input) : updater;
+}
+function noop() {
+  //
+}
+function makeStateUpdater(key, instance) {
+  return updater => {
+    instance.setState(old => {
+      return {
+        ...old,
+        [key]: functionalUpdate(updater, old[key])
+      };
+    });
+  };
+}
+function isFunction(d) {
+  return d instanceof Function;
+}
+function isNumberArray(d) {
+  return Array.isArray(d) && d.every(val => typeof val === 'number');
+}
+function flattenBy(arr, getChildren) {
+  const flat = [];
+  const recurse = subArr => {
+    subArr.forEach(item => {
+      flat.push(item);
+      const children = getChildren(item);
+      if (children != null && children.length) {
+        recurse(children);
+      }
+    });
+  };
+  recurse(arr);
+  return flat;
+}
+function memo(getDeps, fn, opts) {
+  let deps = [];
+  let result;
+  return depArgs => {
+    let depTime;
+    if (opts.key && opts.debug) depTime = Date.now();
+    const newDeps = getDeps(depArgs);
+    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
+    if (!depsChanged) {
+      return result;
+    }
+    deps = newDeps;
+    let resultTime;
+    if (opts.key && opts.debug) resultTime = Date.now();
+    result = fn(...newDeps);
+    opts == null || opts.onChange == null || opts.onChange(result);
+    if (opts.key && opts.debug) {
+      if (opts != null && opts.debug()) {
+        const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
+        const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
+        const resultFpsPercentage = resultEndTime / 16;
+        const pad = (str, num) => {
+          str = String(str);
+          while (str.length < num) {
+            str = ' ' + str;
+          }
+          return str;
+        };
+        console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
+            font-size: .6rem;
+            font-weight: bold;
+            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
+      }
+    }
+    return result;
+  };
+}
+function getMemoOptions(tableOptions, debugLevel, key, onChange) {
+  return {
+    debug: () => {
+      var _tableOptions$debugAl;
+      return (_tableOptions$debugAl = tableOptions == null ? void 0 : tableOptions.debugAll) != null ? _tableOptions$debugAl : tableOptions[debugLevel];
+    },
+    key: 'production' === 'development' && key,
+    onChange
+  };
+}
+exports.flattenBy = flattenBy;
+exports.functionalUpdate = functionalUpdate;
+exports.getMemoOptions = getMemoOptions;
+exports.isFunction = isFunction;
+exports.isNumberArray = isNumberArray;
+exports.makeStateUpdater = makeStateUpdater;
+exports.memo = memo;
+exports.noop = noop;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function createCell(table, row, column, columnId) {
+  const getRenderValue = () => {
+    var _cell$getValue;
+    return (_cell$getValue = cell.getValue()) != null ? _cell$getValue : table.options.renderFallbackValue;
+  };
+  const cell = {
+    id: `${row.id}_${column.id}`,
+    row,
+    column,
+    getValue: () => row.getValue(columnId),
+    renderValue: getRenderValue,
+    getContext: utils.memo(() => [table, column, row, cell], (table, column, row, cell) => ({
+      table,
+      column,
+      row,
+      cell: cell,
+      getValue: cell.getValue,
+      renderValue: cell.renderValue
+    }), utils.getMemoOptions(table.options, 'debugCells', 'cell.getContext'))
+  };
+  table._features.forEach(feature => {
+    feature.createCell == null || feature.createCell(cell, column, row, table);
+  }, {});
+  return cell;
+}
+exports.createCell = createCell;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function createColumn(table, columnDef, depth, parent) {
+  var _ref, _resolvedColumnDef$id;
+  const defaultColumn = table._getDefaultColumnDef();
+  const resolvedColumnDef = {
+    ...defaultColumn,
+    ...columnDef
+  };
+  const accessorKey = resolvedColumnDef.accessorKey;
+  let id = (_ref = (_resolvedColumnDef$id = resolvedColumnDef.id) != null ? _resolvedColumnDef$id : accessorKey ? typeof String.prototype.replaceAll === 'function' ? accessorKey.replaceAll('.', '_') : accessorKey.replace(/\./g, '_') : undefined) != null ? _ref : typeof resolvedColumnDef.header === 'string' ? resolvedColumnDef.header : undefined;
+  let accessorFn;
+  if (resolvedColumnDef.accessorFn) {
+    accessorFn = resolvedColumnDef.accessorFn;
+  } else if (accessorKey) {
+    // Support deep accessor keys
+    if (accessorKey.includes('.')) {
+      accessorFn = originalRow => {
+        let result = originalRow;
+        for (const key of accessorKey.split('.')) {
+          var _result;
+          result = (_result = result) == null ? void 0 : _result[key];
+          if ('production' !== 'production' && result === undefined) {
+            console.warn(`"${key}" in deeply nested key "${accessorKey}" returned undefined.`);
+          }
+        }
+        return result;
+      };
+    } else {
+      accessorFn = originalRow => originalRow[resolvedColumnDef.accessorKey];
+    }
+  }
+  if (!id) {
+    if ('production' !== 'production') {
+      throw new Error(resolvedColumnDef.accessorFn ? `Columns require an id when using an accessorFn` : `Columns require an id when using a non-string header`);
+    }
+    throw new Error();
+  }
+  let column = {
+    id: `${String(id)}`,
+    accessorFn,
+    parent: parent,
+    depth,
+    columnDef: resolvedColumnDef,
+    columns: [],
+    getFlatColumns: utils.memo(() => [true], () => {
+      var _column$columns;
+      return [column, ...((_column$columns = column.columns) == null ? void 0 : _column$columns.flatMap(d => d.getFlatColumns()))];
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'column.getFlatColumns')),
+    getLeafColumns: utils.memo(() => [table._getOrderColumnsFn()], orderColumns => {
+      var _column$columns2;
+      if ((_column$columns2 = column.columns) != null && _column$columns2.length) {
+        let leafColumns = column.columns.flatMap(column => column.getLeafColumns());
+        return orderColumns(leafColumns);
+      }
+      return [column];
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'column.getLeafColumns'))
+  };
+  for (const feature of table._features) {
+    feature.createColumn == null || feature.createColumn(column, table);
+  }
+
+  // Yes, we have to convert table to unknown, because we know more than the compiler here.
+  return column;
+}
+exports.createColumn = createColumn;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+const debug = 'debugHeaders';
+//
+
+function createHeader(table, column, options) {
+  var _options$id;
+  const id = (_options$id = options.id) != null ? _options$id : column.id;
+  let header = {
+    id,
+    column,
+    index: options.index,
+    isPlaceholder: !!options.isPlaceholder,
+    placeholderId: options.placeholderId,
+    depth: options.depth,
+    subHeaders: [],
+    colSpan: 0,
+    rowSpan: 0,
+    headerGroup: null,
+    getLeafHeaders: () => {
+      const leafHeaders = [];
+      const recurseHeader = h => {
+        if (h.subHeaders && h.subHeaders.length) {
+          h.subHeaders.map(recurseHeader);
+        }
+        leafHeaders.push(h);
+      };
+      recurseHeader(header);
+      return leafHeaders;
+    },
+    getContext: () => ({
+      table,
+      header: header,
+      column
+    })
+  };
+  table._features.forEach(feature => {
+    feature.createHeader == null || feature.createHeader(header, table);
+  });
+  return header;
+}
+const Headers = {
+  createTable: table => {
+    // Header Groups
+
+    table.getHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
+      var _left$map$filter, _right$map$filter;
+      const leftColumns = (_left$map$filter = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter : [];
+      const rightColumns = (_right$map$filter = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter : [];
+      const centerColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
+      const headerGroups = buildHeaderGroups(allColumns, [...leftColumns, ...centerColumns, ...rightColumns], table);
+      return headerGroups;
+    }, utils.getMemoOptions(table.options, debug, 'getHeaderGroups'));
+    table.getCenterHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
+      leafColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
+      return buildHeaderGroups(allColumns, leafColumns, table, 'center');
+    }, utils.getMemoOptions(table.options, debug, 'getCenterHeaderGroups'));
+    table.getLeftHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left], (allColumns, leafColumns, left) => {
+      var _left$map$filter2;
+      const orderedLeafColumns = (_left$map$filter2 = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter2 : [];
+      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'left');
+    }, utils.getMemoOptions(table.options, debug, 'getLeftHeaderGroups'));
+    table.getRightHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.right], (allColumns, leafColumns, right) => {
+      var _right$map$filter2;
+      const orderedLeafColumns = (_right$map$filter2 = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter2 : [];
+      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'right');
+    }, utils.getMemoOptions(table.options, debug, 'getRightHeaderGroups'));
+
+    // Footer Groups
+
+    table.getFooterGroups = utils.memo(() => [table.getHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getFooterGroups'));
+    table.getLeftFooterGroups = utils.memo(() => [table.getLeftHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getLeftFooterGroups'));
+    table.getCenterFooterGroups = utils.memo(() => [table.getCenterHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getCenterFooterGroups'));
+    table.getRightFooterGroups = utils.memo(() => [table.getRightHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getRightFooterGroups'));
+
+    // Flat Headers
+
+    table.getFlatHeaders = utils.memo(() => [table.getHeaderGroups()], headerGroups => {
+      return headerGroups.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getFlatHeaders'));
+    table.getLeftFlatHeaders = utils.memo(() => [table.getLeftHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getLeftFlatHeaders'));
+    table.getCenterFlatHeaders = utils.memo(() => [table.getCenterHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getCenterFlatHeaders'));
+    table.getRightFlatHeaders = utils.memo(() => [table.getRightHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getRightFlatHeaders'));
+
+    // Leaf Headers
+
+    table.getCenterLeafHeaders = utils.memo(() => [table.getCenterFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders;
+        return !((_header$subHeaders = header.subHeaders) != null && _header$subHeaders.length);
+      });
+    }, utils.getMemoOptions(table.options, debug, 'getCenterLeafHeaders'));
+    table.getLeftLeafHeaders = utils.memo(() => [table.getLeftFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders2;
+        return !((_header$subHeaders2 = header.subHeaders) != null && _header$subHeaders2.length);
+      });
+    }, utils.getMemoOptions(table.options, debug, 'getLeftLeafHeaders'));
+    table.getRightLeafHeaders = utils.memo(() => [table.getRightFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders3;
+        return !((_header$subHeaders3 = header.subHeaders) != null && _header$subHeaders3.length);
+      });
+    }, utils.getMemoOptions(table.options, debug, 'getRightLeafHeaders'));
+    table.getLeafHeaders = utils.memo(() => [table.getLeftHeaderGroups(), table.getCenterHeaderGroups(), table.getRightHeaderGroups()], (left, center, right) => {
+      var _left$0$headers, _left$, _center$0$headers, _center$, _right$0$headers, _right$;
+      return [...((_left$0$headers = (_left$ = left[0]) == null ? void 0 : _left$.headers) != null ? _left$0$headers : []), ...((_center$0$headers = (_center$ = center[0]) == null ? void 0 : _center$.headers) != null ? _center$0$headers : []), ...((_right$0$headers = (_right$ = right[0]) == null ? void 0 : _right$.headers) != null ? _right$0$headers : [])].map(header => {
+        return header.getLeafHeaders();
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getLeafHeaders'));
+  }
+};
+function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
+  var _headerGroups$0$heade, _headerGroups$;
+  // Find the max depth of the columns:
+  // build the leaf column row
+  // build each buffer row going up
+  //    placeholder for non-existent level
+  //    real column for existing level
+
+  let maxDepth = 0;
+  const findMaxDepth = function (columns, depth) {
+    if (depth === void 0) {
+      depth = 1;
+    }
+    maxDepth = Math.max(maxDepth, depth);
+    columns.filter(column => column.getIsVisible()).forEach(column => {
+      var _column$columns;
+      if ((_column$columns = column.columns) != null && _column$columns.length) {
+        findMaxDepth(column.columns, depth + 1);
+      }
+    }, 0);
+  };
+  findMaxDepth(allColumns);
+  let headerGroups = [];
+  const createHeaderGroup = (headersToGroup, depth) => {
+    // The header group we are creating
+    const headerGroup = {
+      depth,
+      id: [headerFamily, `${depth}`].filter(Boolean).join('_'),
+      headers: []
+    };
+
+    // The parent columns we're going to scan next
+    const pendingParentHeaders = [];
+
+    // Scan each column for parents
+    headersToGroup.forEach(headerToGroup => {
+      // What is the latest (last) parent column?
+
+      const latestPendingParentHeader = [...pendingParentHeaders].reverse()[0];
+      const isLeafHeader = headerToGroup.column.depth === headerGroup.depth;
+      let column;
+      let isPlaceholder = false;
+      if (isLeafHeader && headerToGroup.column.parent) {
+        // The parent header is new
+        column = headerToGroup.column.parent;
+      } else {
+        // The parent header is repeated
+        column = headerToGroup.column;
+        isPlaceholder = true;
+      }
+      if (latestPendingParentHeader && (latestPendingParentHeader == null ? void 0 : latestPendingParentHeader.column) === column) {
+        // This column is repeated. Add it as a sub header to the next batch
+        latestPendingParentHeader.subHeaders.push(headerToGroup);
+      } else {
+        // This is a new header. Let's create it
+        const header = createHeader(table, column, {
+          id: [headerFamily, depth, column.id, headerToGroup == null ? void 0 : headerToGroup.id].filter(Boolean).join('_'),
+          isPlaceholder,
+          placeholderId: isPlaceholder ? `${pendingParentHeaders.filter(d => d.column === column).length}` : undefined,
+          depth,
+          index: pendingParentHeaders.length
+        });
+
+        // Add the headerToGroup as a subHeader of the new header
+        header.subHeaders.push(headerToGroup);
+        // Add the new header to the pendingParentHeaders to get grouped
+        // in the next batch
+        pendingParentHeaders.push(header);
+      }
+      headerGroup.headers.push(headerToGroup);
+      headerToGroup.headerGroup = headerGroup;
+    });
+    headerGroups.push(headerGroup);
+    if (depth > 0) {
+      createHeaderGroup(pendingParentHeaders, depth - 1);
+    }
+  };
+  const bottomHeaders = columnsToGroup.map((column, index) => createHeader(table, column, {
+    depth: maxDepth,
+    index
+  }));
+  createHeaderGroup(bottomHeaders, maxDepth - 1);
+  headerGroups.reverse();
+
+  // headerGroups = headerGroups.filter(headerGroup => {
+  //   return !headerGroup.headers.every(header => header.isPlaceholder)
+  // })
+
+  const recurseHeadersForSpans = headers => {
+    const filteredHeaders = headers.filter(header => header.column.getIsVisible());
+    return filteredHeaders.map(header => {
+      let colSpan = 0;
+      let rowSpan = 0;
+      let childRowSpans = [0];
+      if (header.subHeaders && header.subHeaders.length) {
+        childRowSpans = [];
+        recurseHeadersForSpans(header.subHeaders).forEach(_ref => {
+          let {
+            colSpan: childColSpan,
+            rowSpan: childRowSpan
+          } = _ref;
+          colSpan += childColSpan;
+          childRowSpans.push(childRowSpan);
+        });
+      } else {
+        colSpan = 1;
+      }
+      const minChildRowSpan = Math.min(...childRowSpans);
+      rowSpan = rowSpan + minChildRowSpan;
+      header.colSpan = colSpan;
+      header.rowSpan = rowSpan;
+      return {
+        colSpan,
+        rowSpan
+      };
+    });
+  };
+  recurseHeadersForSpans((_headerGroups$0$heade = (_headerGroups$ = headerGroups[0]) == null ? void 0 : _headerGroups$.headers) != null ? _headerGroups$0$heade : []);
+  return headerGroups;
+}
+exports.Headers = Headers;
+exports.buildHeaderGroups = buildHeaderGroups;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var cell = require('./cell.js');
+const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
+  let row = {
+    id,
+    index: rowIndex,
+    original,
+    depth,
+    parentId,
+    _valuesCache: {},
+    _uniqueValuesCache: {},
+    getValue: columnId => {
+      if (row._valuesCache.hasOwnProperty(columnId)) {
+        return row._valuesCache[columnId];
+      }
+      const column = table.getColumn(columnId);
+      if (!(column != null && column.accessorFn)) {
+        return undefined;
+      }
+      row._valuesCache[columnId] = column.accessorFn(row.original, rowIndex);
+      return row._valuesCache[columnId];
+    },
+    getUniqueValues: columnId => {
+      if (row._uniqueValuesCache.hasOwnProperty(columnId)) {
+        return row._uniqueValuesCache[columnId];
+      }
+      const column = table.getColumn(columnId);
+      if (!(column != null && column.accessorFn)) {
+        return undefined;
+      }
+      if (!column.columnDef.getUniqueValues) {
+        row._uniqueValuesCache[columnId] = [row.getValue(columnId)];
+        return row._uniqueValuesCache[columnId];
+      }
+      row._uniqueValuesCache[columnId] = column.columnDef.getUniqueValues(row.original, rowIndex);
+      return row._uniqueValuesCache[columnId];
+    },
+    renderValue: columnId => {
+      var _row$getValue;
+      return (_row$getValue = row.getValue(columnId)) != null ? _row$getValue : table.options.renderFallbackValue;
+    },
+    subRows: subRows != null ? subRows : [],
+    getLeafRows: () => utils.flattenBy(row.subRows, d => d.subRows),
+    getParentRow: () => row.parentId ? table.getRow(row.parentId, true) : undefined,
+    getParentRows: () => {
+      let parentRows = [];
+      let currentRow = row;
+      while (true) {
+        const parentRow = currentRow.getParentRow();
+        if (!parentRow) break;
+        parentRows.push(parentRow);
+        currentRow = parentRow;
+      }
+      return parentRows.reverse();
+    },
+    getAllCells: utils.memo(() => [table.getAllLeafColumns()], leafColumns => {
+      return leafColumns.map(column => {
+        return cell.createCell(table, row, column, column.id);
+      });
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getAllCells')),
+    _getAllCellsByColumnId: utils.memo(() => [row.getAllCells()], allCells => {
+      return allCells.reduce((acc, cell) => {
+        acc[cell.column.id] = cell;
+        return acc;
+      }, {});
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getAllCellsByColumnId'))
+  };
+  for (let i = 0; i < table._features.length; i++) {
+    const feature = table._features[i];
+    feature == null || feature.createRow == null || feature.createRow(row, table);
+  }
+  return row;
+};
+exports.createRow = createRow;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+//
+const ColumnFaceting = {
+  createColumn: (column, table) => {
+    column._getFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, column.id);
+    column.getFacetedRowModel = () => {
+      if (!column._getFacetedRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return column._getFacetedRowModel();
+    };
+    column._getFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, column.id);
+    column.getFacetedUniqueValues = () => {
+      if (!column._getFacetedUniqueValues) {
+        return new Map();
+      }
+      return column._getFacetedUniqueValues();
+    };
+    column._getFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, column.id);
+    column.getFacetedMinMaxValues = () => {
+      if (!column._getFacetedMinMaxValues) {
+        return undefined;
+      }
+      return column._getFacetedMinMaxValues();
+    };
+  }
+};
+exports.ColumnFaceting = ColumnFaceting;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+const includesString = (row, columnId, filterValue) => {
+  var _filterValue$toString, _row$getValue;
+  const search = filterValue == null || (_filterValue$toString = filterValue.toString()) == null ? void 0 : _filterValue$toString.toLowerCase();
+  return Boolean((_row$getValue = row.getValue(columnId)) == null || (_row$getValue = _row$getValue.toString()) == null || (_row$getValue = _row$getValue.toLowerCase()) == null ? void 0 : _row$getValue.includes(search));
+};
+includesString.autoRemove = val => testFalsey(val);
+const includesStringSensitive = (row, columnId, filterValue) => {
+  var _row$getValue2;
+  return Boolean((_row$getValue2 = row.getValue(columnId)) == null || (_row$getValue2 = _row$getValue2.toString()) == null ? void 0 : _row$getValue2.includes(filterValue));
+};
+includesStringSensitive.autoRemove = val => testFalsey(val);
+const equalsString = (row, columnId, filterValue) => {
+  var _row$getValue3;
+  return ((_row$getValue3 = row.getValue(columnId)) == null || (_row$getValue3 = _row$getValue3.toString()) == null ? void 0 : _row$getValue3.toLowerCase()) === (filterValue == null ? void 0 : filterValue.toLowerCase());
+};
+equalsString.autoRemove = val => testFalsey(val);
+const arrIncludes = (row, columnId, filterValue) => {
+  var _row$getValue4;
+  return (_row$getValue4 = row.getValue(columnId)) == null ? void 0 : _row$getValue4.includes(filterValue);
+};
+arrIncludes.autoRemove = val => testFalsey(val);
+const arrIncludesAll = (row, columnId, filterValue) => {
+  return !filterValue.some(val => {
+    var _row$getValue5;
+    return !((_row$getValue5 = row.getValue(columnId)) != null && _row$getValue5.includes(val));
+  });
+};
+arrIncludesAll.autoRemove = val => testFalsey(val) || !(val != null && val.length);
+const arrIncludesSome = (row, columnId, filterValue) => {
+  return filterValue.some(val => {
+    var _row$getValue6;
+    return (_row$getValue6 = row.getValue(columnId)) == null ? void 0 : _row$getValue6.includes(val);
+  });
+};
+arrIncludesSome.autoRemove = val => testFalsey(val) || !(val != null && val.length);
+const equals = (row, columnId, filterValue) => {
+  return row.getValue(columnId) === filterValue;
+};
+equals.autoRemove = val => testFalsey(val);
+const weakEquals = (row, columnId, filterValue) => {
+  return row.getValue(columnId) == filterValue;
+};
+weakEquals.autoRemove = val => testFalsey(val);
+const inNumberRange = (row, columnId, filterValue) => {
+  let [min, max] = filterValue;
+  const rowValue = row.getValue(columnId);
+  return rowValue >= min && rowValue <= max;
+};
+inNumberRange.resolveFilterValue = val => {
+  let [unsafeMin, unsafeMax] = val;
+  let parsedMin = typeof unsafeMin !== 'number' ? parseFloat(unsafeMin) : unsafeMin;
+  let parsedMax = typeof unsafeMax !== 'number' ? parseFloat(unsafeMax) : unsafeMax;
+  let min = unsafeMin === null || Number.isNaN(parsedMin) ? -Infinity : parsedMin;
+  let max = unsafeMax === null || Number.isNaN(parsedMax) ? Infinity : parsedMax;
+  if (min > max) {
+    const temp = min;
+    min = max;
+    max = temp;
+  }
+  return [min, max];
+};
+inNumberRange.autoRemove = val => testFalsey(val) || testFalsey(val[0]) && testFalsey(val[1]);
+
+// Export
+
+const filterFns = {
+  includesString,
+  includesStringSensitive,
+  equalsString,
+  arrIncludes,
+  arrIncludesAll,
+  arrIncludesSome,
+  equals,
+  weakEquals,
+  inNumberRange
+};
+// Utils
+
+function testFalsey(val) {
+  return val === undefined || val === null || val === '';
+}
+exports.filterFns = filterFns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var filterFns = require('../filterFns.js');
+var utils = require('../utils.js');
+
+//
+
+const ColumnFiltering = {
+  getDefaultColumnDef: () => {
+    return {
+      filterFn: 'auto'
+    };
+  },
+  getInitialState: state => {
+    return {
+      columnFilters: [],
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnFiltersChange: utils.makeStateUpdater('columnFilters', table),
+      filterFromLeafRows: false,
+      maxLeafRowFilterDepth: 100
+    };
+  },
+  createColumn: (column, table) => {
+    column.getAutoFilterFn = () => {
+      const firstRow = table.getCoreRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'string') {
+        return filterFns.filterFns.includesString;
+      }
+      if (typeof value === 'number') {
+        return filterFns.filterFns.inNumberRange;
+      }
+      if (typeof value === 'boolean') {
+        return filterFns.filterFns.equals;
+      }
+      if (value !== null && typeof value === 'object') {
+        return filterFns.filterFns.equals;
+      }
+      if (Array.isArray(value)) {
+        return filterFns.filterFns.arrIncludes;
+      }
+      return filterFns.filterFns.weakEquals;
+    };
+    column.getFilterFn = () => {
+      var _table$options$filter, _table$options$filter2;
+      return utils.isFunction(column.columnDef.filterFn) ? column.columnDef.filterFn : column.columnDef.filterFn === 'auto' ? column.getAutoFilterFn() :
+      // @ts-ignore
+      (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[column.columnDef.filterFn]) != null ? _table$options$filter : filterFns.filterFns[column.columnDef.filterFn];
+    };
+    column.getCanFilter = () => {
+      var _column$columnDef$ena, _table$options$enable, _table$options$enable2;
+      return ((_column$columnDef$ena = column.columnDef.enableColumnFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnFilters) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && !!column.accessorFn;
+    };
+    column.getIsFiltered = () => column.getFilterIndex() > -1;
+    column.getFilterValue = () => {
+      var _table$getState$colum;
+      return (_table$getState$colum = table.getState().columnFilters) == null || (_table$getState$colum = _table$getState$colum.find(d => d.id === column.id)) == null ? void 0 : _table$getState$colum.value;
+    };
+    column.getFilterIndex = () => {
+      var _table$getState$colum2, _table$getState$colum3;
+      return (_table$getState$colum2 = (_table$getState$colum3 = table.getState().columnFilters) == null ? void 0 : _table$getState$colum3.findIndex(d => d.id === column.id)) != null ? _table$getState$colum2 : -1;
+    };
+    column.setFilterValue = value => {
+      table.setColumnFilters(old => {
+        const filterFn = column.getFilterFn();
+        const previousFilter = old == null ? void 0 : old.find(d => d.id === column.id);
+        const newFilter = utils.functionalUpdate(value, previousFilter ? previousFilter.value : undefined);
+
+        //
+        if (shouldAutoRemoveFilter(filterFn, newFilter, column)) {
+          var _old$filter;
+          return (_old$filter = old == null ? void 0 : old.filter(d => d.id !== column.id)) != null ? _old$filter : [];
+        }
+        const newFilterObj = {
+          id: column.id,
+          value: newFilter
+        };
+        if (previousFilter) {
+          var _old$map;
+          return (_old$map = old == null ? void 0 : old.map(d => {
+            if (d.id === column.id) {
+              return newFilterObj;
+            }
+            return d;
+          })) != null ? _old$map : [];
+        }
+        if (old != null && old.length) {
+          return [...old, newFilterObj];
+        }
+        return [newFilterObj];
+      });
+    };
+  },
+  createRow: (row, _table) => {
+    row.columnFilters = {};
+    row.columnFiltersMeta = {};
+  },
+  createTable: table => {
+    table.setColumnFilters = updater => {
+      const leafColumns = table.getAllLeafColumns();
+      const updateFn = old => {
+        var _functionalUpdate;
+        return (_functionalUpdate = utils.functionalUpdate(updater, old)) == null ? void 0 : _functionalUpdate.filter(filter => {
+          const column = leafColumns.find(d => d.id === filter.id);
+          if (column) {
+            const filterFn = column.getFilterFn();
+            if (shouldAutoRemoveFilter(filterFn, filter.value, column)) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+      table.options.onColumnFiltersChange == null || table.options.onColumnFiltersChange(updateFn);
+    };
+    table.resetColumnFilters = defaultState => {
+      var _table$initialState$c, _table$initialState;
+      table.setColumnFilters(defaultState ? [] : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnFilters) != null ? _table$initialState$c : []);
+    };
+    table.getPreFilteredRowModel = () => table.getCoreRowModel();
+    table.getFilteredRowModel = () => {
+      if (!table._getFilteredRowModel && table.options.getFilteredRowModel) {
+        table._getFilteredRowModel = table.options.getFilteredRowModel(table);
+      }
+      if (table.options.manualFiltering || !table._getFilteredRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return table._getFilteredRowModel();
+    };
+  }
+};
+function shouldAutoRemoveFilter(filterFn, value, column) {
+  return (filterFn && filterFn.autoRemove ? filterFn.autoRemove(value, column) : false) || typeof value === 'undefined' || typeof value === 'string' && !value;
+}
+exports.ColumnFiltering = ColumnFiltering;
+exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('./utils.js');
+const sum = (columnId, _leafRows, childRows) => {
+  // It's faster to just add the aggregations together instead of
+  // process leaf nodes individually
+  return childRows.reduce((sum, next) => {
+    const nextValue = next.getValue(columnId);
+    return sum + (typeof nextValue === 'number' ? nextValue : 0);
+  }, 0);
+};
+const min = (columnId, _leafRows, childRows) => {
+  let min;
+  childRows.forEach(row => {
+    const value = row.getValue(columnId);
+    if (value != null && (min > value || min === undefined && value >= value)) {
+      min = value;
+    }
+  });
+  return min;
+};
+const max = (columnId, _leafRows, childRows) => {
+  let max;
+  childRows.forEach(row => {
+    const value = row.getValue(columnId);
+    if (value != null && (max < value || max === undefined && value >= value)) {
+      max = value;
+    }
+  });
+  return max;
+};
+const extent = (columnId, _leafRows, childRows) => {
+  let min;
+  let max;
+  childRows.forEach(row => {
+    const value = row.getValue(columnId);
+    if (value != null) {
+      if (min === undefined) {
+        if (value >= value) min = max = value;
+      } else {
+        if (min > value) min = value;
+        if (max < value) max = value;
+      }
+    }
+  });
+  return [min, max];
+};
+const mean = (columnId, leafRows) => {
+  let count = 0;
+  let sum = 0;
+  leafRows.forEach(row => {
+    let value = row.getValue(columnId);
+    if (value != null && (value = +value) >= value) {
+      ++count, sum += value;
+    }
+  });
+  if (count) return sum / count;
+  return;
+};
+const median = (columnId, leafRows) => {
+  if (!leafRows.length) {
+    return;
+  }
+  const values = leafRows.map(row => row.getValue(columnId));
+  if (!utils.isNumberArray(values)) {
+    return;
+  }
+  if (values.length === 1) {
+    return values[0];
+  }
+  const mid = Math.floor(values.length / 2);
+  const nums = values.sort((a, b) => a - b);
+  return values.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+};
+const unique = (columnId, leafRows) => {
+  return Array.from(new Set(leafRows.map(d => d.getValue(columnId))).values());
+};
+const uniqueCount = (columnId, leafRows) => {
+  return new Set(leafRows.map(d => d.getValue(columnId))).size;
+};
+const count = (_columnId, leafRows) => {
+  return leafRows.length;
+};
+const aggregationFns = {
+  sum,
+  min,
+  max,
+  extent,
+  mean,
+  median,
+  unique,
+  uniqueCount,
+  count
+};
+exports.aggregationFns = aggregationFns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var aggregationFns = require('../aggregationFns.js');
+var utils = require('../utils.js');
+
+//
+
+const ColumnGrouping = {
+  getDefaultColumnDef: () => {
+    return {
+      aggregatedCell: props => {
+        var _toString, _props$getValue;
+        return (_toString = (_props$getValue = props.getValue()) == null || _props$getValue.toString == null ? void 0 : _props$getValue.toString()) != null ? _toString : null;
+      },
+      aggregationFn: 'auto'
+    };
+  },
+  getInitialState: state => {
+    return {
+      grouping: [],
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onGroupingChange: utils.makeStateUpdater('grouping', table),
+      groupedColumnMode: 'reorder'
+    };
+  },
+  createColumn: (column, table) => {
+    column.toggleGrouping = () => {
+      table.setGrouping(old => {
+        // Find any existing grouping for this column
+        if (old != null && old.includes(column.id)) {
+          return old.filter(d => d !== column.id);
+        }
+        return [...(old != null ? old : []), column.id];
+      });
+    };
+    column.getCanGroup = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableGrouping) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableGrouping) != null ? _table$options$enable : true) && (!!column.accessorFn || !!column.columnDef.getGroupingValue);
+    };
+    column.getIsGrouped = () => {
+      var _table$getState$group;
+      return (_table$getState$group = table.getState().grouping) == null ? void 0 : _table$getState$group.includes(column.id);
+    };
+    column.getGroupedIndex = () => {
+      var _table$getState$group2;
+      return (_table$getState$group2 = table.getState().grouping) == null ? void 0 : _table$getState$group2.indexOf(column.id);
+    };
+    column.getToggleGroupingHandler = () => {
+      const canGroup = column.getCanGroup();
+      return () => {
+        if (!canGroup) return;
+        column.toggleGrouping();
+      };
+    };
+    column.getAutoAggregationFn = () => {
+      const firstRow = table.getCoreRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'number') {
+        return aggregationFns.aggregationFns.sum;
+      }
+      if (Object.prototype.toString.call(value) === '[object Date]') {
+        return aggregationFns.aggregationFns.extent;
+      }
+    };
+    column.getAggregationFn = () => {
+      var _table$options$aggreg, _table$options$aggreg2;
+      if (!column) {
+        throw new Error();
+      }
+      return utils.isFunction(column.columnDef.aggregationFn) ? column.columnDef.aggregationFn : column.columnDef.aggregationFn === 'auto' ? column.getAutoAggregationFn() : (_table$options$aggreg = (_table$options$aggreg2 = table.options.aggregationFns) == null ? void 0 : _table$options$aggreg2[column.columnDef.aggregationFn]) != null ? _table$options$aggreg : aggregationFns.aggregationFns[column.columnDef.aggregationFn];
+    };
+  },
+  createTable: table => {
+    table.setGrouping = updater => table.options.onGroupingChange == null ? void 0 : table.options.onGroupingChange(updater);
+    table.resetGrouping = defaultState => {
+      var _table$initialState$g, _table$initialState;
+      table.setGrouping(defaultState ? [] : (_table$initialState$g = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.grouping) != null ? _table$initialState$g : []);
+    };
+    table.getPreGroupedRowModel = () => table.getFilteredRowModel();
+    table.getGroupedRowModel = () => {
+      if (!table._getGroupedRowModel && table.options.getGroupedRowModel) {
+        table._getGroupedRowModel = table.options.getGroupedRowModel(table);
+      }
+      if (table.options.manualGrouping || !table._getGroupedRowModel) {
+        return table.getPreGroupedRowModel();
+      }
+      return table._getGroupedRowModel();
+    };
+  },
+  createRow: (row, table) => {
+    row.getIsGrouped = () => !!row.groupingColumnId;
+    row.getGroupingValue = columnId => {
+      if (row._groupingValuesCache.hasOwnProperty(columnId)) {
+        return row._groupingValuesCache[columnId];
+      }
+      const column = table.getColumn(columnId);
+      if (!(column != null && column.columnDef.getGroupingValue)) {
+        return row.getValue(columnId);
+      }
+      row._groupingValuesCache[columnId] = column.columnDef.getGroupingValue(row.original);
+      return row._groupingValuesCache[columnId];
+    };
+    row._groupingValuesCache = {};
+  },
+  createCell: (cell, column, row, table) => {
+    cell.getIsGrouped = () => column.getIsGrouped() && column.id === row.groupingColumnId;
+    cell.getIsPlaceholder = () => !cell.getIsGrouped() && column.getIsGrouped();
+    cell.getIsAggregated = () => {
+      var _row$subRows;
+      return !cell.getIsGrouped() && !cell.getIsPlaceholder() && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
+    };
+  }
+};
+function orderColumns(leafColumns, grouping, groupedColumnMode) {
+  if (!(grouping != null && grouping.length) || !groupedColumnMode) {
+    return leafColumns;
+  }
+  const nonGroupingColumns = leafColumns.filter(col => !grouping.includes(col.id));
+  if (groupedColumnMode === 'remove') {
+    return nonGroupingColumns;
+  }
+  const groupingColumns = grouping.map(g => leafColumns.find(col => col.id === g)).filter(Boolean);
+  return [...groupingColumns, ...nonGroupingColumns];
+}
+exports.ColumnGrouping = ColumnGrouping;
+exports.orderColumns = orderColumns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const ColumnVisibility = {
+  getInitialState: state => {
+    return {
+      columnVisibility: {},
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnVisibilityChange: utils.makeStateUpdater('columnVisibility', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.toggleVisibility = value => {
+      if (column.getCanHide()) {
+        table.setColumnVisibility(old => ({
+          ...old,
+          [column.id]: value != null ? value : !column.getIsVisible()
+        }));
+      }
+    };
+    column.getIsVisible = () => {
+      var _ref, _table$getState$colum;
+      const childColumns = column.columns;
+      return (_ref = childColumns.length ? childColumns.some(c => c.getIsVisible()) : (_table$getState$colum = table.getState().columnVisibility) == null ? void 0 : _table$getState$colum[column.id]) != null ? _ref : true;
+    };
+    column.getCanHide = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableHiding) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableHiding) != null ? _table$options$enable : true);
+    };
+    column.getToggleVisibilityHandler = () => {
+      return e => {
+        column.toggleVisibility == null || column.toggleVisibility(e.target.checked);
+      };
+    };
+  },
+  createRow: (row, table) => {
+    row._getAllVisibleCells = utils.memo(() => [row.getAllCells(), table.getState().columnVisibility], cells => {
+      return cells.filter(cell => cell.column.getIsVisible());
+    }, utils.getMemoOptions(table.options, 'debugRows', '_getAllVisibleCells'));
+    row.getVisibleCells = utils.memo(() => [row.getLeftVisibleCells(), row.getCenterVisibleCells(), row.getRightVisibleCells()], (left, center, right) => [...left, ...center, ...right], utils.getMemoOptions(table.options, 'debugRows', 'getVisibleCells'));
+  },
+  createTable: table => {
+    const makeVisibleColumnsMethod = (key, getColumns) => {
+      return utils.memo(() => [getColumns(), getColumns().filter(d => d.getIsVisible()).map(d => d.id).join('_')], columns => {
+        return columns.filter(d => d.getIsVisible == null ? void 0 : d.getIsVisible());
+      }, utils.getMemoOptions(table.options, 'debugColumns', key));
+    };
+    table.getVisibleFlatColumns = makeVisibleColumnsMethod('getVisibleFlatColumns', () => table.getAllFlatColumns());
+    table.getVisibleLeafColumns = makeVisibleColumnsMethod('getVisibleLeafColumns', () => table.getAllLeafColumns());
+    table.getLeftVisibleLeafColumns = makeVisibleColumnsMethod('getLeftVisibleLeafColumns', () => table.getLeftLeafColumns());
+    table.getRightVisibleLeafColumns = makeVisibleColumnsMethod('getRightVisibleLeafColumns', () => table.getRightLeafColumns());
+    table.getCenterVisibleLeafColumns = makeVisibleColumnsMethod('getCenterVisibleLeafColumns', () => table.getCenterLeafColumns());
+    table.setColumnVisibility = updater => table.options.onColumnVisibilityChange == null ? void 0 : table.options.onColumnVisibilityChange(updater);
+    table.resetColumnVisibility = defaultState => {
+      var _table$initialState$c;
+      table.setColumnVisibility(defaultState ? {} : (_table$initialState$c = table.initialState.columnVisibility) != null ? _table$initialState$c : {});
+    };
+    table.toggleAllColumnsVisible = value => {
+      var _value;
+      value = (_value = value) != null ? _value : !table.getIsAllColumnsVisible();
+      table.setColumnVisibility(table.getAllLeafColumns().reduce((obj, column) => ({
+        ...obj,
+        [column.id]: !value ? !(column.getCanHide != null && column.getCanHide()) : value
+      }), {}));
+    };
+    table.getIsAllColumnsVisible = () => !table.getAllLeafColumns().some(column => !(column.getIsVisible != null && column.getIsVisible()));
+    table.getIsSomeColumnsVisible = () => table.getAllLeafColumns().some(column => column.getIsVisible == null ? void 0 : column.getIsVisible());
+    table.getToggleAllColumnsVisibilityHandler = () => {
+      return e => {
+        var _target;
+        table.toggleAllColumnsVisible((_target = e.target) == null ? void 0 : _target.checked);
+      };
+    };
+  }
+};
+function _getVisibleLeafColumns(table, position) {
+  return !position ? table.getVisibleLeafColumns() : position === 'center' ? table.getCenterVisibleLeafColumns() : position === 'left' ? table.getLeftVisibleLeafColumns() : table.getRightVisibleLeafColumns();
+}
+exports.ColumnVisibility = ColumnVisibility;
+exports._getVisibleLeafColumns = _getVisibleLeafColumns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var ColumnGrouping = require('./ColumnGrouping.js');
+var ColumnVisibility = require('./ColumnVisibility.js');
+
+//
+
+const ColumnOrdering = {
+  getInitialState: state => {
+    return {
+      columnOrder: [],
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnOrderChange: utils.makeStateUpdater('columnOrder', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.getIndex = utils.memo(position => [ColumnVisibility._getVisibleLeafColumns(table, position)], columns => columns.findIndex(d => d.id === column.id), utils.getMemoOptions(table.options, 'debugColumns', 'getIndex'));
+    column.getIsFirstColumn = position => {
+      var _columns$;
+      const columns = ColumnVisibility._getVisibleLeafColumns(table, position);
+      return ((_columns$ = columns[0]) == null ? void 0 : _columns$.id) === column.id;
+    };
+    column.getIsLastColumn = position => {
+      var _columns;
+      const columns = ColumnVisibility._getVisibleLeafColumns(table, position);
+      return ((_columns = columns[columns.length - 1]) == null ? void 0 : _columns.id) === column.id;
+    };
+  },
+  createTable: table => {
+    table.setColumnOrder = updater => table.options.onColumnOrderChange == null ? void 0 : table.options.onColumnOrderChange(updater);
+    table.resetColumnOrder = defaultState => {
+      var _table$initialState$c;
+      table.setColumnOrder(defaultState ? [] : (_table$initialState$c = table.initialState.columnOrder) != null ? _table$initialState$c : []);
+    };
+    table._getOrderColumnsFn = utils.memo(() => [table.getState().columnOrder, table.getState().grouping, table.options.groupedColumnMode], (columnOrder, grouping, groupedColumnMode) => columns => {
+      // Sort grouped columns to the start of the column list
+      // before the headers are built
+      let orderedColumns = [];
+
+      // If there is no order, return the normal columns
+      if (!(columnOrder != null && columnOrder.length)) {
+        orderedColumns = columns;
+      } else {
+        const columnOrderCopy = [...columnOrder];
+
+        // If there is an order, make a copy of the columns
+        const columnsCopy = [...columns];
+
+        // And make a new ordered array of the columns
+
+        // Loop over the columns and place them in order into the new array
+        while (columnsCopy.length && columnOrderCopy.length) {
+          const targetColumnId = columnOrderCopy.shift();
+          const foundIndex = columnsCopy.findIndex(d => d.id === targetColumnId);
+          if (foundIndex > -1) {
+            orderedColumns.push(columnsCopy.splice(foundIndex, 1)[0]);
+          }
+        }
+
+        // If there are any columns left, add them to the end
+        orderedColumns = [...orderedColumns, ...columnsCopy];
+      }
+      return ColumnGrouping.orderColumns(orderedColumns, grouping, groupedColumnMode);
+    }, utils.getMemoOptions(table.options, 'debugTable', '_getOrderColumnsFn'));
+  }
+};
+exports.ColumnOrdering = ColumnOrdering;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const getDefaultColumnPinningState = () => ({
+  left: [],
+  right: []
+});
+const ColumnPinning = {
+  getInitialState: state => {
+    return {
+      columnPinning: getDefaultColumnPinningState(),
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnPinningChange: utils.makeStateUpdater('columnPinning', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.pin = position => {
+      const columnIds = column.getLeafColumns().map(d => d.id).filter(Boolean);
+      table.setColumnPinning(old => {
+        var _old$left3, _old$right3;
+        if (position === 'right') {
+          var _old$left, _old$right;
+          return {
+            left: ((_old$left = old == null ? void 0 : old.left) != null ? _old$left : []).filter(d => !(columnIds != null && columnIds.includes(d))),
+            right: [...((_old$right = old == null ? void 0 : old.right) != null ? _old$right : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds]
+          };
+        }
+        if (position === 'left') {
+          var _old$left2, _old$right2;
+          return {
+            left: [...((_old$left2 = old == null ? void 0 : old.left) != null ? _old$left2 : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds],
+            right: ((_old$right2 = old == null ? void 0 : old.right) != null ? _old$right2 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
+          };
+        }
+        return {
+          left: ((_old$left3 = old == null ? void 0 : old.left) != null ? _old$left3 : []).filter(d => !(columnIds != null && columnIds.includes(d))),
+          right: ((_old$right3 = old == null ? void 0 : old.right) != null ? _old$right3 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
+        };
+      });
+    };
+    column.getCanPin = () => {
+      const leafColumns = column.getLeafColumns();
+      return leafColumns.some(d => {
+        var _d$columnDef$enablePi, _ref, _table$options$enable;
+        return ((_d$columnDef$enablePi = d.columnDef.enablePinning) != null ? _d$columnDef$enablePi : true) && ((_ref = (_table$options$enable = table.options.enableColumnPinning) != null ? _table$options$enable : table.options.enablePinning) != null ? _ref : true);
+      });
+    };
+    column.getIsPinned = () => {
+      const leafColumnIds = column.getLeafColumns().map(d => d.id);
+      const {
+        left,
+        right
+      } = table.getState().columnPinning;
+      const isLeft = leafColumnIds.some(d => left == null ? void 0 : left.includes(d));
+      const isRight = leafColumnIds.some(d => right == null ? void 0 : right.includes(d));
+      return isLeft ? 'left' : isRight ? 'right' : false;
+    };
+    column.getPinnedIndex = () => {
+      var _table$getState$colum, _table$getState$colum2;
+      const position = column.getIsPinned();
+      return position ? (_table$getState$colum = (_table$getState$colum2 = table.getState().columnPinning) == null || (_table$getState$colum2 = _table$getState$colum2[position]) == null ? void 0 : _table$getState$colum2.indexOf(column.id)) != null ? _table$getState$colum : -1 : 0;
+    };
+  },
+  createRow: (row, table) => {
+    row.getCenterVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allCells, left, right) => {
+      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
+      return allCells.filter(d => !leftAndRight.includes(d.column.id));
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getCenterVisibleCells'));
+    row.getLeftVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left], (allCells, left) => {
+      const cells = (left != null ? left : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
+        ...d,
+        position: 'left'
+      }));
+      return cells;
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getLeftVisibleCells'));
+    row.getRightVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.right], (allCells, right) => {
+      const cells = (right != null ? right : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
+        ...d,
+        position: 'right'
+      }));
+      return cells;
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getRightVisibleCells'));
+  },
+  createTable: table => {
+    table.setColumnPinning = updater => table.options.onColumnPinningChange == null ? void 0 : table.options.onColumnPinningChange(updater);
+    table.resetColumnPinning = defaultState => {
+      var _table$initialState$c, _table$initialState;
+      return table.setColumnPinning(defaultState ? getDefaultColumnPinningState() : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnPinning) != null ? _table$initialState$c : getDefaultColumnPinningState());
+    };
+    table.getIsSomeColumnsPinned = position => {
+      var _pinningState$positio;
+      const pinningState = table.getState().columnPinning;
+      if (!position) {
+        var _pinningState$left, _pinningState$right;
+        return Boolean(((_pinningState$left = pinningState.left) == null ? void 0 : _pinningState$left.length) || ((_pinningState$right = pinningState.right) == null ? void 0 : _pinningState$right.length));
+      }
+      return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
+    };
+    table.getLeftLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left], (allColumns, left) => {
+      return (left != null ? left : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'getLeftLeafColumns'));
+    table.getRightLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.right], (allColumns, right) => {
+      return (right != null ? right : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'getRightLeafColumns'));
+    table.getCenterLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, left, right) => {
+      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
+      return allColumns.filter(d => !leftAndRight.includes(d.id));
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'getCenterLeafColumns'));
+  }
+};
+exports.ColumnPinning = ColumnPinning;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+function safelyAccessDocument(_document) {
+  return _document || (typeof document !== 'undefined' ? document : null);
+}
+exports.safelyAccessDocument = safelyAccessDocument;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var document = require('../utils/document.js');
+var ColumnVisibility = require('./ColumnVisibility.js');
+
+//
+
+//
+
+const defaultColumnSizing = {
+  size: 150,
+  minSize: 20,
+  maxSize: Number.MAX_SAFE_INTEGER
+};
+const getDefaultColumnSizingInfoState = () => ({
+  startOffset: null,
+  startSize: null,
+  deltaOffset: null,
+  deltaPercentage: null,
+  isResizingColumn: false,
+  columnSizingStart: []
+});
+const ColumnSizing = {
+  getDefaultColumnDef: () => {
+    return defaultColumnSizing;
+  },
+  getInitialState: state => {
+    return {
+      columnSizing: {},
+      columnSizingInfo: getDefaultColumnSizingInfoState(),
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      columnResizeMode: 'onEnd',
+      columnResizeDirection: 'ltr',
+      onColumnSizingChange: utils.makeStateUpdater('columnSizing', table),
+      onColumnSizingInfoChange: utils.makeStateUpdater('columnSizingInfo', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.getSize = () => {
+      var _column$columnDef$min, _ref, _column$columnDef$max;
+      const columnSize = table.getState().columnSizing[column.id];
+      return Math.min(Math.max((_column$columnDef$min = column.columnDef.minSize) != null ? _column$columnDef$min : defaultColumnSizing.minSize, (_ref = columnSize != null ? columnSize : column.columnDef.size) != null ? _ref : defaultColumnSizing.size), (_column$columnDef$max = column.columnDef.maxSize) != null ? _column$columnDef$max : defaultColumnSizing.maxSize);
+    };
+    column.getStart = utils.memo(position => [position, ColumnVisibility._getVisibleLeafColumns(table, position), table.getState().columnSizing], (position, columns) => columns.slice(0, column.getIndex(position)).reduce((sum, column) => sum + column.getSize(), 0), utils.getMemoOptions(table.options, 'debugColumns', 'getStart'));
+    column.getAfter = utils.memo(position => [position, ColumnVisibility._getVisibleLeafColumns(table, position), table.getState().columnSizing], (position, columns) => columns.slice(column.getIndex(position) + 1).reduce((sum, column) => sum + column.getSize(), 0), utils.getMemoOptions(table.options, 'debugColumns', 'getAfter'));
+    column.resetSize = () => {
+      table.setColumnSizing(_ref2 => {
+        let {
+          [column.id]: _,
+          ...rest
+        } = _ref2;
+        return rest;
+      });
+    };
+    column.getCanResize = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableResizing) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnResizing) != null ? _table$options$enable : true);
+    };
+    column.getIsResizing = () => {
+      return table.getState().columnSizingInfo.isResizingColumn === column.id;
+    };
+  },
+  createHeader: (header, table) => {
+    header.getSize = () => {
+      let sum = 0;
+      const recurse = header => {
+        if (header.subHeaders.length) {
+          header.subHeaders.forEach(recurse);
+        } else {
+          var _header$column$getSiz;
+          sum += (_header$column$getSiz = header.column.getSize()) != null ? _header$column$getSiz : 0;
+        }
+      };
+      recurse(header);
+      return sum;
+    };
+    header.getStart = () => {
+      if (header.index > 0) {
+        const prevSiblingHeader = header.headerGroup.headers[header.index - 1];
+        return prevSiblingHeader.getStart() + prevSiblingHeader.getSize();
+      }
+      return 0;
+    };
+    header.getResizeHandler = _contextDocument => {
+      const column = table.getColumn(header.column.id);
+      const canResize = column == null ? void 0 : column.getCanResize();
+      return e => {
+        if (!column || !canResize) {
+          return;
+        }
+        e.persist == null || e.persist();
+        if (isTouchStartEvent(e)) {
+          // lets not respond to multiple touches (e.g. 2 or 3 fingers)
+          if (e.touches && e.touches.length > 1) {
+            return;
+          }
+        }
+        const startSize = header.getSize();
+        const columnSizingStart = header ? header.getLeafHeaders().map(d => [d.column.id, d.column.getSize()]) : [[column.id, column.getSize()]];
+        const clientX = isTouchStartEvent(e) ? Math.round(e.touches[0].clientX) : e.clientX;
+        const newColumnSizing = {};
+        const updateOffset = (eventType, clientXPos) => {
+          if (typeof clientXPos !== 'number') {
+            return;
+          }
+          table.setColumnSizingInfo(old => {
+            var _old$startOffset, _old$startSize;
+            const deltaDirection = table.options.columnResizeDirection === 'rtl' ? -1 : 1;
+            const deltaOffset = (clientXPos - ((_old$startOffset = old == null ? void 0 : old.startOffset) != null ? _old$startOffset : 0)) * deltaDirection;
+            const deltaPercentage = Math.max(deltaOffset / ((_old$startSize = old == null ? void 0 : old.startSize) != null ? _old$startSize : 0), -0.999999);
+            old.columnSizingStart.forEach(_ref3 => {
+              let [columnId, headerSize] = _ref3;
+              newColumnSizing[columnId] = Math.round(Math.max(headerSize + headerSize * deltaPercentage, 0) * 100) / 100;
+            });
+            return {
+              ...old,
+              deltaOffset,
+              deltaPercentage
+            };
+          });
+          if (table.options.columnResizeMode === 'onChange' || eventType === 'end') {
+            table.setColumnSizing(old => ({
+              ...old,
+              ...newColumnSizing
+            }));
+          }
+        };
+        const onMove = clientXPos => updateOffset('move', clientXPos);
+        const onEnd = clientXPos => {
+          updateOffset('end', clientXPos);
+          table.setColumnSizingInfo(old => ({
+            ...old,
+            isResizingColumn: false,
+            startOffset: null,
+            startSize: null,
+            deltaOffset: null,
+            deltaPercentage: null,
+            columnSizingStart: []
+          }));
+        };
+        const contextDocument = document.safelyAccessDocument(_contextDocument);
+        const mouseEvents = {
+          moveHandler: e => onMove(e.clientX),
+          upHandler: e => {
+            contextDocument == null || contextDocument.removeEventListener('mousemove', mouseEvents.moveHandler);
+            contextDocument == null || contextDocument.removeEventListener('mouseup', mouseEvents.upHandler);
+            onEnd(e.clientX);
+          }
+        };
+        const touchEvents = {
+          moveHandler: e => {
+            if (e.cancelable) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            onMove(e.touches[0].clientX);
+            return false;
+          },
+          upHandler: e => {
+            var _e$touches$;
+            contextDocument == null || contextDocument.removeEventListener('touchmove', touchEvents.moveHandler);
+            contextDocument == null || contextDocument.removeEventListener('touchend', touchEvents.upHandler);
+            if (e.cancelable) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            onEnd((_e$touches$ = e.touches[0]) == null ? void 0 : _e$touches$.clientX);
+          }
+        };
+        const passiveIfSupported = passiveEventSupported() ? {
+          passive: false
+        } : false;
+        if (isTouchStartEvent(e)) {
+          contextDocument == null || contextDocument.addEventListener('touchmove', touchEvents.moveHandler, passiveIfSupported);
+          contextDocument == null || contextDocument.addEventListener('touchend', touchEvents.upHandler, passiveIfSupported);
+        } else {
+          contextDocument == null || contextDocument.addEventListener('mousemove', mouseEvents.moveHandler, passiveIfSupported);
+          contextDocument == null || contextDocument.addEventListener('mouseup', mouseEvents.upHandler, passiveIfSupported);
+        }
+        table.setColumnSizingInfo(old => ({
+          ...old,
+          startOffset: clientX,
+          startSize,
+          deltaOffset: 0,
+          deltaPercentage: 0,
+          columnSizingStart,
+          isResizingColumn: column.id
+        }));
+      };
+    };
+  },
+  createTable: table => {
+    table.setColumnSizing = updater => table.options.onColumnSizingChange == null ? void 0 : table.options.onColumnSizingChange(updater);
+    table.setColumnSizingInfo = updater => table.options.onColumnSizingInfoChange == null ? void 0 : table.options.onColumnSizingInfoChange(updater);
+    table.resetColumnSizing = defaultState => {
+      var _table$initialState$c;
+      table.setColumnSizing(defaultState ? {} : (_table$initialState$c = table.initialState.columnSizing) != null ? _table$initialState$c : {});
+    };
+    table.resetHeaderSizeInfo = defaultState => {
+      var _table$initialState$c2;
+      table.setColumnSizingInfo(defaultState ? getDefaultColumnSizingInfoState() : (_table$initialState$c2 = table.initialState.columnSizingInfo) != null ? _table$initialState$c2 : getDefaultColumnSizingInfoState());
+    };
+    table.getTotalSize = () => {
+      var _table$getHeaderGroup, _table$getHeaderGroup2;
+      return (_table$getHeaderGroup = (_table$getHeaderGroup2 = table.getHeaderGroups()[0]) == null ? void 0 : _table$getHeaderGroup2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getHeaderGroup : 0;
+    };
+    table.getLeftTotalSize = () => {
+      var _table$getLeftHeaderG, _table$getLeftHeaderG2;
+      return (_table$getLeftHeaderG = (_table$getLeftHeaderG2 = table.getLeftHeaderGroups()[0]) == null ? void 0 : _table$getLeftHeaderG2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getLeftHeaderG : 0;
+    };
+    table.getCenterTotalSize = () => {
+      var _table$getCenterHeade, _table$getCenterHeade2;
+      return (_table$getCenterHeade = (_table$getCenterHeade2 = table.getCenterHeaderGroups()[0]) == null ? void 0 : _table$getCenterHeade2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getCenterHeade : 0;
+    };
+    table.getRightTotalSize = () => {
+      var _table$getRightHeader, _table$getRightHeader2;
+      return (_table$getRightHeader = (_table$getRightHeader2 = table.getRightHeaderGroups()[0]) == null ? void 0 : _table$getRightHeader2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getRightHeader : 0;
+    };
+  }
+};
+let passiveSupported = null;
+function passiveEventSupported() {
+  if (typeof passiveSupported === 'boolean') return passiveSupported;
+  let supported = false;
+  try {
+    const options = {
+      get passive() {
+        supported = true;
+        return false;
+      }
+    };
+    const noop = () => {};
+    window.addEventListener('test', noop, options);
+    window.removeEventListener('test', noop);
+  } catch (err) {
+    supported = false;
+  }
+  passiveSupported = supported;
+  return passiveSupported;
+}
+function isTouchStartEvent(e) {
+  return e.type === 'touchstart';
+}
+exports.ColumnSizing = ColumnSizing;
+exports.defaultColumnSizing = defaultColumnSizing;
+exports.passiveEventSupported = passiveEventSupported;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+//
+const GlobalFaceting = {
+  createTable: table => {
+    table._getGlobalFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, '__global__');
+    table.getGlobalFacetedRowModel = () => {
+      if (table.options.manualFiltering || !table._getGlobalFacetedRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return table._getGlobalFacetedRowModel();
+    };
+    table._getGlobalFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, '__global__');
+    table.getGlobalFacetedUniqueValues = () => {
+      if (!table._getGlobalFacetedUniqueValues) {
+        return new Map();
+      }
+      return table._getGlobalFacetedUniqueValues();
+    };
+    table._getGlobalFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, '__global__');
+    table.getGlobalFacetedMinMaxValues = () => {
+      if (!table._getGlobalFacetedMinMaxValues) {
+        return;
+      }
+      return table._getGlobalFacetedMinMaxValues();
+    };
+  }
+};
+exports.GlobalFaceting = GlobalFaceting;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var filterFns = require('../filterFns.js');
+var utils = require('../utils.js');
+
+//
+
+const GlobalFiltering = {
+  getInitialState: state => {
+    return {
+      globalFilter: undefined,
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onGlobalFilterChange: utils.makeStateUpdater('globalFilter', table),
+      globalFilterFn: 'auto',
+      getColumnCanGlobalFilter: column => {
+        var _table$getCoreRowMode;
+        const value = (_table$getCoreRowMode = table.getCoreRowModel().flatRows[0]) == null || (_table$getCoreRowMode = _table$getCoreRowMode._getAllCellsByColumnId()[column.id]) == null ? void 0 : _table$getCoreRowMode.getValue();
+        return typeof value === 'string' || typeof value === 'number';
+      }
+    };
+  },
+  createColumn: (column, table) => {
+    column.getCanGlobalFilter = () => {
+      var _column$columnDef$ena, _table$options$enable, _table$options$enable2, _table$options$getCol;
+      return ((_column$columnDef$ena = column.columnDef.enableGlobalFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableGlobalFilter) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && ((_table$options$getCol = table.options.getColumnCanGlobalFilter == null ? void 0 : table.options.getColumnCanGlobalFilter(column)) != null ? _table$options$getCol : true) && !!column.accessorFn;
+    };
+  },
+  createTable: table => {
+    table.getGlobalAutoFilterFn = () => {
+      return filterFns.filterFns.includesString;
+    };
+    table.getGlobalFilterFn = () => {
+      var _table$options$filter, _table$options$filter2;
+      const {
+        globalFilterFn: globalFilterFn
+      } = table.options;
+      return utils.isFunction(globalFilterFn) ? globalFilterFn : globalFilterFn === 'auto' ? table.getGlobalAutoFilterFn() : (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[globalFilterFn]) != null ? _table$options$filter : filterFns.filterFns[globalFilterFn];
+    };
+    table.setGlobalFilter = updater => {
+      table.options.onGlobalFilterChange == null || table.options.onGlobalFilterChange(updater);
+    };
+    table.resetGlobalFilter = defaultState => {
+      table.setGlobalFilter(defaultState ? undefined : table.initialState.globalFilter);
+    };
+  }
+};
+exports.GlobalFiltering = GlobalFiltering;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const RowExpanding = {
+  getInitialState: state => {
+    return {
+      expanded: {},
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onExpandedChange: utils.makeStateUpdater('expanded', table),
+      paginateExpandedRows: true
+    };
+  },
+  createTable: table => {
+    let registered = false;
+    let queued = false;
+    table._autoResetExpanded = () => {
+      var _ref, _table$options$autoRe;
+      if (!registered) {
+        table._queue(() => {
+          registered = true;
+        });
+        return;
+      }
+      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetExpanded) != null ? _ref : !table.options.manualExpanding) {
+        if (queued) return;
+        queued = true;
+        table._queue(() => {
+          table.resetExpanded();
+          queued = false;
+        });
+      }
+    };
+    table.setExpanded = updater => table.options.onExpandedChange == null ? void 0 : table.options.onExpandedChange(updater);
+    table.toggleAllRowsExpanded = expanded => {
+      if (expanded != null ? expanded : !table.getIsAllRowsExpanded()) {
+        table.setExpanded(true);
+      } else {
+        table.setExpanded({});
+      }
+    };
+    table.resetExpanded = defaultState => {
+      var _table$initialState$e, _table$initialState;
+      table.setExpanded(defaultState ? {} : (_table$initialState$e = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.expanded) != null ? _table$initialState$e : {});
+    };
+    table.getCanSomeRowsExpand = () => {
+      return table.getPrePaginationRowModel().flatRows.some(row => row.getCanExpand());
+    };
+    table.getToggleAllRowsExpandedHandler = () => {
+      return e => {
+        e.persist == null || e.persist();
+        table.toggleAllRowsExpanded();
+      };
+    };
+    table.getIsSomeRowsExpanded = () => {
+      const expanded = table.getState().expanded;
+      return expanded === true || Object.values(expanded).some(Boolean);
+    };
+    table.getIsAllRowsExpanded = () => {
+      const expanded = table.getState().expanded;
+
+      // If expanded is true, save some cycles and return true
+      if (typeof expanded === 'boolean') {
+        return expanded === true;
+      }
+      if (!Object.keys(expanded).length) {
+        return false;
+      }
+
+      // If any row is not expanded, return false
+      if (table.getRowModel().flatRows.some(row => !row.getIsExpanded())) {
+        return false;
+      }
+
+      // They must all be expanded :shrug:
+      return true;
+    };
+    table.getExpandedDepth = () => {
+      let maxDepth = 0;
+      const rowIds = table.getState().expanded === true ? Object.keys(table.getRowModel().rowsById) : Object.keys(table.getState().expanded);
+      rowIds.forEach(id => {
+        const splitId = id.split('.');
+        maxDepth = Math.max(maxDepth, splitId.length);
+      });
+      return maxDepth;
+    };
+    table.getPreExpandedRowModel = () => table.getSortedRowModel();
+    table.getExpandedRowModel = () => {
+      if (!table._getExpandedRowModel && table.options.getExpandedRowModel) {
+        table._getExpandedRowModel = table.options.getExpandedRowModel(table);
+      }
+      if (table.options.manualExpanding || !table._getExpandedRowModel) {
+        return table.getPreExpandedRowModel();
+      }
+      return table._getExpandedRowModel();
+    };
+  },
+  createRow: (row, table) => {
+    row.toggleExpanded = expanded => {
+      table.setExpanded(old => {
+        var _expanded;
+        const exists = old === true ? true : !!(old != null && old[row.id]);
+        let oldExpanded = {};
+        if (old === true) {
+          Object.keys(table.getRowModel().rowsById).forEach(rowId => {
+            oldExpanded[rowId] = true;
+          });
+        } else {
+          oldExpanded = old;
+        }
+        expanded = (_expanded = expanded) != null ? _expanded : !exists;
+        if (!exists && expanded) {
+          return {
+            ...oldExpanded,
+            [row.id]: true
+          };
+        }
+        if (exists && !expanded) {
+          const {
+            [row.id]: _,
+            ...rest
+          } = oldExpanded;
+          return rest;
+        }
+        return old;
+      });
+    };
+    row.getIsExpanded = () => {
+      var _table$options$getIsR;
+      const expanded = table.getState().expanded;
+      return !!((_table$options$getIsR = table.options.getIsRowExpanded == null ? void 0 : table.options.getIsRowExpanded(row)) != null ? _table$options$getIsR : expanded === true || (expanded == null ? void 0 : expanded[row.id]));
+    };
+    row.getCanExpand = () => {
+      var _table$options$getRow, _table$options$enable, _row$subRows;
+      return (_table$options$getRow = table.options.getRowCanExpand == null ? void 0 : table.options.getRowCanExpand(row)) != null ? _table$options$getRow : ((_table$options$enable = table.options.enableExpanding) != null ? _table$options$enable : true) && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
+    };
+    row.getIsAllParentsExpanded = () => {
+      let isFullyExpanded = true;
+      let currentRow = row;
+      while (isFullyExpanded && currentRow.parentId) {
+        currentRow = table.getRow(currentRow.parentId, true);
+        isFullyExpanded = currentRow.getIsExpanded();
+      }
+      return isFullyExpanded;
+    };
+    row.getToggleExpandedHandler = () => {
+      const canExpand = row.getCanExpand();
+      return () => {
+        if (!canExpand) return;
+        row.toggleExpanded();
+      };
+    };
+  }
+};
+exports.RowExpanding = RowExpanding;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const defaultPageIndex = 0;
+const defaultPageSize = 10;
+const getDefaultPaginationState = () => ({
+  pageIndex: defaultPageIndex,
+  pageSize: defaultPageSize
+});
+const RowPagination = {
+  getInitialState: state => {
+    return {
+      ...state,
+      pagination: {
+        ...getDefaultPaginationState(),
+        ...(state == null ? void 0 : state.pagination)
+      }
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onPaginationChange: utils.makeStateUpdater('pagination', table)
+    };
+  },
+  createTable: table => {
+    let registered = false;
+    let queued = false;
+    table._autoResetPageIndex = () => {
+      var _ref, _table$options$autoRe;
+      if (!registered) {
+        table._queue(() => {
+          registered = true;
+        });
+        return;
+      }
+      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetPageIndex) != null ? _ref : !table.options.manualPagination) {
+        if (queued) return;
+        queued = true;
+        table._queue(() => {
+          table.resetPageIndex();
+          queued = false;
+        });
+      }
+    };
+    table.setPagination = updater => {
+      const safeUpdater = old => {
+        let newState = utils.functionalUpdate(updater, old);
+        return newState;
+      };
+      return table.options.onPaginationChange == null ? void 0 : table.options.onPaginationChange(safeUpdater);
+    };
+    table.resetPagination = defaultState => {
+      var _table$initialState$p;
+      table.setPagination(defaultState ? getDefaultPaginationState() : (_table$initialState$p = table.initialState.pagination) != null ? _table$initialState$p : getDefaultPaginationState());
+    };
+    table.setPageIndex = updater => {
+      table.setPagination(old => {
+        let pageIndex = utils.functionalUpdate(updater, old.pageIndex);
+        const maxPageIndex = typeof table.options.pageCount === 'undefined' || table.options.pageCount === -1 ? Number.MAX_SAFE_INTEGER : table.options.pageCount - 1;
+        pageIndex = Math.max(0, Math.min(pageIndex, maxPageIndex));
+        return {
+          ...old,
+          pageIndex
+        };
+      });
+    };
+    table.resetPageIndex = defaultState => {
+      var _table$initialState$p2, _table$initialState;
+      table.setPageIndex(defaultState ? defaultPageIndex : (_table$initialState$p2 = (_table$initialState = table.initialState) == null || (_table$initialState = _table$initialState.pagination) == null ? void 0 : _table$initialState.pageIndex) != null ? _table$initialState$p2 : defaultPageIndex);
+    };
+    table.resetPageSize = defaultState => {
+      var _table$initialState$p3, _table$initialState2;
+      table.setPageSize(defaultState ? defaultPageSize : (_table$initialState$p3 = (_table$initialState2 = table.initialState) == null || (_table$initialState2 = _table$initialState2.pagination) == null ? void 0 : _table$initialState2.pageSize) != null ? _table$initialState$p3 : defaultPageSize);
+    };
+    table.setPageSize = updater => {
+      table.setPagination(old => {
+        const pageSize = Math.max(1, utils.functionalUpdate(updater, old.pageSize));
+        const topRowIndex = old.pageSize * old.pageIndex;
+        const pageIndex = Math.floor(topRowIndex / pageSize);
+        return {
+          ...old,
+          pageIndex,
+          pageSize
+        };
+      });
+    };
+    //deprecated
+    table.setPageCount = updater => table.setPagination(old => {
+      var _table$options$pageCo;
+      let newPageCount = utils.functionalUpdate(updater, (_table$options$pageCo = table.options.pageCount) != null ? _table$options$pageCo : -1);
+      if (typeof newPageCount === 'number') {
+        newPageCount = Math.max(-1, newPageCount);
+      }
+      return {
+        ...old,
+        pageCount: newPageCount
+      };
+    });
+    table.getPageOptions = utils.memo(() => [table.getPageCount()], pageCount => {
+      let pageOptions = [];
+      if (pageCount && pageCount > 0) {
+        pageOptions = [...new Array(pageCount)].fill(null).map((_, i) => i);
+      }
+      return pageOptions;
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getPageOptions'));
+    table.getCanPreviousPage = () => table.getState().pagination.pageIndex > 0;
+    table.getCanNextPage = () => {
+      const {
+        pageIndex
+      } = table.getState().pagination;
+      const pageCount = table.getPageCount();
+      if (pageCount === -1) {
+        return true;
+      }
+      if (pageCount === 0) {
+        return false;
+      }
+      return pageIndex < pageCount - 1;
+    };
+    table.previousPage = () => {
+      return table.setPageIndex(old => old - 1);
+    };
+    table.nextPage = () => {
+      return table.setPageIndex(old => {
+        return old + 1;
+      });
+    };
+    table.firstPage = () => {
+      return table.setPageIndex(0);
+    };
+    table.lastPage = () => {
+      return table.setPageIndex(table.getPageCount() - 1);
+    };
+    table.getPrePaginationRowModel = () => table.getExpandedRowModel();
+    table.getPaginationRowModel = () => {
+      if (!table._getPaginationRowModel && table.options.getPaginationRowModel) {
+        table._getPaginationRowModel = table.options.getPaginationRowModel(table);
+      }
+      if (table.options.manualPagination || !table._getPaginationRowModel) {
+        return table.getPrePaginationRowModel();
+      }
+      return table._getPaginationRowModel();
+    };
+    table.getPageCount = () => {
+      var _table$options$pageCo2;
+      return (_table$options$pageCo2 = table.options.pageCount) != null ? _table$options$pageCo2 : Math.ceil(table.getRowCount() / table.getState().pagination.pageSize);
+    };
+    table.getRowCount = () => {
+      var _table$options$rowCou;
+      return (_table$options$rowCou = table.options.rowCount) != null ? _table$options$rowCou : table.getPrePaginationRowModel().rows.length;
+    };
+  }
+};
+exports.RowPagination = RowPagination;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const getDefaultRowPinningState = () => ({
+  top: [],
+  bottom: []
+});
+const RowPinning = {
+  getInitialState: state => {
+    return {
+      rowPinning: getDefaultRowPinningState(),
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onRowPinningChange: utils.makeStateUpdater('rowPinning', table)
+    };
+  },
+  createRow: (row, table) => {
+    row.pin = (position, includeLeafRows, includeParentRows) => {
+      const leafRowIds = includeLeafRows ? row.getLeafRows().map(_ref => {
+        let {
+          id
+        } = _ref;
+        return id;
+      }) : [];
+      const parentRowIds = includeParentRows ? row.getParentRows().map(_ref2 => {
+        let {
+          id
+        } = _ref2;
+        return id;
+      }) : [];
+      const rowIds = new Set([...parentRowIds, row.id, ...leafRowIds]);
+      table.setRowPinning(old => {
+        var _old$top3, _old$bottom3;
+        if (position === 'bottom') {
+          var _old$top, _old$bottom;
+          return {
+            top: ((_old$top = old == null ? void 0 : old.top) != null ? _old$top : []).filter(d => !(rowIds != null && rowIds.has(d))),
+            bottom: [...((_old$bottom = old == null ? void 0 : old.bottom) != null ? _old$bottom : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)]
+          };
+        }
+        if (position === 'top') {
+          var _old$top2, _old$bottom2;
+          return {
+            top: [...((_old$top2 = old == null ? void 0 : old.top) != null ? _old$top2 : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)],
+            bottom: ((_old$bottom2 = old == null ? void 0 : old.bottom) != null ? _old$bottom2 : []).filter(d => !(rowIds != null && rowIds.has(d)))
+          };
+        }
+        return {
+          top: ((_old$top3 = old == null ? void 0 : old.top) != null ? _old$top3 : []).filter(d => !(rowIds != null && rowIds.has(d))),
+          bottom: ((_old$bottom3 = old == null ? void 0 : old.bottom) != null ? _old$bottom3 : []).filter(d => !(rowIds != null && rowIds.has(d)))
+        };
+      });
+    };
+    row.getCanPin = () => {
+      var _ref3;
+      const {
+        enableRowPinning,
+        enablePinning
+      } = table.options;
+      if (typeof enableRowPinning === 'function') {
+        return enableRowPinning(row);
+      }
+      return (_ref3 = enableRowPinning != null ? enableRowPinning : enablePinning) != null ? _ref3 : true;
+    };
+    row.getIsPinned = () => {
+      const rowIds = [row.id];
+      const {
+        top,
+        bottom
+      } = table.getState().rowPinning;
+      const isTop = rowIds.some(d => top == null ? void 0 : top.includes(d));
+      const isBottom = rowIds.some(d => bottom == null ? void 0 : bottom.includes(d));
+      return isTop ? 'top' : isBottom ? 'bottom' : false;
+    };
+    row.getPinnedIndex = () => {
+      var _ref4, _visiblePinnedRowIds$;
+      const position = row.getIsPinned();
+      if (!position) return -1;
+      const visiblePinnedRowIds = (_ref4 = position === 'top' ? table.getTopRows() : table.getBottomRows()) == null ? void 0 : _ref4.map(_ref5 => {
+        let {
+          id
+        } = _ref5;
+        return id;
+      });
+      return (_visiblePinnedRowIds$ = visiblePinnedRowIds == null ? void 0 : visiblePinnedRowIds.indexOf(row.id)) != null ? _visiblePinnedRowIds$ : -1;
+    };
+  },
+  createTable: table => {
+    table.setRowPinning = updater => table.options.onRowPinningChange == null ? void 0 : table.options.onRowPinningChange(updater);
+    table.resetRowPinning = defaultState => {
+      var _table$initialState$r, _table$initialState;
+      return table.setRowPinning(defaultState ? getDefaultRowPinningState() : (_table$initialState$r = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.rowPinning) != null ? _table$initialState$r : getDefaultRowPinningState());
+    };
+    table.getIsSomeRowsPinned = position => {
+      var _pinningState$positio;
+      const pinningState = table.getState().rowPinning;
+      if (!position) {
+        var _pinningState$top, _pinningState$bottom;
+        return Boolean(((_pinningState$top = pinningState.top) == null ? void 0 : _pinningState$top.length) || ((_pinningState$bottom = pinningState.bottom) == null ? void 0 : _pinningState$bottom.length));
+      }
+      return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
+    };
+    table._getPinnedRows = (visibleRows, pinnedRowIds, position) => {
+      var _table$options$keepPi;
+      const rows = ((_table$options$keepPi = table.options.keepPinnedRows) != null ? _table$options$keepPi : true) ?
+      //get all rows that are pinned even if they would not be otherwise visible
+      //account for expanded parent rows, but not pagination or filtering
+      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => {
+        const row = table.getRow(rowId, true);
+        return row.getIsAllParentsExpanded() ? row : null;
+      }) :
+      //else get only visible rows that are pinned
+      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => visibleRows.find(row => row.id === rowId));
+      return rows.filter(Boolean).map(d => ({
+        ...d,
+        position
+      }));
+    };
+    table.getTopRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.top], (allRows, topPinnedRowIds) => table._getPinnedRows(allRows, topPinnedRowIds, 'top'), utils.getMemoOptions(table.options, 'debugRows', 'getTopRows'));
+    table.getBottomRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.bottom], (allRows, bottomPinnedRowIds) => table._getPinnedRows(allRows, bottomPinnedRowIds, 'bottom'), utils.getMemoOptions(table.options, 'debugRows', 'getBottomRows'));
+    table.getCenterRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.top, table.getState().rowPinning.bottom], (allRows, top, bottom) => {
+      const topAndBottom = new Set([...(top != null ? top : []), ...(bottom != null ? bottom : [])]);
+      return allRows.filter(d => !topAndBottom.has(d.id));
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getCenterRows'));
+  }
+};
+exports.RowPinning = RowPinning;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const RowSelection = {
+  getInitialState: state => {
+    return {
+      rowSelection: {},
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onRowSelectionChange: utils.makeStateUpdater('rowSelection', table),
+      enableRowSelection: true,
+      enableMultiRowSelection: true,
+      enableSubRowSelection: true
+      // enableGroupingRowSelection: false,
+      // isAdditiveSelectEvent: (e: unknown) => !!e.metaKey,
+      // isInclusiveSelectEvent: (e: unknown) => !!e.shiftKey,
+    };
+  },
+  createTable: table => {
+    table.setRowSelection = updater => table.options.onRowSelectionChange == null ? void 0 : table.options.onRowSelectionChange(updater);
+    table.resetRowSelection = defaultState => {
+      var _table$initialState$r;
+      return table.setRowSelection(defaultState ? {} : (_table$initialState$r = table.initialState.rowSelection) != null ? _table$initialState$r : {});
+    };
+    table.toggleAllRowsSelected = value => {
+      table.setRowSelection(old => {
+        value = typeof value !== 'undefined' ? value : !table.getIsAllRowsSelected();
+        const rowSelection = {
+          ...old
+        };
+        const preGroupedFlatRows = table.getPreGroupedRowModel().flatRows;
+
+        // We don't use `mutateRowIsSelected` here for performance reasons.
+        // All of the rows are flat already, so it wouldn't be worth it
+        if (value) {
+          preGroupedFlatRows.forEach(row => {
+            if (!row.getCanSelect()) {
+              return;
+            }
+            rowSelection[row.id] = true;
+          });
+        } else {
+          preGroupedFlatRows.forEach(row => {
+            delete rowSelection[row.id];
+          });
+        }
+        return rowSelection;
+      });
+    };
+    table.toggleAllPageRowsSelected = value => table.setRowSelection(old => {
+      const resolvedValue = typeof value !== 'undefined' ? value : !table.getIsAllPageRowsSelected();
+      const rowSelection = {
+        ...old
+      };
+      table.getRowModel().rows.forEach(row => {
+        mutateRowIsSelected(rowSelection, row.id, resolvedValue, true, table);
+      });
+      return rowSelection;
+    });
+
+    // addRowSelectionRange: rowId => {
+    //   const {
+    //     rows,
+    //     rowsById,
+    //     options: { selectGroupingRows, selectSubRows },
+    //   } = table
+
+    //   const findSelectedRow = (rows: Row[]) => {
+    //     let found
+    //     rows.find(d => {
+    //       if (d.getIsSelected()) {
+    //         found = d
+    //         return true
+    //       }
+    //       const subFound = findSelectedRow(d.subRows || [])
+    //       if (subFound) {
+    //         found = subFound
+    //         return true
+    //       }
+    //       return false
+    //     })
+    //     return found
+    //   }
+
+    //   const firstRow = findSelectedRow(rows) || rows[0]
+    //   const lastRow = rowsById[rowId]
+
+    //   let include = false
+    //   const selectedRowIds = {}
+
+    //   const addRow = (row: Row) => {
+    //     mutateRowIsSelected(selectedRowIds, row.id, true, {
+    //       rowsById,
+    //       selectGroupingRows: selectGroupingRows!,
+    //       selectSubRows: selectSubRows!,
+    //     })
+    //   }
+
+    //   table.rows.forEach(row => {
+    //     const isFirstRow = row.id === firstRow.id
+    //     const isLastRow = row.id === lastRow.id
+
+    //     if (isFirstRow || isLastRow) {
+    //       if (!include) {
+    //         include = true
+    //       } else if (include) {
+    //         addRow(row)
+    //         include = false
+    //       }
+    //     }
+
+    //     if (include) {
+    //       addRow(row)
+    //     }
+    //   })
+
+    //   table.setRowSelection(selectedRowIds)
+    // },
+    table.getPreSelectedRowModel = () => table.getCoreRowModel();
+    table.getSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getCoreRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getSelectedRowModel'));
+    table.getFilteredSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getFilteredRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getFilteredSelectedRowModel'));
+    table.getGroupedSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getSortedRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getGroupedSelectedRowModel'));
+
+    ///
+
+    // getGroupingRowCanSelect: rowId => {
+    //   const row = table.getRow(rowId)
+
+    //   if (!row) {
+    //     throw new Error()
+    //   }
+
+    //   if (typeof table.options.enableGroupingRowSelection === 'function') {
+    //     return table.options.enableGroupingRowSelection(row)
+    //   }
+
+    //   return table.options.enableGroupingRowSelection ?? false
+    // },
+
+    table.getIsAllRowsSelected = () => {
+      const preGroupedFlatRows = table.getFilteredRowModel().flatRows;
+      const {
+        rowSelection
+      } = table.getState();
+      let isAllRowsSelected = Boolean(preGroupedFlatRows.length && Object.keys(rowSelection).length);
+      if (isAllRowsSelected) {
+        if (preGroupedFlatRows.some(row => row.getCanSelect() && !rowSelection[row.id])) {
+          isAllRowsSelected = false;
+        }
+      }
+      return isAllRowsSelected;
+    };
+    table.getIsAllPageRowsSelected = () => {
+      const paginationFlatRows = table.getPaginationRowModel().flatRows.filter(row => row.getCanSelect());
+      const {
+        rowSelection
+      } = table.getState();
+      let isAllPageRowsSelected = !!paginationFlatRows.length;
+      if (isAllPageRowsSelected && paginationFlatRows.some(row => !rowSelection[row.id])) {
+        isAllPageRowsSelected = false;
+      }
+      return isAllPageRowsSelected;
+    };
+    table.getIsSomeRowsSelected = () => {
+      var _table$getState$rowSe;
+      const totalSelected = Object.keys((_table$getState$rowSe = table.getState().rowSelection) != null ? _table$getState$rowSe : {}).length;
+      return totalSelected > 0 && totalSelected < table.getFilteredRowModel().flatRows.length;
+    };
+    table.getIsSomePageRowsSelected = () => {
+      const paginationFlatRows = table.getPaginationRowModel().flatRows;
+      return table.getIsAllPageRowsSelected() ? false : paginationFlatRows.filter(row => row.getCanSelect()).some(d => d.getIsSelected() || d.getIsSomeSelected());
+    };
+    table.getToggleAllRowsSelectedHandler = () => {
+      return e => {
+        table.toggleAllRowsSelected(e.target.checked);
+      };
+    };
+    table.getToggleAllPageRowsSelectedHandler = () => {
+      return e => {
+        table.toggleAllPageRowsSelected(e.target.checked);
+      };
+    };
+  },
+  createRow: (row, table) => {
+    row.toggleSelected = (value, opts) => {
+      const isSelected = row.getIsSelected();
+      table.setRowSelection(old => {
+        var _opts$selectChildren;
+        value = typeof value !== 'undefined' ? value : !isSelected;
+        if (row.getCanSelect() && isSelected === value) {
+          return old;
+        }
+        const selectedRowIds = {
+          ...old
+        };
+        mutateRowIsSelected(selectedRowIds, row.id, value, (_opts$selectChildren = opts == null ? void 0 : opts.selectChildren) != null ? _opts$selectChildren : true, table);
+        return selectedRowIds;
+      });
+    };
+    row.getIsSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isRowSelected(row, rowSelection);
+    };
+    row.getIsSomeSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isSubRowSelected(row, rowSelection) === 'some';
+    };
+    row.getIsAllSubRowsSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isSubRowSelected(row, rowSelection) === 'all';
+    };
+    row.getCanSelect = () => {
+      var _table$options$enable;
+      if (typeof table.options.enableRowSelection === 'function') {
+        return table.options.enableRowSelection(row);
+      }
+      return (_table$options$enable = table.options.enableRowSelection) != null ? _table$options$enable : true;
+    };
+    row.getCanSelectSubRows = () => {
+      var _table$options$enable2;
+      if (typeof table.options.enableSubRowSelection === 'function') {
+        return table.options.enableSubRowSelection(row);
+      }
+      return (_table$options$enable2 = table.options.enableSubRowSelection) != null ? _table$options$enable2 : true;
+    };
+    row.getCanMultiSelect = () => {
+      var _table$options$enable3;
+      if (typeof table.options.enableMultiRowSelection === 'function') {
+        return table.options.enableMultiRowSelection(row);
+      }
+      return (_table$options$enable3 = table.options.enableMultiRowSelection) != null ? _table$options$enable3 : true;
+    };
+    row.getToggleSelectedHandler = () => {
+      const canSelect = row.getCanSelect();
+      return e => {
+        var _target;
+        if (!canSelect) return;
+        row.toggleSelected((_target = e.target) == null ? void 0 : _target.checked);
+      };
+    };
+  }
+};
+const mutateRowIsSelected = (selectedRowIds, id, value, includeChildren, table) => {
+  var _row$subRows;
+  const row = table.getRow(id, true);
+
+  // const isGrouped = row.getIsGrouped()
+
+  // if ( // TODO: enforce grouping row selection rules
+  //   !isGrouped ||
+  //   (isGrouped && table.options.enableGroupingRowSelection)
+  // ) {
+  if (value) {
+    if (!row.getCanMultiSelect()) {
+      Object.keys(selectedRowIds).forEach(key => delete selectedRowIds[key]);
+    }
+    if (row.getCanSelect()) {
+      selectedRowIds[id] = true;
+    }
+  } else {
+    delete selectedRowIds[id];
+  }
+  // }
+
+  if (includeChildren && (_row$subRows = row.subRows) != null && _row$subRows.length && row.getCanSelectSubRows()) {
+    row.subRows.forEach(row => mutateRowIsSelected(selectedRowIds, row.id, value, includeChildren, table));
+  }
+};
+function selectRowsFn(table, rowModel) {
+  const rowSelection = table.getState().rowSelection;
+  const newSelectedFlatRows = [];
+  const newSelectedRowsById = {};
+
+  // Filters top level and nested rows
+  const recurseRows = function (rows, depth) {
+    return rows.map(row => {
+      var _row$subRows2;
+      const isSelected = isRowSelected(row, rowSelection);
+      if (isSelected) {
+        newSelectedFlatRows.push(row);
+        newSelectedRowsById[row.id] = row;
+      }
+      if ((_row$subRows2 = row.subRows) != null && _row$subRows2.length) {
+        row = {
+          ...row,
+          subRows: recurseRows(row.subRows)
+        };
+      }
+      if (isSelected) {
+        return row;
+      }
+    }).filter(Boolean);
+  };
+  return {
+    rows: recurseRows(rowModel.rows),
+    flatRows: newSelectedFlatRows,
+    rowsById: newSelectedRowsById
+  };
+}
+function isRowSelected(row, selection) {
+  var _selection$row$id;
+  return (_selection$row$id = selection[row.id]) != null ? _selection$row$id : false;
+}
+function isSubRowSelected(row, selection, table) {
+  var _row$subRows3;
+  if (!((_row$subRows3 = row.subRows) != null && _row$subRows3.length)) return false;
+  let allChildrenSelected = true;
+  let someSelected = false;
+  row.subRows.forEach(subRow => {
+    // Bail out early if we know both of these
+    if (someSelected && !allChildrenSelected) {
+      return;
+    }
+    if (subRow.getCanSelect()) {
+      if (isRowSelected(subRow, selection)) {
+        someSelected = true;
+      } else {
+        allChildrenSelected = false;
+      }
+    }
+
+    // Check row selection of nested subrows
+    if (subRow.subRows && subRow.subRows.length) {
+      const subRowChildrenSelected = isSubRowSelected(subRow, selection);
+      if (subRowChildrenSelected === 'all') {
+        someSelected = true;
+      } else if (subRowChildrenSelected === 'some') {
+        someSelected = true;
+        allChildrenSelected = false;
+      } else {
+        allChildrenSelected = false;
+      }
+    }
+  });
+  return allChildrenSelected ? 'all' : someSelected ? 'some' : false;
+}
+exports.RowSelection = RowSelection;
+exports.isRowSelected = isRowSelected;
+exports.isSubRowSelected = isSubRowSelected;
+exports.selectRowsFn = selectRowsFn;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+const reSplitAlphaNumeric = /([0-9]+)/gm;
+const alphanumeric = (rowA, rowB, columnId) => {
+  return compareAlphanumeric(toString(rowA.getValue(columnId)).toLowerCase(), toString(rowB.getValue(columnId)).toLowerCase());
+};
+const alphanumericCaseSensitive = (rowA, rowB, columnId) => {
+  return compareAlphanumeric(toString(rowA.getValue(columnId)), toString(rowB.getValue(columnId)));
+};
+
+// The text filter is more basic (less numeric support)
+// but is much faster
+const text = (rowA, rowB, columnId) => {
+  return compareBasic(toString(rowA.getValue(columnId)).toLowerCase(), toString(rowB.getValue(columnId)).toLowerCase());
+};
+
+// The text filter is more basic (less numeric support)
+// but is much faster
+const textCaseSensitive = (rowA, rowB, columnId) => {
+  return compareBasic(toString(rowA.getValue(columnId)), toString(rowB.getValue(columnId)));
+};
+const datetime = (rowA, rowB, columnId) => {
+  const a = rowA.getValue(columnId);
+  const b = rowB.getValue(columnId);
+
+  // Can handle nullish values
+  // Use > and < because == (and ===) doesn't work with
+  // Date objects (would require calling getTime()).
+  return a > b ? 1 : a < b ? -1 : 0;
+};
+const basic = (rowA, rowB, columnId) => {
+  return compareBasic(rowA.getValue(columnId), rowB.getValue(columnId));
+};
+
+// Utils
+
+function compareBasic(a, b) {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+function toString(a) {
+  if (typeof a === 'number') {
+    if (isNaN(a) || a === Infinity || a === -Infinity) {
+      return '';
+    }
+    return String(a);
+  }
+  if (typeof a === 'string') {
+    return a;
+  }
+  return '';
+}
+
+// Mixed sorting is slow, but very inclusive of many edge cases.
+// It handles numbers, mixed alphanumeric combinations, and even
+// null, undefined, and Infinity
+function compareAlphanumeric(aStr, bStr) {
+  // Split on number groups, but keep the delimiter
+  // Then remove falsey split values
+  const a = aStr.split(reSplitAlphaNumeric).filter(Boolean);
+  const b = bStr.split(reSplitAlphaNumeric).filter(Boolean);
+
+  // While
+  while (a.length && b.length) {
+    const aa = a.shift();
+    const bb = b.shift();
+    const an = parseInt(aa, 10);
+    const bn = parseInt(bb, 10);
+    const combo = [an, bn].sort();
+
+    // Both are string
+    if (isNaN(combo[0])) {
+      if (aa > bb) {
+        return 1;
+      }
+      if (bb > aa) {
+        return -1;
+      }
+      continue;
+    }
+
+    // One is a string, one is a number
+    if (isNaN(combo[1])) {
+      return isNaN(an) ? -1 : 1;
+    }
+
+    // Both are numbers
+    if (an > bn) {
+      return 1;
+    }
+    if (bn > an) {
+      return -1;
+    }
+  }
+  return a.length - b.length;
+}
+
+// Exports
+
+const sortingFns = {
+  alphanumeric,
+  alphanumericCaseSensitive,
+  text,
+  textCaseSensitive,
+  datetime,
+  basic
+};
+exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
+exports.sortingFns = sortingFns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var sortingFns = require('../sortingFns.js');
+var utils = require('../utils.js');
+
+//
+
+const RowSorting = {
+  getInitialState: state => {
+    return {
+      sorting: [],
+      ...state
+    };
+  },
+  getDefaultColumnDef: () => {
+    return {
+      sortingFn: 'auto',
+      sortUndefined: 1
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onSortingChange: utils.makeStateUpdater('sorting', table),
+      isMultiSortEvent: e => {
+        return e.shiftKey;
+      }
+    };
+  },
+  createColumn: (column, table) => {
+    column.getAutoSortingFn = () => {
+      const firstRows = table.getFilteredRowModel().flatRows.slice(10);
+      let isString = false;
+      for (const row of firstRows) {
+        const value = row == null ? void 0 : row.getValue(column.id);
+        if (Object.prototype.toString.call(value) === '[object Date]') {
+          return sortingFns.sortingFns.datetime;
+        }
+        if (typeof value === 'string') {
+          isString = true;
+          if (value.split(sortingFns.reSplitAlphaNumeric).length > 1) {
+            return sortingFns.sortingFns.alphanumeric;
+          }
+        }
+      }
+      if (isString) {
+        return sortingFns.sortingFns.text;
+      }
+      return sortingFns.sortingFns.basic;
+    };
+    column.getAutoSortDir = () => {
+      const firstRow = table.getFilteredRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'string') {
+        return 'asc';
+      }
+      return 'desc';
+    };
+    column.getSortingFn = () => {
+      var _table$options$sortin, _table$options$sortin2;
+      if (!column) {
+        throw new Error();
+      }
+      return utils.isFunction(column.columnDef.sortingFn) ? column.columnDef.sortingFn : column.columnDef.sortingFn === 'auto' ? column.getAutoSortingFn() : (_table$options$sortin = (_table$options$sortin2 = table.options.sortingFns) == null ? void 0 : _table$options$sortin2[column.columnDef.sortingFn]) != null ? _table$options$sortin : sortingFns.sortingFns[column.columnDef.sortingFn];
+    };
+    column.toggleSorting = (desc, multi) => {
+      // if (column.columns.length) {
+      //   column.columns.forEach((c, i) => {
+      //     if (c.id) {
+      //       table.toggleColumnSorting(c.id, undefined, multi || !!i)
+      //     }
+      //   })
+      //   return
+      // }
+
+      // this needs to be outside of table.setSorting to be in sync with rerender
+      const nextSortingOrder = column.getNextSortingOrder();
+      const hasManualValue = typeof desc !== 'undefined' && desc !== null;
+      table.setSorting(old => {
+        // Find any existing sorting for this column
+        const existingSorting = old == null ? void 0 : old.find(d => d.id === column.id);
+        const existingIndex = old == null ? void 0 : old.findIndex(d => d.id === column.id);
+        let newSorting = [];
+
+        // What should we do with this sort action?
+        let sortAction;
+        let nextDesc = hasManualValue ? desc : nextSortingOrder === 'desc';
+
+        // Multi-mode
+        if (old != null && old.length && column.getCanMultiSort() && multi) {
+          if (existingSorting) {
+            sortAction = 'toggle';
+          } else {
+            sortAction = 'add';
+          }
+        } else {
+          // Normal mode
+          if (old != null && old.length && existingIndex !== old.length - 1) {
+            sortAction = 'replace';
+          } else if (existingSorting) {
+            sortAction = 'toggle';
+          } else {
+            sortAction = 'replace';
+          }
+        }
+
+        // Handle toggle states that will remove the sorting
+        if (sortAction === 'toggle') {
+          // If we are "actually" toggling (not a manual set value), should we remove the sorting?
+          if (!hasManualValue) {
+            // Is our intention to remove?
+            if (!nextSortingOrder) {
+              sortAction = 'remove';
+            }
+          }
+        }
+        if (sortAction === 'add') {
+          var _table$options$maxMul;
+          newSorting = [...old, {
+            id: column.id,
+            desc: nextDesc
+          }];
+          // Take latest n columns
+          newSorting.splice(0, newSorting.length - ((_table$options$maxMul = table.options.maxMultiSortColCount) != null ? _table$options$maxMul : Number.MAX_SAFE_INTEGER));
+        } else if (sortAction === 'toggle') {
+          // This flips (or sets) the
+          newSorting = old.map(d => {
+            if (d.id === column.id) {
+              return {
+                ...d,
+                desc: nextDesc
+              };
+            }
+            return d;
+          });
+        } else if (sortAction === 'remove') {
+          newSorting = old.filter(d => d.id !== column.id);
+        } else {
+          newSorting = [{
+            id: column.id,
+            desc: nextDesc
+          }];
+        }
+        return newSorting;
+      });
+    };
+    column.getFirstSortDir = () => {
+      var _ref, _column$columnDef$sor;
+      const sortDescFirst = (_ref = (_column$columnDef$sor = column.columnDef.sortDescFirst) != null ? _column$columnDef$sor : table.options.sortDescFirst) != null ? _ref : column.getAutoSortDir() === 'desc';
+      return sortDescFirst ? 'desc' : 'asc';
+    };
+    column.getNextSortingOrder = multi => {
+      var _table$options$enable, _table$options$enable2;
+      const firstSortDirection = column.getFirstSortDir();
+      const isSorted = column.getIsSorted();
+      if (!isSorted) {
+        return firstSortDirection;
+      }
+      if (isSorted !== firstSortDirection && ((_table$options$enable = table.options.enableSortingRemoval) != null ? _table$options$enable : true) && (
+      // If enableSortRemove, enable in general
+      multi ? (_table$options$enable2 = table.options.enableMultiRemove) != null ? _table$options$enable2 : true : true) // If multi, don't allow if enableMultiRemove))
+      ) {
+        return false;
+      }
+      return isSorted === 'desc' ? 'asc' : 'desc';
+    };
+    column.getCanSort = () => {
+      var _column$columnDef$ena, _table$options$enable3;
+      return ((_column$columnDef$ena = column.columnDef.enableSorting) != null ? _column$columnDef$ena : true) && ((_table$options$enable3 = table.options.enableSorting) != null ? _table$options$enable3 : true) && !!column.accessorFn;
+    };
+    column.getCanMultiSort = () => {
+      var _ref2, _column$columnDef$ena2;
+      return (_ref2 = (_column$columnDef$ena2 = column.columnDef.enableMultiSort) != null ? _column$columnDef$ena2 : table.options.enableMultiSort) != null ? _ref2 : !!column.accessorFn;
+    };
+    column.getIsSorted = () => {
+      var _table$getState$sorti;
+      const columnSort = (_table$getState$sorti = table.getState().sorting) == null ? void 0 : _table$getState$sorti.find(d => d.id === column.id);
+      return !columnSort ? false : columnSort.desc ? 'desc' : 'asc';
+    };
+    column.getSortIndex = () => {
+      var _table$getState$sorti2, _table$getState$sorti3;
+      return (_table$getState$sorti2 = (_table$getState$sorti3 = table.getState().sorting) == null ? void 0 : _table$getState$sorti3.findIndex(d => d.id === column.id)) != null ? _table$getState$sorti2 : -1;
+    };
+    column.clearSorting = () => {
+      //clear sorting for just 1 column
+      table.setSorting(old => old != null && old.length ? old.filter(d => d.id !== column.id) : []);
+    };
+    column.getToggleSortingHandler = () => {
+      const canSort = column.getCanSort();
+      return e => {
+        if (!canSort) return;
+        e.persist == null || e.persist();
+        column.toggleSorting == null || column.toggleSorting(undefined, column.getCanMultiSort() ? table.options.isMultiSortEvent == null ? void 0 : table.options.isMultiSortEvent(e) : false);
+      };
+    };
+  },
+  createTable: table => {
+    table.setSorting = updater => table.options.onSortingChange == null ? void 0 : table.options.onSortingChange(updater);
+    table.resetSorting = defaultState => {
+      var _table$initialState$s, _table$initialState;
+      table.setSorting(defaultState ? [] : (_table$initialState$s = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.sorting) != null ? _table$initialState$s : []);
+    };
+    table.getPreSortedRowModel = () => table.getGroupedRowModel();
+    table.getSortedRowModel = () => {
+      if (!table._getSortedRowModel && table.options.getSortedRowModel) {
+        table._getSortedRowModel = table.options.getSortedRowModel(table);
+      }
+      if (table.options.manualSorting || !table._getSortedRowModel) {
+        return table.getPreSortedRowModel();
+      }
+      return table._getSortedRowModel();
+    };
+  }
+};
+exports.RowSorting = RowSorting;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var column = require('./column.js');
+var headers = require('./headers.js');
+var ColumnFaceting = require('../features/ColumnFaceting.js');
+var ColumnFiltering = require('../features/ColumnFiltering.js');
+var ColumnGrouping = require('../features/ColumnGrouping.js');
+var ColumnOrdering = require('../features/ColumnOrdering.js');
+var ColumnPinning = require('../features/ColumnPinning.js');
+var ColumnSizing = require('../features/ColumnSizing.js');
+var ColumnVisibility = require('../features/ColumnVisibility.js');
+var GlobalFaceting = require('../features/GlobalFaceting.js');
+var GlobalFiltering = require('../features/GlobalFiltering.js');
+var RowExpanding = require('../features/RowExpanding.js');
+var RowPagination = require('../features/RowPagination.js');
+var RowPinning = require('../features/RowPinning.js');
+var RowSelection = require('../features/RowSelection.js');
+var RowSorting = require('../features/RowSorting.js');
+const builtInFeatures = [headers.Headers, ColumnVisibility.ColumnVisibility, ColumnOrdering.ColumnOrdering, ColumnPinning.ColumnPinning, ColumnFaceting.ColumnFaceting, ColumnFiltering.ColumnFiltering, GlobalFaceting.GlobalFaceting,
+//depends on ColumnFaceting
+GlobalFiltering.GlobalFiltering,
+//depends on ColumnFiltering
+RowSorting.RowSorting, ColumnGrouping.ColumnGrouping,
+//depends on RowSorting
+RowExpanding.RowExpanding, RowPagination.RowPagination, RowPinning.RowPinning, RowSelection.RowSelection, ColumnSizing.ColumnSizing];
+
+//
+
+function createTable(options) {
+  var _options$_features, _options$initialState;
+  if ('production' !== 'production' && (options.debugAll || options.debugTable)) {
+    console.info('Creating Table Instance...');
+  }
+  const _features = [...builtInFeatures, ...((_options$_features = options._features) != null ? _options$_features : [])];
+  let table = {
+    _features
+  };
+  const defaultOptions = table._features.reduce((obj, feature) => {
+    return Object.assign(obj, feature.getDefaultOptions == null ? void 0 : feature.getDefaultOptions(table));
+  }, {});
+  const mergeOptions = options => {
+    if (table.options.mergeOptions) {
+      return table.options.mergeOptions(defaultOptions, options);
+    }
+    return {
+      ...defaultOptions,
+      ...options
+    };
+  };
+  const coreInitialState = {};
+  let initialState = {
+    ...coreInitialState,
+    ...((_options$initialState = options.initialState) != null ? _options$initialState : {})
+  };
+  table._features.forEach(feature => {
+    var _feature$getInitialSt;
+    initialState = (_feature$getInitialSt = feature.getInitialState == null ? void 0 : feature.getInitialState(initialState)) != null ? _feature$getInitialSt : initialState;
+  });
+  const queued = [];
+  let queuedTimeout = false;
+  const coreInstance = {
+    _features,
+    options: {
+      ...defaultOptions,
+      ...options
+    },
+    initialState,
+    _queue: cb => {
+      queued.push(cb);
+      if (!queuedTimeout) {
+        queuedTimeout = true;
+
+        // Schedule a microtask to run the queued callbacks after
+        // the current call stack (render, etc) has finished.
+        Promise.resolve().then(() => {
+          while (queued.length) {
+            queued.shift()();
+          }
+          queuedTimeout = false;
+        }).catch(error => setTimeout(() => {
+          throw error;
+        }));
+      }
+    },
+    reset: () => {
+      table.setState(table.initialState);
+    },
+    setOptions: updater => {
+      const newOptions = utils.functionalUpdate(updater, table.options);
+      table.options = mergeOptions(newOptions);
+    },
+    getState: () => {
+      return table.options.state;
+    },
+    setState: updater => {
+      table.options.onStateChange == null || table.options.onStateChange(updater);
+    },
+    _getRowId: (row, index, parent) => {
+      var _table$options$getRow;
+      return (_table$options$getRow = table.options.getRowId == null ? void 0 : table.options.getRowId(row, index, parent)) != null ? _table$options$getRow : `${parent ? [parent.id, index].join('.') : index}`;
+    },
+    getCoreRowModel: () => {
+      if (!table._getCoreRowModel) {
+        table._getCoreRowModel = table.options.getCoreRowModel(table);
+      }
+      return table._getCoreRowModel();
+    },
+    // The final calls start at the bottom of the model,
+    // expanded rows, which then work their way up
+
+    getRowModel: () => {
+      return table.getPaginationRowModel();
+    },
+    //in next version, we should just pass in the row model as the optional 2nd arg
+    getRow: (id, searchAll) => {
+      let row = (searchAll ? table.getPrePaginationRowModel() : table.getRowModel()).rowsById[id];
+      if (!row) {
+        row = table.getCoreRowModel().rowsById[id];
+        if (!row) {
+          if ('production' !== 'production') {
+            throw new Error(`getRow could not find row with ID: ${id}`);
+          }
+          throw new Error();
+        }
+      }
+      return row;
+    },
+    _getDefaultColumnDef: utils.memo(() => [table.options.defaultColumn], defaultColumn => {
+      var _defaultColumn;
+      defaultColumn = (_defaultColumn = defaultColumn) != null ? _defaultColumn : {};
+      return {
+        header: props => {
+          const resolvedColumnDef = props.header.column.columnDef;
+          if (resolvedColumnDef.accessorKey) {
+            return resolvedColumnDef.accessorKey;
+          }
+          if (resolvedColumnDef.accessorFn) {
+            return resolvedColumnDef.id;
+          }
+          return null;
+        },
+        // footer: props => props.header.column.id,
+        cell: props => {
+          var _props$renderValue$to, _props$renderValue;
+          return (_props$renderValue$to = (_props$renderValue = props.renderValue()) == null || _props$renderValue.toString == null ? void 0 : _props$renderValue.toString()) != null ? _props$renderValue$to : null;
+        },
+        ...table._features.reduce((obj, feature) => {
+          return Object.assign(obj, feature.getDefaultColumnDef == null ? void 0 : feature.getDefaultColumnDef());
+        }, {}),
+        ...defaultColumn
+      };
+    }, utils.getMemoOptions(options, 'debugColumns', '_getDefaultColumnDef')),
+    _getColumnDefs: () => table.options.columns,
+    getAllColumns: utils.memo(() => [table._getColumnDefs()], columnDefs => {
+      const recurseColumns = function (columnDefs, parent, depth) {
+        if (depth === void 0) {
+          depth = 0;
+        }
+        return columnDefs.map(columnDef => {
+          const column$1 = column.createColumn(table, columnDef, depth, parent);
+          const groupingColumnDef = columnDef;
+          column$1.columns = groupingColumnDef.columns ? recurseColumns(groupingColumnDef.columns, column$1, depth + 1) : [];
+          return column$1;
+        });
+      };
+      return recurseColumns(columnDefs);
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllColumns')),
+    getAllFlatColumns: utils.memo(() => [table.getAllColumns()], allColumns => {
+      return allColumns.flatMap(column => {
+        return column.getFlatColumns();
+      });
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllFlatColumns')),
+    _getAllFlatColumnsById: utils.memo(() => [table.getAllFlatColumns()], flatColumns => {
+      return flatColumns.reduce((acc, column) => {
+        acc[column.id] = column;
+        return acc;
+      }, {});
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllFlatColumnsById')),
+    getAllLeafColumns: utils.memo(() => [table.getAllColumns(), table._getOrderColumnsFn()], (allColumns, orderColumns) => {
+      let leafColumns = allColumns.flatMap(column => column.getLeafColumns());
+      return orderColumns(leafColumns);
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllLeafColumns')),
+    getColumn: columnId => {
+      const column = table._getAllFlatColumnsById()[columnId];
+      if ('production' !== 'production' && !column) {
+        console.error(`[Table] Column with id '${columnId}' does not exist.`);
+      }
+      return column;
+    }
+  };
+  Object.assign(table, coreInstance);
+  for (let index = 0; index < table._features.length; index++) {
+    const feature = table._features[index];
+    feature == null || feature.createTable == null || feature.createTable(table);
+  }
+  return table;
+}
+exports.createTable = createTable;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var row = require('../core/row.js');
+var utils = require('../utils.js');
+function getCoreRowModel() {
+  return table => utils.memo(() => [table.options.data], data => {
+    const rowModel = {
+      rows: [],
+      flatRows: [],
+      rowsById: {}
+    };
+    const accessRows = function (originalRows, depth, parentRow) {
+      if (depth === void 0) {
+        depth = 0;
+      }
+      const rows = [];
+      for (let i = 0; i < originalRows.length; i++) {
+        // This could be an expensive check at scale, so we should move it somewhere else, but where?
+        // if (!id) {
+        //   if ('production' !== 'production') {
+        //     throw new Error(`getRowId expected an ID, but got ${id}`)
+        //   }
+        // }
+
+        // Make the row
+        const row$1 = row.createRow(table, table._getRowId(originalRows[i], i, parentRow), originalRows[i], i, depth, undefined, parentRow == null ? void 0 : parentRow.id);
+
+        // Keep track of every row in a flat array
+        rowModel.flatRows.push(row$1);
+        // Also keep track of every row by its ID
+        rowModel.rowsById[row$1.id] = row$1;
+        // Push table row into parent
+        rows.push(row$1);
+
+        // Get the original subrows
+        if (table.options.getSubRows) {
+          var _row$originalSubRows;
+          row$1.originalSubRows = table.options.getSubRows(originalRows[i], i);
+
+          // Then recursively access them
+          if ((_row$originalSubRows = row$1.originalSubRows) != null && _row$originalSubRows.length) {
+            row$1.subRows = accessRows(row$1.originalSubRows, depth + 1, row$1);
+          }
+        }
+      }
+      return rows;
+    };
+    rowModel.rows = accessRows(data);
+    return rowModel;
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getRowModel', () => table._autoResetPageIndex()));
+}
+exports.getCoreRowModel = getCoreRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getExpandedRowModel() {
+  return table => utils.memo(() => [table.getState().expanded, table.getPreExpandedRowModel(), table.options.paginateExpandedRows], (expanded, rowModel, paginateExpandedRows) => {
+    if (!rowModel.rows.length || expanded !== true && !Object.keys(expanded != null ? expanded : {}).length) {
+      return rowModel;
+    }
+    if (!paginateExpandedRows) {
+      // Only expand rows at this point if they are being paginated
+      return rowModel;
+    }
+    return expandRows(rowModel);
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getExpandedRowModel'));
+}
+function expandRows(rowModel) {
+  const expandedRows = [];
+  const handleRow = row => {
+    var _row$subRows;
+    expandedRows.push(row);
+    if ((_row$subRows = row.subRows) != null && _row$subRows.length && row.getIsExpanded()) {
+      row.subRows.forEach(handleRow);
+    }
+  };
+  rowModel.rows.forEach(handleRow);
+  return {
+    rows: expandedRows,
+    flatRows: rowModel.flatRows,
+    rowsById: rowModel.rowsById
+  };
+}
+exports.expandRows = expandRows;
+exports.getExpandedRowModel = getExpandedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getFacetedMinMaxValues() {
+  return (table, columnId) => utils.memo(() => {
+    var _table$getColumn;
+    return [(_table$getColumn = table.getColumn(columnId)) == null ? void 0 : _table$getColumn.getFacetedRowModel()];
+  }, facetedRowModel => {
+    if (!facetedRowModel) return undefined;
+    const uniqueValues = facetedRowModel.flatRows.flatMap(flatRow => {
+      var _flatRow$getUniqueVal;
+      return (_flatRow$getUniqueVal = flatRow.getUniqueValues(columnId)) != null ? _flatRow$getUniqueVal : [];
+    }).map(Number).filter(value => !Number.isNaN(value));
+    if (!uniqueValues.length) return;
+    let facetedMinValue = uniqueValues[0];
+    let facetedMaxValue = uniqueValues[uniqueValues.length - 1];
+    for (const value of uniqueValues) {
+      if (value < facetedMinValue) facetedMinValue = value;else if (value > facetedMaxValue) facetedMaxValue = value;
+    }
+    return [facetedMinValue, facetedMaxValue];
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getFacetedMinMaxValues'));
+}
+exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var row = require('../core/row.js');
+function filterRows(rows, filterRowImpl, table) {
+  if (table.options.filterFromLeafRows) {
+    return filterRowModelFromLeafs(rows, filterRowImpl, table);
+  }
+  return filterRowModelFromRoot(rows, filterRowImpl, table);
+}
+function filterRowModelFromLeafs(rowsToFilter, filterRow, table) {
+  var _table$options$maxLea;
+  const newFilteredFlatRows = [];
+  const newFilteredRowsById = {};
+  const maxDepth = (_table$options$maxLea = table.options.maxLeafRowFilterDepth) != null ? _table$options$maxLea : 100;
+  const recurseFilterRows = function (rowsToFilter, depth) {
+    if (depth === void 0) {
+      depth = 0;
+    }
+    const rows = [];
+
+    // Filter from children up first
+    for (let i = 0; i < rowsToFilter.length; i++) {
+      var _row$subRows;
+      let row$1 = rowsToFilter[i];
+      const newRow = row.createRow(table, row$1.id, row$1.original, row$1.index, row$1.depth, undefined, row$1.parentId);
+      newRow.columnFilters = row$1.columnFilters;
+      if ((_row$subRows = row$1.subRows) != null && _row$subRows.length && depth < maxDepth) {
+        newRow.subRows = recurseFilterRows(row$1.subRows, depth + 1);
+        row$1 = newRow;
+        if (filterRow(row$1) && !newRow.subRows.length) {
+          rows.push(row$1);
+          newFilteredRowsById[row$1.id] = row$1;
+          newFilteredFlatRows.push(row$1);
+          continue;
+        }
+        if (filterRow(row$1) || newRow.subRows.length) {
+          rows.push(row$1);
+          newFilteredRowsById[row$1.id] = row$1;
+          newFilteredFlatRows.push(row$1);
+          continue;
+        }
+      } else {
+        row$1 = newRow;
+        if (filterRow(row$1)) {
+          rows.push(row$1);
+          newFilteredRowsById[row$1.id] = row$1;
+          newFilteredFlatRows.push(row$1);
+        }
+      }
+    }
+    return rows;
+  };
+  return {
+    rows: recurseFilterRows(rowsToFilter),
+    flatRows: newFilteredFlatRows,
+    rowsById: newFilteredRowsById
+  };
+}
+function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
+  var _table$options$maxLea2;
+  const newFilteredFlatRows = [];
+  const newFilteredRowsById = {};
+  const maxDepth = (_table$options$maxLea2 = table.options.maxLeafRowFilterDepth) != null ? _table$options$maxLea2 : 100;
+
+  // Filters top level and nested rows
+  const recurseFilterRows = function (rowsToFilter, depth) {
+    if (depth === void 0) {
+      depth = 0;
+    }
+    // Filter from parents downward first
+
+    const rows = [];
+
+    // Apply the filter to any subRows
+    for (let i = 0; i < rowsToFilter.length; i++) {
+      let row$1 = rowsToFilter[i];
+      const pass = filterRow(row$1);
+      if (pass) {
+        var _row$subRows2;
+        if ((_row$subRows2 = row$1.subRows) != null && _row$subRows2.length && depth < maxDepth) {
+          const newRow = row.createRow(table, row$1.id, row$1.original, row$1.index, row$1.depth, undefined, row$1.parentId);
+          newRow.subRows = recurseFilterRows(row$1.subRows, depth + 1);
+          row$1 = newRow;
+        }
+        rows.push(row$1);
+        newFilteredFlatRows.push(row$1);
+        newFilteredRowsById[row$1.id] = row$1;
+      }
+    }
+    return rows;
+  };
+  return {
+    rows: recurseFilterRows(rowsToFilter),
+    flatRows: newFilteredFlatRows,
+    rowsById: newFilteredRowsById
+  };
+}
+exports.filterRows = filterRows;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var filterRowsUtils = require('./filterRowsUtils.js');
+function getFacetedRowModel() {
+  return (table, columnId) => utils.memo(() => [table.getPreFilteredRowModel(), table.getState().columnFilters, table.getState().globalFilter, table.getFilteredRowModel()], (preRowModel, columnFilters, globalFilter) => {
+    if (!preRowModel.rows.length || !(columnFilters != null && columnFilters.length) && !globalFilter) {
+      return preRowModel;
+    }
+    const filterableIds = [...columnFilters.map(d => d.id).filter(d => d !== columnId), globalFilter ? '__global__' : undefined].filter(Boolean);
+    const filterRowsImpl = row => {
+      // Horizontally filter rows through each column
+      for (let i = 0; i < filterableIds.length; i++) {
+        if (row.columnFilters[filterableIds[i]] === false) {
+          return false;
+        }
+      }
+      return true;
+    };
+    return filterRowsUtils.filterRows(preRowModel.rows, filterRowsImpl, table);
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getFacetedRowModel'));
+}
+exports.getFacetedRowModel = getFacetedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getFacetedUniqueValues() {
+  return (table, columnId) => utils.memo(() => {
+    var _table$getColumn;
+    return [(_table$getColumn = table.getColumn(columnId)) == null ? void 0 : _table$getColumn.getFacetedRowModel()];
+  }, facetedRowModel => {
+    if (!facetedRowModel) return new Map();
+    let facetedUniqueValues = new Map();
+    for (let i = 0; i < facetedRowModel.flatRows.length; i++) {
+      const values = facetedRowModel.flatRows[i].getUniqueValues(columnId);
+      for (let j = 0; j < values.length; j++) {
+        const value = values[j];
+        if (facetedUniqueValues.has(value)) {
+          var _facetedUniqueValues$;
+          facetedUniqueValues.set(value, ((_facetedUniqueValues$ = facetedUniqueValues.get(value)) != null ? _facetedUniqueValues$ : 0) + 1);
+        } else {
+          facetedUniqueValues.set(value, 1);
+        }
+      }
+    }
+    return facetedUniqueValues;
+  }, utils.getMemoOptions(table.options, 'debugTable', `getFacetedUniqueValues_${columnId}`));
+}
+exports.getFacetedUniqueValues = getFacetedUniqueValues;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var filterRowsUtils = require('./filterRowsUtils.js');
+function getFilteredRowModel() {
+  return table => utils.memo(() => [table.getPreFilteredRowModel(), table.getState().columnFilters, table.getState().globalFilter], (rowModel, columnFilters, globalFilter) => {
+    if (!rowModel.rows.length || !(columnFilters != null && columnFilters.length) && !globalFilter) {
+      for (let i = 0; i < rowModel.flatRows.length; i++) {
+        rowModel.flatRows[i].columnFilters = {};
+        rowModel.flatRows[i].columnFiltersMeta = {};
+      }
+      return rowModel;
+    }
+    const resolvedColumnFilters = [];
+    const resolvedGlobalFilters = [];
+    (columnFilters != null ? columnFilters : []).forEach(d => {
+      var _filterFn$resolveFilt;
+      const column = table.getColumn(d.id);
+      if (!column) {
+        return;
+      }
+      const filterFn = column.getFilterFn();
+      if (!filterFn) {
+        if ('production' !== 'production') {
+          console.warn(`Could not find a valid 'column.filterFn' for column with the ID: ${column.id}.`);
+        }
+        return;
+      }
+      resolvedColumnFilters.push({
+        id: d.id,
+        filterFn,
+        resolvedValue: (_filterFn$resolveFilt = filterFn.resolveFilterValue == null ? void 0 : filterFn.resolveFilterValue(d.value)) != null ? _filterFn$resolveFilt : d.value
+      });
+    });
+    const filterableIds = (columnFilters != null ? columnFilters : []).map(d => d.id);
+    const globalFilterFn = table.getGlobalFilterFn();
+    const globallyFilterableColumns = table.getAllLeafColumns().filter(column => column.getCanGlobalFilter());
+    if (globalFilter && globalFilterFn && globallyFilterableColumns.length) {
+      filterableIds.push('__global__');
+      globallyFilterableColumns.forEach(column => {
+        var _globalFilterFn$resol;
+        resolvedGlobalFilters.push({
+          id: column.id,
+          filterFn: globalFilterFn,
+          resolvedValue: (_globalFilterFn$resol = globalFilterFn.resolveFilterValue == null ? void 0 : globalFilterFn.resolveFilterValue(globalFilter)) != null ? _globalFilterFn$resol : globalFilter
+        });
+      });
+    }
+    let currentColumnFilter;
+    let currentGlobalFilter;
+
+    // Flag the prefiltered row model with each filter state
+    for (let j = 0; j < rowModel.flatRows.length; j++) {
+      const row = rowModel.flatRows[j];
+      row.columnFilters = {};
+      if (resolvedColumnFilters.length) {
+        for (let i = 0; i < resolvedColumnFilters.length; i++) {
+          currentColumnFilter = resolvedColumnFilters[i];
+          const id = currentColumnFilter.id;
+
+          // Tag the row with the column filter state
+          row.columnFilters[id] = currentColumnFilter.filterFn(row, id, currentColumnFilter.resolvedValue, filterMeta => {
+            row.columnFiltersMeta[id] = filterMeta;
+          });
+        }
+      }
+      if (resolvedGlobalFilters.length) {
+        for (let i = 0; i < resolvedGlobalFilters.length; i++) {
+          currentGlobalFilter = resolvedGlobalFilters[i];
+          const id = currentGlobalFilter.id;
+          // Tag the row with the first truthy global filter state
+          if (currentGlobalFilter.filterFn(row, id, currentGlobalFilter.resolvedValue, filterMeta => {
+            row.columnFiltersMeta[id] = filterMeta;
+          })) {
+            row.columnFilters.__global__ = true;
+            break;
+          }
+        }
+        if (row.columnFilters.__global__ !== true) {
+          row.columnFilters.__global__ = false;
+        }
+      }
+    }
+    const filterRowsImpl = row => {
+      // Horizontally filter rows through each column
+      for (let i = 0; i < filterableIds.length; i++) {
+        if (row.columnFilters[filterableIds[i]] === false) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    // Filter final rows using all of the active filters
+    return filterRowsUtils.filterRows(rowModel.rows, filterRowsImpl, table);
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getFilteredRowModel', () => table._autoResetPageIndex()));
+}
+exports.getFilteredRowModel = getFilteredRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var row = require('../core/row.js');
+var utils = require('../utils.js');
+function getGroupedRowModel() {
+  return table => utils.memo(() => [table.getState().grouping, table.getPreGroupedRowModel()], (grouping, rowModel) => {
+    if (!rowModel.rows.length || !grouping.length) {
+      rowModel.rows.forEach(row => {
+        row.depth = 0;
+        row.parentId = undefined;
+      });
+      return rowModel;
+    }
+
+    // Filter the grouping list down to columns that exist
+    const existingGrouping = grouping.filter(columnId => table.getColumn(columnId));
+    const groupedFlatRows = [];
+    const groupedRowsById = {};
+    // const onlyGroupedFlatRows: Row[] = [];
+    // const onlyGroupedRowsById: Record<RowId, Row> = {};
+    // const nonGroupedFlatRows: Row[] = [];
+    // const nonGroupedRowsById: Record<RowId, Row> = {};
+
+    // Recursively group the data
+    const groupUpRecursively = function (rows, depth, parentId) {
+      if (depth === void 0) {
+        depth = 0;
+      }
+      // Grouping depth has been been met
+      // Stop grouping and simply rewrite thd depth and row relationships
+      if (depth >= existingGrouping.length) {
+        return rows.map(row => {
+          row.depth = depth;
+          groupedFlatRows.push(row);
+          groupedRowsById[row.id] = row;
+          if (row.subRows) {
+            row.subRows = groupUpRecursively(row.subRows, depth + 1, row.id);
+          }
+          return row;
+        });
+      }
+      const columnId = existingGrouping[depth];
+
+      // Group the rows together for this level
+      const rowGroupsMap = groupBy(rows, columnId);
+
+      // Perform aggregations for each group
+      const aggregatedGroupedRows = Array.from(rowGroupsMap.entries()).map((_ref, index) => {
+        let [groupingValue, groupedRows] = _ref;
+        let id = `${columnId}:${groupingValue}`;
+        id = parentId ? `${parentId}>${id}` : id;
+
+        // First, Recurse to group sub rows before aggregation
+        const subRows = groupUpRecursively(groupedRows, depth + 1, id);
+        subRows.forEach(subRow => {
+          subRow.parentId = id;
+        });
+
+        // Flatten the leaf rows of the rows in this group
+        const leafRows = depth ? utils.flattenBy(groupedRows, row => row.subRows) : groupedRows;
+        const row$1 = row.createRow(table, id, leafRows[0].original, index, depth, undefined, parentId);
+        Object.assign(row$1, {
+          groupingColumnId: columnId,
+          groupingValue,
+          subRows,
+          leafRows,
+          getValue: columnId => {
+            // Don't aggregate columns that are in the grouping
+            if (existingGrouping.includes(columnId)) {
+              if (row$1._valuesCache.hasOwnProperty(columnId)) {
+                return row$1._valuesCache[columnId];
+              }
+              if (groupedRows[0]) {
+                var _groupedRows$0$getVal;
+                row$1._valuesCache[columnId] = (_groupedRows$0$getVal = groupedRows[0].getValue(columnId)) != null ? _groupedRows$0$getVal : undefined;
+              }
+              return row$1._valuesCache[columnId];
+            }
+            if (row$1._groupingValuesCache.hasOwnProperty(columnId)) {
+              return row$1._groupingValuesCache[columnId];
+            }
+
+            // Aggregate the values
+            const column = table.getColumn(columnId);
+            const aggregateFn = column == null ? void 0 : column.getAggregationFn();
+            if (aggregateFn) {
+              row$1._groupingValuesCache[columnId] = aggregateFn(columnId, leafRows, groupedRows);
+              return row$1._groupingValuesCache[columnId];
+            }
+          }
+        });
+        subRows.forEach(subRow => {
+          groupedFlatRows.push(subRow);
+          groupedRowsById[subRow.id] = subRow;
+          // if (subRow.getIsGrouped?.()) {
+          //   onlyGroupedFlatRows.push(subRow);
+          //   onlyGroupedRowsById[subRow.id] = subRow;
+          // } else {
+          //   nonGroupedFlatRows.push(subRow);
+          //   nonGroupedRowsById[subRow.id] = subRow;
+          // }
+        });
+        return row$1;
+      });
+      return aggregatedGroupedRows;
+    };
+    const groupedRows = groupUpRecursively(rowModel.rows, 0);
+    groupedRows.forEach(subRow => {
+      groupedFlatRows.push(subRow);
+      groupedRowsById[subRow.id] = subRow;
+      // if (subRow.getIsGrouped?.()) {
+      //   onlyGroupedFlatRows.push(subRow);
+      //   onlyGroupedRowsById[subRow.id] = subRow;
+      // } else {
+      //   nonGroupedFlatRows.push(subRow);
+      //   nonGroupedRowsById[subRow.id] = subRow;
+      // }
+    });
+    return {
+      rows: groupedRows,
+      flatRows: groupedFlatRows,
+      rowsById: groupedRowsById
+    };
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getGroupedRowModel', () => {
+    table._queue(() => {
+      table._autoResetExpanded();
+      table._autoResetPageIndex();
+    });
+  }));
+}
+function groupBy(rows, columnId) {
+  const groupMap = new Map();
+  return rows.reduce((map, row) => {
+    const resKey = `${row.getGroupingValue(columnId)}`;
+    const previous = map.get(resKey);
+    if (!previous) {
+      map.set(resKey, [row]);
+    } else {
+      previous.push(row);
+    }
+    return map;
+  }, groupMap);
+}
+exports.getGroupedRowModel = getGroupedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var getExpandedRowModel = require('./getExpandedRowModel.js');
+function getPaginationRowModel(opts) {
+  return table => utils.memo(() => [table.getState().pagination, table.getPrePaginationRowModel(), table.options.paginateExpandedRows ? undefined : table.getState().expanded], (pagination, rowModel) => {
+    if (!rowModel.rows.length) {
+      return rowModel;
+    }
+    const {
+      pageSize,
+      pageIndex
+    } = pagination;
+    let {
+      rows,
+      flatRows,
+      rowsById
+    } = rowModel;
+    const pageStart = pageSize * pageIndex;
+    const pageEnd = pageStart + pageSize;
+    rows = rows.slice(pageStart, pageEnd);
+    let paginatedRowModel;
+    if (!table.options.paginateExpandedRows) {
+      paginatedRowModel = getExpandedRowModel.expandRows({
+        rows,
+        flatRows,
+        rowsById
+      });
+    } else {
+      paginatedRowModel = {
+        rows,
+        flatRows,
+        rowsById
+      };
+    }
+    paginatedRowModel.flatRows = [];
+    const handleRow = row => {
+      paginatedRowModel.flatRows.push(row);
+      if (row.subRows.length) {
+        row.subRows.forEach(handleRow);
+      }
+    };
+    paginatedRowModel.rows.forEach(handleRow);
+    return paginatedRowModel;
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getPaginationRowModel'));
+}
+exports.getPaginationRowModel = getPaginationRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getSortedRowModel() {
+  return table => utils.memo(() => [table.getState().sorting, table.getPreSortedRowModel()], (sorting, rowModel) => {
+    if (!rowModel.rows.length || !(sorting != null && sorting.length)) {
+      return rowModel;
+    }
+    const sortingState = table.getState().sorting;
+    const sortedFlatRows = [];
+
+    // Filter out sortings that correspond to non existing columns
+    const availableSorting = sortingState.filter(sort => {
+      var _table$getColumn;
+      return (_table$getColumn = table.getColumn(sort.id)) == null ? void 0 : _table$getColumn.getCanSort();
+    });
+    const columnInfoById = {};
+    availableSorting.forEach(sortEntry => {
+      const column = table.getColumn(sortEntry.id);
+      if (!column) return;
+      columnInfoById[sortEntry.id] = {
+        sortUndefined: column.columnDef.sortUndefined,
+        invertSorting: column.columnDef.invertSorting,
+        sortingFn: column.getSortingFn()
+      };
+    });
+    const sortData = rows => {
+      // This will also perform a stable sorting using the row index
+      // if needed.
+      const sortedData = rows.map(row => ({
+        ...row
+      }));
+      sortedData.sort((rowA, rowB) => {
+        for (let i = 0; i < availableSorting.length; i += 1) {
+          var _sortEntry$desc;
+          const sortEntry = availableSorting[i];
+          const columnInfo = columnInfoById[sortEntry.id];
+          const sortUndefined = columnInfo.sortUndefined;
+          const isDesc = (_sortEntry$desc = sortEntry == null ? void 0 : sortEntry.desc) != null ? _sortEntry$desc : false;
+          let sortInt = 0;
+
+          // All sorting ints should always return in ascending order
+          if (sortUndefined) {
+            const aValue = rowA.getValue(sortEntry.id);
+            const bValue = rowB.getValue(sortEntry.id);
+            const aUndefined = aValue === undefined;
+            const bUndefined = bValue === undefined;
+            if (aUndefined || bUndefined) {
+              if (sortUndefined === 'first') return aUndefined ? -1 : 1;
+              if (sortUndefined === 'last') return aUndefined ? 1 : -1;
+              sortInt = aUndefined && bUndefined ? 0 : aUndefined ? sortUndefined : -sortUndefined;
+            }
+          }
+          if (sortInt === 0) {
+            sortInt = columnInfo.sortingFn(rowA, rowB, sortEntry.id);
+          }
+
+          // If sorting is non-zero, take care of desc and inversion
+          if (sortInt !== 0) {
+            if (isDesc) {
+              sortInt *= -1;
+            }
+            if (columnInfo.invertSorting) {
+              sortInt *= -1;
+            }
+            return sortInt;
+          }
+        }
+        return rowA.index - rowB.index;
+      });
+
+      // If there are sub-rows, sort them
+      sortedData.forEach(row => {
+        var _row$subRows;
+        sortedFlatRows.push(row);
+        if ((_row$subRows = row.subRows) != null && _row$subRows.length) {
+          row.subRows = sortData(row.subRows);
+        }
+      });
+      return sortedData;
+    };
+    return {
+      rows: sortData(rowModel.rows),
+      flatRows: sortedFlatRows,
+      rowsById: rowModel.rowsById
+    };
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getSortedRowModel', () => table._autoResetPageIndex()));
+}
+exports.getSortedRowModel = getSortedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var columnHelper = require('./columnHelper.js');
+var cell = require('./core/cell.js');
+var column = require('./core/column.js');
+var headers = require('./core/headers.js');
+var row = require('./core/row.js');
+var table = require('./core/table.js');
+var ColumnFaceting = require('./features/ColumnFaceting.js');
+var ColumnFiltering = require('./features/ColumnFiltering.js');
+var ColumnGrouping = require('./features/ColumnGrouping.js');
+var ColumnOrdering = require('./features/ColumnOrdering.js');
+var ColumnPinning = require('./features/ColumnPinning.js');
+var ColumnSizing = require('./features/ColumnSizing.js');
+var ColumnVisibility = require('./features/ColumnVisibility.js');
+var GlobalFaceting = require('./features/GlobalFaceting.js');
+var GlobalFiltering = require('./features/GlobalFiltering.js');
+var RowExpanding = require('./features/RowExpanding.js');
+var RowPagination = require('./features/RowPagination.js');
+var RowPinning = require('./features/RowPinning.js');
+var RowSelection = require('./features/RowSelection.js');
+var RowSorting = require('./features/RowSorting.js');
+var utils = require('./utils.js');
+var getCoreRowModel = require('./utils/getCoreRowModel.js');
+var getExpandedRowModel = require('./utils/getExpandedRowModel.js');
+var getFacetedMinMaxValues = require('./utils/getFacetedMinMaxValues.js');
+var getFacetedRowModel = require('./utils/getFacetedRowModel.js');
+var getFacetedUniqueValues = require('./utils/getFacetedUniqueValues.js');
+var getFilteredRowModel = require('./utils/getFilteredRowModel.js');
+var getGroupedRowModel = require('./utils/getGroupedRowModel.js');
+var getPaginationRowModel = require('./utils/getPaginationRowModel.js');
+var getSortedRowModel = require('./utils/getSortedRowModel.js');
+var aggregationFns = require('./aggregationFns.js');
+var filterFns = require('./filterFns.js');
+var sortingFns = require('./sortingFns.js');
+exports.createColumnHelper = columnHelper.createColumnHelper;
+exports.createCell = cell.createCell;
+exports.createColumn = column.createColumn;
+exports.Headers = headers.Headers;
+exports.buildHeaderGroups = headers.buildHeaderGroups;
+exports.createRow = row.createRow;
+exports.createTable = table.createTable;
+exports.ColumnFaceting = ColumnFaceting.ColumnFaceting;
+exports.ColumnFiltering = ColumnFiltering.ColumnFiltering;
+exports.shouldAutoRemoveFilter = ColumnFiltering.shouldAutoRemoveFilter;
+exports.ColumnGrouping = ColumnGrouping.ColumnGrouping;
+exports.orderColumns = ColumnGrouping.orderColumns;
+exports.ColumnOrdering = ColumnOrdering.ColumnOrdering;
+exports.ColumnPinning = ColumnPinning.ColumnPinning;
+exports.ColumnSizing = ColumnSizing.ColumnSizing;
+exports.defaultColumnSizing = ColumnSizing.defaultColumnSizing;
+exports.passiveEventSupported = ColumnSizing.passiveEventSupported;
+exports.ColumnVisibility = ColumnVisibility.ColumnVisibility;
+exports._getVisibleLeafColumns = ColumnVisibility._getVisibleLeafColumns;
+exports.GlobalFaceting = GlobalFaceting.GlobalFaceting;
+exports.GlobalFiltering = GlobalFiltering.GlobalFiltering;
+exports.RowExpanding = RowExpanding.RowExpanding;
+exports.RowPagination = RowPagination.RowPagination;
+exports.RowPinning = RowPinning.RowPinning;
+exports.RowSelection = RowSelection.RowSelection;
+exports.isRowSelected = RowSelection.isRowSelected;
+exports.isSubRowSelected = RowSelection.isSubRowSelected;
+exports.selectRowsFn = RowSelection.selectRowsFn;
+exports.RowSorting = RowSorting.RowSorting;
+exports.flattenBy = utils.flattenBy;
+exports.functionalUpdate = utils.functionalUpdate;
+exports.getMemoOptions = utils.getMemoOptions;
+exports.isFunction = utils.isFunction;
+exports.isNumberArray = utils.isNumberArray;
+exports.makeStateUpdater = utils.makeStateUpdater;
+exports.memo = utils.memo;
+exports.noop = utils.noop;
+exports.getCoreRowModel = getCoreRowModel.getCoreRowModel;
+exports.expandRows = getExpandedRowModel.expandRows;
+exports.getExpandedRowModel = getExpandedRowModel.getExpandedRowModel;
+exports.getFacetedMinMaxValues = getFacetedMinMaxValues.getFacetedMinMaxValues;
+exports.getFacetedRowModel = getFacetedRowModel.getFacetedRowModel;
+exports.getFacetedUniqueValues = getFacetedUniqueValues.getFacetedUniqueValues;
+exports.getFilteredRowModel = getFilteredRowModel.getFilteredRowModel;
+exports.getGroupedRowModel = getGroupedRowModel.getGroupedRowModel;
+exports.getPaginationRowModel = getPaginationRowModel.getPaginationRowModel;
+exports.getSortedRowModel = getSortedRowModel.getSortedRowModel;
+exports.aggregationFns = aggregationFns.aggregationFns;
+exports.filterFns = filterFns.filterFns;
+exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
+exports.sortingFns = sortingFns.sortingFns;
+  } },
+  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+/**
+   * react-table
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var React = require('react');
+var tableCore = require('@tanstack/table-core');
+function _interopNamespaceDefault(e) {
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () {
+            return e[k];
+          }
+        });
+      }
+    });
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+var React__namespace = /*#__PURE__*/_interopNamespaceDefault(React);
+
+//
+
+/**
+ * If rendering headers, cells, or footers with custom markup, use flexRender instead of `cell.getValue()` or `cell.renderValue()`.
+ */
+function flexRender(Comp, props) {
+  return !Comp ? null : isReactComponent(Comp) ? /*#__PURE__*/React__namespace.createElement(Comp, props) : Comp;
+}
+function isReactComponent(component) {
+  return isClassComponent(component) || typeof component === 'function' || isExoticComponent(component);
+}
+function isClassComponent(component) {
+  return typeof component === 'function' && (() => {
+    const proto = Object.getPrototypeOf(component);
+    return proto.prototype && proto.prototype.isReactComponent;
+  })();
+}
+function isExoticComponent(component) {
+  return typeof component === 'object' && typeof component.$$typeof === 'symbol' && ['react.memo', 'react.forward_ref'].includes(component.$$typeof.description);
+}
+function useReactTable(options) {
+  // Compose in the generic options to the user options
+  const resolvedOptions = {
+    state: {},
+    // Dummy state
+    onStateChange: () => {},
+    // noop
+    renderFallbackValue: null,
+    ...options
+  };
+
+  // Create a new table and store it in state
+  const [tableRef] = React__namespace.useState(() => ({
+    current: tableCore.createTable(resolvedOptions)
+  }));
+
+  // By default, manage table state here using the table's initial state
+  const [state, setState] = React__namespace.useState(() => tableRef.current.initialState);
+
+  // Compose the default state above with any user state. This will allow the user
+  // to only control a subset of the state if desired.
+  tableRef.current.setOptions(prev => ({
+    ...prev,
+    ...options,
+    state: {
+      ...state,
+      ...options.state
+    },
+    // Similarly, we'll maintain both our internal state and any user-provided
+    // state.
+    onStateChange: updater => {
+      setState(updater);
+      options.onStateChange == null || options.onStateChange(updater);
+    }
+  }));
+  return tableRef.current;
+}
+exports.flexRender = flexRender;
+exports.useReactTable = useReactTable;
+Object.keys(tableCore).forEach(function (k) {
+  if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
+    enumerable: true,
+    get: function () {
+      return tableCore[k];
+    }
+  });
+});
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+function getMeasurementKey(item) {
+  return typeof item === "object" ? item.key : item;
+}
+function createLazyMeasurementsView(cache, flat) {
+  const count = cache.length;
+  return new Proxy(cache, {
+    get(target, prop, receiver) {
+      if (typeof prop === "string") {
+        const c = prop.charCodeAt(0);
+        if (c >= 48 && c <= 57) {
+          const i = +prop;
+          if (Number.isInteger(i) && i >= 0 && i < count) {
+            let v = target[i];
+            if (typeof v !== "object") {
+              const s = flat[i * 2];
+              v = target[i] = {
+                index: i,
+                key: v,
+                start: s,
+                size: flat[i * 2 + 1],
+                end: s + flat[i * 2 + 1],
+                lane: 0
+              };
+            }
+            return v;
+          }
+        }
+        if (prop === "length") return count;
+      }
+      return Reflect.get(target, prop, receiver);
+    }
+  });
+}
+exports.createLazyMeasurementsView = createLazyMeasurementsView;
+exports.getMeasurementKey = getMeasurementKey;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+function memo(getDeps, fn, opts) {
+  let deps = opts.initialDeps ?? [];
+  let result;
+  let isInitial = true;
+  function memoizedFunction() {
+    var _a;
+    const debugEnabled = 'production' !== "production" && !!opts.key && !!((_a = opts.debug) == null ? void 0 : _a.call(opts));
+    let depTime = 0;
+    if (debugEnabled) depTime = Date.now();
+    const newDeps = getDeps();
+    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
+    if (!depsChanged) {
+      return result;
+    }
+    deps = newDeps;
+    let resultTime = 0;
+    if (debugEnabled) resultTime = Date.now();
+    result = fn(...newDeps);
+    if (debugEnabled) {
+      const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
+      const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
+      const resultFpsPercentage = resultEndTime / 16;
+      const pad = (str, num) => {
+        str = String(str);
+        while (str.length < num) {
+          str = " " + str;
+        }
+        return str;
+      };
+      console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
+            font-size: .6rem;
+            font-weight: bold;
+            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
+    }
+    if ((opts == null ? void 0 : opts.onChange) && !(isInitial && opts.skipInitialOnChange)) {
+      opts.onChange(result);
+    }
+    isInitial = false;
+    return result;
+  }
+  memoizedFunction.updateDeps = newDeps => {
+    deps = newDeps;
+  };
+  return memoizedFunction;
+}
+function notUndefined(value, msg) {
+  if (value === void 0) {
+    throw new Error(`Unexpected undefined${msg ? `: ${msg}` : ""}`);
+  } else {
+    return value;
+  }
+}
+const approxEqual = (a, b) => Math.abs(a - b) < 1.01;
+const debounce = (targetWindow, fn, ms) => {
+  let timeoutId;
+  return Object.assign(function (...args) {
+    targetWindow.clearTimeout(timeoutId);
+    timeoutId = targetWindow.setTimeout(() => fn.apply(this, args), ms);
+  }, {
+    // The handle is closure-local, so a caller that has already
+    // unsubscribed has no way to stop a queued call. Teardown paths use
+    // this to drop the pending invocation instead of letting it land.
+    cancel: () => {
+      targetWindow.clearTimeout(timeoutId);
+    }
+  });
+};
+exports.approxEqual = approxEqual;
+exports.debounce = debounce;
+exports.memo = memo;
+exports.notUndefined = notUndefined;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const utils = require("./utils.cjs");
+function classifyScrollEvent({
+  offset,
+  isScrolling,
+  elementMax,
+  holdOffset,
+  scrollOffset,
+  pendingWrite,
+  clampedMaxAtWrite
+}) {
+  var _a;
+  if (isScrolling && pendingWrite === null && offset === scrollOffset) {
+    return "spurious";
+  }
+  if (pendingWrite !== null && Math.abs(offset - pendingWrite.target) < 1.5) {
+    return "readBack";
+  }
+  if (pendingWrite !== null && !pendingWrite.smooth && elementMax !== null && pendingWrite.target > elementMax + holdOffset + 0.5 && Math.abs(offset - (elementMax + holdOffset)) < 1.5) {
+    return "clampedReadBack";
+  }
+  if (pendingWrite !== null && !pendingWrite.smooth && ((_a = pendingWrite.lowMaxes) == null ? void 0 : _a.some(max => Math.abs(offset - max) < 1.5))) {
+    return "clampedReadBack";
+  }
+  if (clampedMaxAtWrite !== null && Math.abs(offset - clampedMaxAtWrite) < 1.5) {
+    return "clampedEcho";
+  }
+  return "external";
+}
+const isAnimating = phase => phase === "smooth" || phase === "smoothFinishing";
+function externalRetiresCommand({
+  kind,
+  offset,
+  command,
+  target
+}) {
+  return kind !== "spurious" && kind !== "readBack" &&
+  // Our own write, clamped (`clampedReadBack`, #1310): the command is not
+  // retired by it, and reconcile retargets below the new max.
+  kind !== "clampedReadBack" && (command == null ? void 0 : command.index) != null &&
+  // Nothing has been written for a command waiting for the tail; these
+  // are the fling's events.
+  command.phase !== "queued" &&
+  // A non-smooth write lands at once, so any other scroll event is the
+  // user's, even before reconcile saw the target reached (the target may
+  // keep moving, or iOS ignored the write under a finger). A write the
+  // browser clamped because the sizer hasn't grown yet reads back at the
+  // max, which is also where the fresh target clamps, so the check below
+  // keeps it reconciling (#1294). While a smooth scroll's animation may
+  // still report, its events look like a user's, so it yields only once it
+  // has landed.
+  !isAnimating(command.phase) && !utils.approxEqual(offset, command.lastTargetOffset) && !utils.approxEqual(offset, target()) &&
+  // A compensation write's clamped echo (#1258) keeps the command. The
+  // order is deliberate, not tidiness: this clause stays after `target()`
+  // (and `clampedReadBack` before it) because `target()` can rebuild the
+  // measurements, so it must run for exactly the events it always did.
+  kind !== "clampedEcho";
+}
+const FLING_WINDOW_MS = 40;
+function flingSpedUp(samples) {
+  const last = samples[samples.length - 1];
+  if (last === void 0) return false;
+  let j = samples.length - 2;
+  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
+  if (j < 0) return false;
+  const mid = samples[j];
+  let k = j - 1;
+  while (k >= 0 && mid.t - samples[k].t < FLING_WINDOW_MS) k--;
+  if (k < 0) return false;
+  const first = samples[k];
+  const recent = (last.offset - mid.offset) / (last.t - mid.t);
+  const before = (mid.offset - first.offset) / (mid.t - first.t);
+  return recent * before >= 0 && Math.abs(recent) >= 2 * Math.abs(before) && Math.abs(recent) - Math.abs(before) >= 0.8;
+}
+function flingCaught(samples) {
+  const last = samples[samples.length - 1];
+  if (last === void 0) return false;
+  let j = samples.length - 2;
+  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
+  if (j < 0) return false;
+  const from = samples[j];
+  return Math.abs(last.offset - from.offset) / (last.t - from.t) >= 0.05;
+}
+exports.classifyScrollEvent = classifyScrollEvent;
+exports.externalRetiresCommand = externalRetiresCommand;
+exports.flingCaught = flingCaught;
+exports.flingSpedUp = flingSpedUp;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+let _isIOSResult;
+const isIOSWebKit = () => {
+  if (_isIOSResult !== void 0) return _isIOSResult;
+  if (typeof navigator === "undefined") return _isIOSResult = false;
+  if (/iP(hone|od|ad)/.test(navigator.userAgent)) return _isIOSResult = true;
+  const mtp = navigator.maxTouchPoints;
+  return _isIOSResult = navigator.platform === "MacIntel" && mtp !== void 0 && mtp > 0;
+};
+let _iosMomentumOverridesWritesResult;
+const iosMomentumOverridesWrites = () => {
+  if (_iosMomentumOverridesWritesResult !== void 0) {
+    return _iosMomentumOverridesWritesResult;
+  }
+  return _iosMomentumOverridesWritesResult = isIOSWebKit() && typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("overflow-anchor: auto");
+};
+const _resetIOSDetectionForTests = () => {
+  _isIOSResult = void 0;
+  _iosMomentumOverridesWritesResult = void 0;
+};
+const touchListenerOptions = {
+  capture: true,
+  passive: true
+};
+class IosGesture {
+  constructor(host) {
+    this.host = host;
+    this._touch = null;
+    this.inMotion = () => this._touch !== null && this._touch.phase !== "lateFling";
+    this.dragging = () => {
+      var _a;
+      return ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
+    };
+    this.tail = () => {
+      var _a;
+      return ((_a = this._touch) == null ? void 0 : _a.phase) === "tail" ? this._touch.moved ? "fling" : "tap" : null;
+    };
+    this.onScroll = ({
+      isScrolling,
+      ownReadBack,
+      moved,
+      external
+    }) => {
+      var _a, _b, _c;
+      if (isScrolling && ((_a = this._touch) == null ? void 0 : _a.phase) === "tail") {
+        this._openTail(this._touch.moved || !ownReadBack, false);
+      } else if (((_b = this._touch) == null ? void 0 : _b.phase) === "lateFling") {
+        if (this.host.now() > this._touch.until) {
+          this._touch = null;
+        } else if (external && isScrolling && moved) {
+          this._openTail(true, false);
+        }
+      }
+      if (!ownReadBack && isScrolling && moved && ((_c = this._touch) == null ? void 0 : _c.phase) === "down") {
+        this._touch.moved = true;
+        return true;
+      }
+      return false;
+    };
+    this.touchStart = () => {
+      this.end();
+      this._touch = {
+        phase: "down",
+        moved: false
+      };
+    };
+    this.touchEnd = () => {
+      var _a;
+      const moved = ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
+      this.end();
+      this._openTail(moved, moved);
+    };
+    this.end = () => {
+      var _a;
+      const win = this.host.getWindow();
+      if (((_a = this._touch) == null ? void 0 : _a.phase) === "tail" && win != null) {
+        win.clearTimeout(this._touch.timerId);
+      }
+      this._touch = null;
+    };
+    this.listen = target => {
+      const onTouchStart = () => this.touchStart();
+      const onTouchEnd = () => this.touchEnd();
+      target.addEventListener("touchstart", onTouchStart, touchListenerOptions);
+      target.addEventListener("touchend", onTouchEnd, touchListenerOptions);
+      target.addEventListener("touchcancel", onTouchEnd, touchListenerOptions);
+      return () => {
+        target.removeEventListener("touchstart", onTouchStart, touchListenerOptions);
+        target.removeEventListener("touchend", onTouchEnd, touchListenerOptions);
+        target.removeEventListener("touchcancel", onTouchEnd, touchListenerOptions);
+        this.end();
+      };
+    };
+    this._openTail = (moved, awaitingFling) => {
+      const win = this.host.getWindow();
+      if (!isIOSWebKit() || win == null) return;
+      this.end();
+      const tail = {
+        phase: "tail",
+        moved,
+        awaitingFling,
+        // Only fires while this tail is current: `end` clears it otherwise.
+        timerId: win.setTimeout(() => {
+          if (this.host.tailStillMoving()) {
+            this._openTail(tail.moved, tail.awaitingFling);
+            return;
+          }
+          this._touch = tail.awaitingFling ? {
+            phase: "lateFling",
+            until: this.host.now() + 1e3
+          } : null;
+          this.host.onTailClosed();
+        }, 150)
+      };
+      this._touch = tail;
+    };
+  }
+  get touch() {
+    return this._touch;
+  }
+}
+exports.IosGesture = IosGesture;
+exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
+exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
+exports.isIOSWebKit = isIOSWebKit;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const lazyMeasurements = require("./lazy-measurements.cjs");
+const utils = require("./utils.cjs");
+const scrollClassifier = require("./scroll-classifier.cjs");
+const iosGesture = require("./ios-gesture.cjs");
+const getRect = element => {
+  const {
+    clientWidth,
+    clientHeight
+  } = element;
+  return {
+    width: clientWidth,
+    height: clientHeight
+  };
+};
+const createFrameQueue = targetWindow => {
+  const ids = /* @__PURE__ */new Set();
+  return {
+    schedule: fn => {
+      const id = targetWindow.requestAnimationFrame(() => {
+        ids.delete(id);
+        fn();
+      });
+      ids.add(id);
+    },
+    cancel: () => {
+      ids.forEach(id => targetWindow.cancelAnimationFrame(id));
+      ids.clear();
+    }
+  };
+};
+const defaultKeyExtractor = index => index;
+const defaultRangeExtractor = range => {
+  const overscan = range.overscan * Math.max(range.lanes ?? 1, 1);
+  const start = Math.max(range.startIndex - overscan, 0);
+  const end = Math.min(range.endIndex + overscan, range.count - 1);
+  const len = end - start + 1;
+  const arr = new Array(len);
+  for (let i = 0; i < len; i++) {
+    arr[i] = start + i;
+  }
+  return arr;
+};
+const observeElementRect = (instance, cb) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const targetWindow = instance.targetWindow;
+  if (!targetWindow) {
+    return;
+  }
+  const handler = rect => {
+    const {
+      width,
+      height
+    } = rect;
+    cb({
+      width: Math.round(width),
+      height: Math.round(height)
+    });
+  };
+  handler(getRect(element));
+  if (!targetWindow.ResizeObserver) {
+    return () => {};
+  }
+  const frames = createFrameQueue(targetWindow);
+  const observer = new targetWindow.ResizeObserver(() => {
+    const run = () => {
+      handler(getRect(element));
+    };
+    instance.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+  });
+  observer.observe(element, {
+    box: "content-box"
+  });
+  return () => {
+    observer.unobserve(element);
+    frames.cancel();
+  };
+};
+const addEventListenerOptions = {
+  passive: true
+};
+const observeWindowRect = (instance, cb) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const handler = () => {
+    cb({
+      width: element.innerWidth,
+      height: element.innerHeight
+    });
+  };
+  handler();
+  element.addEventListener("resize", handler, addEventListenerOptions);
+  return () => {
+    element.removeEventListener("resize", handler);
+  };
+};
+const supportsScrollend = typeof window == "undefined" ? true : "onscrollend" in window;
+const observeOffset = (instance, cb, readOffset) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const targetWindow = instance.targetWindow;
+  if (!targetWindow) {
+    return;
+  }
+  const registerScrollendEvent = instance.options.useScrollendEvent && supportsScrollend;
+  let offset = 0;
+  const fallback = registerScrollendEvent ? null : utils.debounce(targetWindow, () => cb(readOffset(element), false), instance.options.isScrollingResetDelay);
+  const createHandler = isScrolling => () => {
+    offset = readOffset(element);
+    fallback == null ? void 0 : fallback();
+    cb(offset, isScrolling);
+  };
+  const handler = createHandler(true);
+  const endHandler = createHandler(false);
+  element.addEventListener("scroll", handler, addEventListenerOptions);
+  if (registerScrollendEvent) {
+    element.addEventListener("scrollend", endHandler, addEventListenerOptions);
+  }
+  return () => {
+    element.removeEventListener("scroll", handler);
+    if (registerScrollendEvent) {
+      element.removeEventListener("scrollend", endHandler);
+    }
+    fallback == null ? void 0 : fallback.cancel();
+  };
+};
+const observeElementOffset = (instance, cb) => observeOffset(instance, cb, el => {
+  const {
+    horizontal,
+    isRtl
+  } = instance.options;
+  return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
+});
+const observeWindowOffset = (instance, cb) => observeOffset(instance, cb, win => instance.options.horizontal ? win.scrollX : win.scrollY);
+const measureElement = (element, entry, instance) => {
+  if (instance.options.useCachedMeasurements) {
+    const index = instance.indexFromElement(element);
+    const key = instance.options.getItemKey(index);
+    return instance.itemSizeCache.get(key) ?? instance.options.estimateSize(index);
+  }
+  if (entry == null ? void 0 : entry.borderBoxSize) {
+    const box = entry.borderBoxSize[0];
+    if (box) {
+      const size = Math.round(box[instance.options.horizontal ? "inlineSize" : "blockSize"]);
+      return size;
+    }
+  }
+  if (!entry) {
+    const index = instance.indexFromElement(element);
+    const key = instance.options.getItemKey(index);
+    const cachedSize = instance.itemSizeCache.get(key);
+    if (cachedSize !== void 0) {
+      return cachedSize;
+    }
+  }
+  return element[instance.options.horizontal ? "offsetWidth" : "offsetHeight"];
+};
+const scrollWithAdjustments = (offset, {
+  adjustments = 0,
+  behavior
+}, instance) => {
+  var _a, _b;
+  (_b = (_a = instance.scrollElement) == null ? void 0 : _a.scrollTo) == null ? void 0 : _b.call(_a, {
+    [instance.options.horizontal ? "left" : "top"]: offset + adjustments,
+    behavior
+  });
+};
+const windowScroll = scrollWithAdjustments;
+const elementScroll = scrollWithAdjustments;
+const initialScrollPhase = (behavior, atTarget) => behavior === "smooth" ? atTarget ? "smoothLanded" : "smooth" : "instant";
+const isSmoothScroll = state => (state == null ? void 0 : state.phase) === "smooth" || (state == null ? void 0 : state.phase) === "smoothLanded";
+function isAppendWithTrim(prevCount, nextCount, getPreviousKey, getNextKey) {
+  if (nextCount === 0) return false;
+  const firstKey = getNextKey(0);
+  const removedKeys = /* @__PURE__ */new Set();
+  let removedCount = 0;
+  while (removedCount < prevCount) {
+    const key = getPreviousKey(removedCount);
+    if (key === firstKey) break;
+    removedKeys.add(key);
+    removedCount++;
+  }
+  const retainedCount = prevCount - removedCount;
+  if (retainedCount === 0 || retainedCount >= nextCount) return false;
+  for (let i = 0; i < retainedCount; i++) {
+    if (getNextKey(i) !== getPreviousKey(removedCount + i)) return false;
+  }
+  for (let i = retainedCount; i < nextCount; i++) {
+    if (removedKeys.has(getNextKey(i))) return false;
+  }
+  return true;
+}
+class Virtualizer {
+  constructor(opts) {
+    this.unsubs = [];
+    this.scrollElement = null;
+    this.targetWindow = null;
+    this.isScrolling = false;
+    this.scrollState = null;
+    this.measurementsCache = [];
+    this._singleLaneMeasurements = null;
+    this.itemSizeCache = /* @__PURE__ */new Map();
+    this.itemSizeCacheVersion = 0;
+    this.laneAssignments = /* @__PURE__ */new Map();
+    this.pendingMin = null;
+    this.prevLanes = void 0;
+    this.lanesChangedFlag = false;
+    this.lanesSettling = false;
+    this.pendingScrollAnchor = null;
+    this.scrollRect = null;
+    this.scrollOffset = null;
+    this.scrollDirection = null;
+    this._holdOffset = 0;
+    this._reportedOverscroll = false;
+    this._iosGesture = new iosGesture.IosGesture({
+      getWindow: () => this.targetWindow,
+      now: () => this.now(),
+      // The end of a fling can move less than a pixel per scroll event, so
+      // events can stop for 150ms while the fling is still running (seen on
+      // an iPhone, 27.0.1). A command waiting for it would then be written
+      // into the fling and overridden. The element having moved since the
+      // last event means it has not ended: wait again. Not while our own
+      // write has yet to report: that moved it.
+      tailStillMoving: () => {
+        const state = this.scrollState;
+        if ((state == null ? void 0 : state.phase) !== "queued" || this.pendingWrite !== null) {
+          return false;
+        }
+        const now = this._readElementOffset();
+        if (now === null || this._lastElementOffset === null || Math.abs(now - this._lastElementOffset) < 1) {
+          return false;
+        }
+        this._lastElementOffset = now;
+        state.samples = [...(state.samples ?? []), {
+          t: this.now(),
+          offset: now
+        }];
+        return true;
+      },
+      onTailClosed: () => {
+        const state = this.scrollState;
+        if ((state == null ? void 0 : state.phase) === "queued" && scrollClassifier.flingCaught(state.samples ?? [])) {
+          this.scrollState = null;
+        }
+        this._flushHoldIfReady(true);
+        this._writeAwaitingCommand();
+      }
+    });
+    this._lastElementOffset = null;
+    this.pendingWrite = null;
+    this._clampedAdjustment = null;
+    this.elementsCache = /* @__PURE__ */new Map();
+    this._resizeBatch = null;
+    this.now = () => {
+      var _a, _b, _c;
+      return ((_c = (_b = (_a = this.targetWindow) == null ? void 0 : _a.performance) == null ? void 0 : _b.now) == null ? void 0 : _c.call(_b)) ?? Date.now();
+    };
+    this.observer = /* @__PURE__ */(() => {
+      let _ro = null;
+      let _frames = null;
+      const get = () => {
+        if (_ro) {
+          return _ro;
+        }
+        const targetWindow = this.targetWindow;
+        if (!targetWindow || !targetWindow.ResizeObserver) {
+          return null;
+        }
+        const frames = _frames = createFrameQueue(targetWindow);
+        return _ro = new targetWindow.ResizeObserver(entries => {
+          const run = () => {
+            const batch = {
+              sync: false
+            };
+            this._resizeBatch = batch;
+            try {
+              entries.forEach(measureEntry);
+            } finally {
+              this._resizeBatch = null;
+              if (batch.notify) {
+                this.notify(batch.sync);
+                this._noteClampMax();
+                this._flushHoldIfReady(true);
+                this._retryClampedAdjustment();
+              }
+            }
+          };
+          this.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+        });
+      };
+      const measureEntry = entry => {
+        const node = entry.target;
+        const index = this.indexFromElement(node);
+        if (!node.isConnected) {
+          this.observer.unobserve(node);
+          for (const [cacheKey, cachedNode] of this.elementsCache) {
+            if (cachedNode === node) {
+              this.elementsCache.delete(cacheKey);
+              break;
+            }
+          }
+          return;
+        }
+        if (!this.isIndexInRange(index)) return;
+        if (this.shouldMeasureDuringScroll(index)) {
+          this.resizeItem(index, this.options.measureElement(node, entry, this));
+        }
+      };
+      return {
+        disconnect: () => {
+          var _a;
+          (_a = get()) == null ? void 0 : _a.disconnect();
+          _frames == null ? void 0 : _frames.cancel();
+          _ro = null;
+          _frames = null;
+        },
+        observe: target => {
+          var _a;
+          return (_a = get()) == null ? void 0 : _a.observe(target, {
+            box: "border-box"
+          });
+        },
+        unobserve: target => {
+          var _a;
+          return (_a = get()) == null ? void 0 : _a.unobserve(target);
+        }
+      };
+    })();
+    this.range = null;
+    this.setOptions = opts2 => {
+      var _a;
+      const merged = {
+        debug: false,
+        initialOffset: 0,
+        overscan: 1,
+        paddingStart: 0,
+        paddingEnd: 0,
+        scrollPaddingStart: 0,
+        scrollPaddingEnd: 0,
+        horizontal: false,
+        getItemKey: defaultKeyExtractor,
+        rangeExtractor: defaultRangeExtractor,
+        onChange: () => {},
+        measureElement,
+        initialRect: {
+          width: 0,
+          height: 0
+        },
+        scrollMargin: 0,
+        gap: 0,
+        indexAttribute: "data-index",
+        initialMeasurementsCache: [],
+        lanes: 1,
+        anchorTo: "start",
+        followOnAppend: false,
+        scrollEndThreshold: 1,
+        isScrollingResetDelay: 150,
+        enabled: true,
+        isRtl: false,
+        useScrollendEvent: false,
+        useAnimationFrameWithResizeObserver: false,
+        laneAssignmentMode: "estimate",
+        useCachedMeasurements: false
+      };
+      for (const key in opts2) {
+        const v = opts2[key];
+        if (v !== void 0) merged[key] = v;
+      }
+      const prevOptions = this.options;
+      let anchor = null;
+      let followOnAppend = null;
+      let edgeKeysChanged = false;
+      if (prevOptions !== void 0 && prevOptions.enabled && merged.enabled && merged.anchorTo === "end" && this.scrollElement !== null) {
+        const prevCount = prevOptions.count;
+        const nextCount = merged.count;
+        const measurements = this.getMeasurements();
+        const previousItems = ((_a = this._singleLaneMeasurements) == null ? void 0 : _a.items) ?? measurements;
+        const getPreviousKey = index => lazyMeasurements.getMeasurementKey(previousItems[index]);
+        const prevFirstKey = prevCount > 0 ? getPreviousKey(0) : null;
+        const prevLastKey = prevCount > 0 ? getPreviousKey(prevCount - 1) : null;
+        const didCountChange = nextCount !== prevCount;
+        const didEdgeKeysChange = didCountChange || prevCount > 0 && nextCount > 0 && (merged.getItemKey(0) !== prevFirstKey || merged.getItemKey(nextCount - 1) !== prevLastKey);
+        if (didEdgeKeysChange) {
+          edgeKeysChanged = true;
+          const item = prevCount > 0 ? this.getVirtualItemForOffset(this.getScrollOffset()) ?? measurements[0] : null;
+          if (item) {
+            anchor = [item.key, this.getScrollOffset() - item.start];
+          }
+          const behavior = merged.followOnAppend === true ? "auto" : merged.followOnAppend || null;
+          if (behavior && nextCount > 0 && this.isAtEnd(prevOptions.scrollEndThreshold) && (prevCount === 0 || merged.getItemKey(nextCount - 1) !== prevLastKey)) {
+            if (nextCount > prevCount || isAppendWithTrim(prevCount, nextCount, getPreviousKey, merged.getItemKey)) {
+              followOnAppend = behavior;
+            }
+          }
+        }
+      }
+      this.options = merged;
+      if (edgeKeysChanged) {
+        this.pendingMin = 0;
+        this.itemSizeCacheVersion++;
+      }
+      let anchorDelta = null;
+      if (anchor && this.scrollOffset !== null && !this._awaitingCommandReadBack()) {
+        const [anchorKey, anchorOffset] = anchor;
+        const newMeasurements = this.getMeasurements();
+        const {
+          count,
+          getItemKey
+        } = this.options;
+        let idx = 0;
+        while (idx < count && getItemKey(idx) !== anchorKey) {
+          idx++;
+        }
+        if (idx < count) {
+          const anchorItem = newMeasurements[idx];
+          if (anchorItem) {
+            const newOffset = Math.max(0, anchorItem.start + anchorOffset);
+            if (!followOnAppend && newOffset !== this.scrollOffset) {
+              anchorDelta = newOffset - this.scrollOffset;
+              this.scrollOffset = newOffset;
+            }
+          }
+        }
+      }
+      if (followOnAppend) {
+        this.pendingScrollAnchor = {
+          kind: "follow",
+          behavior: followOnAppend
+        };
+      } else if (anchorDelta !== null) {
+        if (this._canWriteScroll()) {
+          this.pendingScrollAnchor = {
+            kind: "anchor",
+            delta: anchorDelta
+          };
+        } else {
+          this._holdOffset += anchorDelta;
+          this._followOffsetTarget(anchorDelta);
+        }
+      }
+    };
+    this.notify = sync => {
+      var _a, _b;
+      (_b = (_a = this.options).onChange) == null ? void 0 : _b.call(_a, this, sync);
+    };
+    this.maybeNotify = utils.memo(() => {
+      this.calculateRange();
+      return [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null];
+    }, isScrolling => {
+      this.notify(isScrolling);
+    }, {
+      key: 'production' !== "production" && "maybeNotify",
+      debug: () => this.options.debug,
+      initialDeps: [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null]
+    });
+    this.cleanup = () => {
+      var _a;
+      this.unsubs.filter(Boolean).forEach(d => d());
+      this.unsubs = [];
+      this.observer.disconnect();
+      if (this.rafId != null && this.targetWindow) {
+        this.targetWindow.cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+      this.scrollState = null;
+      (_a = this._momentumStop) == null ? void 0 : _a.restore();
+      this._momentumStop = null;
+      this.isScrolling = false;
+      this.scrollDirection = null;
+      this._holdOffset = 0;
+      this._reportedOverscroll = false;
+      this._clampedAdjustment = null;
+      this.pendingWrite = null;
+      this.scrollElement = null;
+      this.targetWindow = null;
+    };
+    this._didMount = () => {
+      return () => {
+        this.cleanup();
+      };
+    };
+    this._willUpdate = () => {
+      var _a;
+      const scrollElement = this.options.enabled ? this.options.getScrollElement() : null;
+      if (this.scrollElement !== scrollElement) {
+        this.cleanup();
+        if (!scrollElement) {
+          this.maybeNotify();
+          return;
+        }
+        this.scrollElement = scrollElement;
+        if (this.scrollElement && "ownerDocument" in this.scrollElement) {
+          this.targetWindow = this.scrollElement.ownerDocument.defaultView;
+        } else {
+          this.targetWindow = ((_a = this.scrollElement) == null ? void 0 : _a.window) ?? null;
+        }
+        this.elementsCache.forEach(cached => {
+          this.observer.observe(cached);
+        });
+        this.unsubs.push(this.options.observeElementRect(this, rect => {
+          this.scrollRect = rect;
+          this.maybeNotify();
+        }));
+        this.unsubs.push(this.options.observeElementOffset(this, (offset, isScrolling) => {
+          var _a2, _b, _c, _d;
+          const elementMax = isScrolling ? this._elementMaxScrollOffset() : null;
+          const wasOverscrolled = this._reportedOverscroll;
+          this._reportedOverscroll = offset < 0 || elementMax !== null && offset > elementMax + 1;
+          const elementOffset = offset;
+          this._lastElementOffset = elementOffset;
+          offset = this._toLayoutOffset(offset);
+          const kind = this._classifyScrollEvent(offset, isScrolling, elementMax);
+          if (kind === "spurious") return;
+          if (kind === "readBack") {
+            offset = this.pendingWrite.target;
+          } else if (kind === "clampedReadBack" && ((_a2 = this.scrollState) == null ? void 0 : _a2.index) != null &&
+          // Not `elementMax`: an adapter can report the read-back at rest.
+          offset < this.getMaxScrollOffset() - 1.5) {
+            this.scrollState.lastTargetOffset = offset;
+          } else if (scrollClassifier.externalRetiresCommand({
+            kind,
+            offset,
+            command: this.scrollState,
+            target: () => this.getScrollStateTarget(this.scrollState)
+          })) {
+            this.scrollState = null;
+          }
+          this.pendingWrite = null;
+          if (this._clampedAdjustment !== null && Math.abs(offset - this._clampedAdjustment.maxAtWrite) >= 1.5) {
+            this._clampedAdjustment = null;
+          }
+          const prevOffset = this.getScrollOffset();
+          const prevDirection = this.scrollDirection;
+          this.scrollDirection = isScrolling ? prevOffset === offset ? this.scrollDirection : prevOffset < offset ? "forward" : "backward" : null;
+          this.scrollOffset = offset;
+          this.isScrolling = isScrolling;
+          const queued = this.scrollState;
+          if ((queued == null ? void 0 : queued.phase) === "queued" && kind === "external" && isScrolling) {
+            if (wasOverscrolled || this._reportedOverscroll) {
+              queued.samples = [];
+            } else {
+              const t = this.now();
+              queued.samples = [...(queued.samples ?? []).filter(sample => t - sample.t <= 200), {
+                t,
+                offset: elementOffset
+              }];
+              if (prevDirection !== null && this.scrollDirection !== prevDirection || scrollClassifier.flingSpedUp(queued.samples)) {
+                this.scrollState = null;
+              }
+            }
+          }
+          if (this._iosGesture.onScroll({
+            isScrolling,
+            ownReadBack: kind === "readBack",
+            moved: offset !== prevOffset,
+            // Neither our write's read-back nor a frame of our smooth
+            // animation: the user or a fling moved it.
+            external: kind === "external" && ((_b = this.scrollState) == null ? void 0 : _b.phase) !== "smooth" && ((_c = this.scrollState) == null ? void 0 : _c.phase) !== "smoothFinishing"
+          }) &&
+          // The user scrolls: a command still waiting for the tail is
+          // theirs to override, like a written one would be.
+          ((_d = this.scrollState) == null ? void 0 : _d.phase) === "queued") {
+            this.scrollState = null;
+          }
+          this._flushHoldIfReady(true);
+          if (this.scrollState) {
+            this.scheduleScrollReconcile();
+          }
+          this.maybeNotify();
+        }));
+        if ("addEventListener" in this.scrollElement) {
+          this.unsubs.push(this._iosGesture.listen(this.scrollElement));
+        }
+        this._scrollToOffset(this.getScrollOffset());
+      }
+      this._noteClampMax();
+      const anchor = this.pendingScrollAnchor;
+      this.pendingScrollAnchor = null;
+      if (anchor && this.scrollElement && this.options.enabled) {
+        if (anchor.kind === "anchor") {
+          if (!this._canWriteScroll()) {
+            this._holdOffset += anchor.delta;
+            this._followOffsetTarget(anchor.delta);
+            this.notify(false);
+          } else if (isSmoothScroll(this.scrollState) && !utils.approxEqual(this.getScrollOffset() - anchor.delta, this.scrollState.lastTargetOffset)) ;else {
+            this._followOffsetTarget(anchor.delta);
+            this._scrollToOffset(this.getScrollOffset());
+          }
+        } else {
+          this.scrollToEnd({
+            behavior: anchor.behavior
+          });
+        }
+      }
+      this._flushHoldIfReady(false);
+      this._retryClampedAdjustment();
+    };
+    this._classifyScrollEvent = (offset, isScrolling, elementMax) => {
+      var _a;
+      return scrollClassifier.classifyScrollEvent({
+        offset,
+        isScrolling,
+        elementMax,
+        holdOffset: this._holdOffset,
+        scrollOffset: this.scrollOffset,
+        pendingWrite: this.pendingWrite,
+        clampedMaxAtWrite: ((_a = this._clampedAdjustment) == null ? void 0 : _a.maxAtWrite) ?? null
+      });
+    };
+    this._retryClampedAdjustment = () => {
+      if (this._clampedAdjustment === null || !this.scrollElement || !this.options.enabled) {
+        return;
+      }
+      const {
+        target,
+        maxAtWrite
+      } = this._clampedAdjustment;
+      const max = this.getMaxScrollOffset();
+      if (max > maxAtWrite + 0.5) {
+        this._clampedAdjustment = target > max + 0.5 ? {
+          target,
+          maxAtWrite: max
+        } : null;
+        this._scrollToOffset(target);
+      }
+    };
+    this._writeAwaitingCommand = () => {
+      const state = this.scrollState;
+      if (state === null || state.phase !== "queued") return;
+      const {
+        behavior
+      } = state;
+      this.getMeasurements();
+      const offset = this.getScrollStateTarget(state);
+      state.lastTargetOffset = offset;
+      this._clampedAdjustment = null;
+      state.phase = initialScrollPhase(behavior, state.index != null && utils.approxEqual(offset, this.getScrollOffset()));
+      this._scrollToOffset(offset, {
+        behavior
+      });
+      this.scheduleScrollReconcile();
+    };
+    this._readElementOffset = () => {
+      const el = this.scrollElement;
+      if (el == null) return null;
+      const {
+        horizontal,
+        isRtl
+      } = this.options;
+      if (typeof el.scrollTop === "number") {
+        return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
+      }
+      if (typeof el.scrollY === "number") {
+        return horizontal ? el.scrollX : el.scrollY;
+      }
+      return null;
+    };
+    this._canWriteScroll = () => !(iosGesture.isIOSWebKit() && this._iosGesture.inMotion()) && !this._reportedOverscroll;
+    this._flushHoldIfReady = sync => {
+      var _a;
+      if (this._holdOffset === 0) return;
+      if (!this.scrollElement || !this.options.enabled) return;
+      if (!this._canWriteScroll()) return;
+      if (((_a = this.scrollState) == null ? void 0 : _a.phase) === "smooth") return;
+      this._holdOffset = 0;
+      if (this.scrollOffset !== null && this.scrollOffset < 0) {
+        this.scrollOffset = 0;
+      }
+      this.notify(sync);
+      const target = this.getCommandWrittenOffset() ?? this.getScrollOffset();
+      this._clampedAdjustment = this._clampedBy(target);
+      this._scrollToOffset(target);
+    };
+    this.rafId = null;
+    this.getSize = () => {
+      if (!this.options.enabled) {
+        this.scrollRect = null;
+        return 0;
+      }
+      this.scrollRect = this.scrollRect ?? this.options.initialRect;
+      return this.scrollRect[this.options.horizontal ? "width" : "height"];
+    };
+    this.getScrollOffset = () => {
+      if (!this.options.enabled) {
+        this.scrollOffset = null;
+        return 0;
+      }
+      this.scrollOffset = this.scrollOffset ?? (typeof this.options.initialOffset === "function" ? this.options.initialOffset() : this.options.initialOffset);
+      return this.scrollOffset;
+    };
+    this.getMeasurementOptions = utils.memo(() => [this.options.count, this.options.paddingStart, this.options.scrollMargin, this.options.getItemKey, this.options.enabled, this.options.lanes, this.options.laneAssignmentMode, this.options.gap], (count, paddingStart, scrollMargin, getItemKey, enabled, lanes, laneAssignmentMode, gap) => {
+      const lanesChanged = this.prevLanes !== void 0 && this.prevLanes !== lanes;
+      if (lanesChanged) {
+        this.lanesChangedFlag = true;
+      }
+      this.prevLanes = lanes;
+      this.pendingMin = null;
+      return {
+        count,
+        paddingStart,
+        scrollMargin,
+        getItemKey,
+        enabled,
+        lanes,
+        laneAssignmentMode,
+        gap
+      };
+    }, {
+      key: false
+    });
+    this.isIndexInRange = index => index >= 0 && index < this.options.count;
+    this.getMeasurements = utils.memo(() => [this.getMeasurementOptions(), this.itemSizeCacheVersion], ({
+      count,
+      paddingStart,
+      scrollMargin,
+      getItemKey,
+      enabled,
+      lanes,
+      laneAssignmentMode,
+      gap
+    }, _itemSizeCacheVersion) => {
+      var _a;
+      const itemSizeCache = this.itemSizeCache;
+      if (!enabled) {
+        this.measurementsCache = [];
+        this._singleLaneMeasurements = null;
+        this.itemSizeCache.clear();
+        this.laneAssignments.clear();
+        return [];
+      }
+      if (this.laneAssignments.size > count) {
+        for (const index of this.laneAssignments.keys()) {
+          if (index >= count) {
+            this.laneAssignments.delete(index);
+          }
+        }
+      }
+      if (this.lanesChangedFlag) {
+        this.lanesChangedFlag = false;
+        this.lanesSettling = true;
+        this.measurementsCache = [];
+        this._singleLaneMeasurements = null;
+        this.itemSizeCache.clear();
+        this.laneAssignments.clear();
+        this.pendingMin = null;
+      }
+      if (this.measurementsCache.length === 0 && !this.lanesSettling) {
+        this.measurementsCache = this.options.initialMeasurementsCache;
+        this.measurementsCache.forEach(item => {
+          this.itemSizeCache.set(item.key, item.size);
+        });
+      }
+      const min = this.lanesSettling ? 0 : this.pendingMin ?? 0;
+      this.pendingMin = null;
+      if (this.lanesSettling && this.measurementsCache.length === count) {
+        this.lanesSettling = false;
+      }
+      if (lanes === 1) {
+        const need = count * 2;
+        let flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+        if (!flat || flat.length < need) {
+          const next = new Float64Array(need);
+          if (flat && min > 0) next.set(flat.subarray(0, min * 2));
+          flat = next;
+        }
+        const items = min === 0 ? new Array(count) : this._singleLaneMeasurements.items.slice();
+        let runningStart;
+        if (min === 0) {
+          runningStart = paddingStart + scrollMargin;
+        } else {
+          const prevIdx = min - 1;
+          runningStart = flat[prevIdx * 2] + flat[prevIdx * 2 + 1] + gap;
+        }
+        for (let i = min; i < count; i++) {
+          const key = getItemKey(i);
+          items[i] = key;
+          const measuredSize = itemSizeCache.get(key);
+          const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
+          flat[i * 2] = runningStart;
+          flat[i * 2 + 1] = size;
+          runningStart += size + gap;
+        }
+        this._singleLaneMeasurements = {
+          flat,
+          items
+        };
+        const view = lazyMeasurements.createLazyMeasurementsView(items, flat);
+        this.measurementsCache = view;
+        return view;
+      }
+      const measurements = this.measurementsCache.slice(0, min);
+      const laneLastIndex = new Array(lanes).fill(void 0);
+      const laneEnds = new Float64Array(lanes);
+      let filledLanes = 0;
+      for (let m = 0; m < min; m++) {
+        const item = measurements[m];
+        if (item) {
+          if (laneLastIndex[item.lane] === void 0) filledLanes++;
+          laneLastIndex[item.lane] = m;
+          laneEnds[item.lane] = item.end;
+        }
+      }
+      for (let i = min; i < count; i++) {
+        const key = getItemKey(i);
+        const cachedLane = this.laneAssignments.get(i);
+        let lane;
+        let start;
+        const shouldCacheLane = laneAssignmentMode === "estimate" || itemSizeCache.has(key);
+        if (cachedLane !== void 0 && this.options.lanes > 1) {
+          lane = cachedLane;
+          const prevIndex = laneLastIndex[lane];
+          const prevInLane = prevIndex !== void 0 ? measurements[prevIndex] : void 0;
+          start = prevInLane ? prevInLane.end + gap : paddingStart + scrollMargin;
+        } else if (filledLanes === lanes) {
+          let bestLane = 0;
+          let bestEnd = laneEnds[0];
+          let bestIdx = laneLastIndex[0];
+          for (let l = 1; l < lanes; l++) {
+            const e = laneEnds[l];
+            if (e < bestEnd || e === bestEnd && laneLastIndex[l] < bestIdx) {
+              bestLane = l;
+              bestEnd = e;
+              bestIdx = laneLastIndex[l];
+            }
+          }
+          lane = bestLane;
+          start = bestEnd + gap;
+          if (shouldCacheLane) {
+            this.laneAssignments.set(i, lane);
+          }
+        } else {
+          lane = i % this.options.lanes;
+          start = paddingStart + scrollMargin;
+          if (shouldCacheLane) {
+            this.laneAssignments.set(i, lane);
+          }
+        }
+        const measuredSize = itemSizeCache.get(key);
+        const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
+        const end = start + size;
+        measurements[i] = {
+          index: i,
+          start,
+          size,
+          end,
+          key,
+          lane
+        };
+        if (laneLastIndex[lane] === void 0) filledLanes++;
+        laneLastIndex[lane] = i;
+        laneEnds[lane] = end;
+      }
+      this.measurementsCache = measurements;
+      return measurements;
+    }, {
+      key: 'production' !== "production" && "getMeasurements",
+      debug: () => this.options.debug
+    });
+    this.calculateRange = utils.memo(() => [this.getMeasurements(), this.getSize(), this.getScrollOffset(), this.options.lanes], (measurements, outerSize, scrollOffset, lanes) => {
+      if (measurements.length === 0 || outerSize === 0) {
+        this.range = null;
+        return null;
+      }
+      this.range = calculateRangeImpl(measurements, outerSize, scrollOffset, lanes,
+      // Pass the typed array so binary search + forward-walk can read
+      // start/end directly from Float64Array, skipping the Proxy traps.
+      lanes === 1 && this._singleLaneMeasurements !== null ? this._singleLaneMeasurements.flat : null);
+      return this.range;
+    }, {
+      key: 'production' !== "production" && "calculateRange",
+      debug: () => this.options.debug
+    });
+    this.getVirtualIndexes = utils.memo(() => {
+      let startIndex = null;
+      let endIndex = null;
+      const range = this.calculateRange();
+      if (range) {
+        startIndex = range.startIndex;
+        endIndex = range.endIndex;
+      }
+      this.maybeNotify.updateDeps([this.isScrolling, startIndex, endIndex]);
+      return [this.options.rangeExtractor, this.options.overscan, this.options.count, startIndex, endIndex, this.options.lanes];
+    }, (rangeExtractor, overscan, count, startIndex, endIndex, lanes) => {
+      return startIndex === null || endIndex === null ? [] : rangeExtractor({
+        startIndex,
+        endIndex,
+        overscan,
+        count,
+        lanes
+      });
+    }, {
+      key: 'production' !== "production" && "getVirtualIndexes",
+      debug: () => this.options.debug
+    });
+    this.indexFromElement = node => {
+      const attributeName = this.options.indexAttribute;
+      const indexStr = node.getAttribute(attributeName);
+      if (!indexStr) {
+        console.warn(`Missing attribute name '${attributeName}={index}' on measured element.`);
+        return -1;
+      }
+      return parseInt(indexStr, 10);
+    };
+    this.shouldMeasureDuringScroll = index => {
+      var _a;
+      if (!isSmoothScroll(this.scrollState)) {
+        return true;
+      }
+      const scrollIndex = this.scrollState.index ?? ((_a = this.getVirtualItemForOffset(this.scrollState.lastTargetOffset)) == null ? void 0 : _a.index);
+      if (scrollIndex !== void 0 && this.range) {
+        const bufferSize = Math.max(this.options.overscan, Math.ceil((this.range.endIndex - this.range.startIndex) / 2));
+        const minIndex = Math.max(0, scrollIndex - bufferSize);
+        const maxIndex = Math.min(this.options.count - 1, scrollIndex + bufferSize);
+        return index >= minIndex && index <= maxIndex;
+      }
+      return true;
+    };
+    this.measureElement = node => {
+      if (!node) {
+        this.elementsCache.forEach((cached, key2) => {
+          if (!cached.isConnected) {
+            this.observer.unobserve(cached);
+            this.elementsCache.delete(key2);
+          }
+        });
+        return;
+      }
+      const index = this.indexFromElement(node);
+      if (!this.isIndexInRange(index)) return;
+      const key = this.options.getItemKey(index);
+      const prevNode = this.elementsCache.get(key);
+      if (prevNode !== node) {
+        if (prevNode) {
+          this.observer.unobserve(prevNode);
+        }
+        this.observer.observe(node);
+        this.elementsCache.set(key, node);
+      }
+      if (node.isConnected && (!this.isScrolling || this.scrollState) && this.shouldMeasureDuringScroll(index)) {
+        this.resizeItem(index, this.options.measureElement(node, void 0, this));
+      }
+    };
+    this.resizeItem = (index, size) => {
+      var _a, _b, _c;
+      if (!this.isIndexInRange(index)) return;
+      if ((_a = this._resizeBatch) == null ? void 0 : _a.sync) this.getMeasurements();
+      let cachedSize;
+      let itemStart;
+      let key;
+      const flat = (_b = this._singleLaneMeasurements) == null ? void 0 : _b.flat;
+      if (this.options.lanes === 1 && flat != null) {
+        key = this.options.getItemKey(index);
+        itemStart = flat[index * 2];
+        cachedSize = flat[index * 2 + 1];
+      } else {
+        const item = this.measurementsCache[index];
+        if (!item) return;
+        key = item.key;
+        itemStart = item.start;
+        cachedSize = item.size;
+      }
+      const itemSize = this.itemSizeCache.get(key) ?? cachedSize;
+      const delta = size - itemSize;
+      if (delta !== 0) {
+        const wasAtEnd = this.options.anchorTo === "end" && !isSmoothScroll(this.scrollState) && this.getVirtualDistanceFromEnd() <= this.options.scrollEndThreshold;
+        const prevTotalSize = wasAtEnd ? this._getLayoutTotalSize() : 0;
+        const scrollOffset = this.getScrollOffset();
+        const isFirstMeasure = !this.itemSizeCache.has(key);
+        const defaultShouldAdjust = isFirstMeasure ?
+        // First measurement: compensate any item whose top sits above the
+        // fold — the estimate→actual delta must be corrected regardless of
+        // scroll direction, since the whole estimated block was above it.
+        itemStart < scrollOffset :
+        // Re-measurement: only compensate an item that is ENTIRELY above the
+        // fold. An item that merely *spans* the fold (top above, bottom
+        // below — e.g. a streaming chat message growing at its bottom)
+        // changes size *below* the anchor point, so shifting scrollTop by the
+        // delta would drag the viewport downward on every growth (#1218).
+        // Also skip during backward scroll to avoid the "items jump while
+        // scrolling up" cascade.
+        itemStart + itemSize <= scrollOffset && this.scrollDirection !== "backward";
+        const shouldAdjustScroll = !isSmoothScroll(this.scrollState) && (this.shouldAdjustScrollPositionOnItemSizeChange !== void 0 ? this.shouldAdjustScrollPositionOnItemSizeChange(
+        // The callback expects a VirtualItem; build one lazily only
+        // when the consumer actually supplied a custom predicate.
+        this.measurementsCache[index] ?? {
+          index,
+          key,
+          start: itemStart,
+          size: cachedSize,
+          end: itemStart + cachedSize,
+          lane: 0
+        }, delta, this) : defaultShouldAdjust);
+        if (this.pendingMin === null || index < this.pendingMin) {
+          this.pendingMin = index;
+        }
+        this.itemSizeCache.set(key, size);
+        this.itemSizeCacheVersion++;
+        let adjustedSync = false;
+        if (!this._awaitingCommandReadBack()) {
+          if (wasAtEnd) {
+            adjustedSync = this.applyScrollAdjustment(this._getLayoutTotalSize() - prevTotalSize);
+          } else if (shouldAdjustScroll) {
+            adjustedSync = this.applyScrollAdjustment(delta);
+          }
+        }
+        if (this._resizeBatch) {
+          this._resizeBatch.notify = true;
+          (_c = this._resizeBatch).sync || (_c.sync = adjustedSync);
+          return;
+        }
+        this.notify(adjustedSync);
+        this._noteClampMax();
+        this._flushHoldIfReady(true);
+        this._retryClampedAdjustment();
+      }
+    };
+    this.getVirtualItems = utils.memo(() => [this.getVirtualIndexes(), this.getMeasurements(), this._holdOffset], (indexes, measurements, hold) => {
+      const virtualItems = [];
+      for (let k = 0, len = indexes.length; k < len; k++) {
+        const i = indexes[k];
+        const measurement = measurements[i];
+        virtualItems.push(hold === 0 ? measurement : {
+          ...measurement,
+          start: measurement.start - hold,
+          end: measurement.end - hold
+        });
+      }
+      return virtualItems;
+    }, {
+      key: 'production' !== "production" && "getVirtualItems",
+      debug: () => this.options.debug
+    });
+    this.getVirtualItemForOffset = offset => {
+      var _a;
+      const measurements = this.getMeasurements();
+      if (measurements.length === 0) {
+        return void 0;
+      }
+      const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+      const useFlat = this.options.lanes === 1 && flat != null;
+      const idx = findNearestBinarySearch(0, measurements.length - 1, useFlat ? i => flat[i * 2] : i => utils.notUndefined(measurements[i]).start, offset);
+      return utils.notUndefined(measurements[idx]);
+    };
+    this._noteClampMax = () => {
+      if (!this._awaitingCommandReadBack()) return;
+      const elementMax = this._elementMaxScrollOffset();
+      if (elementMax === null) return;
+      const write = this.pendingWrite;
+      const max = Math.max(elementMax, 0) + this._holdOffset;
+      if (max >= write.target) return;
+      const lowMaxes = write.lowMaxes ?? (write.lowMaxes = []);
+      if (lowMaxes[lowMaxes.length - 1] !== max) lowMaxes.push(max);
+    };
+    this.getMaxScrollOffset = () => (this._elementMaxScrollOffset() ?? 0) + this._holdOffset;
+    this._toLayoutOffset = elementOffset => {
+      var _a;
+      let offset = elementOffset + this._holdOffset;
+      if (((_a = this.pendingScrollAnchor) == null ? void 0 : _a.kind) === "anchor") {
+        offset += this.pendingScrollAnchor.delta;
+      }
+      return offset;
+    };
+    this._elementMaxScrollOffset = () => {
+      const el = this.scrollElement;
+      if (el === null) return null;
+      if ("scrollHeight" in el) {
+        return this.options.horizontal ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
+      }
+      if ("document" in el) {
+        const doc = el.document.documentElement;
+        return this.options.horizontal ? doc.scrollWidth - el.innerWidth : doc.scrollHeight - el.innerHeight;
+      }
+      return null;
+    };
+    this._momentumStop = null;
+    this._stopMomentum = done => {
+      const el = this.scrollElement;
+      const win = this.targetWindow;
+      if (el === null || win === null) return;
+      const scroller = "document" in el ? el.document.scrollingElement : el;
+      if (!(scroller == null ? void 0 : scroller.style)) return;
+      if (this._momentumStop) {
+        this._momentumStop.done = done;
+        return;
+      }
+      const {
+        style
+      } = scroller;
+      const property = this.options.horizontal ? "overflow-x" : "overflow-y";
+      const value = style.getPropertyValue(property);
+      const priority = style.getPropertyPriority(property);
+      style.setProperty(property, "hidden", "important");
+      const stop = {
+        // False when the app replaced the hidden value: the fling may not
+        // have stopped.
+        restore: () => {
+          if (style.getPropertyValue(property) !== "hidden" || style.getPropertyPriority(property) !== "important") {
+            return false;
+          }
+          style.setProperty(property, value, priority);
+          return true;
+        },
+        done
+      };
+      this._momentumStop = stop;
+      win.requestAnimationFrame(() => win.requestAnimationFrame(() => {
+        if (this._momentumStop !== stop) return;
+        this._momentumStop = null;
+        if (stop.restore()) stop.done();
+      }));
+    };
+    this._clampedBy = target => {
+      const elementMax = this._elementMaxScrollOffset();
+      if (elementMax === null) return null;
+      const maxAtWrite = elementMax + this._holdOffset;
+      return target > maxAtWrite + 0.5 ? {
+        target,
+        maxAtWrite
+      } : null;
+    };
+    this.getVirtualDistanceFromEnd = () => {
+      return Math.max(this._getLayoutTotalSize() - this.getSize() - this.getScrollOffset(), 0);
+    };
+    this.getDistanceFromEnd = () => {
+      return Math.max(this.getMaxScrollOffset() - this.getScrollOffset(), 0);
+    };
+    this.isAtEnd = (threshold = this.options.scrollEndThreshold) => {
+      return this.getDistanceFromEnd() <= threshold;
+    };
+    this.getOffsetForAlignment = (toOffset, align, itemSize = 0) => {
+      if (!this.scrollElement) return 0;
+      const size = this.getSize();
+      const scrollOffset = this.getScrollOffset();
+      if (align === "auto") {
+        align = toOffset >= scrollOffset + size ? "end" : "start";
+      }
+      if (align === "center") {
+        toOffset += (itemSize - size) / 2;
+      } else if (align === "end") {
+        toOffset -= size;
+      }
+      const maxOffset = this.getMaxScrollOffset();
+      return Math.max(Math.min(maxOffset, toOffset), 0);
+    };
+    this.getOffsetForIndex = (index, align = "auto") => {
+      index = Math.max(0, Math.min(index, this.options.count - 1));
+      const size = this.getSize();
+      const scrollOffset = this.getScrollOffset();
+      const item = this.measurementsCache[index];
+      if (!item) return;
+      if (align === "auto") {
+        if (item.end >= scrollOffset + size - this.options.scrollPaddingEnd) {
+          align = "end";
+        } else if (item.start <= scrollOffset + this.options.scrollPaddingStart) {
+          align = "start";
+        } else {
+          return [scrollOffset, align];
+        }
+      }
+      if (align === "end" && index === this.options.count - 1) {
+        const maxOffset = this.getMaxScrollOffset();
+        const toOffset2 = maxOffset - this.options.paddingEnd + this.options.scrollPaddingEnd;
+        return [Math.max(Math.min(toOffset2, maxOffset), 0), align];
+      }
+      const toOffset = align === "end" ? item.end + this.options.scrollPaddingEnd : item.start - this.options.scrollPaddingStart;
+      return [this.getOffsetForAlignment(toOffset, align, item.size), align];
+    };
+    this.scrollToOffset = (toOffset, {
+      align = "start",
+      behavior = "auto"
+    } = {}) => {
+      this._startScroll({
+        index: null,
+        align
+      }, this.getOffsetForAlignment(toOffset, align), behavior, "absolute");
+    };
+    this.scrollToIndex = (index, {
+      align: initialAlign = "auto",
+      behavior = "auto"
+    } = {}) => {
+      index = Math.max(0, Math.min(index, this.options.count - 1));
+      const offsetInfo = this.getOffsetForIndex(index, initialAlign);
+      if (!offsetInfo) return;
+      const [offset, align] = offsetInfo;
+      this._startScroll({
+        index,
+        align
+      }, offset, behavior, "absolute");
+    };
+    this.scrollBy = (delta, {
+      behavior = "auto"
+    } = {}) => {
+      const offset = this.getOffsetForAlignment((this.getCommandWrittenOffset() ?? this.getScrollOffset()) + delta, "start");
+      this._startScroll({
+        index: null,
+        align: "start"
+      }, offset, behavior, "relative");
+    };
+    this.scrollToEnd = ({
+      behavior = "auto"
+    } = {}) => {
+      if (this.options.count > 0) {
+        this._startScroll({
+          index: this.options.count - 1,
+          align: "end",
+          toEnd: true
+        }, Math.max(this.getMaxScrollOffset(), 0), behavior, "absolute");
+        return;
+      }
+      this.scrollToOffset(Math.max(this.getTotalSize() - this.getSize(), 0), {
+        behavior
+      });
+    };
+    this.cancelScroll = () => {
+      if (this.rafId != null && this.targetWindow) {
+        this.targetWindow.cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+      this.scrollState = null;
+    };
+    this.getTotalSize = () => Math.max(this._getLayoutTotalSize() - this._holdOffset, 0);
+    this._getLayoutTotalSize = () => {
+      var _a, _b;
+      const measurements = this.getMeasurements();
+      let end;
+      if (measurements.length === 0) {
+        end = this.options.paddingStart;
+      } else if (this.options.lanes === 1) {
+        const lastIdx = measurements.length - 1;
+        const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+        if (flat != null) {
+          end = flat[lastIdx * 2] + flat[lastIdx * 2 + 1];
+        } else {
+          end = ((_b = measurements[lastIdx]) == null ? void 0 : _b.end) ?? 0;
+        }
+      } else {
+        const endByLane = Array(this.options.lanes).fill(null);
+        let endIndex = measurements.length - 1;
+        while (endIndex >= 0 && endByLane.some(val => val === null)) {
+          const item = measurements[endIndex];
+          if (endByLane[item.lane] === null) {
+            endByLane[item.lane] = item.end;
+          }
+          endIndex--;
+        }
+        end = Math.max(...endByLane.filter(val => val !== null));
+      }
+      return Math.max(end - this.options.scrollMargin + this.options.paddingEnd, 0);
+    };
+    this.takeSnapshot = () => {
+      const snapshot = [];
+      if (this.itemSizeCache.size === 0) return snapshot;
+      const m = this.getMeasurements();
+      for (const item of m) {
+        if (item && this.itemSizeCache.has(item.key)) {
+          snapshot.push({
+            index: item.index,
+            key: item.key,
+            start: item.start,
+            size: item.size,
+            end: item.end,
+            lane: item.lane
+          });
+        }
+      }
+      return snapshot;
+    };
+    this._scrollToOffset = (offset, {
+      adjustments,
+      behavior
+    } = {}) => {
+      const write = {
+        target: offset + (adjustments ?? 0),
+        smooth: behavior === "smooth"
+      };
+      this.pendingWrite = write;
+      this.options.scrollToFn(offset - this._holdOffset, {
+        behavior,
+        adjustments
+      }, this);
+      return write;
+    };
+    this.getCommandWrittenOffset = () => this.scrollState !== null && this.pendingWrite !== null && !this.pendingWrite.smooth ? this.pendingWrite.target : null;
+    this._awaitingCommandReadBack = () => {
+      const writtenOffset = this.getCommandWrittenOffset();
+      return !(iosGesture.isIOSWebKit() && this._iosGesture.dragging()) && writtenOffset !== null && !utils.approxEqual(writtenOffset, this.getScrollOffset());
+    };
+    this._followOffsetTarget = delta => {
+      if (this.scrollState !== null && this.scrollState.index == null) {
+        this.scrollState.lastTargetOffset += delta;
+      }
+    };
+    this.measure = () => {
+      this.pendingMin = null;
+      this.itemSizeCache.clear();
+      this.laneAssignments.clear();
+      this.itemSizeCacheVersion++;
+      this.notify(false);
+    };
+    this.setOptions(opts);
+  }
+  /**
+   * @deprecated Always 0: a scroll correction is folded into `scrollOffset`
+   * at once, so there is never an outstanding adjustment to add to it. Read
+   * `scrollOffset` alone.
+   */
+  get scrollAdjustments() {
+    return 0;
+  }
+  // Returns `true` when it performed a synchronous `scrollTop` write this
+  // tick, `false` when the delta was zero or the write was deferred (iOS).
+  // `resizeItem` uses that to decide whether the follow-up `notify` must be
+  // synchronous so the grown transforms commit in the same paint (#1227).
+  applyScrollAdjustment(delta, behavior) {
+    if (delta === 0) return false;
+    if ('production' !== "production" && this.options.debug) {
+      console.info("correction", delta);
+    }
+    this._followOffsetTarget(delta);
+    if (!this._canWriteScroll()) {
+      this._holdOffset += delta;
+      if (this.scrollOffset !== null) this.scrollOffset += delta;
+      return true;
+    } else {
+      const offset = this.getScrollOffset();
+      this._clampedAdjustment = this._clampedBy(offset + delta);
+      const write = this._scrollToOffset(offset, {
+        adjustments: delta,
+        behavior
+      });
+      if (this.scrollOffset !== null) {
+        if (this.pendingWrite === write) this.scrollOffset += delta;
+        if (this.scrollOffset < 0) this.scrollOffset = 0;
+      }
+      return true;
+    }
+  }
+  scheduleScrollReconcile() {
+    if (!this.targetWindow) {
+      this.scrollState = null;
+      return;
+    }
+    if (this.rafId != null) return;
+    this.rafId = this.targetWindow.requestAnimationFrame(() => {
+      this.rafId = null;
+      this.reconcileScroll();
+    });
+  }
+  getScrollStateTarget(state) {
+    const offsetInfo = state.toEnd ? [Math.max(this.getMaxScrollOffset(), 0)] : state.index != null ? this.getOffsetForIndex(state.index, state.align) : void 0;
+    return offsetInfo ? offsetInfo[0] : state.lastTargetOffset;
+  }
+  reconcileScroll() {
+    if (!this.scrollState) return;
+    const el = this.scrollElement;
+    if (!el) return;
+    const MAX_RECONCILE_MS = 5e3;
+    if (this.now() - this.scrollState.startedAt > MAX_RECONCILE_MS) {
+      this.scrollState = null;
+      return;
+    }
+    if (this.scrollState.phase === "queued") {
+      this.scheduleScrollReconcile();
+      return;
+    }
+    this.getMeasurements();
+    const targetOffset = this.getScrollStateTarget(this.scrollState);
+    const STABLE_FRAMES = this.scrollState.index == null ? 1 : this.options.useAnimationFrameWithResizeObserver ? 3 : 2;
+    const targetChanged = targetOffset !== this.scrollState.lastTargetOffset;
+    if (!targetChanged && utils.approxEqual(targetOffset, this.getScrollOffset())) {
+      if (this.scrollState.phase === "smooth") {
+        this.scrollState.phase = "smoothLanded";
+      } else if (this.scrollState.phase === "smoothFinishing") {
+        this.scrollState.phase = "instant";
+      }
+      this.scrollState.stableFrames++;
+      if (this.scrollState.stableFrames >= STABLE_FRAMES) {
+        if (this.getScrollOffset() !== targetOffset) {
+          this._scrollToOffset(targetOffset, {
+            behavior: "auto"
+          });
+        }
+        this.scrollState = null;
+        return;
+      }
+    } else {
+      this.scrollState.stableFrames = 0;
+      if (targetChanged) {
+        const viewport = this.getSize() || 600;
+        const distance = Math.abs(targetOffset - this.getScrollOffset());
+        const keepSmooth = isSmoothScroll(this.scrollState) && distance > viewport;
+        this.scrollState.lastTargetOffset = targetOffset;
+        if (keepSmooth) {
+          this.scrollState.phase = "smooth";
+        } else if (this.scrollState.phase === "smooth") {
+          this.scrollState.phase = "smoothFinishing";
+        } else if (this.scrollState.phase === "smoothLanded") {
+          this.scrollState.phase = "instant";
+        }
+        this._scrollToOffset(targetOffset, {
+          behavior: keepSmooth ? "smooth" : "auto"
+        });
+      }
+    }
+    this.scheduleScrollReconcile();
+  }
+  // Every scroll command starts here: it becomes the in-flight command,
+  // writes its first target and leaves reconcile to retarget and retire it.
+  //
+  // Targets are layout offsets. A held correction is not dropped by a
+  // command: the write lands the element `_holdOffset` short of the target,
+  // under the rows exposed shifted by the same amount, and the flush moves
+  // both together once a write is possible.
+  //
+  // An index or end target that is already at its offset starts a smooth
+  // scroll as landed; an offset target never does, so its first scroll
+  // event is read as the user's (see the scroll handler in `_willUpdate`).
+  _startScroll(target, offset, behavior, kind) {
+    const tail = this._iosGesture.tail();
+    if (kind === "absolute" && tail !== null) {
+      if (tail === "fling" && iosGesture.iosMomentumOverridesWrites()) {
+        this._stopMomentum(() => {
+          const state = this.scrollState;
+          if ((state == null ? void 0 : state.phase) !== "queued" ||
+          // A finger came down: it owns the scroll until it lifts.
+          this._iosGesture.tail() !== "fling" ||
+          // In a bounce WebKit can drop the write (#1287): the tail
+          // decides, as without the stop. (Not `flingCaught`: our stop
+          // also ends the fling at speed, so a slow frame would read as
+          // a catch and the tail would drop the command.)
+          this._reportedOverscroll) {
+            return;
+          }
+          this._iosGesture.end();
+          this._flushHoldIfReady(true);
+          this._writeAwaitingCommand();
+        });
+        this.scrollState = {
+          ...target,
+          startedAt: this.now(),
+          lastTargetOffset: offset,
+          stableFrames: 0,
+          phase: "queued",
+          behavior,
+          samples: []
+        };
+        this.scheduleScrollReconcile();
+        return;
+      }
+      this._iosGesture.end();
+    }
+    this.scrollState = {
+      ...target,
+      startedAt: this.now(),
+      lastTargetOffset: offset,
+      stableFrames: 0,
+      behavior,
+      phase: initialScrollPhase(behavior, target.index != null && utils.approxEqual(offset, this.getScrollOffset()))
+    };
+    this._scrollToOffset(offset, {
+      behavior
+    });
+    this.scheduleScrollReconcile();
+  }
+}
+const findNearestBinarySearch = (low, high, getCurrentValue, value) => {
+  while (low <= high) {
+    const middle = (low + high) / 2 | 0;
+    const currentValue = getCurrentValue(middle);
+    if (currentValue < value) {
+      low = middle + 1;
+    } else if (currentValue > value) {
+      high = middle - 1;
+    } else {
+      return middle;
+    }
+  }
+  if (low > 0) {
+    return low - 1;
+  } else {
+    return 0;
+  }
+};
+function findNearestBinarySearchFlat(flat, high, value) {
+  let low = 0;
+  while (low <= high) {
+    const middle = (low + high) / 2 | 0;
+    const currentValue = flat[middle * 2];
+    if (currentValue < value) {
+      low = middle + 1;
+    } else if (currentValue > value) {
+      high = middle - 1;
+    } else {
+      return middle;
+    }
+  }
+  return low > 0 ? low - 1 : 0;
+}
+function calculateRangeImpl(measurements, outerSize, scrollOffset, lanes, flat) {
+  const lastIndex = measurements.length - 1;
+  if (measurements.length <= lanes) {
+    return {
+      startIndex: 0,
+      endIndex: lastIndex
+    };
+  }
+  if (lanes === 1 && flat !== null) {
+    const startIndex2 = findNearestBinarySearchFlat(flat, lastIndex, scrollOffset);
+    let endIndex2 = startIndex2;
+    const limit = scrollOffset + outerSize;
+    while (endIndex2 < lastIndex && flat[endIndex2 * 2] + flat[endIndex2 * 2 + 1] < limit) {
+      endIndex2++;
+    }
+    return {
+      startIndex: startIndex2,
+      endIndex: endIndex2
+    };
+  }
+  const getStart = index => measurements[index].start;
+  let startIndex = findNearestBinarySearch(0, lastIndex, getStart, scrollOffset);
+  let endIndex = startIndex;
+  if (lanes === 1) {
+    while (endIndex < lastIndex && measurements[endIndex].end < scrollOffset + outerSize) {
+      endIndex++;
+    }
+  } else if (lanes > 1) {
+    const endPerLane = Array(lanes).fill(0);
+    while (endIndex < lastIndex && endPerLane.some(pos => pos < scrollOffset + outerSize)) {
+      const item = measurements[endIndex];
+      endPerLane[item.lane] = item.end;
+      endIndex++;
+    }
+    const startPerLane = Array(lanes).fill(scrollOffset + outerSize);
+    while (startIndex >= 0 && startPerLane.some(pos => pos >= scrollOffset)) {
+      const item = measurements[startIndex];
+      startPerLane[item.lane] = item.start;
+      startIndex--;
+    }
+    startIndex = Math.max(0, startIndex - startIndex % lanes);
+    endIndex = Math.min(lastIndex, endIndex + (lanes - 1 - endIndex % lanes));
+  }
+  return {
+    startIndex,
+    endIndex
+  };
+}
+exports.approxEqual = utils.approxEqual;
+exports.debounce = utils.debounce;
+exports.memo = utils.memo;
+exports.notUndefined = utils.notUndefined;
+exports._resetIOSDetectionForTests = iosGesture._resetIOSDetectionForTests;
+exports.Virtualizer = Virtualizer;
+exports.defaultKeyExtractor = defaultKeyExtractor;
+exports.defaultRangeExtractor = defaultRangeExtractor;
+exports.elementScroll = elementScroll;
+exports.measureElement = measureElement;
+exports.observeElementOffset = observeElementOffset;
+exports.observeElementRect = observeElementRect;
+exports.observeWindowOffset = observeWindowOffset;
+exports.observeWindowRect = observeWindowRect;
+exports.windowScroll = windowScroll;
+  } },
+  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const React = require("react");
+const reactDom = require("react-dom");
+const virtualCore = require("@tanstack/virtual-core");
+function _interopNamespaceDefault(e) {
+  const n = Object.create(null, {
+    [Symbol.toStringTag]: {
+      value: "Module"
+    }
+  });
+  if (e) {
+    for (const k in e) {
+      if (k !== "default") {
+        const d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: () => e[k]
+        });
+      }
+    }
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+const React__namespace = /* @__PURE__ */_interopNamespaceDefault(React);
+const useIsomorphicLayoutEffect = typeof document !== "undefined" ? React__namespace.useLayoutEffect : React__namespace.useEffect;
+function useVirtualizerBase({
+  useFlushSync = true,
+  directDomUpdates = false,
+  directDomUpdatesMode = "transform",
+  ...options
+}) {
+  const rerender = React__namespace.useReducer(x => x + 1, 0)[1];
+  const directRef = React__namespace.useRef({
+    enabled: directDomUpdates,
+    mode: directDomUpdatesMode,
+    container: null,
+    lastSize: null,
+    // Keyed by the element itself so a remounted node (same key, new DOM
+    // node — e.g. when `enabled` is toggled off then on) is treated as fresh
+    // and gets its style written.
+    lastPositions: /* @__PURE__ */new WeakMap(),
+    prevRange: null
+  });
+  directRef.current.enabled = directDomUpdates;
+  directRef.current.mode = directDomUpdatesMode;
+  const measuringFromRef = React__namespace.useRef(false);
+  const applyContainerSize = instance2 => {
+    const state = directRef.current;
+    if (!state.enabled || !state.container) return;
+    const totalSize = instance2.getTotalSize();
+    if (totalSize !== state.lastSize) {
+      state.lastSize = totalSize;
+      const sizeAxis = instance2.options.horizontal ? "width" : "height";
+      state.container.style[sizeAxis] = `${totalSize}px`;
+    }
+  };
+  const applyItemPosition = (instance2, item, el) => {
+    const state = directRef.current;
+    const horizontal = !!instance2.options.horizontal;
+    const next = item.start - instance2.options.scrollMargin;
+    if (state.lastPositions.get(el) === next) return;
+    state.lastPositions.set(el, next);
+    if (state.mode === "transform") {
+      el.style.transform = horizontal ? `translate3d(${next}px, 0, 0)` : `translate3d(0, ${next}px, 0)`;
+    } else {
+      el.style[horizontal ? "left" : "top"] = `${next}px`;
+    }
+  };
+  const applyDirectStyles = instance2 => {
+    const state = directRef.current;
+    if (!state.enabled || !state.container) return;
+    applyContainerSize(instance2);
+    for (const item of instance2.getVirtualItems()) {
+      const el = instance2.elementsCache.get(item.key);
+      if (el) applyItemPosition(instance2, item, el);
+    }
+  };
+  const resolvedOptions = {
+    ...options,
+    onChange: (instance2, sync) => {
+      var _a;
+      const state = directRef.current;
+      let shouldRerender = true;
+      if (state.enabled) {
+        applyDirectStyles(instance2);
+        const range = instance2.range;
+        const prev = state.prevRange;
+        shouldRerender = !prev || prev.isScrolling !== instance2.isScrolling || prev.startIndex !== (range == null ? void 0 : range.startIndex) || prev.endIndex !== (range == null ? void 0 : range.endIndex);
+        if (shouldRerender) {
+          state.prevRange = range ? {
+            startIndex: range.startIndex,
+            endIndex: range.endIndex,
+            isScrolling: instance2.isScrolling
+          } : null;
+        }
+      }
+      if (shouldRerender) {
+        if (useFlushSync && sync && !measuringFromRef.current) {
+          reactDom.flushSync(rerender);
+        } else {
+          rerender();
+        }
+      }
+      (_a = options.onChange) == null ? void 0 : _a.call(options, instance2, sync);
+    }
+  };
+  const [instance] = React__namespace.useState(() => {
+    const v = new virtualCore.Virtualizer(resolvedOptions);
+    const measureElement = v.measureElement;
+    v.measureElement = node => {
+      measuringFromRef.current = true;
+      try {
+        measureElement(node);
+      } finally {
+        measuringFromRef.current = false;
+      }
+      const state = directRef.current;
+      if (node !== null && state.enabled && state.container) {
+        const item = v.measurementsCache[v.indexFromElement(node)];
+        if (item) applyItemPosition(v, item, node);
+      }
+    };
+    return Object.assign(v, {
+      containerRef: node => {
+        const state = directRef.current;
+        state.container = node;
+        state.lastSize = null;
+        if (node !== null) {
+          applyDirectStyles(v);
+        }
+      }
+    });
+  });
+  instance.setOptions(resolvedOptions);
+  useIsomorphicLayoutEffect(() => {
+    return instance._didMount();
+  }, []);
+  useIsomorphicLayoutEffect(() => {
+    applyContainerSize(instance);
+    return instance._willUpdate();
+  });
+  useIsomorphicLayoutEffect(() => {
+    applyDirectStyles(instance);
+  });
+  return instance;
+}
+function useVirtualizer(options) {
+  return useVirtualizerBase({
+    observeElementRect: virtualCore.observeElementRect,
+    observeElementOffset: virtualCore.observeElementOffset,
+    scrollToFn: virtualCore.elementScroll,
+    ...options
+  });
+}
+function useWindowVirtualizer(options) {
+  return useVirtualizerBase({
+    getScrollElement: () => typeof document !== "undefined" ? window : null,
+    observeElementRect: virtualCore.observeWindowRect,
+    observeElementOffset: virtualCore.observeWindowOffset,
+    scrollToFn: virtualCore.windowScroll,
+    initialOffset: () => typeof document !== "undefined" ? window.scrollY : 0,
+    ...options
+  });
+}
+exports.useVirtualizer = useVirtualizer;
+exports.useWindowVirtualizer = useWindowVirtualizer;
+Object.keys(virtualCore).forEach(k => {
+  if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
+    enumerable: true,
+    get: () => virtualCore[k]
+  });
+});
+  } },
+  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VIRTUAL_STICKY_CLASS = void 0;
+exports.VirtualGap = VirtualGap;
+exports.VirtualProbe = VirtualProbe;
+exports.gapPieces = gapPieces;
+exports.useVirtualizer = useVirtualizer;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useVirtualizer
+   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
+     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
+     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
+   Usage:
+     const v = useVirtualizer({ count: files.length });
+     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
+       <VirtualProbe />
+       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
+         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
+     </div>
+     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-table-row-height); overflow-y: auto; }
+   Props:
+     count: how many items there are
+     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
+       size; the token is the estimate for the items not rendered)
+     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
+     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
+     overscan: rows rendered beyond each edge of the view (default 4)
+     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
+     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
+     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
+       grid) not rendered
+     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
+     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
+       first in the viewport)
+   Behavior:
+     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
+     name it (aria-label) and give it its role (list, grid, listbox).
+     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
+     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
+     scroll anchoring keeps the content still while gaps replace items of another size.
+     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
+     "12 of 4,000" even though only a few are in the page.
+   Notes:
+     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
+     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
+     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
+     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
+*/
+
+const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
+
+// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
+function gapPieces(count) {
+  const out = [];
+  let n = Math.max(0, Math.floor(count));
+  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
+    out.push(p);
+    n -= p;
+  }
+  return out;
+}
+function VirtualGap({
+  count,
+  axis = 'y'
+}) {
+  if (!count) return null;
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-gap',
+    'data-plx-axis': axis,
+    'aria-hidden': 'true'
+  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
+    key: i,
+    className: 'plx-virtual-gap__piece',
+    'data-plx-span': String(p)
+  })));
+}
+function VirtualProbe({
+  axis = 'y'
+}) {
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-probe',
+    'data-plx-axis': axis,
+    'data-plx-virtual-probe': '',
+    'aria-hidden': 'true'
+  });
+}
+function useVirtualizer({
+  count = 0,
+  mode = 'fixed',
+  axis = 'y',
+  grid = false,
+  overscan = 4,
+  sticky
+} = {}) {
+  const viewportRef = _react.default.useRef(null);
+  const [view, setView] = _react.default.useState({
+    offset: 0,
+    size: 0,
+    pitch: 0,
+    columns: 1
+  });
+  const [focused, setFocused] = _react.default.useState(-1);
+  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
+  const shown = _react.default.useRef({
+    start: 0,
+    end: 0
+  }); // the rows rendered last
+  const horizontal = axis === 'x';
+
+  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
+  const measure = _react.default.useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
+    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
+    let columns = 1;
+    if (grid) {
+      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
+      if (items.length) {
+        const top = items[0].offsetTop;
+        let n = 0;
+        while (n < items.length && items[n].offsetTop === top) n++;
+        // no wrap seen while more items exist: guess wider, render more and look again
+        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
+      }
+    }
+    if (mode === 'measured') {
+      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
+        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
+      });
+    }
+    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
+    const size = horizontal ? el.clientWidth : el.clientHeight;
+    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
+      offset,
+      size,
+      pitch,
+      columns
+    });
+  }, [horizontal, grid, mode, count, view.columns]);
+  _react.default.useLayoutEffect(() => {
+    measure();
+  });
+  _react.default.useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return undefined;
+    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
+    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
+    const onScroll = () => measure();
+    const onFocus = e => {
+      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
+      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
+    };
+    const onBlur = e => {
+      if (!el.contains(e.relatedTarget)) setFocused(-1);
+    };
+    el.addEventListener('scroll', onScroll, {
+      passive: true
+    });
+    el.addEventListener('focusin', onFocus);
+    el.addEventListener('focusout', onBlur);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('focusin', onFocus);
+      el.removeEventListener('focusout', onBlur);
+      if (ro) ro.disconnect();
+    };
+  }, [measure]);
+  const columns = grid ? Math.max(1, view.columns) : 1;
+  const rows = Math.ceil(count / columns);
+  const pitch = view.pitch || 1;
+  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
+  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
+  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
+  let first;
+  const last = shown.current;
+  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
+    let pos = last.start * pitch,
+      i = last.start;
+    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
+      pos += sizes.current.get(i) || pitch;
+      i++;
+    }
+    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
+    first = Math.min(rows, i);
+  } else first = Math.min(rows, Math.floor(view.offset / pitch));
+  let fill = 0,
+    covered = 0;
+  const target = view.size || pitch * 10;
+  while (first + fill < rows && covered < target) {
+    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
+    fill++;
+  }
+  const startRow = Math.max(0, first - overscan);
+  const endRow = Math.min(rows, first + fill + overscan); // exclusive
+  const start = startRow * columns,
+    end = Math.min(count, endRow * columns);
+  shown.current = {
+    start: startRow,
+    end: endRow
+  };
+
+  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
+  const pinned = [];
+  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
+  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
+  if (header !== undefined && !grid) pinned.push(header);
+  const segments = [];
+  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
+  let at = 0;
+  const pushRows = (from, to) => {
+    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
+      key: 'i' + i,
+      index: i
+    });
+  };
+  const pushGap = (from, to) => {
+    if (to > from) segments.push({
+      key: 'g' + from,
+      gap: true,
+      count: to - from
+    });
+  };
+  rowsOut.filter(r => r < startRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, startRow);
+  pushRows(startRow, endRow);
+  at = endRow;
+  rowsOut.filter(r => r >= endRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, rows);
+  const itemProps = _react.default.useCallback(index => ({
+    'data-plx-virtual-index': index,
+    'aria-posinset': index + 1,
+    'aria-setsize': count
+  }), [count]);
+  const scrollToIndex = _react.default.useCallback(index => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const offset = Math.floor(index / columns) * pitch;
+    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
+    measure();
+  }, [columns, pitch, horizontal, measure]);
+  return {
+    viewportRef,
+    segments,
+    itemProps,
+    scrollToIndex,
+    range: {
+      start,
+      end
+    },
+    columns
+  };
+}
+  } },
+  "platform/components/DataTableNext/environment.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokenPixels = tokenPixels;
+/* Plenix · DataTableNext environment
+   Summary: Engine-independent CSS token resolution.
+   Usage: Internal to DataTableNext; no legacy grid modules are imported.
+   Props: A token/length and optional element.
+   Behavior: Reads dimensions from inherited CSS tokens.
+   Notes: Contains no engine loader or runtime stylesheet requests. */
+function tokenPixels(token, el) {
+  if (!token || typeof document === 'undefined') return 0;
+  const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());
+  if (!m) {
+    if (typeof token === 'number' || /^\d+(?:\.\d+)?px$/.test(String(token))) return parseFloat(token) || 0;
+    const host = el || document.documentElement,
+      doc = host.ownerDocument || document,
+      win = doc.defaultView;
+    if (!win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
+    // Measure a caller CSS length in the container's inherited font and available width, without an inline style or a retained rule.
+    const sheet = new win.CSSStyleSheet(),
+      before = doc.adoptedStyleSheets,
+      probe = doc.createElement('span');
+    sheet.replaceSync('.plx-data-table__length-probe{inline-size:' + String(token) + ';}');
+    probe.className = 'plx-data-table__length-probe';
+    try {
+      doc.adoptedStyleSheets = before.concat(sheet);
+      host.appendChild(probe);
+      return probe.getBoundingClientRect().width || 0;
+    } finally {
+      probe.remove();
+      doc.adoptedStyleSheets = before;
+    }
+  }
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(m[1] || m[2]).trim();
+  if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+  return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
+}
+  } },
+  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Popover = Popover;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _floating = require("../../utils/floating.js");
+var _Button = require("../Button/Button.jsx");
+var _Sheet = require("../Sheet/Sheet.jsx");
+var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
+   Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
+     a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
+     dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
+     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
+   Usage:
+     <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
+     <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
+     <Popover trigger={<Link href="/people/maya">Maya Chen</Link>} triggerOn="hover" label="Maya Chen" size="sm">…</Popover>
+     <Popover trigger={target} triggerOn="manual" open={open} onOpenChange={setOpen} arrow placement="bottom">…</Popover>
+   Props:
+     trigger: the element that opens it (one element; it gets the ref, and for a click popover aria-haspopup="dialog",
+       aria-expanded and aria-controls)
+     triggerOn: "click" (default: click, Enter or Space on the trigger) | "hover" (a hover card: opens after
+       --plx-comp-popover-hover-open-delay on pointer hover and on keyboard focus, and stays open while the pointer is in
+       it) | "manual" (only the open prop opens it: a teaching bubble pointing at its target)
+     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
+     onOpenChange(open): runs when it opens or closes
+     title: the title in its header; it names the popover
+     label: the accessible name when there is no title
+     footer: a row of actions at the bottom, at the end edge
+     closeButton: a Close button at the end of the header (default false; Escape and a click outside always close it)
+     placement: where it sits against the trigger: "bottom-start" (default) | "bottom" | "bottom-end" | "top" | "top-start"
+       | "top-end" | "start" | "start-top" | "start-bottom" | "end" | "end-top" | "end-bottom" (start and end follow the
+       writing direction)
+     size: "md" (default; 320px wide) | "sm" (240px) | "lg" (400px) | "auto" (as wide as its content); never wider than
+       the window less its margins
+     arrow: a caret on the edge that faces the trigger, pointing at it (default false)
+     role: "dialog" (default) | "alertdialog" (a question that needs an answer: Popconfirm) | null (a disclosure panel of
+       links, MegaMenu: no popup role, and the trigger is a plain disclosure button with aria-expanded)
+     initialFocus: a ref to the element that takes focus when it opens (default: the first control in its body, else its
+       first control (Close, a footer action), else the popover)
+     focusOnOpen: focus moves into it when it opens (default true for a click popover, false for hover and manual)
+     sheetOnNarrow: at the Narrow window class a click popover opens as a bottom Sheet instead (default true; a hover
+       card never does)
+     strings: the words it shows and announces, for other languages: { close: "Close" }
+     className: more classes on the popover
+     children: the content
+     Other props pass through to the popover's <div> (aria-describedby).
+   Behavior:
+     Click: the trigger opens and closes it; focus moves into it (initialFocus, else the first control in its body, else
+       its first control, else the popover) and returns to the trigger when Escape closes it, or when it closes while
+       focus is inside it (Close, an action). Escape, a click outside, and Tab out of it close it. It is not modal: the
+       page stays usable and focus is not trapped.
+     Hover: opens after the open delay on pointer hover, and at once on keyboard focus of the trigger; closes
+       --plx-comp-popover-hover-close-delay after the pointer leaves both, on blur, and with Escape. Touch has no hover:
+       a tap follows the trigger (a link), so a hover card holds nothing that is only there.
+     Manual: opens and closes only by the open prop (a click outside does not close it); Escape asks to close it
+       (onOpenChange(false)) and returns focus to the trigger.
+     Placement: by CSS anchor positioning it flips to the other side and shifts its alignment to stay in the window, and
+       follows the trigger on scroll and resize; without it, it is drawn inside the trigger's wrapper on its side. With an
+       arrow it keeps its side and alignment, so the arrow always points at the trigger.
+     At the Narrow window class (under --plx-sys-shell-phone-below) a click popover is a bottom Sheet: the same title,
+       content and footer, modal, with the sheet's own close.
+   Notes:
+     One popover at a time; never a popover inside a popover. A hint of a few words is a Tooltip; a decision that blocks
+       the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
+     ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
+*/
+const STRINGS = {
+  close: 'Close'
+};
+const SIZES = ['sm', 'md', 'lg', 'auto'];
+
+// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+function Popover({
+  trigger,
+  triggerOn = 'click',
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  title,
+  label,
+  footer,
+  closeButton = false,
+  placement = 'bottom-start',
+  size = 'md',
+  arrow = false,
+  role = 'dialog',
+  initialFocus,
+  focusOnOpen,
+  sheetOnNarrow = true,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Popover', {
+    size
+  }, {
+    size: ['md', 'sm', 'lg', 'auto']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-popover');
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(!!defaultOpen);
+  const open = controlled ? !!openProp : own;
+  const setOpen = _react.default.useCallback(v => {
+    if (!controlled) setOwn(v);
+    if (onOpenChange) onOpenChange(v);
+  }, [controlled, onOpenChange]);
+  const wrap = _react.default.useRef(null),
+    panel = _react.default.useRef(null),
+    anchor = _react.default.useRef(null),
+    timer = _react.default.useRef(null);
+  const hover = triggerOn === 'hover',
+    click = triggerOn === 'click';
+  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
+  const asSheet = click && sheetOnNarrow && narrow;
+  const floating = open && !asSheet;
+  const where = _floating.PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const {
+    placement: used
+  } = (0, _floating.useFloating)(anchor, panel, {
+    open: floating,
+    placement: where,
+    offset: arrow ? 'md' : 'xs',
+    flip: !arrow,
+    shift: !arrow
+  });
+  const [side, align] = used.split('-');
+  const close = _react.default.useCallback(refocus => {
+    setOpen(false);
+    if (refocus && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [setOpen]);
+  (0, _layer.useLayer)(panel, floating, {
+    onEscape: () => close(!hover)
+  });
+
+  // into the top layer as soon as it is in the page, before focus moves in
+  _react.default.useLayoutEffect(() => {
+    const el = panel.current;
+    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [floating]);
+  // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
+  const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
+  _react.default.useEffect(() => {
+    if (!floating) return undefined;
+    if (takeFocus) {
+      const root = panel.current;
+      const wanted = initialFocus && initialFocus.current;
+      const first = wanted || (0, _layer.focusables)(root.querySelector('.plx-popover__body'))[0] || (0, _layer.focusables)(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    if (!click) return undefined;
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', outside);
+    return () => document.removeEventListener('mousedown', outside);
+  }, [floating]);
+  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
+  // closed while focus was inside it (Close, an action, the open prop): focus goes back to the trigger, not the page
+  const inside = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (floating || !inside.current) return;
+    inside.current = false;
+    const a = document.activeElement;
+    if ((!a || a === document.body) && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [floating]);
+
+  // the hover card's timers: open after the open delay, close after the close delay (cancelled by coming back)
+  const later = v => {
+    clearTimeout(timer.current);
+    const el = wrap.current;
+    timer.current = setTimeout(() => setOpen(v), ms(el, v ? '--plx-comp-popover-hover-open-delay' : '--plx-comp-popover-hover-close-delay'));
+  };
+  const hoverProps = hover ? {
+    onPointerEnter: e => {
+      if (e.pointerType !== 'touch') later(true);
+    },
+    onPointerLeave: e => {
+      if (e.pointerType !== 'touch') later(false);
+    },
+    onFocus: e => {
+      if (e.target === anchor.current && e.target.matches(':focus-visible')) {
+        clearTimeout(timer.current);
+        setOpen(true);
+      }
+    },
+    onBlur: e => {
+      if (!wrap.current.contains(e.relatedTarget)) {
+        clearTimeout(timer.current);
+        setOpen(false);
+      }
+    }
+  } : click ? {
+    // Tab out of the popover (or the trigger) to somewhere else closes it; a click on its text does not (no related target)
+    onBlur: e => {
+      if (floating && e.relatedTarget && !wrap.current.contains(e.relatedTarget)) setOpen(false);
+    } // the sheet is a portal: not while it shows
+  } : {};
+  const child = _react.default.Children.only(trigger);
+  const triggerEl = /*#__PURE__*/_react.default.cloneElement(child, click ? {
+    ref: anchor,
+    'aria-haspopup': role ? 'dialog' : undefined,
+    'aria-expanded': open,
+    'aria-controls': open ? id : undefined,
+    expanded: undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  } : {
+    ref: anchor
+  });
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const titleId = id + 't';
+  const header = title || closeButton ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__header"
+  }, title ? /*#__PURE__*/_react.default.createElement("h2", {
+    id: titleId,
+    className: "plx-popover__title"
+  }, title) : null, closeButton ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.close,
+    className: "plx-popover__close",
+    onClick: () => close(true)
+  }) : null) : null;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    ref: wrap,
+    className: "plx-popover-anchor"
+  }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: panel,
+    id: id,
+    role: role || undefined,
+    "aria-labelledby": role && title ? titleId : undefined,
+    "aria-label": role && !title ? label : undefined,
+    tabIndex: -1,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    "data-plx-popover-side": side,
+    "data-plx-popover-align": align || 'center',
+    className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
+    onFocus: () => {
+      inside.current = true;
+    },
+    onBlur: e => {
+      inside.current = !!(panel.current && panel.current.contains(e.relatedTarget));
+    }
+  }, rest), arrow ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-popover__arrow",
+    "aria-hidden": "true"
+  }) : null, header, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__body"
+  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__footer"
+  }, footer) : null) : null, asSheet ? /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
+    open: open,
+    onClose: () => setOpen(false),
+    title: title || label,
+    footer: footer,
+    form: "bottom",
+    initialFocus: initialFocus,
+    closeLabel: t.close
+  }, children) : null);
+}
+  } },
+  "platform/components/DataTableNext/state.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.normalizeSort = void 0;
+exports.opening = opening;
+exports.readView = readView;
+exports.visibilityOf = exports.valueAt = exports.recordKey = void 0;
+exports.writeView = writeView;
+/* Plenix · DataTableNext state
+   Summary: Opening views and dimensions for the independent TanStack trial.
+   Usage: Internal to DataTableNext.
+   Props: Existing DataTable view props and storageKey.
+   Behavior: Reads saved state before the first render; no post-build restoration.
+   Notes: Canonical row keys preserve the distinction between numeric and string IDs. */
+const recordKey = value => typeof value + ':' + String(value);
+exports.recordKey = recordKey;
+const normalizeSort = value => (Array.isArray(value) ? value : []).filter(x => x && (x.field || x.column)).map(x => ({
+  id: x.field || x.column,
+  desc: x.dir === 'desc'
+}));
+exports.normalizeSort = normalizeSort;
+function readView(key) {
+  try {
+    return key ? JSON.parse(localStorage.getItem('plx-data-table:' + key) || 'null') : null;
+  } catch (e) {
+    return null;
+  }
+}
+function writeView(key, view) {
+  if (key) try {
+    localStorage.setItem('plx-data-table:' + key, JSON.stringify(view));
+  } catch (e) {/* disabled storage */}
+}
+const visibilityOf = hidden => Object.fromEntries((Array.isArray(hidden) ? hidden : []).map(field => [field, false]));
+exports.visibilityOf = visibilityOf;
+const valueAt = (row, field) => String(field).split('.').reduce((value, key) => value == null ? undefined : value[key], row);
+exports.valueAt = valueAt;
+function opening(props) {
+  const saved = readView(props.storageKey) || {},
+    options = props.options || {},
+    known = new Set(props.columns.map(c => c.field));
+  const fields = values => Array.isArray(values) ? values.filter(f => known.has(f)) : undefined;
+  const widths = saved.widths && typeof saved.widths === 'object' ? Object.fromEntries(Object.entries(saved.widths).filter(([key, value]) => known.has(key) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0)) : {};
+  const step = ['short', 'medium', 'tall', 'extra-tall'].includes(saved.rowHeight) ? saved.rowHeight : props.rowHeight || 'short';
+  return {
+    sorting: normalizeSort(props.sort?.length ? props.sort : saved.sort || options.initialSort),
+    order: fields(props.columnOrder) || fields(saved.order) || props.columns.map(c => c.field),
+    visibility: visibilityOf(fields(props.hiddenColumns) || fields(saved.hidden)),
+    widths,
+    groupBy: props.groupBy ?? saved.groupBy ?? options.groupBy ?? false,
+    collapsed: Array.isArray(saved.collapsed) ? saved.collapsed : [],
+    rowHeight: step,
+    wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false
+  };
+}
+  } },
+  "platform/components/DataTableNext/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CellValue = CellValue;
+exports.byteFilter = byteFilter;
+exports.listFilter = listFilter;
+exports.textFilter = textFilter;
+exports.valueText = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _Tag = require("../Tag/Tag.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DataTableNext cells
+   Summary: Existing Platform rich-cell parts rendered directly by React.
+   Usage: <CellValue column={column} value={value} />
+   Props: A column descriptor and its raw value; custom renderers stay with the table's cell adapter.
+   Behavior: Formats bytes and renders deleted values, avatars, tags and status badges with shared CSS.
+   Notes: Imports no legacy grid implementation. Data still sorts and filters by its raw value. */
+
+const valueText = value => value == null ? '' : Array.isArray(value) ? value.map(valueText).join(', ') : typeof value === 'object' ? String(value.label ?? value.name ?? '') : String(value);
+exports.valueText = valueText;
+function textFilter(row, field, search) {
+  return valueText(row.getValue(field)).toLocaleLowerCase().includes(String(search ?? '').toLocaleLowerCase());
+}
+function listFilter(row, field, search) {
+  const value = row.getValue(field);
+  return [].concat(value ?? []).some(item => valueText(item).toLocaleLowerCase() === String(search ?? '').toLocaleLowerCase());
+}
+function byteFilter(row, field, search) {
+  if (search == null || search === '') return true;
+  const match = /^\s*(>=|<=|>|<|=|!=)?\s*(-?\d+(?:\.\d+)?)\s*(B|[KMGT]i?B)?\s*$/i.exec(String(search));
+  if (!match) return false;
+  const raw = row.getValue(field);
+  if (raw === null || raw === undefined || raw === '') return false;
+  const unit = (match[3] || 'B').toUpperCase(),
+    power = unit === 'B' ? 0 : ['K', 'M', 'G', 'T'].indexOf(unit[0]) + 1;
+  const amount = Number(match[2]) * Math.pow(unit.includes('I') ? 1024 : 1000, power),
+    value = Number(row.getValue(field));
+  if (!Number.isFinite(value)) return false;
+  switch (match[1] || '=') {
+    case '>':
+      return value > amount;
+    case '>=':
+      return value >= amount;
+    case '<':
+      return value < amount;
+    case '<=':
+      return value <= amount;
+    case '!=':
+      return value !== amount;
+    default:
+      return value === amount;
+  }
+}
+function CellValue({
+  column,
+  value,
+  strings
+}) {
+  const kinds = [].concat(column.kind || []);
+  if (value === null || value === undefined || value === '') return /*#__PURE__*/_react.default.createElement("span", {
+    className: 'plx-data-table__value' + (kinds.includes('deleted') ? ' plx-data-table__deleted' : '')
+  }, column.empty ?? (kinds.includes('deleted') ? strings?.deleted || 'Deleted' : ''));
+  if (column.type === 'bytes') return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-data-table__value"
+  }, (0, _format.formatBytes)(Number(value)));
+  if (kinds.includes('deleted')) return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-data-table__value plx-data-table__deleted"
+  }, valueText(value));
+  if (kinds.includes('avatar-name')) {
+    const person = typeof value === 'object' ? value : {
+        name: String(value)
+      },
+      name = person.name || person.label || '';
+    return /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-data-table__rich"
+    }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+      name: name,
+      src: person.src,
+      size: "2xs",
+      "aria-hidden": "true"
+    }), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-data-table__value"
+    }, name));
+  }
+  if (kinds.includes('tags')) return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-data-table__rich"
+  }, [].concat(value).map((tag, i) => /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
+    key: i,
+    category: typeof tag === 'object' ? tag.category : undefined
+  }, typeof tag === 'object' ? tag.label : String(tag))));
+  if (kinds.includes('badge')) {
+    const badge = typeof value === 'object' ? value : {
+      label: String(value)
+    };
+    return /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+      tone: badge.tone,
+      icon: badge.icon || 'circle-info'
+    }, badge.label);
+  }
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-data-table__value"
+  }, valueText(value));
+}
+  } },
+  "platform/components/DataTableNext/adapter.js": { deps: {"./state.js":"platform/components/DataTableNext/state.js","./cells.jsx":"platform/components/DataTableNext/cells.jsx"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createAdapter = createAdapter;
+var _state = require("./state.js");
+var _cells = require("./cells.jsx");
+/* Plenix · DataTableNext compatibility
+   Summary: The row, cell and column methods used by current Plenix application callbacks.
+   Usage: Internal to DataTableNext; onReady receives the table adapter.
+   Props: React-owned model access and mutations, always read through a live ref.
+   Behavior: Adapts records without exposing a second imperative renderer.
+   Notes: The adapter remains private; public callbacks receive records directly. */
+
+function createAdapter(current) {
+  const row = key => {
+    const captured = current.current.recordsByKey.get(key);
+    const data = () => current.current.recordsByKey.get(key) || captured;
+    return {
+      getData: data,
+      getIndex: () => data()?.[current.current.index],
+      getTable: () => api,
+      getElement: () => current.current.rowElements.get(key),
+      isSelected: () => !!current.current.selection[key],
+      select: () => current.current.pick(key, true),
+      deselect: () => current.current.pick(key, false),
+      toggleSelect: () => current.current.pick(key, !current.current.selection[key]),
+      update: patch => current.current.updateRecord(key, record => ({
+        ...record,
+        ...patch
+      })),
+      delete: () => current.current.updateRecord(key, () => null),
+      treeExpand: () => current.current.table.getCoreRowModel().rowsById[key]?.toggleExpanded(true),
+      treeCollapse: () => current.current.table.getCoreRowModel().rowsById[key]?.toggleExpanded(false),
+      treeToggle: () => current.current.table.getCoreRowModel().rowsById[key]?.toggleExpanded(),
+      getTreeChildren: () => (data()?.[current.current.childField] || []).map(record => row((0, _state.recordKey)(record[current.current.index]))),
+      getCell: field => cell(key, field),
+      getCells: () => current.current.fields.map(c => cell(key, c.field))
+    };
+  };
+  const column = field => ({
+    getField: () => field,
+    getDefinition: () => current.current.fields.find(c => c.field === field),
+    getTable: () => api,
+    getElement: () => current.current.headerElements.get(field),
+    getWidth: () => current.current.table.getColumn(field)?.getSize(),
+    isVisible: () => current.current.table.getColumn(field)?.getIsVisible(),
+    show: () => current.current.table.getColumn(field)?.toggleVisibility(true),
+    hide: () => current.current.table.getColumn(field)?.toggleVisibility(false),
+    setWidth: width => current.current.resize(field, width),
+    move: (target, after) => current.current.move(field, typeof target === 'string' ? target : target.getField(), after)
+  });
+  const cell = (key, field) => ({
+    getData: () => row(key).getData(),
+    getValue: () => (0, _state.valueAt)(row(key).getData(), field),
+    setValue: value => current.current.commitEdit(key, field, value),
+    edit: () => current.current.setEditing({
+      key,
+      field,
+      value: (0, _state.valueAt)(row(key).getData(), field)
+    }),
+    cancelEdit: () => current.current.setEditing(null),
+    getRow: () => row(key),
+    getColumn: () => column(field),
+    getField: () => field,
+    getTable: () => api,
+    getElement: () => current.current.rowElements.get(key)?.querySelector('[data-plx-field="' + CSS.escape(field) + '"]')
+  });
+  const group = value => ({
+    getKey: () => value.value,
+    getField: () => value.field,
+    getRows: () => value.rows.map(record => row(record.id)),
+    getSubGroups: () => value.groups.map(group),
+    getVisibility: () => !current.current.collapsed.has(value.id),
+    show: () => current.current.toggleGroup(value.id, true),
+    hide: () => current.current.toggleGroup(value.id, false)
+  });
+  const api = {
+    getData: active => active ? current.current.table.getPrePaginationRowModel().flatRows.map(r => r.original) : current.current.data.slice(),
+    getRows: active => api.getData(active).map(record => row((0, _state.recordKey)(record[current.current.index]))),
+    getDataCount: active => api.getData(active).length,
+    setData: records => current.current.replaceData(records),
+    replaceData: records => current.current.replaceData(records),
+    updateData: patches => Promise.all(patches.map(patch => current.current.updateRecord((0, _state.recordKey)(patch[current.current.index]), record => ({
+      ...record,
+      ...patch
+    })))),
+    getRow: id => current.current.recordsByKey.has((0, _state.recordKey)(id)) ? row((0, _state.recordKey)(id)) : false,
+    getColumns: () => current.current.table.getAllLeafColumns().filter(c => !c.id.startsWith('__')).map(c => column(c.id)),
+    getColumn: column,
+    getSelectedData: () => current.current.data.filter(r => current.current.selection[(0, _state.recordKey)(r[current.current.index])]),
+    getSelectedRows: () => api.getSelectedData().map(r => row((0, _state.recordKey)(r[current.current.index]))),
+    getSorters: () => current.current.sorting.map(s => ({
+      field: s.id,
+      dir: s.desc ? 'desc' : 'asc',
+      column: column(s.id)
+    })),
+    setSort: (field, dir) => current.current.setSorting(Array.isArray(field) ? field.map(s => ({
+      id: s.column || s.field,
+      desc: s.dir === 'desc'
+    })) : [{
+      id: field,
+      desc: dir === 'desc'
+    }]),
+    addFilter: (field, type, value) => current.current.table.getColumn(field)?.setFilterValue(value),
+    clearFilter: () => current.current.table.setColumnFilters([]),
+    setFilter: filters => current.current.table.setColumnFilters(filters.map(filter => ({
+      id: filter.field,
+      value: filter.value
+    }))),
+    getFilters: () => current.current.table.getState().columnFilters.map(filter => ({
+      field: filter.id,
+      type: 'like',
+      value: filter.value
+    })),
+    clearSort: () => current.current.setSorting([]),
+    selectRow: id => current.current.pick((0, _state.recordKey)(id), true),
+    deselectRow: id => current.current.pick((0, _state.recordKey)(id), false),
+    setPage: page => current.current.setPage(page - 1),
+    getPage: () => current.current.page + 1,
+    setPageSize: size => current.current.setPageSize(size),
+    getPageSize: () => current.current.pageSize,
+    scrollToRow: async id => {
+      const at = current.current.model.findIndex(r => r.id === (0, _state.recordKey)(id));
+      if (at < 0) return;
+      if (current.current.virtual.options.enabled) current.current.virtual.scrollToIndex(at, {
+        align: 'auto'
+      });else current.current.rowElements.get((0, _state.recordKey)(id))?.scrollIntoView({
+        block: 'nearest'
+      });
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    },
+    on: (name, fn) => {
+      const listeners = current.current.listeners;
+      if (!listeners.has(name)) listeners.set(name, new Set());
+      listeners.get(name).add(fn);
+    },
+    off: (name, fn) => current.current.listeners.get(name)?.delete(fn),
+    getGroups: () => current.current.groups.map(group),
+    setGroupBy: value => current.current.changeGroups(value),
+    copyToClipboard: () => {
+      const fields = current.current.table.getVisibleLeafColumns();
+      const text = [fields.map(c => c.columnDef.meta.title || c.id), ...api.getData(true).map(record => fields.map(c => (0, _state.valueAt)(record, c.id)))].map(values => values.map(value => (0, _cells.valueText)(value).replace(/[\t\r\n]/g, ' ')).join('\t')).join('\n');
+      return navigator.clipboard.writeText(text);
+    },
+    print: () => window.print(),
+    options: {},
+    row,
+    column,
+    cell
+  };
+  return api;
+}
+  } },
+  "platform/components/DataTableNext/records.js": { deps: {"./state.js":"platform/components/DataTableNext/state.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.changeRecord = changeRecord;
+exports.groupDisplay = groupDisplay;
+exports.groupSummary = groupSummary;
+exports.groupedRows = groupedRows;
+exports.recordsOf = recordsOf;
+exports.setField = setField;
+var _state = require("./state.js");
+/* Plenix · DataTableNext records
+   Summary: Canonical records, immutable edits and multi-membership grouping for the independent renderer.
+   Usage: Internal to DataTableNext.
+   Props: TanStack rows, column descriptors and grouping fields.
+   Behavior: Repeated memberships share one canonical record; group display instances have separate keys.
+   Notes: No legacy engine models or renderer code are imported. */
+
+function recordsOf(rows, index = 'id', children = null) {
+  const found = new Map(),
+    visited = new Set();
+  function visit(list) {
+    for (const record of list || []) {
+      if (!record || visited.has(record)) continue;
+      visited.add(record);
+      const key = (0, _state.recordKey)(record[index]);
+      if (!found.has(key)) found.set(key, record);
+      if (children && Array.isArray(record[children])) visit(record[children]);
+    }
+  }
+  visit(rows);
+  return [...found.values()];
+}
+function setField(record, field, value) {
+  const path = String(field).split('.');
+  if (path.some(part => ['__proto__', 'constructor', 'prototype'].includes(part))) throw Error('Unsupported field path');
+  const result = {
+    ...record
+  };
+  let at = result,
+    original = record;
+  path.forEach((part, i) => {
+    if (i === path.length - 1) at[part] = value;else {
+      at[part] = Array.isArray(original && original[part]) ? original[part].slice() : {
+        ...(original && original[part])
+      };
+      at = at[part];
+      original = original && original[part];
+    }
+  });
+  return result;
+}
+function changeRecord(rows, key, change, index = 'id', children = null) {
+  return rows.flatMap(record => {
+    if ((0, _state.recordKey)(record[index]) === key) {
+      const next = change(record);
+      return next == null ? [] : [next];
+    }
+    if (children && Array.isArray(record[children])) return [{
+      ...record,
+      [children]: changeRecord(record[children], key, change, index, children)
+    }];
+    return [record];
+  });
+}
+const valueKey = value => value == null || value === '' ? 'empty' : typeof value + ':' + JSON.stringify(value);
+function groupedRows(rows, fields, columns) {
+  const levels = typeof fields === 'string' ? [fields] : Array.isArray(fields) ? fields.filter(Boolean) : [];
+  function build(input, depth, path) {
+    if (depth >= levels.length) return [];
+    const field = levels[depth],
+      column = columns.find(column => column.field === field) || {},
+      buckets = new Map();
+    for (const row of input) {
+      const raw = (0, _state.valueAt)(row.original, field),
+        multiple = column.multi || column.type === 'multi';
+      const values = multiple && Array.isArray(raw) ? raw.length ? raw : [null] : [raw];
+      const seen = new Set();
+      for (const value of values) {
+        const key = valueKey(value);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        if (!buckets.has(key)) buckets.set(key, {
+          value,
+          rows: []
+        });
+        buckets.get(key).rows.push(row);
+      }
+    }
+    return [...buckets.values()].map((bucket, bucketIndex) => {
+      const nextPath = path.concat({
+          field,
+          value: bucket.value
+        }),
+        key = 'group:' + JSON.stringify(nextPath.map(part => [part.field, valueKey(part.value)]));
+      const unique = [...new Map(bucket.rows.map(row => [row.id, row])).values()];
+      return {
+        id: key,
+        field,
+        value: bucket.value,
+        depth,
+        separated: bucketIndex > 0,
+        path: nextPath,
+        rows: unique,
+        groups: build(unique, depth + 1, nextPath)
+      };
+    });
+  }
+  return build(rows, 0, []);
+}
+function groupSummary(group, column) {
+  if (column.summary === 'count') return group.rows.length;
+  const values = group.rows.map(row => (0, _state.valueAt)(row.original, column.field)).filter(value => value !== null && value !== undefined && value !== '' && typeof value !== 'boolean' && Number.isFinite(Number(value))).map(Number);
+  if (!values.length) return column.summary === 'sum' ? 0 : null;
+  switch (column.summary) {
+    case 'sum':
+      return values.reduce((sum, value) => sum + value, 0);
+    case 'average':
+      return values.reduce((sum, value) => sum + value, 0) / values.length;
+    case 'min':
+      return Math.min(...values);
+    case 'max':
+      return Math.max(...values);
+    default:
+      return null;
+  }
+}
+function groupDisplay(groups, collapsed, add, gaps = true) {
+  const display = [];
+  function visit(group) {
+    display.push({
+      id: group.id,
+      displayKey: group.id,
+      __group: group
+    });
+    if (collapsed.has(group.id)) return;
+    if (group.groups.length) siblings(group.groups);else group.rows.forEach(row => display.push({
+      ...row,
+      displayKey: group.id + ':' + row.id
+    }));
+    if (add) display.push({
+      id: group.id + ':add',
+      displayKey: group.id + ':add',
+      __add: group
+    });
+  }
+  function siblings(list) {
+    list.forEach((group, i) => {
+      if (i && gaps) display.push({
+        id: group.id + ':gap',
+        displayKey: group.id + ':gap',
+        __gap: true
+      });
+      visit(group);
+    });
+  }
+  siblings(groups);
+  return display;
+}
+  } },
+  "platform/components/DataTableNext/DataTableNext.jsx": { deps: {"react":null,"react-dom":null,"./scrollbars.jsx":"platform/components/DataTableNext/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataTableNext/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataTableNext/state.js","./adapter.js":"platform/components/DataTableNext/adapter.js","./cells.jsx":"platform/components/DataTableNext/cells.jsx","./records.js":"platform/components/DataTableNext/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataTableNext = DataTableNext;
+var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
+var _scrollbars = require("./scrollbars.jsx");
+var _dnd = require("../../utils/dnd.js");
+var _DragHandle = require("../DragHandle/DragHandle.jsx");
+var _reactTable = require("@tanstack/react-table");
+var _reactVirtual = require("@tanstack/react-virtual");
+var _direction = require("../../utils/direction.js");
+var _format = require("../../utils/format.js");
+var _cx = require("../../utils/cx.js");
+var _grid = require("../../utils/grid.js");
+var _sizeSteps = require("../../utils/sizeSteps.js");
+var _useVirtualizer = require("../../hooks/useVirtualizer.js");
+var _environment = require("./environment.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _Pagination = require("../Pagination/Pagination.jsx");
+var _EmptyState = require("../EmptyState/EmptyState.jsx");
+var _state = require("./state.js");
+var _adapter = require("./adapter.js");
+var _cells = require("./cells.jsx");
+var _records = require("./records.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTableNext (TanStack)
+   Summary: A React-owned grid beside DataTable; no existing table switches engines.
+   Usage: <DataTableNext label="People" data={people} columns={columns} selectable />
+   Props: label/data/columns/index, selection and view state, rowHeight/wrapHeaders, narrow layout, fill/pages/load-more,
+     groupBy, tree/childrenField/treeColumn, editable columns, row menus, storageKey, fetchRows and loading/error state.
+     onRowClick(record,event), onRowDoubleClick(record,event), onCellEdit(record,change) receive application records.
+   Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
+     token-sized CSS gaps represent missing rows. Opening saved state is supplied on the very first render.
+   Notes: Own Plenix markup and stylesheet use the existing table tokens. Existing applications switch only by opt-in. */
+const EMPTY_ROWS = [];
+const words = (template, values) => String(template).replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
+const B = 'plx-data-table',
+  interactive = 'a,button,input,select,textarea,label,[role="button"],[contenteditable="true"]';
+const defaults = {
+  empty: 'Nothing to show',
+  failed: 'The table could not load',
+  retry: 'Retry',
+  selectAll: 'Select all rows',
+  selectRow: 'Select row',
+  rowActions: 'Row actions',
+  clearSort: 'Clear sort',
+  hide: 'Hide field',
+  showAll: 'Show all fields',
+  narrower: 'Narrower',
+  wider: 'Wider',
+  fit: 'Fit to content',
+  deleted: 'Deleted',
+  moveLeft: 'Move left',
+  moveRight: 'Move right',
+  perPage: 'Rows per page',
+  view: 'View options',
+  wrapHeaders: 'Wrap headers',
+  rowHeight: 'Row height',
+  short: 'Short',
+  medium: 'Medium',
+  tall: 'Tall',
+  'extra-tall': 'Extra tall',
+  filter: 'Filter',
+  clearFilter: 'Clear filter',
+  groupBy: 'Group by this field',
+  ungroup: 'Ungroup',
+  loadMore: 'Load more',
+  loading: 'Loading records',
+  group: 'Group by this field',
+  filterBy: 'Filter by this field',
+  any: 'Any',
+  contains: 'Contains…',
+  moveRow: 'Move row',
+  moveUp: 'Move up',
+  moveDown: 'Move down',
+  moveTop: 'Move to top',
+  moveBottom: 'Move to bottom',
+  resize: 'Resize',
+  range: '{first}–{last} of {total}',
+  count: '{shown} of {total}',
+  pages: '{label} pages',
+  loaded: '{n} more rows loaded, {shown} of {total}',
+  noValue: '(Empty)',
+  addTo: 'Add a record to {value}',
+  groupRow: '{value}, group, {count} {records}',
+  record: 'record',
+  records: 'records',
+  expanded: 'expanded',
+  collapsed: 'collapsed',
+  sum: 'Sum',
+  countOf: 'Count',
+  average: 'Average',
+  min: 'Min',
+  max: 'Max',
+  sortText: ['Sort A → Z', 'Sort Z → A'],
+  sortNumber: ['Sort 1 → 9', 'Sort 9 → 1'],
+  sortDate: ['Sort oldest → newest', 'Sort newest → oldest'],
+  sortCheck: ['Sort unchecked → checked', 'Sort checked → unchecked']
+};
+const typeIcons = {
+  multi: 'field-select',
+  text: 'ed-text',
+  number: 'field-number',
+  bytes: 'attachment',
+  currency: 'field-currency',
+  date: 'calendar',
+  select: 'field-select',
+  checkbox: 'select',
+  file: 'attachment',
+  image: 'image-a-2',
+  link: 'link',
+  person: 'person',
+  'long-text': 'field-long-text'
+};
+const kinds = c => [].concat(c.kind || []);
+const typeOf = c => c.type || (kinds(c).includes('wrap') ? 'long-text' : c.sorter === 'number' ? 'number' : c.sorter === 'date' ? 'date' : 'text');
+const sorted = s => s.map(x => ({
+  field: x.id,
+  dir: x.desc ? 'desc' : 'asc'
+}));
+const lengthName = v => {
+  const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || ''));
+  return match?.[1];
+};
+const compare = (a, b, id) => {
+  const x = a.getValue(id),
+    y = b.getValue(id);
+  if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
+  return (0, _cells.valueText)(x).localeCompare((0, _cells.valueText)(y), undefined, {
+    numeric: true
+  });
+};
+function Gap({
+  count,
+  kind = 'record'
+}) {
+  return count > 0 ? /*#__PURE__*/_react.default.createElement("div", {
+    className: 'plx-virtual-gap plx-data-table__gap plx-data-table__gap--' + kind,
+    "aria-hidden": "true"
+  }, (0, _useVirtualizer.gapPieces)(count).map((n, i) => /*#__PURE__*/_react.default.createElement("div", {
+    key: i,
+    className: "plx-virtual-gap__piece",
+    "data-plx-span": String(n)
+  }))) : null;
+}
+function RowGap({
+  rows
+}) {
+  const counts = rows.reduce((all, row) => {
+    all[row.__group ? row.__group.separated ? 'separated' : 'group' : row.__gap ? 'band' : row.__add ? 'add' : 'record']++;
+    return all;
+  }, {
+    record: 0,
+    group: 0,
+    separated: 0,
+    band: 0,
+    add: 0
+  });
+  return /*#__PURE__*/_react.default.createElement("div", {
+    "aria-hidden": "true"
+  }, Object.entries(counts).map(([kind, count]) => /*#__PURE__*/_react.default.createElement(Gap, {
+    key: kind,
+    kind: kind,
+    count: count
+  })));
+}
+function CellEditor({
+  column,
+  value,
+  onCommit,
+  onCancel
+}) {
+  const [draft, setDraft] = _react.default.useState(value ?? ''),
+    done = _react.default.useRef(false);
+  const finish = () => {
+    if (done.current) return;
+    done.current = true;
+    onCommit(column.editor === 'number' ? draft === '' ? null : Number(draft) : draft);
+  };
+  return /*#__PURE__*/_react.default.createElement("input", {
+    autoFocus: true,
+    className: "plx-data-table__editor",
+    "aria-label": 'Edit ' + column.title,
+    type: column.editor === 'number' ? 'number' : 'text',
+    value: draft,
+    onChange: e => setDraft(e.target.value),
+    onBlur: finish,
+    onKeyDown: e => {
+      e.stopPropagation();
+      if (e.key === 'Escape') {
+        done.current = true;
+        onCancel();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        finish();
+      }
+    }
+  });
+}
+function Check({
+  checked,
+  mixed,
+  label,
+  onChange
+}) {
+  const ref = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    if (ref.current) ref.current.indeterminate = !!mixed;
+  }, [mixed]);
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: B + '__check',
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    ref: ref,
+    type: "checkbox",
+    checked: !!checked,
+    "aria-label": label,
+    onChange: onChange,
+    onClick: e => e.stopPropagation()
+  }));
+}
+// Calculate token widths during React's read-only render, then let React batch all style writes at commit.
+// Reading the grid in a separate layout effect for every new cell alternates reads and writes and forces layout.
+const Width = /*#__PURE__*/_react.default.forwardRef(function Width({
+  as: Element = 'div',
+  width,
+  frozenOffset,
+  children,
+  ...props
+}, forwarded) {
+  const ref = _react.default.useRef(null),
+    style = width == null ? undefined : {
+      width: (0, _grid.gridPx)(width, {
+        el: ref.current || document.documentElement
+      }),
+      ...(frozenOffset == null ? {} : {
+        insetInlineStart: (0, _grid.gridPx)(frozenOffset, {
+          el: ref.current || document.documentElement
+        })
+      })
+    };
+  return /*#__PURE__*/_react.default.createElement(Element, _extends({}, props, {
+    style: style,
+    ref: node => {
+      ref.current = node;
+      if (typeof forwarded === 'function') forwarded(node);else if (forwarded) forwarded.current = node;
+    }
+  }), children);
+});
+function NextEngine(props) {
+  const {
+    label,
+    data = EMPTY_ROWS,
+    columns,
+    index = 'id',
+    selectable = false,
+    selected,
+    keepHiddenSelection = true,
+    onSelectionChange,
+    options = {},
+    mode = 'fill',
+    height,
+    narrow = 'list',
+    narrowAt = '--plx-ref-size-600px',
+    keyColumns,
+    storageKey,
+    headerMenu = true,
+    rowMenu,
+    rowMenuButton = true,
+    columnMenu,
+    onReady,
+    on = {},
+    className,
+    empty,
+    error,
+    onRetry
+  } = props;
+  const S = {
+      ...defaults,
+      ...props.strings
+    },
+    initial = _react.default.useMemo(() => (0, _state.opening)(props), [storageKey]);
+  const frame = _react.default.useRef(null),
+    holder = _react.default.useRef(null),
+    header = _react.default.useRef(null),
+    live = _react.default.useRef({}),
+    ready = _react.default.useRef(false);
+  const selectionAnchor = _react.default.useRef(null),
+    viewportId = _react.default.useId(),
+    displayElements = _react.default.useRef(new Map()),
+    parkedFocus = _react.default.useRef(null),
+    pendingEdit = _react.default.useRef(null),
+    mutations = _react.default.useRef([]),
+    printView = _react.default.useRef(null);
+  const deliveredReady = _react.default.useRef(null);
+  const listeners = _react.default.useRef(new Map()),
+    rowElements = _react.default.useRef(new Map()),
+    headerElements = _react.default.useRef(new Map());
+  const [localSort, setSorting] = _react.default.useState(initial.sorting),
+    [order, setOrder] = _react.default.useState(initial.order),
+    [visibility, setVisibility] = _react.default.useState(initial.visibility);
+  const sortSignal = JSON.stringify(props.sort),
+    orderSignal = JSON.stringify(props.columnOrder),
+    hiddenSignal = JSON.stringify(props.hiddenColumns);
+  const [sortOwner, setSortOwner] = _react.default.useState(null),
+    [orderOwner, setOrderOwner] = _react.default.useState(null),
+    [hiddenOwner, setHiddenOwner] = _react.default.useState(null);
+  const [sizing, setSizing] = _react.default.useState(() => Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)])));
+  const [autoSizing, setAutoSizing] = _react.default.useState({});
+  const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
+    [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
+  const [filterField, setFilterField] = _react.default.useState(null);
+  const [edited, setEdited] = _react.default.useState(null),
+    [editing, setEditing] = _react.default.useState(null),
+    [expanded, setExpanded] = _react.default.useState(options.dataTreeStartExpanded ?? false);
+  const [localGroups, setGroups] = _react.default.useState(initial.groupBy),
+    [groupOwner, setGroupOwner] = _react.default.useState(null),
+    [collapsed, setCollapsed] = _react.default.useState(() => new Set(initial.collapsed));
+  const [loaded, setLoaded] = _react.default.useState(props.pageSize || 50),
+    [printing, setPrinting] = _react.default.useState(false);
+  const groupSignal = JSON.stringify(props.groupBy),
+    groupBy = groupOwner === groupSignal ? localGroups : props.groupBy ?? localGroups;
+  const childField = props.tree ?? options.dataTree ? props.childrenField || options.dataTreeChildField || '_children' : null;
+  const [ownSelection, setSelection] = _react.default.useState({}),
+    [filters, setFilters] = _react.default.useState([]),
+    [page, setPage] = _react.default.useState(0),
+    [pageSize, setPageSize] = _react.default.useState(props.pageSize || 50);
+  const fetching = _react.default.useRef(false);
+  const [remoteBusy, setRemoteBusy] = _react.default.useState(false);
+  const [remote, setRemote] = _react.default.useState(null),
+    [remoteError, setRemoteError] = _react.default.useState(null),
+    [retry, setRetry] = _react.default.useState(0);
+  const [metrics, setMetrics] = _react.default.useState({
+      row: 0,
+      line: 0,
+      lead: 0,
+      menu: 0,
+      min: 0,
+      space: 0,
+      room: 0
+    }),
+    [isNarrow, setNarrow] = _react.default.useState(false),
+    [message, setMessage] = _react.default.useState('');
+  const effectiveStep = props.rowHeight || rowHeight,
+    effectiveWrap = props.wrapHeaders ?? wrapHeaders;
+  const selection = Array.isArray(selected) ? Object.fromEntries(selected.map(k => [(0, _state.recordKey)(k), true])) : ownSelection;
+  const sorting = sortOwner === sortSignal ? localSort : props.sort?.length ? (0, _state.normalizeSort)(props.sort) : localSort;
+  const columnOrder = orderOwner === orderSignal ? order : props.columnOrder || order,
+    columnVisibility = hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? (0, _state.visibilityOf)(props.hiddenColumns) : visibility;
+  const remoteMode = typeof props.fetchRows === 'function' && (mode === 'pages' || mode === 'load-more'),
+    incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
+  const source = edited?.input === incoming ? edited.rows : incoming,
+    canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
+  const recordsByKey = _react.default.useMemo(() => new Map(canonical.map(record => [(0, _state.recordKey)(record[index]), record])), [canonical, index]);
+  const replaceData = rows => new Promise(resolve => {
+    mutations.current.push(resolve);
+    setEdited({
+      input: incoming,
+      rows: rows.slice()
+    });
+  });
+  const changeGroups = value => {
+    setGroupOwner(groupSignal);
+    setGroups(value);
+    setCollapsed(new Set());
+  };
+  const toggleGroup = (id, open) => setCollapsed(old => {
+    const next = new Set(old),
+      expand = open ?? old.has(id);
+    if (expand) next.delete(id);else next.add(id);
+    setMessage(expand ? S.expanded : S.collapsed);
+    return next;
+  });
+  const updateRecord = (key, change) => new Promise(resolve => {
+    mutations.current.push(resolve);
+    setEdited(old => ({
+      input: incoming,
+      rows: (0, _records.changeRecord)(old?.input === incoming ? old.rows : source, key, change, index, childField)
+    }));
+  });
+  const commitEdit = (key, field, value) => {
+    const old = canonical.find(record => (0, _state.recordKey)(record[index]) === key),
+      previous = (0, _state.valueAt)(old, field);
+    updateRecord(key, record => (0, _records.setField)(record, field, value));
+    setEditing(null);
+    pendingEdit.current = {
+      key,
+      field
+    };
+    props.onCellEdit?.((0, _records.setField)(old, field, value), {
+      field,
+      value,
+      previous,
+      row: old
+    });
+  };
+  const emit = (name, ...args) => {
+    live.current.props.on?.[name]?.(...args);
+    listeners.current.get(name)?.forEach(fn => fn(...args));
+  };
+  const api = _react.default.useMemo(() => (0, _adapter.createAdapter)(live), []);
+  const resize = (field, value) => {
+    const definition = columns.find(c => c.field === field),
+      at = frame.current;
+    const min = (0, _environment.tokenPixels)(definition?.minWidth || '--plx-ref-size-80px', at),
+      max = definition?.maxWidth ? (0, _environment.tokenPixels)(definition.maxWidth, at) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
+    const width = (0, _grid.snapToGrid)((0, _sizeSteps.snapSize)((0, _environment.tokenPixels)(value, at), min, max), {
+      el: at
+    });
+    setSizing(s => ({
+      ...s,
+      [field]: width
+    }));
+  };
+  const move = (field, target, after) => {
+    const current = live.current.table.getAllLeafColumns().map(c => c.id).filter(id => !id.startsWith('__') && id !== field);
+    const at = current.indexOf(target);
+    current.splice(Math.max(0, at + (after ? 1 : 0)), 0, field);
+    setOrderOwner(orderSignal);
+    setOrder(current);
+    emit('columnMoved', api.column(field), current.map(api.column));
+  };
+  const notifySelection = next => {
+    live.current.selection = next;
+    setSelection(next);
+    const active = new Set(live.current.table.getFilteredRowModel().flatRows.map(r => r.id)),
+      records = canonical.filter(r => next[(0, _state.recordKey)(r[index])]);
+    onSelectionChange?.(records.map(r => r[index]), {
+      count: records.length,
+      hidden: records.filter(r => !active.has((0, _state.recordKey)(r[index]))).length
+    });
+    emit('rowSelectionChanged', records, records.map(r => api.row((0, _state.recordKey)(r[index]))));
+  };
+  const pick = (key, value) => {
+    const next = {
+      ...live.current.selection
+    };
+    if (options.selectableRows === 1 && value) Object.keys(next).forEach(k => delete next[k]);
+    if (value) next[key] = true;else delete next[key];
+    notifySelection(next);
+  };
+  const changeSort = update => {
+    const next = typeof update === 'function' ? update(sorting) : update;
+    setSortOwner(sortSignal);
+    setSorting(next);
+    setPage(0);
+    emit('dataSorted', next.map(s => ({
+      field: s.id,
+      dir: s.desc ? 'desc' : 'asc'
+    })));
+  };
+  const leafDefs = _react.default.useMemo(() => columns.map(c => ({
+    id: c.field,
+    accessorFn: r => (0, _state.valueAt)(r, c.field),
+    header: c.title || c.field,
+    enableSorting: c.headerSort !== false,
+    filterFn: c.type === 'bytes' ? _cells.byteFilter : c.filter === 'list' ? _cells.listFilter : _cells.textFilter,
+    sortingFn: c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
+    size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, (0, _environment.tokenPixels)(c.width, frame.current) || autoSizing[c.field] || metrics.min),
+    minSize: kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min,
+    maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
+    meta: c
+  })), [columns, metrics.min, autoSizing]);
+  const table = (0, _reactTable.useReactTable)({
+    data: source,
+    columns: leafDefs,
+    getRowId: r => (0, _state.recordKey)(r[index]),
+    getSubRows: childField ? r => r[childField] : undefined,
+    onExpandedChange: setExpanded,
+    filterFromLeafRows: true,
+    state: {
+      expanded: printing ? true : expanded,
+      sorting,
+      columnOrder,
+      columnVisibility,
+      columnSizing: sizing,
+      columnFilters: filters,
+      globalFilter: props.filter,
+      pagination: {
+        pageIndex: page,
+        pageSize
+      },
+      rowSelection: selection
+    },
+    onSortingChange: changeSort,
+    onColumnVisibilityChange: update => {
+      setHiddenOwner(hiddenSignal);
+      setVisibility(typeof update === 'function' ? update(columnVisibility) : update);
+    },
+    onColumnOrderChange: update => {
+      setOrderOwner(orderSignal);
+      setOrder(typeof update === 'function' ? update(columnOrder) : update);
+    },
+    onColumnSizingChange: setSizing,
+    onColumnFiltersChange: update => {
+      setFilters(update);
+      setPage(0);
+    },
+    getColumnCanGlobalFilter: () => true,
+    globalFilterFn: (row, id, fn) => typeof fn !== 'function' || !!fn(row.original),
+    globalFilter: props.filter,
+    manualPagination: remoteMode,
+    manualSorting: remoteMode,
+    manualFiltering: remoteMode,
+    pageCount: remoteMode ? Math.ceil((remote?.total || 0) / pageSize) : undefined,
+    getExpandedRowModel: (0, _reactTable.getExpandedRowModel)(),
+    getCoreRowModel: (0, _reactTable.getCoreRowModel)(),
+    getFilteredRowModel: (0, _reactTable.getFilteredRowModel)(),
+    getSortedRowModel: (0, _reactTable.getSortedRowModel)(),
+    getPaginationRowModel: mode === 'pages' ? (0, _reactTable.getPaginationRowModel)() : undefined,
+    autoResetPageIndex: false
+  });
+  const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
+  const loadedRows = _react.default.useMemo(() => mode === 'load-more' && !remoteMode ? allRows.slice(0, loaded) : allRows, [allRows, mode, remoteMode, loaded]);
+  const groups = _react.default.useMemo(() => (0, _records.groupedRows)(loadedRows, groupBy, columns), [loadedRows, groupBy, columns]);
+  const model = _react.default.useMemo(() => groups.length ? (0, _records.groupDisplay)(groups, printing ? new Set() : collapsed, !!props.onAddToGroup) : loadedRows, [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]),
+    virtualized = mode !== 'pages' && !isNarrow && !printing;
+  const estimate = row => row?.__group ? metrics.group + metrics.line * (row.__group.separated ? 2 : 1) : row?.__gap ? metrics.groupGap : row?.__add ? metrics.add + metrics.line : metrics.row + metrics.line;
+  const virtual = (0, _reactVirtual.useVirtualizer)({
+    count: model.length,
+    getScrollElement: () => holder.current,
+    estimateSize: i => estimate(model[i]),
+    getItemKey: i => model[i]?.displayKey || model[i]?.id,
+    overscan: 4,
+    enabled: virtualized && metrics.row > 0,
+    initialRect: {
+      width: 0,
+      height: 0
+    },
+    initialOffset: () => printView.current?.top ?? holder.current?.scrollTop ?? 0
+  });
+  const semanticRows = model.filter(row => !row.__gap),
+    semanticIndex = new Map(semanticRows.map((row, i) => [row.displayKey || row.id, i + 2]));
+  const virtualItems = virtual.getVirtualItems(),
+    first = virtualized ? virtualItems[0]?.index || 0 : 0,
+    last = virtualized ? (virtualItems[virtualItems.length - 1]?.index ?? Math.min(model.length, 1) - 1) + 1 : model.length;
+  const shown = virtualized ? model.slice(first, last) : model;
+  const pinnedAt = columns.findIndex(c => c.rowLabel),
+    frozen = new Set(columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map(c => c.field));
+  const visible = table.getVisibleLeafColumns(),
+    ordered = visible.filter(c => frozen.has(c.id)).concat(visible.filter(c => !frozen.has(c.id)));
+  const widths = Object.fromEntries(ordered.map(column => [column.id, column.getSize()]));
+  const listable = column => !column.rowHandle && !kinds(column).some(kind => ['icon', 'actions'].includes(kind));
+  const keys = keyColumns?.length ? keyColumns : columns.filter(c => !kinds(c).some(k => ['icon', 'actions'].includes(k)) && !c.rowHandle).slice(0, 3).map(c => c.field);
+  const listed = narrow === 'auto' ? columns.some(listable) : narrow === 'list' && columns.some(column => listable(column) && !keys.includes(column.field));
+  const columnDnd = (0, _dnd.useSortable)({
+    items: ordered,
+    getId: column => column.id,
+    getName: column => column.columnDef.meta.title || column.id,
+    label: label + ' columns',
+    orientation: 'horizontal',
+    disabled: !(props.movableColumns ?? options.movableColumns),
+    onReorder: (next, {
+      item
+    }) => {
+      setOrderOwner(orderSignal);
+      setOrder(next.map(column => column.id));
+      emit('columnMoved', api.column(item.id), next.map(column => api.column(column.id)));
+    }
+  });
+  const rowDnd = (0, _dnd.useSortable)({
+    items: canonical,
+    getId: record => (0, _state.recordKey)(record[index]),
+    getName: record => String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index]),
+    label: label + ' rows',
+    disabled: !(props.movableRows ?? options.movableRows) || !!groupBy || !!childField,
+    onReorder: (rows, {
+      item
+    }) => {
+      setEdited({
+        input: incoming,
+        rows
+      });
+      props.onRowMove?.(rows);
+      emit('rowMoved', api.row((0, _state.recordKey)(item[index])));
+    }
+  });
+  live.current = {
+    props,
+    index,
+    data: canonical,
+    source,
+    recordsByKey,
+    replaceData,
+    model,
+    groups,
+    groupBy,
+    changeGroups,
+    toggleGroup,
+    collapsed,
+    updateRecord,
+    commitEdit,
+    editing,
+    setEditing,
+    childField,
+    expanded,
+    setExpanded,
+    fields: columns,
+    table,
+    selection,
+    sorting,
+    setSorting: changeSort,
+    resize,
+    move,
+    pick,
+    setPage,
+    page,
+    pageSize,
+    setPageSize,
+    virtual,
+    rowElements: rowElements.current,
+    headerElements: headerElements.current,
+    listeners: listeners.current
+  };
+  _react.default.useLayoutEffect(() => {
+    const at = frame.current;
+    if (!at || !metrics.min) return;
+    const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
+      cs = getComputedStyle(at),
+      widths = {},
+      free = [];
+    columns.forEach(c => {
+      const explicit = kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.width, at);
+      if (explicit) {
+        widths[c.field] = explicit;
+        return;
+      }
+      const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-table-data-font-family' : '--plx-comp-data-table-font-family').trim() || cs.fontFamily;
+      ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size').trim() + ' ' + family;
+      let width = ctx.measureText(c.title || c.field).width;
+      source.forEach(record => {
+        const value = (0, _state.valueAt)(record, c.field);
+        width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width);
+      });
+      widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, width + metrics.space * 2), {
+        round: 'up',
+        el: at
+      });
+      free.push(c.field);
+    });
+    const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0),
+      used = Object.values(widths).reduce((sum, width) => sum + width, 0),
+      step = (0, _grid.gridStep)(at);
+    const units = Math.max(0, Math.floor((available - used) / step)),
+      share = free.length ? Math.floor(units / free.length) : 0;
+    free.forEach((field, i) => widths[field] += (share + (i < units - share * free.length ? 1 : 0)) * step);
+    setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
+  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable]);
+  _react.default.useLayoutEffect(() => {
+    const at = frame.current;
+    if (!at) return;
+    const doc = at.ownerDocument;
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const next = {
+        row: (0, _environment.tokenPixels)('--plx-comp-data-table-record-height', at),
+        line: (0, _environment.tokenPixels)('--plx-comp-data-table-line-width', at),
+        lead: (0, _environment.tokenPixels)('--plx-comp-data-table-lead-column-width', at),
+        menu: (0, _environment.tokenPixels)('--plx-comp-data-table-row-menu-width', at),
+        min: (0, _environment.tokenPixels)('--plx-ref-size-80px', at),
+        space: (0, _environment.tokenPixels)('--plx-comp-data-table-cell-padding-inline', at),
+        room: at.clientWidth,
+        add: (0, _environment.tokenPixels)('--plx-sys-data-table-row-height', at),
+        group: (0, _environment.tokenPixels)('--plx-comp-data-table-group-header-height', at),
+        groupGap: (0, _environment.tokenPixels)('--plx-comp-data-table-group-gap', at)
+      };
+      setMetrics(old => Object.keys(next).every(k => next[k] === old[k]) ? old : next);
+      const threshold = narrow === 'auto' ? keys.reduce((sum, field) => sum + (live.current.table?.getColumn(field)?.getSize() || next.min), selectable ? next.lead : 0) : (0, _environment.tokenPixels)(narrowAt, at),
+        want = listed && at.clientWidth > 0 && at.clientWidth < threshold;
+      setNarrow(want);
+      if (!height && mode !== 'pages' && holder.current) {
+        const top = holder.current.getBoundingClientRect().top;
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+          round: 'down',
+          el: at
+        });
+      }
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    measure();
+    const ro = new ResizeObserver(schedule);
+    ro.observe(at);
+    const mo = new MutationObserver(schedule);
+    mo.observe(doc.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction', 'data-plx-mode']
+    });
+    const region = at.closest('[data-plx-density]');
+    if (region && region !== doc.documentElement) mo.observe(region, {
+      attributes: true,
+      attributeFilter: ['data-plx-density']
+    });
+    return () => {
+      ro.disconnect();
+      mo.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|')]);
+  _react.default.useLayoutEffect(() => {
+    virtual.measure();
+  }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
+  _react.default.useEffect(() => {
+    if (!metrics.row || !Object.keys(autoSizing).length || ready.current) return;
+    ready.current = true;
+    api.options = options;
+    deliveredReady.current = onReady;
+    onReady?.(api);
+    emit('tableBuilt');
+  }, [metrics.row, autoSizing]);
+  _react.default.useEffect(() => {
+    if (ready.current && onReady !== deliveredReady.current) {
+      deliveredReady.current = onReady;
+      onReady?.(api);
+    }
+  }, [onReady]);
+  _react.default.useEffect(() => {
+    if (!ready.current) return;
+    (0, _state.writeView)(storageKey, {
+      sort: sorting.map(s => ({
+        column: s.id,
+        dir: s.desc ? 'desc' : 'asc'
+      })),
+      order: columnOrder,
+      hidden: Object.keys(columnVisibility).filter(k => columnVisibility[k] === false),
+      widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + 'px'])),
+      rowHeight: effectiveStep,
+      wrapHeaders: effectiveWrap,
+      groupBy,
+      collapsed: [...collapsed]
+    });
+  }, [storageKey, JSON.stringify(sorting), JSON.stringify(columnOrder), JSON.stringify(columnVisibility), JSON.stringify(sizing), effectiveStep, effectiveWrap, metrics.row, groupSignal, groupBy, collapsed]);
+  _react.default.useEffect(() => {
+    if (!ready.current) return;
+    const active = new Set(table.getFilteredRowModel().rows.map(r => r.id)),
+      next = {
+        ...selection
+      };
+    const known = new Set(canonical.map(record => (0, _state.recordKey)(record[index])));
+    const hidden = Object.keys(next).filter(key => next[key] && known.has(key) && !active.has(key));
+    if (!keepHiddenSelection && hidden.length) {
+      hidden.forEach(key => delete next[key]);
+      notifySelection(next);
+    } else if (Object.keys(selection).some(key => selection[key])) {
+      const records = canonical.filter(r => selection[(0, _state.recordKey)(r[index])]);
+      onSelectionChange?.(records.map(r => r[index]), {
+        count: records.length,
+        hidden: hidden.length
+      });
+    }
+    emit('dataFiltered', filters.map(f => ({
+      field: f.id,
+      type: 'like',
+      value: f.value
+    })), table.getFilteredRowModel().rows.map(r => api.row(r.id)));
+  }, [props.filter, JSON.stringify(filters), source, keepHiddenSelection]);
+  const previousData = _react.default.useRef(source);
+  _react.default.useEffect(() => {
+    if (ready.current && previousData.current !== source) {
+      previousData.current = source;
+      emit('dataChanged', source);
+    }
+  }, [source]);
+  _react.default.useEffect(() => {
+    setPage(0);
+    setLoaded(pageSize);
+  }, [sortSignal, props.filter, JSON.stringify(filters), props.search, pageSize]);
+  _react.default.useEffect(() => {
+    const before = () => {
+        const el = holder.current;
+        printView.current = el ? {
+          top: el.scrollTop,
+          left: el.scrollLeft,
+          max: el.style.maxBlockSize
+        } : null;
+        if (el) el.style.removeProperty('max-block-size');
+        (0, _reactDom.flushSync)(() => setPrinting(true));
+      },
+      after = () => {
+        setPrinting(false);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          const el = holder.current,
+            saved = printView.current;
+          if (el && saved) {
+            if (saved.max) el.style.maxBlockSize = (0, _grid.gridPx)(parseFloat(saved.max), {
+              el
+            });else el.style.removeProperty('max-block-size');
+            virtual.scrollToOffset(saved.top);
+            el.scrollLeft = saved.left;
+            printView.current = null;
+          }
+        }));
+      };
+    window.addEventListener('beforeprint', before);
+    window.addEventListener('afterprint', after);
+    return () => {
+      window.removeEventListener('beforeprint', before);
+      window.removeEventListener('afterprint', after);
+    };
+  }, []);
+  _react.default.useEffect(() => {
+    if (!remoteMode) return;
+    fetching.current = true;
+    setRemoteBusy(true);
+    let alive = true;
+    const controller = new AbortController();
+    setRemoteError(null);
+    Promise.resolve().then(() => props.fetchRows({
+      page: page + 1,
+      size: pageSize,
+      sort: sorted(sorting),
+      filters: filters.map(f => ({
+        field: f.id,
+        type: 'like',
+        value: f.value
+      })),
+      search: props.search,
+      signal: controller.signal
+    })).then(result => {
+      if (alive) {
+        fetching.current = false;
+        setRemoteBusy(false);
+        setRemote(old => ({
+          rows: mode === 'load-more' && page > 0 ? [...(old?.rows || []), ...(result.rows || [])] : result.rows || [],
+          total: result.total || 0
+        }));
+      }
+    }, failure => {
+      if (alive) {
+        fetching.current = false;
+        setRemoteBusy(false);
+        setRemoteError(failure);
+      }
+    });
+    return () => {
+      alive = false;
+      controller.abort();
+    };
+  }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
+  const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+  const selectionRows = table.getPrePaginationRowModel().rows,
+    selectedVisible = selectionRows.filter(r => selection[r.id]),
+    allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
+  const selectAll = value => {
+    const next = {
+      ...selection
+    };
+    selectionRows.forEach(r => {
+      if (value) next[r.id] = true;else delete next[r.id];
+    });
+    notifySelection(next);
+  };
+  const pickCheckbox = (row, event) => {
+    const wanted = event.target.checked,
+      from = selectionRows.findIndex(r => r.id === selectionAnchor.current),
+      to = selectionRows.indexOf(row);
+    if ((event.nativeEvent?.shiftKey || event.shiftKey) && from >= 0 && to >= 0) {
+      const next = {
+        ...selection
+      };
+      selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(record => {
+        if (wanted) next[record.id] = true;else delete next[record.id];
+      });
+      notifySelection(next);
+    } else pick(row.id, wanted);
+    selectionAnchor.current = row.id;
+  };
+  const fit = field => {
+    const c = columns.find(c => c.field === field),
+      ctx = document.createElement('canvas').getContext('2d'),
+      cs = getComputedStyle(frame.current);
+    ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size') + ' ' + cs.getPropertyValue('--plx-comp-data-table-font-family');
+    const values = [c.title || field, ...source.map(r => (0, _cells.valueText)((0, _state.valueAt)(r, field)))];
+    resize(field, Math.max(...values.map(v => ctx.measureText(v).width)) + metrics.space * 2);
+  };
+  const menuItems = (items, row, extra) => items.map((item, i) => item.separator ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+    key: i
+  }) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: i,
+    icon: item.icon,
+    danger: item.danger,
+    disabled: typeof item.disabled === 'function' ? item.disabled(row) : item.disabled,
+    onSelect: () => {
+      (item.onSelect || item.action)?.(row, extra);
+    }
+  }, item.label));
+  const rowItems = row => typeof rowMenu === 'function' ? rowMenu(row) : rowMenu || [];
+  const headerItems = column => {
+    const c = column.columnDef.meta,
+      custom = typeof columnMenu === 'function' ? columnMenu(c) : columnMenu || [];
+    const direction = typeOf(c) === 'number' || typeOf(c) === 'currency' || typeOf(c) === 'bytes' ? S.sortNumber : typeOf(c) === 'date' ? S.sortDate : typeOf(c) === 'checkbox' ? S.sortCheck : S.sortText;
+    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, menuItems(custom, c, api.column(c.field)), custom.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => table.setSorting([{
+        id: c.field,
+        desc: false
+      }])
+    }, direction[0]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => table.setSorting([{
+        id: c.field,
+        desc: true
+      }])
+    }, direction[1]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => table.setSorting([])
+    }, S.clearSort), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => setFilterField(c.field)
+    }, S.filterBy), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => column.setFilterValue(undefined)
+    }, S.clearFilter), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), -1, column.columnDef.minSize, column.columnDef.maxSize))
+    }, S.narrower), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), 1, column.columnDef.minSize, column.columnDef.maxSize))
+    }, S.wider), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => fit(c.field)
+    }, S.fit), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: frozen.has(c.field) || ordered.indexOf(column) === 0,
+      onSelect: () => columnDnd.moveTo(ordered.indexOf(column), ordered.indexOf(column) - 1)
+    }, S.moveLeft), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: frozen.has(c.field) || ordered.indexOf(column) === ordered.length - 1,
+      onSelect: () => columnDnd.moveTo(ordered.indexOf(column), ordered.indexOf(column) + 1)
+    }, S.moveRight), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => changeGroups(c.field)
+    }, S.group), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => changeGroups(false)
+    }, S.ungroup), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => column.toggleVisibility(false),
+      disabled: frozen.has(c.field)
+    }, S.hide), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => setVisibility({})
+    }, S.showAll));
+  };
+  const startResize = (event, column) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const from = event.clientX,
+      width = column.getSize(),
+      doc = event.currentTarget.ownerDocument;
+    const move = e => resize(column.id, width + (e.clientX - from) * ((0, _direction.isRtl)(frame.current) ? -1 : 1));
+    const up = () => {
+      doc.removeEventListener('pointermove', move);
+      doc.removeEventListener('pointerup', up);
+    };
+    doc.addEventListener('pointermove', move);
+    doc.addEventListener('pointerup', up, {
+      once: true
+    });
+  };
+  const headerCell = column => {
+    const c = column.columnDef.meta,
+      pinned = frozen.has(c.field),
+      offset = (selectable ? metrics.lead : 0) + ordered.slice(0, ordered.indexOf(column)).filter(col => frozen.has(col.id)).reduce((sum, col) => sum + col.getSize(), 0);
+    const node = /*#__PURE__*/_react.default.createElement(Width, _extends({
+      key: c.field
+    }, columnDnd.itemProps(ordered.indexOf(column)), {
+      ref: node => {
+        if (node) headerElements.current.set(c.field, node);else headerElements.current.delete(c.field);
+      },
+      width: widths[c.field],
+      frozenOffset: pinned ? offset : undefined,
+      role: "columnheader",
+      tabIndex: 0,
+      "data-plx-field": c.field,
+      "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
+      className: (0, _cx.cx)('plx-data-table__grid-col', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && 'plx-data-table__grid-frozen', [].concat(groupBy || []).includes(c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
+      "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
+      onClick: e => {
+        if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
+      },
+      onKeyDown: e => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+          e.preventDefault();
+          column.toggleSorting();
+        }
+      }
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-data-table__grid-col-content"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-data-table__grid-col-title-holder"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-data-table__grid-col-title",
+      title: c.title
+    }, kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
+      className: B + '__header-icon'
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: c.icon || 'circle-info',
+      label: c.title
+    })) : /*#__PURE__*/_react.default.createElement("span", {
+      className: B + '__title'
+    }, props.movableColumns ?? options.movableColumns ? /*#__PURE__*/_react.default.createElement(_DragHandle.DragHandle, {
+      disabled: frozen.has(column.id),
+      dnd: columnDnd.handleProps(ordered.indexOf(column))
+    }) : null, /*#__PURE__*/_react.default.createElement("span", {
+      className: B + '__type-icon'
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: typeIcons[typeOf(c)] || 'ed-text'
+    })), /*#__PURE__*/_react.default.createElement("span", {
+      className: B + '__title-text'
+    }, c.title || c.field))), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-data-table__grid-col-sorter",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: 'plx-data-table__grid-arrow' + (column.getIsSorted() === 'desc' ? ' plx-data-table__sort-desc' : '')
+    }))), headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      className: "plx-data-table__grid-header-popup-button",
+      label: c.title + ' column actions',
+      trigger: /*#__PURE__*/_react.default.createElement("span", {
+        role: "button",
+        tabIndex: 0,
+        className: B + '__menu-chevron',
+        "aria-label": c.title + ' column actions'
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: "chevron-down"
+      }))
+    }, headerItems(column)) : null, c.filter || filterField === c.field || column.getIsFiltered() ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-data-table__grid-header-popup-button"
+    }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+      open: filterField === c.field,
+      onOpenChange: open => setFilterField(open ? c.field : null),
+      title: S.filter + ' ' + c.title,
+      size: "sm",
+      trigger: /*#__PURE__*/_react.default.createElement("span", {
+        role: "button",
+        tabIndex: 0,
+        "aria-label": S.filter + ' ' + c.title
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: "filter"
+      }))
+    }, c.filter === 'list' ? /*#__PURE__*/_react.default.createElement(_Input.Select, {
+      "aria-label": S.filter + ' ' + c.title,
+      value: column.getFilterValue() || '',
+      options: [{
+        value: '',
+        label: S.any
+      }, ...[...new Set(source.map(r => String((0, _state.valueAt)(r, c.field) ?? '')))].filter(Boolean).map(value => ({
+        value,
+        label: value
+      }))],
+      onChange: e => column.setFilterValue(e.target.value || undefined)
+    }) : /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      "aria-label": S.filter + ' ' + c.title,
+      value: column.getFilterValue() || '',
+      onChange: e => column.setFilterValue(e.target.value)
+    }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "sm",
+      onClick: () => column.setFilterValue(undefined)
+    }, S.clearFilter))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-data-table__grid-col-resize-handle",
+      role: "separator",
+      "aria-label": S.resize + ' ' + c.title,
+      "aria-orientation": "vertical",
+      tabIndex: 0,
+      "aria-valuenow": column.getSize(),
+      "aria-valuemin": column.columnDef.minSize,
+      "aria-valuemax": column.columnDef.maxSize,
+      onPointerDown: e => startResize(e, column),
+      onDoubleClick: () => fit(c.field),
+      onKeyDown: e => {
+        if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+          e.preventDefault();
+          resize(c.field, e.key === 'Home' ? column.columnDef.minSize : e.key === 'End' ? column.columnDef.maxSize : (0, _sizeSteps.stepSize)(column.getSize(), e.key === 'ArrowRight' ? 1 : -1, column.columnDef.minSize, column.columnDef.maxSize));
+        }
+      }
+    }) : null);
+    return headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
+      key: c.field,
+      target: node,
+      label: c.title + ' column actions'
+    }, headerItems(column)) : node;
+  };
+  const focusCell = (rowIndex, columnIndex, step = 1) => {
+    while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
+    const record = model[rowIndex],
+      column = ordered[columnIndex];
+    if (!record || columnIndex !== null && !column) return;
+    if (virtualized) virtual.scrollToIndex(rowIndex, {
+      align: 'auto'
+    });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const node = displayElements.current.get(record.displayKey || record.id);
+      (columnIndex === null ? node : node?.querySelector('[data-plx-field="' + CSS.escape(column.id) + '"]'))?.focus({
+        preventScroll: true
+      });
+    }));
+  };
+  const groupNode = group => /*#__PURE__*/_react.default.createElement("div", {
+    key: group.id,
+    "data-plx-group": group.id,
+    className: (0, _cx.cx)('plx-data-table__grid-row plx-data-table__grid-group', 'plx-data-table__grid-group-level-' + group.depth, group.separated && B + '__group--gap'),
+    role: "row",
+    tabIndex: 0,
+    "aria-rowindex": semanticIndex.get(group.id),
+    "aria-label": words(S.groupRow, {
+      value: (0, _cells.valueText)(group.value) || S.noValue,
+      count: group.rows.length,
+      records: group.rows.length === 1 ? S.record : S.records
+    }),
+    "aria-level": group.depth + 1,
+    "aria-expanded": !collapsed.has(group.id),
+    onKeyDown: event => {
+      if (event.target !== event.currentTarget) return;
+      if (['Enter', ' ', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
+        event.preventDefault();
+        toggleGroup(group.id, event.key === 'ArrowRight' ? true : event.key === 'ArrowLeft' ? false : undefined);
+      } else if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
+        event.preventDefault();
+        const headers = model.filter(row => row.__group),
+          next = headers[headers.findIndex(row => row.id === group.id) + (event.key === 'ArrowDown' ? 1 : -1)];
+        if (next) {
+          virtual.scrollToIndex(model.indexOf(next), {
+            align: 'center'
+          });
+          requestAnimationFrame(() => requestAnimationFrame(() => holder.current?.querySelector('.plx-data-table__grid-group[data-plx-group="' + CSS.escape(next.id) + '"]')?.focus({
+            preventScroll: true
+          })));
+        }
+      }
+    }
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__group-head',
+    role: "presentation"
+  }, ordered.map((column, i) => /*#__PURE__*/_react.default.createElement(Width, {
+    key: column.id,
+    width: widths[column.id] + (i === 0 && selectable ? metrics.lead : 0),
+    className: (0, _cx.cx)(B + '__group-cell', i === 0 && B + '__group-cell--first', column.columnDef.meta.summary && B + '__group-cell--summary'),
+    role: "gridcell",
+    "aria-colspan": i === 0 && selectable ? 2 : undefined
+  }, i === 0 ? /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__group-label'
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__group-chevron',
+    "aria-hidden": "true",
+    onClick: () => toggleGroup(group.id)
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: collapsed.has(group.id) ? 'chevron-right' : 'chevron-down'
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__group-text'
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "eyebrow",
+    className: B + '__group-eyebrow'
+  }, columns.find(c => c.field === group.field)?.title || group.field), /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__group-value'
+  }, (0, _cells.valueText)(group.value) || S.noValue)), /*#__PURE__*/_react.default.createElement("span", {
+    className: 'plx-font-data ' + B + '__group-count'
+  }, (0, _format.formatNumber)(group.rows.length))) : column.columnDef.meta.summary ? /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__group-summary'
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__group-summary-name'
+  }, {
+    sum: S.sum,
+    count: S.countOf,
+    average: S.average,
+    min: S.min,
+    max: S.max
+  }[column.columnDef.meta.summary]), /*#__PURE__*/_react.default.createElement("span", {
+    className: 'plx-font-data ' + B + '__group-summary-value'
+  }, (0, _records.groupSummary)(group, column.columnDef.meta) == null ? null : (0, _format.formatNumber)((0, _records.groupSummary)(group, column.columnDef.meta)))) : null))));
+  const rememberRow = (row, node) => {
+    const displayKey = row.displayKey || row.id,
+      previous = displayElements.current.get(displayKey),
+      active = document.activeElement;
+    if (node) {
+      displayElements.current.set(displayKey, node);
+      rowElements.current.set(row.id, node);
+      if (parkedFocus.current?.key === displayKey && active === holder.current) {
+        const saved = parkedFocus.current;
+        parkedFocus.current = null;
+        requestAnimationFrame(() => {
+          if (document.activeElement === holder.current) {
+            const cell = saved.field ? node.querySelector('[data-plx-field="' + CSS.escape(saved.field) + '"]') : node;
+            const control = saved.control >= 0 ? cell?.querySelectorAll('input,button,a[href],select,textarea')[saved.control] : null;
+            (control || cell || holder.current)?.focus({
+              preventScroll: true
+            });
+          }
+        });
+      }
+    } else {
+      if (previous?.contains(active)) {
+        const cell = active.closest('[data-plx-field]'),
+          controls = cell ? [...cell.querySelectorAll('input,button,a[href],select,textarea')] : [];
+        parkedFocus.current = {
+          key: displayKey,
+          field: cell?.getAttribute('data-plx-field'),
+          control: controls.indexOf(active)
+        };
+        holder.current?.focus({
+          preventScroll: true
+        });
+      }
+      displayElements.current.delete(displayKey);
+      if (rowElements.current.get(row.id) === previous) {
+        const replacement = [...displayElements.current.values()].find(el => el.dataset.plxRecord === row.id);
+        if (replacement) rowElements.current.set(row.id, replacement);else rowElements.current.delete(row.id);
+      }
+    }
+  };
+  _react.default.useLayoutEffect(() => {
+    mutations.current.splice(0).forEach(resolve => resolve());
+    if (pendingEdit.current) {
+      const {
+        key,
+        field
+      } = pendingEdit.current;
+      pendingEdit.current = null;
+      emit('cellEdited', api.cell(key, field));
+    }
+  }, [source]);
+  const rowNode = row => {
+    if (row.__group) return groupNode(row.__group);
+    if (row.__add) return /*#__PURE__*/_react.default.createElement("div", {
+      key: row.id,
+      className: B + '__add-row',
+      role: "row",
+      "aria-rowindex": semanticIndex.get(row.id)
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      role: "gridcell",
+      "aria-colspan": ordered.length + (selectable ? 1 : 0),
+      className: B + '__group-cell ' + B + '__group-cell--first'
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "xs",
+      iconOnly: true,
+      icon: "add",
+      label: words(S.addTo, {
+        value: (0, _cells.valueText)(row.__add.value) || S.noValue
+      }),
+      onClick: () => props.onAddToGroup(row.__add.value, row.__add.path)
+    })));
+    if (row.__gap) return /*#__PURE__*/_react.default.createElement("div", {
+      key: row.id,
+      className: B + '__group--gap'
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: B + '__group-band'
+    }));
+    const rowApi = api.row(row.id),
+      record = row.original;
+    let offset = selectable ? metrics.lead : 0;
+    const node = /*#__PURE__*/_react.default.createElement("div", _extends({
+      key: row.displayKey || row.id
+    }, rowDnd.itemProps(canonical.indexOf(record)), {
+      "data-plx-record": row.id,
+      ref: node => rememberRow(row, node),
+      role: "row",
+      "aria-rowindex": (mode === 'pages' ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
+      "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : undefined,
+      tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
+      "aria-level": childField ? row.depth + 1 : undefined,
+      "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
+      className: (0, _cx.cx)('plx-data-table__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && 'plx-data-table__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && 'plx-data-table__grid-selected'),
+      onClick: e => {
+        if (e.target.closest(interactive)) return;
+        if (options.selectableRows) pick(row.id, !selection[row.id]);
+        emit('rowClick', e, rowApi);
+        props.onRowClick?.(record, e);
+      },
+      onDoubleClick: e => {
+        if (!e.target.closest(interactive)) {
+          props.onRowDoubleClick?.(record, e);
+          emit('rowDblClick', e, rowApi);
+        }
+      },
+      onKeyDown: e => {
+        if (e.key === 'Enter' && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')) {
+          e.preventDefault();
+          if (options.selectableRows) pick(row.id, !selection[row.id]);
+          emit('rowClick', e, rowApi);
+          props.onRowClick?.(record, e);
+        }
+        if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
+          e.preventDefault();
+          const step = e.key === 'ArrowDown' ? 1 : -1;
+          focusCell(model.indexOf(row) + step, null, step);
+        }
+      }
+    }), selectable ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-data-table__grid-cell plx-data-table__grid-row-header plx-data-table__w-lead plx-data-table__grid-frozen",
+      role: "gridcell"
+    }, /*#__PURE__*/_react.default.createElement(Check, {
+      label: S.selectRow + ' ' + record[index],
+      checked: selection[row.id],
+      onChange: e => pickCheckbox(row, e)
+    })) : null, ordered.map(column => {
+      const c = column.columnDef.meta,
+        k = kinds(c),
+        pinned = frozen.has(c.field),
+        sticky = offset;
+      if (pinned) offset += column.getSize();
+      const cell = api.cell(row.id, c.field),
+        canEdit = !!c.editor && (typeof c.editable === 'function' ? c.editable(cell) : c.editable !== false);
+      const value = (0, _state.valueAt)(record, c.field);
+      const content = c.render ? c.render(record, cell) : value == null || value === '' ? c.empty ?? '' : String(value);
+      return /*#__PURE__*/_react.default.createElement(Width, {
+        key: c.field,
+        width: isNarrow ? null : widths[c.field],
+        frozenOffset: pinned && !isNarrow ? sticky : undefined,
+        role: "gridcell",
+        tabIndex: -1,
+        "data-plx-field": c.field,
+        dir: "auto",
+        onDoubleClick: () => {
+          if (canEdit) setEditing({
+            key: row.id,
+            field: c.field,
+            value
+          });
+        },
+        onKeyDown: event => {
+          if (event.target !== event.currentTarget) return;
+          if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
+            if (document.getSelection()?.toString()) return;
+            event.preventDefault();
+            navigator.clipboard.writeText((0, _cells.valueText)(value));
+            return;
+          }
+          if (event.key === 'Enter' && canEdit) {
+            event.preventDefault();
+            setEditing({
+              key: row.id,
+              field: c.field,
+              value
+            });
+            return;
+          }
+          const index = model.indexOf(row),
+            at = ordered.indexOf(column),
+            keys = {
+              ArrowDown: [index + 1, at],
+              ArrowUp: [index - 1, at],
+              ArrowLeft: [index, at + ((0, _direction.isRtl)(frame.current) ? 1 : -1)],
+              ArrowRight: [index, at + ((0, _direction.isRtl)(frame.current) ? -1 : 1)]
+            };
+          if (keys[event.key]) {
+            event.preventDefault();
+            focusCell(...keys[event.key], event.key === 'ArrowUp' ? -1 : 1);
+          }
+        },
+        "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
+        className: (0, _cx.cx)('plx-data-table__grid-cell', editing?.key === row.id && editing.field === c.field && 'plx-data-table__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), [].concat(groupBy || []).includes(c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && 'plx-data-table__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
+      }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__tree-level',
+        "data-plx-depth": 0
+      }, row.getCanExpand() ? /*#__PURE__*/_react.default.createElement("button", {
+        type: "button",
+        className: B + '__grid-data-tree-control',
+        "aria-expanded": row.getIsExpanded(),
+        "aria-label": row.getIsExpanded() ? 'Collapse row' : 'Expand row',
+        onClick: () => row.toggleExpanded()
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__grid-data-tree-control-' + (row.getIsExpanded() ? 'collapse' : 'expand')
+      })) : null) : null, editing?.key === row.id && editing.field === c.field ? /*#__PURE__*/_react.default.createElement(CellEditor, {
+        column: c,
+        value: value,
+        onCommit: next => commitEdit(row.id, c.field, next),
+        onCancel: () => setEditing(null)
+      }) : c.rowHandle ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+        label: S.moveRow,
+        trigger: /*#__PURE__*/_react.default.createElement(_DragHandle.DragHandle, {
+          dnd: rowDnd.handleProps(canonical.indexOf(record))
+        })
+      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        disabled: !rowDnd.canMove(canonical.indexOf(record), -1),
+        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), canonical.indexOf(record) - 1)
+      }, S.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        disabled: !rowDnd.canMove(canonical.indexOf(record), 1),
+        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), canonical.indexOf(record) + 1)
+      }, S.moveDown), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), 0)
+      }, S.moveTop), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), canonical.length - 1)
+      }, S.moveBottom)) : c.render ? /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__portal'
+      }, /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__value'
+      }, content)) : /*#__PURE__*/_react.default.createElement(_cells.CellValue, {
+        column: c,
+        value: value,
+        strings: S
+      }));
+    }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-data-table__grid-cell plx-data-table__w-view",
+      role: "gridcell"
+    }) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
+      width: metrics.menu,
+      className: "plx-data-table__grid-cell plx-data-table__cell--row-menu",
+      role: "gridcell"
+    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: S.rowActions,
+      trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        className: B + '__row-menu',
+        variant: "ghost",
+        size: "xs",
+        iconOnly: true,
+        icon: "more",
+        label: S.rowActions
+      })
+    }, menuItems(rowItems(record), record, rowApi))) : null);
+    return rowMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
+      key: row.displayKey || row.id,
+      target: node,
+      label: S.rowActions
+    }, menuItems(rowItems(record), record, rowApi)) : node;
+  };
+  const priorGroups = model.slice(0, first).filter(row => row.__group).map(row => row.__group),
+    currentGroup = model[first]?.__group || priorGroups[priorGroups.length - 1];
+  const stickyGroups = currentGroup ? priorGroups.filter((group, i) => group.path.every((part, depth) => JSON.stringify(part) === JSON.stringify(currentGroup.path[depth])) && !priorGroups.slice(i + 1).some(next => next.depth === group.depth)) : [];
+  const failed = error || remoteError;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: frame,
+    className: (0, _cx.cx)(B, pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
+    "data-plx-engine": "next",
+    "data-plx-render": virtualized ? 'virtual' : undefined,
+    "data-plx-row-height": !isNarrow ? effectiveStep : undefined,
+    "data-plx-wrap-headers": effectiveWrap ? '' : undefined,
+    "data-plx-height": lengthName(height),
+    "data-plx-fit": !height && mode !== 'pages' ? '' : undefined
+  }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    className: B + '__error',
+    tone: "error",
+    title: S.failed,
+    action: onRetry || remoteError ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      onClick: () => {
+        setRetry(n => n + 1);
+        onRetry?.();
+      }
+    }, S.retry) : null
+  }, String(failed === true ? '' : failed.message || failed)) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__table plx-data-table__grid',
+    role: groups.length || childField ? 'treegrid' : 'grid',
+    "aria-label": label,
+    "aria-busy": remoteMode && remoteBusy ? true : undefined,
+    "aria-rowcount": groups.length || childField ? semanticRows.length + 1 : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
+    "aria-colcount": ordered.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
+    hidden: !!failed
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-data-table__grid-header",
+    ref: header
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-data-table__grid-header-contents"
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({}, columnDnd.listProps, {
+    className: "plx-data-table__grid-headers",
+    role: "row"
+  }), selectable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-data-table__grid-col plx-data-table__grid-row-header plx-data-table__w-lead plx-data-table__grid-frozen",
+    role: "columnheader"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-data-table__grid-col-content"
+  }, /*#__PURE__*/_react.default.createElement(Check, {
+    label: S.selectAll,
+    checked: allVisible,
+    mixed: selectedVisible.length > 0 && !allVisible,
+    onChange: e => selectAll(e.target.checked)
+  }))) : null, ordered.map(headerCell), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-data-table__grid-col plx-data-table__w-view",
+    role: "columnheader"
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: S.view,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "xs",
+      iconOnly: true,
+      icon: "settings-customize",
+      label: S.view
+    })
+  }, ['short', 'medium', 'tall', 'extra-tall'].map(step => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: step,
+    checked: effectiveStep === step,
+    onSelect: () => setRowHeight(step)
+  }, S[step])), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    checked: effectiveWrap,
+    onSelect: () => setWrapHeaders(v => !v)
+  }, S.wrapHeaders))) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
+    width: metrics.menu,
+    className: "plx-data-table__grid-col",
+    role: "columnheader",
+    "aria-label": S.rowActions
+  }) : null))), /*#__PURE__*/_react.default.createElement("div", {
+    id: viewportId,
+    ref: holder,
+    className: "plx-data-table__grid-tableholder",
+    role: "rowgroup",
+    tabIndex: 0,
+    onKeyDown: event => {
+      if (event.target === event.currentTarget && event.key === 'ArrowDown') {
+        event.preventDefault();
+        focusCell(first, 0);
+      }
+    },
+    onScroll: e => {
+      if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
+      if (mode === 'load-more' && e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight < (0, _environment.tokenPixels)('--plx-ref-size-200px', frame.current)) {
+        if (remoteMode && !fetching.current && source.length < (remote?.total || 0)) {
+          fetching.current = true;
+          setPage(n => n + 1);
+        } else if (!remoteMode) setLoaded(n => Math.min(allRows.length, n + pageSize));
+      }
+    }
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({}, rowDnd.listProps, {
+    className: "plx-data-table__grid-table",
+    role: "presentation"
+  }), stickyGroups.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__sticky-groups',
+    "aria-hidden": "true",
+    inert: ""
+  }, stickyGroups.map(group => /*#__PURE__*/_react.default.cloneElement(groupNode(group), {
+    key: 'sticky:' + group.id,
+    className: B + '__sticky-group plx-data-table__grid-group-level-' + group.depth,
+    role: undefined,
+    tabIndex: -1,
+    'aria-expanded': undefined,
+    'aria-rowindex': undefined,
+    'aria-level': undefined,
+    onKeyDown: undefined
+  }))) : null, /*#__PURE__*/_react.default.createElement(RowGap, {
+    rows: model.slice(0, first)
+  }), shown.map(rowNode), /*#__PURE__*/_react.default.createElement(RowGap, {
+    rows: model.slice(last)
+  })), !model.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-data-table__grid-placeholder"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-data-table__grid-placeholder-contents"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__empty'
+  }, remoteMode && remoteBusy ? S.loading : empty || S.empty))) : null)), /*#__PURE__*/_react.default.createElement(_scrollbars.Scrollbars, {
+    holder: holder,
+    viewportId: viewportId
+  }), mode === 'pages' && !failed ? /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__footer'
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: B + '__range'
+  }, words(S.range, {
+    first: displayedTotal ? Math.min(page * pageSize + 1, displayedTotal) : 0,
+    last: Math.min((page + 1) * pageSize, displayedTotal),
+    total: displayedTotal
+  })), /*#__PURE__*/_react.default.createElement("label", {
+    className: B + '__page-size'
+  }, /*#__PURE__*/_react.default.createElement("span", null, S.perPage), /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: String(pageSize),
+    options: (props.pageSizes || [25, 50, 100]).map(n => ({
+      value: String(n),
+      label: String(n)
+    })),
+    onChange: e => {
+      setPage(0);
+      setPageSize(+e.target.value);
+    }
+  })), /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
+    className: B + '__pages',
+    label: words(S.pages, {
+      label
+    }),
+    page: page + 1,
+    pageCount: Math.max(1, Math.ceil(displayedTotal / pageSize)),
+    onPageChange: n => setPage(n - 1)
+  })) : null, mode === 'load-more' && !failed ? /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__footer'
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: B + '__range'
+  }, words(S.count, {
+    shown: Math.min(loadedRows.length, displayedTotal),
+    total: displayedTotal
+  })), loadedRows.length < displayedTotal ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    loading: remoteMode && remoteBusy,
+    className: B + '__more',
+    onClick: () => {
+      if (remoteMode) {
+        if (!fetching.current) {
+          fetching.current = true;
+          setPage(n => n + 1);
+        }
+      } else setLoaded(n => Math.min(allRows.length, n + pageSize));
+    }
+  }, S.loadMore) : null) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-sr-only",
+    role: "status",
+    "aria-live": "polite"
+  }, message));
+}
+function DataTableNext(props) {
+  return /*#__PURE__*/_react.default.createElement(NextEngine, _extends({
+    key: props.storageKey || ''
+  }, props));
+}
+DataTableNext.preload = () => Promise.resolve();
+  } },
   "platform/components/DataTable/cells.js": { deps: {"../../utils/format.js":"platform/utils/format.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -13007,292 +22266,6 @@ function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = f
     if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
   });
   return Math.max(min, Math.min(step, max));
-}
-  } },
-  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Popover = Popover;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _floating = require("../../utils/floating.js");
-var _Button = require("../Button/Button.jsx");
-var _Sheet = require("../Sheet/Sheet.jsx");
-var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
-   Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
-     a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
-     dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
-     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
-   Usage:
-     <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
-     <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
-     <Popover trigger={<Link href="/people/maya">Maya Chen</Link>} triggerOn="hover" label="Maya Chen" size="sm">…</Popover>
-     <Popover trigger={target} triggerOn="manual" open={open} onOpenChange={setOpen} arrow placement="bottom">…</Popover>
-   Props:
-     trigger: the element that opens it (one element; it gets the ref, and for a click popover aria-haspopup="dialog",
-       aria-expanded and aria-controls)
-     triggerOn: "click" (default: click, Enter or Space on the trigger) | "hover" (a hover card: opens after
-       --plx-comp-popover-hover-open-delay on pointer hover and on keyboard focus, and stays open while the pointer is in
-       it) | "manual" (only the open prop opens it: a teaching bubble pointing at its target)
-     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
-     onOpenChange(open): runs when it opens or closes
-     title: the title in its header; it names the popover
-     label: the accessible name when there is no title
-     footer: a row of actions at the bottom, at the end edge
-     closeButton: a Close button at the end of the header (default false; Escape and a click outside always close it)
-     placement: where it sits against the trigger: "bottom-start" (default) | "bottom" | "bottom-end" | "top" | "top-start"
-       | "top-end" | "start" | "start-top" | "start-bottom" | "end" | "end-top" | "end-bottom" (start and end follow the
-       writing direction)
-     size: "md" (default; 320px wide) | "sm" (240px) | "lg" (400px) | "auto" (as wide as its content); never wider than
-       the window less its margins
-     arrow: a caret on the edge that faces the trigger, pointing at it (default false)
-     role: "dialog" (default) | "alertdialog" (a question that needs an answer: Popconfirm) | null (a disclosure panel of
-       links, MegaMenu: no popup role, and the trigger is a plain disclosure button with aria-expanded)
-     initialFocus: a ref to the element that takes focus when it opens (default: the first control in its body, else its
-       first control (Close, a footer action), else the popover)
-     focusOnOpen: focus moves into it when it opens (default true for a click popover, false for hover and manual)
-     sheetOnNarrow: at the Narrow window class a click popover opens as a bottom Sheet instead (default true; a hover
-       card never does)
-     strings: the words it shows and announces, for other languages: { close: "Close" }
-     className: more classes on the popover
-     children: the content
-     Other props pass through to the popover's <div> (aria-describedby).
-   Behavior:
-     Click: the trigger opens and closes it; focus moves into it (initialFocus, else the first control in its body, else
-       its first control, else the popover) and returns to the trigger when Escape closes it, or when it closes while
-       focus is inside it (Close, an action). Escape, a click outside, and Tab out of it close it. It is not modal: the
-       page stays usable and focus is not trapped.
-     Hover: opens after the open delay on pointer hover, and at once on keyboard focus of the trigger; closes
-       --plx-comp-popover-hover-close-delay after the pointer leaves both, on blur, and with Escape. Touch has no hover:
-       a tap follows the trigger (a link), so a hover card holds nothing that is only there.
-     Manual: opens and closes only by the open prop (a click outside does not close it); Escape asks to close it
-       (onOpenChange(false)) and returns focus to the trigger.
-     Placement: by CSS anchor positioning it flips to the other side and shifts its alignment to stay in the window, and
-       follows the trigger on scroll and resize; without it, it is drawn inside the trigger's wrapper on its side. With an
-       arrow it keeps its side and alignment, so the arrow always points at the trigger.
-     At the Narrow window class (under --plx-sys-shell-phone-below) a click popover is a bottom Sheet: the same title,
-       content and footer, modal, with the sheet's own close.
-   Notes:
-     One popover at a time; never a popover inside a popover. A hint of a few words is a Tooltip; a decision that blocks
-       the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
-     ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
-*/
-const STRINGS = {
-  close: 'Close'
-};
-const SIZES = ['sm', 'md', 'lg', 'auto'];
-
-// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
-// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-function Popover({
-  trigger,
-  triggerOn = 'click',
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  title,
-  label,
-  footer,
-  closeButton = false,
-  placement = 'bottom-start',
-  size = 'md',
-  arrow = false,
-  role = 'dialog',
-  initialFocus,
-  focusOnOpen,
-  sheetOnNarrow = true,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Popover', {
-    size
-  }, {
-    size: ['md', 'sm', 'lg', 'auto']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  const id = (0, _layer.useUid)('plx-popover');
-  const controlled = openProp !== undefined;
-  const [own, setOwn] = _react.default.useState(!!defaultOpen);
-  const open = controlled ? !!openProp : own;
-  const setOpen = _react.default.useCallback(v => {
-    if (!controlled) setOwn(v);
-    if (onOpenChange) onOpenChange(v);
-  }, [controlled, onOpenChange]);
-  const wrap = _react.default.useRef(null),
-    panel = _react.default.useRef(null),
-    anchor = _react.default.useRef(null),
-    timer = _react.default.useRef(null);
-  const hover = triggerOn === 'hover',
-    click = triggerOn === 'click';
-  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
-  const asSheet = click && sheetOnNarrow && narrow;
-  const floating = open && !asSheet;
-  const where = _floating.PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const {
-    placement: used
-  } = (0, _floating.useFloating)(anchor, panel, {
-    open: floating,
-    placement: where,
-    offset: arrow ? 'md' : 'xs',
-    flip: !arrow,
-    shift: !arrow
-  });
-  const [side, align] = used.split('-');
-  const close = _react.default.useCallback(refocus => {
-    setOpen(false);
-    if (refocus && anchor.current && anchor.current.focus) anchor.current.focus();
-  }, [setOpen]);
-  (0, _layer.useLayer)(panel, floating, {
-    onEscape: () => close(!hover)
-  });
-
-  // into the top layer as soon as it is in the page, before focus moves in
-  _react.default.useLayoutEffect(() => {
-    const el = panel.current;
-    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
-  }, [floating]);
-  // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
-  const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
-  _react.default.useEffect(() => {
-    if (!floating) return undefined;
-    if (takeFocus) {
-      const root = panel.current;
-      const wanted = initialFocus && initialFocus.current;
-      const first = wanted || (0, _layer.focusables)(root.querySelector('.plx-popover__body'))[0] || (0, _layer.focusables)(root)[0] || root;
-      if (first) first.focus({
-        preventScroll: true
-      });
-    }
-    if (!click) return undefined;
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', outside);
-    return () => document.removeEventListener('mousedown', outside);
-  }, [floating]);
-  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
-  // closed while focus was inside it (Close, an action, the open prop): focus goes back to the trigger, not the page
-  const inside = _react.default.useRef(false);
-  _react.default.useEffect(() => {
-    if (floating || !inside.current) return;
-    inside.current = false;
-    const a = document.activeElement;
-    if ((!a || a === document.body) && anchor.current && anchor.current.focus) anchor.current.focus();
-  }, [floating]);
-
-  // the hover card's timers: open after the open delay, close after the close delay (cancelled by coming back)
-  const later = v => {
-    clearTimeout(timer.current);
-    const el = wrap.current;
-    timer.current = setTimeout(() => setOpen(v), ms(el, v ? '--plx-comp-popover-hover-open-delay' : '--plx-comp-popover-hover-close-delay'));
-  };
-  const hoverProps = hover ? {
-    onPointerEnter: e => {
-      if (e.pointerType !== 'touch') later(true);
-    },
-    onPointerLeave: e => {
-      if (e.pointerType !== 'touch') later(false);
-    },
-    onFocus: e => {
-      if (e.target === anchor.current && e.target.matches(':focus-visible')) {
-        clearTimeout(timer.current);
-        setOpen(true);
-      }
-    },
-    onBlur: e => {
-      if (!wrap.current.contains(e.relatedTarget)) {
-        clearTimeout(timer.current);
-        setOpen(false);
-      }
-    }
-  } : click ? {
-    // Tab out of the popover (or the trigger) to somewhere else closes it; a click on its text does not (no related target)
-    onBlur: e => {
-      if (floating && e.relatedTarget && !wrap.current.contains(e.relatedTarget)) setOpen(false);
-    } // the sheet is a portal: not while it shows
-  } : {};
-  const child = _react.default.Children.only(trigger);
-  const triggerEl = /*#__PURE__*/_react.default.cloneElement(child, click ? {
-    ref: anchor,
-    'aria-haspopup': role ? 'dialog' : undefined,
-    'aria-expanded': open,
-    'aria-controls': open ? id : undefined,
-    expanded: undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  } : {
-    ref: anchor
-  });
-  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const titleId = id + 't';
-  const header = title || closeButton ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__header"
-  }, title ? /*#__PURE__*/_react.default.createElement("h2", {
-    id: titleId,
-    className: "plx-popover__title"
-  }, title) : null, closeButton ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    size: "xs",
-    iconOnly: true,
-    icon: "close",
-    label: t.close,
-    className: "plx-popover__close",
-    onClick: () => close(true)
-  }) : null) : null;
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    ref: wrap,
-    className: "plx-popover-anchor"
-  }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: panel,
-    id: id,
-    role: role || undefined,
-    "aria-labelledby": role && title ? titleId : undefined,
-    "aria-label": role && !title ? label : undefined,
-    tabIndex: -1,
-    popover: TOP_LAYER ? 'manual' : undefined,
-    "data-plx-popover-side": side,
-    "data-plx-popover-align": align || 'center',
-    className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
-    onFocus: () => {
-      inside.current = true;
-    },
-    onBlur: e => {
-      inside.current = !!(panel.current && panel.current.contains(e.relatedTarget));
-    }
-  }, rest), arrow ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-popover__arrow",
-    "aria-hidden": "true"
-  }) : null, header, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__body"
-  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__footer"
-  }, footer) : null) : null, asSheet ? /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
-    open: open,
-    onClose: () => setOpen(false),
-    title: title || label,
-    footer: footer,
-    form: "bottom",
-    initialFocus: initialFocus,
-    closeLabel: t.close
-  }, children) : null);
 }
   } },
   "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -16539,7 +25512,7 @@ function floatingScroll(root, holder) {
   };
 }
   } },
-  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"./cells.js":"platform/components/DataTable/cells.js","./actions.jsx":"platform/components/DataTable/actions.jsx","../Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./MultiTable.jsx":"platform/components/DataTable/MultiTable.jsx","../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/grid.js":"platform/utils/grid.js","./floatingScroll.js":"platform/components/DataTable/floatingScroll.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataTable/DataTable.jsx": { deps: {"../DataTableNext/DataTableNext.jsx":"platform/components/DataTableNext/DataTableNext.jsx","react":null,"react-dom":null,"./cells.js":"platform/components/DataTable/cells.js","./actions.jsx":"platform/components/DataTable/actions.jsx","../Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./MultiTable.jsx":"platform/components/DataTable/MultiTable.jsx","../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/grid.js":"platform/utils/grid.js","./floatingScroll.js":"platform/components/DataTable/floatingScroll.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16547,6 +25520,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DataTable = DataTable;
 exports.TableEngine = TableEngine;
+var _DataTableNext = require("../DataTableNext/DataTableNext.jsx");
 var _react = _interopRequireDefault(require("react"));
 var _reactDom = _interopRequireDefault(require("react-dom"));
 var _cells = require("./cells.js");
@@ -16586,6 +25560,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        options={{ dataTree: true, dataTreeElementColumn: 'name', movableColumns: true }}
        on={{ rowClick: (e, row) => open(row.getData()) }} />
    Props:
+     engine: "next" opts into the independent TanStack renderer; omitted keeps the existing engine.
      label: names the grid for screen readers (required)
      data: the rows: plain objects, Tabulator's data format (children in _children with options.dataTree)
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
@@ -19286,7 +28261,9 @@ function TableEngine(props) {
 // the interactive table: records to sort, filter, select, open, edit, group or nest
 function ActionTable(props) {
   const rowMenu = (0, _actions.useDataTableActions)(props.rowMenu, undefined, props.strings);
-  return /*#__PURE__*/_react.default.createElement(_MultiTable.MultiTable, _extends({}, props, {
+  return props.engine === 'next' ? /*#__PURE__*/_react.default.createElement(_DataTableNext.DataTableNext, _extends({}, props, {
+    rowMenu: rowMenu
+  })) : /*#__PURE__*/_react.default.createElement(_MultiTable.MultiTable, _extends({}, props, {
     rowMenu: rowMenu
   }));
 }
@@ -24861,276 +33838,6 @@ function setSingleKeyHotkeys(on) {
 }
 function singleKeyHotkeys() {
   return singleKeys;
-}
-  } },
-  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.VIRTUAL_STICKY_CLASS = void 0;
-exports.VirtualGap = VirtualGap;
-exports.VirtualProbe = VirtualProbe;
-exports.gapPieces = gapPieces;
-exports.useVirtualizer = useVirtualizer;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useVirtualizer
-   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
-     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
-     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
-   Usage:
-     const v = useVirtualizer({ count: files.length });
-     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
-       <VirtualProbe />
-       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
-         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
-     </div>
-     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-table-row-height); overflow-y: auto; }
-   Props:
-     count: how many items there are
-     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
-       size; the token is the estimate for the items not rendered)
-     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
-     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
-     overscan: rows rendered beyond each edge of the view (default 4)
-     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
-     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
-     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
-       grid) not rendered
-     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
-     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
-       first in the viewport)
-   Behavior:
-     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
-     name it (aria-label) and give it its role (list, grid, listbox).
-     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
-     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
-     scroll anchoring keeps the content still while gaps replace items of another size.
-     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
-     "12 of 4,000" even though only a few are in the page.
-   Notes:
-     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
-     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
-     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
-     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
-*/
-
-const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
-
-// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
-function gapPieces(count) {
-  const out = [];
-  let n = Math.max(0, Math.floor(count));
-  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
-    out.push(p);
-    n -= p;
-  }
-  return out;
-}
-function VirtualGap({
-  count,
-  axis = 'y'
-}) {
-  if (!count) return null;
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-gap',
-    'data-plx-axis': axis,
-    'aria-hidden': 'true'
-  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
-    key: i,
-    className: 'plx-virtual-gap__piece',
-    'data-plx-span': String(p)
-  })));
-}
-function VirtualProbe({
-  axis = 'y'
-}) {
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-probe',
-    'data-plx-axis': axis,
-    'data-plx-virtual-probe': '',
-    'aria-hidden': 'true'
-  });
-}
-function useVirtualizer({
-  count = 0,
-  mode = 'fixed',
-  axis = 'y',
-  grid = false,
-  overscan = 4,
-  sticky
-} = {}) {
-  const viewportRef = _react.default.useRef(null);
-  const [view, setView] = _react.default.useState({
-    offset: 0,
-    size: 0,
-    pitch: 0,
-    columns: 1
-  });
-  const [focused, setFocused] = _react.default.useState(-1);
-  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
-  const shown = _react.default.useRef({
-    start: 0,
-    end: 0
-  }); // the rows rendered last
-  const horizontal = axis === 'x';
-
-  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
-  const measure = _react.default.useCallback(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
-    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
-    let columns = 1;
-    if (grid) {
-      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
-      if (items.length) {
-        const top = items[0].offsetTop;
-        let n = 0;
-        while (n < items.length && items[n].offsetTop === top) n++;
-        // no wrap seen while more items exist: guess wider, render more and look again
-        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
-      }
-    }
-    if (mode === 'measured') {
-      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
-        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
-      });
-    }
-    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
-    const size = horizontal ? el.clientWidth : el.clientHeight;
-    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
-      offset,
-      size,
-      pitch,
-      columns
-    });
-  }, [horizontal, grid, mode, count, view.columns]);
-  _react.default.useLayoutEffect(() => {
-    measure();
-  });
-  _react.default.useEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return undefined;
-    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
-    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
-    const onScroll = () => measure();
-    const onFocus = e => {
-      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
-      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
-    };
-    const onBlur = e => {
-      if (!el.contains(e.relatedTarget)) setFocused(-1);
-    };
-    el.addEventListener('scroll', onScroll, {
-      passive: true
-    });
-    el.addEventListener('focusin', onFocus);
-    el.addEventListener('focusout', onBlur);
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
-    if (ro) ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', onScroll);
-      el.removeEventListener('focusin', onFocus);
-      el.removeEventListener('focusout', onBlur);
-      if (ro) ro.disconnect();
-    };
-  }, [measure]);
-  const columns = grid ? Math.max(1, view.columns) : 1;
-  const rows = Math.ceil(count / columns);
-  const pitch = view.pitch || 1;
-  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
-  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
-  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
-  let first;
-  const last = shown.current;
-  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
-    let pos = last.start * pitch,
-      i = last.start;
-    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
-      pos += sizes.current.get(i) || pitch;
-      i++;
-    }
-    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
-    first = Math.min(rows, i);
-  } else first = Math.min(rows, Math.floor(view.offset / pitch));
-  let fill = 0,
-    covered = 0;
-  const target = view.size || pitch * 10;
-  while (first + fill < rows && covered < target) {
-    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
-    fill++;
-  }
-  const startRow = Math.max(0, first - overscan);
-  const endRow = Math.min(rows, first + fill + overscan); // exclusive
-  const start = startRow * columns,
-    end = Math.min(count, endRow * columns);
-  shown.current = {
-    start: startRow,
-    end: endRow
-  };
-
-  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
-  const pinned = [];
-  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
-  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
-  if (header !== undefined && !grid) pinned.push(header);
-  const segments = [];
-  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
-  let at = 0;
-  const pushRows = (from, to) => {
-    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
-      key: 'i' + i,
-      index: i
-    });
-  };
-  const pushGap = (from, to) => {
-    if (to > from) segments.push({
-      key: 'g' + from,
-      gap: true,
-      count: to - from
-    });
-  };
-  rowsOut.filter(r => r < startRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, startRow);
-  pushRows(startRow, endRow);
-  at = endRow;
-  rowsOut.filter(r => r >= endRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, rows);
-  const itemProps = _react.default.useCallback(index => ({
-    'data-plx-virtual-index': index,
-    'aria-posinset': index + 1,
-    'aria-setsize': count
-  }), [count]);
-  const scrollToIndex = _react.default.useCallback(index => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const offset = Math.floor(index / columns) * pitch;
-    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
-    measure();
-  }, [columns, pitch, horizontal, measure]);
-  return {
-    viewportRef,
-    segments,
-    itemProps,
-    scrollToIndex,
-    range: {
-      start,
-      end
-    },
-    columns
-  };
 }
   } },
   "platform/hooks/useIntersection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -50281,70 +58988,6 @@ function GeoMap({
   }));
 }
   } },
-  "platform/components/DragHandle/DragHandle.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DragHandle = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _dnd = require("../../utils/dnd.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DragHandle
-   Summary: The grip an item is moved by (13 Interaction › Interaction foundations › Drag handle): a small button with the
-     drag icon (six dots) that the drag-and-drop engine (utils/dnd.js) turns into a drag for the pointer and a pick-up
-     for the keyboard. Vertical (the dots stand) for rows that move up and down; horizontal (the dots lie) for columns,
-     tabs and cards that move sideways.
-   Usage:
-     const s = useSortable({ items, onReorder: setItems });
-     <DragHandle dnd={s.handleProps(i)} />                                    // the engine names it ("Move Hero banner")
-     <DragHandle label="Move column Status" orientation="horizontal" dnd={…} />
-     <Menu label="Move Hero banner" trigger={<DragHandle dnd={s.handleProps(i)} />}>…Move up, Move down…</Menu>
-   Props:
-     label: the accessible name, a verb and the item ("Move Hero banner"); default the engine's (dnd["aria-label"])
-     orientation: "vertical" (default) | "horizontal"
-     dnd: the engine's handle props (useSortable().handleProps(i), useDraggable().handleProps): the pointer, the keys, the
-       instructions (aria-describedby) and aria-pressed while the item is picked up
-     disabled: the item cannot move now (default false)
-     className: more classes on the handle
-     ref: the button (forwarded), so the handle can be a Menu's trigger
-   Behavior:
-     Pointer: press and move past the slop to drag the item; the handle shows the grab pointer, grabbing while it drags.
-       A click without moving does what the handle's other props say (a Menu's trigger opens its menu of moves).
-     Keyboard: Space or Enter picks the item up (aria-pressed true, the selected fill); the arrow keys move it; Space or
-       Enter drops it; Escape puts it back. The engine's handlers run first, so while the item is picked up the arrow
-       keys move it rather than open a menu.
-     Touch: the handle takes the finger itself (touch-action none), so the page still scrolls everywhere else.
-   Notes:
-     Every drag has a way without dragging (WCAG 2.5.7): a menu of moves on the handle (SortableList), move buttons, or
-       the keyboard. The handle is at least the inline control size (24px; larger with touch), WCAG 2.5.8.
-     Other props pass through to the <button>.
-*/
-const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(function DragHandle({
-  label,
-  orientation = 'vertical',
-  dnd,
-  disabled = false,
-  className,
-  ...rest
-}, ref) {
-  const props = (0, _dnd.mergeDndProps)(dnd || {}, rest);
-  return /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: "button"
-  }, props, {
-    "aria-label": label || props['aria-label'],
-    disabled: disabled || props.disabled || undefined,
-    className: (0, _cx.cx)('plx-drag-handle', 'plx-drag-handle--' + (orientation === 'horizontal' ? 'horizontal' : 'vertical'), className)
-  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "drag",
-    className: "plx-drag-handle__icon"
-  }));
-});
-  } },
   "platform/patterns/SortableList/SortableList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../../components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -67853,7637 +76496,6 @@ const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(functio
     className: (0, _cx.cx)('plx-heading', 'plx-heading--size-' + sz, className)
   }, rest), children);
 });
-  } },
-  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-// type Person = {
-//   firstName: string
-//   lastName: string
-//   age: number
-//   visits: number
-//   status: string
-//   progress: number
-//   createdAt: Date
-//   nested: {
-//     foo: [
-//       {
-//         bar: 'bar'
-//       }
-//     ]
-//     bar: { subBar: boolean }[]
-//     baz: {
-//       foo: 'foo'
-//       bar: {
-//         baz: 'baz'
-//       }
-//     }
-//   }
-// }
-
-// const test: DeepKeys<Person> = 'nested.foo.0.bar'
-// const test2: DeepKeys<Person> = 'nested.bar'
-
-// const helper = createColumnHelper<Person>()
-
-// helper.accessor('nested.foo', {
-//   cell: info => info.getValue(),
-// })
-
-// helper.accessor('nested.foo.0.bar', {
-//   cell: info => info.getValue(),
-// })
-
-// helper.accessor('nested.bar', {
-//   cell: info => info.getValue(),
-// })
-function createColumnHelper() {
-  return {
-    accessor: (accessor, column) => {
-      return typeof accessor === 'function' ? {
-        ...column,
-        accessorFn: accessor
-      } : {
-        ...column,
-        accessorKey: accessor
-      };
-    },
-    display: column => column,
-    group: column => column
-  };
-}
-exports.createColumnHelper = createColumnHelper;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-// Is this type a tuple?
-
-// If this type is a tuple, what indices are allowed?
-
-///
-function functionalUpdate(updater, input) {
-  return typeof updater === 'function' ? updater(input) : updater;
-}
-function noop() {
-  //
-}
-function makeStateUpdater(key, instance) {
-  return updater => {
-    instance.setState(old => {
-      return {
-        ...old,
-        [key]: functionalUpdate(updater, old[key])
-      };
-    });
-  };
-}
-function isFunction(d) {
-  return d instanceof Function;
-}
-function isNumberArray(d) {
-  return Array.isArray(d) && d.every(val => typeof val === 'number');
-}
-function flattenBy(arr, getChildren) {
-  const flat = [];
-  const recurse = subArr => {
-    subArr.forEach(item => {
-      flat.push(item);
-      const children = getChildren(item);
-      if (children != null && children.length) {
-        recurse(children);
-      }
-    });
-  };
-  recurse(arr);
-  return flat;
-}
-function memo(getDeps, fn, opts) {
-  let deps = [];
-  let result;
-  return depArgs => {
-    let depTime;
-    if (opts.key && opts.debug) depTime = Date.now();
-    const newDeps = getDeps(depArgs);
-    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
-    if (!depsChanged) {
-      return result;
-    }
-    deps = newDeps;
-    let resultTime;
-    if (opts.key && opts.debug) resultTime = Date.now();
-    result = fn(...newDeps);
-    opts == null || opts.onChange == null || opts.onChange(result);
-    if (opts.key && opts.debug) {
-      if (opts != null && opts.debug()) {
-        const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
-        const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
-        const resultFpsPercentage = resultEndTime / 16;
-        const pad = (str, num) => {
-          str = String(str);
-          while (str.length < num) {
-            str = ' ' + str;
-          }
-          return str;
-        };
-        console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
-            font-size: .6rem;
-            font-weight: bold;
-            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
-      }
-    }
-    return result;
-  };
-}
-function getMemoOptions(tableOptions, debugLevel, key, onChange) {
-  return {
-    debug: () => {
-      var _tableOptions$debugAl;
-      return (_tableOptions$debugAl = tableOptions == null ? void 0 : tableOptions.debugAll) != null ? _tableOptions$debugAl : tableOptions[debugLevel];
-    },
-    key: 'production' === 'development' && key,
-    onChange
-  };
-}
-exports.flattenBy = flattenBy;
-exports.functionalUpdate = functionalUpdate;
-exports.getMemoOptions = getMemoOptions;
-exports.isFunction = isFunction;
-exports.isNumberArray = isNumberArray;
-exports.makeStateUpdater = makeStateUpdater;
-exports.memo = memo;
-exports.noop = noop;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-function createCell(table, row, column, columnId) {
-  const getRenderValue = () => {
-    var _cell$getValue;
-    return (_cell$getValue = cell.getValue()) != null ? _cell$getValue : table.options.renderFallbackValue;
-  };
-  const cell = {
-    id: `${row.id}_${column.id}`,
-    row,
-    column,
-    getValue: () => row.getValue(columnId),
-    renderValue: getRenderValue,
-    getContext: utils.memo(() => [table, column, row, cell], (table, column, row, cell) => ({
-      table,
-      column,
-      row,
-      cell: cell,
-      getValue: cell.getValue,
-      renderValue: cell.renderValue
-    }), utils.getMemoOptions(table.options, 'debugCells', 'cell.getContext'))
-  };
-  table._features.forEach(feature => {
-    feature.createCell == null || feature.createCell(cell, column, row, table);
-  }, {});
-  return cell;
-}
-exports.createCell = createCell;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-function createColumn(table, columnDef, depth, parent) {
-  var _ref, _resolvedColumnDef$id;
-  const defaultColumn = table._getDefaultColumnDef();
-  const resolvedColumnDef = {
-    ...defaultColumn,
-    ...columnDef
-  };
-  const accessorKey = resolvedColumnDef.accessorKey;
-  let id = (_ref = (_resolvedColumnDef$id = resolvedColumnDef.id) != null ? _resolvedColumnDef$id : accessorKey ? typeof String.prototype.replaceAll === 'function' ? accessorKey.replaceAll('.', '_') : accessorKey.replace(/\./g, '_') : undefined) != null ? _ref : typeof resolvedColumnDef.header === 'string' ? resolvedColumnDef.header : undefined;
-  let accessorFn;
-  if (resolvedColumnDef.accessorFn) {
-    accessorFn = resolvedColumnDef.accessorFn;
-  } else if (accessorKey) {
-    // Support deep accessor keys
-    if (accessorKey.includes('.')) {
-      accessorFn = originalRow => {
-        let result = originalRow;
-        for (const key of accessorKey.split('.')) {
-          var _result;
-          result = (_result = result) == null ? void 0 : _result[key];
-          if ('production' !== 'production' && result === undefined) {
-            console.warn(`"${key}" in deeply nested key "${accessorKey}" returned undefined.`);
-          }
-        }
-        return result;
-      };
-    } else {
-      accessorFn = originalRow => originalRow[resolvedColumnDef.accessorKey];
-    }
-  }
-  if (!id) {
-    if ('production' !== 'production') {
-      throw new Error(resolvedColumnDef.accessorFn ? `Columns require an id when using an accessorFn` : `Columns require an id when using a non-string header`);
-    }
-    throw new Error();
-  }
-  let column = {
-    id: `${String(id)}`,
-    accessorFn,
-    parent: parent,
-    depth,
-    columnDef: resolvedColumnDef,
-    columns: [],
-    getFlatColumns: utils.memo(() => [true], () => {
-      var _column$columns;
-      return [column, ...((_column$columns = column.columns) == null ? void 0 : _column$columns.flatMap(d => d.getFlatColumns()))];
-    }, utils.getMemoOptions(table.options, 'debugColumns', 'column.getFlatColumns')),
-    getLeafColumns: utils.memo(() => [table._getOrderColumnsFn()], orderColumns => {
-      var _column$columns2;
-      if ((_column$columns2 = column.columns) != null && _column$columns2.length) {
-        let leafColumns = column.columns.flatMap(column => column.getLeafColumns());
-        return orderColumns(leafColumns);
-      }
-      return [column];
-    }, utils.getMemoOptions(table.options, 'debugColumns', 'column.getLeafColumns'))
-  };
-  for (const feature of table._features) {
-    feature.createColumn == null || feature.createColumn(column, table);
-  }
-
-  // Yes, we have to convert table to unknown, because we know more than the compiler here.
-  return column;
-}
-exports.createColumn = createColumn;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-const debug = 'debugHeaders';
-//
-
-function createHeader(table, column, options) {
-  var _options$id;
-  const id = (_options$id = options.id) != null ? _options$id : column.id;
-  let header = {
-    id,
-    column,
-    index: options.index,
-    isPlaceholder: !!options.isPlaceholder,
-    placeholderId: options.placeholderId,
-    depth: options.depth,
-    subHeaders: [],
-    colSpan: 0,
-    rowSpan: 0,
-    headerGroup: null,
-    getLeafHeaders: () => {
-      const leafHeaders = [];
-      const recurseHeader = h => {
-        if (h.subHeaders && h.subHeaders.length) {
-          h.subHeaders.map(recurseHeader);
-        }
-        leafHeaders.push(h);
-      };
-      recurseHeader(header);
-      return leafHeaders;
-    },
-    getContext: () => ({
-      table,
-      header: header,
-      column
-    })
-  };
-  table._features.forEach(feature => {
-    feature.createHeader == null || feature.createHeader(header, table);
-  });
-  return header;
-}
-const Headers = {
-  createTable: table => {
-    // Header Groups
-
-    table.getHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
-      var _left$map$filter, _right$map$filter;
-      const leftColumns = (_left$map$filter = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter : [];
-      const rightColumns = (_right$map$filter = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter : [];
-      const centerColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
-      const headerGroups = buildHeaderGroups(allColumns, [...leftColumns, ...centerColumns, ...rightColumns], table);
-      return headerGroups;
-    }, utils.getMemoOptions(table.options, debug, 'getHeaderGroups'));
-    table.getCenterHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
-      leafColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
-      return buildHeaderGroups(allColumns, leafColumns, table, 'center');
-    }, utils.getMemoOptions(table.options, debug, 'getCenterHeaderGroups'));
-    table.getLeftHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left], (allColumns, leafColumns, left) => {
-      var _left$map$filter2;
-      const orderedLeafColumns = (_left$map$filter2 = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter2 : [];
-      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'left');
-    }, utils.getMemoOptions(table.options, debug, 'getLeftHeaderGroups'));
-    table.getRightHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.right], (allColumns, leafColumns, right) => {
-      var _right$map$filter2;
-      const orderedLeafColumns = (_right$map$filter2 = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter2 : [];
-      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'right');
-    }, utils.getMemoOptions(table.options, debug, 'getRightHeaderGroups'));
-
-    // Footer Groups
-
-    table.getFooterGroups = utils.memo(() => [table.getHeaderGroups()], headerGroups => {
-      return [...headerGroups].reverse();
-    }, utils.getMemoOptions(table.options, debug, 'getFooterGroups'));
-    table.getLeftFooterGroups = utils.memo(() => [table.getLeftHeaderGroups()], headerGroups => {
-      return [...headerGroups].reverse();
-    }, utils.getMemoOptions(table.options, debug, 'getLeftFooterGroups'));
-    table.getCenterFooterGroups = utils.memo(() => [table.getCenterHeaderGroups()], headerGroups => {
-      return [...headerGroups].reverse();
-    }, utils.getMemoOptions(table.options, debug, 'getCenterFooterGroups'));
-    table.getRightFooterGroups = utils.memo(() => [table.getRightHeaderGroups()], headerGroups => {
-      return [...headerGroups].reverse();
-    }, utils.getMemoOptions(table.options, debug, 'getRightFooterGroups'));
-
-    // Flat Headers
-
-    table.getFlatHeaders = utils.memo(() => [table.getHeaderGroups()], headerGroups => {
-      return headerGroups.map(headerGroup => {
-        return headerGroup.headers;
-      }).flat();
-    }, utils.getMemoOptions(table.options, debug, 'getFlatHeaders'));
-    table.getLeftFlatHeaders = utils.memo(() => [table.getLeftHeaderGroups()], left => {
-      return left.map(headerGroup => {
-        return headerGroup.headers;
-      }).flat();
-    }, utils.getMemoOptions(table.options, debug, 'getLeftFlatHeaders'));
-    table.getCenterFlatHeaders = utils.memo(() => [table.getCenterHeaderGroups()], left => {
-      return left.map(headerGroup => {
-        return headerGroup.headers;
-      }).flat();
-    }, utils.getMemoOptions(table.options, debug, 'getCenterFlatHeaders'));
-    table.getRightFlatHeaders = utils.memo(() => [table.getRightHeaderGroups()], left => {
-      return left.map(headerGroup => {
-        return headerGroup.headers;
-      }).flat();
-    }, utils.getMemoOptions(table.options, debug, 'getRightFlatHeaders'));
-
-    // Leaf Headers
-
-    table.getCenterLeafHeaders = utils.memo(() => [table.getCenterFlatHeaders()], flatHeaders => {
-      return flatHeaders.filter(header => {
-        var _header$subHeaders;
-        return !((_header$subHeaders = header.subHeaders) != null && _header$subHeaders.length);
-      });
-    }, utils.getMemoOptions(table.options, debug, 'getCenterLeafHeaders'));
-    table.getLeftLeafHeaders = utils.memo(() => [table.getLeftFlatHeaders()], flatHeaders => {
-      return flatHeaders.filter(header => {
-        var _header$subHeaders2;
-        return !((_header$subHeaders2 = header.subHeaders) != null && _header$subHeaders2.length);
-      });
-    }, utils.getMemoOptions(table.options, debug, 'getLeftLeafHeaders'));
-    table.getRightLeafHeaders = utils.memo(() => [table.getRightFlatHeaders()], flatHeaders => {
-      return flatHeaders.filter(header => {
-        var _header$subHeaders3;
-        return !((_header$subHeaders3 = header.subHeaders) != null && _header$subHeaders3.length);
-      });
-    }, utils.getMemoOptions(table.options, debug, 'getRightLeafHeaders'));
-    table.getLeafHeaders = utils.memo(() => [table.getLeftHeaderGroups(), table.getCenterHeaderGroups(), table.getRightHeaderGroups()], (left, center, right) => {
-      var _left$0$headers, _left$, _center$0$headers, _center$, _right$0$headers, _right$;
-      return [...((_left$0$headers = (_left$ = left[0]) == null ? void 0 : _left$.headers) != null ? _left$0$headers : []), ...((_center$0$headers = (_center$ = center[0]) == null ? void 0 : _center$.headers) != null ? _center$0$headers : []), ...((_right$0$headers = (_right$ = right[0]) == null ? void 0 : _right$.headers) != null ? _right$0$headers : [])].map(header => {
-        return header.getLeafHeaders();
-      }).flat();
-    }, utils.getMemoOptions(table.options, debug, 'getLeafHeaders'));
-  }
-};
-function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
-  var _headerGroups$0$heade, _headerGroups$;
-  // Find the max depth of the columns:
-  // build the leaf column row
-  // build each buffer row going up
-  //    placeholder for non-existent level
-  //    real column for existing level
-
-  let maxDepth = 0;
-  const findMaxDepth = function (columns, depth) {
-    if (depth === void 0) {
-      depth = 1;
-    }
-    maxDepth = Math.max(maxDepth, depth);
-    columns.filter(column => column.getIsVisible()).forEach(column => {
-      var _column$columns;
-      if ((_column$columns = column.columns) != null && _column$columns.length) {
-        findMaxDepth(column.columns, depth + 1);
-      }
-    }, 0);
-  };
-  findMaxDepth(allColumns);
-  let headerGroups = [];
-  const createHeaderGroup = (headersToGroup, depth) => {
-    // The header group we are creating
-    const headerGroup = {
-      depth,
-      id: [headerFamily, `${depth}`].filter(Boolean).join('_'),
-      headers: []
-    };
-
-    // The parent columns we're going to scan next
-    const pendingParentHeaders = [];
-
-    // Scan each column for parents
-    headersToGroup.forEach(headerToGroup => {
-      // What is the latest (last) parent column?
-
-      const latestPendingParentHeader = [...pendingParentHeaders].reverse()[0];
-      const isLeafHeader = headerToGroup.column.depth === headerGroup.depth;
-      let column;
-      let isPlaceholder = false;
-      if (isLeafHeader && headerToGroup.column.parent) {
-        // The parent header is new
-        column = headerToGroup.column.parent;
-      } else {
-        // The parent header is repeated
-        column = headerToGroup.column;
-        isPlaceholder = true;
-      }
-      if (latestPendingParentHeader && (latestPendingParentHeader == null ? void 0 : latestPendingParentHeader.column) === column) {
-        // This column is repeated. Add it as a sub header to the next batch
-        latestPendingParentHeader.subHeaders.push(headerToGroup);
-      } else {
-        // This is a new header. Let's create it
-        const header = createHeader(table, column, {
-          id: [headerFamily, depth, column.id, headerToGroup == null ? void 0 : headerToGroup.id].filter(Boolean).join('_'),
-          isPlaceholder,
-          placeholderId: isPlaceholder ? `${pendingParentHeaders.filter(d => d.column === column).length}` : undefined,
-          depth,
-          index: pendingParentHeaders.length
-        });
-
-        // Add the headerToGroup as a subHeader of the new header
-        header.subHeaders.push(headerToGroup);
-        // Add the new header to the pendingParentHeaders to get grouped
-        // in the next batch
-        pendingParentHeaders.push(header);
-      }
-      headerGroup.headers.push(headerToGroup);
-      headerToGroup.headerGroup = headerGroup;
-    });
-    headerGroups.push(headerGroup);
-    if (depth > 0) {
-      createHeaderGroup(pendingParentHeaders, depth - 1);
-    }
-  };
-  const bottomHeaders = columnsToGroup.map((column, index) => createHeader(table, column, {
-    depth: maxDepth,
-    index
-  }));
-  createHeaderGroup(bottomHeaders, maxDepth - 1);
-  headerGroups.reverse();
-
-  // headerGroups = headerGroups.filter(headerGroup => {
-  //   return !headerGroup.headers.every(header => header.isPlaceholder)
-  // })
-
-  const recurseHeadersForSpans = headers => {
-    const filteredHeaders = headers.filter(header => header.column.getIsVisible());
-    return filteredHeaders.map(header => {
-      let colSpan = 0;
-      let rowSpan = 0;
-      let childRowSpans = [0];
-      if (header.subHeaders && header.subHeaders.length) {
-        childRowSpans = [];
-        recurseHeadersForSpans(header.subHeaders).forEach(_ref => {
-          let {
-            colSpan: childColSpan,
-            rowSpan: childRowSpan
-          } = _ref;
-          colSpan += childColSpan;
-          childRowSpans.push(childRowSpan);
-        });
-      } else {
-        colSpan = 1;
-      }
-      const minChildRowSpan = Math.min(...childRowSpans);
-      rowSpan = rowSpan + minChildRowSpan;
-      header.colSpan = colSpan;
-      header.rowSpan = rowSpan;
-      return {
-        colSpan,
-        rowSpan
-      };
-    });
-  };
-  recurseHeadersForSpans((_headerGroups$0$heade = (_headerGroups$ = headerGroups[0]) == null ? void 0 : _headerGroups$.headers) != null ? _headerGroups$0$heade : []);
-  return headerGroups;
-}
-exports.Headers = Headers;
-exports.buildHeaderGroups = buildHeaderGroups;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-var cell = require('./cell.js');
-const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
-  let row = {
-    id,
-    index: rowIndex,
-    original,
-    depth,
-    parentId,
-    _valuesCache: {},
-    _uniqueValuesCache: {},
-    getValue: columnId => {
-      if (row._valuesCache.hasOwnProperty(columnId)) {
-        return row._valuesCache[columnId];
-      }
-      const column = table.getColumn(columnId);
-      if (!(column != null && column.accessorFn)) {
-        return undefined;
-      }
-      row._valuesCache[columnId] = column.accessorFn(row.original, rowIndex);
-      return row._valuesCache[columnId];
-    },
-    getUniqueValues: columnId => {
-      if (row._uniqueValuesCache.hasOwnProperty(columnId)) {
-        return row._uniqueValuesCache[columnId];
-      }
-      const column = table.getColumn(columnId);
-      if (!(column != null && column.accessorFn)) {
-        return undefined;
-      }
-      if (!column.columnDef.getUniqueValues) {
-        row._uniqueValuesCache[columnId] = [row.getValue(columnId)];
-        return row._uniqueValuesCache[columnId];
-      }
-      row._uniqueValuesCache[columnId] = column.columnDef.getUniqueValues(row.original, rowIndex);
-      return row._uniqueValuesCache[columnId];
-    },
-    renderValue: columnId => {
-      var _row$getValue;
-      return (_row$getValue = row.getValue(columnId)) != null ? _row$getValue : table.options.renderFallbackValue;
-    },
-    subRows: subRows != null ? subRows : [],
-    getLeafRows: () => utils.flattenBy(row.subRows, d => d.subRows),
-    getParentRow: () => row.parentId ? table.getRow(row.parentId, true) : undefined,
-    getParentRows: () => {
-      let parentRows = [];
-      let currentRow = row;
-      while (true) {
-        const parentRow = currentRow.getParentRow();
-        if (!parentRow) break;
-        parentRows.push(parentRow);
-        currentRow = parentRow;
-      }
-      return parentRows.reverse();
-    },
-    getAllCells: utils.memo(() => [table.getAllLeafColumns()], leafColumns => {
-      return leafColumns.map(column => {
-        return cell.createCell(table, row, column, column.id);
-      });
-    }, utils.getMemoOptions(table.options, 'debugRows', 'getAllCells')),
-    _getAllCellsByColumnId: utils.memo(() => [row.getAllCells()], allCells => {
-      return allCells.reduce((acc, cell) => {
-        acc[cell.column.id] = cell;
-        return acc;
-      }, {});
-    }, utils.getMemoOptions(table.options, 'debugRows', 'getAllCellsByColumnId'))
-  };
-  for (let i = 0; i < table._features.length; i++) {
-    const feature = table._features[i];
-    feature == null || feature.createRow == null || feature.createRow(row, table);
-  }
-  return row;
-};
-exports.createRow = createRow;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-//
-const ColumnFaceting = {
-  createColumn: (column, table) => {
-    column._getFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, column.id);
-    column.getFacetedRowModel = () => {
-      if (!column._getFacetedRowModel) {
-        return table.getPreFilteredRowModel();
-      }
-      return column._getFacetedRowModel();
-    };
-    column._getFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, column.id);
-    column.getFacetedUniqueValues = () => {
-      if (!column._getFacetedUniqueValues) {
-        return new Map();
-      }
-      return column._getFacetedUniqueValues();
-    };
-    column._getFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, column.id);
-    column.getFacetedMinMaxValues = () => {
-      if (!column._getFacetedMinMaxValues) {
-        return undefined;
-      }
-      return column._getFacetedMinMaxValues();
-    };
-  }
-};
-exports.ColumnFaceting = ColumnFaceting;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-const includesString = (row, columnId, filterValue) => {
-  var _filterValue$toString, _row$getValue;
-  const search = filterValue == null || (_filterValue$toString = filterValue.toString()) == null ? void 0 : _filterValue$toString.toLowerCase();
-  return Boolean((_row$getValue = row.getValue(columnId)) == null || (_row$getValue = _row$getValue.toString()) == null || (_row$getValue = _row$getValue.toLowerCase()) == null ? void 0 : _row$getValue.includes(search));
-};
-includesString.autoRemove = val => testFalsey(val);
-const includesStringSensitive = (row, columnId, filterValue) => {
-  var _row$getValue2;
-  return Boolean((_row$getValue2 = row.getValue(columnId)) == null || (_row$getValue2 = _row$getValue2.toString()) == null ? void 0 : _row$getValue2.includes(filterValue));
-};
-includesStringSensitive.autoRemove = val => testFalsey(val);
-const equalsString = (row, columnId, filterValue) => {
-  var _row$getValue3;
-  return ((_row$getValue3 = row.getValue(columnId)) == null || (_row$getValue3 = _row$getValue3.toString()) == null ? void 0 : _row$getValue3.toLowerCase()) === (filterValue == null ? void 0 : filterValue.toLowerCase());
-};
-equalsString.autoRemove = val => testFalsey(val);
-const arrIncludes = (row, columnId, filterValue) => {
-  var _row$getValue4;
-  return (_row$getValue4 = row.getValue(columnId)) == null ? void 0 : _row$getValue4.includes(filterValue);
-};
-arrIncludes.autoRemove = val => testFalsey(val);
-const arrIncludesAll = (row, columnId, filterValue) => {
-  return !filterValue.some(val => {
-    var _row$getValue5;
-    return !((_row$getValue5 = row.getValue(columnId)) != null && _row$getValue5.includes(val));
-  });
-};
-arrIncludesAll.autoRemove = val => testFalsey(val) || !(val != null && val.length);
-const arrIncludesSome = (row, columnId, filterValue) => {
-  return filterValue.some(val => {
-    var _row$getValue6;
-    return (_row$getValue6 = row.getValue(columnId)) == null ? void 0 : _row$getValue6.includes(val);
-  });
-};
-arrIncludesSome.autoRemove = val => testFalsey(val) || !(val != null && val.length);
-const equals = (row, columnId, filterValue) => {
-  return row.getValue(columnId) === filterValue;
-};
-equals.autoRemove = val => testFalsey(val);
-const weakEquals = (row, columnId, filterValue) => {
-  return row.getValue(columnId) == filterValue;
-};
-weakEquals.autoRemove = val => testFalsey(val);
-const inNumberRange = (row, columnId, filterValue) => {
-  let [min, max] = filterValue;
-  const rowValue = row.getValue(columnId);
-  return rowValue >= min && rowValue <= max;
-};
-inNumberRange.resolveFilterValue = val => {
-  let [unsafeMin, unsafeMax] = val;
-  let parsedMin = typeof unsafeMin !== 'number' ? parseFloat(unsafeMin) : unsafeMin;
-  let parsedMax = typeof unsafeMax !== 'number' ? parseFloat(unsafeMax) : unsafeMax;
-  let min = unsafeMin === null || Number.isNaN(parsedMin) ? -Infinity : parsedMin;
-  let max = unsafeMax === null || Number.isNaN(parsedMax) ? Infinity : parsedMax;
-  if (min > max) {
-    const temp = min;
-    min = max;
-    max = temp;
-  }
-  return [min, max];
-};
-inNumberRange.autoRemove = val => testFalsey(val) || testFalsey(val[0]) && testFalsey(val[1]);
-
-// Export
-
-const filterFns = {
-  includesString,
-  includesStringSensitive,
-  equalsString,
-  arrIncludes,
-  arrIncludesAll,
-  arrIncludesSome,
-  equals,
-  weakEquals,
-  inNumberRange
-};
-// Utils
-
-function testFalsey(val) {
-  return val === undefined || val === null || val === '';
-}
-exports.filterFns = filterFns;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var filterFns = require('../filterFns.js');
-var utils = require('../utils.js');
-
-//
-
-const ColumnFiltering = {
-  getDefaultColumnDef: () => {
-    return {
-      filterFn: 'auto'
-    };
-  },
-  getInitialState: state => {
-    return {
-      columnFilters: [],
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onColumnFiltersChange: utils.makeStateUpdater('columnFilters', table),
-      filterFromLeafRows: false,
-      maxLeafRowFilterDepth: 100
-    };
-  },
-  createColumn: (column, table) => {
-    column.getAutoFilterFn = () => {
-      const firstRow = table.getCoreRowModel().flatRows[0];
-      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
-      if (typeof value === 'string') {
-        return filterFns.filterFns.includesString;
-      }
-      if (typeof value === 'number') {
-        return filterFns.filterFns.inNumberRange;
-      }
-      if (typeof value === 'boolean') {
-        return filterFns.filterFns.equals;
-      }
-      if (value !== null && typeof value === 'object') {
-        return filterFns.filterFns.equals;
-      }
-      if (Array.isArray(value)) {
-        return filterFns.filterFns.arrIncludes;
-      }
-      return filterFns.filterFns.weakEquals;
-    };
-    column.getFilterFn = () => {
-      var _table$options$filter, _table$options$filter2;
-      return utils.isFunction(column.columnDef.filterFn) ? column.columnDef.filterFn : column.columnDef.filterFn === 'auto' ? column.getAutoFilterFn() :
-      // @ts-ignore
-      (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[column.columnDef.filterFn]) != null ? _table$options$filter : filterFns.filterFns[column.columnDef.filterFn];
-    };
-    column.getCanFilter = () => {
-      var _column$columnDef$ena, _table$options$enable, _table$options$enable2;
-      return ((_column$columnDef$ena = column.columnDef.enableColumnFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnFilters) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && !!column.accessorFn;
-    };
-    column.getIsFiltered = () => column.getFilterIndex() > -1;
-    column.getFilterValue = () => {
-      var _table$getState$colum;
-      return (_table$getState$colum = table.getState().columnFilters) == null || (_table$getState$colum = _table$getState$colum.find(d => d.id === column.id)) == null ? void 0 : _table$getState$colum.value;
-    };
-    column.getFilterIndex = () => {
-      var _table$getState$colum2, _table$getState$colum3;
-      return (_table$getState$colum2 = (_table$getState$colum3 = table.getState().columnFilters) == null ? void 0 : _table$getState$colum3.findIndex(d => d.id === column.id)) != null ? _table$getState$colum2 : -1;
-    };
-    column.setFilterValue = value => {
-      table.setColumnFilters(old => {
-        const filterFn = column.getFilterFn();
-        const previousFilter = old == null ? void 0 : old.find(d => d.id === column.id);
-        const newFilter = utils.functionalUpdate(value, previousFilter ? previousFilter.value : undefined);
-
-        //
-        if (shouldAutoRemoveFilter(filterFn, newFilter, column)) {
-          var _old$filter;
-          return (_old$filter = old == null ? void 0 : old.filter(d => d.id !== column.id)) != null ? _old$filter : [];
-        }
-        const newFilterObj = {
-          id: column.id,
-          value: newFilter
-        };
-        if (previousFilter) {
-          var _old$map;
-          return (_old$map = old == null ? void 0 : old.map(d => {
-            if (d.id === column.id) {
-              return newFilterObj;
-            }
-            return d;
-          })) != null ? _old$map : [];
-        }
-        if (old != null && old.length) {
-          return [...old, newFilterObj];
-        }
-        return [newFilterObj];
-      });
-    };
-  },
-  createRow: (row, _table) => {
-    row.columnFilters = {};
-    row.columnFiltersMeta = {};
-  },
-  createTable: table => {
-    table.setColumnFilters = updater => {
-      const leafColumns = table.getAllLeafColumns();
-      const updateFn = old => {
-        var _functionalUpdate;
-        return (_functionalUpdate = utils.functionalUpdate(updater, old)) == null ? void 0 : _functionalUpdate.filter(filter => {
-          const column = leafColumns.find(d => d.id === filter.id);
-          if (column) {
-            const filterFn = column.getFilterFn();
-            if (shouldAutoRemoveFilter(filterFn, filter.value, column)) {
-              return false;
-            }
-          }
-          return true;
-        });
-      };
-      table.options.onColumnFiltersChange == null || table.options.onColumnFiltersChange(updateFn);
-    };
-    table.resetColumnFilters = defaultState => {
-      var _table$initialState$c, _table$initialState;
-      table.setColumnFilters(defaultState ? [] : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnFilters) != null ? _table$initialState$c : []);
-    };
-    table.getPreFilteredRowModel = () => table.getCoreRowModel();
-    table.getFilteredRowModel = () => {
-      if (!table._getFilteredRowModel && table.options.getFilteredRowModel) {
-        table._getFilteredRowModel = table.options.getFilteredRowModel(table);
-      }
-      if (table.options.manualFiltering || !table._getFilteredRowModel) {
-        return table.getPreFilteredRowModel();
-      }
-      return table._getFilteredRowModel();
-    };
-  }
-};
-function shouldAutoRemoveFilter(filterFn, value, column) {
-  return (filterFn && filterFn.autoRemove ? filterFn.autoRemove(value, column) : false) || typeof value === 'undefined' || typeof value === 'string' && !value;
-}
-exports.ColumnFiltering = ColumnFiltering;
-exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('./utils.js');
-const sum = (columnId, _leafRows, childRows) => {
-  // It's faster to just add the aggregations together instead of
-  // process leaf nodes individually
-  return childRows.reduce((sum, next) => {
-    const nextValue = next.getValue(columnId);
-    return sum + (typeof nextValue === 'number' ? nextValue : 0);
-  }, 0);
-};
-const min = (columnId, _leafRows, childRows) => {
-  let min;
-  childRows.forEach(row => {
-    const value = row.getValue(columnId);
-    if (value != null && (min > value || min === undefined && value >= value)) {
-      min = value;
-    }
-  });
-  return min;
-};
-const max = (columnId, _leafRows, childRows) => {
-  let max;
-  childRows.forEach(row => {
-    const value = row.getValue(columnId);
-    if (value != null && (max < value || max === undefined && value >= value)) {
-      max = value;
-    }
-  });
-  return max;
-};
-const extent = (columnId, _leafRows, childRows) => {
-  let min;
-  let max;
-  childRows.forEach(row => {
-    const value = row.getValue(columnId);
-    if (value != null) {
-      if (min === undefined) {
-        if (value >= value) min = max = value;
-      } else {
-        if (min > value) min = value;
-        if (max < value) max = value;
-      }
-    }
-  });
-  return [min, max];
-};
-const mean = (columnId, leafRows) => {
-  let count = 0;
-  let sum = 0;
-  leafRows.forEach(row => {
-    let value = row.getValue(columnId);
-    if (value != null && (value = +value) >= value) {
-      ++count, sum += value;
-    }
-  });
-  if (count) return sum / count;
-  return;
-};
-const median = (columnId, leafRows) => {
-  if (!leafRows.length) {
-    return;
-  }
-  const values = leafRows.map(row => row.getValue(columnId));
-  if (!utils.isNumberArray(values)) {
-    return;
-  }
-  if (values.length === 1) {
-    return values[0];
-  }
-  const mid = Math.floor(values.length / 2);
-  const nums = values.sort((a, b) => a - b);
-  return values.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
-};
-const unique = (columnId, leafRows) => {
-  return Array.from(new Set(leafRows.map(d => d.getValue(columnId))).values());
-};
-const uniqueCount = (columnId, leafRows) => {
-  return new Set(leafRows.map(d => d.getValue(columnId))).size;
-};
-const count = (_columnId, leafRows) => {
-  return leafRows.length;
-};
-const aggregationFns = {
-  sum,
-  min,
-  max,
-  extent,
-  mean,
-  median,
-  unique,
-  uniqueCount,
-  count
-};
-exports.aggregationFns = aggregationFns;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var aggregationFns = require('../aggregationFns.js');
-var utils = require('../utils.js');
-
-//
-
-const ColumnGrouping = {
-  getDefaultColumnDef: () => {
-    return {
-      aggregatedCell: props => {
-        var _toString, _props$getValue;
-        return (_toString = (_props$getValue = props.getValue()) == null || _props$getValue.toString == null ? void 0 : _props$getValue.toString()) != null ? _toString : null;
-      },
-      aggregationFn: 'auto'
-    };
-  },
-  getInitialState: state => {
-    return {
-      grouping: [],
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onGroupingChange: utils.makeStateUpdater('grouping', table),
-      groupedColumnMode: 'reorder'
-    };
-  },
-  createColumn: (column, table) => {
-    column.toggleGrouping = () => {
-      table.setGrouping(old => {
-        // Find any existing grouping for this column
-        if (old != null && old.includes(column.id)) {
-          return old.filter(d => d !== column.id);
-        }
-        return [...(old != null ? old : []), column.id];
-      });
-    };
-    column.getCanGroup = () => {
-      var _column$columnDef$ena, _table$options$enable;
-      return ((_column$columnDef$ena = column.columnDef.enableGrouping) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableGrouping) != null ? _table$options$enable : true) && (!!column.accessorFn || !!column.columnDef.getGroupingValue);
-    };
-    column.getIsGrouped = () => {
-      var _table$getState$group;
-      return (_table$getState$group = table.getState().grouping) == null ? void 0 : _table$getState$group.includes(column.id);
-    };
-    column.getGroupedIndex = () => {
-      var _table$getState$group2;
-      return (_table$getState$group2 = table.getState().grouping) == null ? void 0 : _table$getState$group2.indexOf(column.id);
-    };
-    column.getToggleGroupingHandler = () => {
-      const canGroup = column.getCanGroup();
-      return () => {
-        if (!canGroup) return;
-        column.toggleGrouping();
-      };
-    };
-    column.getAutoAggregationFn = () => {
-      const firstRow = table.getCoreRowModel().flatRows[0];
-      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
-      if (typeof value === 'number') {
-        return aggregationFns.aggregationFns.sum;
-      }
-      if (Object.prototype.toString.call(value) === '[object Date]') {
-        return aggregationFns.aggregationFns.extent;
-      }
-    };
-    column.getAggregationFn = () => {
-      var _table$options$aggreg, _table$options$aggreg2;
-      if (!column) {
-        throw new Error();
-      }
-      return utils.isFunction(column.columnDef.aggregationFn) ? column.columnDef.aggregationFn : column.columnDef.aggregationFn === 'auto' ? column.getAutoAggregationFn() : (_table$options$aggreg = (_table$options$aggreg2 = table.options.aggregationFns) == null ? void 0 : _table$options$aggreg2[column.columnDef.aggregationFn]) != null ? _table$options$aggreg : aggregationFns.aggregationFns[column.columnDef.aggregationFn];
-    };
-  },
-  createTable: table => {
-    table.setGrouping = updater => table.options.onGroupingChange == null ? void 0 : table.options.onGroupingChange(updater);
-    table.resetGrouping = defaultState => {
-      var _table$initialState$g, _table$initialState;
-      table.setGrouping(defaultState ? [] : (_table$initialState$g = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.grouping) != null ? _table$initialState$g : []);
-    };
-    table.getPreGroupedRowModel = () => table.getFilteredRowModel();
-    table.getGroupedRowModel = () => {
-      if (!table._getGroupedRowModel && table.options.getGroupedRowModel) {
-        table._getGroupedRowModel = table.options.getGroupedRowModel(table);
-      }
-      if (table.options.manualGrouping || !table._getGroupedRowModel) {
-        return table.getPreGroupedRowModel();
-      }
-      return table._getGroupedRowModel();
-    };
-  },
-  createRow: (row, table) => {
-    row.getIsGrouped = () => !!row.groupingColumnId;
-    row.getGroupingValue = columnId => {
-      if (row._groupingValuesCache.hasOwnProperty(columnId)) {
-        return row._groupingValuesCache[columnId];
-      }
-      const column = table.getColumn(columnId);
-      if (!(column != null && column.columnDef.getGroupingValue)) {
-        return row.getValue(columnId);
-      }
-      row._groupingValuesCache[columnId] = column.columnDef.getGroupingValue(row.original);
-      return row._groupingValuesCache[columnId];
-    };
-    row._groupingValuesCache = {};
-  },
-  createCell: (cell, column, row, table) => {
-    cell.getIsGrouped = () => column.getIsGrouped() && column.id === row.groupingColumnId;
-    cell.getIsPlaceholder = () => !cell.getIsGrouped() && column.getIsGrouped();
-    cell.getIsAggregated = () => {
-      var _row$subRows;
-      return !cell.getIsGrouped() && !cell.getIsPlaceholder() && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
-    };
-  }
-};
-function orderColumns(leafColumns, grouping, groupedColumnMode) {
-  if (!(grouping != null && grouping.length) || !groupedColumnMode) {
-    return leafColumns;
-  }
-  const nonGroupingColumns = leafColumns.filter(col => !grouping.includes(col.id));
-  if (groupedColumnMode === 'remove') {
-    return nonGroupingColumns;
-  }
-  const groupingColumns = grouping.map(g => leafColumns.find(col => col.id === g)).filter(Boolean);
-  return [...groupingColumns, ...nonGroupingColumns];
-}
-exports.ColumnGrouping = ColumnGrouping;
-exports.orderColumns = orderColumns;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-
-//
-
-const ColumnVisibility = {
-  getInitialState: state => {
-    return {
-      columnVisibility: {},
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onColumnVisibilityChange: utils.makeStateUpdater('columnVisibility', table)
-    };
-  },
-  createColumn: (column, table) => {
-    column.toggleVisibility = value => {
-      if (column.getCanHide()) {
-        table.setColumnVisibility(old => ({
-          ...old,
-          [column.id]: value != null ? value : !column.getIsVisible()
-        }));
-      }
-    };
-    column.getIsVisible = () => {
-      var _ref, _table$getState$colum;
-      const childColumns = column.columns;
-      return (_ref = childColumns.length ? childColumns.some(c => c.getIsVisible()) : (_table$getState$colum = table.getState().columnVisibility) == null ? void 0 : _table$getState$colum[column.id]) != null ? _ref : true;
-    };
-    column.getCanHide = () => {
-      var _column$columnDef$ena, _table$options$enable;
-      return ((_column$columnDef$ena = column.columnDef.enableHiding) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableHiding) != null ? _table$options$enable : true);
-    };
-    column.getToggleVisibilityHandler = () => {
-      return e => {
-        column.toggleVisibility == null || column.toggleVisibility(e.target.checked);
-      };
-    };
-  },
-  createRow: (row, table) => {
-    row._getAllVisibleCells = utils.memo(() => [row.getAllCells(), table.getState().columnVisibility], cells => {
-      return cells.filter(cell => cell.column.getIsVisible());
-    }, utils.getMemoOptions(table.options, 'debugRows', '_getAllVisibleCells'));
-    row.getVisibleCells = utils.memo(() => [row.getLeftVisibleCells(), row.getCenterVisibleCells(), row.getRightVisibleCells()], (left, center, right) => [...left, ...center, ...right], utils.getMemoOptions(table.options, 'debugRows', 'getVisibleCells'));
-  },
-  createTable: table => {
-    const makeVisibleColumnsMethod = (key, getColumns) => {
-      return utils.memo(() => [getColumns(), getColumns().filter(d => d.getIsVisible()).map(d => d.id).join('_')], columns => {
-        return columns.filter(d => d.getIsVisible == null ? void 0 : d.getIsVisible());
-      }, utils.getMemoOptions(table.options, 'debugColumns', key));
-    };
-    table.getVisibleFlatColumns = makeVisibleColumnsMethod('getVisibleFlatColumns', () => table.getAllFlatColumns());
-    table.getVisibleLeafColumns = makeVisibleColumnsMethod('getVisibleLeafColumns', () => table.getAllLeafColumns());
-    table.getLeftVisibleLeafColumns = makeVisibleColumnsMethod('getLeftVisibleLeafColumns', () => table.getLeftLeafColumns());
-    table.getRightVisibleLeafColumns = makeVisibleColumnsMethod('getRightVisibleLeafColumns', () => table.getRightLeafColumns());
-    table.getCenterVisibleLeafColumns = makeVisibleColumnsMethod('getCenterVisibleLeafColumns', () => table.getCenterLeafColumns());
-    table.setColumnVisibility = updater => table.options.onColumnVisibilityChange == null ? void 0 : table.options.onColumnVisibilityChange(updater);
-    table.resetColumnVisibility = defaultState => {
-      var _table$initialState$c;
-      table.setColumnVisibility(defaultState ? {} : (_table$initialState$c = table.initialState.columnVisibility) != null ? _table$initialState$c : {});
-    };
-    table.toggleAllColumnsVisible = value => {
-      var _value;
-      value = (_value = value) != null ? _value : !table.getIsAllColumnsVisible();
-      table.setColumnVisibility(table.getAllLeafColumns().reduce((obj, column) => ({
-        ...obj,
-        [column.id]: !value ? !(column.getCanHide != null && column.getCanHide()) : value
-      }), {}));
-    };
-    table.getIsAllColumnsVisible = () => !table.getAllLeafColumns().some(column => !(column.getIsVisible != null && column.getIsVisible()));
-    table.getIsSomeColumnsVisible = () => table.getAllLeafColumns().some(column => column.getIsVisible == null ? void 0 : column.getIsVisible());
-    table.getToggleAllColumnsVisibilityHandler = () => {
-      return e => {
-        var _target;
-        table.toggleAllColumnsVisible((_target = e.target) == null ? void 0 : _target.checked);
-      };
-    };
-  }
-};
-function _getVisibleLeafColumns(table, position) {
-  return !position ? table.getVisibleLeafColumns() : position === 'center' ? table.getCenterVisibleLeafColumns() : position === 'left' ? table.getLeftVisibleLeafColumns() : table.getRightVisibleLeafColumns();
-}
-exports.ColumnVisibility = ColumnVisibility;
-exports._getVisibleLeafColumns = _getVisibleLeafColumns;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-var ColumnGrouping = require('./ColumnGrouping.js');
-var ColumnVisibility = require('./ColumnVisibility.js');
-
-//
-
-const ColumnOrdering = {
-  getInitialState: state => {
-    return {
-      columnOrder: [],
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onColumnOrderChange: utils.makeStateUpdater('columnOrder', table)
-    };
-  },
-  createColumn: (column, table) => {
-    column.getIndex = utils.memo(position => [ColumnVisibility._getVisibleLeafColumns(table, position)], columns => columns.findIndex(d => d.id === column.id), utils.getMemoOptions(table.options, 'debugColumns', 'getIndex'));
-    column.getIsFirstColumn = position => {
-      var _columns$;
-      const columns = ColumnVisibility._getVisibleLeafColumns(table, position);
-      return ((_columns$ = columns[0]) == null ? void 0 : _columns$.id) === column.id;
-    };
-    column.getIsLastColumn = position => {
-      var _columns;
-      const columns = ColumnVisibility._getVisibleLeafColumns(table, position);
-      return ((_columns = columns[columns.length - 1]) == null ? void 0 : _columns.id) === column.id;
-    };
-  },
-  createTable: table => {
-    table.setColumnOrder = updater => table.options.onColumnOrderChange == null ? void 0 : table.options.onColumnOrderChange(updater);
-    table.resetColumnOrder = defaultState => {
-      var _table$initialState$c;
-      table.setColumnOrder(defaultState ? [] : (_table$initialState$c = table.initialState.columnOrder) != null ? _table$initialState$c : []);
-    };
-    table._getOrderColumnsFn = utils.memo(() => [table.getState().columnOrder, table.getState().grouping, table.options.groupedColumnMode], (columnOrder, grouping, groupedColumnMode) => columns => {
-      // Sort grouped columns to the start of the column list
-      // before the headers are built
-      let orderedColumns = [];
-
-      // If there is no order, return the normal columns
-      if (!(columnOrder != null && columnOrder.length)) {
-        orderedColumns = columns;
-      } else {
-        const columnOrderCopy = [...columnOrder];
-
-        // If there is an order, make a copy of the columns
-        const columnsCopy = [...columns];
-
-        // And make a new ordered array of the columns
-
-        // Loop over the columns and place them in order into the new array
-        while (columnsCopy.length && columnOrderCopy.length) {
-          const targetColumnId = columnOrderCopy.shift();
-          const foundIndex = columnsCopy.findIndex(d => d.id === targetColumnId);
-          if (foundIndex > -1) {
-            orderedColumns.push(columnsCopy.splice(foundIndex, 1)[0]);
-          }
-        }
-
-        // If there are any columns left, add them to the end
-        orderedColumns = [...orderedColumns, ...columnsCopy];
-      }
-      return ColumnGrouping.orderColumns(orderedColumns, grouping, groupedColumnMode);
-    }, utils.getMemoOptions(table.options, 'debugTable', '_getOrderColumnsFn'));
-  }
-};
-exports.ColumnOrdering = ColumnOrdering;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-
-//
-
-const getDefaultColumnPinningState = () => ({
-  left: [],
-  right: []
-});
-const ColumnPinning = {
-  getInitialState: state => {
-    return {
-      columnPinning: getDefaultColumnPinningState(),
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onColumnPinningChange: utils.makeStateUpdater('columnPinning', table)
-    };
-  },
-  createColumn: (column, table) => {
-    column.pin = position => {
-      const columnIds = column.getLeafColumns().map(d => d.id).filter(Boolean);
-      table.setColumnPinning(old => {
-        var _old$left3, _old$right3;
-        if (position === 'right') {
-          var _old$left, _old$right;
-          return {
-            left: ((_old$left = old == null ? void 0 : old.left) != null ? _old$left : []).filter(d => !(columnIds != null && columnIds.includes(d))),
-            right: [...((_old$right = old == null ? void 0 : old.right) != null ? _old$right : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds]
-          };
-        }
-        if (position === 'left') {
-          var _old$left2, _old$right2;
-          return {
-            left: [...((_old$left2 = old == null ? void 0 : old.left) != null ? _old$left2 : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds],
-            right: ((_old$right2 = old == null ? void 0 : old.right) != null ? _old$right2 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
-          };
-        }
-        return {
-          left: ((_old$left3 = old == null ? void 0 : old.left) != null ? _old$left3 : []).filter(d => !(columnIds != null && columnIds.includes(d))),
-          right: ((_old$right3 = old == null ? void 0 : old.right) != null ? _old$right3 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
-        };
-      });
-    };
-    column.getCanPin = () => {
-      const leafColumns = column.getLeafColumns();
-      return leafColumns.some(d => {
-        var _d$columnDef$enablePi, _ref, _table$options$enable;
-        return ((_d$columnDef$enablePi = d.columnDef.enablePinning) != null ? _d$columnDef$enablePi : true) && ((_ref = (_table$options$enable = table.options.enableColumnPinning) != null ? _table$options$enable : table.options.enablePinning) != null ? _ref : true);
-      });
-    };
-    column.getIsPinned = () => {
-      const leafColumnIds = column.getLeafColumns().map(d => d.id);
-      const {
-        left,
-        right
-      } = table.getState().columnPinning;
-      const isLeft = leafColumnIds.some(d => left == null ? void 0 : left.includes(d));
-      const isRight = leafColumnIds.some(d => right == null ? void 0 : right.includes(d));
-      return isLeft ? 'left' : isRight ? 'right' : false;
-    };
-    column.getPinnedIndex = () => {
-      var _table$getState$colum, _table$getState$colum2;
-      const position = column.getIsPinned();
-      return position ? (_table$getState$colum = (_table$getState$colum2 = table.getState().columnPinning) == null || (_table$getState$colum2 = _table$getState$colum2[position]) == null ? void 0 : _table$getState$colum2.indexOf(column.id)) != null ? _table$getState$colum : -1 : 0;
-    };
-  },
-  createRow: (row, table) => {
-    row.getCenterVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allCells, left, right) => {
-      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
-      return allCells.filter(d => !leftAndRight.includes(d.column.id));
-    }, utils.getMemoOptions(table.options, 'debugRows', 'getCenterVisibleCells'));
-    row.getLeftVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left], (allCells, left) => {
-      const cells = (left != null ? left : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
-        ...d,
-        position: 'left'
-      }));
-      return cells;
-    }, utils.getMemoOptions(table.options, 'debugRows', 'getLeftVisibleCells'));
-    row.getRightVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.right], (allCells, right) => {
-      const cells = (right != null ? right : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
-        ...d,
-        position: 'right'
-      }));
-      return cells;
-    }, utils.getMemoOptions(table.options, 'debugRows', 'getRightVisibleCells'));
-  },
-  createTable: table => {
-    table.setColumnPinning = updater => table.options.onColumnPinningChange == null ? void 0 : table.options.onColumnPinningChange(updater);
-    table.resetColumnPinning = defaultState => {
-      var _table$initialState$c, _table$initialState;
-      return table.setColumnPinning(defaultState ? getDefaultColumnPinningState() : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnPinning) != null ? _table$initialState$c : getDefaultColumnPinningState());
-    };
-    table.getIsSomeColumnsPinned = position => {
-      var _pinningState$positio;
-      const pinningState = table.getState().columnPinning;
-      if (!position) {
-        var _pinningState$left, _pinningState$right;
-        return Boolean(((_pinningState$left = pinningState.left) == null ? void 0 : _pinningState$left.length) || ((_pinningState$right = pinningState.right) == null ? void 0 : _pinningState$right.length));
-      }
-      return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
-    };
-    table.getLeftLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left], (allColumns, left) => {
-      return (left != null ? left : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
-    }, utils.getMemoOptions(table.options, 'debugColumns', 'getLeftLeafColumns'));
-    table.getRightLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.right], (allColumns, right) => {
-      return (right != null ? right : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
-    }, utils.getMemoOptions(table.options, 'debugColumns', 'getRightLeafColumns'));
-    table.getCenterLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, left, right) => {
-      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
-      return allColumns.filter(d => !leftAndRight.includes(d.id));
-    }, utils.getMemoOptions(table.options, 'debugColumns', 'getCenterLeafColumns'));
-  }
-};
-exports.ColumnPinning = ColumnPinning;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-function safelyAccessDocument(_document) {
-  return _document || (typeof document !== 'undefined' ? document : null);
-}
-exports.safelyAccessDocument = safelyAccessDocument;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-var document = require('../utils/document.js');
-var ColumnVisibility = require('./ColumnVisibility.js');
-
-//
-
-//
-
-const defaultColumnSizing = {
-  size: 150,
-  minSize: 20,
-  maxSize: Number.MAX_SAFE_INTEGER
-};
-const getDefaultColumnSizingInfoState = () => ({
-  startOffset: null,
-  startSize: null,
-  deltaOffset: null,
-  deltaPercentage: null,
-  isResizingColumn: false,
-  columnSizingStart: []
-});
-const ColumnSizing = {
-  getDefaultColumnDef: () => {
-    return defaultColumnSizing;
-  },
-  getInitialState: state => {
-    return {
-      columnSizing: {},
-      columnSizingInfo: getDefaultColumnSizingInfoState(),
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      columnResizeMode: 'onEnd',
-      columnResizeDirection: 'ltr',
-      onColumnSizingChange: utils.makeStateUpdater('columnSizing', table),
-      onColumnSizingInfoChange: utils.makeStateUpdater('columnSizingInfo', table)
-    };
-  },
-  createColumn: (column, table) => {
-    column.getSize = () => {
-      var _column$columnDef$min, _ref, _column$columnDef$max;
-      const columnSize = table.getState().columnSizing[column.id];
-      return Math.min(Math.max((_column$columnDef$min = column.columnDef.minSize) != null ? _column$columnDef$min : defaultColumnSizing.minSize, (_ref = columnSize != null ? columnSize : column.columnDef.size) != null ? _ref : defaultColumnSizing.size), (_column$columnDef$max = column.columnDef.maxSize) != null ? _column$columnDef$max : defaultColumnSizing.maxSize);
-    };
-    column.getStart = utils.memo(position => [position, ColumnVisibility._getVisibleLeafColumns(table, position), table.getState().columnSizing], (position, columns) => columns.slice(0, column.getIndex(position)).reduce((sum, column) => sum + column.getSize(), 0), utils.getMemoOptions(table.options, 'debugColumns', 'getStart'));
-    column.getAfter = utils.memo(position => [position, ColumnVisibility._getVisibleLeafColumns(table, position), table.getState().columnSizing], (position, columns) => columns.slice(column.getIndex(position) + 1).reduce((sum, column) => sum + column.getSize(), 0), utils.getMemoOptions(table.options, 'debugColumns', 'getAfter'));
-    column.resetSize = () => {
-      table.setColumnSizing(_ref2 => {
-        let {
-          [column.id]: _,
-          ...rest
-        } = _ref2;
-        return rest;
-      });
-    };
-    column.getCanResize = () => {
-      var _column$columnDef$ena, _table$options$enable;
-      return ((_column$columnDef$ena = column.columnDef.enableResizing) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnResizing) != null ? _table$options$enable : true);
-    };
-    column.getIsResizing = () => {
-      return table.getState().columnSizingInfo.isResizingColumn === column.id;
-    };
-  },
-  createHeader: (header, table) => {
-    header.getSize = () => {
-      let sum = 0;
-      const recurse = header => {
-        if (header.subHeaders.length) {
-          header.subHeaders.forEach(recurse);
-        } else {
-          var _header$column$getSiz;
-          sum += (_header$column$getSiz = header.column.getSize()) != null ? _header$column$getSiz : 0;
-        }
-      };
-      recurse(header);
-      return sum;
-    };
-    header.getStart = () => {
-      if (header.index > 0) {
-        const prevSiblingHeader = header.headerGroup.headers[header.index - 1];
-        return prevSiblingHeader.getStart() + prevSiblingHeader.getSize();
-      }
-      return 0;
-    };
-    header.getResizeHandler = _contextDocument => {
-      const column = table.getColumn(header.column.id);
-      const canResize = column == null ? void 0 : column.getCanResize();
-      return e => {
-        if (!column || !canResize) {
-          return;
-        }
-        e.persist == null || e.persist();
-        if (isTouchStartEvent(e)) {
-          // lets not respond to multiple touches (e.g. 2 or 3 fingers)
-          if (e.touches && e.touches.length > 1) {
-            return;
-          }
-        }
-        const startSize = header.getSize();
-        const columnSizingStart = header ? header.getLeafHeaders().map(d => [d.column.id, d.column.getSize()]) : [[column.id, column.getSize()]];
-        const clientX = isTouchStartEvent(e) ? Math.round(e.touches[0].clientX) : e.clientX;
-        const newColumnSizing = {};
-        const updateOffset = (eventType, clientXPos) => {
-          if (typeof clientXPos !== 'number') {
-            return;
-          }
-          table.setColumnSizingInfo(old => {
-            var _old$startOffset, _old$startSize;
-            const deltaDirection = table.options.columnResizeDirection === 'rtl' ? -1 : 1;
-            const deltaOffset = (clientXPos - ((_old$startOffset = old == null ? void 0 : old.startOffset) != null ? _old$startOffset : 0)) * deltaDirection;
-            const deltaPercentage = Math.max(deltaOffset / ((_old$startSize = old == null ? void 0 : old.startSize) != null ? _old$startSize : 0), -0.999999);
-            old.columnSizingStart.forEach(_ref3 => {
-              let [columnId, headerSize] = _ref3;
-              newColumnSizing[columnId] = Math.round(Math.max(headerSize + headerSize * deltaPercentage, 0) * 100) / 100;
-            });
-            return {
-              ...old,
-              deltaOffset,
-              deltaPercentage
-            };
-          });
-          if (table.options.columnResizeMode === 'onChange' || eventType === 'end') {
-            table.setColumnSizing(old => ({
-              ...old,
-              ...newColumnSizing
-            }));
-          }
-        };
-        const onMove = clientXPos => updateOffset('move', clientXPos);
-        const onEnd = clientXPos => {
-          updateOffset('end', clientXPos);
-          table.setColumnSizingInfo(old => ({
-            ...old,
-            isResizingColumn: false,
-            startOffset: null,
-            startSize: null,
-            deltaOffset: null,
-            deltaPercentage: null,
-            columnSizingStart: []
-          }));
-        };
-        const contextDocument = document.safelyAccessDocument(_contextDocument);
-        const mouseEvents = {
-          moveHandler: e => onMove(e.clientX),
-          upHandler: e => {
-            contextDocument == null || contextDocument.removeEventListener('mousemove', mouseEvents.moveHandler);
-            contextDocument == null || contextDocument.removeEventListener('mouseup', mouseEvents.upHandler);
-            onEnd(e.clientX);
-          }
-        };
-        const touchEvents = {
-          moveHandler: e => {
-            if (e.cancelable) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-            onMove(e.touches[0].clientX);
-            return false;
-          },
-          upHandler: e => {
-            var _e$touches$;
-            contextDocument == null || contextDocument.removeEventListener('touchmove', touchEvents.moveHandler);
-            contextDocument == null || contextDocument.removeEventListener('touchend', touchEvents.upHandler);
-            if (e.cancelable) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-            onEnd((_e$touches$ = e.touches[0]) == null ? void 0 : _e$touches$.clientX);
-          }
-        };
-        const passiveIfSupported = passiveEventSupported() ? {
-          passive: false
-        } : false;
-        if (isTouchStartEvent(e)) {
-          contextDocument == null || contextDocument.addEventListener('touchmove', touchEvents.moveHandler, passiveIfSupported);
-          contextDocument == null || contextDocument.addEventListener('touchend', touchEvents.upHandler, passiveIfSupported);
-        } else {
-          contextDocument == null || contextDocument.addEventListener('mousemove', mouseEvents.moveHandler, passiveIfSupported);
-          contextDocument == null || contextDocument.addEventListener('mouseup', mouseEvents.upHandler, passiveIfSupported);
-        }
-        table.setColumnSizingInfo(old => ({
-          ...old,
-          startOffset: clientX,
-          startSize,
-          deltaOffset: 0,
-          deltaPercentage: 0,
-          columnSizingStart,
-          isResizingColumn: column.id
-        }));
-      };
-    };
-  },
-  createTable: table => {
-    table.setColumnSizing = updater => table.options.onColumnSizingChange == null ? void 0 : table.options.onColumnSizingChange(updater);
-    table.setColumnSizingInfo = updater => table.options.onColumnSizingInfoChange == null ? void 0 : table.options.onColumnSizingInfoChange(updater);
-    table.resetColumnSizing = defaultState => {
-      var _table$initialState$c;
-      table.setColumnSizing(defaultState ? {} : (_table$initialState$c = table.initialState.columnSizing) != null ? _table$initialState$c : {});
-    };
-    table.resetHeaderSizeInfo = defaultState => {
-      var _table$initialState$c2;
-      table.setColumnSizingInfo(defaultState ? getDefaultColumnSizingInfoState() : (_table$initialState$c2 = table.initialState.columnSizingInfo) != null ? _table$initialState$c2 : getDefaultColumnSizingInfoState());
-    };
-    table.getTotalSize = () => {
-      var _table$getHeaderGroup, _table$getHeaderGroup2;
-      return (_table$getHeaderGroup = (_table$getHeaderGroup2 = table.getHeaderGroups()[0]) == null ? void 0 : _table$getHeaderGroup2.headers.reduce((sum, header) => {
-        return sum + header.getSize();
-      }, 0)) != null ? _table$getHeaderGroup : 0;
-    };
-    table.getLeftTotalSize = () => {
-      var _table$getLeftHeaderG, _table$getLeftHeaderG2;
-      return (_table$getLeftHeaderG = (_table$getLeftHeaderG2 = table.getLeftHeaderGroups()[0]) == null ? void 0 : _table$getLeftHeaderG2.headers.reduce((sum, header) => {
-        return sum + header.getSize();
-      }, 0)) != null ? _table$getLeftHeaderG : 0;
-    };
-    table.getCenterTotalSize = () => {
-      var _table$getCenterHeade, _table$getCenterHeade2;
-      return (_table$getCenterHeade = (_table$getCenterHeade2 = table.getCenterHeaderGroups()[0]) == null ? void 0 : _table$getCenterHeade2.headers.reduce((sum, header) => {
-        return sum + header.getSize();
-      }, 0)) != null ? _table$getCenterHeade : 0;
-    };
-    table.getRightTotalSize = () => {
-      var _table$getRightHeader, _table$getRightHeader2;
-      return (_table$getRightHeader = (_table$getRightHeader2 = table.getRightHeaderGroups()[0]) == null ? void 0 : _table$getRightHeader2.headers.reduce((sum, header) => {
-        return sum + header.getSize();
-      }, 0)) != null ? _table$getRightHeader : 0;
-    };
-  }
-};
-let passiveSupported = null;
-function passiveEventSupported() {
-  if (typeof passiveSupported === 'boolean') return passiveSupported;
-  let supported = false;
-  try {
-    const options = {
-      get passive() {
-        supported = true;
-        return false;
-      }
-    };
-    const noop = () => {};
-    window.addEventListener('test', noop, options);
-    window.removeEventListener('test', noop);
-  } catch (err) {
-    supported = false;
-  }
-  passiveSupported = supported;
-  return passiveSupported;
-}
-function isTouchStartEvent(e) {
-  return e.type === 'touchstart';
-}
-exports.ColumnSizing = ColumnSizing;
-exports.defaultColumnSizing = defaultColumnSizing;
-exports.passiveEventSupported = passiveEventSupported;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-//
-const GlobalFaceting = {
-  createTable: table => {
-    table._getGlobalFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, '__global__');
-    table.getGlobalFacetedRowModel = () => {
-      if (table.options.manualFiltering || !table._getGlobalFacetedRowModel) {
-        return table.getPreFilteredRowModel();
-      }
-      return table._getGlobalFacetedRowModel();
-    };
-    table._getGlobalFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, '__global__');
-    table.getGlobalFacetedUniqueValues = () => {
-      if (!table._getGlobalFacetedUniqueValues) {
-        return new Map();
-      }
-      return table._getGlobalFacetedUniqueValues();
-    };
-    table._getGlobalFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, '__global__');
-    table.getGlobalFacetedMinMaxValues = () => {
-      if (!table._getGlobalFacetedMinMaxValues) {
-        return;
-      }
-      return table._getGlobalFacetedMinMaxValues();
-    };
-  }
-};
-exports.GlobalFaceting = GlobalFaceting;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var filterFns = require('../filterFns.js');
-var utils = require('../utils.js');
-
-//
-
-const GlobalFiltering = {
-  getInitialState: state => {
-    return {
-      globalFilter: undefined,
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onGlobalFilterChange: utils.makeStateUpdater('globalFilter', table),
-      globalFilterFn: 'auto',
-      getColumnCanGlobalFilter: column => {
-        var _table$getCoreRowMode;
-        const value = (_table$getCoreRowMode = table.getCoreRowModel().flatRows[0]) == null || (_table$getCoreRowMode = _table$getCoreRowMode._getAllCellsByColumnId()[column.id]) == null ? void 0 : _table$getCoreRowMode.getValue();
-        return typeof value === 'string' || typeof value === 'number';
-      }
-    };
-  },
-  createColumn: (column, table) => {
-    column.getCanGlobalFilter = () => {
-      var _column$columnDef$ena, _table$options$enable, _table$options$enable2, _table$options$getCol;
-      return ((_column$columnDef$ena = column.columnDef.enableGlobalFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableGlobalFilter) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && ((_table$options$getCol = table.options.getColumnCanGlobalFilter == null ? void 0 : table.options.getColumnCanGlobalFilter(column)) != null ? _table$options$getCol : true) && !!column.accessorFn;
-    };
-  },
-  createTable: table => {
-    table.getGlobalAutoFilterFn = () => {
-      return filterFns.filterFns.includesString;
-    };
-    table.getGlobalFilterFn = () => {
-      var _table$options$filter, _table$options$filter2;
-      const {
-        globalFilterFn: globalFilterFn
-      } = table.options;
-      return utils.isFunction(globalFilterFn) ? globalFilterFn : globalFilterFn === 'auto' ? table.getGlobalAutoFilterFn() : (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[globalFilterFn]) != null ? _table$options$filter : filterFns.filterFns[globalFilterFn];
-    };
-    table.setGlobalFilter = updater => {
-      table.options.onGlobalFilterChange == null || table.options.onGlobalFilterChange(updater);
-    };
-    table.resetGlobalFilter = defaultState => {
-      table.setGlobalFilter(defaultState ? undefined : table.initialState.globalFilter);
-    };
-  }
-};
-exports.GlobalFiltering = GlobalFiltering;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-
-//
-
-const RowExpanding = {
-  getInitialState: state => {
-    return {
-      expanded: {},
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onExpandedChange: utils.makeStateUpdater('expanded', table),
-      paginateExpandedRows: true
-    };
-  },
-  createTable: table => {
-    let registered = false;
-    let queued = false;
-    table._autoResetExpanded = () => {
-      var _ref, _table$options$autoRe;
-      if (!registered) {
-        table._queue(() => {
-          registered = true;
-        });
-        return;
-      }
-      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetExpanded) != null ? _ref : !table.options.manualExpanding) {
-        if (queued) return;
-        queued = true;
-        table._queue(() => {
-          table.resetExpanded();
-          queued = false;
-        });
-      }
-    };
-    table.setExpanded = updater => table.options.onExpandedChange == null ? void 0 : table.options.onExpandedChange(updater);
-    table.toggleAllRowsExpanded = expanded => {
-      if (expanded != null ? expanded : !table.getIsAllRowsExpanded()) {
-        table.setExpanded(true);
-      } else {
-        table.setExpanded({});
-      }
-    };
-    table.resetExpanded = defaultState => {
-      var _table$initialState$e, _table$initialState;
-      table.setExpanded(defaultState ? {} : (_table$initialState$e = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.expanded) != null ? _table$initialState$e : {});
-    };
-    table.getCanSomeRowsExpand = () => {
-      return table.getPrePaginationRowModel().flatRows.some(row => row.getCanExpand());
-    };
-    table.getToggleAllRowsExpandedHandler = () => {
-      return e => {
-        e.persist == null || e.persist();
-        table.toggleAllRowsExpanded();
-      };
-    };
-    table.getIsSomeRowsExpanded = () => {
-      const expanded = table.getState().expanded;
-      return expanded === true || Object.values(expanded).some(Boolean);
-    };
-    table.getIsAllRowsExpanded = () => {
-      const expanded = table.getState().expanded;
-
-      // If expanded is true, save some cycles and return true
-      if (typeof expanded === 'boolean') {
-        return expanded === true;
-      }
-      if (!Object.keys(expanded).length) {
-        return false;
-      }
-
-      // If any row is not expanded, return false
-      if (table.getRowModel().flatRows.some(row => !row.getIsExpanded())) {
-        return false;
-      }
-
-      // They must all be expanded :shrug:
-      return true;
-    };
-    table.getExpandedDepth = () => {
-      let maxDepth = 0;
-      const rowIds = table.getState().expanded === true ? Object.keys(table.getRowModel().rowsById) : Object.keys(table.getState().expanded);
-      rowIds.forEach(id => {
-        const splitId = id.split('.');
-        maxDepth = Math.max(maxDepth, splitId.length);
-      });
-      return maxDepth;
-    };
-    table.getPreExpandedRowModel = () => table.getSortedRowModel();
-    table.getExpandedRowModel = () => {
-      if (!table._getExpandedRowModel && table.options.getExpandedRowModel) {
-        table._getExpandedRowModel = table.options.getExpandedRowModel(table);
-      }
-      if (table.options.manualExpanding || !table._getExpandedRowModel) {
-        return table.getPreExpandedRowModel();
-      }
-      return table._getExpandedRowModel();
-    };
-  },
-  createRow: (row, table) => {
-    row.toggleExpanded = expanded => {
-      table.setExpanded(old => {
-        var _expanded;
-        const exists = old === true ? true : !!(old != null && old[row.id]);
-        let oldExpanded = {};
-        if (old === true) {
-          Object.keys(table.getRowModel().rowsById).forEach(rowId => {
-            oldExpanded[rowId] = true;
-          });
-        } else {
-          oldExpanded = old;
-        }
-        expanded = (_expanded = expanded) != null ? _expanded : !exists;
-        if (!exists && expanded) {
-          return {
-            ...oldExpanded,
-            [row.id]: true
-          };
-        }
-        if (exists && !expanded) {
-          const {
-            [row.id]: _,
-            ...rest
-          } = oldExpanded;
-          return rest;
-        }
-        return old;
-      });
-    };
-    row.getIsExpanded = () => {
-      var _table$options$getIsR;
-      const expanded = table.getState().expanded;
-      return !!((_table$options$getIsR = table.options.getIsRowExpanded == null ? void 0 : table.options.getIsRowExpanded(row)) != null ? _table$options$getIsR : expanded === true || (expanded == null ? void 0 : expanded[row.id]));
-    };
-    row.getCanExpand = () => {
-      var _table$options$getRow, _table$options$enable, _row$subRows;
-      return (_table$options$getRow = table.options.getRowCanExpand == null ? void 0 : table.options.getRowCanExpand(row)) != null ? _table$options$getRow : ((_table$options$enable = table.options.enableExpanding) != null ? _table$options$enable : true) && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
-    };
-    row.getIsAllParentsExpanded = () => {
-      let isFullyExpanded = true;
-      let currentRow = row;
-      while (isFullyExpanded && currentRow.parentId) {
-        currentRow = table.getRow(currentRow.parentId, true);
-        isFullyExpanded = currentRow.getIsExpanded();
-      }
-      return isFullyExpanded;
-    };
-    row.getToggleExpandedHandler = () => {
-      const canExpand = row.getCanExpand();
-      return () => {
-        if (!canExpand) return;
-        row.toggleExpanded();
-      };
-    };
-  }
-};
-exports.RowExpanding = RowExpanding;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-
-//
-
-const defaultPageIndex = 0;
-const defaultPageSize = 10;
-const getDefaultPaginationState = () => ({
-  pageIndex: defaultPageIndex,
-  pageSize: defaultPageSize
-});
-const RowPagination = {
-  getInitialState: state => {
-    return {
-      ...state,
-      pagination: {
-        ...getDefaultPaginationState(),
-        ...(state == null ? void 0 : state.pagination)
-      }
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onPaginationChange: utils.makeStateUpdater('pagination', table)
-    };
-  },
-  createTable: table => {
-    let registered = false;
-    let queued = false;
-    table._autoResetPageIndex = () => {
-      var _ref, _table$options$autoRe;
-      if (!registered) {
-        table._queue(() => {
-          registered = true;
-        });
-        return;
-      }
-      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetPageIndex) != null ? _ref : !table.options.manualPagination) {
-        if (queued) return;
-        queued = true;
-        table._queue(() => {
-          table.resetPageIndex();
-          queued = false;
-        });
-      }
-    };
-    table.setPagination = updater => {
-      const safeUpdater = old => {
-        let newState = utils.functionalUpdate(updater, old);
-        return newState;
-      };
-      return table.options.onPaginationChange == null ? void 0 : table.options.onPaginationChange(safeUpdater);
-    };
-    table.resetPagination = defaultState => {
-      var _table$initialState$p;
-      table.setPagination(defaultState ? getDefaultPaginationState() : (_table$initialState$p = table.initialState.pagination) != null ? _table$initialState$p : getDefaultPaginationState());
-    };
-    table.setPageIndex = updater => {
-      table.setPagination(old => {
-        let pageIndex = utils.functionalUpdate(updater, old.pageIndex);
-        const maxPageIndex = typeof table.options.pageCount === 'undefined' || table.options.pageCount === -1 ? Number.MAX_SAFE_INTEGER : table.options.pageCount - 1;
-        pageIndex = Math.max(0, Math.min(pageIndex, maxPageIndex));
-        return {
-          ...old,
-          pageIndex
-        };
-      });
-    };
-    table.resetPageIndex = defaultState => {
-      var _table$initialState$p2, _table$initialState;
-      table.setPageIndex(defaultState ? defaultPageIndex : (_table$initialState$p2 = (_table$initialState = table.initialState) == null || (_table$initialState = _table$initialState.pagination) == null ? void 0 : _table$initialState.pageIndex) != null ? _table$initialState$p2 : defaultPageIndex);
-    };
-    table.resetPageSize = defaultState => {
-      var _table$initialState$p3, _table$initialState2;
-      table.setPageSize(defaultState ? defaultPageSize : (_table$initialState$p3 = (_table$initialState2 = table.initialState) == null || (_table$initialState2 = _table$initialState2.pagination) == null ? void 0 : _table$initialState2.pageSize) != null ? _table$initialState$p3 : defaultPageSize);
-    };
-    table.setPageSize = updater => {
-      table.setPagination(old => {
-        const pageSize = Math.max(1, utils.functionalUpdate(updater, old.pageSize));
-        const topRowIndex = old.pageSize * old.pageIndex;
-        const pageIndex = Math.floor(topRowIndex / pageSize);
-        return {
-          ...old,
-          pageIndex,
-          pageSize
-        };
-      });
-    };
-    //deprecated
-    table.setPageCount = updater => table.setPagination(old => {
-      var _table$options$pageCo;
-      let newPageCount = utils.functionalUpdate(updater, (_table$options$pageCo = table.options.pageCount) != null ? _table$options$pageCo : -1);
-      if (typeof newPageCount === 'number') {
-        newPageCount = Math.max(-1, newPageCount);
-      }
-      return {
-        ...old,
-        pageCount: newPageCount
-      };
-    });
-    table.getPageOptions = utils.memo(() => [table.getPageCount()], pageCount => {
-      let pageOptions = [];
-      if (pageCount && pageCount > 0) {
-        pageOptions = [...new Array(pageCount)].fill(null).map((_, i) => i);
-      }
-      return pageOptions;
-    }, utils.getMemoOptions(table.options, 'debugTable', 'getPageOptions'));
-    table.getCanPreviousPage = () => table.getState().pagination.pageIndex > 0;
-    table.getCanNextPage = () => {
-      const {
-        pageIndex
-      } = table.getState().pagination;
-      const pageCount = table.getPageCount();
-      if (pageCount === -1) {
-        return true;
-      }
-      if (pageCount === 0) {
-        return false;
-      }
-      return pageIndex < pageCount - 1;
-    };
-    table.previousPage = () => {
-      return table.setPageIndex(old => old - 1);
-    };
-    table.nextPage = () => {
-      return table.setPageIndex(old => {
-        return old + 1;
-      });
-    };
-    table.firstPage = () => {
-      return table.setPageIndex(0);
-    };
-    table.lastPage = () => {
-      return table.setPageIndex(table.getPageCount() - 1);
-    };
-    table.getPrePaginationRowModel = () => table.getExpandedRowModel();
-    table.getPaginationRowModel = () => {
-      if (!table._getPaginationRowModel && table.options.getPaginationRowModel) {
-        table._getPaginationRowModel = table.options.getPaginationRowModel(table);
-      }
-      if (table.options.manualPagination || !table._getPaginationRowModel) {
-        return table.getPrePaginationRowModel();
-      }
-      return table._getPaginationRowModel();
-    };
-    table.getPageCount = () => {
-      var _table$options$pageCo2;
-      return (_table$options$pageCo2 = table.options.pageCount) != null ? _table$options$pageCo2 : Math.ceil(table.getRowCount() / table.getState().pagination.pageSize);
-    };
-    table.getRowCount = () => {
-      var _table$options$rowCou;
-      return (_table$options$rowCou = table.options.rowCount) != null ? _table$options$rowCou : table.getPrePaginationRowModel().rows.length;
-    };
-  }
-};
-exports.RowPagination = RowPagination;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-
-//
-
-const getDefaultRowPinningState = () => ({
-  top: [],
-  bottom: []
-});
-const RowPinning = {
-  getInitialState: state => {
-    return {
-      rowPinning: getDefaultRowPinningState(),
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onRowPinningChange: utils.makeStateUpdater('rowPinning', table)
-    };
-  },
-  createRow: (row, table) => {
-    row.pin = (position, includeLeafRows, includeParentRows) => {
-      const leafRowIds = includeLeafRows ? row.getLeafRows().map(_ref => {
-        let {
-          id
-        } = _ref;
-        return id;
-      }) : [];
-      const parentRowIds = includeParentRows ? row.getParentRows().map(_ref2 => {
-        let {
-          id
-        } = _ref2;
-        return id;
-      }) : [];
-      const rowIds = new Set([...parentRowIds, row.id, ...leafRowIds]);
-      table.setRowPinning(old => {
-        var _old$top3, _old$bottom3;
-        if (position === 'bottom') {
-          var _old$top, _old$bottom;
-          return {
-            top: ((_old$top = old == null ? void 0 : old.top) != null ? _old$top : []).filter(d => !(rowIds != null && rowIds.has(d))),
-            bottom: [...((_old$bottom = old == null ? void 0 : old.bottom) != null ? _old$bottom : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)]
-          };
-        }
-        if (position === 'top') {
-          var _old$top2, _old$bottom2;
-          return {
-            top: [...((_old$top2 = old == null ? void 0 : old.top) != null ? _old$top2 : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)],
-            bottom: ((_old$bottom2 = old == null ? void 0 : old.bottom) != null ? _old$bottom2 : []).filter(d => !(rowIds != null && rowIds.has(d)))
-          };
-        }
-        return {
-          top: ((_old$top3 = old == null ? void 0 : old.top) != null ? _old$top3 : []).filter(d => !(rowIds != null && rowIds.has(d))),
-          bottom: ((_old$bottom3 = old == null ? void 0 : old.bottom) != null ? _old$bottom3 : []).filter(d => !(rowIds != null && rowIds.has(d)))
-        };
-      });
-    };
-    row.getCanPin = () => {
-      var _ref3;
-      const {
-        enableRowPinning,
-        enablePinning
-      } = table.options;
-      if (typeof enableRowPinning === 'function') {
-        return enableRowPinning(row);
-      }
-      return (_ref3 = enableRowPinning != null ? enableRowPinning : enablePinning) != null ? _ref3 : true;
-    };
-    row.getIsPinned = () => {
-      const rowIds = [row.id];
-      const {
-        top,
-        bottom
-      } = table.getState().rowPinning;
-      const isTop = rowIds.some(d => top == null ? void 0 : top.includes(d));
-      const isBottom = rowIds.some(d => bottom == null ? void 0 : bottom.includes(d));
-      return isTop ? 'top' : isBottom ? 'bottom' : false;
-    };
-    row.getPinnedIndex = () => {
-      var _ref4, _visiblePinnedRowIds$;
-      const position = row.getIsPinned();
-      if (!position) return -1;
-      const visiblePinnedRowIds = (_ref4 = position === 'top' ? table.getTopRows() : table.getBottomRows()) == null ? void 0 : _ref4.map(_ref5 => {
-        let {
-          id
-        } = _ref5;
-        return id;
-      });
-      return (_visiblePinnedRowIds$ = visiblePinnedRowIds == null ? void 0 : visiblePinnedRowIds.indexOf(row.id)) != null ? _visiblePinnedRowIds$ : -1;
-    };
-  },
-  createTable: table => {
-    table.setRowPinning = updater => table.options.onRowPinningChange == null ? void 0 : table.options.onRowPinningChange(updater);
-    table.resetRowPinning = defaultState => {
-      var _table$initialState$r, _table$initialState;
-      return table.setRowPinning(defaultState ? getDefaultRowPinningState() : (_table$initialState$r = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.rowPinning) != null ? _table$initialState$r : getDefaultRowPinningState());
-    };
-    table.getIsSomeRowsPinned = position => {
-      var _pinningState$positio;
-      const pinningState = table.getState().rowPinning;
-      if (!position) {
-        var _pinningState$top, _pinningState$bottom;
-        return Boolean(((_pinningState$top = pinningState.top) == null ? void 0 : _pinningState$top.length) || ((_pinningState$bottom = pinningState.bottom) == null ? void 0 : _pinningState$bottom.length));
-      }
-      return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
-    };
-    table._getPinnedRows = (visibleRows, pinnedRowIds, position) => {
-      var _table$options$keepPi;
-      const rows = ((_table$options$keepPi = table.options.keepPinnedRows) != null ? _table$options$keepPi : true) ?
-      //get all rows that are pinned even if they would not be otherwise visible
-      //account for expanded parent rows, but not pagination or filtering
-      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => {
-        const row = table.getRow(rowId, true);
-        return row.getIsAllParentsExpanded() ? row : null;
-      }) :
-      //else get only visible rows that are pinned
-      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => visibleRows.find(row => row.id === rowId));
-      return rows.filter(Boolean).map(d => ({
-        ...d,
-        position
-      }));
-    };
-    table.getTopRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.top], (allRows, topPinnedRowIds) => table._getPinnedRows(allRows, topPinnedRowIds, 'top'), utils.getMemoOptions(table.options, 'debugRows', 'getTopRows'));
-    table.getBottomRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.bottom], (allRows, bottomPinnedRowIds) => table._getPinnedRows(allRows, bottomPinnedRowIds, 'bottom'), utils.getMemoOptions(table.options, 'debugRows', 'getBottomRows'));
-    table.getCenterRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.top, table.getState().rowPinning.bottom], (allRows, top, bottom) => {
-      const topAndBottom = new Set([...(top != null ? top : []), ...(bottom != null ? bottom : [])]);
-      return allRows.filter(d => !topAndBottom.has(d.id));
-    }, utils.getMemoOptions(table.options, 'debugRows', 'getCenterRows'));
-  }
-};
-exports.RowPinning = RowPinning;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-
-//
-
-const RowSelection = {
-  getInitialState: state => {
-    return {
-      rowSelection: {},
-      ...state
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onRowSelectionChange: utils.makeStateUpdater('rowSelection', table),
-      enableRowSelection: true,
-      enableMultiRowSelection: true,
-      enableSubRowSelection: true
-      // enableGroupingRowSelection: false,
-      // isAdditiveSelectEvent: (e: unknown) => !!e.metaKey,
-      // isInclusiveSelectEvent: (e: unknown) => !!e.shiftKey,
-    };
-  },
-  createTable: table => {
-    table.setRowSelection = updater => table.options.onRowSelectionChange == null ? void 0 : table.options.onRowSelectionChange(updater);
-    table.resetRowSelection = defaultState => {
-      var _table$initialState$r;
-      return table.setRowSelection(defaultState ? {} : (_table$initialState$r = table.initialState.rowSelection) != null ? _table$initialState$r : {});
-    };
-    table.toggleAllRowsSelected = value => {
-      table.setRowSelection(old => {
-        value = typeof value !== 'undefined' ? value : !table.getIsAllRowsSelected();
-        const rowSelection = {
-          ...old
-        };
-        const preGroupedFlatRows = table.getPreGroupedRowModel().flatRows;
-
-        // We don't use `mutateRowIsSelected` here for performance reasons.
-        // All of the rows are flat already, so it wouldn't be worth it
-        if (value) {
-          preGroupedFlatRows.forEach(row => {
-            if (!row.getCanSelect()) {
-              return;
-            }
-            rowSelection[row.id] = true;
-          });
-        } else {
-          preGroupedFlatRows.forEach(row => {
-            delete rowSelection[row.id];
-          });
-        }
-        return rowSelection;
-      });
-    };
-    table.toggleAllPageRowsSelected = value => table.setRowSelection(old => {
-      const resolvedValue = typeof value !== 'undefined' ? value : !table.getIsAllPageRowsSelected();
-      const rowSelection = {
-        ...old
-      };
-      table.getRowModel().rows.forEach(row => {
-        mutateRowIsSelected(rowSelection, row.id, resolvedValue, true, table);
-      });
-      return rowSelection;
-    });
-
-    // addRowSelectionRange: rowId => {
-    //   const {
-    //     rows,
-    //     rowsById,
-    //     options: { selectGroupingRows, selectSubRows },
-    //   } = table
-
-    //   const findSelectedRow = (rows: Row[]) => {
-    //     let found
-    //     rows.find(d => {
-    //       if (d.getIsSelected()) {
-    //         found = d
-    //         return true
-    //       }
-    //       const subFound = findSelectedRow(d.subRows || [])
-    //       if (subFound) {
-    //         found = subFound
-    //         return true
-    //       }
-    //       return false
-    //     })
-    //     return found
-    //   }
-
-    //   const firstRow = findSelectedRow(rows) || rows[0]
-    //   const lastRow = rowsById[rowId]
-
-    //   let include = false
-    //   const selectedRowIds = {}
-
-    //   const addRow = (row: Row) => {
-    //     mutateRowIsSelected(selectedRowIds, row.id, true, {
-    //       rowsById,
-    //       selectGroupingRows: selectGroupingRows!,
-    //       selectSubRows: selectSubRows!,
-    //     })
-    //   }
-
-    //   table.rows.forEach(row => {
-    //     const isFirstRow = row.id === firstRow.id
-    //     const isLastRow = row.id === lastRow.id
-
-    //     if (isFirstRow || isLastRow) {
-    //       if (!include) {
-    //         include = true
-    //       } else if (include) {
-    //         addRow(row)
-    //         include = false
-    //       }
-    //     }
-
-    //     if (include) {
-    //       addRow(row)
-    //     }
-    //   })
-
-    //   table.setRowSelection(selectedRowIds)
-    // },
-    table.getPreSelectedRowModel = () => table.getCoreRowModel();
-    table.getSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getCoreRowModel()], (rowSelection, rowModel) => {
-      if (!Object.keys(rowSelection).length) {
-        return {
-          rows: [],
-          flatRows: [],
-          rowsById: {}
-        };
-      }
-      return selectRowsFn(table, rowModel);
-    }, utils.getMemoOptions(table.options, 'debugTable', 'getSelectedRowModel'));
-    table.getFilteredSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getFilteredRowModel()], (rowSelection, rowModel) => {
-      if (!Object.keys(rowSelection).length) {
-        return {
-          rows: [],
-          flatRows: [],
-          rowsById: {}
-        };
-      }
-      return selectRowsFn(table, rowModel);
-    }, utils.getMemoOptions(table.options, 'debugTable', 'getFilteredSelectedRowModel'));
-    table.getGroupedSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getSortedRowModel()], (rowSelection, rowModel) => {
-      if (!Object.keys(rowSelection).length) {
-        return {
-          rows: [],
-          flatRows: [],
-          rowsById: {}
-        };
-      }
-      return selectRowsFn(table, rowModel);
-    }, utils.getMemoOptions(table.options, 'debugTable', 'getGroupedSelectedRowModel'));
-
-    ///
-
-    // getGroupingRowCanSelect: rowId => {
-    //   const row = table.getRow(rowId)
-
-    //   if (!row) {
-    //     throw new Error()
-    //   }
-
-    //   if (typeof table.options.enableGroupingRowSelection === 'function') {
-    //     return table.options.enableGroupingRowSelection(row)
-    //   }
-
-    //   return table.options.enableGroupingRowSelection ?? false
-    // },
-
-    table.getIsAllRowsSelected = () => {
-      const preGroupedFlatRows = table.getFilteredRowModel().flatRows;
-      const {
-        rowSelection
-      } = table.getState();
-      let isAllRowsSelected = Boolean(preGroupedFlatRows.length && Object.keys(rowSelection).length);
-      if (isAllRowsSelected) {
-        if (preGroupedFlatRows.some(row => row.getCanSelect() && !rowSelection[row.id])) {
-          isAllRowsSelected = false;
-        }
-      }
-      return isAllRowsSelected;
-    };
-    table.getIsAllPageRowsSelected = () => {
-      const paginationFlatRows = table.getPaginationRowModel().flatRows.filter(row => row.getCanSelect());
-      const {
-        rowSelection
-      } = table.getState();
-      let isAllPageRowsSelected = !!paginationFlatRows.length;
-      if (isAllPageRowsSelected && paginationFlatRows.some(row => !rowSelection[row.id])) {
-        isAllPageRowsSelected = false;
-      }
-      return isAllPageRowsSelected;
-    };
-    table.getIsSomeRowsSelected = () => {
-      var _table$getState$rowSe;
-      const totalSelected = Object.keys((_table$getState$rowSe = table.getState().rowSelection) != null ? _table$getState$rowSe : {}).length;
-      return totalSelected > 0 && totalSelected < table.getFilteredRowModel().flatRows.length;
-    };
-    table.getIsSomePageRowsSelected = () => {
-      const paginationFlatRows = table.getPaginationRowModel().flatRows;
-      return table.getIsAllPageRowsSelected() ? false : paginationFlatRows.filter(row => row.getCanSelect()).some(d => d.getIsSelected() || d.getIsSomeSelected());
-    };
-    table.getToggleAllRowsSelectedHandler = () => {
-      return e => {
-        table.toggleAllRowsSelected(e.target.checked);
-      };
-    };
-    table.getToggleAllPageRowsSelectedHandler = () => {
-      return e => {
-        table.toggleAllPageRowsSelected(e.target.checked);
-      };
-    };
-  },
-  createRow: (row, table) => {
-    row.toggleSelected = (value, opts) => {
-      const isSelected = row.getIsSelected();
-      table.setRowSelection(old => {
-        var _opts$selectChildren;
-        value = typeof value !== 'undefined' ? value : !isSelected;
-        if (row.getCanSelect() && isSelected === value) {
-          return old;
-        }
-        const selectedRowIds = {
-          ...old
-        };
-        mutateRowIsSelected(selectedRowIds, row.id, value, (_opts$selectChildren = opts == null ? void 0 : opts.selectChildren) != null ? _opts$selectChildren : true, table);
-        return selectedRowIds;
-      });
-    };
-    row.getIsSelected = () => {
-      const {
-        rowSelection
-      } = table.getState();
-      return isRowSelected(row, rowSelection);
-    };
-    row.getIsSomeSelected = () => {
-      const {
-        rowSelection
-      } = table.getState();
-      return isSubRowSelected(row, rowSelection) === 'some';
-    };
-    row.getIsAllSubRowsSelected = () => {
-      const {
-        rowSelection
-      } = table.getState();
-      return isSubRowSelected(row, rowSelection) === 'all';
-    };
-    row.getCanSelect = () => {
-      var _table$options$enable;
-      if (typeof table.options.enableRowSelection === 'function') {
-        return table.options.enableRowSelection(row);
-      }
-      return (_table$options$enable = table.options.enableRowSelection) != null ? _table$options$enable : true;
-    };
-    row.getCanSelectSubRows = () => {
-      var _table$options$enable2;
-      if (typeof table.options.enableSubRowSelection === 'function') {
-        return table.options.enableSubRowSelection(row);
-      }
-      return (_table$options$enable2 = table.options.enableSubRowSelection) != null ? _table$options$enable2 : true;
-    };
-    row.getCanMultiSelect = () => {
-      var _table$options$enable3;
-      if (typeof table.options.enableMultiRowSelection === 'function') {
-        return table.options.enableMultiRowSelection(row);
-      }
-      return (_table$options$enable3 = table.options.enableMultiRowSelection) != null ? _table$options$enable3 : true;
-    };
-    row.getToggleSelectedHandler = () => {
-      const canSelect = row.getCanSelect();
-      return e => {
-        var _target;
-        if (!canSelect) return;
-        row.toggleSelected((_target = e.target) == null ? void 0 : _target.checked);
-      };
-    };
-  }
-};
-const mutateRowIsSelected = (selectedRowIds, id, value, includeChildren, table) => {
-  var _row$subRows;
-  const row = table.getRow(id, true);
-
-  // const isGrouped = row.getIsGrouped()
-
-  // if ( // TODO: enforce grouping row selection rules
-  //   !isGrouped ||
-  //   (isGrouped && table.options.enableGroupingRowSelection)
-  // ) {
-  if (value) {
-    if (!row.getCanMultiSelect()) {
-      Object.keys(selectedRowIds).forEach(key => delete selectedRowIds[key]);
-    }
-    if (row.getCanSelect()) {
-      selectedRowIds[id] = true;
-    }
-  } else {
-    delete selectedRowIds[id];
-  }
-  // }
-
-  if (includeChildren && (_row$subRows = row.subRows) != null && _row$subRows.length && row.getCanSelectSubRows()) {
-    row.subRows.forEach(row => mutateRowIsSelected(selectedRowIds, row.id, value, includeChildren, table));
-  }
-};
-function selectRowsFn(table, rowModel) {
-  const rowSelection = table.getState().rowSelection;
-  const newSelectedFlatRows = [];
-  const newSelectedRowsById = {};
-
-  // Filters top level and nested rows
-  const recurseRows = function (rows, depth) {
-    return rows.map(row => {
-      var _row$subRows2;
-      const isSelected = isRowSelected(row, rowSelection);
-      if (isSelected) {
-        newSelectedFlatRows.push(row);
-        newSelectedRowsById[row.id] = row;
-      }
-      if ((_row$subRows2 = row.subRows) != null && _row$subRows2.length) {
-        row = {
-          ...row,
-          subRows: recurseRows(row.subRows)
-        };
-      }
-      if (isSelected) {
-        return row;
-      }
-    }).filter(Boolean);
-  };
-  return {
-    rows: recurseRows(rowModel.rows),
-    flatRows: newSelectedFlatRows,
-    rowsById: newSelectedRowsById
-  };
-}
-function isRowSelected(row, selection) {
-  var _selection$row$id;
-  return (_selection$row$id = selection[row.id]) != null ? _selection$row$id : false;
-}
-function isSubRowSelected(row, selection, table) {
-  var _row$subRows3;
-  if (!((_row$subRows3 = row.subRows) != null && _row$subRows3.length)) return false;
-  let allChildrenSelected = true;
-  let someSelected = false;
-  row.subRows.forEach(subRow => {
-    // Bail out early if we know both of these
-    if (someSelected && !allChildrenSelected) {
-      return;
-    }
-    if (subRow.getCanSelect()) {
-      if (isRowSelected(subRow, selection)) {
-        someSelected = true;
-      } else {
-        allChildrenSelected = false;
-      }
-    }
-
-    // Check row selection of nested subrows
-    if (subRow.subRows && subRow.subRows.length) {
-      const subRowChildrenSelected = isSubRowSelected(subRow, selection);
-      if (subRowChildrenSelected === 'all') {
-        someSelected = true;
-      } else if (subRowChildrenSelected === 'some') {
-        someSelected = true;
-        allChildrenSelected = false;
-      } else {
-        allChildrenSelected = false;
-      }
-    }
-  });
-  return allChildrenSelected ? 'all' : someSelected ? 'some' : false;
-}
-exports.RowSelection = RowSelection;
-exports.isRowSelected = isRowSelected;
-exports.isSubRowSelected = isSubRowSelected;
-exports.selectRowsFn = selectRowsFn;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-const reSplitAlphaNumeric = /([0-9]+)/gm;
-const alphanumeric = (rowA, rowB, columnId) => {
-  return compareAlphanumeric(toString(rowA.getValue(columnId)).toLowerCase(), toString(rowB.getValue(columnId)).toLowerCase());
-};
-const alphanumericCaseSensitive = (rowA, rowB, columnId) => {
-  return compareAlphanumeric(toString(rowA.getValue(columnId)), toString(rowB.getValue(columnId)));
-};
-
-// The text filter is more basic (less numeric support)
-// but is much faster
-const text = (rowA, rowB, columnId) => {
-  return compareBasic(toString(rowA.getValue(columnId)).toLowerCase(), toString(rowB.getValue(columnId)).toLowerCase());
-};
-
-// The text filter is more basic (less numeric support)
-// but is much faster
-const textCaseSensitive = (rowA, rowB, columnId) => {
-  return compareBasic(toString(rowA.getValue(columnId)), toString(rowB.getValue(columnId)));
-};
-const datetime = (rowA, rowB, columnId) => {
-  const a = rowA.getValue(columnId);
-  const b = rowB.getValue(columnId);
-
-  // Can handle nullish values
-  // Use > and < because == (and ===) doesn't work with
-  // Date objects (would require calling getTime()).
-  return a > b ? 1 : a < b ? -1 : 0;
-};
-const basic = (rowA, rowB, columnId) => {
-  return compareBasic(rowA.getValue(columnId), rowB.getValue(columnId));
-};
-
-// Utils
-
-function compareBasic(a, b) {
-  return a === b ? 0 : a > b ? 1 : -1;
-}
-function toString(a) {
-  if (typeof a === 'number') {
-    if (isNaN(a) || a === Infinity || a === -Infinity) {
-      return '';
-    }
-    return String(a);
-  }
-  if (typeof a === 'string') {
-    return a;
-  }
-  return '';
-}
-
-// Mixed sorting is slow, but very inclusive of many edge cases.
-// It handles numbers, mixed alphanumeric combinations, and even
-// null, undefined, and Infinity
-function compareAlphanumeric(aStr, bStr) {
-  // Split on number groups, but keep the delimiter
-  // Then remove falsey split values
-  const a = aStr.split(reSplitAlphaNumeric).filter(Boolean);
-  const b = bStr.split(reSplitAlphaNumeric).filter(Boolean);
-
-  // While
-  while (a.length && b.length) {
-    const aa = a.shift();
-    const bb = b.shift();
-    const an = parseInt(aa, 10);
-    const bn = parseInt(bb, 10);
-    const combo = [an, bn].sort();
-
-    // Both are string
-    if (isNaN(combo[0])) {
-      if (aa > bb) {
-        return 1;
-      }
-      if (bb > aa) {
-        return -1;
-      }
-      continue;
-    }
-
-    // One is a string, one is a number
-    if (isNaN(combo[1])) {
-      return isNaN(an) ? -1 : 1;
-    }
-
-    // Both are numbers
-    if (an > bn) {
-      return 1;
-    }
-    if (bn > an) {
-      return -1;
-    }
-  }
-  return a.length - b.length;
-}
-
-// Exports
-
-const sortingFns = {
-  alphanumeric,
-  alphanumericCaseSensitive,
-  text,
-  textCaseSensitive,
-  datetime,
-  basic
-};
-exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
-exports.sortingFns = sortingFns;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var sortingFns = require('../sortingFns.js');
-var utils = require('../utils.js');
-
-//
-
-const RowSorting = {
-  getInitialState: state => {
-    return {
-      sorting: [],
-      ...state
-    };
-  },
-  getDefaultColumnDef: () => {
-    return {
-      sortingFn: 'auto',
-      sortUndefined: 1
-    };
-  },
-  getDefaultOptions: table => {
-    return {
-      onSortingChange: utils.makeStateUpdater('sorting', table),
-      isMultiSortEvent: e => {
-        return e.shiftKey;
-      }
-    };
-  },
-  createColumn: (column, table) => {
-    column.getAutoSortingFn = () => {
-      const firstRows = table.getFilteredRowModel().flatRows.slice(10);
-      let isString = false;
-      for (const row of firstRows) {
-        const value = row == null ? void 0 : row.getValue(column.id);
-        if (Object.prototype.toString.call(value) === '[object Date]') {
-          return sortingFns.sortingFns.datetime;
-        }
-        if (typeof value === 'string') {
-          isString = true;
-          if (value.split(sortingFns.reSplitAlphaNumeric).length > 1) {
-            return sortingFns.sortingFns.alphanumeric;
-          }
-        }
-      }
-      if (isString) {
-        return sortingFns.sortingFns.text;
-      }
-      return sortingFns.sortingFns.basic;
-    };
-    column.getAutoSortDir = () => {
-      const firstRow = table.getFilteredRowModel().flatRows[0];
-      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
-      if (typeof value === 'string') {
-        return 'asc';
-      }
-      return 'desc';
-    };
-    column.getSortingFn = () => {
-      var _table$options$sortin, _table$options$sortin2;
-      if (!column) {
-        throw new Error();
-      }
-      return utils.isFunction(column.columnDef.sortingFn) ? column.columnDef.sortingFn : column.columnDef.sortingFn === 'auto' ? column.getAutoSortingFn() : (_table$options$sortin = (_table$options$sortin2 = table.options.sortingFns) == null ? void 0 : _table$options$sortin2[column.columnDef.sortingFn]) != null ? _table$options$sortin : sortingFns.sortingFns[column.columnDef.sortingFn];
-    };
-    column.toggleSorting = (desc, multi) => {
-      // if (column.columns.length) {
-      //   column.columns.forEach((c, i) => {
-      //     if (c.id) {
-      //       table.toggleColumnSorting(c.id, undefined, multi || !!i)
-      //     }
-      //   })
-      //   return
-      // }
-
-      // this needs to be outside of table.setSorting to be in sync with rerender
-      const nextSortingOrder = column.getNextSortingOrder();
-      const hasManualValue = typeof desc !== 'undefined' && desc !== null;
-      table.setSorting(old => {
-        // Find any existing sorting for this column
-        const existingSorting = old == null ? void 0 : old.find(d => d.id === column.id);
-        const existingIndex = old == null ? void 0 : old.findIndex(d => d.id === column.id);
-        let newSorting = [];
-
-        // What should we do with this sort action?
-        let sortAction;
-        let nextDesc = hasManualValue ? desc : nextSortingOrder === 'desc';
-
-        // Multi-mode
-        if (old != null && old.length && column.getCanMultiSort() && multi) {
-          if (existingSorting) {
-            sortAction = 'toggle';
-          } else {
-            sortAction = 'add';
-          }
-        } else {
-          // Normal mode
-          if (old != null && old.length && existingIndex !== old.length - 1) {
-            sortAction = 'replace';
-          } else if (existingSorting) {
-            sortAction = 'toggle';
-          } else {
-            sortAction = 'replace';
-          }
-        }
-
-        // Handle toggle states that will remove the sorting
-        if (sortAction === 'toggle') {
-          // If we are "actually" toggling (not a manual set value), should we remove the sorting?
-          if (!hasManualValue) {
-            // Is our intention to remove?
-            if (!nextSortingOrder) {
-              sortAction = 'remove';
-            }
-          }
-        }
-        if (sortAction === 'add') {
-          var _table$options$maxMul;
-          newSorting = [...old, {
-            id: column.id,
-            desc: nextDesc
-          }];
-          // Take latest n columns
-          newSorting.splice(0, newSorting.length - ((_table$options$maxMul = table.options.maxMultiSortColCount) != null ? _table$options$maxMul : Number.MAX_SAFE_INTEGER));
-        } else if (sortAction === 'toggle') {
-          // This flips (or sets) the
-          newSorting = old.map(d => {
-            if (d.id === column.id) {
-              return {
-                ...d,
-                desc: nextDesc
-              };
-            }
-            return d;
-          });
-        } else if (sortAction === 'remove') {
-          newSorting = old.filter(d => d.id !== column.id);
-        } else {
-          newSorting = [{
-            id: column.id,
-            desc: nextDesc
-          }];
-        }
-        return newSorting;
-      });
-    };
-    column.getFirstSortDir = () => {
-      var _ref, _column$columnDef$sor;
-      const sortDescFirst = (_ref = (_column$columnDef$sor = column.columnDef.sortDescFirst) != null ? _column$columnDef$sor : table.options.sortDescFirst) != null ? _ref : column.getAutoSortDir() === 'desc';
-      return sortDescFirst ? 'desc' : 'asc';
-    };
-    column.getNextSortingOrder = multi => {
-      var _table$options$enable, _table$options$enable2;
-      const firstSortDirection = column.getFirstSortDir();
-      const isSorted = column.getIsSorted();
-      if (!isSorted) {
-        return firstSortDirection;
-      }
-      if (isSorted !== firstSortDirection && ((_table$options$enable = table.options.enableSortingRemoval) != null ? _table$options$enable : true) && (
-      // If enableSortRemove, enable in general
-      multi ? (_table$options$enable2 = table.options.enableMultiRemove) != null ? _table$options$enable2 : true : true) // If multi, don't allow if enableMultiRemove))
-      ) {
-        return false;
-      }
-      return isSorted === 'desc' ? 'asc' : 'desc';
-    };
-    column.getCanSort = () => {
-      var _column$columnDef$ena, _table$options$enable3;
-      return ((_column$columnDef$ena = column.columnDef.enableSorting) != null ? _column$columnDef$ena : true) && ((_table$options$enable3 = table.options.enableSorting) != null ? _table$options$enable3 : true) && !!column.accessorFn;
-    };
-    column.getCanMultiSort = () => {
-      var _ref2, _column$columnDef$ena2;
-      return (_ref2 = (_column$columnDef$ena2 = column.columnDef.enableMultiSort) != null ? _column$columnDef$ena2 : table.options.enableMultiSort) != null ? _ref2 : !!column.accessorFn;
-    };
-    column.getIsSorted = () => {
-      var _table$getState$sorti;
-      const columnSort = (_table$getState$sorti = table.getState().sorting) == null ? void 0 : _table$getState$sorti.find(d => d.id === column.id);
-      return !columnSort ? false : columnSort.desc ? 'desc' : 'asc';
-    };
-    column.getSortIndex = () => {
-      var _table$getState$sorti2, _table$getState$sorti3;
-      return (_table$getState$sorti2 = (_table$getState$sorti3 = table.getState().sorting) == null ? void 0 : _table$getState$sorti3.findIndex(d => d.id === column.id)) != null ? _table$getState$sorti2 : -1;
-    };
-    column.clearSorting = () => {
-      //clear sorting for just 1 column
-      table.setSorting(old => old != null && old.length ? old.filter(d => d.id !== column.id) : []);
-    };
-    column.getToggleSortingHandler = () => {
-      const canSort = column.getCanSort();
-      return e => {
-        if (!canSort) return;
-        e.persist == null || e.persist();
-        column.toggleSorting == null || column.toggleSorting(undefined, column.getCanMultiSort() ? table.options.isMultiSortEvent == null ? void 0 : table.options.isMultiSortEvent(e) : false);
-      };
-    };
-  },
-  createTable: table => {
-    table.setSorting = updater => table.options.onSortingChange == null ? void 0 : table.options.onSortingChange(updater);
-    table.resetSorting = defaultState => {
-      var _table$initialState$s, _table$initialState;
-      table.setSorting(defaultState ? [] : (_table$initialState$s = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.sorting) != null ? _table$initialState$s : []);
-    };
-    table.getPreSortedRowModel = () => table.getGroupedRowModel();
-    table.getSortedRowModel = () => {
-      if (!table._getSortedRowModel && table.options.getSortedRowModel) {
-        table._getSortedRowModel = table.options.getSortedRowModel(table);
-      }
-      if (table.options.manualSorting || !table._getSortedRowModel) {
-        return table.getPreSortedRowModel();
-      }
-      return table._getSortedRowModel();
-    };
-  }
-};
-exports.RowSorting = RowSorting;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-var column = require('./column.js');
-var headers = require('./headers.js');
-var ColumnFaceting = require('../features/ColumnFaceting.js');
-var ColumnFiltering = require('../features/ColumnFiltering.js');
-var ColumnGrouping = require('../features/ColumnGrouping.js');
-var ColumnOrdering = require('../features/ColumnOrdering.js');
-var ColumnPinning = require('../features/ColumnPinning.js');
-var ColumnSizing = require('../features/ColumnSizing.js');
-var ColumnVisibility = require('../features/ColumnVisibility.js');
-var GlobalFaceting = require('../features/GlobalFaceting.js');
-var GlobalFiltering = require('../features/GlobalFiltering.js');
-var RowExpanding = require('../features/RowExpanding.js');
-var RowPagination = require('../features/RowPagination.js');
-var RowPinning = require('../features/RowPinning.js');
-var RowSelection = require('../features/RowSelection.js');
-var RowSorting = require('../features/RowSorting.js');
-const builtInFeatures = [headers.Headers, ColumnVisibility.ColumnVisibility, ColumnOrdering.ColumnOrdering, ColumnPinning.ColumnPinning, ColumnFaceting.ColumnFaceting, ColumnFiltering.ColumnFiltering, GlobalFaceting.GlobalFaceting,
-//depends on ColumnFaceting
-GlobalFiltering.GlobalFiltering,
-//depends on ColumnFiltering
-RowSorting.RowSorting, ColumnGrouping.ColumnGrouping,
-//depends on RowSorting
-RowExpanding.RowExpanding, RowPagination.RowPagination, RowPinning.RowPinning, RowSelection.RowSelection, ColumnSizing.ColumnSizing];
-
-//
-
-function createTable(options) {
-  var _options$_features, _options$initialState;
-  if ('production' !== 'production' && (options.debugAll || options.debugTable)) {
-    console.info('Creating Table Instance...');
-  }
-  const _features = [...builtInFeatures, ...((_options$_features = options._features) != null ? _options$_features : [])];
-  let table = {
-    _features
-  };
-  const defaultOptions = table._features.reduce((obj, feature) => {
-    return Object.assign(obj, feature.getDefaultOptions == null ? void 0 : feature.getDefaultOptions(table));
-  }, {});
-  const mergeOptions = options => {
-    if (table.options.mergeOptions) {
-      return table.options.mergeOptions(defaultOptions, options);
-    }
-    return {
-      ...defaultOptions,
-      ...options
-    };
-  };
-  const coreInitialState = {};
-  let initialState = {
-    ...coreInitialState,
-    ...((_options$initialState = options.initialState) != null ? _options$initialState : {})
-  };
-  table._features.forEach(feature => {
-    var _feature$getInitialSt;
-    initialState = (_feature$getInitialSt = feature.getInitialState == null ? void 0 : feature.getInitialState(initialState)) != null ? _feature$getInitialSt : initialState;
-  });
-  const queued = [];
-  let queuedTimeout = false;
-  const coreInstance = {
-    _features,
-    options: {
-      ...defaultOptions,
-      ...options
-    },
-    initialState,
-    _queue: cb => {
-      queued.push(cb);
-      if (!queuedTimeout) {
-        queuedTimeout = true;
-
-        // Schedule a microtask to run the queued callbacks after
-        // the current call stack (render, etc) has finished.
-        Promise.resolve().then(() => {
-          while (queued.length) {
-            queued.shift()();
-          }
-          queuedTimeout = false;
-        }).catch(error => setTimeout(() => {
-          throw error;
-        }));
-      }
-    },
-    reset: () => {
-      table.setState(table.initialState);
-    },
-    setOptions: updater => {
-      const newOptions = utils.functionalUpdate(updater, table.options);
-      table.options = mergeOptions(newOptions);
-    },
-    getState: () => {
-      return table.options.state;
-    },
-    setState: updater => {
-      table.options.onStateChange == null || table.options.onStateChange(updater);
-    },
-    _getRowId: (row, index, parent) => {
-      var _table$options$getRow;
-      return (_table$options$getRow = table.options.getRowId == null ? void 0 : table.options.getRowId(row, index, parent)) != null ? _table$options$getRow : `${parent ? [parent.id, index].join('.') : index}`;
-    },
-    getCoreRowModel: () => {
-      if (!table._getCoreRowModel) {
-        table._getCoreRowModel = table.options.getCoreRowModel(table);
-      }
-      return table._getCoreRowModel();
-    },
-    // The final calls start at the bottom of the model,
-    // expanded rows, which then work their way up
-
-    getRowModel: () => {
-      return table.getPaginationRowModel();
-    },
-    //in next version, we should just pass in the row model as the optional 2nd arg
-    getRow: (id, searchAll) => {
-      let row = (searchAll ? table.getPrePaginationRowModel() : table.getRowModel()).rowsById[id];
-      if (!row) {
-        row = table.getCoreRowModel().rowsById[id];
-        if (!row) {
-          if ('production' !== 'production') {
-            throw new Error(`getRow could not find row with ID: ${id}`);
-          }
-          throw new Error();
-        }
-      }
-      return row;
-    },
-    _getDefaultColumnDef: utils.memo(() => [table.options.defaultColumn], defaultColumn => {
-      var _defaultColumn;
-      defaultColumn = (_defaultColumn = defaultColumn) != null ? _defaultColumn : {};
-      return {
-        header: props => {
-          const resolvedColumnDef = props.header.column.columnDef;
-          if (resolvedColumnDef.accessorKey) {
-            return resolvedColumnDef.accessorKey;
-          }
-          if (resolvedColumnDef.accessorFn) {
-            return resolvedColumnDef.id;
-          }
-          return null;
-        },
-        // footer: props => props.header.column.id,
-        cell: props => {
-          var _props$renderValue$to, _props$renderValue;
-          return (_props$renderValue$to = (_props$renderValue = props.renderValue()) == null || _props$renderValue.toString == null ? void 0 : _props$renderValue.toString()) != null ? _props$renderValue$to : null;
-        },
-        ...table._features.reduce((obj, feature) => {
-          return Object.assign(obj, feature.getDefaultColumnDef == null ? void 0 : feature.getDefaultColumnDef());
-        }, {}),
-        ...defaultColumn
-      };
-    }, utils.getMemoOptions(options, 'debugColumns', '_getDefaultColumnDef')),
-    _getColumnDefs: () => table.options.columns,
-    getAllColumns: utils.memo(() => [table._getColumnDefs()], columnDefs => {
-      const recurseColumns = function (columnDefs, parent, depth) {
-        if (depth === void 0) {
-          depth = 0;
-        }
-        return columnDefs.map(columnDef => {
-          const column$1 = column.createColumn(table, columnDef, depth, parent);
-          const groupingColumnDef = columnDef;
-          column$1.columns = groupingColumnDef.columns ? recurseColumns(groupingColumnDef.columns, column$1, depth + 1) : [];
-          return column$1;
-        });
-      };
-      return recurseColumns(columnDefs);
-    }, utils.getMemoOptions(options, 'debugColumns', 'getAllColumns')),
-    getAllFlatColumns: utils.memo(() => [table.getAllColumns()], allColumns => {
-      return allColumns.flatMap(column => {
-        return column.getFlatColumns();
-      });
-    }, utils.getMemoOptions(options, 'debugColumns', 'getAllFlatColumns')),
-    _getAllFlatColumnsById: utils.memo(() => [table.getAllFlatColumns()], flatColumns => {
-      return flatColumns.reduce((acc, column) => {
-        acc[column.id] = column;
-        return acc;
-      }, {});
-    }, utils.getMemoOptions(options, 'debugColumns', 'getAllFlatColumnsById')),
-    getAllLeafColumns: utils.memo(() => [table.getAllColumns(), table._getOrderColumnsFn()], (allColumns, orderColumns) => {
-      let leafColumns = allColumns.flatMap(column => column.getLeafColumns());
-      return orderColumns(leafColumns);
-    }, utils.getMemoOptions(options, 'debugColumns', 'getAllLeafColumns')),
-    getColumn: columnId => {
-      const column = table._getAllFlatColumnsById()[columnId];
-      if ('production' !== 'production' && !column) {
-        console.error(`[Table] Column with id '${columnId}' does not exist.`);
-      }
-      return column;
-    }
-  };
-  Object.assign(table, coreInstance);
-  for (let index = 0; index < table._features.length; index++) {
-    const feature = table._features[index];
-    feature == null || feature.createTable == null || feature.createTable(table);
-  }
-  return table;
-}
-exports.createTable = createTable;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var row = require('../core/row.js');
-var utils = require('../utils.js');
-function getCoreRowModel() {
-  return table => utils.memo(() => [table.options.data], data => {
-    const rowModel = {
-      rows: [],
-      flatRows: [],
-      rowsById: {}
-    };
-    const accessRows = function (originalRows, depth, parentRow) {
-      if (depth === void 0) {
-        depth = 0;
-      }
-      const rows = [];
-      for (let i = 0; i < originalRows.length; i++) {
-        // This could be an expensive check at scale, so we should move it somewhere else, but where?
-        // if (!id) {
-        //   if ('production' !== 'production') {
-        //     throw new Error(`getRowId expected an ID, but got ${id}`)
-        //   }
-        // }
-
-        // Make the row
-        const row$1 = row.createRow(table, table._getRowId(originalRows[i], i, parentRow), originalRows[i], i, depth, undefined, parentRow == null ? void 0 : parentRow.id);
-
-        // Keep track of every row in a flat array
-        rowModel.flatRows.push(row$1);
-        // Also keep track of every row by its ID
-        rowModel.rowsById[row$1.id] = row$1;
-        // Push table row into parent
-        rows.push(row$1);
-
-        // Get the original subrows
-        if (table.options.getSubRows) {
-          var _row$originalSubRows;
-          row$1.originalSubRows = table.options.getSubRows(originalRows[i], i);
-
-          // Then recursively access them
-          if ((_row$originalSubRows = row$1.originalSubRows) != null && _row$originalSubRows.length) {
-            row$1.subRows = accessRows(row$1.originalSubRows, depth + 1, row$1);
-          }
-        }
-      }
-      return rows;
-    };
-    rowModel.rows = accessRows(data);
-    return rowModel;
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getRowModel', () => table._autoResetPageIndex()));
-}
-exports.getCoreRowModel = getCoreRowModel;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-function getExpandedRowModel() {
-  return table => utils.memo(() => [table.getState().expanded, table.getPreExpandedRowModel(), table.options.paginateExpandedRows], (expanded, rowModel, paginateExpandedRows) => {
-    if (!rowModel.rows.length || expanded !== true && !Object.keys(expanded != null ? expanded : {}).length) {
-      return rowModel;
-    }
-    if (!paginateExpandedRows) {
-      // Only expand rows at this point if they are being paginated
-      return rowModel;
-    }
-    return expandRows(rowModel);
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getExpandedRowModel'));
-}
-function expandRows(rowModel) {
-  const expandedRows = [];
-  const handleRow = row => {
-    var _row$subRows;
-    expandedRows.push(row);
-    if ((_row$subRows = row.subRows) != null && _row$subRows.length && row.getIsExpanded()) {
-      row.subRows.forEach(handleRow);
-    }
-  };
-  rowModel.rows.forEach(handleRow);
-  return {
-    rows: expandedRows,
-    flatRows: rowModel.flatRows,
-    rowsById: rowModel.rowsById
-  };
-}
-exports.expandRows = expandRows;
-exports.getExpandedRowModel = getExpandedRowModel;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-function getFacetedMinMaxValues() {
-  return (table, columnId) => utils.memo(() => {
-    var _table$getColumn;
-    return [(_table$getColumn = table.getColumn(columnId)) == null ? void 0 : _table$getColumn.getFacetedRowModel()];
-  }, facetedRowModel => {
-    if (!facetedRowModel) return undefined;
-    const uniqueValues = facetedRowModel.flatRows.flatMap(flatRow => {
-      var _flatRow$getUniqueVal;
-      return (_flatRow$getUniqueVal = flatRow.getUniqueValues(columnId)) != null ? _flatRow$getUniqueVal : [];
-    }).map(Number).filter(value => !Number.isNaN(value));
-    if (!uniqueValues.length) return;
-    let facetedMinValue = uniqueValues[0];
-    let facetedMaxValue = uniqueValues[uniqueValues.length - 1];
-    for (const value of uniqueValues) {
-      if (value < facetedMinValue) facetedMinValue = value;else if (value > facetedMaxValue) facetedMaxValue = value;
-    }
-    return [facetedMinValue, facetedMaxValue];
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getFacetedMinMaxValues'));
-}
-exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var row = require('../core/row.js');
-function filterRows(rows, filterRowImpl, table) {
-  if (table.options.filterFromLeafRows) {
-    return filterRowModelFromLeafs(rows, filterRowImpl, table);
-  }
-  return filterRowModelFromRoot(rows, filterRowImpl, table);
-}
-function filterRowModelFromLeafs(rowsToFilter, filterRow, table) {
-  var _table$options$maxLea;
-  const newFilteredFlatRows = [];
-  const newFilteredRowsById = {};
-  const maxDepth = (_table$options$maxLea = table.options.maxLeafRowFilterDepth) != null ? _table$options$maxLea : 100;
-  const recurseFilterRows = function (rowsToFilter, depth) {
-    if (depth === void 0) {
-      depth = 0;
-    }
-    const rows = [];
-
-    // Filter from children up first
-    for (let i = 0; i < rowsToFilter.length; i++) {
-      var _row$subRows;
-      let row$1 = rowsToFilter[i];
-      const newRow = row.createRow(table, row$1.id, row$1.original, row$1.index, row$1.depth, undefined, row$1.parentId);
-      newRow.columnFilters = row$1.columnFilters;
-      if ((_row$subRows = row$1.subRows) != null && _row$subRows.length && depth < maxDepth) {
-        newRow.subRows = recurseFilterRows(row$1.subRows, depth + 1);
-        row$1 = newRow;
-        if (filterRow(row$1) && !newRow.subRows.length) {
-          rows.push(row$1);
-          newFilteredRowsById[row$1.id] = row$1;
-          newFilteredFlatRows.push(row$1);
-          continue;
-        }
-        if (filterRow(row$1) || newRow.subRows.length) {
-          rows.push(row$1);
-          newFilteredRowsById[row$1.id] = row$1;
-          newFilteredFlatRows.push(row$1);
-          continue;
-        }
-      } else {
-        row$1 = newRow;
-        if (filterRow(row$1)) {
-          rows.push(row$1);
-          newFilteredRowsById[row$1.id] = row$1;
-          newFilteredFlatRows.push(row$1);
-        }
-      }
-    }
-    return rows;
-  };
-  return {
-    rows: recurseFilterRows(rowsToFilter),
-    flatRows: newFilteredFlatRows,
-    rowsById: newFilteredRowsById
-  };
-}
-function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
-  var _table$options$maxLea2;
-  const newFilteredFlatRows = [];
-  const newFilteredRowsById = {};
-  const maxDepth = (_table$options$maxLea2 = table.options.maxLeafRowFilterDepth) != null ? _table$options$maxLea2 : 100;
-
-  // Filters top level and nested rows
-  const recurseFilterRows = function (rowsToFilter, depth) {
-    if (depth === void 0) {
-      depth = 0;
-    }
-    // Filter from parents downward first
-
-    const rows = [];
-
-    // Apply the filter to any subRows
-    for (let i = 0; i < rowsToFilter.length; i++) {
-      let row$1 = rowsToFilter[i];
-      const pass = filterRow(row$1);
-      if (pass) {
-        var _row$subRows2;
-        if ((_row$subRows2 = row$1.subRows) != null && _row$subRows2.length && depth < maxDepth) {
-          const newRow = row.createRow(table, row$1.id, row$1.original, row$1.index, row$1.depth, undefined, row$1.parentId);
-          newRow.subRows = recurseFilterRows(row$1.subRows, depth + 1);
-          row$1 = newRow;
-        }
-        rows.push(row$1);
-        newFilteredFlatRows.push(row$1);
-        newFilteredRowsById[row$1.id] = row$1;
-      }
-    }
-    return rows;
-  };
-  return {
-    rows: recurseFilterRows(rowsToFilter),
-    flatRows: newFilteredFlatRows,
-    rowsById: newFilteredRowsById
-  };
-}
-exports.filterRows = filterRows;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-var filterRowsUtils = require('./filterRowsUtils.js');
-function getFacetedRowModel() {
-  return (table, columnId) => utils.memo(() => [table.getPreFilteredRowModel(), table.getState().columnFilters, table.getState().globalFilter, table.getFilteredRowModel()], (preRowModel, columnFilters, globalFilter) => {
-    if (!preRowModel.rows.length || !(columnFilters != null && columnFilters.length) && !globalFilter) {
-      return preRowModel;
-    }
-    const filterableIds = [...columnFilters.map(d => d.id).filter(d => d !== columnId), globalFilter ? '__global__' : undefined].filter(Boolean);
-    const filterRowsImpl = row => {
-      // Horizontally filter rows through each column
-      for (let i = 0; i < filterableIds.length; i++) {
-        if (row.columnFilters[filterableIds[i]] === false) {
-          return false;
-        }
-      }
-      return true;
-    };
-    return filterRowsUtils.filterRows(preRowModel.rows, filterRowsImpl, table);
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getFacetedRowModel'));
-}
-exports.getFacetedRowModel = getFacetedRowModel;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-function getFacetedUniqueValues() {
-  return (table, columnId) => utils.memo(() => {
-    var _table$getColumn;
-    return [(_table$getColumn = table.getColumn(columnId)) == null ? void 0 : _table$getColumn.getFacetedRowModel()];
-  }, facetedRowModel => {
-    if (!facetedRowModel) return new Map();
-    let facetedUniqueValues = new Map();
-    for (let i = 0; i < facetedRowModel.flatRows.length; i++) {
-      const values = facetedRowModel.flatRows[i].getUniqueValues(columnId);
-      for (let j = 0; j < values.length; j++) {
-        const value = values[j];
-        if (facetedUniqueValues.has(value)) {
-          var _facetedUniqueValues$;
-          facetedUniqueValues.set(value, ((_facetedUniqueValues$ = facetedUniqueValues.get(value)) != null ? _facetedUniqueValues$ : 0) + 1);
-        } else {
-          facetedUniqueValues.set(value, 1);
-        }
-      }
-    }
-    return facetedUniqueValues;
-  }, utils.getMemoOptions(table.options, 'debugTable', `getFacetedUniqueValues_${columnId}`));
-}
-exports.getFacetedUniqueValues = getFacetedUniqueValues;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-var filterRowsUtils = require('./filterRowsUtils.js');
-function getFilteredRowModel() {
-  return table => utils.memo(() => [table.getPreFilteredRowModel(), table.getState().columnFilters, table.getState().globalFilter], (rowModel, columnFilters, globalFilter) => {
-    if (!rowModel.rows.length || !(columnFilters != null && columnFilters.length) && !globalFilter) {
-      for (let i = 0; i < rowModel.flatRows.length; i++) {
-        rowModel.flatRows[i].columnFilters = {};
-        rowModel.flatRows[i].columnFiltersMeta = {};
-      }
-      return rowModel;
-    }
-    const resolvedColumnFilters = [];
-    const resolvedGlobalFilters = [];
-    (columnFilters != null ? columnFilters : []).forEach(d => {
-      var _filterFn$resolveFilt;
-      const column = table.getColumn(d.id);
-      if (!column) {
-        return;
-      }
-      const filterFn = column.getFilterFn();
-      if (!filterFn) {
-        if ('production' !== 'production') {
-          console.warn(`Could not find a valid 'column.filterFn' for column with the ID: ${column.id}.`);
-        }
-        return;
-      }
-      resolvedColumnFilters.push({
-        id: d.id,
-        filterFn,
-        resolvedValue: (_filterFn$resolveFilt = filterFn.resolveFilterValue == null ? void 0 : filterFn.resolveFilterValue(d.value)) != null ? _filterFn$resolveFilt : d.value
-      });
-    });
-    const filterableIds = (columnFilters != null ? columnFilters : []).map(d => d.id);
-    const globalFilterFn = table.getGlobalFilterFn();
-    const globallyFilterableColumns = table.getAllLeafColumns().filter(column => column.getCanGlobalFilter());
-    if (globalFilter && globalFilterFn && globallyFilterableColumns.length) {
-      filterableIds.push('__global__');
-      globallyFilterableColumns.forEach(column => {
-        var _globalFilterFn$resol;
-        resolvedGlobalFilters.push({
-          id: column.id,
-          filterFn: globalFilterFn,
-          resolvedValue: (_globalFilterFn$resol = globalFilterFn.resolveFilterValue == null ? void 0 : globalFilterFn.resolveFilterValue(globalFilter)) != null ? _globalFilterFn$resol : globalFilter
-        });
-      });
-    }
-    let currentColumnFilter;
-    let currentGlobalFilter;
-
-    // Flag the prefiltered row model with each filter state
-    for (let j = 0; j < rowModel.flatRows.length; j++) {
-      const row = rowModel.flatRows[j];
-      row.columnFilters = {};
-      if (resolvedColumnFilters.length) {
-        for (let i = 0; i < resolvedColumnFilters.length; i++) {
-          currentColumnFilter = resolvedColumnFilters[i];
-          const id = currentColumnFilter.id;
-
-          // Tag the row with the column filter state
-          row.columnFilters[id] = currentColumnFilter.filterFn(row, id, currentColumnFilter.resolvedValue, filterMeta => {
-            row.columnFiltersMeta[id] = filterMeta;
-          });
-        }
-      }
-      if (resolvedGlobalFilters.length) {
-        for (let i = 0; i < resolvedGlobalFilters.length; i++) {
-          currentGlobalFilter = resolvedGlobalFilters[i];
-          const id = currentGlobalFilter.id;
-          // Tag the row with the first truthy global filter state
-          if (currentGlobalFilter.filterFn(row, id, currentGlobalFilter.resolvedValue, filterMeta => {
-            row.columnFiltersMeta[id] = filterMeta;
-          })) {
-            row.columnFilters.__global__ = true;
-            break;
-          }
-        }
-        if (row.columnFilters.__global__ !== true) {
-          row.columnFilters.__global__ = false;
-        }
-      }
-    }
-    const filterRowsImpl = row => {
-      // Horizontally filter rows through each column
-      for (let i = 0; i < filterableIds.length; i++) {
-        if (row.columnFilters[filterableIds[i]] === false) {
-          return false;
-        }
-      }
-      return true;
-    };
-
-    // Filter final rows using all of the active filters
-    return filterRowsUtils.filterRows(rowModel.rows, filterRowsImpl, table);
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getFilteredRowModel', () => table._autoResetPageIndex()));
-}
-exports.getFilteredRowModel = getFilteredRowModel;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var row = require('../core/row.js');
-var utils = require('../utils.js');
-function getGroupedRowModel() {
-  return table => utils.memo(() => [table.getState().grouping, table.getPreGroupedRowModel()], (grouping, rowModel) => {
-    if (!rowModel.rows.length || !grouping.length) {
-      rowModel.rows.forEach(row => {
-        row.depth = 0;
-        row.parentId = undefined;
-      });
-      return rowModel;
-    }
-
-    // Filter the grouping list down to columns that exist
-    const existingGrouping = grouping.filter(columnId => table.getColumn(columnId));
-    const groupedFlatRows = [];
-    const groupedRowsById = {};
-    // const onlyGroupedFlatRows: Row[] = [];
-    // const onlyGroupedRowsById: Record<RowId, Row> = {};
-    // const nonGroupedFlatRows: Row[] = [];
-    // const nonGroupedRowsById: Record<RowId, Row> = {};
-
-    // Recursively group the data
-    const groupUpRecursively = function (rows, depth, parentId) {
-      if (depth === void 0) {
-        depth = 0;
-      }
-      // Grouping depth has been been met
-      // Stop grouping and simply rewrite thd depth and row relationships
-      if (depth >= existingGrouping.length) {
-        return rows.map(row => {
-          row.depth = depth;
-          groupedFlatRows.push(row);
-          groupedRowsById[row.id] = row;
-          if (row.subRows) {
-            row.subRows = groupUpRecursively(row.subRows, depth + 1, row.id);
-          }
-          return row;
-        });
-      }
-      const columnId = existingGrouping[depth];
-
-      // Group the rows together for this level
-      const rowGroupsMap = groupBy(rows, columnId);
-
-      // Perform aggregations for each group
-      const aggregatedGroupedRows = Array.from(rowGroupsMap.entries()).map((_ref, index) => {
-        let [groupingValue, groupedRows] = _ref;
-        let id = `${columnId}:${groupingValue}`;
-        id = parentId ? `${parentId}>${id}` : id;
-
-        // First, Recurse to group sub rows before aggregation
-        const subRows = groupUpRecursively(groupedRows, depth + 1, id);
-        subRows.forEach(subRow => {
-          subRow.parentId = id;
-        });
-
-        // Flatten the leaf rows of the rows in this group
-        const leafRows = depth ? utils.flattenBy(groupedRows, row => row.subRows) : groupedRows;
-        const row$1 = row.createRow(table, id, leafRows[0].original, index, depth, undefined, parentId);
-        Object.assign(row$1, {
-          groupingColumnId: columnId,
-          groupingValue,
-          subRows,
-          leafRows,
-          getValue: columnId => {
-            // Don't aggregate columns that are in the grouping
-            if (existingGrouping.includes(columnId)) {
-              if (row$1._valuesCache.hasOwnProperty(columnId)) {
-                return row$1._valuesCache[columnId];
-              }
-              if (groupedRows[0]) {
-                var _groupedRows$0$getVal;
-                row$1._valuesCache[columnId] = (_groupedRows$0$getVal = groupedRows[0].getValue(columnId)) != null ? _groupedRows$0$getVal : undefined;
-              }
-              return row$1._valuesCache[columnId];
-            }
-            if (row$1._groupingValuesCache.hasOwnProperty(columnId)) {
-              return row$1._groupingValuesCache[columnId];
-            }
-
-            // Aggregate the values
-            const column = table.getColumn(columnId);
-            const aggregateFn = column == null ? void 0 : column.getAggregationFn();
-            if (aggregateFn) {
-              row$1._groupingValuesCache[columnId] = aggregateFn(columnId, leafRows, groupedRows);
-              return row$1._groupingValuesCache[columnId];
-            }
-          }
-        });
-        subRows.forEach(subRow => {
-          groupedFlatRows.push(subRow);
-          groupedRowsById[subRow.id] = subRow;
-          // if (subRow.getIsGrouped?.()) {
-          //   onlyGroupedFlatRows.push(subRow);
-          //   onlyGroupedRowsById[subRow.id] = subRow;
-          // } else {
-          //   nonGroupedFlatRows.push(subRow);
-          //   nonGroupedRowsById[subRow.id] = subRow;
-          // }
-        });
-        return row$1;
-      });
-      return aggregatedGroupedRows;
-    };
-    const groupedRows = groupUpRecursively(rowModel.rows, 0);
-    groupedRows.forEach(subRow => {
-      groupedFlatRows.push(subRow);
-      groupedRowsById[subRow.id] = subRow;
-      // if (subRow.getIsGrouped?.()) {
-      //   onlyGroupedFlatRows.push(subRow);
-      //   onlyGroupedRowsById[subRow.id] = subRow;
-      // } else {
-      //   nonGroupedFlatRows.push(subRow);
-      //   nonGroupedRowsById[subRow.id] = subRow;
-      // }
-    });
-    return {
-      rows: groupedRows,
-      flatRows: groupedFlatRows,
-      rowsById: groupedRowsById
-    };
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getGroupedRowModel', () => {
-    table._queue(() => {
-      table._autoResetExpanded();
-      table._autoResetPageIndex();
-    });
-  }));
-}
-function groupBy(rows, columnId) {
-  const groupMap = new Map();
-  return rows.reduce((map, row) => {
-    const resKey = `${row.getGroupingValue(columnId)}`;
-    const previous = map.get(resKey);
-    if (!previous) {
-      map.set(resKey, [row]);
-    } else {
-      previous.push(row);
-    }
-    return map;
-  }, groupMap);
-}
-exports.getGroupedRowModel = getGroupedRowModel;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-var getExpandedRowModel = require('./getExpandedRowModel.js');
-function getPaginationRowModel(opts) {
-  return table => utils.memo(() => [table.getState().pagination, table.getPrePaginationRowModel(), table.options.paginateExpandedRows ? undefined : table.getState().expanded], (pagination, rowModel) => {
-    if (!rowModel.rows.length) {
-      return rowModel;
-    }
-    const {
-      pageSize,
-      pageIndex
-    } = pagination;
-    let {
-      rows,
-      flatRows,
-      rowsById
-    } = rowModel;
-    const pageStart = pageSize * pageIndex;
-    const pageEnd = pageStart + pageSize;
-    rows = rows.slice(pageStart, pageEnd);
-    let paginatedRowModel;
-    if (!table.options.paginateExpandedRows) {
-      paginatedRowModel = getExpandedRowModel.expandRows({
-        rows,
-        flatRows,
-        rowsById
-      });
-    } else {
-      paginatedRowModel = {
-        rows,
-        flatRows,
-        rowsById
-      };
-    }
-    paginatedRowModel.flatRows = [];
-    const handleRow = row => {
-      paginatedRowModel.flatRows.push(row);
-      if (row.subRows.length) {
-        row.subRows.forEach(handleRow);
-      }
-    };
-    paginatedRowModel.rows.forEach(handleRow);
-    return paginatedRowModel;
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getPaginationRowModel'));
-}
-exports.getPaginationRowModel = getPaginationRowModel;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var utils = require('../utils.js');
-function getSortedRowModel() {
-  return table => utils.memo(() => [table.getState().sorting, table.getPreSortedRowModel()], (sorting, rowModel) => {
-    if (!rowModel.rows.length || !(sorting != null && sorting.length)) {
-      return rowModel;
-    }
-    const sortingState = table.getState().sorting;
-    const sortedFlatRows = [];
-
-    // Filter out sortings that correspond to non existing columns
-    const availableSorting = sortingState.filter(sort => {
-      var _table$getColumn;
-      return (_table$getColumn = table.getColumn(sort.id)) == null ? void 0 : _table$getColumn.getCanSort();
-    });
-    const columnInfoById = {};
-    availableSorting.forEach(sortEntry => {
-      const column = table.getColumn(sortEntry.id);
-      if (!column) return;
-      columnInfoById[sortEntry.id] = {
-        sortUndefined: column.columnDef.sortUndefined,
-        invertSorting: column.columnDef.invertSorting,
-        sortingFn: column.getSortingFn()
-      };
-    });
-    const sortData = rows => {
-      // This will also perform a stable sorting using the row index
-      // if needed.
-      const sortedData = rows.map(row => ({
-        ...row
-      }));
-      sortedData.sort((rowA, rowB) => {
-        for (let i = 0; i < availableSorting.length; i += 1) {
-          var _sortEntry$desc;
-          const sortEntry = availableSorting[i];
-          const columnInfo = columnInfoById[sortEntry.id];
-          const sortUndefined = columnInfo.sortUndefined;
-          const isDesc = (_sortEntry$desc = sortEntry == null ? void 0 : sortEntry.desc) != null ? _sortEntry$desc : false;
-          let sortInt = 0;
-
-          // All sorting ints should always return in ascending order
-          if (sortUndefined) {
-            const aValue = rowA.getValue(sortEntry.id);
-            const bValue = rowB.getValue(sortEntry.id);
-            const aUndefined = aValue === undefined;
-            const bUndefined = bValue === undefined;
-            if (aUndefined || bUndefined) {
-              if (sortUndefined === 'first') return aUndefined ? -1 : 1;
-              if (sortUndefined === 'last') return aUndefined ? 1 : -1;
-              sortInt = aUndefined && bUndefined ? 0 : aUndefined ? sortUndefined : -sortUndefined;
-            }
-          }
-          if (sortInt === 0) {
-            sortInt = columnInfo.sortingFn(rowA, rowB, sortEntry.id);
-          }
-
-          // If sorting is non-zero, take care of desc and inversion
-          if (sortInt !== 0) {
-            if (isDesc) {
-              sortInt *= -1;
-            }
-            if (columnInfo.invertSorting) {
-              sortInt *= -1;
-            }
-            return sortInt;
-          }
-        }
-        return rowA.index - rowB.index;
-      });
-
-      // If there are sub-rows, sort them
-      sortedData.forEach(row => {
-        var _row$subRows;
-        sortedFlatRows.push(row);
-        if ((_row$subRows = row.subRows) != null && _row$subRows.length) {
-          row.subRows = sortData(row.subRows);
-        }
-      });
-      return sortedData;
-    };
-    return {
-      rows: sortData(rowModel.rows),
-      flatRows: sortedFlatRows,
-      rowsById: rowModel.rowsById
-    };
-  }, utils.getMemoOptions(table.options, 'debugTable', 'getSortedRowModel', () => table._autoResetPageIndex()));
-}
-exports.getSortedRowModel = getSortedRowModel;
-  } },
-  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
-/**
-   * table-core
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var columnHelper = require('./columnHelper.js');
-var cell = require('./core/cell.js');
-var column = require('./core/column.js');
-var headers = require('./core/headers.js');
-var row = require('./core/row.js');
-var table = require('./core/table.js');
-var ColumnFaceting = require('./features/ColumnFaceting.js');
-var ColumnFiltering = require('./features/ColumnFiltering.js');
-var ColumnGrouping = require('./features/ColumnGrouping.js');
-var ColumnOrdering = require('./features/ColumnOrdering.js');
-var ColumnPinning = require('./features/ColumnPinning.js');
-var ColumnSizing = require('./features/ColumnSizing.js');
-var ColumnVisibility = require('./features/ColumnVisibility.js');
-var GlobalFaceting = require('./features/GlobalFaceting.js');
-var GlobalFiltering = require('./features/GlobalFiltering.js');
-var RowExpanding = require('./features/RowExpanding.js');
-var RowPagination = require('./features/RowPagination.js');
-var RowPinning = require('./features/RowPinning.js');
-var RowSelection = require('./features/RowSelection.js');
-var RowSorting = require('./features/RowSorting.js');
-var utils = require('./utils.js');
-var getCoreRowModel = require('./utils/getCoreRowModel.js');
-var getExpandedRowModel = require('./utils/getExpandedRowModel.js');
-var getFacetedMinMaxValues = require('./utils/getFacetedMinMaxValues.js');
-var getFacetedRowModel = require('./utils/getFacetedRowModel.js');
-var getFacetedUniqueValues = require('./utils/getFacetedUniqueValues.js');
-var getFilteredRowModel = require('./utils/getFilteredRowModel.js');
-var getGroupedRowModel = require('./utils/getGroupedRowModel.js');
-var getPaginationRowModel = require('./utils/getPaginationRowModel.js');
-var getSortedRowModel = require('./utils/getSortedRowModel.js');
-var aggregationFns = require('./aggregationFns.js');
-var filterFns = require('./filterFns.js');
-var sortingFns = require('./sortingFns.js');
-exports.createColumnHelper = columnHelper.createColumnHelper;
-exports.createCell = cell.createCell;
-exports.createColumn = column.createColumn;
-exports.Headers = headers.Headers;
-exports.buildHeaderGroups = headers.buildHeaderGroups;
-exports.createRow = row.createRow;
-exports.createTable = table.createTable;
-exports.ColumnFaceting = ColumnFaceting.ColumnFaceting;
-exports.ColumnFiltering = ColumnFiltering.ColumnFiltering;
-exports.shouldAutoRemoveFilter = ColumnFiltering.shouldAutoRemoveFilter;
-exports.ColumnGrouping = ColumnGrouping.ColumnGrouping;
-exports.orderColumns = ColumnGrouping.orderColumns;
-exports.ColumnOrdering = ColumnOrdering.ColumnOrdering;
-exports.ColumnPinning = ColumnPinning.ColumnPinning;
-exports.ColumnSizing = ColumnSizing.ColumnSizing;
-exports.defaultColumnSizing = ColumnSizing.defaultColumnSizing;
-exports.passiveEventSupported = ColumnSizing.passiveEventSupported;
-exports.ColumnVisibility = ColumnVisibility.ColumnVisibility;
-exports._getVisibleLeafColumns = ColumnVisibility._getVisibleLeafColumns;
-exports.GlobalFaceting = GlobalFaceting.GlobalFaceting;
-exports.GlobalFiltering = GlobalFiltering.GlobalFiltering;
-exports.RowExpanding = RowExpanding.RowExpanding;
-exports.RowPagination = RowPagination.RowPagination;
-exports.RowPinning = RowPinning.RowPinning;
-exports.RowSelection = RowSelection.RowSelection;
-exports.isRowSelected = RowSelection.isRowSelected;
-exports.isSubRowSelected = RowSelection.isSubRowSelected;
-exports.selectRowsFn = RowSelection.selectRowsFn;
-exports.RowSorting = RowSorting.RowSorting;
-exports.flattenBy = utils.flattenBy;
-exports.functionalUpdate = utils.functionalUpdate;
-exports.getMemoOptions = utils.getMemoOptions;
-exports.isFunction = utils.isFunction;
-exports.isNumberArray = utils.isNumberArray;
-exports.makeStateUpdater = utils.makeStateUpdater;
-exports.memo = utils.memo;
-exports.noop = utils.noop;
-exports.getCoreRowModel = getCoreRowModel.getCoreRowModel;
-exports.expandRows = getExpandedRowModel.expandRows;
-exports.getExpandedRowModel = getExpandedRowModel.getExpandedRowModel;
-exports.getFacetedMinMaxValues = getFacetedMinMaxValues.getFacetedMinMaxValues;
-exports.getFacetedRowModel = getFacetedRowModel.getFacetedRowModel;
-exports.getFacetedUniqueValues = getFacetedUniqueValues.getFacetedUniqueValues;
-exports.getFilteredRowModel = getFilteredRowModel.getFilteredRowModel;
-exports.getGroupedRowModel = getGroupedRowModel.getGroupedRowModel;
-exports.getPaginationRowModel = getPaginationRowModel.getPaginationRowModel;
-exports.getSortedRowModel = getSortedRowModel.getSortedRowModel;
-exports.aggregationFns = aggregationFns.aggregationFns;
-exports.filterFns = filterFns.filterFns;
-exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
-exports.sortingFns = sortingFns.sortingFns;
-  } },
-  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-/**
-   * react-table
-   *
-   * Copyright (c) TanStack
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.md file in the root directory of this source tree.
-   *
-   * @license MIT
-   */
-'use strict';
-
-var React = require('react');
-var tableCore = require('@tanstack/table-core');
-function _interopNamespaceDefault(e) {
-  var n = Object.create(null);
-  if (e) {
-    Object.keys(e).forEach(function (k) {
-      if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () {
-            return e[k];
-          }
-        });
-      }
-    });
-  }
-  n.default = e;
-  return Object.freeze(n);
-}
-var React__namespace = /*#__PURE__*/_interopNamespaceDefault(React);
-
-//
-
-/**
- * If rendering headers, cells, or footers with custom markup, use flexRender instead of `cell.getValue()` or `cell.renderValue()`.
- */
-function flexRender(Comp, props) {
-  return !Comp ? null : isReactComponent(Comp) ? /*#__PURE__*/React__namespace.createElement(Comp, props) : Comp;
-}
-function isReactComponent(component) {
-  return isClassComponent(component) || typeof component === 'function' || isExoticComponent(component);
-}
-function isClassComponent(component) {
-  return typeof component === 'function' && (() => {
-    const proto = Object.getPrototypeOf(component);
-    return proto.prototype && proto.prototype.isReactComponent;
-  })();
-}
-function isExoticComponent(component) {
-  return typeof component === 'object' && typeof component.$$typeof === 'symbol' && ['react.memo', 'react.forward_ref'].includes(component.$$typeof.description);
-}
-function useReactTable(options) {
-  // Compose in the generic options to the user options
-  const resolvedOptions = {
-    state: {},
-    // Dummy state
-    onStateChange: () => {},
-    // noop
-    renderFallbackValue: null,
-    ...options
-  };
-
-  // Create a new table and store it in state
-  const [tableRef] = React__namespace.useState(() => ({
-    current: tableCore.createTable(resolvedOptions)
-  }));
-
-  // By default, manage table state here using the table's initial state
-  const [state, setState] = React__namespace.useState(() => tableRef.current.initialState);
-
-  // Compose the default state above with any user state. This will allow the user
-  // to only control a subset of the state if desired.
-  tableRef.current.setOptions(prev => ({
-    ...prev,
-    ...options,
-    state: {
-      ...state,
-      ...options.state
-    },
-    // Similarly, we'll maintain both our internal state and any user-provided
-    // state.
-    onStateChange: updater => {
-      setState(updater);
-      options.onStateChange == null || options.onStateChange(updater);
-    }
-  }));
-  return tableRef.current;
-}
-exports.flexRender = flexRender;
-exports.useReactTable = useReactTable;
-Object.keys(tableCore).forEach(function (k) {
-  if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
-    enumerable: true,
-    get: function () {
-      return tableCore[k];
-    }
-  });
-});
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-function getMeasurementKey(item) {
-  return typeof item === "object" ? item.key : item;
-}
-function createLazyMeasurementsView(cache, flat) {
-  const count = cache.length;
-  return new Proxy(cache, {
-    get(target, prop, receiver) {
-      if (typeof prop === "string") {
-        const c = prop.charCodeAt(0);
-        if (c >= 48 && c <= 57) {
-          const i = +prop;
-          if (Number.isInteger(i) && i >= 0 && i < count) {
-            let v = target[i];
-            if (typeof v !== "object") {
-              const s = flat[i * 2];
-              v = target[i] = {
-                index: i,
-                key: v,
-                start: s,
-                size: flat[i * 2 + 1],
-                end: s + flat[i * 2 + 1],
-                lane: 0
-              };
-            }
-            return v;
-          }
-        }
-        if (prop === "length") return count;
-      }
-      return Reflect.get(target, prop, receiver);
-    }
-  });
-}
-exports.createLazyMeasurementsView = createLazyMeasurementsView;
-exports.getMeasurementKey = getMeasurementKey;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-function memo(getDeps, fn, opts) {
-  let deps = opts.initialDeps ?? [];
-  let result;
-  let isInitial = true;
-  function memoizedFunction() {
-    var _a;
-    const debugEnabled = 'production' !== "production" && !!opts.key && !!((_a = opts.debug) == null ? void 0 : _a.call(opts));
-    let depTime = 0;
-    if (debugEnabled) depTime = Date.now();
-    const newDeps = getDeps();
-    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
-    if (!depsChanged) {
-      return result;
-    }
-    deps = newDeps;
-    let resultTime = 0;
-    if (debugEnabled) resultTime = Date.now();
-    result = fn(...newDeps);
-    if (debugEnabled) {
-      const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
-      const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
-      const resultFpsPercentage = resultEndTime / 16;
-      const pad = (str, num) => {
-        str = String(str);
-        while (str.length < num) {
-          str = " " + str;
-        }
-        return str;
-      };
-      console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
-            font-size: .6rem;
-            font-weight: bold;
-            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
-    }
-    if ((opts == null ? void 0 : opts.onChange) && !(isInitial && opts.skipInitialOnChange)) {
-      opts.onChange(result);
-    }
-    isInitial = false;
-    return result;
-  }
-  memoizedFunction.updateDeps = newDeps => {
-    deps = newDeps;
-  };
-  return memoizedFunction;
-}
-function notUndefined(value, msg) {
-  if (value === void 0) {
-    throw new Error(`Unexpected undefined${msg ? `: ${msg}` : ""}`);
-  } else {
-    return value;
-  }
-}
-const approxEqual = (a, b) => Math.abs(a - b) < 1.01;
-const debounce = (targetWindow, fn, ms) => {
-  let timeoutId;
-  return Object.assign(function (...args) {
-    targetWindow.clearTimeout(timeoutId);
-    timeoutId = targetWindow.setTimeout(() => fn.apply(this, args), ms);
-  }, {
-    // The handle is closure-local, so a caller that has already
-    // unsubscribed has no way to stop a queued call. Teardown paths use
-    // this to drop the pending invocation instead of letting it land.
-    cancel: () => {
-      targetWindow.clearTimeout(timeoutId);
-    }
-  });
-};
-exports.approxEqual = approxEqual;
-exports.debounce = debounce;
-exports.memo = memo;
-exports.notUndefined = notUndefined;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-const utils = require("./utils.cjs");
-function classifyScrollEvent({
-  offset,
-  isScrolling,
-  elementMax,
-  holdOffset,
-  scrollOffset,
-  pendingWrite,
-  clampedMaxAtWrite
-}) {
-  var _a;
-  if (isScrolling && pendingWrite === null && offset === scrollOffset) {
-    return "spurious";
-  }
-  if (pendingWrite !== null && Math.abs(offset - pendingWrite.target) < 1.5) {
-    return "readBack";
-  }
-  if (pendingWrite !== null && !pendingWrite.smooth && elementMax !== null && pendingWrite.target > elementMax + holdOffset + 0.5 && Math.abs(offset - (elementMax + holdOffset)) < 1.5) {
-    return "clampedReadBack";
-  }
-  if (pendingWrite !== null && !pendingWrite.smooth && ((_a = pendingWrite.lowMaxes) == null ? void 0 : _a.some(max => Math.abs(offset - max) < 1.5))) {
-    return "clampedReadBack";
-  }
-  if (clampedMaxAtWrite !== null && Math.abs(offset - clampedMaxAtWrite) < 1.5) {
-    return "clampedEcho";
-  }
-  return "external";
-}
-const isAnimating = phase => phase === "smooth" || phase === "smoothFinishing";
-function externalRetiresCommand({
-  kind,
-  offset,
-  command,
-  target
-}) {
-  return kind !== "spurious" && kind !== "readBack" &&
-  // Our own write, clamped (`clampedReadBack`, #1310): the command is not
-  // retired by it, and reconcile retargets below the new max.
-  kind !== "clampedReadBack" && (command == null ? void 0 : command.index) != null &&
-  // Nothing has been written for a command waiting for the tail; these
-  // are the fling's events.
-  command.phase !== "queued" &&
-  // A non-smooth write lands at once, so any other scroll event is the
-  // user's, even before reconcile saw the target reached (the target may
-  // keep moving, or iOS ignored the write under a finger). A write the
-  // browser clamped because the sizer hasn't grown yet reads back at the
-  // max, which is also where the fresh target clamps, so the check below
-  // keeps it reconciling (#1294). While a smooth scroll's animation may
-  // still report, its events look like a user's, so it yields only once it
-  // has landed.
-  !isAnimating(command.phase) && !utils.approxEqual(offset, command.lastTargetOffset) && !utils.approxEqual(offset, target()) &&
-  // A compensation write's clamped echo (#1258) keeps the command. The
-  // order is deliberate, not tidiness: this clause stays after `target()`
-  // (and `clampedReadBack` before it) because `target()` can rebuild the
-  // measurements, so it must run for exactly the events it always did.
-  kind !== "clampedEcho";
-}
-const FLING_WINDOW_MS = 40;
-function flingSpedUp(samples) {
-  const last = samples[samples.length - 1];
-  if (last === void 0) return false;
-  let j = samples.length - 2;
-  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
-  if (j < 0) return false;
-  const mid = samples[j];
-  let k = j - 1;
-  while (k >= 0 && mid.t - samples[k].t < FLING_WINDOW_MS) k--;
-  if (k < 0) return false;
-  const first = samples[k];
-  const recent = (last.offset - mid.offset) / (last.t - mid.t);
-  const before = (mid.offset - first.offset) / (mid.t - first.t);
-  return recent * before >= 0 && Math.abs(recent) >= 2 * Math.abs(before) && Math.abs(recent) - Math.abs(before) >= 0.8;
-}
-function flingCaught(samples) {
-  const last = samples[samples.length - 1];
-  if (last === void 0) return false;
-  let j = samples.length - 2;
-  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
-  if (j < 0) return false;
-  const from = samples[j];
-  return Math.abs(last.offset - from.offset) / (last.t - from.t) >= 0.05;
-}
-exports.classifyScrollEvent = classifyScrollEvent;
-exports.externalRetiresCommand = externalRetiresCommand;
-exports.flingCaught = flingCaught;
-exports.flingSpedUp = flingSpedUp;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-let _isIOSResult;
-const isIOSWebKit = () => {
-  if (_isIOSResult !== void 0) return _isIOSResult;
-  if (typeof navigator === "undefined") return _isIOSResult = false;
-  if (/iP(hone|od|ad)/.test(navigator.userAgent)) return _isIOSResult = true;
-  const mtp = navigator.maxTouchPoints;
-  return _isIOSResult = navigator.platform === "MacIntel" && mtp !== void 0 && mtp > 0;
-};
-let _iosMomentumOverridesWritesResult;
-const iosMomentumOverridesWrites = () => {
-  if (_iosMomentumOverridesWritesResult !== void 0) {
-    return _iosMomentumOverridesWritesResult;
-  }
-  return _iosMomentumOverridesWritesResult = isIOSWebKit() && typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("overflow-anchor: auto");
-};
-const _resetIOSDetectionForTests = () => {
-  _isIOSResult = void 0;
-  _iosMomentumOverridesWritesResult = void 0;
-};
-const touchListenerOptions = {
-  capture: true,
-  passive: true
-};
-class IosGesture {
-  constructor(host) {
-    this.host = host;
-    this._touch = null;
-    this.inMotion = () => this._touch !== null && this._touch.phase !== "lateFling";
-    this.dragging = () => {
-      var _a;
-      return ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
-    };
-    this.tail = () => {
-      var _a;
-      return ((_a = this._touch) == null ? void 0 : _a.phase) === "tail" ? this._touch.moved ? "fling" : "tap" : null;
-    };
-    this.onScroll = ({
-      isScrolling,
-      ownReadBack,
-      moved,
-      external
-    }) => {
-      var _a, _b, _c;
-      if (isScrolling && ((_a = this._touch) == null ? void 0 : _a.phase) === "tail") {
-        this._openTail(this._touch.moved || !ownReadBack, false);
-      } else if (((_b = this._touch) == null ? void 0 : _b.phase) === "lateFling") {
-        if (this.host.now() > this._touch.until) {
-          this._touch = null;
-        } else if (external && isScrolling && moved) {
-          this._openTail(true, false);
-        }
-      }
-      if (!ownReadBack && isScrolling && moved && ((_c = this._touch) == null ? void 0 : _c.phase) === "down") {
-        this._touch.moved = true;
-        return true;
-      }
-      return false;
-    };
-    this.touchStart = () => {
-      this.end();
-      this._touch = {
-        phase: "down",
-        moved: false
-      };
-    };
-    this.touchEnd = () => {
-      var _a;
-      const moved = ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
-      this.end();
-      this._openTail(moved, moved);
-    };
-    this.end = () => {
-      var _a;
-      const win = this.host.getWindow();
-      if (((_a = this._touch) == null ? void 0 : _a.phase) === "tail" && win != null) {
-        win.clearTimeout(this._touch.timerId);
-      }
-      this._touch = null;
-    };
-    this.listen = target => {
-      const onTouchStart = () => this.touchStart();
-      const onTouchEnd = () => this.touchEnd();
-      target.addEventListener("touchstart", onTouchStart, touchListenerOptions);
-      target.addEventListener("touchend", onTouchEnd, touchListenerOptions);
-      target.addEventListener("touchcancel", onTouchEnd, touchListenerOptions);
-      return () => {
-        target.removeEventListener("touchstart", onTouchStart, touchListenerOptions);
-        target.removeEventListener("touchend", onTouchEnd, touchListenerOptions);
-        target.removeEventListener("touchcancel", onTouchEnd, touchListenerOptions);
-        this.end();
-      };
-    };
-    this._openTail = (moved, awaitingFling) => {
-      const win = this.host.getWindow();
-      if (!isIOSWebKit() || win == null) return;
-      this.end();
-      const tail = {
-        phase: "tail",
-        moved,
-        awaitingFling,
-        // Only fires while this tail is current: `end` clears it otherwise.
-        timerId: win.setTimeout(() => {
-          if (this.host.tailStillMoving()) {
-            this._openTail(tail.moved, tail.awaitingFling);
-            return;
-          }
-          this._touch = tail.awaitingFling ? {
-            phase: "lateFling",
-            until: this.host.now() + 1e3
-          } : null;
-          this.host.onTailClosed();
-        }, 150)
-      };
-      this._touch = tail;
-    };
-  }
-  get touch() {
-    return this._touch;
-  }
-}
-exports.IosGesture = IosGesture;
-exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
-exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
-exports.isIOSWebKit = isIOSWebKit;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-const lazyMeasurements = require("./lazy-measurements.cjs");
-const utils = require("./utils.cjs");
-const scrollClassifier = require("./scroll-classifier.cjs");
-const iosGesture = require("./ios-gesture.cjs");
-const getRect = element => {
-  const {
-    clientWidth,
-    clientHeight
-  } = element;
-  return {
-    width: clientWidth,
-    height: clientHeight
-  };
-};
-const createFrameQueue = targetWindow => {
-  const ids = /* @__PURE__ */new Set();
-  return {
-    schedule: fn => {
-      const id = targetWindow.requestAnimationFrame(() => {
-        ids.delete(id);
-        fn();
-      });
-      ids.add(id);
-    },
-    cancel: () => {
-      ids.forEach(id => targetWindow.cancelAnimationFrame(id));
-      ids.clear();
-    }
-  };
-};
-const defaultKeyExtractor = index => index;
-const defaultRangeExtractor = range => {
-  const overscan = range.overscan * Math.max(range.lanes ?? 1, 1);
-  const start = Math.max(range.startIndex - overscan, 0);
-  const end = Math.min(range.endIndex + overscan, range.count - 1);
-  const len = end - start + 1;
-  const arr = new Array(len);
-  for (let i = 0; i < len; i++) {
-    arr[i] = start + i;
-  }
-  return arr;
-};
-const observeElementRect = (instance, cb) => {
-  const element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  const targetWindow = instance.targetWindow;
-  if (!targetWindow) {
-    return;
-  }
-  const handler = rect => {
-    const {
-      width,
-      height
-    } = rect;
-    cb({
-      width: Math.round(width),
-      height: Math.round(height)
-    });
-  };
-  handler(getRect(element));
-  if (!targetWindow.ResizeObserver) {
-    return () => {};
-  }
-  const frames = createFrameQueue(targetWindow);
-  const observer = new targetWindow.ResizeObserver(() => {
-    const run = () => {
-      handler(getRect(element));
-    };
-    instance.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
-  });
-  observer.observe(element, {
-    box: "content-box"
-  });
-  return () => {
-    observer.unobserve(element);
-    frames.cancel();
-  };
-};
-const addEventListenerOptions = {
-  passive: true
-};
-const observeWindowRect = (instance, cb) => {
-  const element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  const handler = () => {
-    cb({
-      width: element.innerWidth,
-      height: element.innerHeight
-    });
-  };
-  handler();
-  element.addEventListener("resize", handler, addEventListenerOptions);
-  return () => {
-    element.removeEventListener("resize", handler);
-  };
-};
-const supportsScrollend = typeof window == "undefined" ? true : "onscrollend" in window;
-const observeOffset = (instance, cb, readOffset) => {
-  const element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  const targetWindow = instance.targetWindow;
-  if (!targetWindow) {
-    return;
-  }
-  const registerScrollendEvent = instance.options.useScrollendEvent && supportsScrollend;
-  let offset = 0;
-  const fallback = registerScrollendEvent ? null : utils.debounce(targetWindow, () => cb(readOffset(element), false), instance.options.isScrollingResetDelay);
-  const createHandler = isScrolling => () => {
-    offset = readOffset(element);
-    fallback == null ? void 0 : fallback();
-    cb(offset, isScrolling);
-  };
-  const handler = createHandler(true);
-  const endHandler = createHandler(false);
-  element.addEventListener("scroll", handler, addEventListenerOptions);
-  if (registerScrollendEvent) {
-    element.addEventListener("scrollend", endHandler, addEventListenerOptions);
-  }
-  return () => {
-    element.removeEventListener("scroll", handler);
-    if (registerScrollendEvent) {
-      element.removeEventListener("scrollend", endHandler);
-    }
-    fallback == null ? void 0 : fallback.cancel();
-  };
-};
-const observeElementOffset = (instance, cb) => observeOffset(instance, cb, el => {
-  const {
-    horizontal,
-    isRtl
-  } = instance.options;
-  return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
-});
-const observeWindowOffset = (instance, cb) => observeOffset(instance, cb, win => instance.options.horizontal ? win.scrollX : win.scrollY);
-const measureElement = (element, entry, instance) => {
-  if (instance.options.useCachedMeasurements) {
-    const index = instance.indexFromElement(element);
-    const key = instance.options.getItemKey(index);
-    return instance.itemSizeCache.get(key) ?? instance.options.estimateSize(index);
-  }
-  if (entry == null ? void 0 : entry.borderBoxSize) {
-    const box = entry.borderBoxSize[0];
-    if (box) {
-      const size = Math.round(box[instance.options.horizontal ? "inlineSize" : "blockSize"]);
-      return size;
-    }
-  }
-  if (!entry) {
-    const index = instance.indexFromElement(element);
-    const key = instance.options.getItemKey(index);
-    const cachedSize = instance.itemSizeCache.get(key);
-    if (cachedSize !== void 0) {
-      return cachedSize;
-    }
-  }
-  return element[instance.options.horizontal ? "offsetWidth" : "offsetHeight"];
-};
-const scrollWithAdjustments = (offset, {
-  adjustments = 0,
-  behavior
-}, instance) => {
-  var _a, _b;
-  (_b = (_a = instance.scrollElement) == null ? void 0 : _a.scrollTo) == null ? void 0 : _b.call(_a, {
-    [instance.options.horizontal ? "left" : "top"]: offset + adjustments,
-    behavior
-  });
-};
-const windowScroll = scrollWithAdjustments;
-const elementScroll = scrollWithAdjustments;
-const initialScrollPhase = (behavior, atTarget) => behavior === "smooth" ? atTarget ? "smoothLanded" : "smooth" : "instant";
-const isSmoothScroll = state => (state == null ? void 0 : state.phase) === "smooth" || (state == null ? void 0 : state.phase) === "smoothLanded";
-function isAppendWithTrim(prevCount, nextCount, getPreviousKey, getNextKey) {
-  if (nextCount === 0) return false;
-  const firstKey = getNextKey(0);
-  const removedKeys = /* @__PURE__ */new Set();
-  let removedCount = 0;
-  while (removedCount < prevCount) {
-    const key = getPreviousKey(removedCount);
-    if (key === firstKey) break;
-    removedKeys.add(key);
-    removedCount++;
-  }
-  const retainedCount = prevCount - removedCount;
-  if (retainedCount === 0 || retainedCount >= nextCount) return false;
-  for (let i = 0; i < retainedCount; i++) {
-    if (getNextKey(i) !== getPreviousKey(removedCount + i)) return false;
-  }
-  for (let i = retainedCount; i < nextCount; i++) {
-    if (removedKeys.has(getNextKey(i))) return false;
-  }
-  return true;
-}
-class Virtualizer {
-  constructor(opts) {
-    this.unsubs = [];
-    this.scrollElement = null;
-    this.targetWindow = null;
-    this.isScrolling = false;
-    this.scrollState = null;
-    this.measurementsCache = [];
-    this._singleLaneMeasurements = null;
-    this.itemSizeCache = /* @__PURE__ */new Map();
-    this.itemSizeCacheVersion = 0;
-    this.laneAssignments = /* @__PURE__ */new Map();
-    this.pendingMin = null;
-    this.prevLanes = void 0;
-    this.lanesChangedFlag = false;
-    this.lanesSettling = false;
-    this.pendingScrollAnchor = null;
-    this.scrollRect = null;
-    this.scrollOffset = null;
-    this.scrollDirection = null;
-    this._holdOffset = 0;
-    this._reportedOverscroll = false;
-    this._iosGesture = new iosGesture.IosGesture({
-      getWindow: () => this.targetWindow,
-      now: () => this.now(),
-      // The end of a fling can move less than a pixel per scroll event, so
-      // events can stop for 150ms while the fling is still running (seen on
-      // an iPhone, 27.0.1). A command waiting for it would then be written
-      // into the fling and overridden. The element having moved since the
-      // last event means it has not ended: wait again. Not while our own
-      // write has yet to report: that moved it.
-      tailStillMoving: () => {
-        const state = this.scrollState;
-        if ((state == null ? void 0 : state.phase) !== "queued" || this.pendingWrite !== null) {
-          return false;
-        }
-        const now = this._readElementOffset();
-        if (now === null || this._lastElementOffset === null || Math.abs(now - this._lastElementOffset) < 1) {
-          return false;
-        }
-        this._lastElementOffset = now;
-        state.samples = [...(state.samples ?? []), {
-          t: this.now(),
-          offset: now
-        }];
-        return true;
-      },
-      onTailClosed: () => {
-        const state = this.scrollState;
-        if ((state == null ? void 0 : state.phase) === "queued" && scrollClassifier.flingCaught(state.samples ?? [])) {
-          this.scrollState = null;
-        }
-        this._flushHoldIfReady(true);
-        this._writeAwaitingCommand();
-      }
-    });
-    this._lastElementOffset = null;
-    this.pendingWrite = null;
-    this._clampedAdjustment = null;
-    this.elementsCache = /* @__PURE__ */new Map();
-    this._resizeBatch = null;
-    this.now = () => {
-      var _a, _b, _c;
-      return ((_c = (_b = (_a = this.targetWindow) == null ? void 0 : _a.performance) == null ? void 0 : _b.now) == null ? void 0 : _c.call(_b)) ?? Date.now();
-    };
-    this.observer = /* @__PURE__ */(() => {
-      let _ro = null;
-      let _frames = null;
-      const get = () => {
-        if (_ro) {
-          return _ro;
-        }
-        const targetWindow = this.targetWindow;
-        if (!targetWindow || !targetWindow.ResizeObserver) {
-          return null;
-        }
-        const frames = _frames = createFrameQueue(targetWindow);
-        return _ro = new targetWindow.ResizeObserver(entries => {
-          const run = () => {
-            const batch = {
-              sync: false
-            };
-            this._resizeBatch = batch;
-            try {
-              entries.forEach(measureEntry);
-            } finally {
-              this._resizeBatch = null;
-              if (batch.notify) {
-                this.notify(batch.sync);
-                this._noteClampMax();
-                this._flushHoldIfReady(true);
-                this._retryClampedAdjustment();
-              }
-            }
-          };
-          this.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
-        });
-      };
-      const measureEntry = entry => {
-        const node = entry.target;
-        const index = this.indexFromElement(node);
-        if (!node.isConnected) {
-          this.observer.unobserve(node);
-          for (const [cacheKey, cachedNode] of this.elementsCache) {
-            if (cachedNode === node) {
-              this.elementsCache.delete(cacheKey);
-              break;
-            }
-          }
-          return;
-        }
-        if (!this.isIndexInRange(index)) return;
-        if (this.shouldMeasureDuringScroll(index)) {
-          this.resizeItem(index, this.options.measureElement(node, entry, this));
-        }
-      };
-      return {
-        disconnect: () => {
-          var _a;
-          (_a = get()) == null ? void 0 : _a.disconnect();
-          _frames == null ? void 0 : _frames.cancel();
-          _ro = null;
-          _frames = null;
-        },
-        observe: target => {
-          var _a;
-          return (_a = get()) == null ? void 0 : _a.observe(target, {
-            box: "border-box"
-          });
-        },
-        unobserve: target => {
-          var _a;
-          return (_a = get()) == null ? void 0 : _a.unobserve(target);
-        }
-      };
-    })();
-    this.range = null;
-    this.setOptions = opts2 => {
-      var _a;
-      const merged = {
-        debug: false,
-        initialOffset: 0,
-        overscan: 1,
-        paddingStart: 0,
-        paddingEnd: 0,
-        scrollPaddingStart: 0,
-        scrollPaddingEnd: 0,
-        horizontal: false,
-        getItemKey: defaultKeyExtractor,
-        rangeExtractor: defaultRangeExtractor,
-        onChange: () => {},
-        measureElement,
-        initialRect: {
-          width: 0,
-          height: 0
-        },
-        scrollMargin: 0,
-        gap: 0,
-        indexAttribute: "data-index",
-        initialMeasurementsCache: [],
-        lanes: 1,
-        anchorTo: "start",
-        followOnAppend: false,
-        scrollEndThreshold: 1,
-        isScrollingResetDelay: 150,
-        enabled: true,
-        isRtl: false,
-        useScrollendEvent: false,
-        useAnimationFrameWithResizeObserver: false,
-        laneAssignmentMode: "estimate",
-        useCachedMeasurements: false
-      };
-      for (const key in opts2) {
-        const v = opts2[key];
-        if (v !== void 0) merged[key] = v;
-      }
-      const prevOptions = this.options;
-      let anchor = null;
-      let followOnAppend = null;
-      let edgeKeysChanged = false;
-      if (prevOptions !== void 0 && prevOptions.enabled && merged.enabled && merged.anchorTo === "end" && this.scrollElement !== null) {
-        const prevCount = prevOptions.count;
-        const nextCount = merged.count;
-        const measurements = this.getMeasurements();
-        const previousItems = ((_a = this._singleLaneMeasurements) == null ? void 0 : _a.items) ?? measurements;
-        const getPreviousKey = index => lazyMeasurements.getMeasurementKey(previousItems[index]);
-        const prevFirstKey = prevCount > 0 ? getPreviousKey(0) : null;
-        const prevLastKey = prevCount > 0 ? getPreviousKey(prevCount - 1) : null;
-        const didCountChange = nextCount !== prevCount;
-        const didEdgeKeysChange = didCountChange || prevCount > 0 && nextCount > 0 && (merged.getItemKey(0) !== prevFirstKey || merged.getItemKey(nextCount - 1) !== prevLastKey);
-        if (didEdgeKeysChange) {
-          edgeKeysChanged = true;
-          const item = prevCount > 0 ? this.getVirtualItemForOffset(this.getScrollOffset()) ?? measurements[0] : null;
-          if (item) {
-            anchor = [item.key, this.getScrollOffset() - item.start];
-          }
-          const behavior = merged.followOnAppend === true ? "auto" : merged.followOnAppend || null;
-          if (behavior && nextCount > 0 && this.isAtEnd(prevOptions.scrollEndThreshold) && (prevCount === 0 || merged.getItemKey(nextCount - 1) !== prevLastKey)) {
-            if (nextCount > prevCount || isAppendWithTrim(prevCount, nextCount, getPreviousKey, merged.getItemKey)) {
-              followOnAppend = behavior;
-            }
-          }
-        }
-      }
-      this.options = merged;
-      if (edgeKeysChanged) {
-        this.pendingMin = 0;
-        this.itemSizeCacheVersion++;
-      }
-      let anchorDelta = null;
-      if (anchor && this.scrollOffset !== null && !this._awaitingCommandReadBack()) {
-        const [anchorKey, anchorOffset] = anchor;
-        const newMeasurements = this.getMeasurements();
-        const {
-          count,
-          getItemKey
-        } = this.options;
-        let idx = 0;
-        while (idx < count && getItemKey(idx) !== anchorKey) {
-          idx++;
-        }
-        if (idx < count) {
-          const anchorItem = newMeasurements[idx];
-          if (anchorItem) {
-            const newOffset = Math.max(0, anchorItem.start + anchorOffset);
-            if (!followOnAppend && newOffset !== this.scrollOffset) {
-              anchorDelta = newOffset - this.scrollOffset;
-              this.scrollOffset = newOffset;
-            }
-          }
-        }
-      }
-      if (followOnAppend) {
-        this.pendingScrollAnchor = {
-          kind: "follow",
-          behavior: followOnAppend
-        };
-      } else if (anchorDelta !== null) {
-        if (this._canWriteScroll()) {
-          this.pendingScrollAnchor = {
-            kind: "anchor",
-            delta: anchorDelta
-          };
-        } else {
-          this._holdOffset += anchorDelta;
-          this._followOffsetTarget(anchorDelta);
-        }
-      }
-    };
-    this.notify = sync => {
-      var _a, _b;
-      (_b = (_a = this.options).onChange) == null ? void 0 : _b.call(_a, this, sync);
-    };
-    this.maybeNotify = utils.memo(() => {
-      this.calculateRange();
-      return [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null];
-    }, isScrolling => {
-      this.notify(isScrolling);
-    }, {
-      key: 'production' !== "production" && "maybeNotify",
-      debug: () => this.options.debug,
-      initialDeps: [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null]
-    });
-    this.cleanup = () => {
-      var _a;
-      this.unsubs.filter(Boolean).forEach(d => d());
-      this.unsubs = [];
-      this.observer.disconnect();
-      if (this.rafId != null && this.targetWindow) {
-        this.targetWindow.cancelAnimationFrame(this.rafId);
-        this.rafId = null;
-      }
-      this.scrollState = null;
-      (_a = this._momentumStop) == null ? void 0 : _a.restore();
-      this._momentumStop = null;
-      this.isScrolling = false;
-      this.scrollDirection = null;
-      this._holdOffset = 0;
-      this._reportedOverscroll = false;
-      this._clampedAdjustment = null;
-      this.pendingWrite = null;
-      this.scrollElement = null;
-      this.targetWindow = null;
-    };
-    this._didMount = () => {
-      return () => {
-        this.cleanup();
-      };
-    };
-    this._willUpdate = () => {
-      var _a;
-      const scrollElement = this.options.enabled ? this.options.getScrollElement() : null;
-      if (this.scrollElement !== scrollElement) {
-        this.cleanup();
-        if (!scrollElement) {
-          this.maybeNotify();
-          return;
-        }
-        this.scrollElement = scrollElement;
-        if (this.scrollElement && "ownerDocument" in this.scrollElement) {
-          this.targetWindow = this.scrollElement.ownerDocument.defaultView;
-        } else {
-          this.targetWindow = ((_a = this.scrollElement) == null ? void 0 : _a.window) ?? null;
-        }
-        this.elementsCache.forEach(cached => {
-          this.observer.observe(cached);
-        });
-        this.unsubs.push(this.options.observeElementRect(this, rect => {
-          this.scrollRect = rect;
-          this.maybeNotify();
-        }));
-        this.unsubs.push(this.options.observeElementOffset(this, (offset, isScrolling) => {
-          var _a2, _b, _c, _d;
-          const elementMax = isScrolling ? this._elementMaxScrollOffset() : null;
-          const wasOverscrolled = this._reportedOverscroll;
-          this._reportedOverscroll = offset < 0 || elementMax !== null && offset > elementMax + 1;
-          const elementOffset = offset;
-          this._lastElementOffset = elementOffset;
-          offset = this._toLayoutOffset(offset);
-          const kind = this._classifyScrollEvent(offset, isScrolling, elementMax);
-          if (kind === "spurious") return;
-          if (kind === "readBack") {
-            offset = this.pendingWrite.target;
-          } else if (kind === "clampedReadBack" && ((_a2 = this.scrollState) == null ? void 0 : _a2.index) != null &&
-          // Not `elementMax`: an adapter can report the read-back at rest.
-          offset < this.getMaxScrollOffset() - 1.5) {
-            this.scrollState.lastTargetOffset = offset;
-          } else if (scrollClassifier.externalRetiresCommand({
-            kind,
-            offset,
-            command: this.scrollState,
-            target: () => this.getScrollStateTarget(this.scrollState)
-          })) {
-            this.scrollState = null;
-          }
-          this.pendingWrite = null;
-          if (this._clampedAdjustment !== null && Math.abs(offset - this._clampedAdjustment.maxAtWrite) >= 1.5) {
-            this._clampedAdjustment = null;
-          }
-          const prevOffset = this.getScrollOffset();
-          const prevDirection = this.scrollDirection;
-          this.scrollDirection = isScrolling ? prevOffset === offset ? this.scrollDirection : prevOffset < offset ? "forward" : "backward" : null;
-          this.scrollOffset = offset;
-          this.isScrolling = isScrolling;
-          const queued = this.scrollState;
-          if ((queued == null ? void 0 : queued.phase) === "queued" && kind === "external" && isScrolling) {
-            if (wasOverscrolled || this._reportedOverscroll) {
-              queued.samples = [];
-            } else {
-              const t = this.now();
-              queued.samples = [...(queued.samples ?? []).filter(sample => t - sample.t <= 200), {
-                t,
-                offset: elementOffset
-              }];
-              if (prevDirection !== null && this.scrollDirection !== prevDirection || scrollClassifier.flingSpedUp(queued.samples)) {
-                this.scrollState = null;
-              }
-            }
-          }
-          if (this._iosGesture.onScroll({
-            isScrolling,
-            ownReadBack: kind === "readBack",
-            moved: offset !== prevOffset,
-            // Neither our write's read-back nor a frame of our smooth
-            // animation: the user or a fling moved it.
-            external: kind === "external" && ((_b = this.scrollState) == null ? void 0 : _b.phase) !== "smooth" && ((_c = this.scrollState) == null ? void 0 : _c.phase) !== "smoothFinishing"
-          }) &&
-          // The user scrolls: a command still waiting for the tail is
-          // theirs to override, like a written one would be.
-          ((_d = this.scrollState) == null ? void 0 : _d.phase) === "queued") {
-            this.scrollState = null;
-          }
-          this._flushHoldIfReady(true);
-          if (this.scrollState) {
-            this.scheduleScrollReconcile();
-          }
-          this.maybeNotify();
-        }));
-        if ("addEventListener" in this.scrollElement) {
-          this.unsubs.push(this._iosGesture.listen(this.scrollElement));
-        }
-        this._scrollToOffset(this.getScrollOffset());
-      }
-      this._noteClampMax();
-      const anchor = this.pendingScrollAnchor;
-      this.pendingScrollAnchor = null;
-      if (anchor && this.scrollElement && this.options.enabled) {
-        if (anchor.kind === "anchor") {
-          if (!this._canWriteScroll()) {
-            this._holdOffset += anchor.delta;
-            this._followOffsetTarget(anchor.delta);
-            this.notify(false);
-          } else if (isSmoothScroll(this.scrollState) && !utils.approxEqual(this.getScrollOffset() - anchor.delta, this.scrollState.lastTargetOffset)) ;else {
-            this._followOffsetTarget(anchor.delta);
-            this._scrollToOffset(this.getScrollOffset());
-          }
-        } else {
-          this.scrollToEnd({
-            behavior: anchor.behavior
-          });
-        }
-      }
-      this._flushHoldIfReady(false);
-      this._retryClampedAdjustment();
-    };
-    this._classifyScrollEvent = (offset, isScrolling, elementMax) => {
-      var _a;
-      return scrollClassifier.classifyScrollEvent({
-        offset,
-        isScrolling,
-        elementMax,
-        holdOffset: this._holdOffset,
-        scrollOffset: this.scrollOffset,
-        pendingWrite: this.pendingWrite,
-        clampedMaxAtWrite: ((_a = this._clampedAdjustment) == null ? void 0 : _a.maxAtWrite) ?? null
-      });
-    };
-    this._retryClampedAdjustment = () => {
-      if (this._clampedAdjustment === null || !this.scrollElement || !this.options.enabled) {
-        return;
-      }
-      const {
-        target,
-        maxAtWrite
-      } = this._clampedAdjustment;
-      const max = this.getMaxScrollOffset();
-      if (max > maxAtWrite + 0.5) {
-        this._clampedAdjustment = target > max + 0.5 ? {
-          target,
-          maxAtWrite: max
-        } : null;
-        this._scrollToOffset(target);
-      }
-    };
-    this._writeAwaitingCommand = () => {
-      const state = this.scrollState;
-      if (state === null || state.phase !== "queued") return;
-      const {
-        behavior
-      } = state;
-      this.getMeasurements();
-      const offset = this.getScrollStateTarget(state);
-      state.lastTargetOffset = offset;
-      this._clampedAdjustment = null;
-      state.phase = initialScrollPhase(behavior, state.index != null && utils.approxEqual(offset, this.getScrollOffset()));
-      this._scrollToOffset(offset, {
-        behavior
-      });
-      this.scheduleScrollReconcile();
-    };
-    this._readElementOffset = () => {
-      const el = this.scrollElement;
-      if (el == null) return null;
-      const {
-        horizontal,
-        isRtl
-      } = this.options;
-      if (typeof el.scrollTop === "number") {
-        return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
-      }
-      if (typeof el.scrollY === "number") {
-        return horizontal ? el.scrollX : el.scrollY;
-      }
-      return null;
-    };
-    this._canWriteScroll = () => !(iosGesture.isIOSWebKit() && this._iosGesture.inMotion()) && !this._reportedOverscroll;
-    this._flushHoldIfReady = sync => {
-      var _a;
-      if (this._holdOffset === 0) return;
-      if (!this.scrollElement || !this.options.enabled) return;
-      if (!this._canWriteScroll()) return;
-      if (((_a = this.scrollState) == null ? void 0 : _a.phase) === "smooth") return;
-      this._holdOffset = 0;
-      if (this.scrollOffset !== null && this.scrollOffset < 0) {
-        this.scrollOffset = 0;
-      }
-      this.notify(sync);
-      const target = this.getCommandWrittenOffset() ?? this.getScrollOffset();
-      this._clampedAdjustment = this._clampedBy(target);
-      this._scrollToOffset(target);
-    };
-    this.rafId = null;
-    this.getSize = () => {
-      if (!this.options.enabled) {
-        this.scrollRect = null;
-        return 0;
-      }
-      this.scrollRect = this.scrollRect ?? this.options.initialRect;
-      return this.scrollRect[this.options.horizontal ? "width" : "height"];
-    };
-    this.getScrollOffset = () => {
-      if (!this.options.enabled) {
-        this.scrollOffset = null;
-        return 0;
-      }
-      this.scrollOffset = this.scrollOffset ?? (typeof this.options.initialOffset === "function" ? this.options.initialOffset() : this.options.initialOffset);
-      return this.scrollOffset;
-    };
-    this.getMeasurementOptions = utils.memo(() => [this.options.count, this.options.paddingStart, this.options.scrollMargin, this.options.getItemKey, this.options.enabled, this.options.lanes, this.options.laneAssignmentMode, this.options.gap], (count, paddingStart, scrollMargin, getItemKey, enabled, lanes, laneAssignmentMode, gap) => {
-      const lanesChanged = this.prevLanes !== void 0 && this.prevLanes !== lanes;
-      if (lanesChanged) {
-        this.lanesChangedFlag = true;
-      }
-      this.prevLanes = lanes;
-      this.pendingMin = null;
-      return {
-        count,
-        paddingStart,
-        scrollMargin,
-        getItemKey,
-        enabled,
-        lanes,
-        laneAssignmentMode,
-        gap
-      };
-    }, {
-      key: false
-    });
-    this.isIndexInRange = index => index >= 0 && index < this.options.count;
-    this.getMeasurements = utils.memo(() => [this.getMeasurementOptions(), this.itemSizeCacheVersion], ({
-      count,
-      paddingStart,
-      scrollMargin,
-      getItemKey,
-      enabled,
-      lanes,
-      laneAssignmentMode,
-      gap
-    }, _itemSizeCacheVersion) => {
-      var _a;
-      const itemSizeCache = this.itemSizeCache;
-      if (!enabled) {
-        this.measurementsCache = [];
-        this._singleLaneMeasurements = null;
-        this.itemSizeCache.clear();
-        this.laneAssignments.clear();
-        return [];
-      }
-      if (this.laneAssignments.size > count) {
-        for (const index of this.laneAssignments.keys()) {
-          if (index >= count) {
-            this.laneAssignments.delete(index);
-          }
-        }
-      }
-      if (this.lanesChangedFlag) {
-        this.lanesChangedFlag = false;
-        this.lanesSettling = true;
-        this.measurementsCache = [];
-        this._singleLaneMeasurements = null;
-        this.itemSizeCache.clear();
-        this.laneAssignments.clear();
-        this.pendingMin = null;
-      }
-      if (this.measurementsCache.length === 0 && !this.lanesSettling) {
-        this.measurementsCache = this.options.initialMeasurementsCache;
-        this.measurementsCache.forEach(item => {
-          this.itemSizeCache.set(item.key, item.size);
-        });
-      }
-      const min = this.lanesSettling ? 0 : this.pendingMin ?? 0;
-      this.pendingMin = null;
-      if (this.lanesSettling && this.measurementsCache.length === count) {
-        this.lanesSettling = false;
-      }
-      if (lanes === 1) {
-        const need = count * 2;
-        let flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
-        if (!flat || flat.length < need) {
-          const next = new Float64Array(need);
-          if (flat && min > 0) next.set(flat.subarray(0, min * 2));
-          flat = next;
-        }
-        const items = min === 0 ? new Array(count) : this._singleLaneMeasurements.items.slice();
-        let runningStart;
-        if (min === 0) {
-          runningStart = paddingStart + scrollMargin;
-        } else {
-          const prevIdx = min - 1;
-          runningStart = flat[prevIdx * 2] + flat[prevIdx * 2 + 1] + gap;
-        }
-        for (let i = min; i < count; i++) {
-          const key = getItemKey(i);
-          items[i] = key;
-          const measuredSize = itemSizeCache.get(key);
-          const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
-          flat[i * 2] = runningStart;
-          flat[i * 2 + 1] = size;
-          runningStart += size + gap;
-        }
-        this._singleLaneMeasurements = {
-          flat,
-          items
-        };
-        const view = lazyMeasurements.createLazyMeasurementsView(items, flat);
-        this.measurementsCache = view;
-        return view;
-      }
-      const measurements = this.measurementsCache.slice(0, min);
-      const laneLastIndex = new Array(lanes).fill(void 0);
-      const laneEnds = new Float64Array(lanes);
-      let filledLanes = 0;
-      for (let m = 0; m < min; m++) {
-        const item = measurements[m];
-        if (item) {
-          if (laneLastIndex[item.lane] === void 0) filledLanes++;
-          laneLastIndex[item.lane] = m;
-          laneEnds[item.lane] = item.end;
-        }
-      }
-      for (let i = min; i < count; i++) {
-        const key = getItemKey(i);
-        const cachedLane = this.laneAssignments.get(i);
-        let lane;
-        let start;
-        const shouldCacheLane = laneAssignmentMode === "estimate" || itemSizeCache.has(key);
-        if (cachedLane !== void 0 && this.options.lanes > 1) {
-          lane = cachedLane;
-          const prevIndex = laneLastIndex[lane];
-          const prevInLane = prevIndex !== void 0 ? measurements[prevIndex] : void 0;
-          start = prevInLane ? prevInLane.end + gap : paddingStart + scrollMargin;
-        } else if (filledLanes === lanes) {
-          let bestLane = 0;
-          let bestEnd = laneEnds[0];
-          let bestIdx = laneLastIndex[0];
-          for (let l = 1; l < lanes; l++) {
-            const e = laneEnds[l];
-            if (e < bestEnd || e === bestEnd && laneLastIndex[l] < bestIdx) {
-              bestLane = l;
-              bestEnd = e;
-              bestIdx = laneLastIndex[l];
-            }
-          }
-          lane = bestLane;
-          start = bestEnd + gap;
-          if (shouldCacheLane) {
-            this.laneAssignments.set(i, lane);
-          }
-        } else {
-          lane = i % this.options.lanes;
-          start = paddingStart + scrollMargin;
-          if (shouldCacheLane) {
-            this.laneAssignments.set(i, lane);
-          }
-        }
-        const measuredSize = itemSizeCache.get(key);
-        const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
-        const end = start + size;
-        measurements[i] = {
-          index: i,
-          start,
-          size,
-          end,
-          key,
-          lane
-        };
-        if (laneLastIndex[lane] === void 0) filledLanes++;
-        laneLastIndex[lane] = i;
-        laneEnds[lane] = end;
-      }
-      this.measurementsCache = measurements;
-      return measurements;
-    }, {
-      key: 'production' !== "production" && "getMeasurements",
-      debug: () => this.options.debug
-    });
-    this.calculateRange = utils.memo(() => [this.getMeasurements(), this.getSize(), this.getScrollOffset(), this.options.lanes], (measurements, outerSize, scrollOffset, lanes) => {
-      if (measurements.length === 0 || outerSize === 0) {
-        this.range = null;
-        return null;
-      }
-      this.range = calculateRangeImpl(measurements, outerSize, scrollOffset, lanes,
-      // Pass the typed array so binary search + forward-walk can read
-      // start/end directly from Float64Array, skipping the Proxy traps.
-      lanes === 1 && this._singleLaneMeasurements !== null ? this._singleLaneMeasurements.flat : null);
-      return this.range;
-    }, {
-      key: 'production' !== "production" && "calculateRange",
-      debug: () => this.options.debug
-    });
-    this.getVirtualIndexes = utils.memo(() => {
-      let startIndex = null;
-      let endIndex = null;
-      const range = this.calculateRange();
-      if (range) {
-        startIndex = range.startIndex;
-        endIndex = range.endIndex;
-      }
-      this.maybeNotify.updateDeps([this.isScrolling, startIndex, endIndex]);
-      return [this.options.rangeExtractor, this.options.overscan, this.options.count, startIndex, endIndex, this.options.lanes];
-    }, (rangeExtractor, overscan, count, startIndex, endIndex, lanes) => {
-      return startIndex === null || endIndex === null ? [] : rangeExtractor({
-        startIndex,
-        endIndex,
-        overscan,
-        count,
-        lanes
-      });
-    }, {
-      key: 'production' !== "production" && "getVirtualIndexes",
-      debug: () => this.options.debug
-    });
-    this.indexFromElement = node => {
-      const attributeName = this.options.indexAttribute;
-      const indexStr = node.getAttribute(attributeName);
-      if (!indexStr) {
-        console.warn(`Missing attribute name '${attributeName}={index}' on measured element.`);
-        return -1;
-      }
-      return parseInt(indexStr, 10);
-    };
-    this.shouldMeasureDuringScroll = index => {
-      var _a;
-      if (!isSmoothScroll(this.scrollState)) {
-        return true;
-      }
-      const scrollIndex = this.scrollState.index ?? ((_a = this.getVirtualItemForOffset(this.scrollState.lastTargetOffset)) == null ? void 0 : _a.index);
-      if (scrollIndex !== void 0 && this.range) {
-        const bufferSize = Math.max(this.options.overscan, Math.ceil((this.range.endIndex - this.range.startIndex) / 2));
-        const minIndex = Math.max(0, scrollIndex - bufferSize);
-        const maxIndex = Math.min(this.options.count - 1, scrollIndex + bufferSize);
-        return index >= minIndex && index <= maxIndex;
-      }
-      return true;
-    };
-    this.measureElement = node => {
-      if (!node) {
-        this.elementsCache.forEach((cached, key2) => {
-          if (!cached.isConnected) {
-            this.observer.unobserve(cached);
-            this.elementsCache.delete(key2);
-          }
-        });
-        return;
-      }
-      const index = this.indexFromElement(node);
-      if (!this.isIndexInRange(index)) return;
-      const key = this.options.getItemKey(index);
-      const prevNode = this.elementsCache.get(key);
-      if (prevNode !== node) {
-        if (prevNode) {
-          this.observer.unobserve(prevNode);
-        }
-        this.observer.observe(node);
-        this.elementsCache.set(key, node);
-      }
-      if (node.isConnected && (!this.isScrolling || this.scrollState) && this.shouldMeasureDuringScroll(index)) {
-        this.resizeItem(index, this.options.measureElement(node, void 0, this));
-      }
-    };
-    this.resizeItem = (index, size) => {
-      var _a, _b, _c;
-      if (!this.isIndexInRange(index)) return;
-      if ((_a = this._resizeBatch) == null ? void 0 : _a.sync) this.getMeasurements();
-      let cachedSize;
-      let itemStart;
-      let key;
-      const flat = (_b = this._singleLaneMeasurements) == null ? void 0 : _b.flat;
-      if (this.options.lanes === 1 && flat != null) {
-        key = this.options.getItemKey(index);
-        itemStart = flat[index * 2];
-        cachedSize = flat[index * 2 + 1];
-      } else {
-        const item = this.measurementsCache[index];
-        if (!item) return;
-        key = item.key;
-        itemStart = item.start;
-        cachedSize = item.size;
-      }
-      const itemSize = this.itemSizeCache.get(key) ?? cachedSize;
-      const delta = size - itemSize;
-      if (delta !== 0) {
-        const wasAtEnd = this.options.anchorTo === "end" && !isSmoothScroll(this.scrollState) && this.getVirtualDistanceFromEnd() <= this.options.scrollEndThreshold;
-        const prevTotalSize = wasAtEnd ? this._getLayoutTotalSize() : 0;
-        const scrollOffset = this.getScrollOffset();
-        const isFirstMeasure = !this.itemSizeCache.has(key);
-        const defaultShouldAdjust = isFirstMeasure ?
-        // First measurement: compensate any item whose top sits above the
-        // fold — the estimate→actual delta must be corrected regardless of
-        // scroll direction, since the whole estimated block was above it.
-        itemStart < scrollOffset :
-        // Re-measurement: only compensate an item that is ENTIRELY above the
-        // fold. An item that merely *spans* the fold (top above, bottom
-        // below — e.g. a streaming chat message growing at its bottom)
-        // changes size *below* the anchor point, so shifting scrollTop by the
-        // delta would drag the viewport downward on every growth (#1218).
-        // Also skip during backward scroll to avoid the "items jump while
-        // scrolling up" cascade.
-        itemStart + itemSize <= scrollOffset && this.scrollDirection !== "backward";
-        const shouldAdjustScroll = !isSmoothScroll(this.scrollState) && (this.shouldAdjustScrollPositionOnItemSizeChange !== void 0 ? this.shouldAdjustScrollPositionOnItemSizeChange(
-        // The callback expects a VirtualItem; build one lazily only
-        // when the consumer actually supplied a custom predicate.
-        this.measurementsCache[index] ?? {
-          index,
-          key,
-          start: itemStart,
-          size: cachedSize,
-          end: itemStart + cachedSize,
-          lane: 0
-        }, delta, this) : defaultShouldAdjust);
-        if (this.pendingMin === null || index < this.pendingMin) {
-          this.pendingMin = index;
-        }
-        this.itemSizeCache.set(key, size);
-        this.itemSizeCacheVersion++;
-        let adjustedSync = false;
-        if (!this._awaitingCommandReadBack()) {
-          if (wasAtEnd) {
-            adjustedSync = this.applyScrollAdjustment(this._getLayoutTotalSize() - prevTotalSize);
-          } else if (shouldAdjustScroll) {
-            adjustedSync = this.applyScrollAdjustment(delta);
-          }
-        }
-        if (this._resizeBatch) {
-          this._resizeBatch.notify = true;
-          (_c = this._resizeBatch).sync || (_c.sync = adjustedSync);
-          return;
-        }
-        this.notify(adjustedSync);
-        this._noteClampMax();
-        this._flushHoldIfReady(true);
-        this._retryClampedAdjustment();
-      }
-    };
-    this.getVirtualItems = utils.memo(() => [this.getVirtualIndexes(), this.getMeasurements(), this._holdOffset], (indexes, measurements, hold) => {
-      const virtualItems = [];
-      for (let k = 0, len = indexes.length; k < len; k++) {
-        const i = indexes[k];
-        const measurement = measurements[i];
-        virtualItems.push(hold === 0 ? measurement : {
-          ...measurement,
-          start: measurement.start - hold,
-          end: measurement.end - hold
-        });
-      }
-      return virtualItems;
-    }, {
-      key: 'production' !== "production" && "getVirtualItems",
-      debug: () => this.options.debug
-    });
-    this.getVirtualItemForOffset = offset => {
-      var _a;
-      const measurements = this.getMeasurements();
-      if (measurements.length === 0) {
-        return void 0;
-      }
-      const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
-      const useFlat = this.options.lanes === 1 && flat != null;
-      const idx = findNearestBinarySearch(0, measurements.length - 1, useFlat ? i => flat[i * 2] : i => utils.notUndefined(measurements[i]).start, offset);
-      return utils.notUndefined(measurements[idx]);
-    };
-    this._noteClampMax = () => {
-      if (!this._awaitingCommandReadBack()) return;
-      const elementMax = this._elementMaxScrollOffset();
-      if (elementMax === null) return;
-      const write = this.pendingWrite;
-      const max = Math.max(elementMax, 0) + this._holdOffset;
-      if (max >= write.target) return;
-      const lowMaxes = write.lowMaxes ?? (write.lowMaxes = []);
-      if (lowMaxes[lowMaxes.length - 1] !== max) lowMaxes.push(max);
-    };
-    this.getMaxScrollOffset = () => (this._elementMaxScrollOffset() ?? 0) + this._holdOffset;
-    this._toLayoutOffset = elementOffset => {
-      var _a;
-      let offset = elementOffset + this._holdOffset;
-      if (((_a = this.pendingScrollAnchor) == null ? void 0 : _a.kind) === "anchor") {
-        offset += this.pendingScrollAnchor.delta;
-      }
-      return offset;
-    };
-    this._elementMaxScrollOffset = () => {
-      const el = this.scrollElement;
-      if (el === null) return null;
-      if ("scrollHeight" in el) {
-        return this.options.horizontal ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
-      }
-      if ("document" in el) {
-        const doc = el.document.documentElement;
-        return this.options.horizontal ? doc.scrollWidth - el.innerWidth : doc.scrollHeight - el.innerHeight;
-      }
-      return null;
-    };
-    this._momentumStop = null;
-    this._stopMomentum = done => {
-      const el = this.scrollElement;
-      const win = this.targetWindow;
-      if (el === null || win === null) return;
-      const scroller = "document" in el ? el.document.scrollingElement : el;
-      if (!(scroller == null ? void 0 : scroller.style)) return;
-      if (this._momentumStop) {
-        this._momentumStop.done = done;
-        return;
-      }
-      const {
-        style
-      } = scroller;
-      const property = this.options.horizontal ? "overflow-x" : "overflow-y";
-      const value = style.getPropertyValue(property);
-      const priority = style.getPropertyPriority(property);
-      style.setProperty(property, "hidden", "important");
-      const stop = {
-        // False when the app replaced the hidden value: the fling may not
-        // have stopped.
-        restore: () => {
-          if (style.getPropertyValue(property) !== "hidden" || style.getPropertyPriority(property) !== "important") {
-            return false;
-          }
-          style.setProperty(property, value, priority);
-          return true;
-        },
-        done
-      };
-      this._momentumStop = stop;
-      win.requestAnimationFrame(() => win.requestAnimationFrame(() => {
-        if (this._momentumStop !== stop) return;
-        this._momentumStop = null;
-        if (stop.restore()) stop.done();
-      }));
-    };
-    this._clampedBy = target => {
-      const elementMax = this._elementMaxScrollOffset();
-      if (elementMax === null) return null;
-      const maxAtWrite = elementMax + this._holdOffset;
-      return target > maxAtWrite + 0.5 ? {
-        target,
-        maxAtWrite
-      } : null;
-    };
-    this.getVirtualDistanceFromEnd = () => {
-      return Math.max(this._getLayoutTotalSize() - this.getSize() - this.getScrollOffset(), 0);
-    };
-    this.getDistanceFromEnd = () => {
-      return Math.max(this.getMaxScrollOffset() - this.getScrollOffset(), 0);
-    };
-    this.isAtEnd = (threshold = this.options.scrollEndThreshold) => {
-      return this.getDistanceFromEnd() <= threshold;
-    };
-    this.getOffsetForAlignment = (toOffset, align, itemSize = 0) => {
-      if (!this.scrollElement) return 0;
-      const size = this.getSize();
-      const scrollOffset = this.getScrollOffset();
-      if (align === "auto") {
-        align = toOffset >= scrollOffset + size ? "end" : "start";
-      }
-      if (align === "center") {
-        toOffset += (itemSize - size) / 2;
-      } else if (align === "end") {
-        toOffset -= size;
-      }
-      const maxOffset = this.getMaxScrollOffset();
-      return Math.max(Math.min(maxOffset, toOffset), 0);
-    };
-    this.getOffsetForIndex = (index, align = "auto") => {
-      index = Math.max(0, Math.min(index, this.options.count - 1));
-      const size = this.getSize();
-      const scrollOffset = this.getScrollOffset();
-      const item = this.measurementsCache[index];
-      if (!item) return;
-      if (align === "auto") {
-        if (item.end >= scrollOffset + size - this.options.scrollPaddingEnd) {
-          align = "end";
-        } else if (item.start <= scrollOffset + this.options.scrollPaddingStart) {
-          align = "start";
-        } else {
-          return [scrollOffset, align];
-        }
-      }
-      if (align === "end" && index === this.options.count - 1) {
-        const maxOffset = this.getMaxScrollOffset();
-        const toOffset2 = maxOffset - this.options.paddingEnd + this.options.scrollPaddingEnd;
-        return [Math.max(Math.min(toOffset2, maxOffset), 0), align];
-      }
-      const toOffset = align === "end" ? item.end + this.options.scrollPaddingEnd : item.start - this.options.scrollPaddingStart;
-      return [this.getOffsetForAlignment(toOffset, align, item.size), align];
-    };
-    this.scrollToOffset = (toOffset, {
-      align = "start",
-      behavior = "auto"
-    } = {}) => {
-      this._startScroll({
-        index: null,
-        align
-      }, this.getOffsetForAlignment(toOffset, align), behavior, "absolute");
-    };
-    this.scrollToIndex = (index, {
-      align: initialAlign = "auto",
-      behavior = "auto"
-    } = {}) => {
-      index = Math.max(0, Math.min(index, this.options.count - 1));
-      const offsetInfo = this.getOffsetForIndex(index, initialAlign);
-      if (!offsetInfo) return;
-      const [offset, align] = offsetInfo;
-      this._startScroll({
-        index,
-        align
-      }, offset, behavior, "absolute");
-    };
-    this.scrollBy = (delta, {
-      behavior = "auto"
-    } = {}) => {
-      const offset = this.getOffsetForAlignment((this.getCommandWrittenOffset() ?? this.getScrollOffset()) + delta, "start");
-      this._startScroll({
-        index: null,
-        align: "start"
-      }, offset, behavior, "relative");
-    };
-    this.scrollToEnd = ({
-      behavior = "auto"
-    } = {}) => {
-      if (this.options.count > 0) {
-        this._startScroll({
-          index: this.options.count - 1,
-          align: "end",
-          toEnd: true
-        }, Math.max(this.getMaxScrollOffset(), 0), behavior, "absolute");
-        return;
-      }
-      this.scrollToOffset(Math.max(this.getTotalSize() - this.getSize(), 0), {
-        behavior
-      });
-    };
-    this.cancelScroll = () => {
-      if (this.rafId != null && this.targetWindow) {
-        this.targetWindow.cancelAnimationFrame(this.rafId);
-        this.rafId = null;
-      }
-      this.scrollState = null;
-    };
-    this.getTotalSize = () => Math.max(this._getLayoutTotalSize() - this._holdOffset, 0);
-    this._getLayoutTotalSize = () => {
-      var _a, _b;
-      const measurements = this.getMeasurements();
-      let end;
-      if (measurements.length === 0) {
-        end = this.options.paddingStart;
-      } else if (this.options.lanes === 1) {
-        const lastIdx = measurements.length - 1;
-        const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
-        if (flat != null) {
-          end = flat[lastIdx * 2] + flat[lastIdx * 2 + 1];
-        } else {
-          end = ((_b = measurements[lastIdx]) == null ? void 0 : _b.end) ?? 0;
-        }
-      } else {
-        const endByLane = Array(this.options.lanes).fill(null);
-        let endIndex = measurements.length - 1;
-        while (endIndex >= 0 && endByLane.some(val => val === null)) {
-          const item = measurements[endIndex];
-          if (endByLane[item.lane] === null) {
-            endByLane[item.lane] = item.end;
-          }
-          endIndex--;
-        }
-        end = Math.max(...endByLane.filter(val => val !== null));
-      }
-      return Math.max(end - this.options.scrollMargin + this.options.paddingEnd, 0);
-    };
-    this.takeSnapshot = () => {
-      const snapshot = [];
-      if (this.itemSizeCache.size === 0) return snapshot;
-      const m = this.getMeasurements();
-      for (const item of m) {
-        if (item && this.itemSizeCache.has(item.key)) {
-          snapshot.push({
-            index: item.index,
-            key: item.key,
-            start: item.start,
-            size: item.size,
-            end: item.end,
-            lane: item.lane
-          });
-        }
-      }
-      return snapshot;
-    };
-    this._scrollToOffset = (offset, {
-      adjustments,
-      behavior
-    } = {}) => {
-      const write = {
-        target: offset + (adjustments ?? 0),
-        smooth: behavior === "smooth"
-      };
-      this.pendingWrite = write;
-      this.options.scrollToFn(offset - this._holdOffset, {
-        behavior,
-        adjustments
-      }, this);
-      return write;
-    };
-    this.getCommandWrittenOffset = () => this.scrollState !== null && this.pendingWrite !== null && !this.pendingWrite.smooth ? this.pendingWrite.target : null;
-    this._awaitingCommandReadBack = () => {
-      const writtenOffset = this.getCommandWrittenOffset();
-      return !(iosGesture.isIOSWebKit() && this._iosGesture.dragging()) && writtenOffset !== null && !utils.approxEqual(writtenOffset, this.getScrollOffset());
-    };
-    this._followOffsetTarget = delta => {
-      if (this.scrollState !== null && this.scrollState.index == null) {
-        this.scrollState.lastTargetOffset += delta;
-      }
-    };
-    this.measure = () => {
-      this.pendingMin = null;
-      this.itemSizeCache.clear();
-      this.laneAssignments.clear();
-      this.itemSizeCacheVersion++;
-      this.notify(false);
-    };
-    this.setOptions(opts);
-  }
-  /**
-   * @deprecated Always 0: a scroll correction is folded into `scrollOffset`
-   * at once, so there is never an outstanding adjustment to add to it. Read
-   * `scrollOffset` alone.
-   */
-  get scrollAdjustments() {
-    return 0;
-  }
-  // Returns `true` when it performed a synchronous `scrollTop` write this
-  // tick, `false` when the delta was zero or the write was deferred (iOS).
-  // `resizeItem` uses that to decide whether the follow-up `notify` must be
-  // synchronous so the grown transforms commit in the same paint (#1227).
-  applyScrollAdjustment(delta, behavior) {
-    if (delta === 0) return false;
-    if ('production' !== "production" && this.options.debug) {
-      console.info("correction", delta);
-    }
-    this._followOffsetTarget(delta);
-    if (!this._canWriteScroll()) {
-      this._holdOffset += delta;
-      if (this.scrollOffset !== null) this.scrollOffset += delta;
-      return true;
-    } else {
-      const offset = this.getScrollOffset();
-      this._clampedAdjustment = this._clampedBy(offset + delta);
-      const write = this._scrollToOffset(offset, {
-        adjustments: delta,
-        behavior
-      });
-      if (this.scrollOffset !== null) {
-        if (this.pendingWrite === write) this.scrollOffset += delta;
-        if (this.scrollOffset < 0) this.scrollOffset = 0;
-      }
-      return true;
-    }
-  }
-  scheduleScrollReconcile() {
-    if (!this.targetWindow) {
-      this.scrollState = null;
-      return;
-    }
-    if (this.rafId != null) return;
-    this.rafId = this.targetWindow.requestAnimationFrame(() => {
-      this.rafId = null;
-      this.reconcileScroll();
-    });
-  }
-  getScrollStateTarget(state) {
-    const offsetInfo = state.toEnd ? [Math.max(this.getMaxScrollOffset(), 0)] : state.index != null ? this.getOffsetForIndex(state.index, state.align) : void 0;
-    return offsetInfo ? offsetInfo[0] : state.lastTargetOffset;
-  }
-  reconcileScroll() {
-    if (!this.scrollState) return;
-    const el = this.scrollElement;
-    if (!el) return;
-    const MAX_RECONCILE_MS = 5e3;
-    if (this.now() - this.scrollState.startedAt > MAX_RECONCILE_MS) {
-      this.scrollState = null;
-      return;
-    }
-    if (this.scrollState.phase === "queued") {
-      this.scheduleScrollReconcile();
-      return;
-    }
-    this.getMeasurements();
-    const targetOffset = this.getScrollStateTarget(this.scrollState);
-    const STABLE_FRAMES = this.scrollState.index == null ? 1 : this.options.useAnimationFrameWithResizeObserver ? 3 : 2;
-    const targetChanged = targetOffset !== this.scrollState.lastTargetOffset;
-    if (!targetChanged && utils.approxEqual(targetOffset, this.getScrollOffset())) {
-      if (this.scrollState.phase === "smooth") {
-        this.scrollState.phase = "smoothLanded";
-      } else if (this.scrollState.phase === "smoothFinishing") {
-        this.scrollState.phase = "instant";
-      }
-      this.scrollState.stableFrames++;
-      if (this.scrollState.stableFrames >= STABLE_FRAMES) {
-        if (this.getScrollOffset() !== targetOffset) {
-          this._scrollToOffset(targetOffset, {
-            behavior: "auto"
-          });
-        }
-        this.scrollState = null;
-        return;
-      }
-    } else {
-      this.scrollState.stableFrames = 0;
-      if (targetChanged) {
-        const viewport = this.getSize() || 600;
-        const distance = Math.abs(targetOffset - this.getScrollOffset());
-        const keepSmooth = isSmoothScroll(this.scrollState) && distance > viewport;
-        this.scrollState.lastTargetOffset = targetOffset;
-        if (keepSmooth) {
-          this.scrollState.phase = "smooth";
-        } else if (this.scrollState.phase === "smooth") {
-          this.scrollState.phase = "smoothFinishing";
-        } else if (this.scrollState.phase === "smoothLanded") {
-          this.scrollState.phase = "instant";
-        }
-        this._scrollToOffset(targetOffset, {
-          behavior: keepSmooth ? "smooth" : "auto"
-        });
-      }
-    }
-    this.scheduleScrollReconcile();
-  }
-  // Every scroll command starts here: it becomes the in-flight command,
-  // writes its first target and leaves reconcile to retarget and retire it.
-  //
-  // Targets are layout offsets. A held correction is not dropped by a
-  // command: the write lands the element `_holdOffset` short of the target,
-  // under the rows exposed shifted by the same amount, and the flush moves
-  // both together once a write is possible.
-  //
-  // An index or end target that is already at its offset starts a smooth
-  // scroll as landed; an offset target never does, so its first scroll
-  // event is read as the user's (see the scroll handler in `_willUpdate`).
-  _startScroll(target, offset, behavior, kind) {
-    const tail = this._iosGesture.tail();
-    if (kind === "absolute" && tail !== null) {
-      if (tail === "fling" && iosGesture.iosMomentumOverridesWrites()) {
-        this._stopMomentum(() => {
-          const state = this.scrollState;
-          if ((state == null ? void 0 : state.phase) !== "queued" ||
-          // A finger came down: it owns the scroll until it lifts.
-          this._iosGesture.tail() !== "fling" ||
-          // In a bounce WebKit can drop the write (#1287): the tail
-          // decides, as without the stop. (Not `flingCaught`: our stop
-          // also ends the fling at speed, so a slow frame would read as
-          // a catch and the tail would drop the command.)
-          this._reportedOverscroll) {
-            return;
-          }
-          this._iosGesture.end();
-          this._flushHoldIfReady(true);
-          this._writeAwaitingCommand();
-        });
-        this.scrollState = {
-          ...target,
-          startedAt: this.now(),
-          lastTargetOffset: offset,
-          stableFrames: 0,
-          phase: "queued",
-          behavior,
-          samples: []
-        };
-        this.scheduleScrollReconcile();
-        return;
-      }
-      this._iosGesture.end();
-    }
-    this.scrollState = {
-      ...target,
-      startedAt: this.now(),
-      lastTargetOffset: offset,
-      stableFrames: 0,
-      behavior,
-      phase: initialScrollPhase(behavior, target.index != null && utils.approxEqual(offset, this.getScrollOffset()))
-    };
-    this._scrollToOffset(offset, {
-      behavior
-    });
-    this.scheduleScrollReconcile();
-  }
-}
-const findNearestBinarySearch = (low, high, getCurrentValue, value) => {
-  while (low <= high) {
-    const middle = (low + high) / 2 | 0;
-    const currentValue = getCurrentValue(middle);
-    if (currentValue < value) {
-      low = middle + 1;
-    } else if (currentValue > value) {
-      high = middle - 1;
-    } else {
-      return middle;
-    }
-  }
-  if (low > 0) {
-    return low - 1;
-  } else {
-    return 0;
-  }
-};
-function findNearestBinarySearchFlat(flat, high, value) {
-  let low = 0;
-  while (low <= high) {
-    const middle = (low + high) / 2 | 0;
-    const currentValue = flat[middle * 2];
-    if (currentValue < value) {
-      low = middle + 1;
-    } else if (currentValue > value) {
-      high = middle - 1;
-    } else {
-      return middle;
-    }
-  }
-  return low > 0 ? low - 1 : 0;
-}
-function calculateRangeImpl(measurements, outerSize, scrollOffset, lanes, flat) {
-  const lastIndex = measurements.length - 1;
-  if (measurements.length <= lanes) {
-    return {
-      startIndex: 0,
-      endIndex: lastIndex
-    };
-  }
-  if (lanes === 1 && flat !== null) {
-    const startIndex2 = findNearestBinarySearchFlat(flat, lastIndex, scrollOffset);
-    let endIndex2 = startIndex2;
-    const limit = scrollOffset + outerSize;
-    while (endIndex2 < lastIndex && flat[endIndex2 * 2] + flat[endIndex2 * 2 + 1] < limit) {
-      endIndex2++;
-    }
-    return {
-      startIndex: startIndex2,
-      endIndex: endIndex2
-    };
-  }
-  const getStart = index => measurements[index].start;
-  let startIndex = findNearestBinarySearch(0, lastIndex, getStart, scrollOffset);
-  let endIndex = startIndex;
-  if (lanes === 1) {
-    while (endIndex < lastIndex && measurements[endIndex].end < scrollOffset + outerSize) {
-      endIndex++;
-    }
-  } else if (lanes > 1) {
-    const endPerLane = Array(lanes).fill(0);
-    while (endIndex < lastIndex && endPerLane.some(pos => pos < scrollOffset + outerSize)) {
-      const item = measurements[endIndex];
-      endPerLane[item.lane] = item.end;
-      endIndex++;
-    }
-    const startPerLane = Array(lanes).fill(scrollOffset + outerSize);
-    while (startIndex >= 0 && startPerLane.some(pos => pos >= scrollOffset)) {
-      const item = measurements[startIndex];
-      startPerLane[item.lane] = item.start;
-      startIndex--;
-    }
-    startIndex = Math.max(0, startIndex - startIndex % lanes);
-    endIndex = Math.min(lastIndex, endIndex + (lanes - 1 - endIndex % lanes));
-  }
-  return {
-    startIndex,
-    endIndex
-  };
-}
-exports.approxEqual = utils.approxEqual;
-exports.debounce = utils.debounce;
-exports.memo = utils.memo;
-exports.notUndefined = utils.notUndefined;
-exports._resetIOSDetectionForTests = iosGesture._resetIOSDetectionForTests;
-exports.Virtualizer = Virtualizer;
-exports.defaultKeyExtractor = defaultKeyExtractor;
-exports.defaultRangeExtractor = defaultRangeExtractor;
-exports.elementScroll = elementScroll;
-exports.measureElement = measureElement;
-exports.observeElementOffset = observeElementOffset;
-exports.observeElementRect = observeElementRect;
-exports.observeWindowOffset = observeWindowOffset;
-exports.observeWindowRect = observeWindowRect;
-exports.windowScroll = windowScroll;
-  } },
-  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-const React = require("react");
-const reactDom = require("react-dom");
-const virtualCore = require("@tanstack/virtual-core");
-function _interopNamespaceDefault(e) {
-  const n = Object.create(null, {
-    [Symbol.toStringTag]: {
-      value: "Module"
-    }
-  });
-  if (e) {
-    for (const k in e) {
-      if (k !== "default") {
-        const d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: () => e[k]
-        });
-      }
-    }
-  }
-  n.default = e;
-  return Object.freeze(n);
-}
-const React__namespace = /* @__PURE__ */_interopNamespaceDefault(React);
-const useIsomorphicLayoutEffect = typeof document !== "undefined" ? React__namespace.useLayoutEffect : React__namespace.useEffect;
-function useVirtualizerBase({
-  useFlushSync = true,
-  directDomUpdates = false,
-  directDomUpdatesMode = "transform",
-  ...options
-}) {
-  const rerender = React__namespace.useReducer(x => x + 1, 0)[1];
-  const directRef = React__namespace.useRef({
-    enabled: directDomUpdates,
-    mode: directDomUpdatesMode,
-    container: null,
-    lastSize: null,
-    // Keyed by the element itself so a remounted node (same key, new DOM
-    // node — e.g. when `enabled` is toggled off then on) is treated as fresh
-    // and gets its style written.
-    lastPositions: /* @__PURE__ */new WeakMap(),
-    prevRange: null
-  });
-  directRef.current.enabled = directDomUpdates;
-  directRef.current.mode = directDomUpdatesMode;
-  const measuringFromRef = React__namespace.useRef(false);
-  const applyContainerSize = instance2 => {
-    const state = directRef.current;
-    if (!state.enabled || !state.container) return;
-    const totalSize = instance2.getTotalSize();
-    if (totalSize !== state.lastSize) {
-      state.lastSize = totalSize;
-      const sizeAxis = instance2.options.horizontal ? "width" : "height";
-      state.container.style[sizeAxis] = `${totalSize}px`;
-    }
-  };
-  const applyItemPosition = (instance2, item, el) => {
-    const state = directRef.current;
-    const horizontal = !!instance2.options.horizontal;
-    const next = item.start - instance2.options.scrollMargin;
-    if (state.lastPositions.get(el) === next) return;
-    state.lastPositions.set(el, next);
-    if (state.mode === "transform") {
-      el.style.transform = horizontal ? `translate3d(${next}px, 0, 0)` : `translate3d(0, ${next}px, 0)`;
-    } else {
-      el.style[horizontal ? "left" : "top"] = `${next}px`;
-    }
-  };
-  const applyDirectStyles = instance2 => {
-    const state = directRef.current;
-    if (!state.enabled || !state.container) return;
-    applyContainerSize(instance2);
-    for (const item of instance2.getVirtualItems()) {
-      const el = instance2.elementsCache.get(item.key);
-      if (el) applyItemPosition(instance2, item, el);
-    }
-  };
-  const resolvedOptions = {
-    ...options,
-    onChange: (instance2, sync) => {
-      var _a;
-      const state = directRef.current;
-      let shouldRerender = true;
-      if (state.enabled) {
-        applyDirectStyles(instance2);
-        const range = instance2.range;
-        const prev = state.prevRange;
-        shouldRerender = !prev || prev.isScrolling !== instance2.isScrolling || prev.startIndex !== (range == null ? void 0 : range.startIndex) || prev.endIndex !== (range == null ? void 0 : range.endIndex);
-        if (shouldRerender) {
-          state.prevRange = range ? {
-            startIndex: range.startIndex,
-            endIndex: range.endIndex,
-            isScrolling: instance2.isScrolling
-          } : null;
-        }
-      }
-      if (shouldRerender) {
-        if (useFlushSync && sync && !measuringFromRef.current) {
-          reactDom.flushSync(rerender);
-        } else {
-          rerender();
-        }
-      }
-      (_a = options.onChange) == null ? void 0 : _a.call(options, instance2, sync);
-    }
-  };
-  const [instance] = React__namespace.useState(() => {
-    const v = new virtualCore.Virtualizer(resolvedOptions);
-    const measureElement = v.measureElement;
-    v.measureElement = node => {
-      measuringFromRef.current = true;
-      try {
-        measureElement(node);
-      } finally {
-        measuringFromRef.current = false;
-      }
-      const state = directRef.current;
-      if (node !== null && state.enabled && state.container) {
-        const item = v.measurementsCache[v.indexFromElement(node)];
-        if (item) applyItemPosition(v, item, node);
-      }
-    };
-    return Object.assign(v, {
-      containerRef: node => {
-        const state = directRef.current;
-        state.container = node;
-        state.lastSize = null;
-        if (node !== null) {
-          applyDirectStyles(v);
-        }
-      }
-    });
-  });
-  instance.setOptions(resolvedOptions);
-  useIsomorphicLayoutEffect(() => {
-    return instance._didMount();
-  }, []);
-  useIsomorphicLayoutEffect(() => {
-    applyContainerSize(instance);
-    return instance._willUpdate();
-  });
-  useIsomorphicLayoutEffect(() => {
-    applyDirectStyles(instance);
-  });
-  return instance;
-}
-function useVirtualizer(options) {
-  return useVirtualizerBase({
-    observeElementRect: virtualCore.observeElementRect,
-    observeElementOffset: virtualCore.observeElementOffset,
-    scrollToFn: virtualCore.elementScroll,
-    ...options
-  });
-}
-function useWindowVirtualizer(options) {
-  return useVirtualizerBase({
-    getScrollElement: () => typeof document !== "undefined" ? window : null,
-    observeElementRect: virtualCore.observeWindowRect,
-    observeElementOffset: virtualCore.observeWindowOffset,
-    scrollToFn: virtualCore.windowScroll,
-    initialOffset: () => typeof document !== "undefined" ? window.scrollY : 0,
-    ...options
-  });
-}
-exports.useVirtualizer = useVirtualizer;
-exports.useWindowVirtualizer = useWindowVirtualizer;
-Object.keys(virtualCore).forEach(k => {
-  if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
-    enumerable: true,
-    get: () => virtualCore[k]
-  });
-});
-  } },
-  "platform/components/DataTableNext/environment.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.structuralStylesheet = structuralStylesheet;
-exports.tokenPixels = tokenPixels;
-/* Plenix · DataTableNext environment
-   Summary: Engine-independent CSS token resolution and structural stylesheet location.
-   Usage: Internal to DataTableNext; no legacy grid modules are imported.
-   Props: A token/length and optional element, or the configured vendor asset base.
-   Behavior: Reads dimensions from CSS and locates the existing structural stylesheet only.
-   Notes: Contains no script loader, prefetch, Tabulator constructor or prototype patches. */
-const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
-function structuralStylesheet() {
-  if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/') + 'tabulator/tabulator.min.css';
-  const src = SCRIPT || (typeof document !== 'undefined' ? [...document.scripts].map(s => s.src).find(s => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(s)) : '');
-  if (src) return new URL('tabulator/tabulator.min.css', new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src)).href;
-  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__ + 'tabulator/tabulator.min.css';
-  return 'platform/vendor/tabulator/tabulator.min.css';
-}
-function tokenPixels(token, el) {
-  if (!token || typeof document === 'undefined') return 0;
-  const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());
-  if (!m) {
-    if (typeof token === 'number' || /^\d+(?:\.\d+)?px$/.test(String(token))) return parseFloat(token) || 0;
-    const host = el || document.documentElement,
-      doc = host.ownerDocument || document,
-      win = doc.defaultView;
-    if (!win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
-    // Measure a caller CSS length in the container's inherited font and available width, without an inline style or a retained rule.
-    const sheet = new win.CSSStyleSheet(),
-      before = doc.adoptedStyleSheets,
-      probe = doc.createElement('span');
-    sheet.replaceSync('.plx-data-table__length-probe{inline-size:' + String(token) + ';}');
-    probe.className = 'plx-data-table__length-probe';
-    try {
-      doc.adoptedStyleSheets = before.concat(sheet);
-      host.appendChild(probe);
-      return probe.getBoundingClientRect().width || 0;
-    } finally {
-      probe.remove();
-      doc.adoptedStyleSheets = before;
-    }
-  }
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(m[1] || m[2]).trim();
-  if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
-  return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
-}
-  } },
-  "platform/components/DataTableNext/state.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.normalizeSort = void 0;
-exports.opening = opening;
-exports.readView = readView;
-exports.visibilityOf = exports.valueAt = exports.recordKey = void 0;
-exports.writeView = writeView;
-/* Plenix · DataTableNext state
-   Summary: Opening views and dimensions for the independent TanStack trial.
-   Usage: Internal to DataTableNext.
-   Props: Existing DataTable view props and storageKey.
-   Behavior: Reads saved state before the first render; no post-build restoration.
-   Notes: Canonical row keys preserve the distinction between numeric and string IDs. */
-const recordKey = value => typeof value + ':' + String(value);
-exports.recordKey = recordKey;
-const normalizeSort = value => (Array.isArray(value) ? value : []).filter(x => x && (x.field || x.column)).map(x => ({
-  id: x.field || x.column,
-  desc: x.dir === 'desc'
-}));
-exports.normalizeSort = normalizeSort;
-function readView(key) {
-  try {
-    return key ? JSON.parse(localStorage.getItem('plx-data-table:' + key) || 'null') : null;
-  } catch (e) {
-    return null;
-  }
-}
-function writeView(key, view) {
-  if (key) try {
-    localStorage.setItem('plx-data-table:' + key, JSON.stringify(view));
-  } catch (e) {/* disabled storage */}
-}
-const visibilityOf = hidden => Object.fromEntries((Array.isArray(hidden) ? hidden : []).map(field => [field, false]));
-exports.visibilityOf = visibilityOf;
-const valueAt = (row, field) => String(field).split('.').reduce((value, key) => value == null ? undefined : value[key], row);
-exports.valueAt = valueAt;
-function opening(props) {
-  const saved = readView(props.storageKey) || {},
-    options = props.options || {},
-    known = new Set(props.columns.map(c => c.field));
-  const fields = values => Array.isArray(values) ? values.filter(f => known.has(f)) : undefined;
-  const widths = saved.widths && typeof saved.widths === 'object' ? Object.fromEntries(Object.entries(saved.widths).filter(([key, value]) => known.has(key) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0)) : {};
-  const step = ['short', 'medium', 'tall', 'extra-tall'].includes(saved.rowHeight) ? saved.rowHeight : props.rowHeight || 'short';
-  return {
-    sorting: normalizeSort(props.sort?.length ? props.sort : saved.sort || options.initialSort),
-    order: fields(props.columnOrder) || fields(saved.order) || props.columns.map(c => c.field),
-    visibility: visibilityOf(fields(props.hiddenColumns) || fields(saved.hidden)),
-    widths,
-    rowHeight: step,
-    wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false
-  };
-}
-  } },
-  "platform/components/DataTableNext/adapter.js": { deps: {"./state.js":"platform/components/DataTableNext/state.js"}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.createAdapter = createAdapter;
-var _state = require("./state.js");
-/* Plenix · DataTableNext compatibility
-   Summary: The row, cell and column methods used by current Plenix application callbacks.
-   Usage: Internal to DataTableNext; onReady receives the table adapter.
-   Props: React-owned model access and mutations, always read through a live ref.
-   Behavior: Adapts records without exposing a second imperative renderer.
-   Notes: Advanced Tabulator modules are outside this phase's compatibility surface. */
-
-function createAdapter(current) {
-  const row = key => {
-    const data = () => current.current.data.find(r => (0, _state.recordKey)(r[current.current.index]) === key);
-    return {
-      getData: data,
-      getIndex: () => data()?.[current.current.index],
-      getTable: () => api,
-      getElement: () => current.current.rowElements.get(key),
-      isSelected: () => !!current.current.selection[key],
-      select: () => current.current.pick(key, true),
-      deselect: () => current.current.pick(key, false),
-      toggleSelect: () => current.current.pick(key, !current.current.selection[key]),
-      getCell: field => cell(key, field),
-      getCells: () => current.current.fields.map(c => cell(key, c.field))
-    };
-  };
-  const column = field => ({
-    getField: () => field,
-    getDefinition: () => current.current.fields.find(c => c.field === field),
-    getTable: () => api,
-    getElement: () => current.current.headerElements.get(field),
-    getWidth: () => current.current.table.getColumn(field)?.getSize(),
-    isVisible: () => current.current.table.getColumn(field)?.getIsVisible(),
-    show: () => current.current.table.getColumn(field)?.toggleVisibility(true),
-    hide: () => current.current.table.getColumn(field)?.toggleVisibility(false),
-    setWidth: width => current.current.resize(field, width),
-    move: (target, after) => current.current.move(field, typeof target === 'string' ? target : target.getField(), after)
-  });
-  const cell = (key, field) => ({
-    getData: () => row(key).getData(),
-    getValue: () => (0, _state.valueAt)(row(key).getData(), field),
-    getRow: () => row(key),
-    getColumn: () => column(field),
-    getField: () => field,
-    getTable: () => api,
-    getElement: () => current.current.rowElements.get(key)?.querySelector('[tabulator-field="' + CSS.escape(field) + '"]')
-  });
-  const api = {
-    getData: active => active ? current.current.table.getPrePaginationRowModel().rows.map(r => r.original) : current.current.data.slice(),
-    getRows: active => (active ? current.current.table.getPrePaginationRowModel().rows : current.current.table.getCoreRowModel().rows).map(r => row(r.id)),
-    getRow: id => current.current.data.some(r => (0, _state.recordKey)(r[current.current.index]) === (0, _state.recordKey)(id)) ? row((0, _state.recordKey)(id)) : false,
-    getColumns: () => current.current.table.getAllLeafColumns().filter(c => !c.id.startsWith('__')).map(c => column(c.id)),
-    getColumn: column,
-    getSelectedData: () => current.current.data.filter(r => current.current.selection[(0, _state.recordKey)(r[current.current.index])]),
-    getSelectedRows: () => api.getSelectedData().map(r => row((0, _state.recordKey)(r[current.current.index]))),
-    getSorters: () => current.current.sorting.map(s => ({
-      field: s.id,
-      dir: s.desc ? 'desc' : 'asc',
-      column: column(s.id)
-    })),
-    setSort: (field, dir) => current.current.setSorting(Array.isArray(field) ? field.map(s => ({
-      id: s.column || s.field,
-      desc: s.dir === 'desc'
-    })) : [{
-      id: field,
-      desc: dir === 'desc'
-    }]),
-    clearSort: () => current.current.setSorting([]),
-    selectRow: id => current.current.pick((0, _state.recordKey)(id), true),
-    deselectRow: id => current.current.pick((0, _state.recordKey)(id), false),
-    setPage: page => current.current.setPage(page - 1),
-    getPage: () => current.current.page + 1,
-    setPageSize: size => current.current.setPageSize(size),
-    getPageSize: () => current.current.pageSize,
-    scrollToRow: id => {
-      const at = current.current.table.getRowModel().rows.findIndex(r => r.id === (0, _state.recordKey)(id));
-      if (at >= 0) current.current.virtual.scrollToIndex(at);
-      return Promise.resolve();
-    },
-    on: (name, fn) => {
-      const listeners = current.current.listeners;
-      if (!listeners.has(name)) listeners.set(name, new Set());
-      listeners.get(name).add(fn);
-    },
-    off: (name, fn) => current.current.listeners.get(name)?.delete(fn),
-    options: {},
-    row,
-    column,
-    cell
-  };
-  return api;
-}
-  } },
-  "platform/components/DataTableNext/DataTableNext.jsx": { deps: {"react":null,"@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataTableNext/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataTableNext/state.js","./adapter.js":"platform/components/DataTableNext/adapter.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DataTableNext = DataTableNext;
-var _react = _interopRequireDefault(require("react"));
-var _reactTable = require("@tanstack/react-table");
-var _reactVirtual = require("@tanstack/react-virtual");
-var _cx = require("../../utils/cx.js");
-var _grid = require("../../utils/grid.js");
-var _sizeSteps = require("../../utils/sizeSteps.js");
-var _useVirtualizer = require("../../hooks/useVirtualizer.js");
-var _environment = require("./environment.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Button = require("../Button/Button.jsx");
-var _Menu = require("../Menu/Menu.jsx");
-var _Text = require("../Text/Text.jsx");
-var _Input = require("../Input/Input.jsx");
-var _Popover = require("../Popover/Popover.jsx");
-var _Pagination = require("../Pagination/Pagination.jsx");
-var _EmptyState = require("../EmptyState/EmptyState.jsx");
-var _state = require("./state.js");
-var _adapter = require("./adapter.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTableNext (TanStack trial, phase 1)
-   Summary: A React-owned grid beside DataTable; no existing table switches engines.
-   Usage: <DataTableNext label="People" data={people} columns={columns} selectable />
-   Props: DataTable's core props: label/data/columns/index, controlled selection and view props, storageKey,
-     rowHeight/wrapHeaders/viewMenu, narrow/keyColumns/narrowAt, fill/pages, fetchRows, empty/error/onRetry,
-     rowMenu/rowMenuButton/headerMenu/columnMenu, strings, on and onReady. Column render receives a compatible cell.
-   Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
-     token-sized CSS gaps represent missing rows. Opening saved state is supplied on the very first render.
-   Notes: Phase 2 adds grouping, tree, editing, moving rows, load-more and remaining built-in rich cell kinds.
-     Existing DataTable CSS and public DataTable exports remain unchanged. */
-const EMPTY_ROWS = [];
-const B = 'plx-data-table',
-  interactive = 'a,button,input,select,textarea,label,[role="button"],[contenteditable="true"]';
-const defaults = {
-  empty: 'Nothing to show',
-  failed: 'The table could not load',
-  retry: 'Retry',
-  selectAll: 'Select all rows',
-  selectRow: 'Select row',
-  rowActions: 'Row actions',
-  clearSort: 'Clear sort',
-  hide: 'Hide field',
-  showAll: 'Show all fields',
-  narrower: 'Narrower',
-  wider: 'Wider',
-  fit: 'Fit to content',
-  moveLeft: 'Move left',
-  moveRight: 'Move right',
-  perPage: 'Rows per page',
-  view: 'View options',
-  wrapHeaders: 'Wrap headers',
-  rowHeight: 'Row height',
-  short: 'Short',
-  medium: 'Medium',
-  tall: 'Tall',
-  'extra-tall': 'Extra tall',
-  filter: 'Filter',
-  clearFilter: 'Clear filter'
-};
-const typeIcons = {
-  text: 'ed-text',
-  number: 'field-number',
-  bytes: 'attachment',
-  currency: 'field-currency',
-  date: 'calendar',
-  select: 'field-select',
-  checkbox: 'select',
-  file: 'attachment',
-  image: 'image-a-2',
-  link: 'link',
-  person: 'person',
-  'long-text': 'field-long-text'
-};
-const kinds = c => [].concat(c.kind || []);
-const typeOf = c => c.type || (kinds(c).includes('wrap') ? 'long-text' : c.sorter === 'number' ? 'number' : c.sorter === 'date' ? 'date' : 'text');
-const sorted = s => s.map(x => ({
-  field: x.id,
-  dir: x.desc ? 'desc' : 'asc'
-}));
-const lengthName = v => {
-  const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || ''));
-  return match?.[1];
-};
-const compare = (a, b, id) => {
-  const x = a.getValue(id),
-    y = b.getValue(id);
-  if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
-  return String(x).localeCompare(String(y), undefined, {
-    numeric: true
-  });
-};
-function Gap({
-  count
-}) {
-  return count > 0 ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-virtual-gap plx-data-table__gap",
-    "aria-hidden": "true"
-  }, (0, _useVirtualizer.gapPieces)(count).map((n, i) => /*#__PURE__*/_react.default.createElement("div", {
-    key: i,
-    className: "plx-virtual-gap__piece",
-    "data-plx-span": String(n)
-  }))) : null;
-}
-function Check({
-  checked,
-  mixed,
-  label,
-  onChange
-}) {
-  const ref = _react.default.useRef(null);
-  _react.default.useLayoutEffect(() => {
-    if (ref.current) ref.current.indeterminate = !!mixed;
-  }, [mixed]);
-  return /*#__PURE__*/_react.default.createElement("label", {
-    className: B + '__check',
-    onClick: e => e.stopPropagation()
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    ref: ref,
-    type: "checkbox",
-    checked: !!checked,
-    "aria-label": label,
-    onChange: onChange,
-    onClick: e => e.stopPropagation()
-  }));
-}
-// Calculate token widths during React's read-only render, then let React batch all style writes at commit.
-// Reading the grid in a separate layout effect for every new cell alternates reads and writes and forces layout.
-const Width = /*#__PURE__*/_react.default.forwardRef(function Width({
-  as: Element = 'div',
-  width,
-  frozenOffset,
-  children,
-  ...props
-}, forwarded) {
-  const ref = _react.default.useRef(null),
-    style = width == null ? undefined : {
-      width: (0, _grid.gridPx)(width, {
-        el: ref.current || document.documentElement
-      }),
-      ...(frozenOffset == null ? {} : {
-        insetInlineStart: (0, _grid.gridPx)(frozenOffset, {
-          el: ref.current || document.documentElement
-        })
-      })
-    };
-  return /*#__PURE__*/_react.default.createElement(Element, _extends({}, props, {
-    style: style,
-    ref: node => {
-      ref.current = node;
-      if (typeof forwarded === 'function') forwarded(node);else if (forwarded) forwarded.current = node;
-    }
-  }), children);
-});
-function NextEngine(props) {
-  const {
-    label,
-    data = EMPTY_ROWS,
-    columns,
-    index = 'id',
-    selectable = false,
-    selected,
-    keepHiddenSelection = true,
-    onSelectionChange,
-    options = {},
-    mode = 'fill',
-    height,
-    narrow = 'list',
-    narrowAt = '--plx-ref-size-600px',
-    keyColumns,
-    storageKey,
-    headerMenu = true,
-    rowMenu,
-    rowMenuButton = true,
-    columnMenu,
-    onReady,
-    on = {},
-    className,
-    empty,
-    error,
-    onRetry
-  } = props;
-  const S = {
-      ...defaults,
-      ...props.strings
-    },
-    initial = _react.default.useMemo(() => (0, _state.opening)(props), [storageKey]);
-  const frame = _react.default.useRef(null),
-    holder = _react.default.useRef(null),
-    header = _react.default.useRef(null),
-    live = _react.default.useRef({}),
-    ready = _react.default.useRef(false);
-  const selectionAnchor = _react.default.useRef(null);
-  const listeners = _react.default.useRef(new Map()),
-    rowElements = _react.default.useRef(new Map()),
-    headerElements = _react.default.useRef(new Map());
-  const [localSort, setSorting] = _react.default.useState(initial.sorting),
-    [order, setOrder] = _react.default.useState(initial.order),
-    [visibility, setVisibility] = _react.default.useState(initial.visibility);
-  const sortSignal = JSON.stringify(props.sort),
-    orderSignal = JSON.stringify(props.columnOrder),
-    hiddenSignal = JSON.stringify(props.hiddenColumns);
-  const [sortOwner, setSortOwner] = _react.default.useState(null),
-    [orderOwner, setOrderOwner] = _react.default.useState(null),
-    [hiddenOwner, setHiddenOwner] = _react.default.useState(null);
-  const [sizing, setSizing] = _react.default.useState(() => Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)])));
-  const [autoSizing, setAutoSizing] = _react.default.useState({});
-  const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
-    [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
-  const [filterField, setFilterField] = _react.default.useState(null);
-  const [ownSelection, setSelection] = _react.default.useState({}),
-    [filters, setFilters] = _react.default.useState([]),
-    [page, setPage] = _react.default.useState(0),
-    [pageSize, setPageSize] = _react.default.useState(props.pageSize || 50);
-  const [remote, setRemote] = _react.default.useState(null),
-    [remoteError, setRemoteError] = _react.default.useState(null),
-    [retry, setRetry] = _react.default.useState(0);
-  const [metrics, setMetrics] = _react.default.useState({
-      row: 0,
-      line: 0,
-      lead: 0,
-      menu: 0,
-      min: 0,
-      space: 0,
-      room: 0
-    }),
-    [isNarrow, setNarrow] = _react.default.useState(false),
-    [message, setMessage] = _react.default.useState('');
-  const effectiveStep = props.rowHeight || rowHeight,
-    effectiveWrap = props.wrapHeaders ?? wrapHeaders;
-  const selection = Array.isArray(selected) ? Object.fromEntries(selected.map(k => [(0, _state.recordKey)(k), true])) : ownSelection;
-  const sorting = sortOwner === sortSignal ? localSort : props.sort?.length ? (0, _state.normalizeSort)(props.sort) : localSort;
-  const columnOrder = orderOwner === orderSignal ? order : props.columnOrder || order,
-    columnVisibility = hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? (0, _state.visibilityOf)(props.hiddenColumns) : visibility;
-  const remoteMode = typeof props.fetchRows === 'function' && mode === 'pages',
-    source = remoteMode ? remote?.rows || EMPTY_ROWS : data;
-  const emit = (name, ...args) => {
-    live.current.props.on?.[name]?.(...args);
-    listeners.current.get(name)?.forEach(fn => fn(...args));
-  };
-  const api = _react.default.useMemo(() => (0, _adapter.createAdapter)(live), []);
-  const resize = (field, value) => {
-    const definition = columns.find(c => c.field === field),
-      at = frame.current;
-    const min = (0, _environment.tokenPixels)(definition?.minWidth || '--plx-ref-size-80px', at),
-      max = definition?.maxWidth ? (0, _environment.tokenPixels)(definition.maxWidth, at) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
-    const width = (0, _grid.snapToGrid)((0, _sizeSteps.snapSize)((0, _environment.tokenPixels)(value, at), min, max), {
-      el: at
-    });
-    setSizing(s => ({
-      ...s,
-      [field]: width
-    }));
-  };
-  const move = (field, target, after) => {
-    const current = live.current.table.getAllLeafColumns().map(c => c.id).filter(id => !id.startsWith('__') && id !== field);
-    const at = current.indexOf(target);
-    current.splice(Math.max(0, at + (after ? 1 : 0)), 0, field);
-    setOrderOwner(orderSignal);
-    setOrder(current);
-    emit('columnMoved', api.column(field), current.map(api.column));
-  };
-  const notifySelection = next => {
-    setSelection(next);
-    const active = new Set(live.current.table.getFilteredRowModel().rows.map(r => r.id)),
-      records = source.filter(r => next[(0, _state.recordKey)(r[index])]);
-    onSelectionChange?.(records.map(r => r[index]), {
-      count: records.length,
-      hidden: records.filter(r => !active.has((0, _state.recordKey)(r[index]))).length
-    });
-    emit('rowSelectionChanged', records, records.map(r => api.row((0, _state.recordKey)(r[index]))));
-  };
-  const pick = (key, value) => {
-    const next = {
-      ...live.current.selection
-    };
-    if (options.selectableRows === 1 && value) Object.keys(next).forEach(k => delete next[k]);
-    if (value) next[key] = true;else delete next[key];
-    notifySelection(next);
-  };
-  const changeSort = update => {
-    const next = typeof update === 'function' ? update(sorting) : update;
-    setSortOwner(sortSignal);
-    setSorting(next);
-    setPage(0);
-    emit('dataSorted', next.map(s => ({
-      field: s.id,
-      dir: s.desc ? 'desc' : 'asc'
-    })));
-  };
-  const leafDefs = _react.default.useMemo(() => columns.map(c => ({
-    id: c.field,
-    accessorFn: r => (0, _state.valueAt)(r, c.field),
-    header: c.title || c.field,
-    enableSorting: c.headerSort !== false,
-    filterFn: c.filter === 'list' ? 'equalsString' : 'includesString',
-    sortingFn: c.sorter === 'number' ? 'basic' : compare,
-    size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, (0, _environment.tokenPixels)(c.width, frame.current) || autoSizing[c.field] || metrics.min),
-    minSize: kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min,
-    maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
-    meta: c
-  })), [columns, metrics.min, autoSizing]);
-  const table = (0, _reactTable.useReactTable)({
-    data: source,
-    columns: leafDefs,
-    getRowId: r => (0, _state.recordKey)(r[index]),
-    state: {
-      sorting,
-      columnOrder,
-      columnVisibility,
-      columnSizing: sizing,
-      columnFilters: filters,
-      globalFilter: props.filter,
-      pagination: {
-        pageIndex: page,
-        pageSize
-      },
-      rowSelection: selection
-    },
-    onSortingChange: changeSort,
-    onColumnVisibilityChange: update => {
-      setHiddenOwner(hiddenSignal);
-      setVisibility(typeof update === 'function' ? update(columnVisibility) : update);
-    },
-    onColumnOrderChange: update => {
-      setOrderOwner(orderSignal);
-      setOrder(typeof update === 'function' ? update(columnOrder) : update);
-    },
-    onColumnSizingChange: setSizing,
-    onColumnFiltersChange: update => {
-      setFilters(update);
-      setPage(0);
-    },
-    getColumnCanGlobalFilter: () => true,
-    globalFilterFn: (row, id, fn) => typeof fn !== 'function' || !!fn(row.original),
-    globalFilter: props.filter,
-    manualPagination: remoteMode,
-    manualSorting: remoteMode,
-    manualFiltering: remoteMode,
-    pageCount: remoteMode ? Math.ceil((remote?.total || 0) / pageSize) : undefined,
-    getCoreRowModel: (0, _reactTable.getCoreRowModel)(),
-    getFilteredRowModel: (0, _reactTable.getFilteredRowModel)(),
-    getSortedRowModel: (0, _reactTable.getSortedRowModel)(),
-    getPaginationRowModel: mode === 'pages' ? (0, _reactTable.getPaginationRowModel)() : undefined,
-    autoResetPageIndex: false
-  });
-  const model = table.getRowModel().rows,
-    virtualized = mode === 'fill' && !isNarrow;
-  const virtual = (0, _reactVirtual.useVirtualizer)({
-    count: model.length,
-    getScrollElement: () => holder.current,
-    estimateSize: () => metrics.row + metrics.line,
-    getItemKey: i => model[i]?.id,
-    overscan: 4,
-    enabled: virtualized && metrics.row > 0,
-    initialRect: {
-      width: 0,
-      height: 0
-    }
-  });
-  const virtualItems = virtual.getVirtualItems(),
-    first = virtualized ? virtualItems[0]?.index || 0 : 0,
-    last = virtualized ? (virtualItems[virtualItems.length - 1]?.index ?? Math.min(model.length, 1) - 1) + 1 : model.length;
-  const shown = virtualized ? model.slice(first, last) : model;
-  const pinnedAt = columns.findIndex(c => c.rowLabel),
-    frozen = new Set(columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map(c => c.field));
-  const visible = table.getVisibleLeafColumns(),
-    ordered = visible.filter(c => frozen.has(c.id)).concat(visible.filter(c => !frozen.has(c.id)));
-  const widths = Object.fromEntries(ordered.map(column => [column.id, column.getSize()]));
-  const listable = column => !column.rowHandle && !kinds(column).some(kind => ['icon', 'actions'].includes(kind));
-  const keys = keyColumns?.length ? keyColumns : columns.filter(c => !kinds(c).some(k => ['icon', 'actions'].includes(k)) && !c.rowHandle).slice(0, 3).map(c => c.field);
-  const listed = narrow === 'auto' ? columns.some(listable) : narrow === 'list' && columns.some(column => listable(column) && !keys.includes(column.field));
-  live.current = {
-    props,
-    index,
-    data: source,
-    fields: columns,
-    table,
-    selection,
-    sorting,
-    setSorting: changeSort,
-    resize,
-    move,
-    pick,
-    setPage,
-    page,
-    pageSize,
-    setPageSize,
-    virtual,
-    rowElements: rowElements.current,
-    headerElements: headerElements.current,
-    listeners: listeners.current
-  };
-  _react.default.useLayoutEffect(() => {
-    const at = frame.current;
-    if (!at || !metrics.min) return;
-    const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
-      cs = getComputedStyle(at),
-      widths = {},
-      free = [];
-    columns.forEach(c => {
-      const explicit = kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.width, at);
-      if (explicit) {
-        widths[c.field] = explicit;
-        return;
-      }
-      const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-table-data-font-family' : '--plx-comp-data-table-font-family').trim() || cs.fontFamily;
-      ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size').trim() + ' ' + family;
-      let width = ctx.measureText(c.title || c.field).width;
-      source.forEach(record => {
-        const value = (0, _state.valueAt)(record, c.field);
-        if (typeof value === 'string' || typeof value === 'number') width = Math.max(width, ctx.measureText(String(value)).width);
-      });
-      widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, width + metrics.space * 2), {
-        round: 'up',
-        el: at
-      });
-      free.push(c.field);
-    });
-    const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0),
-      used = Object.values(widths).reduce((sum, width) => sum + width, 0),
-      step = (0, _grid.gridStep)(at);
-    const units = Math.max(0, Math.floor((available - used) / step)),
-      share = free.length ? Math.floor(units / free.length) : 0;
-    free.forEach((field, i) => widths[field] += (share + (i < units - share * free.length ? 1 : 0)) * step);
-    setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
-  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable]);
-  _react.default.useLayoutEffect(() => {
-    const at = frame.current;
-    if (!at) return;
-    const doc = at.ownerDocument;
-    // Reuse the existing structural stylesheet; no Tabulator script or engine is loaded by the trial.
-    const href = (0, _environment.structuralStylesheet)();
-    let link = [...doc.querySelectorAll('link[rel="stylesheet"]')].find(l => l.href === href);
-    if (!link) {
-      link = doc.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = href;
-      doc.head.prepend(link);
-    }
-    let raf = 0;
-    const measure = () => {
-      raf = 0;
-      const next = {
-        row: (0, _environment.tokenPixels)('--plx-comp-data-table-record-height', at),
-        line: (0, _environment.tokenPixels)('--plx-comp-data-table-line-width', at),
-        lead: (0, _environment.tokenPixels)('--plx-comp-data-table-lead-column-width', at),
-        menu: (0, _environment.tokenPixels)('--plx-comp-data-table-row-menu-width', at),
-        min: (0, _environment.tokenPixels)('--plx-ref-size-80px', at),
-        space: (0, _environment.tokenPixels)('--plx-comp-data-table-cell-padding-inline', at),
-        room: at.clientWidth
-      };
-      setMetrics(old => Object.keys(next).every(k => next[k] === old[k]) ? old : next);
-      const threshold = narrow === 'auto' ? keys.reduce((sum, field) => sum + (live.current.table?.getColumn(field)?.getSize() || next.min), selectable ? next.lead : 0) : (0, _environment.tokenPixels)(narrowAt, at),
-        want = listed && at.clientWidth > 0 && at.clientWidth < threshold;
-      setNarrow(want);
-      if (!height && mode === 'fill' && holder.current) {
-        const top = holder.current.getBoundingClientRect().top;
-        holder.current.style.maxBlockSize = (0, _grid.gridPx)(Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
-          round: 'down',
-          el: at
-        });
-      }
-    };
-    const schedule = () => {
-      if (!raf) raf = requestAnimationFrame(measure);
-    };
-    measure();
-    const ro = new ResizeObserver(schedule);
-    ro.observe(at);
-    const mo = new MutationObserver(schedule);
-    mo.observe(doc.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction', 'data-plx-mode']
-    });
-    const region = at.closest('[data-plx-density]');
-    if (region && region !== doc.documentElement) mo.observe(region, {
-      attributes: true,
-      attributeFilter: ['data-plx-density']
-    });
-    return () => {
-      ro.disconnect();
-      mo.disconnect();
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|')]);
-  _react.default.useLayoutEffect(() => {
-    virtual.measure();
-  }, [metrics.row, metrics.line]);
-  _react.default.useEffect(() => {
-    if (!metrics.row || !Object.keys(autoSizing).length || ready.current) return;
-    ready.current = true;
-    api.options = options;
-    onReady?.(api);
-    emit('tableBuilt');
-  }, [metrics.row, autoSizing]);
-  _react.default.useEffect(() => {
-    if (!ready.current) return;
-    (0, _state.writeView)(storageKey, {
-      sort: sorting.map(s => ({
-        column: s.id,
-        dir: s.desc ? 'desc' : 'asc'
-      })),
-      order: columnOrder,
-      hidden: Object.keys(columnVisibility).filter(k => columnVisibility[k] === false),
-      widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + 'px'])),
-      rowHeight: effectiveStep,
-      wrapHeaders: effectiveWrap
-    });
-  }, [storageKey, JSON.stringify(sorting), JSON.stringify(columnOrder), JSON.stringify(columnVisibility), JSON.stringify(sizing), effectiveStep, effectiveWrap, metrics.row]);
-  _react.default.useEffect(() => {
-    if (!ready.current) return;
-    const active = new Set(table.getFilteredRowModel().rows.map(r => r.id)),
-      next = {
-        ...selection
-      };
-    const known = new Set(source.map(record => (0, _state.recordKey)(record[index])));
-    const hidden = Object.keys(next).filter(key => next[key] && known.has(key) && !active.has(key));
-    if (!keepHiddenSelection && hidden.length) {
-      hidden.forEach(key => delete next[key]);
-      notifySelection(next);
-    } else if (Object.keys(selection).some(key => selection[key])) {
-      const records = source.filter(r => selection[(0, _state.recordKey)(r[index])]);
-      onSelectionChange?.(records.map(r => r[index]), {
-        count: records.length,
-        hidden: hidden.length
-      });
-    }
-    emit('dataFiltered', filters.map(f => ({
-      field: f.id,
-      type: 'like',
-      value: f.value
-    })), table.getFilteredRowModel().rows.map(r => api.row(r.id)));
-  }, [props.filter, JSON.stringify(filters), source, keepHiddenSelection]);
-  const previousData = _react.default.useRef(source);
-  _react.default.useEffect(() => {
-    if (ready.current && previousData.current !== source) {
-      previousData.current = source;
-      emit('dataChanged', source);
-    }
-  }, [source]);
-  _react.default.useEffect(() => setPage(0), [sortSignal, props.filter]);
-  _react.default.useEffect(() => {
-    if (!remoteMode) return;
-    let alive = true;
-    const controller = new AbortController();
-    setRemoteError(null);
-    Promise.resolve().then(() => props.fetchRows({
-      page: page + 1,
-      size: pageSize,
-      sort: sorted(sorting),
-      filters: filters.map(f => ({
-        field: f.id,
-        type: 'like',
-        value: f.value
-      })),
-      search: props.search,
-      signal: controller.signal
-    })).then(result => {
-      if (alive) setRemote({
-        rows: result.rows || [],
-        total: result.total || 0
-      });
-    }, failure => {
-      if (alive) setRemoteError(failure);
-    });
-    return () => {
-      alive = false;
-      controller.abort();
-    };
-  }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
-  const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
-  const selectionRows = table.getPrePaginationRowModel().rows,
-    selectedVisible = selectionRows.filter(r => selection[r.id]),
-    allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
-  const selectAll = value => {
-    const next = {
-      ...selection
-    };
-    selectionRows.forEach(r => {
-      if (value) next[r.id] = true;else delete next[r.id];
-    });
-    notifySelection(next);
-  };
-  const pickCheckbox = (row, event) => {
-    const wanted = event.target.checked,
-      from = selectionRows.findIndex(r => r.id === selectionAnchor.current),
-      to = selectionRows.indexOf(row);
-    if ((event.nativeEvent?.shiftKey || event.shiftKey) && from >= 0 && to >= 0) {
-      const next = {
-        ...selection
-      };
-      selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(record => {
-        if (wanted) next[record.id] = true;else delete next[record.id];
-      });
-      notifySelection(next);
-    } else pick(row.id, wanted);
-    selectionAnchor.current = row.id;
-  };
-  const fit = field => {
-    const c = columns.find(c => c.field === field),
-      ctx = document.createElement('canvas').getContext('2d'),
-      cs = getComputedStyle(frame.current);
-    ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size') + ' ' + cs.getPropertyValue('--plx-comp-data-table-font-family');
-    const values = [c.title || field, ...source.map(r => String((0, _state.valueAt)(r, field) ?? ''))];
-    resize(field, Math.max(...values.map(v => ctx.measureText(v).width)) + metrics.space * 2);
-  };
-  const menuItems = (items, row, extra) => items.map((item, i) => item.separator ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
-    key: i
-  }) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: i,
-    icon: item.icon,
-    danger: item.danger,
-    disabled: typeof item.disabled === 'function' ? item.disabled(row) : item.disabled,
-    onSelect: () => {
-      (item.onSelect || item.action)?.(row, extra);
-    }
-  }, item.label));
-  const rowItems = row => typeof rowMenu === 'function' ? rowMenu(row) : rowMenu || [];
-  const headerItems = column => {
-    const c = column.columnDef.meta,
-      custom = typeof columnMenu === 'function' ? columnMenu(c) : columnMenu || [];
-    const direction = typeOf(c) === 'number' || typeOf(c) === 'currency' ? ['Sort 1 → 9', 'Sort 9 → 1'] : typeOf(c) === 'date' ? ['Sort oldest → newest', 'Sort newest → oldest'] : ['Sort A → Z', 'Sort Z → A'];
-    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, menuItems(custom, c, api.column(c.field)), custom.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => table.setSorting([{
-        id: c.field,
-        desc: false
-      }])
-    }, direction[0]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => table.setSorting([{
-        id: c.field,
-        desc: true
-      }])
-    }, direction[1]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => table.setSorting([])
-    }, S.clearSort), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => setFilterField(c.field)
-    }, "Filter by this field"), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => column.setFilterValue(undefined)
-    }, S.clearFilter), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), -1, column.columnDef.minSize, column.columnDef.maxSize))
-    }, S.narrower), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), 1, column.columnDef.minSize, column.columnDef.maxSize))
-    }, S.wider), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => fit(c.field)
-    }, S.fit), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => column.toggleVisibility(false),
-      disabled: frozen.has(c.field)
-    }, S.hide), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => setVisibility({})
-    }, S.showAll));
-  };
-  const startResize = (event, column) => {
-    if (event.button !== 0) return;
-    event.preventDefault();
-    event.stopPropagation();
-    const from = event.clientX,
-      width = column.getSize(),
-      doc = event.currentTarget.ownerDocument;
-    const move = e => resize(column.id, width + e.clientX - from);
-    const up = () => {
-      doc.removeEventListener('pointermove', move);
-      doc.removeEventListener('pointerup', up);
-    };
-    doc.addEventListener('pointermove', move);
-    doc.addEventListener('pointerup', up, {
-      once: true
-    });
-  };
-  const headerCell = column => {
-    const c = column.columnDef.meta,
-      pinned = frozen.has(c.field),
-      offset = (selectable ? metrics.lead : 0) + ordered.slice(0, ordered.indexOf(column)).filter(col => frozen.has(col.id)).reduce((sum, col) => sum + col.getSize(), 0);
-    const node = /*#__PURE__*/_react.default.createElement(Width, {
-      key: c.field,
-      ref: node => {
-        if (node) headerElements.current.set(c.field, node);else headerElements.current.delete(c.field);
-      },
-      width: widths[c.field],
-      frozenOffset: pinned ? offset : undefined,
-      role: "columnheader",
-      tabIndex: 0,
-      "tabulator-field": c.field,
-      "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('tabulator-col plx-u-relative', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && 'is-filtered', pinned && 'tabulator-frozen', c.headerHozAlign && B + '__head-align-' + c.headerHozAlign),
-      "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
-      onClick: e => {
-        if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
-      },
-      onKeyDown: e => {
-        if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
-          e.preventDefault();
-          column.toggleSorting();
-        }
-      }
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "tabulator-col-content"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "tabulator-col-title-holder"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "tabulator-col-title",
-      title: c.title
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: B + '__title'
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: B + '__type-icon'
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: typeIcons[typeOf(c)] || 'ed-text'
-    })), c.title || c.field)), /*#__PURE__*/_react.default.createElement("div", {
-      className: "tabulator-col-sorter",
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: 'tabulator-arrow' + (column.getIsSorted() === 'desc' ? ' desc' : '')
-    }))), headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      className: "tabulator-header-popup-button",
-      label: c.title + ' column actions',
-      trigger: /*#__PURE__*/_react.default.createElement("span", {
-        role: "button",
-        tabIndex: 0,
-        className: B + '__menu-chevron',
-        "aria-label": c.title + ' column actions'
-      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-        name: "chevron-down"
-      }))
-    }, headerItems(column)) : null, c.filter || filterField === c.field || column.getIsFiltered() ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "tabulator-header-popup-button"
-    }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
-      open: filterField === c.field,
-      onOpenChange: open => setFilterField(open ? c.field : null),
-      title: S.filter + ' ' + c.title,
-      size: "sm",
-      trigger: /*#__PURE__*/_react.default.createElement("span", {
-        role: "button",
-        tabIndex: 0,
-        "aria-label": S.filter + ' ' + c.title
-      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-        name: "filter"
-      }))
-    }, c.filter === 'list' ? /*#__PURE__*/_react.default.createElement(_Input.Select, {
-      "aria-label": S.filter + ' ' + c.title,
-      value: column.getFilterValue() || '',
-      options: [{
-        value: '',
-        label: 'Any'
-      }, ...[...new Set(source.map(r => String((0, _state.valueAt)(r, c.field) ?? '')))].filter(Boolean).map(value => ({
-        value,
-        label: value
-      }))],
-      onChange: e => column.setFilterValue(e.target.value || undefined)
-    }) : /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      "aria-label": S.filter + ' ' + c.title,
-      value: column.getFilterValue() || '',
-      onChange: e => column.setFilterValue(e.target.value)
-    }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "ghost",
-      size: "sm",
-      onClick: () => column.setFilterValue(undefined)
-    }, S.clearFilter))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "tabulator-col-resize-handle",
-      role: "separator",
-      "aria-label": 'Resize ' + c.title,
-      "aria-orientation": "vertical",
-      tabIndex: 0,
-      "aria-valuenow": column.getSize(),
-      "aria-valuemin": column.columnDef.minSize,
-      "aria-valuemax": column.columnDef.maxSize,
-      onPointerDown: e => startResize(e, column),
-      onDoubleClick: () => fit(c.field),
-      onKeyDown: e => {
-        if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
-          e.preventDefault();
-          resize(c.field, e.key === 'Home' ? column.columnDef.minSize : e.key === 'End' ? column.columnDef.maxSize : (0, _sizeSteps.stepSize)(column.getSize(), e.key === 'ArrowRight' ? 1 : -1, column.columnDef.minSize, column.columnDef.maxSize));
-        }
-      }
-    }) : null);
-    return headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
-      key: c.field,
-      target: node,
-      label: c.title + ' column actions'
-    }, headerItems(column)) : node;
-  };
-  const focusCell = (rowIndex, columnIndex) => {
-    const record = model[rowIndex],
-      column = ordered[columnIndex];
-    if (!record || !column) return;
-    if (virtualized) virtual.scrollToIndex(rowIndex, {
-      align: 'auto'
-    });
-    requestAnimationFrame(() => requestAnimationFrame(() => rowElements.current.get(record.id)?.querySelector('[tabulator-field="' + CSS.escape(column.id) + '"]')?.focus({
-      preventScroll: true
-    })));
-  };
-  const rowNode = row => {
-    const rowApi = api.row(row.id),
-      record = row.original;
-    let offset = selectable ? metrics.lead : 0;
-    const node = /*#__PURE__*/_react.default.createElement("div", {
-      key: row.id,
-      ref: node => {
-        if (node) rowElements.current.set(row.id, node);else rowElements.current.delete(row.id);
-      },
-      role: "row",
-      "aria-rowindex": (mode === 'pages' ? page * pageSize : 0) + model.indexOf(row) + 2,
-      "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : undefined,
-      tabIndex: on.rowClick || options.selectableRows ? 0 : undefined,
-      className: (0, _cx.cx)('tabulator-row', selection[row.id] && 'tabulator-selected'),
-      onClick: e => {
-        if (e.target.closest(interactive)) return;
-        if (options.selectableRows) pick(row.id, !selection[row.id]);
-        emit('rowClick', e, rowApi);
-      },
-      onKeyDown: e => {
-        if (e.key === 'Enter' && e.target === e.currentTarget) {
-          e.preventDefault();
-          emit('rowClick', e, rowApi);
-        }
-        if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
-          e.preventDefault();
-          const next = model.indexOf(row) + (e.key === 'ArrowDown' ? 1 : -1);
-          virtual.scrollToIndex(Math.max(0, next));
-          requestAnimationFrame(() => rowElements.current.get(model[next]?.id)?.focus());
-        }
-      }
-    }, selectable ? /*#__PURE__*/_react.default.createElement("div", {
-      className: "tabulator-cell tabulator-row-header plx-data-table__w-lead tabulator-frozen",
-      role: "gridcell"
-    }, /*#__PURE__*/_react.default.createElement(Check, {
-      label: S.selectRow + ' ' + record[index],
-      checked: selection[row.id],
-      onChange: e => pickCheckbox(row, e)
-    })) : null, ordered.map(column => {
-      const c = column.columnDef.meta,
-        k = kinds(c),
-        pinned = frozen.has(c.field),
-        sticky = offset;
-      if (pinned) offset += column.getSize();
-      const cell = api.cell(row.id, c.field);
-      const value = (0, _state.valueAt)(record, c.field);
-      const content = c.render ? c.render(record, cell) : value == null || value === '' ? c.empty ?? '' : String(value);
-      return /*#__PURE__*/_react.default.createElement(Width, {
-        key: c.field,
-        width: isNarrow ? null : widths[c.field],
-        frozenOffset: pinned && !isNarrow ? sticky : undefined,
-        role: "gridcell",
-        tabIndex: -1,
-        "tabulator-field": c.field,
-        dir: "auto",
-        onKeyDown: event => {
-          if (event.target !== event.currentTarget) return;
-          const index = model.indexOf(row),
-            at = ordered.indexOf(column),
-            keys = {
-              ArrowDown: [index + 1, at],
-              ArrowUp: [index - 1, at],
-              ArrowLeft: [index, at - 1],
-              ArrowRight: [index, at + 1]
-            };
-          if (keys[event.key]) {
-            event.preventDefault();
-            focusCell(...keys[event.key]);
-          }
-        },
-        "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
-        className: (0, _cx.cx)('tabulator-cell', k.map(kind => B + '__cell--' + kind).join(' '), c.rowHandle && B + '__cell--handle', pinned && 'tabulator-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', c.hozAlign && B + '__cell--align-' + c.hozAlign)
-      }, c.render ? /*#__PURE__*/_react.default.createElement("span", {
-        className: B + '__portal'
-      }, /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
-        className: B + '__value'
-      }, content)) : k.includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
-        className: B + '__header-icon'
-      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-        name: c.icon || 'circle-info',
-        label: c.title
-      })) : /*#__PURE__*/_react.default.createElement("span", {
-        className: B + '__value'
-      }, content));
-    }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
-      className: "tabulator-cell plx-data-table__w-view",
-      role: "gridcell"
-    }) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
-      width: metrics.menu,
-      className: "tabulator-cell plx-data-table__cell--row-menu",
-      role: "gridcell"
-    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: S.rowActions,
-      trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-        className: B + '__row-menu',
-        variant: "ghost",
-        size: "xs",
-        iconOnly: true,
-        icon: "more",
-        label: S.rowActions
-      })
-    }, menuItems(rowItems(record), record))) : null);
-    return rowMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
-      key: row.id,
-      target: node,
-      label: S.rowActions
-    }, menuItems(rowItems(record), record)) : node;
-  };
-  const failed = error || remoteError;
-  return /*#__PURE__*/_react.default.createElement("div", {
-    ref: frame,
-    className: (0, _cx.cx)(B, pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', className),
-    "data-plx-engine": "next",
-    "data-plx-render": virtualized ? 'virtual' : undefined,
-    "data-plx-row-height": !isNarrow ? effectiveStep : undefined,
-    "data-plx-wrap-headers": effectiveWrap ? '' : undefined,
-    "data-plx-height": lengthName(height),
-    "data-plx-fit": !height && mode === 'fill' ? '' : undefined
-  }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
-    className: B + '__error',
-    tone: "error",
-    title: S.failed,
-    action: onRetry || remoteError ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      onClick: () => {
-        setRetry(n => n + 1);
-        onRetry?.();
-      }
-    }, S.retry) : null
-  }, String(failed === true ? '' : failed.message || failed)) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: B + '__table tabulator',
-    role: "grid",
-    "aria-label": label,
-    "aria-rowcount": (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
-    "aria-colcount": ordered.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
-    hidden: !!failed
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-header",
-    ref: header
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-header-contents"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-headers",
-    role: "row"
-  }, selectable ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-col tabulator-row-header plx-data-table__w-lead tabulator-frozen",
-    role: "columnheader"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-col-content"
-  }, /*#__PURE__*/_react.default.createElement(Check, {
-    label: S.selectAll,
-    checked: allVisible,
-    mixed: selectedVisible.length > 0 && !allVisible,
-    onChange: e => selectAll(e.target.checked)
-  }))) : null, ordered.map(headerCell), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-col plx-data-table__w-view",
-    role: "columnheader"
-  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: S.view,
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "ghost",
-      size: "xs",
-      iconOnly: true,
-      icon: "settings-customize",
-      label: S.view
-    })
-  }, ['short', 'medium', 'tall', 'extra-tall'].map(step => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: step,
-    checked: effectiveStep === step,
-    onSelect: () => setRowHeight(step)
-  }, S[step])), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    checked: effectiveWrap,
-    onSelect: () => setWrapHeaders(v => !v)
-  }, S.wrapHeaders))) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
-    width: metrics.menu,
-    className: "tabulator-col",
-    role: "columnheader",
-    "aria-label": S.rowActions
-  }) : null))), /*#__PURE__*/_react.default.createElement("div", {
-    ref: holder,
-    className: "tabulator-tableholder",
-    role: "rowgroup",
-    tabIndex: 0,
-    onKeyDown: event => {
-      if (event.target === event.currentTarget && event.key === 'ArrowDown') {
-        event.preventDefault();
-        focusCell(first, 0);
-      }
-    },
-    onScroll: e => {
-      if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
-    }
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-table",
-    role: "presentation"
-  }, /*#__PURE__*/_react.default.createElement(Gap, {
-    count: first
-  }), shown.map(rowNode), /*#__PURE__*/_react.default.createElement(Gap, {
-    count: model.length - last
-  })), !model.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-placeholder"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "tabulator-placeholder-contents"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: B + '__empty'
-  }, empty || S.empty))) : null)), mode === 'pages' && !failed ? /*#__PURE__*/_react.default.createElement("div", {
-    className: B + '__footer'
-  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: B + '__range'
-  }, displayedTotal ? Math.min(page * pageSize + 1, displayedTotal) : 0, "\u2013", Math.min((page + 1) * pageSize, displayedTotal), " of ", displayedTotal), /*#__PURE__*/_react.default.createElement("label", {
-    className: B + '__page-size'
-  }, /*#__PURE__*/_react.default.createElement("span", null, S.perPage), /*#__PURE__*/_react.default.createElement(_Input.Select, {
-    value: String(pageSize),
-    options: (props.pageSizes || [25, 50, 100]).map(n => ({
-      value: String(n),
-      label: String(n)
-    })),
-    onChange: e => {
-      setPage(0);
-      setPageSize(+e.target.value);
-    }
-  })), /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
-    className: B + '__pages',
-    label: label + ' pages',
-    page: page + 1,
-    pageCount: Math.max(1, Math.ceil(displayedTotal / pageSize)),
-    onPageChange: n => setPage(n - 1)
-  })) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-sr-only",
-    role: "status",
-    "aria-live": "polite"
-  }, message));
-}
-function DataTableNext(props) {
-  return /*#__PURE__*/_react.default.createElement(NextEngine, _extends({
-    key: props.storageKey || ''
-  }, props));
-}
-DataTableNext.preload = () => Promise.resolve();
   } },
   "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./components/DataTableNext/DataTableNext.jsx":"platform/components/DataTableNext/DataTableNext.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";

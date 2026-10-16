@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.50.0] - 2026-10-16
+
+### Added
+- The TanStack table is complete (#128, #140): `DataTableNext` has every DataTable capability (nested and multi-value
+  grouping with summaries, tree rows, editing, moving rows and columns, load-more, copy, print, the floating
+  scrollbars, every cell kind), its own `plx-data-table__*` markup and stylesheet (`data-table-next.css`, on the
+  existing data-table tokens, the same look), and Plenix callbacks (`onRowClick(row, event)`, `onRowDoubleClick`,
+  `onCellEdit`). On 600 rich rows it opens in 24–92 ms (Tabulator 90–159 ms).
+- `DataTable engine="next"` renders the TanStack table with the same props (opt in per table; the default is unchanged).
+
 ## [0.49.0] - 2026-10-16
 
 ### Added
