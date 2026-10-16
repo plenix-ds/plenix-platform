@@ -32,14 +32,16 @@
      actions[].primary: the page's one primary command (filled; it keeps its label); default none
      find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
      quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
-       options, value, onChange, kind }]; when the bar is short of room they fold into More after the commands, each a
+       options, value, onChange, kind, required, counts }]; when the bar is short of room they fold into More after the commands, each a
        submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
      view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
      count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
        rows are selected ("× N selected" takes its place)
      status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
        is short of room, and while rows are selected
-     end: more controls at the very end (Export); hidden while rows are selected
+     end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
+       fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
+       items are Menu children or MenuItem descriptors, including checked toggles.
      selection.hidden: how many selected records are hidden by filters (DataTable onSelectionChange supplies it)
      selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
@@ -93,6 +95,8 @@ import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { BarActions, foldOrder } from './BarActions.jsx';
 import { MenuSub, MenuItem, MenuRadioGroup } from '../../components/Menu/Menu.jsx';
 import { QuickFilter } from '../QuickFilter/QuickFilter.jsx';
+import { SingleQuickFilterMenu } from '../QuickFilter/single-menu.jsx';
+import { Inline } from '../../components/Stack/Stack.jsx';
 import { DATE_PRESETS } from '../../utils/fields.js';
 
 const STRINGS = { more: 'More actions', actions: '{label} actions', find: 'Find and view', selected: '{n} selected', hidden: ' ({n} hidden by filters)',
@@ -139,31 +143,44 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const shape = layout === 'auto' || layout === 'split' ? (actions.length ? 'one' : 'view') : layout;
   const shown = selecting ? selActs : shape === 'view' ? [] : actions;
   const quick = selecting ? [] : quickFilters;
-  const folds = foldOrder(shown).length + quick.length;
+  const ending = end && !React.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
+  const endContent = ending ? ending.content : end;
+  const endFold = !selecting && ending && ending.fold;
+  const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map((a) => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map((q) => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map((a) => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map((q) => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
   const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
   const ctx = React.useMemo(() => ({ iconOnly: step >= ICONS, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
-  // the commands fold first (from the end, Delete last); then the quick filters, from the end
+  // Commands fold first (from the end, Delete last), then an opted-in end control, then quick filters.
   const foldAll = Math.max(0, step - SEARCH);
   const fold = Math.min(foldAll, foldOrder(shown).length);
-  const quickAway = Math.min(quick.length, foldAll - fold);
+  const endAway = !!endFold && foldAll > fold;
+  const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
   const quickKept = quick.slice(0, quick.length - quickAway), quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map((q) => {
     const id = q.id || q.label;
+    const counted = option => {
+      const count = option.count !== undefined ? option.count : q.counts instanceof Map ? q.counts.get(option.value) || 0 : q.counts ? q.counts[option.value] || 0 : undefined;
+      return count === undefined ? option.label || option.value : <Inline as="span" gap="xs">{option.label || option.value}<Text variant="data">{formatNumber(count)}</Text></Inline>;
+    };
+    if (q.kind === 'single') return <MenuSub key={id} label={q.label} icon={q.icon}><SingleQuickFilterMenu {...q} /></MenuSub>;
     if (q.kind === 'date') {
       const d = Object.assign({ preset: 'any', from: '', to: '' }, q.value);
       return <MenuSub key={id} label={q.label} icon={q.icon}><MenuRadioGroup label={q.label} value={d.preset} onChange={(v) => q.onChange && q.onChange(Object.assign({}, d, { preset: v }))}>
-        {DATE_PRESETS.map((p) => <MenuItem key={p.value} value={p.value}>{p.label}</MenuItem>)}</MenuRadioGroup></MenuSub>;
+        {DATE_PRESETS.map((p) => <MenuItem key={p.value} value={p.value}>{counted(p)}</MenuItem>)}</MenuRadioGroup></MenuSub>;
     }
     const chosen = q.value || [];
     return <MenuSub key={id} label={chosen.length ? q.label + ' (' + chosen.length + ')' : q.label} icon={q.icon}>
       {(q.options || []).map((o) => (typeof o === 'string' ? { value: o, label: o } : o)).map((o) => (
         <MenuItem key={o.value} checked={chosen.indexOf(o.value) >= 0} keepOpen
-          onSelect={() => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter((x) => x !== o.value) : chosen.concat(o.value))}>{o.label || o.value}</MenuItem>))}
+          onSelect={() => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter((x) => x !== o.value) : chosen.concat(o.value))}>{counted(o)}</MenuItem>))}
     </MenuSub>;
   });
+  const endMenu = endAway ? <MenuSub key="plx-end" label={endFold.label} icon={endFold.icon}>
+    {Array.isArray(endFold.items) && endFold.items.length && !React.isValidElement(endFold.items[0]) ? endFold.items.map(item => <MenuItem key={item.id || item.label} icon={item.icon} checked={item.checked} disabled={item.disabled} danger={item.danger} onSelect={item.onSelect}>{item.label}</MenuItem>) : endFold.items}
+  </MenuSub> : null;
+  const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
   // the swap is announced (the focus stays where it is, on the table)
   const was = React.useRef(selecting);
   React.useEffect(() => {
@@ -173,10 +190,10 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const words = { noun: (sel && sel.noun) || 'item', plural: (sel && sel.plural) || ((sel && sel.noun) || 'item') + 's' };
   const off = (a) => !!a.disabled || !!(a.single && selCount > 1);
   const why = (a) => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words));
-  const acts = shown.length || quickMenu.length ? (
+  const acts = shown.length || extraMenu.length ? (
     <Toolbar.Group className="plx-command-bar__actions">
       <BarActions actions={shown} iconOnly={ctx.iconOnly} fold={fold} moreLabel={t.more} dangerClass="plx-command-bar__danger"
-        off={selecting ? off : undefined} why={selecting ? why : undefined} extra={quickMenu} />
+        off={selecting ? off : undefined} why={selecting ? why : undefined} extra={extraMenu} />
     </Toolbar.Group>
   ) : null;
   const quickEls = quickKept.map((q) => <QuickFilter key={q.id || q.label} {...q} />);
@@ -196,10 +213,11 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
     </Tooltip>
   ) : null;
   const statusEl = selecting || !status || ctx.collapsed ? null : <Text variant="secondary" className="plx-command-bar__status">{status}</Text>;
-  const tail = countEl || statusEl || end || clearEl ? (
+  const keptEnd = !selecting && !endAway ? endContent : null;
+  const tail = countEl || statusEl || keptEnd || clearEl ? (
     <Toolbar.Group className="plx-command-bar__end">
       {selecting && viewEl ? <Divider orientation="vertical" /> : null}
-      {countEl}{statusEl}{selecting ? null : end}{clearEl}
+      {countEl}{statusEl}{keptEnd}{clearEl}
     </Toolbar.Group>
   ) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
