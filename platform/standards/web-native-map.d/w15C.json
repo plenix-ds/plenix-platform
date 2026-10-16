@@ -1,0 +1,93 @@
+{
+  "$description": "W15C foundations and implementation guidance mapped to native equivalents. Web/Node packages remain web/Node mechanisms.",
+  "map": {
+    "interaction|Internationalization": {
+      "ios": [
+        "ios-foundations|Right to left"
+      ],
+      "android": [
+        "android-implementation|Behavior"
+      ]
+    },
+    "foundations|Design principles": {
+      "ios": [
+        "ios-foundations|Design principles"
+      ],
+      "android": [
+        "android-foundations|Overview"
+      ]
+    },
+    "foundations|Visual hierarchy": {
+      "ios": [
+        "ios-foundations|Design principles"
+      ],
+      "android": [
+        "android-foundations|Text roles"
+      ]
+    },
+    "foundations|Voice and tone": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-foundations|Text roles"
+      ]
+    },
+    "foundations|Writing messages": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-implementation|Behavior"
+      ]
+    },
+    "foundations|Empty-state and onboarding copy": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-implementation|Behavior"
+      ]
+    },
+    "patterns|Lifecycle journeys": {
+      "ios": [
+        "ios-foundations|Design principles"
+      ],
+      "android": [
+        "android-implementation|Behavior"
+      ]
+    },
+    "interaction|WCAG guidance": {
+      "ios": [
+        "ios-interaction|Accessibility"
+      ],
+      "android": [
+        "android-interaction|Conformance"
+      ]
+    },
+    "implementation|Performance": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|Build outputs"
+      ]
+    },
+    "implementation|Web components": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|Implementations and controls"
+      ]
+    },
+    "implementation|Design-system MCP tooling": {
+      "ios": [
+        "ios-implementation|Generated files"
+      ],
+      "android": [
+        "android-implementation|Build outputs"
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
+export default {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "next": "Next",
+    "back": "Back"
+  },
+  "collection": {
+    "selected": {
+      "=0": "Nothing selected",
+      "one": "{count} item selected",
+      "other": "{count} items selected"
+    }
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "step": "Step {n} of {total}",
+    "error": "Could not save. Try again."
+  },
+  "dialog": {
+    "close": "Close"
+  },
+  "text": {
+    "more": "Show more",
+    "less": "Show less"
+  },
+  "emptyState": {
+    "title": "No items yet",
+    "description": "Create an item to get started.",
+    "action": "Create item"
+  }
+};

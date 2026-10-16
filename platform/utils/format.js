@@ -43,6 +43,7 @@
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
+     Bare YYYY-MM-DD values represent local calendar dates; timestamps with a zone retain their instant.
      A value that is not a finite number or a valid date comes back as an empty string, never "NaN" or "Invalid Date".
    Notes:
      Never build a separator, a symbol position or a date order by hand: these functions are the only place they are made.
@@ -76,7 +77,15 @@ export const FORMATS = {
 };
 
 const ok = (n) => typeof n === 'number' && isFinite(n);
-const toDate = (d) => { const x = d instanceof Date ? d : new Date(d); return isNaN(x.getTime()) ? null : x; };
+// A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
+const toDate = (d) => {
+  if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    const [year, month, day] = d.split('-').map(Number), x = new Date(0);
+    x.setFullYear(year, month - 1, day); x.setHours(0, 0, 0, 0);
+    return x.getFullYear() === year && x.getMonth() === month - 1 && x.getDate() === day ? x : null;
+  }
+  const x = d instanceof Date ? d : new Date(d); return isNaN(x.getTime()) ? null : x;
+};
 
 export function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
