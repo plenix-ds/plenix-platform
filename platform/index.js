@@ -277,4 +277,18 @@ export { Auth, SignInForm, SignUpForm, PasswordResetForm, MfaChallenge, SsoButto
 export { SessionTimeout, useSessionTimeout } from './patterns/SessionTimeout/SessionTimeout.jsx';
 export { RoleManager } from './patterns/RoleManager/RoleManager.jsx';
 export { ConnectedAccounts, ConnectedAccount } from './patterns/ConnectedAccounts/ConnectedAccounts.jsx';
+export { ShareDialog } from './patterns/ShareDialog/ShareDialog.jsx';
+export { PermissionsEditor } from './patterns/PermissionsEditor/PermissionsEditor.jsx';
+export { Tour } from './patterns/Tour/Tour.jsx';
+export { Checklist } from './components/Checklist/Checklist.jsx';
+export { Onboarding } from './patterns/Onboarding/Onboarding.jsx';
+export { FeatureIntro } from './patterns/FeatureIntro/FeatureIntro.jsx';
+export { HelpPanel } from './patterns/HelpPanel/HelpPanel.jsx';
+export { ImportDialog } from './patterns/ImportDialog/ImportDialog.jsx';
+export { ImportWizard } from './patterns/ImportWizard/ImportWizard.jsx';
+export { ExportDialog } from './patterns/ExportDialog/ExportDialog.jsx';
+export { AccessRequest } from './patterns/AccessRequest/AccessRequest.jsx';
+export { TrialUpgrade } from './patterns/TrialUpgrade/TrialUpgrade.jsx';
+export { Offboarding } from './patterns/Offboarding/Offboarding.jsx';
+export { ShortcutsDialog } from './patterns/ShortcutsDialog/ShortcutsDialog.jsx';
 /* END library parts */

@@ -1,7 +1,8 @@
-## Batch 384 (2026-10-15): Codex PR #4 (wave 10 lane C)
-- take-pr.js on PR #4 (31 files: lanes/w10C/design-system into the submodule, no generated files). CI on the PR: all 20
-  checks green. Reviewed: statuses are Badges with icons, no inline styles or raw colors; code terse but within the rules.
-- Its Android Confirmation fragment would have replaced wave 10 B's page: combined (6 variants); merge.js now unions
-  variants by name; AGENTS.md says so.
-- Released on CI's browser tests of the same code plus the local quick gates (owner: "what is taking soo longgg"); the
-  local batch run finished afterwards as an extra check. Released as {V}.
+## Batch 385 (2026-10-15): Codex PRs #99 and #100 (wave 11 B and C)
+- GitHub Actions could not start on either PR (billing / spending limit on the account: the owner's to fix), so the
+  integrator checked them here: take-pr.js (31 + 31 files, no clashes, no generated files), build, SYSTEM_OK, SPEC_OK
+  (693 records), natives ALL OK, their 21 labs LABS_OK, the 14 pages open without console errors. The big test suite
+  waits for the very end (owner).
+- Labs are thin (1 token, 4–12 checks each): the patterns compose existing components.
+- Needs the owner: workflow wording; spacing from existing roles; the informational New badge; status tones (queued
+  active, requested waiting, denied negative); upgrade terms and offboarding consequences are the caller's. Released as {V}.

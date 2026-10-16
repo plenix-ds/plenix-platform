@@ -1,0 +1,3 @@
+/* Plenix · Checklist: existing Platform roles, no new surfaces. */
+.plx-checklist{row-gap:var(--plx-comp-checklist-gap);}
+.plx-checklist__items{row-gap:var(--plx-comp-checklist-items-gap);}

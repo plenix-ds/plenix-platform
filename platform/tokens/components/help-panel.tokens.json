@@ -1,0 +1,10 @@
+{
+  "$description": "HelpPanel: component spacing roles.",
+  "plx-comp": {
+    "help-panel-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "HelpPanel: space between composed regions."
+    }
+  }
+}

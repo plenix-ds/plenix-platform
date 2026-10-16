@@ -1,0 +1,10 @@
+{
+  "$description": "ShortcutsDialog: component spacing roles.",
+  "plx-comp": {
+    "shortcuts-dialog-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "ShortcutsDialog: space between composed regions."
+    }
+  }
+}

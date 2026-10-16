@@ -53577,11 +53577,1849 @@ function ConnectedAccounts({
   })));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/patterns/ShareDialog/ShareDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
+});
+exports.ShareDialog = ShareDialog;
+var _react = _interopRequireDefault(require("react"));
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _EntityPicker = require("../../components/EntityPicker/EntityPicker.jsx");
+var _RoleLabel = require("../../components/RoleLabel/RoleLabel.jsx");
+var _CopyButton = require("../../components/CopyButton/CopyButton.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Tabs = require("../../components/Tabs/Tabs.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ShareDialog
+   Summary: Manage people and their roles, copy a restricted link, or invoke Web Share.
+   Usage: <ShareDialog open title="Share record" people={people} grants={grants} url={url} onSave={save} onClose={close} />
+   Props:
+     open, title, onClose: modal lifecycle; people: EntityPicker options; grants: [{ person, role }].
+     roles: [{ value, label }]; defaultRole: new grant role (default viewer); url: existing share URL.
+     linkAccess: "restricted" (default) or "view"; onSave({ grants, linkAccess }): persistence promise.
+     initialTab: "people" or "link"; webShare: show native share when supported (default true).
+     strings: title, people, link, person, role, add, remove, save, cancel, copy, access, restricted, anyone,
+       nativeShare, failed, unsaved and invalid; className: extra classes.
+   Behavior:
+     Draft grants reset on reopen. Duplicate people are not added. Pending writes block edits and dismissal.
+     Failed saves retain the draft. Closing dirty changes asks first. Clipboard and Web Share do not change permissions.
+   Notes:
+     The server must authorize every grant and validate roles. A copied URL never enables public access itself.
+*/
+
+const ROLES = [{
+  value: 'viewer',
+  label: 'Viewer'
+}, {
+  value: 'editor',
+  label: 'Editor'
+}];
+function ShareDialog({
+  open,
+  title,
+  onClose,
+  people = [],
+  grants = [],
+  roles = ROLES,
+  defaultRole = 'viewer',
+  url = '',
+  linkAccess = 'restricted',
+  onSave,
+  initialTab = 'people',
+  webShare = true,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Share',
+    people: 'People',
+    link: 'Link',
+    person: 'Person',
+    role: 'Role',
+    add: 'Add person',
+    remove: 'Remove',
+    save: 'Save access',
+    cancel: 'Cancel',
+    copy: 'Copy link',
+    access: 'Link access',
+    restricted: 'Only people with access',
+    anyone: 'Anyone with the link can view',
+    nativeShare: 'Share using device',
+    failed: 'Could not share. Try again.',
+    invalid: 'Choose a person and an available role.',
+    unsaved: 'Your access changes will be lost.'
+  }, strings);
+  const [draft, setDraft] = _react.default.useState(grants),
+    [access, setAccess] = _react.default.useState(linkAccess);
+  const [person, setPerson] = _react.default.useState(''),
+    [role, setRole] = _react.default.useState(defaultRole),
+    [tab, setTab] = _react.default.useState(initialTab);
+  const [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    epoch = _react.default.useRef(0),
+    initial = _react.default.useRef(null);
+  initial.current = {
+    grants,
+    linkAccess,
+    defaultRole,
+    initialTab
+  };
+  _react.default.useEffect(() => {
+    epoch.current++;
+    const v = initial.current;
+    setDraft(v.grants);
+    setAccess(v.linkAccess);
+    setPerson('');
+    setRole(v.defaultRole);
+    setTab(v.initialTab);
+    setError('');
+    setBusy(false);
+    lock.current = false;
+    return () => {
+      epoch.current++;
+    };
+  }, [open]);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(grants) || access !== linkAccess;
+  const guard = (0, _UnsavedGuard.useUnsavedGuard)(open && dirty, t.unsaved);
+  const close = guard(() => {
+    if (!lock.current && onClose) onClose();
+  });
+  const run = async fn => {
+    if (lock.current) return;
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await fn();
+    } catch (e) {
+      if (at === epoch.current && e?.name !== 'AbortError') setError(t.failed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  const add = () => {
+    if (!people.some(p => p.value === person) || !roles.some(r => r.value === role)) {
+      setError(t.invalid);
+      return;
+    }
+    setDraft(all => all.some(g => g.person === person) ? all : all.concat([{
+      person,
+      role
+    }]));
+    setPerson('');
+    setError('');
+  };
+  const save = () => {
+    const at = epoch.current;
+    return run(async () => {
+      await onSave({
+        grants: draft,
+        linkAccess: access
+      });
+      if (at === epoch.current && onClose) onClose();
+    });
+  };
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    title: title || t.title,
+    onClose: close,
+    dismissible: !busy,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: busy,
+      onClick: close
+    }, t.cancel), onSave ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      disabled: busy || !dirty,
+      onClick: save
+    }, t.save) : null)
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-share-dialog', className),
+    "aria-busy": busy
+  }, /*#__PURE__*/_react.default.createElement(_Tabs.Tabs, {
+    variant: "folder",
+    label: title || t.title,
+    value: tab,
+    onChange: setTab,
+    items: [{
+      value: 'people',
+      label: t.people,
+      content: /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        label: t.person
+      }, /*#__PURE__*/_react.default.createElement(_EntityPicker.EntityPicker, {
+        kind: "people",
+        options: people,
+        value: person,
+        onChange: setPerson,
+        disabled: busy
+      })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        label: t.role
+      }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+        value: role,
+        options: roles,
+        disabled: busy,
+        onChange: e => setRole(e.target.value)
+      })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        disabled: busy || !person || !onSave,
+        onClick: add
+      }, t.add), draft.map(g => /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+        key: g.person,
+        wrap: true
+      }, /*#__PURE__*/_react.default.createElement(_Text.Text, null, people.find(p => p.value === g.person)?.label || g.person), /*#__PURE__*/_react.default.createElement(_RoleLabel.RoleLabel, {
+        role: g.role,
+        label: roles.find(r => r.value === g.role)?.label
+      }), /*#__PURE__*/_react.default.createElement(_Input.Select, {
+        "aria-label": t.role + ': ' + (people.find(p => p.value === g.person)?.label || g.person),
+        value: g.role,
+        options: roles,
+        disabled: busy || !onSave,
+        onChange: e => setDraft(draft.map(v => v.person === g.person ? {
+          ...v,
+          role: e.target.value
+        } : v))
+      }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        disabled: busy || !onSave,
+        onClick: () => setDraft(draft.filter(v => v.person !== g.person))
+      }, t.remove))))
+    }, {
+      value: 'link',
+      label: t.link,
+      content: /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        label: t.access
+      }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+        value: access,
+        disabled: busy || !onSave,
+        onChange: e => setAccess(e.target.value),
+        options: [{
+          value: 'restricted',
+          label: t.restricted
+        }, {
+          value: 'view',
+          label: t.anyone
+        }]
+      })), /*#__PURE__*/_react.default.createElement(_CopyButton.CopyButton, {
+        field: true,
+        value: url,
+        label: t.copy,
+        fieldLabel: t.link,
+        disabled: !url || busy
+      }), webShare && typeof navigator !== 'undefined' && navigator.share ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        disabled: !url || busy,
+        onClick: () => run(() => navigator.share({
+          title: title || t.title,
+          url
+        }))
+      }, t.nativeShare) : null)
+    }]
+  }), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null));
+}
+  } },
+  "platform/patterns/PermissionsEditor/PermissionsEditor.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PermissionsEditor = PermissionsEditor;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _PermissionSummary = require("../PermissionSummary/PermissionSummary.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · PermissionsEditor
+   Summary: An editable capabilities matrix by role or person with a readable permission summary.
+   Usage: <PermissionsEditor subjects={roles} capabilities={rights} value={rightsByRole} onChange={setRights} />
+   Props:
+     subjects: [{ id, label, locked }]; capabilities: [{ id, label }]; value: { subjectId: [capabilityId] }.
+     mode: "roles" (default) or "people"; onChange(next): controlled draft updates; onSave(next): optional persistence.
+     readOnly: disables all changes; strings: { label, capability, subject, save, failed, unsaved }; className: extra classes.
+   Behavior:
+     A named Checkbox at each intersection updates an immutable draft; locked subjects cannot change.
+     Optional Save waits for persistence, preserves the draft on failure and guards unsaved navigation.
+     The selected subject has a PermissionSummary. The matrix is a Platform DataTable.
+   Notes:
+     Permissions are UI data, never authorization. Validate grants and locked roles on the server.
+*/
+
+function PermissionsEditor({
+  subjects = [],
+  capabilities = [],
+  value = {},
+  mode = 'roles',
+  onChange,
+  onSave,
+  readOnly = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    label: 'Permissions',
+    capability: 'Capability',
+    subject: 'Show permissions for',
+    save: 'Save permissions',
+    failed: 'Could not save permissions. Try again.',
+    unsaved: 'Your permission changes have not been saved.'
+  }, strings);
+  const [selected, setSelected] = _react.default.useState(subjects[0]?.id || ''),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const [saved, setSaved] = _react.default.useState(value),
+    lock = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (!onSave) setSaved(value);
+  }, [value, onSave]);
+  (0, _UnsavedGuard.useUnsavedGuard)(!!onSave && JSON.stringify(saved) !== JSON.stringify(value), t.unsaved);
+  const subject = subjects.find(s => s.id === selected) || subjects[0];
+  const change = (s, cap, checked) => {
+    if (readOnly || lock.current || s.locked || !onChange) return;
+    const had = value[s.id] || [],
+      next = {
+        ...value,
+        [s.id]: checked ? Array.from(new Set(had.concat(cap))) : had.filter(v => v !== cap)
+      };
+    onChange(next);
+  };
+  const columns = [{
+    title: t.capability,
+    field: 'label',
+    kind: 'wrap',
+    rowLabel: true
+  }].concat(subjects.map(s => ({
+    title: s.label,
+    field: 'permission-' + s.id,
+    kind: 'center',
+    headerSort: false,
+    render: cap => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+      label: s.label + ': ' + cap.label,
+      checked: (value[s.id] || []).includes(cap.id),
+      disabled: readOnly || busy || s.locked || !onChange,
+      onChange: e => change(s, cap.id, e.target.checked)
+    })
+  })));
+  const save = async () => {
+    if (lock.current || !onSave) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onSave(value);
+      setSaved(value);
+    } catch (e) {
+      setError(t.failed);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-permissions-editor', className),
+    "aria-busy": busy
+  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: t.label,
+    data: capabilities,
+    columns: columns,
+    index: "id",
+    headerMenu: false
+  }), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.subject
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: subject?.id || '',
+    options: subjects.map(s => ({
+      value: s.id,
+      label: s.label
+    })),
+    onChange: e => setSelected(e.target.value)
+  })), subject ? /*#__PURE__*/_react.default.createElement(_PermissionSummary.PermissionSummary, {
+    access: subject.label,
+    icon: mode === 'people' ? 'person' : 'settings-permissions',
+    can: capabilities.filter(c => (value[subject.id] || []).includes(c.id)).map(c => c.label),
+    cannot: capabilities.filter(c => !(value[subject.id] || []).includes(c.id)).map(c => c.label),
+    live: true
+  }) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, onSave ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    disabled: busy || readOnly || JSON.stringify(saved) === JSON.stringify(value),
+    onClick: save
+  }, t.save) : null);
+}
+  } },
+  "platform/patterns/Tour/Tour.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Tour = Tour;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _TeachingBubble = require("../../components/TeachingBubble/TeachingBubble.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tour
+   Summary: A skippable, resumable sequence of TeachingBubbles around real controls.
+   Usage: <Tour open={open} onOpenChange={setOpen} steps={steps} defaultStep={savedStep} onStepChange={remember} />
+   Props:
+     steps: [{ id, target, title, content, placement }]; target is a Platform control rendered in place.
+     open, onOpenChange(next): controlled visibility; step: controlled index; defaultStep: resume index.
+     onStepChange(index): persist progress; onFinish(reason): "complete" or "skip"; spotlight: dim other regions (default true).
+     strings: { next, back, finish, skip, resume, close, step }; className: extra classes.
+   Behavior:
+     Targets remain mounted. Only the current bubble opens. Escape and Close skip; Back preserves progress.
+     Resume reopens at the saved step. The last Next completes the tour; keyboard focus enters each bubble.
+   Notes:
+     Tour progress storage belongs to the caller; never force a completed tour to restart.
+*/
+
+function Tour({
+  steps = [],
+  open = false,
+  onOpenChange,
+  step,
+  defaultStep = 0,
+  onStepChange,
+  onFinish,
+  spotlight = true,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    next: 'Next',
+    back: 'Back',
+    finish: 'Finish tour',
+    skip: 'Skip tour',
+    resume: 'Resume tour',
+    close: 'Close',
+    step: '{current} of {total}'
+  }, strings);
+  const [own, setOwn] = _react.default.useState(defaultStep);
+  const at = Math.max(0, Math.min(step === undefined ? own : step, steps.length - 1));
+  const move = n => {
+    if (step === undefined) setOwn(n);
+    if (onStepChange) onStepChange(n);
+  };
+  const finish = reason => {
+    if (onOpenChange) onOpenChange(false);
+    if (onFinish) onFinish(reason);
+  };
+  if (!steps.length) return null;
+  return /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true,
+    className: (0, _cx.cx)('plx-tour', className)
+  }, steps.map((s, i) => /*#__PURE__*/_react.default.createElement(_TeachingBubble.TeachingBubble, {
+    key: s.id,
+    target: s.target,
+    open: open && i === at,
+    title: s.title,
+    placement: s.placement,
+    spotlight: spotlight,
+    focusOnOpen: true,
+    step: {
+      current: i + 1,
+      total: steps.length
+    },
+    strings: t,
+    onDismiss: () => finish('skip'),
+    primaryAction: {
+      label: i === steps.length - 1 ? t.finish : t.next,
+      onClick: () => i === steps.length - 1 ? finish('complete') : move(i + 1)
+    },
+    secondaryAction: i > 0 ? {
+      label: t.back,
+      onClick: () => move(i - 1)
+    } : {
+      label: t.skip,
+      onClick: () => finish('skip')
+    }
+  }, s.content)), open ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => finish('skip')
+  }, t.skip) : onOpenChange ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => onOpenChange(true)
+  }, t.resume) : null);
+}
+  } },
+  "platform/components/Checklist/Checklist.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Checklist = Checklist;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../Stack/Stack.jsx");
+var _Checkbox = require("../Checkbox/Checkbox.jsx");
+var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _CollapsibleSection = require("../CollapsibleSection/CollapsibleSection.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Checklist
+   Summary: Named setup tasks with completion progress, optional collapse and dismissal.
+   Usage: <Checklist title="Get started" items={tasks} completed={done} onChange={setDone} />
+   Props:
+     title: group heading; items: [{ id, label, description, disabled }]; completed: completed ids.
+     onChange(ids, changedId): controlled updates; progress: show progress (default true).
+     collapsible: show a CollapsibleSection (default false); onDismiss(): optional dismissal action.
+     strings: { dismiss, progress }; className: extra classes.
+   Behavior:
+     Native checkboxes support pointer, Space and labels. Disabled tasks cannot change.
+     Completion is derived from unique known ids; empty lists report zero. Collapsing preserves state.
+   Notes:
+     Completion and dismissal persistence belong to the caller. Technical counts use DM Mono.
+*/
+
+function Checklist({
+  title,
+  items = [],
+  completed = [],
+  onChange,
+  progress = true,
+  collapsible = false,
+  onDismiss,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    dismiss: 'Dismiss checklist',
+    progress: 'Tasks completed'
+  }, strings);
+  const done = items.filter(item => completed.includes(item.id)).length;
+  const body = /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: "plx-checklist__items"
+  }, progress ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    role: "status"
+  }, done + ' / ' + items.length), /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+    value: items.length ? done / items.length * 100 : 0,
+    label: t.progress
+  })) : null, items.map(item => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    key: item.id,
+    label: item.label,
+    description: item.description,
+    checked: completed.includes(item.id),
+    disabled: item.disabled || !onChange,
+    onChange: e => {
+      const known = completed.filter(id => items.some(v => v.id === id));
+      if (onChange) onChange(e.target.checked ? Array.from(new Set(known.concat(item.id))) : known.filter(id => id !== item.id), item.id);
+    }
+  })));
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-checklist', className)
+  }, !collapsible && title || onDismiss ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    justify: "between",
+    wrap: true
+  }, !collapsible && title ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "h3",
+    variant: "heading"
+  }, title) : null, onDismiss ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    onClick: onDismiss
+  }, t.dismiss) : null) : null, collapsible ? /*#__PURE__*/_react.default.createElement(_CollapsibleSection.CollapsibleSection, {
+    title: title
+  }, body) : body);
+}
+  } },
+  "platform/patterns/Onboarding/Onboarding.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","../Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Onboarding = Onboarding;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Checklist = require("../../components/Checklist/Checklist.jsx");
+var _Tour = require("../Tour/Tour.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Onboarding
+   Summary: An optional welcome dialog followed by a setup checklist and a user-started product tour.
+   Usage: <Onboarding title="Welcome" tasks={tasks} completed={done} onChange={setDone} steps={tourSteps} />
+   Props:
+     title, children: welcome content; welcome: initially show welcome (default true).
+     tasks, completed, onChange: Checklist data; steps: optional Tour steps; onDismiss(): dismiss setup.
+     onWelcomeDismiss(), onTourStep(index), onTourFinish(reason): persist progress in the caller.
+     strings: { start, skip, tour, checklist, close }; className: extra classes.
+   Behavior:
+     Welcome can be skipped. Setup stays available after either action; a tour never starts automatically.
+     Checklist completion and tour progress survive visibility changes; storage belongs to the caller.
+   Notes:
+     Keep onboarding optional. Never require educational steps to access the product.
+*/
+
+function Onboarding({
+  title,
+  children,
+  welcome = true,
+  tasks = [],
+  completed = [],
+  onChange,
+  steps = [],
+  onDismiss,
+  onWelcomeDismiss,
+  onTourStep,
+  onTourFinish,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    start: 'Get started',
+    skip: 'Skip welcome',
+    tour: 'Take a tour',
+    checklist: 'Get started',
+    close: 'Close'
+  }, strings);
+  const [shown, setShown] = _react.default.useState(welcome),
+    [tour, setTour] = _react.default.useState(false);
+  const close = () => {
+    setShown(false);
+    if (onWelcomeDismiss) onWelcomeDismiss();
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-onboarding', className)
+  }, /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: shown,
+    title: title,
+    onClose: close,
+    closeLabel: t.close,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: close
+    }, t.skip), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      onClick: close
+    }, t.start))
+  }, children), /*#__PURE__*/_react.default.createElement(_Checklist.Checklist, {
+    title: t.checklist,
+    items: tasks,
+    completed: completed,
+    onChange: onChange,
+    onDismiss: onDismiss,
+    strings: strings
+  }), steps.length ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => setTour(true)
+  }, t.tour), /*#__PURE__*/_react.default.createElement(_Tour.Tour, {
+    open: tour && !shown,
+    onOpenChange: setTour,
+    steps: steps,
+    onStepChange: onTourStep,
+    onFinish: onTourFinish,
+    strings: strings
+  })) : null);
+}
+  } },
+  "platform/patterns/FeatureIntro/FeatureIntro.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FeatureIntro = FeatureIntro;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _TeachingBubble = require("../../components/TeachingBubble/TeachingBubble.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · FeatureIntro
+   Summary: A feature label with a New Badge, optional TeachingBubble and a what-is-new dialog.
+   Usage: <FeatureIntro title="Saved views" target={<Button>Views</Button>} onDismiss={remember}>Save and reuse filters.</FeatureIntro>
+   Props:
+     title, children: feature explanation; target: optional Platform control; showBadge: default true.
+     initiallyOpen: start the teaching bubble open (default false); onDismiss(): remember dismissal.
+     strings: { new, whatsNew, gotIt, later, close }; className: extra classes.
+   Behavior:
+     The bubble is dismissible and does not trap focus. The what-is-new dialog opens only on request.
+     Dismissal closes education and calls the caller without changing feature availability.
+   Notes:
+     Persist seen state in the application; new is informational, never a warning.
+*/
+
+function FeatureIntro({
+  title,
+  children,
+  target,
+  showBadge = true,
+  initiallyOpen = false,
+  onDismiss,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    new: 'New',
+    whatsNew: 'What is new',
+    gotIt: 'Got it',
+    later: 'Not now',
+    close: 'Close'
+  }, strings);
+  const [bubble, setBubble] = _react.default.useState(initiallyOpen),
+    [dialog, setDialog] = _react.default.useState(false);
+  const done = () => {
+    setBubble(false);
+    setDialog(false);
+    if (onDismiss) onDismiss();
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    className: (0, _cx.cx)('plx-feature-intro', className),
+    wrap: true
+  }, target ? /*#__PURE__*/_react.default.createElement(_TeachingBubble.TeachingBubble, {
+    target: target,
+    open: bubble,
+    title: title,
+    onDismiss: done,
+    spotlight: false,
+    strings: t,
+    primaryAction: {
+      label: t.gotIt,
+      onClick: done
+    },
+    secondaryAction: {
+      label: t.later,
+      onClick: done
+    }
+  }, children) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, title), showBadge ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "active",
+    icon: "circle-info"
+  }, t.new) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => {
+      setBubble(false);
+      setDialog(true);
+    }
+  }, t.whatsNew), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: dialog,
+    title: title,
+    onClose: done,
+    closeLabel: t.close,
+    footer: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      onClick: done
+    }, t.gotIt)
+  }, children));
+}
+  } },
+  "platform/patterns/HelpPanel/HelpPanel.jsx": { deps: {"react":null,"../SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.HelpPanel = HelpPanel;
+var _react = _interopRequireDefault(require("react"));
+var _SidePanel = require("../SidePanel/SidePanel.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · HelpPanel
+   Summary: Searchable help articles in the Platform inspector SidePanel.
+   Usage: <HelpPanel open title="Help" articles={articles} onOpenChange={setOpen} />
+   Props:
+     articles: [{ id, title, summary, content, href }]; content is a Platform node; href is an optional full article URL.
+     open, onOpenChange, title: SidePanel props; strings: { title, search, empty, back, read, close }; className: extra classes.
+   Behavior:
+     Search matches article titles and summaries. Selecting a result opens its content; Back restores the results.
+     Empty results are explicit; every article action is a Button and every external article is a Link.
+   Notes:
+     Supply article content from a trusted renderer. The inspector owns responsive placement and scrolling.
+*/
+
+function HelpPanel({
+  articles = [],
+  open = true,
+  onOpenChange,
+  title,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Help',
+    search: 'Search help',
+    empty: 'No matching articles',
+    back: 'Back to articles',
+    read: 'Read full article',
+    close: 'Collapse help'
+  }, strings);
+  const [query, setQuery] = _react.default.useState(''),
+    [selected, setSelected] = _react.default.useState(null);
+  const article = articles.find(a => a.id === selected);
+  const matches = articles.filter(a => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(query.trim().toLowerCase()));
+  return /*#__PURE__*/_react.default.createElement(_SidePanel.SidePanel, {
+    title: title || t.title,
+    open: open,
+    onOpenChange: onOpenChange,
+    collapseLabel: t.close,
+    className: (0, _cx.cx)('plx-help-panel', className)
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: "plx-help-panel__content"
+  }, article ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => setSelected(null)
+  }, t.back), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "h3",
+    variant: "heading"
+  }, article.title), article.content, article.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: article.href
+  }, t.read) : null) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    label: t.search,
+    placeholder: t.search,
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    onClear: () => setQuery(''),
+    strings: strings
+  }), matches.length ? matches.map(a => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: a.id,
+    gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    onClick: () => setSelected(a.id)
+  }, a.title), a.summary ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, a.summary) : null)) : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    title: t.empty
+  }))));
+}
+  } },
+  "platform/patterns/ImportDialog/ImportDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ImportDialog = ImportDialog;
+var _react = _interopRequireDefault(require("react"));
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Tabs = require("../../components/Tabs/Tabs.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _FileInput = require("../../components/FileInput/FileInput.jsx");
+var _DropZone = require("../../components/DropZone/DropZone.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ImportDialog
+   Summary: Choose a file, paste data or provide an HTTP URL before an explicit import.
+   Usage: <ImportDialog open onImport={readSource} onClose={close} />
+   Props:
+     open, title, onClose: dialog lifecycle; initialMode: "file", "paste" or "url".
+     accept: file extensions or MIME types; multiple: accept several files (default false).
+     onImport({ mode, files, text, url }): asynchronous reader/importer; validate(source): optional error string.
+     strings: { title, file, paste, url, choose, drop, none, import, cancel, invalid, failed, unsaved }; className.
+   Behavior:
+     Reject empty data, invalid URLs and unsupported dropped files. Draft input survives failures.
+     Pending imports cannot repeat or dismiss. Reopening resets the source and guards stale responses.
+   Notes:
+     The caller owns parsing, server-side validation and URL fetching. The component never fetches an arbitrary URL.
+*/
+
+function ImportDialog({
+  open,
+  title,
+  onClose,
+  initialMode = 'file',
+  accept = '',
+  multiple = false,
+  onImport,
+  validate,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Import',
+    file: 'File',
+    paste: 'Paste data',
+    url: 'URL',
+    choose: 'Choose source file',
+    drop: 'Drop a file here or choose it below.',
+    none: 'No file chosen',
+    import: 'Import',
+    cancel: 'Cancel',
+    invalid: 'Choose a supported file, paste data, or enter an HTTP URL.',
+    failed: 'Could not import. Your source is still available.',
+    unsaved: 'Your import source will be lost.'
+  }, strings);
+  const [mode, setMode] = _react.default.useState(initialMode),
+    [files, setFiles] = _react.default.useState([]),
+    [text, setText] = _react.default.useState(''),
+    [url, setUrl] = _react.default.useState('');
+  const [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState(''),
+    [drag, setDrag] = _react.default.useState(false);
+  const lock = _react.default.useRef(false),
+    epoch = _react.default.useRef(0),
+    first = _react.default.useRef(initialMode);
+  first.current = initialMode;
+  _react.default.useEffect(() => {
+    epoch.current++;
+    lock.current = false;
+    setBusy(false);
+    setMode(first.current);
+    setFiles([]);
+    setText('');
+    setUrl('');
+    setError('');
+    return () => {
+      epoch.current++;
+    };
+  }, [open]);
+  const guard = (0, _UnsavedGuard.useUnsavedGuard)(open && !!(files.length || text || url), t.unsaved);
+  const close = guard(() => {
+    if (!lock.current && onClose) onClose();
+  });
+  const allowed = file => !accept || accept.split(',').some(s => {
+    const rule = s.trim().toLowerCase();
+    return rule.startsWith('.') ? file.name.toLowerCase().endsWith(rule) : rule.endsWith('/*') ? file.type.toLowerCase().startsWith(rule.slice(0, -1)) : file.type.toLowerCase() === rule;
+  });
+  const submit = async () => {
+    if (lock.current) return;
+    let validUrl = false;
+    try {
+      validUrl = ['https:', 'http:'].includes(new URL(url.trim()).protocol);
+    } catch (e) {/* invalid source */}
+    if (mode === 'file' && (!files.length || !multiple && files.length > 1 || !files.every(allowed)) || mode === 'paste' && !text.trim() || mode === 'url' && !validUrl) {
+      setError(t.invalid);
+      return;
+    }
+    const source = {
+      mode,
+      files: mode === 'file' ? files : [],
+      text: mode === 'paste' ? text : '',
+      url: mode === 'url' ? url.trim() : ''
+    };
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      const problem = validate ? await validate(source) : '';
+      if (at !== epoch.current) return;
+      if (problem) {
+        setError(typeof problem === 'string' ? problem : t.invalid);
+        return;
+      }
+      await onImport(source);
+      if (at === epoch.current && onClose) onClose();
+    } catch (e) {
+      if (at === epoch.current) setError(t.failed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    title: title || t.title,
+    onClose: close,
+    dismissible: !busy,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: busy,
+      onClick: close
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      disabled: busy,
+      onClick: submit
+    }, t.import))
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-import-dialog', className),
+    "aria-busy": busy
+  }, /*#__PURE__*/_react.default.createElement(_Tabs.Tabs, {
+    label: title || t.title,
+    variant: "folder",
+    value: mode,
+    onChange: setMode,
+    items: [{
+      value: 'file',
+      label: t.file,
+      disabled: busy,
+      content: /*#__PURE__*/_react.default.createElement(_DropZone.DropZone, {
+        active: drag,
+        onDragOver: e => e.preventDefault(),
+        onDragEnter: () => !busy && setDrag(true),
+        onDragLeave: () => setDrag(false),
+        onDrop: e => {
+          e.preventDefault();
+          setDrag(false);
+          if (!busy) setFiles(Array.from(e.dataTransfer.files));
+        }
+      }, /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.drop), /*#__PURE__*/_react.default.createElement(_FileInput.FileInput, {
+        accept: accept,
+        multiple: multiple,
+        label: t.choose,
+        onChange: setFiles,
+        disabled: busy,
+        strings: strings
+      }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+        variant: "data"
+      }, files.length ? files.map(f => f.name).join(', ') : t.none))
+    }, {
+      value: 'paste',
+      label: t.paste,
+      disabled: busy,
+      content: /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        label: t.paste
+      }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+        value: text,
+        disabled: busy,
+        onChange: e => setText(e.target.value)
+      }))
+    }, {
+      value: 'url',
+      label: t.url,
+      disabled: busy,
+      content: /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        label: t.url
+      }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+        type: "url",
+        value: url,
+        disabled: busy,
+        onChange: e => setUrl(e.target.value)
+      }))
+    }]
+  }), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null));
+}
+  } },
+  "platform/patterns/ImportWizard/ImportWizard.jsx": { deps: {"react":null,"../ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ImportWizard = ImportWizard;
+var _react = _interopRequireDefault(require("react"));
+var _ImportDialog = require("../ImportDialog/ImportDialog.jsx");
+var _Wizard = require("../Wizard/Wizard.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ImportWizard
+   Summary: Read an import source, map columns, review rows and report persisted results.
+   Usage: <ImportWizard open fields={fields} onRead={parseSource} onImport={persistRows} onClose={close} />
+   Props:
+     open, title, onClose: dialog lifecycle; fields: [{ id, label, required }].
+     onRead(source): resolves { columns: [{ id, label }], rows: objects }; onImport({ source, mapping, rows }): promise.
+     strings: { title, mapping, review, results, column, choose, missing, invalid, done, imported, source, cancel }; className.
+   Behavior:
+     Source parsing precedes the wizard. Required target fields must be mapped; review shows the mapped values.
+     Finish persists once, then shows results. Failures retain the map and rows for retry.
+   Notes:
+     Parsing and import storage belong to the caller. Reopening starts a new import; late read results are ignored.
+*/
+
+function ImportWizard({
+  open,
+  title,
+  onClose,
+  fields = [],
+  onRead,
+  onImport,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Import records',
+    mapping: 'Map columns',
+    review: 'Review',
+    results: 'Results',
+    column: 'Source column',
+    choose: 'Choose a column',
+    missing: 'Map every required field.',
+    invalid: 'The source has no usable columns or rows.',
+    done: 'Done',
+    imported: 'Import complete',
+    source: 'Source',
+    cancel: 'Cancel',
+    unsaved: 'Your import mapping will be lost.'
+  }, strings);
+  const [data, setData] = _react.default.useState(null),
+    [source, setSource] = _react.default.useState(null),
+    [mapping, setMapping] = _react.default.useState({}),
+    [complete, setComplete] = _react.default.useState(false);
+  const epoch = _react.default.useRef(0),
+    lock = _react.default.useRef(false),
+    loaded = _react.default.useRef(false);
+  const [busy, setBusy] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    epoch.current++;
+    setData(null);
+    setSource(null);
+    setMapping({});
+    setComplete(false);
+    setBusy(false);
+    loaded.current = false;
+    lock.current = false;
+    return () => {
+      epoch.current++;
+    };
+  }, [open]);
+  const guard = (0, _UnsavedGuard.useUnsavedGuard)(open && !!data && !complete, t.unsaved);
+  const close = guard(() => {
+    if (!lock.current && onClose) onClose();
+  });
+  const read = async input => {
+    const at = epoch.current,
+      parsed = await onRead(input);
+    if (at !== epoch.current) return;
+    if (!parsed || !Array.isArray(parsed.columns) || !parsed.columns.length || !Array.isArray(parsed.rows)) throw new Error(t.invalid);
+    loaded.current = true;
+    setSource(input);
+    setData(parsed);
+    setMapping({});
+  };
+  const mapped = data ? data.rows.map((row, i) => fields.reduce((out, f) => ({
+    ...out,
+    [f.id]: mapping[f.id] ? row[mapping[f.id]] : ''
+  }), {
+    _plxRow: i
+  })) : [];
+  const validate = () => fields.some(f => f.required && !mapping[f.id]) ? t.missing : '';
+  const finish = async () => {
+    if (lock.current) return;
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(true);
+    try {
+      await onImport({
+        source,
+        mapping,
+        rows: mapped.map(({
+          _plxRow,
+          ...row
+        }) => row)
+      });
+      if (at === epoch.current) setComplete(true);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  if (!data) return /*#__PURE__*/_react.default.createElement(_ImportDialog.ImportDialog, {
+    open: open,
+    title: title || t.title,
+    onImport: read,
+    strings: strings,
+    onClose: () => {
+      if (!loaded.current && onClose) onClose();
+    }
+  });
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    title: title || t.title,
+    onClose: close,
+    dismissible: !busy
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-import-wizard', className)
+  }, complete ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check",
+    role: "status"
+  }, t.imported), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "h3",
+    variant: "heading"
+  }, t.results), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, mapped.length), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    onClick: onClose
+  }, t.done)) : /*#__PURE__*/_react.default.createElement(_Wizard.Wizard, {
+    label: title || t.title,
+    strings: strings,
+    onCancel: close,
+    onComplete: finish,
+    steps: [{
+      id: 'mapping',
+      label: t.mapping,
+      validate,
+      content: /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, fields.map(f => /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        key: f.id,
+        label: f.label,
+        required: f.required
+      }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+        value: mapping[f.id] || '',
+        options: [{
+          value: '',
+          label: t.choose
+        }].concat(data.columns.map(c => ({
+          value: c.id,
+          label: c.label
+        }))),
+        onChange: e => setMapping({
+          ...mapping,
+          [f.id]: e.target.value
+        })
+      }))))
+    }, {
+      id: 'review',
+      label: t.review,
+      content: /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+        label: t.review,
+        index: "_plxRow",
+        data: mapped,
+        columns: fields.map(f => ({
+          field: f.id,
+          title: f.label,
+          kind: 'wrap'
+        })),
+        headerMenu: false
+      })
+    }]
+  })));
+}
+  } },
+  "platform/patterns/ExportDialog/ExportDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ExportDialog = ExportDialog;
+var _react = _interopRequireDefault(require("react"));
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ExportDialog
+   Summary: Explicit format and record scope selection, with optional background export results.
+   Usage: <ExportDialog open formats={formats} selectedCount={3} onExport={startExport} onClose={close} />
+   Props:
+     open, title, onClose: dialog lifecycle; formats: [{ value, label }]; selectedCount: available selected records.
+     onExport({ format, scope, background }): resolves optional { href, label }; allowBackground: default true.
+     initialBackground: default false; strings: title, format, scope, all, selection, background, export, cancel,
+       invalid, failed, ready, queued, download, done; className.
+   Behavior:
+     Reject empty formats and unavailable selection scope. Await the export and prevent repeat actions.
+     Errors keep all options. Background work shows a queued Badge; supplied download URLs are explicit Links.
+   Notes:
+     Job creation, progress and download authorization belong to the caller. This component never fabricates a file.
+*/
+
+function ExportDialog({
+  open,
+  title,
+  onClose,
+  formats = [],
+  selectedCount = 0,
+  onExport,
+  allowBackground = true,
+  initialBackground = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Export',
+    format: 'Format',
+    scope: 'Scope',
+    all: 'All records',
+    selection: 'Selected records',
+    background: 'Export in the background',
+    export: 'Export',
+    cancel: 'Cancel',
+    invalid: 'Choose an available format and scope.',
+    failed: 'Could not export. Try again.',
+    ready: 'Export ready',
+    queued: 'Export queued',
+    download: 'Download export',
+    done: 'Done'
+  }, strings);
+  const [format, setFormat] = _react.default.useState(formats[0]?.value || ''),
+    [scope, setScope] = _react.default.useState('all'),
+    [background, setBackground] = _react.default.useState(initialBackground);
+  const [busy, setBusy] = _react.default.useState(false),
+    [result, setResult] = _react.default.useState(null),
+    [finished, setFinished] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    epoch = _react.default.useRef(0),
+    initial = _react.default.useRef(null);
+  initial.current = {
+    format: formats[0]?.value || '',
+    background: initialBackground
+  };
+  _react.default.useEffect(() => {
+    epoch.current++;
+    lock.current = false;
+    setBusy(false);
+    setFormat(initial.current.format);
+    setScope('all');
+    setBackground(initial.current.background);
+    setFinished(false);
+    setResult(null);
+    setError('');
+    return () => {
+      epoch.current++;
+    };
+  }, [open]);
+  const start = async () => {
+    if (lock.current) return;
+    if (!formats.some(f => f.value === format) || scope === 'selection' && selectedCount < 1) {
+      setError(t.invalid);
+      return;
+    }
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      const out = await onExport({
+        format,
+        scope,
+        background: allowBackground && background
+      });
+      if (at === epoch.current) {
+        setResult(out);
+        setFinished(true);
+      }
+    } catch (e) {
+      if (at === epoch.current) setError(t.failed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    title: title || t.title,
+    onClose: () => {
+      if (!lock.current && onClose) onClose();
+    },
+    dismissible: !busy,
+    footer: finished ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: onClose
+    }, t.done) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: busy,
+      onClick: onClose
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      disabled: busy || !onExport,
+      onClick: start
+    }, t.export))
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-export-dialog', className),
+    "aria-busy": busy
+  }, finished ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: background && allowBackground ? 'refresh' : 'check',
+    tone: background && allowBackground ? 'active' : 'success',
+    role: "status"
+  }, background && allowBackground ? t.queued : t.ready), result?.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: result.href
+  }, result.label || t.download) : null) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.format
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    disabled: busy,
+    value: format,
+    onChange: e => setFormat(e.target.value),
+    options: formats
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.scope
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    disabled: busy,
+    value: scope,
+    onChange: e => setScope(e.target.value),
+    options: [{
+      value: 'all',
+      label: t.all
+    }, {
+      value: 'selection',
+      label: t.selection,
+      disabled: selectedCount < 1
+    }]
+  })), allowBackground ? /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    label: t.background,
+    checked: background,
+    disabled: busy,
+    onChange: e => setBackground(e.target.checked)
+  }) : null), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null));
+}
+  } },
+  "platform/patterns/AccessRequest/AccessRequest.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AccessRequest = AccessRequest;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AccessRequest
+   Summary: Request access and communicate pending, approved or denied states with icon Badges.
+   Usage: <AccessRequest status={status} onRequest={requestAccess} />
+   Props:
+     status: "request", "pending", "approved" or "denied"; onRequest(message): persistence promise.
+     onOpen(): open approved resource; strings: title, description, message, request, pending, approved, denied,
+       open, failed; className.
+   Behavior:
+     Submit once while pending; failed requests retain the message. Successful requests show Pending.
+     A denied request can be submitted again. Approved access offers an explicit Open action.
+   Notes:
+     Only the server can approve access; a submitted request never grants permissions.
+*/
+
+function AccessRequest({
+  status = 'request',
+  onRequest,
+  onOpen,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Request access',
+    description: 'Ask the owner for access to this resource.',
+    message: 'Message to the owner',
+    request: 'Request access',
+    pending: 'Access requested',
+    approved: 'Access approved',
+    denied: 'Access denied',
+    open: 'Open resource',
+    failed: 'Could not send your request. Try again.'
+  }, strings);
+  const [message, setMessage] = _react.default.useState(''),
+    [busy, setBusy] = _react.default.useState(false),
+    [sent, setSent] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    setSent(false);
+  }, [status]);
+  const shown = status === 'approved' ? 'approved' : sent ? 'pending' : status;
+  const send = async () => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onRequest(message);
+      setSent(true);
+    } catch (e) {
+      setError(t.failed);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-access-request', className),
+    "aria-busy": busy
+  }, /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    title: t.title
+  }, t.description), shown !== 'request' ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    role: "status",
+    tone: shown === 'approved' ? 'success' : shown === 'denied' ? 'negative' : 'waiting',
+    icon: shown === 'approved' ? 'check' : shown === 'denied' ? 'lock' : 'refresh'
+  }, t[shown]) : null, (shown === 'request' || shown === 'denied') && onRequest ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.message
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    value: message,
+    disabled: busy,
+    onChange: e => setMessage(e.target.value)
+  })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    disabled: busy,
+    onClick: send
+  }, t.request)) : null, shown === 'approved' && onOpen ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: onOpen
+  }, t.open) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+}
+  } },
+  "platform/patterns/TrialUpgrade/TrialUpgrade.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TrialUpgrade = TrialUpgrade;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Banner = require("../../components/Banner/Banner.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _ComparisonView = require("../ComparisonView/ComparisonView.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · TrialUpgrade
+   Summary: A trial banner and optional plan comparison dialog with explicit upgrade submission.
+   Usage: <TrialUpgrade message={trialMessage} plans={plans} attributes={rows} onUpgrade={choosePlan} />
+   Props:
+     message: caller-formatted trial details; plans: ComparisonView items; attributes: compared feature rows.
+     onUpgrade(planId): persistence or checkout promise; defaultOpen: show comparison initially (default false).
+     strings: { trial, compare, title, plan, upgrade, cancel, failed, upgraded }; className.
+   Behavior:
+     Opening the comparison never purchases a plan. Upgrade is explicit, waits for persistence and retains selection on error.
+     The caller supplies prices, terms and billing behavior; no price or trial date is invented.
+   Notes:
+     The pattern owns no payment processing or subscription authorization.
+*/
+
+function TrialUpgrade({
+  message,
+  plans = [],
+  attributes = [],
+  onUpgrade,
+  defaultOpen = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    trial: 'Trial',
+    compare: 'Compare plans',
+    title: 'Choose a plan',
+    plan: 'Plan',
+    upgrade: 'Upgrade',
+    cancel: 'Cancel',
+    failed: 'Could not upgrade. Try again.',
+    upgraded: 'Plan updated'
+  }, strings);
+  const [open, setOpen] = _react.default.useState(defaultOpen),
+    [plan, setPlan] = _react.default.useState(plans[0]?.id || ''),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState(''),
+    [saved, setSaved] = _react.default.useState(false);
+  const lock = _react.default.useRef(false);
+  const upgrade = async () => {
+    if (lock.current || !plans.some(p => p.id === plan)) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onUpgrade(plan);
+      setSaved(true);
+      setOpen(false);
+    } catch (e) {
+      setError(t.failed);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-trial-upgrade', className)
+  }, /*#__PURE__*/_react.default.createElement(_Banner.Banner, {
+    tone: "neutral",
+    title: t.trial,
+    actions: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      onClick: () => setOpen(true)
+    }, t.compare)
+  }, message), saved ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check",
+    role: "status"
+  }, t.upgraded) : null, /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    title: t.title,
+    size: "lg",
+    dismissible: !busy,
+    onClose: () => {
+      if (!lock.current) setOpen(false);
+    },
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: busy,
+      onClick: () => setOpen(false)
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      disabled: busy || !onUpgrade || !plans.some(p => p.id === plan),
+      onClick: upgrade
+    }, t.upgrade))
+  }, /*#__PURE__*/_react.default.createElement(_ComparisonView.ComparisonView, {
+    items: plans,
+    attributes: attributes,
+    mode: "matrix",
+    label: t.compare,
+    strings: strings
+  }), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.plan
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: plan,
+    disabled: busy,
+    onChange: e => setPlan(e.target.value),
+    options: plans.map(p => ({
+      value: p.id,
+      label: p.title
+    }))
+  })), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null));
+}
+  } },
+  "platform/patterns/Offboarding/Offboarding.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","../ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Offboarding = Offboarding;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _WizardDialog = require("../WizardDialog/WizardDialog.jsx");
+var _ExportDialog = require("../ExportDialog/ExportDialog.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Offboarding
+   Summary: Export data before explicit subscription cancellation or typed account deletion confirmation.
+   Usage: <Offboarding open accountName="Workspace" action="delete" onConfirm={deleteAccount} onClose={close} onExport={exportData} formats={formats} />
+   Props:
+     open, onClose: lifecycle; accountName: exact confirmation text; action: "cancel" (default) or "delete".
+     onConfirm({ action, reason }): persistence promise; onExport(options), formats: ExportDialog integration.
+     strings: { title, backup, export, review, reason, confirmName, mismatch, cancel, complete }; className.
+   Behavior:
+     The first step offers export without requiring it. Deletion requires the exact account name.
+     Failed final actions retain values and remain retryable; duplicate requests are blocked by Wizard.
+   Notes:
+     The caller must authorize cancellation/deletion and supply consequences in children.
+*/
+
+function Offboarding({
+  open,
+  onClose,
+  accountName,
+  action = 'cancel',
+  onConfirm,
+  onExport,
+  formats = [],
+  children,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: action === 'delete' ? 'Delete account' : 'Cancel subscription',
+    backup: 'Export your data',
+    export: 'Export data',
+    review: 'Confirm your choice',
+    reason: 'Reason (optional)',
+    confirmName: 'Type the account name to confirm',
+    mismatch: 'Enter the exact account name.',
+    cancel: 'Keep account',
+    complete: action === 'delete' ? 'Delete account' : 'Cancel subscription'
+  }, strings);
+  const [reason, setReason] = _react.default.useState(''),
+    [name, setName] = _react.default.useState(''),
+    [exporting, setExporting] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    if (open) {
+      setReason('');
+      setName('');
+      setExporting(false);
+    }
+  }, [open]);
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-offboarding', className)
+  }, /*#__PURE__*/_react.default.createElement(_WizardDialog.WizardDialog, {
+    className: (0, _cx.cx)("plx-offboarding", className),
+    open: open,
+    title: t.title,
+    onClose: onClose,
+    dirty: !!(reason || name),
+    strings: t,
+    onComplete: async () => {
+      await onConfirm({
+        action,
+        reason
+      });
+      if (onClose) onClose();
+    },
+    steps: [{
+      id: 'backup',
+      label: t.backup,
+      content: /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, children, onExport ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        onClick: () => setExporting(true)
+      }, t.export) : null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        label: t.reason
+      }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+        value: reason,
+        onChange: e => setReason(e.target.value)
+      })))
+    }, {
+      id: 'confirm',
+      label: t.review,
+      validate: () => action === 'delete' && (!accountName || name !== accountName) ? t.mismatch : '',
+      content: /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, /*#__PURE__*/_react.default.createElement(_Text.Text, null, accountName), action === 'delete' ? /*#__PURE__*/_react.default.createElement(_Field.Field, {
+        label: t.confirmName,
+        required: true
+      }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+        value: name,
+        onChange: e => setName(e.target.value),
+        autoComplete: "off"
+      })) : null)
+    }]
+  }), onExport ? /*#__PURE__*/_react.default.createElement(_ExportDialog.ExportDialog, {
+    open: exporting && open,
+    onClose: () => setExporting(false),
+    formats: formats,
+    onExport: onExport,
+    strings: strings
+  }) : null);
+}
+  } },
+  "platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ShortcutsDialog = ShortcutsDialog;
+var _react = _interopRequireDefault(require("react"));
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Kbd = require("../../components/Kbd/Kbd.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _hotkey = require("../../utils/hotkey.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ShortcutsDialog
+   Summary: A searchable, grouped view of the live Platform hotkey registry.
+   Usage: <ShortcutsDialog open={open} onClose={close} />
+   Props:
+     open, onClose: Dialog lifecycle; searchable: show search (default true).
+     strings: { title, search, general, empty, close }; className.
+   Behavior:
+     Registry updates are reflected while open. Search matches names, groups and platform-formatted bindings.
+     Disabled bindings are omitted. Kbd renders technical key names in DM Mono.
+   Notes:
+     This dialog only documents shortcuts; it never registers or changes them.
+*/
+
+function ShortcutsDialog({
+  open,
+  onClose,
+  searchable = true,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Keyboard shortcuts',
+    search: 'Search shortcuts',
+    general: 'General',
+    empty: 'No matching shortcuts',
+    close: 'Close'
+  }, strings);
+  const all = (0, _hotkey.useHotkeyList)(),
+    [query, setQuery] = _react.default.useState('');
+  _react.default.useEffect(() => {
+    if (!open) setQuery('');
+  }, [open]);
+  const filtered = all.filter(v => v.enabled !== false && (v.label + ' ' + v.group + ' ' + (0, _hotkey.hotkeyLabel)(v.binding)).toLowerCase().includes(query.trim().toLowerCase()));
+  const groups = Array.from(new Set(filtered.map(v => v.group || t.general)));
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    title: t.title,
+    onClose: onClose,
+    closeLabel: t.close,
+    footer: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: onClose
+    }, t.close)
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-shortcuts-dialog', className)
+  }, searchable ? /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    onClear: () => setQuery(''),
+    label: t.search,
+    placeholder: t.search,
+    strings: strings
+  }) : null, groups.length ? groups.map(group => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: group,
+    gap: "sm"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "h3",
+    variant: "heading"
+  }, group), filtered.filter(v => (v.group || t.general) === group).map((v, i) => /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    key: v.binding + i,
+    justify: "between",
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, null, v.label), /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(v.binding)))))) : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    title: t.empty
+  })));
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "AccessRequest", {
+  enumerable: true,
+  get: function () {
+    return _AccessRequest.AccessRequest;
+  }
 });
 Object.defineProperty(exports, "AccountRecovery", {
   enumerable: true,
@@ -53875,6 +55713,12 @@ Object.defineProperty(exports, "Checkbox", {
   enumerable: true,
   get: function () {
     return _Checkbox.Checkbox;
+  }
+});
+Object.defineProperty(exports, "Checklist", {
+  enumerable: true,
+  get: function () {
+    return _Checklist.Checklist;
   }
 });
 Object.defineProperty(exports, "Chip", {
@@ -54219,6 +56063,12 @@ Object.defineProperty(exports, "EventChip", {
     return _EventChip.EventChip;
   }
 });
+Object.defineProperty(exports, "ExportDialog", {
+  enumerable: true,
+  get: function () {
+    return _ExportDialog.ExportDialog;
+  }
+});
 Object.defineProperty(exports, "FLOATING_PLACEMENTS", {
   enumerable: true,
   get: function () {
@@ -54235,6 +56085,12 @@ Object.defineProperty(exports, "FeatureCard", {
   enumerable: true,
   get: function () {
     return _FeatureCard.FeatureCard;
+  }
+});
+Object.defineProperty(exports, "FeatureIntro", {
+  enumerable: true,
+  get: function () {
+    return _FeatureIntro.FeatureIntro;
   }
 });
 Object.defineProperty(exports, "Field", {
@@ -54375,6 +56231,12 @@ Object.defineProperty(exports, "HeatMap", {
     return _HeatMap.HeatMap;
   }
 });
+Object.defineProperty(exports, "HelpPanel", {
+  enumerable: true,
+  get: function () {
+    return _HelpPanel.HelpPanel;
+  }
+});
 Object.defineProperty(exports, "Hide", {
   enumerable: true,
   get: function () {
@@ -54427,6 +56289,18 @@ Object.defineProperty(exports, "ImageUpload", {
   enumerable: true,
   get: function () {
     return _ImageUpload.ImageUpload;
+  }
+});
+Object.defineProperty(exports, "ImportDialog", {
+  enumerable: true,
+  get: function () {
+    return _ImportDialog.ImportDialog;
+  }
+});
+Object.defineProperty(exports, "ImportWizard", {
+  enumerable: true,
+  get: function () {
+    return _ImportWizard.ImportWizard;
   }
 });
 Object.defineProperty(exports, "Inline", {
@@ -54615,6 +56489,18 @@ Object.defineProperty(exports, "NumberInput", {
     return _NumberInput.NumberInput;
   }
 });
+Object.defineProperty(exports, "Offboarding", {
+  enumerable: true,
+  get: function () {
+    return _Offboarding.Offboarding;
+  }
+});
+Object.defineProperty(exports, "Onboarding", {
+  enumerable: true,
+  get: function () {
+    return _Onboarding.Onboarding;
+  }
+});
 Object.defineProperty(exports, "OtpInput", {
   enumerable: true,
   get: function () {
@@ -54673,6 +56559,12 @@ Object.defineProperty(exports, "PermissionSummary", {
   enumerable: true,
   get: function () {
     return _PermissionSummary.PermissionSummary;
+  }
+});
+Object.defineProperty(exports, "PermissionsEditor", {
+  enumerable: true,
+  get: function () {
+    return _PermissionsEditor.PermissionsEditor;
   }
 });
 Object.defineProperty(exports, "Persona", {
@@ -55029,10 +56921,22 @@ Object.defineProperty(exports, "SettingsSection", {
     return _SettingsLayout.SettingsSection;
   }
 });
+Object.defineProperty(exports, "ShareDialog", {
+  enumerable: true,
+  get: function () {
+    return _ShareDialog.ShareDialog;
+  }
+});
 Object.defineProperty(exports, "Sheet", {
   enumerable: true,
   get: function () {
     return _Sheet.Sheet;
+  }
+});
+Object.defineProperty(exports, "ShortcutsDialog", {
+  enumerable: true,
+  get: function () {
+    return _ShortcutsDialog.ShortcutsDialog;
   }
 });
 Object.defineProperty(exports, "Show", {
@@ -55293,6 +57197,12 @@ Object.defineProperty(exports, "Tooltip", {
     return _Tooltip.Tooltip;
   }
 });
+Object.defineProperty(exports, "Tour", {
+  enumerable: true,
+  get: function () {
+    return _Tour.Tour;
+  }
+});
 Object.defineProperty(exports, "TransferList", {
   enumerable: true,
   get: function () {
@@ -55315,6 +57225,12 @@ Object.defineProperty(exports, "Treemap", {
   enumerable: true,
   get: function () {
     return _Treemap.Treemap;
+  }
+});
+Object.defineProperty(exports, "TrialUpgrade", {
+  enumerable: true,
+  get: function () {
+    return _TrialUpgrade.TrialUpgrade;
   }
 });
 Object.defineProperty(exports, "UserCard", {
@@ -56615,6 +58531,20 @@ var _Auth = require("./patterns/Auth/Auth.jsx");
 var _SessionTimeout = require("./patterns/SessionTimeout/SessionTimeout.jsx");
 var _RoleManager = require("./patterns/RoleManager/RoleManager.jsx");
 var _ConnectedAccounts = require("./patterns/ConnectedAccounts/ConnectedAccounts.jsx");
+var _ShareDialog = require("./patterns/ShareDialog/ShareDialog.jsx");
+var _PermissionsEditor = require("./patterns/PermissionsEditor/PermissionsEditor.jsx");
+var _Tour = require("./patterns/Tour/Tour.jsx");
+var _Checklist = require("./components/Checklist/Checklist.jsx");
+var _Onboarding = require("./patterns/Onboarding/Onboarding.jsx");
+var _FeatureIntro = require("./patterns/FeatureIntro/FeatureIntro.jsx");
+var _HelpPanel = require("./patterns/HelpPanel/HelpPanel.jsx");
+var _ImportDialog = require("./patterns/ImportDialog/ImportDialog.jsx");
+var _ImportWizard = require("./patterns/ImportWizard/ImportWizard.jsx");
+var _ExportDialog = require("./patterns/ExportDialog/ExportDialog.jsx");
+var _AccessRequest = require("./patterns/AccessRequest/AccessRequest.jsx");
+var _TrialUpgrade = require("./patterns/TrialUpgrade/TrialUpgrade.jsx");
+var _Offboarding = require("./patterns/Offboarding/Offboarding.jsx");
+var _ShortcutsDialog = require("./patterns/ShortcutsDialog/ShortcutsDialog.jsx");
   } }
   };
   var cache = {};
