@@ -1,0 +1,23 @@
+/* Plenix · SingleQuickFilterMenu
+   Summary: A quick filter's single-choice radio group inside More.
+   Usage: <SingleQuickFilterMenu {...quickFilter} />
+   Props: label, options, value, required, onChange, counts and strings are the QuickFilter descriptor.
+   Behavior: Required choices omit All; radio changes preserve the collection's array shape.
+   Notes: The CommandBar folding task (#132) consumes this shared group. */
+import React from 'react';
+import { MenuRadioGroup, MenuItem } from '../../components/Menu/Menu.jsx';
+import { singleChoice } from './single-choice.js';
+import { Text } from '../../components/Text/Text.jsx';
+import { Inline } from '../../components/Stack/Stack.jsx';
+import { formatNumber } from '../../utils/format.js';
+export function SingleQuickFilterMenu({ label, options = [], value, required, onChange, counts, strings }) {
+  const chosen = singleChoice(options, value, required);
+  const items = options.map(option => typeof option === 'string' ? { value: option, label: option } : option);
+  if (!required) items.unshift({ value: '', label: strings && strings.all || 'All' });
+  return <MenuRadioGroup label={label} value={chosen.length ? chosen[0] : ''} onChange={v => onChange && onChange(v === '' ? [] : [v])}>
+    {items.map(option => {
+      const count = option.count !== undefined ? option.count : counts instanceof Map ? counts.get(option.value) || 0 : counts ? counts[option.value] || 0 : undefined;
+      return <MenuItem key={option.value} value={option.value}>{count === undefined ? option.label || option.value : <Inline as="span" gap="xs">{option.label || option.value}<Text variant="data">{formatNumber(count)}</Text></Inline>}</MenuItem>;
+    })}
+  </MenuRadioGroup>;
+}

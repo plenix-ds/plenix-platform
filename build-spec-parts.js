@@ -17,7 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const NAME = /^w\d{2}[A-Z]\.(records|labs|docs)\.js$|^w\d{2}[A-Z]\.css$/;
+const NAME = /^w(?:\d{2}[A-Z]|13[1-4])\.(records|labs|docs)\.js$|^w(?:\d{2}[A-Z]|13[1-4])\.css$/;
 
 module.exports = function buildSpecParts(root, { check = false } = {}) {
   const DS = path.join(root, 'platform', 'design-system');
@@ -26,7 +26,7 @@ module.exports = function buildSpecParts(root, { check = false } = {}) {
   if (!fs.existsSync(path.join(DS, 'spec.js'))) return { changed: false, parts: 0, skipped: true, stale: [] };
   const files = fs.existsSync(DIR) ? fs.readdirSync(DIR).filter((f) => !f.startsWith('.')).sort() : [];
   const bad = files.filter((f) => !NAME.test(f) && f !== 'README.md');
-  if (bad.length) throw new Error('platform/design-system/parts: not a part name (wNNL.records.js, .labs.js, .docs.js, .css): ' + bad.join(', '));
+  if (bad.length) throw new Error('platform/design-system/parts: not a part name (wNNL or w131–w134 with .records.js, .labs.js, .docs.js, .css): ' + bad.join(', '));
   const read = (f) => fs.readFileSync(path.join(DIR, f), 'utf8').replace(/\r\n/g, '\n').replace(/\s+$/, '') + '\n';
   const of = (kind) => files.filter((f) => f.endsWith('.' + kind + '.js'));
   const q = JSON.stringify;

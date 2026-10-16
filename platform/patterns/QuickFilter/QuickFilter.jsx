@@ -8,11 +8,13 @@
      <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
      <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
    Props:
-     kind: "list" (default) | "date"
+     kind: "list" (default) | "single" | "date"
+     required: (single) hides All and Clear; defaults an empty choice to the first option
+     Single choices use the same array value shape as list filters, with at most one entry.
      label: the button's words ("Category", "Type", "Tags", "Date")
      icon: its icon
      noun: (list) the word for one value, for the find field ("Find a tag")
-     options: (list) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
+     options: (list, single) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
      counts: optional Map (or object) from option value to faceted count; useCollectionView.quickProps supplies it
        An option's explicit count wins, including zero; without counts the existing labels remain unchanged
      value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
@@ -24,10 +26,11 @@
      The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
      The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
      range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
-     chosen.
+     chosen. A required single choice omits All and Clear.
    Notes:
      The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
 import React from 'react';
+import { singleChoice } from './single-choice.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Checkbox, RadioGroup } from '../../components/Checkbox/Checkbox.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -39,12 +42,16 @@ import { formatNumber } from '../../utils/format.js';
 import { PanelTrigger, Pill, toggle, fill } from '../CommandBar/panel-parts.jsx';
 import { DATE_PRESETS, CATEGORY_ORDER } from '../../utils/fields.js';
 
-const STRINGS = { find: 'Find a {noun}', none: 'No {noun} matches', clear: 'Clear', presets: DATE_PRESETS, custom: 'Custom range', from: 'From', to: 'To' };
+const STRINGS = { find: 'Find a {noun}', none: 'No {noun} matches', clear: 'Clear', all: 'All', presets: DATE_PRESETS, custom: 'Custom range', from: 'From', to: 'To' };
 const asOptions = (options) => (options || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
 
-export function QuickFilter({ kind = 'list', label, icon, noun = 'value', options, value, onChange, counts, inline = false, strings }) {
+export function QuickFilter({ kind = 'list', label, icon, noun = 'value', options, value, onChange, counts, required = false, inline = false, strings }) {
   const t = Object.assign({}, STRINGS, strings);
   const [q, setQ] = React.useState('');
+  const first = (options || [])[0], firstValue = typeof first === 'string' ? first : first && first.value;
+  React.useEffect(() => {
+    if (kind === 'single' && required && (!value || !value.length) && firstValue !== undefined && onChange) onChange([firstValue]);
+  }, [kind, required, value, firstValue, onChange]);
   const countOf = (o) => o.count !== undefined ? o.count : counts instanceof Map ? counts.get(o.value) || 0 : counts ? Object.prototype.hasOwnProperty.call(counts, o.value) ? counts[o.value] : 0 : undefined;
   const counted = (o, label) => { const n = countOf(o); return n === undefined || n === null ? label : <Inline as="span" gap="xs">{label}<Text variant="data">{formatNumber(n)}</Text></Inline>; };
   if (kind === 'date') {
@@ -64,7 +71,16 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
     const footer = <Button size="sm" variant="ghost" icon="filter-off" disabled={!on} onClick={() => onChange({ preset: 'any', from: '', to: '' })}>{t.clear}</Button>;
     return <PanelTrigger icon={icon || 'calendar'} label={label} title={label} count={on ? 1 : 0} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
   }
-  const list = asOptions(options), chosen = value || [];
+  const list = asOptions(options);
+  if (kind === 'single') {
+    const chosen = singleChoice(list, value, required);
+    const choices = list.map(o => ({ value: o.value, label: counted(o, <Pill color={o.color}>{o.label}</Pill>) }));
+    if (!required) choices.unshift({ value: '', label: t.all });
+    const body = <div className="plx-find-panel"><RadioGroup label={label} value={chosen.length ? chosen[0] : ''} options={choices} onChange={v => onChange(v === '' ? [] : [v])} /></div>;
+    const footer = required ? null : <Button size="sm" variant="ghost" icon="filter-off" disabled={!chosen.length} onClick={() => onChange([])}>{t.clear}</Button>;
+    return <PanelTrigger icon={icon} label={label} title={label} count={chosen.length} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
+  }
+  const chosen = value || [];
   const shown = list.filter((o) => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
   const body = (
     <div className="plx-find-panel plx-find-panel--checklist">
