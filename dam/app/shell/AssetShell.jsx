@@ -10,7 +10,7 @@
    recentSearches; the last five) and, while a query is typed, the matching assets; choosing an asset leaves the view
    (its history entry) and opens the asset in the search screen (#/search?q=…&asset=<id>). */
 import React from 'react';
-import { ActivityList, AppHeader, Icon, SearchField, SectionHeading, StatusDot, StatusBar, AppShell, Text, Thumbnail, navigate, screenHref, useViewState } from 'plenix-platform';
+import { ActivityList, AppHeader, Icon, SearchField, SectionHeading, StatusIcon, StatusBar, AppShell, Text, Thumbnail, navigate, screenHref, useViewState } from 'plenix-platform';
 import { FIND_EMPTY, findAssets } from '../pages/home/findAssets.js';
 
 // DATA: the library totals come from the back end; this is the sample record the pages show until then. Who is signed in
@@ -76,7 +76,7 @@ export function AssetHeader({ current, query = '', onSearch, onUpload }) {
 }
 
 export function AssetStatusBar() {
-  return <StatusBar start={<><StatusDot tone="success" label="Library online" /><span>{LIBRARY.summary}</span></>} end={LIBRARY.owner} />;
+  return <StatusBar start={<><StatusIcon tone="success" size="sm">Library online</StatusIcon><span>{LIBRARY.summary}</span></>} end={LIBRARY.owner} />;
 }
 
 export function AssetPage({ title, current, query, onSearch, onUpload, sideNav, panel, children }) {

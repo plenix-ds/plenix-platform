@@ -3,7 +3,7 @@
    entry: Back closes it; Platforms Standard 4.3). */
 import { EntityHeader, ActivityList, Button, Checkbox, Icon, Inline, PageContent, Panel, SidePanel, Stack, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
-import { ALL_TASKS, PriDot } from '../suite/shared.jsx';
+import { ALL_TASKS, Priority } from '../suite/shared.jsx';
 const { useState } = React;
 
 /* ─── Tasks ─────────────────────────────────────────────────────── */
@@ -23,7 +23,7 @@ export function TasksScreen({ screen }) {
           <Panel icon="circle-check" title="All tasks" flush>
             <ActivityList label="Tasks">{ALL_TASKS.map((t) => (
               <ActivityList.Item key={t.id} selected={sel === t.id} onOpen={() => setSel(sel === t.id ? null : t.id)}
-                leading={<Inline gap="xs" className="plx-u-relative plx-u-z-raised"><Checkbox aria-label={'Done: ' + t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /><PriDot pri={t.pri} /></Inline>}
+                leading={<Inline gap="xs" className="plx-u-relative plx-u-z-raised"><Checkbox aria-label={'Done: ' + t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /><Priority pri={t.pri} /></Inline>}
                 title={done[t.id] ? <Text variant="secondary"><s>{t.title}</s></Text> : t.title}
                 meta={t.proj} time={'Due ' + t.due} />
             ))}</ActivityList>

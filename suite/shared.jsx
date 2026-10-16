@@ -1,5 +1,5 @@
 /* Plenix suite · shared (suite/shared.jsx). Split out of app/plenix.jsx in batch 113; edit here. */
-import { Avatar, StatusDot } from 'plenix-platform';
+import { Avatar, StatusIcon, VisuallyHidden } from 'plenix-platform';
 const {useState,useRef,useEffect,useCallback}=React;
 
 
@@ -183,7 +183,9 @@ export const CARD={backgroundColor:"var(--plx-sys-surface-raised)",borderRadius:
 /* avatars: the Platform Avatar (rounded squares; corner and text size follow the size). Sizes snap to the scale. */
 export const AV_SIZES=[24,28,32,40,48,64];
 export const Av=({name,av,avColor,size=28})=>{const s=AV_SIZES.reduce((a,b)=>Math.abs(b-size)<Math.abs(a-size)?b:a);return <Avatar name={name} initials={av} size={s} color={avColor}/>;};
-export const PRI_TONE={high:"danger",med:"warning",low:"success"}, PRI_LABEL={high:"High priority",med:"Medium priority",low:"Low priority"};
-export const PriDot=({pri})=><StatusDot tone={PRI_TONE[pri]||"neutral"} label={PRI_LABEL[pri]}/>;
+// a status is never a dot (owner, 2026-10-14): priority is its icon and a short word; a project's status, in the tight nav
+// row, its icon with its name spoken
+export const PRI_TONE={high:"danger",med:"warning",low:"success"}, PRI_LABEL={high:"High priority",med:"Medium priority",low:"Low priority"}, PRI_WORD={high:"High",med:"Medium",low:"Low"};
+export const Priority=({pri})=><StatusIcon tone={PRI_TONE[pri]||"neutral"} size="sm">{PRI_WORD[pri]||pri}<VisuallyHidden> priority</VisuallyHidden></StatusIcon>;
 export const STATUS_TONE={active:"success",paused:"warning",completed:"neutral"};
-export const ProjStatusDot=({s})=><StatusDot tone={STATUS_TONE[s]||"neutral"} label={s}/>;
+export const ProjStatus=({s})=><StatusIcon tone={STATUS_TONE[s]||"neutral"} size="sm" label={"Status: "+s}/>;

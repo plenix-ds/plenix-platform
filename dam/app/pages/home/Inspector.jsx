@@ -7,7 +7,7 @@
    Each section collapses (General, Tags and Stats start open, as before). */
 import React from 'react';
 import {
-  Tabs, CollapsibleSection, Field, Input, Textarea, Select, Rating, Tag, TagList, TagInput, Button, PropertyList, Icon, EmptyState, ActivityList, StatusDot,
+  Tabs, CollapsibleSection, Field, Input, Textarea, Select, Rating, Tag, TagList, TagInput, Button, PropertyList, Icon, EmptyState, ActivityList, Badge,
   Stack, Inline, Text, Preview, ColorPicker,
 } from 'plenix-platform';
 import * as D from './homeData.js';
@@ -148,8 +148,8 @@ function AssetDetail({ asset, act, onDialog, onPreview }) {
         { value: 'versions', label: 'Versions', content: (
           <ActivityList label="Versions">
             {D.VERSIONS.map((v) => (
-              <ActivityList.Item key={v.label} leading={<StatusDot tone={v.current ? 'info' : 'neutral'} label={v.current ? 'Current version' : 'Earlier version'} />}
-                title={v.label} meta={v.date + ' · ' + v.user}
+              <ActivityList.Item key={v.label}
+                title={v.current ? <Inline gap="xs" wrap>{v.label}<Badge tone="info" icon="check">Current version</Badge></Inline> : v.label} meta={v.date + ' · ' + v.user}
                 actions={<><Button size="xs" variant="ghost" onClick={act('Download', 'info')}>Download</Button>{v.current ? null : <Button size="xs" variant="ghost" onClick={act('Restore', 'info')}>Restore</Button>}</>} />
             ))}
           </ActivityList>) },

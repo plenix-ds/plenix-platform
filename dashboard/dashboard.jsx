@@ -2,7 +2,7 @@
    batch 201: every widget is a Panel; the widgets sit in a WidgetGrid (drag a handle or use the arrow keys to reorder);
    rows are ActivityList items, RowButtons, Checkboxes and EventChips; project cards carry the project's color as their accent. */
 import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, WidgetGrid, useAppLayout, useSession } from 'plenix-platform';
-import { ALL_NOTES, ALL_TASKS, CONTACTS, EMAILS, EVENTS, PROJECTS, PriDot } from '../suite/shared.jsx';
+import { ALL_NOTES, ALL_TASKS, CONTACTS, EMAILS, EVENTS, PROJECTS, Priority } from '../suite/shared.jsx';
 const { useState, useEffect } = React;
 
 const allLink = (label, onClick) => <Button variant="ghost" size="xs" iconEnd="chevron-right" label={label} onClick={onClick}>All</Button>;
@@ -97,7 +97,7 @@ export function TasksWidget({ handle,  onViewAll, prefs }) {
     <Panel icon="circle-check" title="To do" actions={<Inline gap="xs"><Badge tone="waiting" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{pending.map((t) => (
         <Inline key={t.id} gap="sm" justify="between" align="baseline">
-          <Inline gap="xs">{showPri ? <PriDot pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
+          <Inline gap="xs">{showPri ? <Priority pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
           {showDue ? <Text variant="data">{t.due}</Text> : null}
         </Inline>
       ))}</Stack>

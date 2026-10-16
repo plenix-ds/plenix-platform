@@ -393,10 +393,10 @@ function AssetHeader({
 }
 function AssetStatusBar() {
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.StatusBar, {
-    start: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.StatusDot, {
+    start: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.StatusIcon, {
       tone: "success",
-      label: "Library online"
-    }), /*#__PURE__*/_react.default.createElement("span", null, LIBRARY.summary)),
+      size: "sm"
+    }, "Library online"), /*#__PURE__*/_react.default.createElement("span", null, LIBRARY.summary)),
     end: LIBRARY.owner
   });
 }
@@ -2829,11 +2829,13 @@ function AssetDetail({
         label: "Versions"
       }, D.VERSIONS.map(v => /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActivityList.Item, {
         key: v.label,
-        leading: /*#__PURE__*/_react.default.createElement(_plenixPlatform.StatusDot, {
-          tone: v.current ? 'info' : 'neutral',
-          label: v.current ? 'Current version' : 'Earlier version'
-        }),
-        title: v.label,
+        title: v.current ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
+          gap: "xs",
+          wrap: true
+        }, v.label, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
+          tone: "info",
+          icon: "check"
+        }, "Current version")) : v.label,
         meta: v.date + ' · ' + v.user,
         actions: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
           size: "xs",

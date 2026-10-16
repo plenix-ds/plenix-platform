@@ -1,6 +1,6 @@
 /* Plenix suite · leftnav (suite/leftnav.jsx). Split out of app/plenix.jsx in batch 113; edit here. */
 import { Button, NavList, NavPane } from 'plenix-platform';
-import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, Av, CALENDARS, CONTACTS, Ico, PROJECTS, ProjStatusDot, THREADS } from './shared.jsx';
+import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, Av, CALENDARS, CONTACTS, Ico, PROJECTS, ProjStatus, THREADS } from './shared.jsx';
 const {useState,useRef,useEffect,useCallback}=React;
 
 /* ─── Left Nav (contextual) ─────────────────────────────────────── */
@@ -12,7 +12,7 @@ export function LeftNav({section,sub,setSub,onSettings}){
   const by=(list,key,count)=>[...new Set(list.map(x=>x[key]))].map(v=>({id:v,label:v,count:count(v)}));
   const nav={
     projects:{label:"Projects",groups:[{heading:null,items:[{id:"all",label:"All projects",count:PROJECTS.length}]}].concat(Object.entries(groups).map(([tag,projs])=>({heading:tagLabels[tag]||tag,
-      items:projs.map(p=>({id:p.id,label:p.name,count:p.files,icon:<span className="plx-u-items-center plx-u-gap-x-4px plx-u-inline-flex"><Mark color={p.color}/>{p.status&&<ProjStatusDot s={p.status}/>}</span>}))})))},
+      items:projs.map(p=>({id:p.id,label:p.name,count:p.files,icon:<span className="plx-u-items-center plx-u-gap-x-4px plx-u-inline-flex"><Mark color={p.color}/>{p.status&&<ProjStatus s={p.status}/>}</span>}))})))},
     messaging:{label:"Messages",groups:[{heading:null,items:[{id:"all",label:"All messages"}]},{heading:"Channels",items:[{id:"sms",label:"SMS"},{id:"whatsapp",label:"WhatsApp"},{id:"email",label:"Email"}]},
       {heading:"Threads",items:THREADS.map(t=>({id:`t-${t.id}`,label:t.name,count:t.unread>0?t.unread:undefined,icon:<Av name={t.name} avColor={t.avColor} size={22}/>}))}]},
     contacts:{label:"Contacts",groups:[{heading:null,items:[{id:"all",label:"All contacts",count:CONTACTS.length}]},{heading:"Groups",items:[{id:"clients",label:"Clients",count:2},{id:"contractors",label:"Contractors",count:2},{id:"professional",label:"Professional"},{id:"personal",label:"Personal"}]}]},

@@ -9,7 +9,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.THREADS = exports.SolidIco = exports.STATUS_TONE = exports.SOLID = exports.ProjStatusDot = exports.PriDot = exports.PROJECTS = exports.PRI_TONE = exports.PRI_LABEL = exports.P = exports.MSGS = exports.Ico = exports.EVENTS = exports.EMAILS = exports.CONTACTS = exports.CARD = exports.CAPTURES = exports.CAL_EVENTS = exports.CALENDARS = exports.Av = exports.AV_SIZES = exports.ALL_TASKS = exports.ALL_NOTES = exports.ALL_FILES = exports.ALL_BOOKMARKS = void 0;
+exports.THREADS = exports.SolidIco = exports.STATUS_TONE = exports.SOLID = exports.ProjStatus = exports.Priority = exports.PROJECTS = exports.PRI_WORD = exports.PRI_TONE = exports.PRI_LABEL = exports.P = exports.MSGS = exports.Ico = exports.EVENTS = exports.EMAILS = exports.CONTACTS = exports.CARD = exports.CAPTURES = exports.CAL_EVENTS = exports.CALENDARS = exports.Av = exports.AV_SIZES = exports.ALL_TASKS = exports.ALL_NOTES = exports.ALL_FILES = exports.ALL_BOOKMARKS = void 0;
 exports.aiFileName = aiFileName;
 exports.aiSearch = aiSearch;
 exports.callClaude = callClaude;
@@ -773,6 +773,8 @@ const Av = ({
     color: avColor
   });
 };
+// a status is never a dot (owner, 2026-10-14): priority is its icon and a short word; a project's status, in the tight nav
+// row, its icon with its name spoken
 exports.Av = Av;
 const PRI_TONE = exports.PRI_TONE = {
     high: "danger",
@@ -783,26 +785,32 @@ const PRI_TONE = exports.PRI_TONE = {
     high: "High priority",
     med: "Medium priority",
     low: "Low priority"
+  },
+  PRI_WORD = exports.PRI_WORD = {
+    high: "High",
+    med: "Medium",
+    low: "Low"
   };
-const PriDot = ({
+const Priority = ({
   pri
-}) => /*#__PURE__*/React.createElement(_plenixPlatform.StatusDot, {
+}) => /*#__PURE__*/React.createElement(_plenixPlatform.StatusIcon, {
   tone: PRI_TONE[pri] || "neutral",
-  label: PRI_LABEL[pri]
-});
-exports.PriDot = PriDot;
+  size: "sm"
+}, PRI_WORD[pri] || pri, /*#__PURE__*/React.createElement(_plenixPlatform.VisuallyHidden, null, " priority"));
+exports.Priority = Priority;
 const STATUS_TONE = exports.STATUS_TONE = {
   active: "success",
   paused: "warning",
   completed: "neutral"
 };
-const ProjStatusDot = ({
+const ProjStatus = ({
   s
-}) => /*#__PURE__*/React.createElement(_plenixPlatform.StatusDot, {
+}) => /*#__PURE__*/React.createElement(_plenixPlatform.StatusIcon, {
   tone: STATUS_TONE[s] || "neutral",
-  label: s
+  size: "sm",
+  label: "Status: " + s
 });
-exports.ProjStatusDot = ProjStatusDot;
+exports.ProjStatus = ProjStatus;
   } },
   "suite/capture.jsx": { deps: {"plenix-platform":null,"./shared.jsx":"suite/shared.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 Object.defineProperty(exports, "__esModule", {
@@ -1028,7 +1036,7 @@ function LeftNav({
             className: "plx-u-items-center plx-u-gap-x-4px plx-u-inline-flex"
           }, /*#__PURE__*/React.createElement(Mark, {
             color: p.color
-          }), p.status && /*#__PURE__*/React.createElement(_shared.ProjStatusDot, {
+          }), p.status && /*#__PURE__*/React.createElement(_shared.ProjStatus, {
             s: p.status
           }))
         }))
@@ -2507,7 +2515,7 @@ function TasksScreen({
         ...d,
         [t.id]: !d[t.id]
       }))
-    }), /*#__PURE__*/React.createElement(_shared.PriDot, {
+    }), /*#__PURE__*/React.createElement(_shared.Priority, {
       pri: t.pri
     })),
     title: done[t.id] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
