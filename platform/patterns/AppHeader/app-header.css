@@ -36,12 +36,11 @@
 .plx-app-header__search-slot{display:flex;position:relative;}
 .plx-app-header__search{align-items:center;background-color:var(--plx-comp-app-header-surface);column-gap:var(--plx-comp-app-header-search-gap);display:flex;inline-size:var(--plx-comp-app-header-search-width);inset-block-end:0;inset-block-start:0;inset-inline-end:0;position:absolute;z-index:var(--plx-comp-app-header-search-z-index);}
 .plx-app-header__search>.plx-search{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
-/* below Wide (under 840px, --plx-sys-shell-rail-below): the pinned links leave the header (the switcher in the header name has them); search spans the bar */
-@media (width < 840px){
-.plx-app-header__nav,.plx-app-header__nav+.plx-app-header__divider,.plx-app-header__start>.plx-app-header__divider{display:none;}
-.plx-app-header__search-slot{position:static;}
-.plx-app-header__search{inline-size:auto;inset-inline-end:var(--plx-comp-app-header-search-inset-inline-end);inset-inline-start:var(--plx-comp-app-header-search-inset-inline-start);}
-}
+/* a header narrower than Wide (under 840px, --plx-sys-shell-rail-below; AppHeader measures its own width, owner 2026-10-15,
+   GitHub #27): the pinned links leave the header (the switcher in the header name has them); search spans the bar */
+.plx-app-header--compact .plx-app-header__nav,.plx-app-header--compact .plx-app-header__nav+.plx-app-header__divider,.plx-app-header--compact .plx-app-header__start>.plx-app-header__divider{display:none;}
+.plx-app-header--compact .plx-app-header__search-slot{position:static;}
+.plx-app-header--compact .plx-app-header__search{inline-size:auto;inset-inline-end:var(--plx-comp-app-header-search-inset-inline-end);inset-inline-start:var(--plx-comp-app-header-search-inset-inline-start);}
 /* the switcher: every application, pinned first; a grid of icons and names */
 .plx-app-switcher{display:flex;position:relative;}
 /* the panel is a menu surface (the owner, batch 230): the Menu's border, corners and shadow; a real border, so the tiles

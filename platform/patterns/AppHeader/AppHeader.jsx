@@ -73,7 +73,9 @@
      row with no scrolling; pin or unpin from there.
      The switcher is a dialog: it focuses its first link, and Escape, a click outside or focus leaving it closes it.
      The header links are the applications the person pinned (from the switcher), as icon links with tooltips; the current one is marked.
-     On a phone the header links leave the header; the switcher in the header name still has them.
+     When the header itself is narrower than Wide (under 840px, --plx-sys-shell-rail-below) the header links leave it and
+       search spans the bar; the switcher in the header name still has them. The header measures its own width, not the
+       screen's, so it behaves the same in a full window, a split view or a panel (owner, 2026-10-15, GitHub #27).
      The end is right-aligned: search always first and furthest left, then the application's action, then the utilities with no gaps.
      Search is an icon until asked for, then a field that opens to its left without moving any other icon.
      Ctrl K (Cmd K) opens search from anywhere on the page; Escape closes it.
@@ -108,7 +110,7 @@ import { useSession } from '../../providers/SessionProvider.jsx';
 import { PLENIX_APPS, appById, appHref } from '../../providers/apps.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { useDensity } from '../../hooks/useDensity.js';
-import { useMedia, below } from '../AppShell/AppShell.jsx';
+import { useMedia, below, tokenPx } from '../AppShell/AppShell.jsx';
 
 export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel = 'Pinned applications',
   action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, back, title, className, ...rest }) {
@@ -118,6 +120,18 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
   const refocus = React.useRef(false);
   const searchId = useUid('plx-header-search');
   const narrow = useMedia(below('--plx-sys-shell-phone-below'));
+  // the header's own width decides whether its links fit (measured before paint, so nothing jumps)
+  const root = React.useRef(null);
+  const [compact, setCompact] = React.useState(false);
+  React.useLayoutEffect(() => {
+    const el = root.current, limit = tokenPx('--plx-sys-shell-rail-below');
+    if (!el || !limit) return undefined;
+    const fit = () => setCompact(el.getBoundingClientRect().width < limit);
+    fit();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(fit); ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const fullScreen = narrow && searching;   // at Narrow the search view fills the screen
   const close = () => { refocus.current = true; setSearching(false); };
   // the full-screen view is a history entry: the browser's Back closes it; Cancel and Escape go back along it
@@ -186,7 +200,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
     document.body,
   ) : null;
   return (
-    <header className={cx('plx-app-header', 'plx-app-header--' + tone, searching && 'is-searching', className)} {...rest}>
+    <header ref={root} className={cx('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)} {...rest}>
       <div className="plx-app-header__start">
         {back ? <AppHeader.Item icon={<Icon name="arrow-left" />} label={back.label || 'Back'} href={back.href} onClick={back.onClick} className="plx-app-header__back" /> : null}
         {title ? <span className="plx-app-header__brand plx-app-header__title">{title}</span>

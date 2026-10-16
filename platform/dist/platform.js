@@ -17202,7 +17202,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      row with no scrolling; pin or unpin from there.
      The switcher is a dialog: it focuses its first link, and Escape, a click outside or focus leaving it closes it.
      The header links are the applications the person pinned (from the switcher), as icon links with tooltips; the current one is marked.
-     On a phone the header links leave the header; the switcher in the header name still has them.
+     When the header itself is narrower than Wide (under 840px, --plx-sys-shell-rail-below) the header links leave it and
+       search spans the bar; the switcher in the header name still has them. The header measures its own width, not the
+       screen's, so it behaves the same in a full window, a split view or a panel (owner, 2026-10-15, GitHub #27).
      The end is right-aligned: search always first and furthest left, then the application's action, then the utilities with no gaps.
      Search is an icon until asked for, then a field that opens to its left without moving any other icon.
      Ctrl K (Cmd K) opens search from anywhere on the page; Escape closes it.
@@ -17255,6 +17257,20 @@ function AppHeader({
   const refocus = _react.default.useRef(false);
   const searchId = (0, _layer.useUid)('plx-header-search');
   const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
+  // the header's own width decides whether its links fit (measured before paint, so nothing jumps)
+  const root = _react.default.useRef(null);
+  const [compact, setCompact] = _react.default.useState(false);
+  _react.default.useLayoutEffect(() => {
+    const el = root.current,
+      limit = (0, _AppShell.tokenPx)('--plx-sys-shell-rail-below');
+    if (!el || !limit) return undefined;
+    const fit = () => setCompact(el.getBoundingClientRect().width < limit);
+    fit();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const fullScreen = narrow && searching; // at Narrow the search view fills the screen
   const close = () => {
     refocus.current = true;
@@ -17378,7 +17394,8 @@ function AppHeader({
     as: "p"
   }, "Type what you are looking for, then press Enter.") : null)), document.body) : null;
   return /*#__PURE__*/_react.default.createElement("header", _extends({
-    className: (0, _cx.cx)('plx-app-header', 'plx-app-header--' + tone, searching && 'is-searching', className)
+    ref: root,
+    className: (0, _cx.cx)('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-header__start"
   }, back ? /*#__PURE__*/_react.default.createElement(AppHeader.Item, {

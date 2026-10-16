@@ -141,7 +141,10 @@ function Splitter() {
   }, /*#__PURE__*/React.createElement(Text, {
     as: "h2",
     variant: "title"
-  }, "1. The pane's size menu with touch"), /*#__PURE__*/React.createElement(Text, {
+  }, "1. The pane's size menu with touch"), /*#__PURE__*/React.createElement(Badge, {
+    tone: "neutral",
+    icon: "close"
+  }, "Decided: no change (owner, 2026-10-15: resizing a pane by touch is not common)"), /*#__PURE__*/React.createElement(Text, {
     as: "p"
   }, "A pane's width can be changed without dragging, from a small menu: Narrower, Wider, Reset width, Collapse. With a mouse its button shows on hover; with touch there is no hover, so it must always show. Each frame below is a tablet with touch (48px targets). Tap the buttons: the menus work.")), /*#__PURE__*/React.createElement(Option, {
     letter: "Today",
@@ -248,7 +251,10 @@ function HeaderCollapse() {
   }, /*#__PURE__*/React.createElement(Text, {
     as: "h2",
     variant: "title"
-  }, "2. The AppHeader's links in a narrow header"), /*#__PURE__*/React.createElement(Text, {
+  }, "2. The AppHeader's links in a narrow header"), /*#__PURE__*/React.createElement(Badge, {
+    tone: "success",
+    icon: "check"
+  }, "Decided: B, built (owner, 2026-10-15). The header now measures its own width, so both rows below show B."), /*#__PURE__*/React.createElement(Text, {
     as: "p"
   }, "Below 840px the header hides its pinned-app links (the app switcher in the header name still has them) and lets the search span the bar. Today it checks the screen's width. When the header is narrower than the screen (a split view, an embedded page), the links stay and crowd the bar. These frames are on this wide screen, so they show exactly that.")), /*#__PURE__*/React.createElement(Option, {
     letter: "A",
