@@ -1,0 +1,10 @@
+{
+  "$description": "PromptSuggestions composition spacing.",
+  "plx-comp": {
+    "prompt-suggestions-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between PromptSuggestions regions."
+    }
+  }
+}

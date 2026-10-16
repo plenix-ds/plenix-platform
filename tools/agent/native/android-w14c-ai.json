@@ -1,0 +1,420 @@
+{
+  "android-actions|Button": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "AIButton: Trigger",
+        "web": "specialized|AI trigger",
+        "use": "Request a clearly named AI action, never automatic generation.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "AIButton: With menu of AI actions",
+        "web": "specialized|AI trigger",
+        "use": "Request a clearly named AI action, never automatic generation.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "AIButton: Icon only",
+        "web": "specialized|AI trigger",
+        "use": "Request a clearly named AI action, never automatic generation.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "PromptSuggestions: Chips",
+        "web": "specialized|Prompt suggestions",
+        "use": "Offer optional prompt choices with explicit selection.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "PromptSuggestions: Cards",
+        "web": "specialized|Prompt suggestions",
+        "use": "Offer optional prompt choices with explicit selection.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+        "views": "Use the existing Plenix spacing role between native controls."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "    Text(model.reviewNotice)",
+        "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "noticeView.text = model.reviewNotice",
+        "actionButton.setOnClickListener { model.requestAction() }"
+      ]
+    }
+  },
+  "android-content|Text roles": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "AIDisclaimer: Footer",
+        "web": "specialized|AI disclaimer",
+        "use": "Remind people to check AI content and provide an optional policy link.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "AIDisclaimer: Inline",
+        "web": "specialized|AI disclaimer",
+        "use": "Remind people to check AI content and provide an optional policy link.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+        "views": "Use the existing Plenix spacing role between native controls."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "    Text(model.reviewNotice)",
+        "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "noticeView.text = model.reviewNotice",
+        "actionButton.setOnClickListener { model.requestAction() }"
+      ]
+    }
+  },
+  "android-content|Badge": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "ConfidenceIndicator: High",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "ConfidenceIndicator: Medium",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "ConfidenceIndicator: Low",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "ConfidenceIndicator: Numeric",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+        "views": "Use the existing Plenix spacing role between native controls."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "    Text(model.reviewNotice)",
+        "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "noticeView.text = model.reviewNotice",
+        "actionButton.setOnClickListener { model.requestAction() }"
+      ]
+    }
+  },
+  "android-overlays|Consistent help": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "AIExplanation: Why this",
+        "web": "specialized|AI explainability",
+        "use": "Explain a recommendation with caller supplied reasons on request.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "AIExplanation: Factors",
+        "web": "specialized|AI explainability",
+        "use": "Explain a recommendation with caller supplied reasons on request.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+        "views": "Use the existing Plenix spacing role between native controls."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "    Text(model.reviewNotice)",
+        "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "noticeView.text = model.reviewNotice",
+        "actionButton.setOnClickListener { model.requestAction() }"
+      ]
+    }
+  },
+  "android-feedback|Progress indicators": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "Chat.Typing: Thinking",
+        "web": "specialized|Thinking / processing state",
+        "use": "Communicate active work and caller supplied progress steps without invented completion.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "Chat.Typing: With steps",
+        "web": "specialized|Thinking / processing state",
+        "use": "Communicate active work and caller supplied progress steps without invented completion.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+        "views": "Use the existing Plenix spacing role between native controls."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "    Text(model.reviewNotice)",
+        "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "noticeView.text = model.reviewNotice",
+        "actionButton.setOnClickListener { model.requestAction() }"
+      ]
+    }
+  },
+  "android-patterns|Confirmation": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "SuggestedEdit: Inline diff",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "SuggestedEdit: Accept",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "SuggestedEdit: Reject",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "SuggestedEdit: Accept all",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+        "views": "Use the existing Plenix spacing role between native controls."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "    Text(model.reviewNotice)",
+        "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "noticeView.text = model.reviewNotice",
+        "actionButton.setOnClickListener { model.requestAction() }"
+      ]
+    }
+  },
+  "android-actions|Menu": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "RefineMenu: Shorter",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "RefineMenu: Longer",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "RefineMenu: Tone",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      },
+      {
+        "name": "RefineMenu: Custom prompt",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+        "views": "Use the existing Plenix spacing role between native controls."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "    Text(model.reviewNotice)",
+        "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "noticeView.text = model.reviewNotice",
+        "actionButton.setOnClickListener { model.requestAction() }"
+      ]
+    }
+  }
+}

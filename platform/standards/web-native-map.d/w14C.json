@@ -1,0 +1,85 @@
+{
+  "$description": "Explicit AI interactions use Generative AI guidance on iOS and existing Android actions, content and feedback primitives.",
+  "map": {
+    "specialized|AI trigger": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-actions|Button"
+      ]
+    },
+    "specialized|AI disclaimer": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "specialized|Confidence / uncertainty": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-content|Badge"
+      ]
+    },
+    "specialized|AI explainability": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-overlays|Consistent help"
+      ]
+    },
+    "specialized|Prompt suggestions": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-actions|Button"
+      ]
+    },
+    "specialized|Thinking / processing state": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-feedback|Progress indicators"
+      ]
+    },
+    "specialized|Suggested edit": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-patterns|Confirmation"
+      ]
+    },
+    "specialized|Refine": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-actions|Menu"
+      ]
+    },
+    "specialized|AI action": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-actions|Button"
+      ]
+    },
+    "specialized|Accept / reject suggestion": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-patterns|Confirmation"
+      ]
+    }
+  }
+}

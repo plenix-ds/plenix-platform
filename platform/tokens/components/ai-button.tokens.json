@@ -1,0 +1,10 @@
+{
+  "$description": "AIButton composition spacing.",
+  "plx-comp": {
+    "ai-button-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between AIButton regions."
+    }
+  }
+}

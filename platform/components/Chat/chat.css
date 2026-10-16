@@ -22,3 +22,7 @@
 .plx-chat__field{flex-basis:0%;flex-grow:1;min-inline-size:0;resize:none;}
 /* the thread scrolls and is in the Tab order: the focus ring, as every control (batch 215) */
 .plx-chat__thread:focus-visible{outline-color:var(--plx-comp-chat-thread-focus-outline-color);outline-offset:var(--plx-comp-chat-thread-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-chat-thread-focus-outline-width);}
+
+/* Thinking reuses existing loading motion and typing spacing roles. */
+.plx-chat__thinking { display: flex; flex-direction: column; gap: var(--plx-comp-chat-typing-gap); }
+.plx-chat__thinking-label { display: inline-flex; align-items: center; gap: var(--plx-comp-chat-typing-gap); }

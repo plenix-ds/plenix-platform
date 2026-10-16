@@ -1,0 +1,10 @@
+{
+  "$description": "ConfidenceIndicator composition spacing.",
+  "plx-comp": {
+    "confidence-indicator-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between ConfidenceIndicator regions."
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$description": "SuggestedEdit composition spacing.",
+  "plx-comp": {
+    "suggested-edit-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between SuggestedEdit regions."
+    }
+  }
+}

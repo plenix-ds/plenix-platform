@@ -1,0 +1,10 @@
+{
+  "$description": "AIExplanation composition spacing.",
+  "plx-comp": {
+    "ai-explanation-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between AIExplanation regions."
+    }
+  }
+}

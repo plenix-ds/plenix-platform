@@ -1,0 +1,10 @@
+{
+  "$description": "AIDisclaimer composition spacing.",
+  "plx-comp": {
+    "ai-disclaimer-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between AIDisclaimer regions."
+    }
+  }
+}
