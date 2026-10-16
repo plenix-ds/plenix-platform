@@ -53,7 +53,7 @@
      MediaCard.title: the asset name; with onOpen or href it is the tile's link or button
      MediaCard.meta: technical data (size, type, date)
      MediaCard.badge: a badge over the media
-     MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
+     MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9" | "9/16" | "3/4"
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
      MediaCard.onSelectChange(checked): runs when the selection box changes, or when the card is clicked anywhere but its
