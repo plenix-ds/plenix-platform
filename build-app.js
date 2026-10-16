@@ -91,7 +91,7 @@ function bundle(target) {
     const source = fs.readFileSync(file, 'utf8');
     let code;
     try {
-      code = Babel.transform(source, {
+      code = Babel.transform(file.includes(path.sep + 'node_modules' + path.sep) ? source.replace(/\bprocess\.env\.NODE_ENV\b/g, "'production'") : source, {
         filename: file, sourceType: 'module', comments: true,
         presets: [['react', { runtime: 'classic' }]],
         plugins: [['transform-modules-commonjs', { strictMode: target.strict }]],
@@ -110,7 +110,11 @@ function bundle(target) {
         entry.deps[spec] = { external: EXTERNALS[spec] };
         continue;
       }
-      if (!spec.startsWith('.')) throw new BuildError(`${target.name}: unknown package "${spec}" in ${rel(file)} (only react, react-dom and plenix-platform are available)`);
+      if (!spec.startsWith('.')) {
+        if (!/^@tanstack\/(react-table|table-core|react-virtual|virtual-core)$/.test(spec)) throw new BuildError('Unapproved browser package ' + spec + ' in ' + rel(file));
+        const dep = require.resolve(spec, { paths: [path.dirname(file)] });
+        entry.deps[spec] = { id: rel(dep) }; visit(dep); continue;
+      }
       const dep = resolveFile(file, spec);
       entry.deps[spec] = { id: rel(dep) };
       visit(dep);

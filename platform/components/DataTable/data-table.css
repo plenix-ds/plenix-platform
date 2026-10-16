@@ -303,7 +303,8 @@
 /* a virtual grid (a grid with a height): every row is the density's row height and its line, and the rows not drawn are
    gaps of the same rows (system/virtual.css: --plx-sys-virtual-item-size plus --plx-sys-virtual-item-gap per row) */
 .plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-tableholder .tabulator-table{--plx-sys-virtual-item-gap:var(--plx-comp-data-table-line-width);--plx-sys-virtual-item-size:var(--plx-comp-data-table-record-height);}
-.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs){block-size:calc(var(--plx-comp-data-table-record-height) + var(--plx-comp-data-table-line-width));overflow:hidden;}
+/* Clip row content without creating a row-local scroll container: frozen cells stick to the table holder. */
+.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs){block-size:calc(var(--plx-comp-data-table-record-height) + var(--plx-comp-data-table-line-width));overflow:clip;}
 .plx-data-table .tabulator .tabulator-tableholder .tabulator-table>.plx-data-table__gap{margin-block-end:0;}
 /* printing: the whole grid, every row (a virtual grid draws them all while the page prints) */
 @media print{

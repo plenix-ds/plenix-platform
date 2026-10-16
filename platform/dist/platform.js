@@ -15678,277 +15678,7 @@ function MultiTable(props) {
   }));
 }
   } },
-  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.VIRTUAL_STICKY_CLASS = void 0;
-exports.VirtualGap = VirtualGap;
-exports.VirtualProbe = VirtualProbe;
-exports.gapPieces = gapPieces;
-exports.useVirtualizer = useVirtualizer;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useVirtualizer
-   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
-     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
-     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
-   Usage:
-     const v = useVirtualizer({ count: files.length });
-     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
-       <VirtualProbe />
-       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
-         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
-     </div>
-     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-table-row-height); overflow-y: auto; }
-   Props:
-     count: how many items there are
-     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
-       size; the token is the estimate for the items not rendered)
-     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
-     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
-     overscan: rows rendered beyond each edge of the view (default 4)
-     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
-     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
-     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
-       grid) not rendered
-     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
-     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
-       first in the viewport)
-   Behavior:
-     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
-     name it (aria-label) and give it its role (list, grid, listbox).
-     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
-     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
-     scroll anchoring keeps the content still while gaps replace items of another size.
-     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
-     "12 of 4,000" even though only a few are in the page.
-   Notes:
-     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
-     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
-     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
-     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
-*/
-
-const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
-
-// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
-function gapPieces(count) {
-  const out = [];
-  let n = Math.max(0, Math.floor(count));
-  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
-    out.push(p);
-    n -= p;
-  }
-  return out;
-}
-function VirtualGap({
-  count,
-  axis = 'y'
-}) {
-  if (!count) return null;
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-gap',
-    'data-plx-axis': axis,
-    'aria-hidden': 'true'
-  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
-    key: i,
-    className: 'plx-virtual-gap__piece',
-    'data-plx-span': String(p)
-  })));
-}
-function VirtualProbe({
-  axis = 'y'
-}) {
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-probe',
-    'data-plx-axis': axis,
-    'data-plx-virtual-probe': '',
-    'aria-hidden': 'true'
-  });
-}
-function useVirtualizer({
-  count = 0,
-  mode = 'fixed',
-  axis = 'y',
-  grid = false,
-  overscan = 4,
-  sticky
-} = {}) {
-  const viewportRef = _react.default.useRef(null);
-  const [view, setView] = _react.default.useState({
-    offset: 0,
-    size: 0,
-    pitch: 0,
-    columns: 1
-  });
-  const [focused, setFocused] = _react.default.useState(-1);
-  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
-  const shown = _react.default.useRef({
-    start: 0,
-    end: 0
-  }); // the rows rendered last
-  const horizontal = axis === 'x';
-
-  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
-  const measure = _react.default.useCallback(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
-    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
-    let columns = 1;
-    if (grid) {
-      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
-      if (items.length) {
-        const top = items[0].offsetTop;
-        let n = 0;
-        while (n < items.length && items[n].offsetTop === top) n++;
-        // no wrap seen while more items exist: guess wider, render more and look again
-        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
-      }
-    }
-    if (mode === 'measured') {
-      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
-        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
-      });
-    }
-    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
-    const size = horizontal ? el.clientWidth : el.clientHeight;
-    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
-      offset,
-      size,
-      pitch,
-      columns
-    });
-  }, [horizontal, grid, mode, count, view.columns]);
-  _react.default.useLayoutEffect(() => {
-    measure();
-  });
-  _react.default.useEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return undefined;
-    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
-    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
-    const onScroll = () => measure();
-    const onFocus = e => {
-      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
-      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
-    };
-    const onBlur = e => {
-      if (!el.contains(e.relatedTarget)) setFocused(-1);
-    };
-    el.addEventListener('scroll', onScroll, {
-      passive: true
-    });
-    el.addEventListener('focusin', onFocus);
-    el.addEventListener('focusout', onBlur);
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
-    if (ro) ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', onScroll);
-      el.removeEventListener('focusin', onFocus);
-      el.removeEventListener('focusout', onBlur);
-      if (ro) ro.disconnect();
-    };
-  }, [measure]);
-  const columns = grid ? Math.max(1, view.columns) : 1;
-  const rows = Math.ceil(count / columns);
-  const pitch = view.pitch || 1;
-  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
-  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
-  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
-  let first;
-  const last = shown.current;
-  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
-    let pos = last.start * pitch,
-      i = last.start;
-    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
-      pos += sizes.current.get(i) || pitch;
-      i++;
-    }
-    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
-    first = Math.min(rows, i);
-  } else first = Math.min(rows, Math.floor(view.offset / pitch));
-  let fill = 0,
-    covered = 0;
-  const target = view.size || pitch * 10;
-  while (first + fill < rows && covered < target) {
-    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
-    fill++;
-  }
-  const startRow = Math.max(0, first - overscan);
-  const endRow = Math.min(rows, first + fill + overscan); // exclusive
-  const start = startRow * columns,
-    end = Math.min(count, endRow * columns);
-  shown.current = {
-    start: startRow,
-    end: endRow
-  };
-
-  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
-  const pinned = [];
-  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
-  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
-  if (header !== undefined && !grid) pinned.push(header);
-  const segments = [];
-  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
-  let at = 0;
-  const pushRows = (from, to) => {
-    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
-      key: 'i' + i,
-      index: i
-    });
-  };
-  const pushGap = (from, to) => {
-    if (to > from) segments.push({
-      key: 'g' + from,
-      gap: true,
-      count: to - from
-    });
-  };
-  rowsOut.filter(r => r < startRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, startRow);
-  pushRows(startRow, endRow);
-  at = endRow;
-  rowsOut.filter(r => r >= endRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, rows);
-  const itemProps = _react.default.useCallback(index => ({
-    'data-plx-virtual-index': index,
-    'aria-posinset': index + 1,
-    'aria-setsize': count
-  }), [count]);
-  const scrollToIndex = _react.default.useCallback(index => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const offset = Math.floor(index / columns) * pitch;
-    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
-    measure();
-  }, [columns, pitch, horizontal, measure]);
-  return {
-    viewportRef,
-    segments,
-    itemProps,
-    scrollToIndex,
-    range: {
-      start,
-      end
-    },
-    columns
-  };
-}
-  } },
-  "platform/components/DataTable/strict.js": { deps: {"../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/DataTable/strict.js": { deps: {"../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15959,65 +15689,16 @@ exports.groupLayout = groupLayout;
 exports.remeasure = remeasure;
 exports.reshare = reshare;
 exports.strictTabulator = strictTabulator;
+exports.syncGeometry = syncGeometry;
 exports.virtualPrint = virtualPrint;
-exports.virtualResync = virtualResync;
 var _sizeSteps = require("../../utils/sizeSteps.js");
-var _useVirtualizer = require("../../hooks/useVirtualizer.js");
 var _grid = require("../../utils/grid.js");
-/* Plenix · DataTable strict mode (strict.js)
-   Summary: Tabulator drawn by Plenix (Strict DS 6b, batch 285; geometry split, owner 2026-10-13): Tabulator keeps its
-     data, sorting, filtering, selection, editing, grouping and tree, measures the columns' content and sizes and resizes
-     the columns; Plenix owns everything else. Tabulator writes a column's width (width, min-width, max-width on its
-     column, header and cell elements: a JavaScript adjustment from measured layout); every other geometry write it makes
-     (row heights, padding, positions) is switched off here, once per window, and the Plenix stylesheet draws the grid from
-     classes and tokens.
-   Usage:
-     strictTabulator(Tabulator, win)   // loadTabulator does it before the first grid is built
-     virtualResync(table)              // a density or row height change: the virtual renderer takes the new heights
-     virtualPrint(table, true|false)   // before / after printing: every row in the document, then the window again
-     groupLayout(table)                // a grouped grid's rows: their flags and offsets (prefix sums of the tokens)
-     groupAt(table, top)               // the display row at a scroll position, from the tokens' heights
-     remeasure(table, columns)         // React filled these columns' cells, or the density changed: their content
-                                       // widths are measured again
-   Props:
-     none: strictTabulator(Tabulator, win) patches that window's Tabulator once
-   Behavior:
-     Column widths (Tabulator's): the "plenix" layout mode measures each column's content once (Tabulator's fit to data;
-       a width the column definition gives, or the person's, is kept), then shares the room left among the columns
-       without a width, as the stylesheet's fill columns did; a window resize only shares the room again. A density
-       change measures the columns' content once more (DataTable calls remeasure for every column, once per change;
-       never a row), so a bigger density never cuts text off (owner, 2026-10-14). Every width
-       Tabulator writes is a whole number of grid steps (utils/grid.js: measured, fitted and dragged widths round up),
-       so what JavaScript writes inline stays on the Plenix grid (owner, 2026-10-13).
-     Row height and cell padding (Plenix's): never measured, never written. A record row is the grid's row height step
-       (--plx-comp-data-table-record-height: Short is the density's row height; Medium, Tall and Extra tall are fixed
-       tokens) plus its line; the stylesheet draws it.
-     Virtual rendering (renderVertical "virtual": a grid with a room, its height or the room fill and load-more measure):
-       Tabulator renders the rows in view; every row counts as its kind's height, read from the tokens (the grid's hidden
-       probe boxes, each sized by its token), never from the rows: a record row the row height step, a group row the
-       group header height (the density row height + 16px), plus the gap band before it and the add row of the group
-       above it when it has them. The room for the rows not drawn is two gaps of the system's virtualization
-       (system/virtual.css: pieces of 1, 2, 4 … rows, data-plx-span; a grouped grid's gap has one part per row kind, each
-       sized by its token), never padding. A grouped grid finds the row at a scroll position from those heights (prefix
-       sums), so a jump, a kept position and a density change land on the right row.
-     Group rows (groupBy): Tabulator's groups and their data; no group row is measured and no header margin is written.
-       Each group row carries plxGap (a band before it: it is not the first row, nor the first group under its parent)
-       and plxAddFor (the group whose add row it draws above its band), also as classes on its element; the grid's own
-       callback (table.plxOnGroupLayout) fills the parts in.
-       The grid carries aria-rowcount and each drawn row its aria-rowindex. A focused control whose row scrolls out parks
-       the focus on the scrolling body and gets it back when the row is drawn again.
-     Off: row and cell heights, header vertical alignment, the body's sizing, the virtual renderer's padding, the
-       frozen-rows holder's width, a hidden column's display (a class, plx-data-table__hidden).
-     Pinned (frozen) columns: classes only (tabulator-frozen, data-plx-sticky naming the widths before it); Tabulator's own
-       pinning writes position and left/right inline, so it stays off. A pinned column's width is a whole size token
-       (its own, or its content rounded up to the next one), so the offset classes stay exact.
-     Tree rows: no branch spacer and no indent written; the row's level is its tabulator-tree-level-N class and the tree
-       cell (plx-data-table__tree-cell) is indented by the stylesheet.
-     Popups (menus, the header filter): no coordinates. The popup opens in the top layer (popover) and is placed by CSS
-       anchor positioning against the cell, header or button that opened it.
-   Notes:
-     The patches are found from a probe table built once (Tabulator's classes are not exported), then the probe is removed.
-*/
+/* Plenix · DataTable engine integration
+   Summary: Tabulator owns row measurement and virtual rendering; Plenix supplies token sizes and column layout.
+   Usage: strictTabulator(Tabulator, win); syncGeometry(table); virtualPrint(table, on).
+   Props: Table instances use token-derived rowHeight and viewport options.
+   Behavior: Keeps grid-snapped column widths, frozen-column classes, tree semantics and accessible anchored menus.
+   Notes: Group decoration preserves existing add rows/gaps; it does not replace the virtual renderer's measurements. */
 
 const OFF = function () {};
 const done = new WeakMap(); // Tabulator -> the promise of its patches
@@ -16039,144 +15720,50 @@ function tokenPx(name, el) {
   if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(win.getComputedStyle(el.ownerDocument.documentElement).fontSize) || 16);
   return parseFloat(v) || 0;
 }
-// the heights of the grid's row kinds, read from its tokens where the grid is (its row height step, its density): rec
-// (the row height step), grp (the group header), band (the gap between groups), add (a Short row: the add row, column
-// calcs) and line. A token written as calc() is read from the grid's probe (a hidden box per kind sized by its token;
-// DataTable draws it), else from the custom property.
-function heights(table) {
-  if (table.plxH) return table.plxH;
-  const el = table.element,
-    probe = table.plxProbe;
-  const box = (kind, name) => {
-    const p = probe && probe.isConnected && probe.querySelector('[data-plx-probe="' + kind + '"]');
-    const v = p ? parseFloat(p.ownerDocument.defaultView.getComputedStyle(p).blockSize) : 0;
-    return v > 0 ? v : tokenPx(name, el);
-  };
-  const H = {
-    rec: box('record', '--plx-comp-data-table-record-height'),
-    grp: box('group', '--plx-comp-data-table-group-header-height'),
-    band: box('band', '--plx-comp-data-table-group-gap'),
-    add: box('add', '--plx-sys-data-table-row-height'),
-    line: tokenPx('--plx-comp-data-table-line-width', el)
-  };
-  if (!H.rec) H.rec = tokenPx('--plx-sys-data-table-row-height', el);
-  if (!H.add) H.add = H.rec;
-  table.plxH = H;
-  return H;
-}
-// one record row's block size: the row height step and its line (read from the tokens, never from a row)
-function rowPx(table) {
-  const H = heights(table);
-  return H.rec + H.line || 1;
-}
-// a display row's block size by its kind (no row is measured)
-function hOf(table, row) {
-  const H = heights(table);
-  if (row && row.type === 'group') return H.grp + H.line + (row.plxGap ? H.band + H.line : 0) + (row.plxAddFor ? H.add + H.line : 0);
-  if (row && row.type === 'calc') return H.add + H.line;
-  return H.rec + H.line;
-}
-
-// ---- group rows: flags and offsets (a grouped grid's rows have several heights, all known from the tokens) ----
-const EMPTY = {
-  mixed: false,
-  n: 0
-};
-function groupLayout(table, rowsIn) {
+// Group flags decorate native display rows. No prefix sums or token-height renderer bookkeeping.
+function groupLayout(table) {
   const rm = table && table.rowManager;
-  if (!rm) return EMPTY;
-  const rows = rowsIn || rm.getDisplayRows(),
-    n = rows.length,
-    L0 = table.plxLayout,
-    H = heights(table);
-  if (L0 && L0.rows === rows && L0.n === n && L0.H === H && L0.first === rows[0] && L0.last === rows[n - 1] && L0.adds === !!table.plxAddRows) return L0;
-  let mixed = false;
-  for (let i = 0; i < n; i++) if (rows[i].type !== 'row') {
-    mixed = true;
-    break;
-  }
-  const adds = !!table.plxAddRows;
-  const L = {
+  if (!rm || !table.options.groupBy) return;
+  const rows = rm.getDisplayRows(),
+    before = table.plxLayout;
+  if (before && before.rows === rows && before.n === rows.length && before.last === rows[rows.length - 1] && before.adds === !!table.plxAddRows) return;
+  table.plxLayout = {
     rows,
-    n,
-    H,
-    first: rows[0],
-    last: rows[n - 1],
-    mixed,
-    adds
+    n: rows.length,
+    last: rows[rows.length - 1],
+    adds: !!table.plxAddRows
   };
-  table.plxLayout = L;
-  if (!mixed) {
-    table.plxTailFor = null;
-    return L;
-  }
-  // flags: a band before every group but the first row and the first group under its parent; the add row of the group
-  // whose records end just above
-  for (let i = 0; i < n; i++) {
-    const r = rows[i];
-    if (r.type !== 'group') continue;
-    const prev = i ? rows[i - 1] : null;
+  rows.forEach((r, i) => {
+    if (r.type !== 'group') return;
+    const prev = rows[i - 1];
     r.plxGap = !!prev && !(prev.type === 'group' && r.parent === prev);
-    r.plxAddFor = adds && prev && prev.type === 'row' && prev.modules.group ? prev.modules.group : null;
+    r.plxAddFor = table.plxAddRows && prev && prev.type === 'row' && prev.modules.group ? prev.modules.group : null;
     if (r.element) {
       r.element.classList.toggle('plx-data-table__group--gap', r.plxGap);
       r.element.classList.toggle('plx-data-table__group--add', !!r.plxAddFor);
     }
-  }
-  const last = rows[n - 1];
-  table.plxTailFor = adds && last && last.type === 'row' && last.modules.group ? last.modules.group : null;
-  // prefix sums: the offset of row i and the count of each kind before it
-  const off = new Float64Array(n + 1),
-    rec = new Int32Array(n + 1),
-    grp = new Int32Array(n + 1),
-    band = new Int32Array(n + 1),
-    add = new Int32Array(n + 1);
-  for (let i = 0; i < n; i++) {
-    const r = rows[i],
-      g = r.type === 'group';
-    off[i + 1] = off[i] + hOf(table, r);
-    rec[i + 1] = rec[i] + (r.type === 'row' ? 1 : 0);
-    grp[i + 1] = grp[i] + (g ? 1 : 0);
-    band[i + 1] = band[i] + (g && r.plxGap ? 1 : 0);
-    add[i + 1] = add[i] + (g && r.plxAddFor ? 1 : 0) + (r.type === 'calc' ? 1 : 0);
-  }
-  Object.assign(L, {
-    off,
-    rec,
-    grp,
-    band,
-    add
   });
-  if (table.plxOnGroupLayout) table.plxOnGroupLayout(null);
-  return L;
+  const last = rows[rows.length - 1];
+  table.plxTailFor = table.plxAddRows && last && last.type === 'row' && last.modules.group ? last.modules.group : null;
+  if (table.plxOnGroupLayout) table.plxOnGroupLayout();
 }
-// the display row at a scroll offset (a binary search in the offsets)
-function indexIn(L, top) {
-  let lo = 0,
-    hi = L.n - 1;
-  while (lo < hi) {
-    const mid = lo + hi + 1 >> 1;
-    if (L.off[mid] <= top) lo = mid;else hi = mid - 1;
-  }
-  return Math.max(0, lo);
-}
+// Called once per frame after native rendering; use the native window and actual displayed offsets for sticky headings.
 function groupAt(table, top) {
-  const L = groupLayout(table);
-  if (!L.mixed || !L.n) return null;
-  const i = indexIn(L, top);
-  return {
-    index: i,
-    row: L.rows[i],
-    offset: L.off[i],
-    layout: L
-  };
+  if (!table || !table.options.groupBy) return null;
+  const rm = table.rowManager,
+    r = rm.renderer,
+    rows = rm.getDisplayRows();
+  for (let i = r.vDomTop || 0; i <= Math.min(rows.length - 1, r.vDomBottom ?? rows.length - 1); i++) {
+    const row = rows[i],
+      el = row.element;
+    if (el && el.isConnected && el.offsetTop + el.offsetHeight > top) return {
+      index: i,
+      row,
+      offset: el.offsetTop
+    };
+  }
+  return null;
 }
-// the heights changed (a density, a row height step): every height is read again
-function forgetHeights(table) {
-  table.plxH = null;
-  table.plxLayout = null;
-}
-
 // the lead column (the checkbox column, a mark column): its width is the lead token, from its classes
 const isLead = c => !!c.isRowHeader || /__cell--select|__cell--icon|__w-lead|__w-view/.test(String(c.definition && c.definition.cssClass || ''));
 // the next size token at or above px (a pinned column's width)
@@ -16289,366 +15876,52 @@ function remeasure(table, columns) {
   if (any && cm.table.modules.layout.getMode() === 'plenix') share(table, vis);
 }
 
-// ---- virtual rendering: the rows in view, gaps for the others ----
-
-// a gap's pieces for n rows (system/virtual.css sizes each piece from --plx-sys-virtual-item-size, set by data-table.css)
-const pieceEls = (parent, n) => (0, _useVirtualizer.gapPieces)(n).forEach(p => {
-  const d = parent.ownerDocument.createElement('div');
-  d.className = 'plx-virtual-gap__piece';
-  d.setAttribute('data-plx-span', String(p));
-  parent.appendChild(d);
-});
-function fillGap(box, n) {
-  const key = String(n);
-  if (box.plxHave === key) return;
-  box.plxHave = key;
-  box.textContent = '';
-  pieceEls(box, n);
-}
-// a grouped grid's gap: one part per row kind (records, group headers, gap bands, add rows), each part's item size its
-// kind's token (data-table.css: plx-data-table__gap-part--*)
-const KINDS = ['rec', 'grp', 'band', 'add'];
-function fillGapParts(box, L, from, to) {
-  const c = KINDS.map(k => to > from ? L[k][to] - L[k][from] : 0),
-    key = 'g' + c.join();
-  if (box.plxHave === key) return;
-  box.plxHave = key;
-  box.textContent = '';
-  KINDS.forEach((k, i) => {
-    if (!c[i]) return;
-    const part = box.ownerDocument.createElement('div');
-    part.className = 'plx-data-table__gap-part plx-data-table__gap-part--' + k;
-    pieceEls(part, c[i]);
-    box.appendChild(part);
-  });
-}
-// the focus inside a row that is about to leave the document waits on the scrolling body
-function park(r, leaving) {
-  const doc = r.tableElement.ownerDocument,
-    a = doc.activeElement;
-  if (!a || a === r.tableElement || !r.tableElement.contains(a)) return;
-  if (leaving && !leaving.some(row => row.getElement().contains(a))) return;
-  r.plxFocus = a;
-  try {
-    r.elementVertical.focus({
-      preventScroll: true
-    });
-  } catch (e) {/* not focusable */}
-}
-// the gaps, the ARIA positions and a parked focus, after every change of the rows drawn
-function sync(r) {
-  const te = r.tableElement,
-    rows = r.rows(),
-    total = rows.length,
-    table = r.table;
-  const drawn = total && r.vDomBottom >= r.vDomTop;
-  const L = groupLayout(table, rows);
-  // the add row at the end of the last group (a grouped grid with add rows) follows the bottom gap
-  const tail = table.plxTailEl && table.plxTailFor ? table.plxTailEl : null;
-  if (te.firstChild !== r.plxTop) te.insertBefore(r.plxTop, te.firstChild);
-  if (tail) {
-    if (tail.parentNode !== te || tail.previousSibling !== r.plxBottom || te.lastChild !== tail) {
-      te.appendChild(r.plxBottom);
-      te.appendChild(tail);
-    }
-  } else {
-    if (table.plxTailEl && table.plxTailEl.parentNode === te) te.removeChild(table.plxTailEl);
-    if (te.lastChild !== r.plxBottom) te.appendChild(r.plxBottom);
-  }
-  if (L.mixed) {
-    fillGapParts(r.plxTop, L, 0, drawn ? r.vDomTop : 0);
-    fillGapParts(r.plxBottom, L, drawn ? r.vDomBottom + 1 : 0, total);
-  } else {
-    fillGap(r.plxTop, drawn ? r.vDomTop : 0);
-    fillGap(r.plxBottom, drawn ? Math.max(0, total - 1 - r.vDomBottom) : total);
-  }
-  table.element.setAttribute('aria-rowcount', String(total + 1));
-  const head = table.columnManager && table.columnManager.headersElement;
-  if (head && head.getAttribute('role') === 'row') head.setAttribute('aria-rowindex', '1');
-  if (drawn) for (let i = r.vDomTop; i <= r.vDomBottom; i++) {
-    const row = rows[i];
-    if (row && row.element) row.element.setAttribute('aria-rowindex', String(i + 2));
-  }
-  const f = r.plxFocus;
-  if (f) {
-    const doc = te.ownerDocument,
-      at = doc.activeElement;
-    if (at !== r.elementVertical && at !== doc.body && at !== f) r.plxFocus = null; // the person moved on
-    else if (f.isConnected && te.contains(f)) {
-      r.plxFocus = null;
-      try {
-        f.focus({
-          preventScroll: true
-        });
-      } catch (e) {/* gone */}
-    }
-  }
-}
-
-// the renderer's own add and remove steps, at each row kind's height from the tokens (no row is measured, no padding is
-// written)
-function addTop(rows, room) {
-  const te = this.tableElement,
-    t = this.table;
-  let n = this.vDomTop - 1,
-    chain = 0,
-    added = 0;
-  while (this.vDomTop && rows[n] && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[n])) {
-    const row = rows[n],
-      h = hOf(t, row);
-    this.styleRow(row, n);
-    te.insertBefore(row.getElement(), this.plxTop.parentNode === te ? this.plxTop.nextSibling : te.firstChild);
-    row.initialize();
-    room -= h;
-    added += h;
-    this.vDomTop--;
-    n--;
-    chain++;
-  }
-  if (added) {
-    this.vDomTopPad = Math.max(0, this.vDomTopPad - added);
-    this.vDomScrollPosTop -= added;
-  }
-  sync(this);
-}
-function removeTop(rows, room) {
-  const t = this.table,
-    out = [];
-  let chain = 0,
-    gone = 0;
-  while (rows[this.vDomTop] && this.vDomTop < this.vDomBottom && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[this.vDomTop])) {
-    const h = hOf(t, rows[this.vDomTop]);
-    out.push(rows[this.vDomTop]);
-    this.vDomTop++;
-    room -= h;
-    gone += h;
-    chain++;
-  }
-  park(this, out);
-  out.forEach(row => row.detachElement());
-  if (gone) {
-    this.vDomTopPad += gone;
-    this.vDomScrollPosTop += this.vDomTop ? gone : gone + this.vDomWindowBuffer;
-  }
-  sync(this);
-}
-function addBottom(rows, room) {
-  const te = this.tableElement,
-    t = this.table;
-  let n = this.vDomBottom + 1,
-    chain = 0,
-    added = 0;
-  while (rows[n] && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[n])) {
-    const row = rows[n],
-      h = hOf(t, row);
-    this.styleRow(row, n);
-    te.insertBefore(row.getElement(), this.plxBottom.parentNode === te ? this.plxBottom : null);
-    row.initialize();
-    room -= h;
-    added += h;
-    this.vDomBottom++;
-    n++;
-    chain++;
-  }
-  if (added) {
-    this.vDomBottomPad = Math.max(0, this.vDomBottomPad - added);
-    this.vDomScrollPosBottom += added;
-  }
-  sync(this);
-}
-function removeBottom(rows, room) {
-  const t = this.table,
-    out = [];
-  let chain = 0,
-    gone = 0;
-  while (rows[this.vDomBottom] && this.vDomBottom > this.vDomTop && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[this.vDomBottom])) {
-    const h = hOf(t, rows[this.vDomBottom]);
-    out.push(rows[this.vDomBottom]);
-    this.vDomBottom--;
-    room -= h;
-    gone += h;
-    chain++;
-  }
-  park(this, out);
-  out.forEach(row => row.detachElement());
-  if (gone) {
-    this.vDomBottomPad += gone;
-    this.vDomScrollPosBottom -= gone;
-  }
-  sync(this);
-}
-// a grouped grid scrolls by its rows' heights: a jump finds the row at the scroll position from the offsets (Tabulator's
-// own estimate assumes one row height) and draws from it in place
-function scrollRowsMixed(own) {
-  return function (top, up) {
-    const L = this.plxTop ? groupLayout(this.table, this.rows()) : EMPTY;
-    if (!L.mixed) return own.apply(this, arguments);
-    const i = top - this.vDomScrollPosTop,
-      s = top - this.vDomScrollPosBottom,
-      far = 2 * this.vDomWindowBuffer,
-      rows = this.rows();
-    this.scrollTop = top;
-    if (-i > far || s > far) {
-      const left = this.table.rowManager.scrollLeft,
-        at = this.elementVertical.scrollTop,
-        k = indexIn(L, at);
-      this._virtualRenderFill(k, true, at - L.off[k]);
-      this.scrollColumns(left);
-    } else if (up) {
-      if (i < 0) this._addTopRow(rows, -i);
-      if (s < 0) {
-        if (this.vDomScrollHeight - this.scrollTop > this.vDomWindowBuffer) this._removeBottomRow(rows, -s);else this.vDomScrollPosBottom = this.scrollTop;
-      }
-    } else {
-      if (s >= 0) this._addBottomRow(rows, s);
-      if (i >= 0) {
-        if (this.scrollTop > this.vDomWindowBuffer) this._removeTopRow(rows, i);else this.vDomScrollPosTop = this.scrollTop;
-      }
-    }
-    return undefined;
-  };
-}
-
-// a group row (Tabulator's group): its height is its kind's token (never measured), and no margin is written to keep its
-// toggle in view when the grid scrolls sideways (the first group cell is sticky: data-table.css)
-const patchedGroups = new WeakSet();
-function patchGroup(group) {
-  const G = Object.getPrototypeOf(group);
-  if (patchedGroups.has(G)) return;
-  patchedGroups.add(G);
-  G.getHeight = function () {
-    return hOf(this.groupManager.table, this);
-  };
-  ['normalizeHeight', 'calcHeight', 'scrollHeader'].forEach(n => {
-    if (typeof G[n] === 'function') G[n] = OFF;
-  });
-  G.setHeight = function () {
-    this.height = this.outerHeight = hOf(this.groupManager.table, this);
-  };
-}
-const patchedRenderers = new WeakSet();
-function patchVirtualClass(V) {
-  if (patchedRenderers.has(V)) return;
-  patchedRenderers.add(V);
-  const fill = V._virtualRenderFill,
-    clear = V.clearRows,
-    rerender = V.rerenderRows;
-  V._virtualRenderFill = function (at, keep, into) {
-    if (this.plxTop) park(this);
-    this.vDomRowHeight = rowPx(this.table);
-    fill.apply(this, arguments);
-    if (!this.plxTop) return;
-    // a grouped grid: the place Tabulator kept (with one row height) is the row's own offset (the tokens' heights)
-    const L = groupLayout(this.table, this.rows());
-    if (L.mixed && L.n) {
-      const E = this.elementVertical.clientHeight,
-        total = L.off[L.n];
-      this.vDomScrollHeight = Math.max(0, total - E);
-      if (at && keep) {
-        const want = Math.max(0, Math.min(L.off[Math.min(at, L.n)] + (into || 0), Math.max(0, total - E)));
-        this.scrollTop = want;
-        this.vDomScrollPosTop = want;
-        this.vDomScrollPosBottom = want;
-        this.elementVertical.scrollTop = want;
-      }
-    }
-    sync(this);
-  };
-  V.scrollRows = scrollRowsMixed(V.scrollRows);
-  V.clearRows = function () {
-    if (this.plxTop) park(this);
-    clear.apply(this, arguments);
-    if (this.plxTop) sync(this);
-  };
-  V.rerenderRows = function () {
-    rerender.apply(this, arguments);
-    if (this.plxTop) sync(this);
-  };
-  V._addTopRow = addTop;
-  V._removeTopRow = removeTop;
-  V._addBottomRow = addBottom;
-  V._removeBottomRow = removeBottom;
-  V._quickNormalizeRowHeight = OFF;
-}
-// one virtual renderer: its two gaps, and the body's padding and sizing writes switched off on its element
-function hookVirtual(r) {
-  if (r.plxTop) return;
-  patchVirtualClass(Object.getPrototypeOf(r));
-  const te = r.tableElement,
-    doc = te.ownerDocument;
-  const gap = () => {
-    const g = doc.createElement('div');
-    g.className = 'plx-virtual-gap plx-data-table__gap';
-    g.setAttribute('aria-hidden', 'true');
-    return g;
-  };
-  r.plxTop = gap();
-  r.plxBottom = gap();
-  // where Tabulator would write the padding, the gaps are drawn instead (at once: it reads the scroll height next)
-  ['paddingTop', 'paddingBottom'].forEach(p => Object.defineProperty(te.style, p, {
-    configurable: true,
-    get: () => '',
-    set() {
-      sync(r);
-    }
-  }));
-  ['minHeight', 'minWidth', 'display', 'visibility'].forEach(p => Object.defineProperty(te.style, p, {
-    configurable: true,
-    get: () => '',
-    set: OFF
-  }));
-  r.vDomRowHeight = rowPx(r.table);
-  te.insertBefore(r.plxTop, te.firstChild);
-  te.appendChild(r.plxBottom);
-}
-
-// a density or row height change: the rows are already their new height (CSS); the renderer takes it, and the row that
-// was at the top of the view stays there
-function virtualResync(table) {
+// A density/row-height change is passed to native row normalization, then redrawn once.
+function syncGeometry(table) {
   if (!table) return;
-  const r = table.rowManager && table.rowManager.renderer;
-  if (!r || !r.plxTop) {
-    forgetHeights(table);
-    return;
+  const probe = table.plxProbe && table.plxProbe.querySelector('[data-plx-probe="record"]');
+  const value = probe ? parseFloat(probe.ownerDocument.defaultView.getComputedStyle(probe).blockSize) : tokenPx('--plx-comp-data-table-record-height', table.element);
+  if (table.options.rowHeight) table.options.rowHeight = (0, _grid.snapToGrid)(value, {
+    el: table.element
+  });
+  table.blockRedraw();
+  try {
+    table.rowManager.rows.forEach(row => row.reinitializeHeight());
+    table.rowManager.getDisplayRows().filter(row => row.type === 'group').forEach(group => group.reinitialize());
+  } finally {
+    table.restoreRedraw();
   }
-  const top = r.elementVertical.scrollTop,
-    L0 = groupLayout(table, r.rows()),
-    H0 = heights(table),
-    before = rowPx(table);
-  const was = L0.mixed && L0.n ? indexIn(L0, top) : -1,
-    wasH = was >= 0 ? L0.off[was + 1] - L0.off[was] : 0,
-    wasOff = was >= 0 ? L0.off[was] : 0;
-  forgetHeights(table);
-  const now = rowPx(table),
-    H1 = heights(table);
-  r.vDomRowHeight = now;
-  if (['rec', 'grp', 'band', 'add', 'line'].every(k => H0[k] === H1[k]) || !r.rows().length) {
-    sync(r);
-    return;
-  }
-  if (was >= 0) {
-    const L1 = groupLayout(table, r.rows()),
-      nowH = L1.off[was + 1] - L1.off[was];
-    r._virtualRenderFill(was, true, wasH ? (top - wasOff) * nowH / wasH : 0);
-    return;
-  }
-  const index = Math.floor(top / before),
-    into = (top - index * before) * now / before;
-  r._virtualRenderFill(index, true, into);
+  table.redraw();
 }
-// printing: every row in the document while the page prints, then the rows in view again
+// Native rendering draws every loaded record for printing and restores its own virtual window afterward.
 function virtualPrint(table, on) {
-  const rm = table && table.rowManager,
-    r = rm && rm.renderer;
-  if (!r || !r.plxTop) return;
+  const rm = table && table.rowManager;
+  if (!rm || rm.renderMode !== 'virtual' && !table.plxPrint) return;
   if (on) {
-    const g = groupAt(table, r.elementVertical.scrollTop);
-    r.plxPrintTop = g ? g.index : Math.floor(r.elementVertical.scrollTop / rowPx(table));
-    rm.fixedHeight = false;
-    r._virtualRenderFill();
-  } else {
-    rm.fixedHeight = true;
-    r._virtualRenderFill(r.plxPrintTop || 0, true);
+    if (table.plxPrint) return;
+    table.plxPrint = {
+      fixed: rm.fixedHeight,
+      top: rm.element.scrollTop,
+      max: table.options.maxHeight,
+      height: table.options.height,
+      renderer: table.options.renderVertical
+    };
+    table.options.renderVertical = 'basic';
+    table.options.maxHeight = false;
+    table.setHeight(false);
+  } else if (table.plxPrint) {
+    const saved = table.plxPrint;
+    table.options.renderVertical = saved.renderer;
+    table.options.maxHeight = saved.max;
+    table.options.height = saved.height;
+    if (!saved.height) table.element.style.removeProperty('height');
+    // Restore max-height mode before the first native draw, rather than drawing once with print's full height.
+    ['height', 'min-height', 'max-height'].forEach(p => rm.element.style.removeProperty(p));
+    rm.initializeRenderer();
+    rm.fixedHeight = saved.fixed;
+    table.redraw();
+    rm.element.scrollTop = saved.top;
+    delete table.plxPrint;
   }
 }
 
@@ -16757,9 +16030,7 @@ function strictTabulator(Tabulator, win) {
       if (cell) {
         const Cell = Object.getPrototypeOf(cell);
         // a cell's width is Tabulator's (setWidth, setMinWidth, setMaxWidth, clearWidth stay); its height is the row's (CSS)
-        ['setHeight'].forEach(n => {
-          if (typeof Cell[n] === 'function') Cell[n] = OFF;
-        });
+
         // a cell's alignment is a class (DataTable maps hozAlign to plx-data-table__cell--align-*): only its width stays
         const configure = Cell._configureCell;
         Cell._configureCell = function () {
@@ -16813,15 +16084,14 @@ function strictTabulator(Tabulator, win) {
           }
         };
       }
-      if (row) {
-        const R = Object.getPrototypeOf(row);
-        ['setCellHeight', 'normalizeHeight', 'reinitializeHeight', 'calcHeight'].forEach(n => {
-          if (typeof R[n] === 'function') R[n] = OFF;
-        });
-        // a row's height is its row height step's (the virtual renderer counts with it); a basic grid never asks
-        const height = R.getHeight;
-        R.getHeight = function () {
-          return this.table.rowManager.renderMode === 'virtual' ? hOf(this.table, this) : height.call(this);
+      // Static wrapping Tables and narrow lists keep their intrinsic CSS height, as before.
+      // Interactive table rows use Tabulator's native token-height normalization unchanged.
+      const firstCell = probe.rowManager.rows[0] && probe.rowManager.rows[0].cells[0];
+      if (firstCell) {
+        const Cell = Object.getPrototypeOf(firstCell),
+          setHeight = Cell.setHeight;
+        Cell.setHeight = function () {
+          if (!this.table.plxNaturalRows) return setHeight.apply(this, arguments);
         };
       }
       const CM = Object.getPrototypeOf(probe.columnManager);
@@ -16836,41 +16106,14 @@ function strictTabulator(Tabulator, win) {
         const styleRow = RB.styleRow;
         RB.styleRow = function (row) {
           if (row && row.type === 'group') {
-            patchGroup(row);
-            groupLayout(this.table, this.rows());
+            groupLayout(this.table);
             if (this.table.plxOnGroupDraw) this.table.plxOnGroupDraw(row);
           }
-          return styleRow.apply(this, arguments);
+          const result = styleRow.apply(this, arguments);
+          row.getElement().setAttribute('aria-rowindex', String(arguments[1] + 2));
+          return result;
         };
       }
-      const RM = Object.getPrototypeOf(probe.rowManager);
-      ['normalizeHeight'].forEach(n => {
-        if (typeof RM[n] === 'function') RM[n] = OFF;
-      });
-      // the body's size is the stylesheet's: nothing is written; the renderer still learns how tall its view is
-      RM.adjustTableSize = function () {
-        if (this.renderer && typeof this.renderer.resize === 'function') this.renderer.resize();
-        return false;
-      };
-      // the virtual renderer: a grid with a room (its tableholder has a maximum block size: data-plx-height, or the room
-      // fill and load-more measure) counts as one
-      const init = RM.initializeRenderer;
-      RM.initializeRenderer = function () {
-        init.apply(this, arguments);
-        if (this.renderMode === 'virtual' && this.renderer && 'vDomTopPad' in this.renderer) {
-          this.fixedHeight = true;
-          hookVirtual(this.renderer);
-        }
-        // the basic renderer's width for a body of group rows only: the stylesheet's (the body is as wide as its rows)
-        else if (this.tableElement && !this.tableElement.plxStrict) {
-          this.tableElement.plxStrict = true;
-          Object.defineProperty(this.tableElement.style, 'minWidth', {
-            configurable: true,
-            get: () => '',
-            set: OFF
-          });
-        }
-      };
       // a column's resize handle (Tabulator's) sits inside its header, at its end edge: a header row holds only column
       // headers (ARIA), and the handle is a separator that names its column
       if (probe.modules.resizeColumns) {
@@ -17268,20 +16511,28 @@ function floatingScroll(root, holder) {
     if (s === null) t.track.removeAttribute('data-plx-thumb');else if (t.track.getAttribute('data-plx-thumb') !== s) t.track.setAttribute('data-plx-thumb', s);
   });
   const win = doc.defaultView;
-  const ro = win && win.ResizeObserver ? new win.ResizeObserver(size) : null;
+  let frame = 0;
+  const schedule = () => {
+    if (!frame) frame = win.requestAnimationFrame(() => {
+      frame = 0;
+      size();
+    });
+  };
+  const ro = win && win.ResizeObserver ? new win.ResizeObserver(schedule) : null;
   if (ro) {
     ro.observe(holder);
     Array.from(holder.children).forEach(c => ro.observe(c));
   }
   const mo = win && win.MutationObserver ? new win.MutationObserver(() => {
     if (ro) Array.from(holder.children).forEach(c => ro.observe(c));
-    size();
+    schedule();
   }) : null;
   if (mo) mo.observe(holder, {
     childList: true
   });
-  size();
+  schedule();
   return () => {
+    if (frame) win.cancelAnimationFrame(frame);
     if (ro) ro.disconnect();
     if (mo) mo.disconnect();
     tracks.forEach(t => t.track.remove());
@@ -17980,40 +17231,60 @@ function TableEngine(props) {
       closed: Array.from(closedRef.current)
     });
   };
-  // the kept view onto a grid just built: what still fits its columns (a field that is gone is skipped)
-  const restoreView = t => {
-    const key = latest.current.storageKey,
-      v = key ? readView(key) : null;
+  // Opening state is expressed in Tabulator's construction options, before its first draw.
+  const openingView = (p, opts, host) => {
+    const saved = p.storageKey ? readView(p.storageKey) : null,
+      defs = opts.columns;
+    const fields = new Set(defs.map(c => c.field).filter(Boolean));
+    const order = Array.isArray(p.columnOrder) ? p.columnOrder : saved && saved.order;
+    if (Array.isArray(order)) {
+      const free = defs.filter(c => !c.frozen),
+        desired = order.map(f => free.find(c => c.field === f)).filter(Boolean);
+      const ordered = [...new Set(desired.concat(free))];
+      let at = 0;
+      opts.columns = defs.map(c => c.frozen ? c : ordered[at++]);
+    }
     resized.current = {};
-    if (!v) return;
-    restoring.current = true;
-    try {
-      const col = f => t.getColumns().find(c => c.getField() === f);
-      const order = (v.order || []).filter(col);
-      order.forEach((f, i) => {
-        const c = col(f),
-          prev = i ? col(order[i - 1]) : null;
-        if (c && prev && !c.getDefinition().frozen && !prev.getDefinition().frozen) c.move(prev, true);
-      });
-      Object.keys(v.widths || {}).forEach(f => {
-        const c = col(f),
-          px = viewPx(v.widths[f]);
-        if (c && px) {
-          c.setWidth(px);
-          resized.current[f] = Math.round(px) + 'px';
-        }
-      });
-      (v.hidden || []).forEach(f => {
-        const c = col(f);
-        if (c) c.hide();
-      });
-      const sort = (v.sort || []).filter(s => col(s.column) && (s.dir === 'asc' || s.dir === 'desc'));
-      if (sort.length) t.setSort(sort);
-      // the grouping kept (a field that is gone is not grouped by); its closed groups come with groupStartOpen
-      const want = [].concat(v.groupBy || []).filter(col);
-      if (v.groupBy !== undefined && JSON.stringify(want.length ? want.length === 1 ? want[0] : want : false) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, want.length ? want.length === 1 ? want[0] : want : false);
-    } catch (e) {/* a view kept for another column set: what fits is restored */}
-    restoring.current = false;
+    const hidden = Array.isArray(p.hiddenColumns) ? p.hiddenColumns : saved && saved.hidden;
+    for (const c of opts.columns) {
+      if (Array.isArray(hidden) && c.field) c.visible = !hidden.includes(c.field);
+      const px = saved && saved.widths && (0, _tabulator.tablePx)(saved.widths[c.field], host);
+      if (px && !c.frozen) {
+        c.width = px;
+        resized.current[c.field] = Math.round(px) + 'px';
+      }
+    }
+    const controlledSort = Array.isArray(p.sort) ? p.sort.filter(x => x && fields.has(x.field)).map(x => ({
+      column: x.field,
+      dir: x.dir === 'desc' ? 'desc' : 'asc'
+    })).reverse() : null;
+    const savedSort = saved && Array.isArray(saved.sort) ? saved.sort.filter(x => fields.has(x.column) && ['asc', 'desc'].includes(x.dir)) : null;
+    const wantSort = controlledSort && controlledSort.length ? controlledSort : savedSort && savedSort.length ? savedSort : null;
+    const sortIdentity = list => (list || []).map(x => ({
+      column: typeof x.column === 'string' ? x.column : x.column?.getField?.() || x.field,
+      dir: x.dir
+    }));
+    opts.initialSort = sortIdentity(opts.initialSort);
+    const ownsSort = controlledSort && controlledSort.length && JSON.stringify(controlledSort) !== JSON.stringify(opts.initialSort || savedSort || []);
+    if (wantSort) opts.initialSort = wantSort;
+    const group = p.groupBy !== undefined ? p.groupBy : saved && saved.groupBy;
+    if (group !== undefined && group !== null) {
+      const valid = [].concat(group || []).filter(x => fields.has(typeof x === 'function' ? x.plxField : x));
+      opts.groupBy = valid.length ? valid.length === 1 ? valid[0] : valid : false;
+    }
+    let filter = null;
+    if (typeof p.filter === 'function') {
+      filter = d => typeof latest.current.filter === 'function' ? !!latest.current.filter(d) : true;
+      opts.initialFilter = [].concat(opts.initialFilter || [], [{
+        field: filter
+      }]);
+    }
+    return {
+      filter,
+      sort: ownsSort ? controlledSort.map(x => ({
+        ...x
+      })).reverse() : null
+    };
   };
   // a column's width is Tabulator's (its resize handle, the header menu, Fit to content): the person's width is kept in
   // the view, and the resize handle says it (aria-valuenow)
@@ -18111,69 +17382,71 @@ function TableEngine(props) {
   };
   // the page's view (filter, sort, groupBy, columnOrder, hiddenColumns: the command bar's panels), applied to the grid;
   // a part left undefined is not touched
-  const applyView = t => {
+  const applyView = (t, batched = false) => {
     const p = latest.current;
     if (!t || isStatic) return;
     const col = f => t.getColumns().find(c => c.getField() === f);
-    if (typeof p.filter === 'function') {
-      if (!t.plxViewFilter) {
-        t.plxViewFilter = d => {
-          const fn = latest.current.filter;
-          return typeof fn === 'function' ? !!fn(d) : true;
-        };
-        t.addFilter(t.plxViewFilter);
-      } else t.refreshFilter();
-    } else if (t.plxViewFilter) {
-      t.removeFilter(t.plxViewFilter);
-      t.plxViewFilter = null;
-    }
-    if (Array.isArray(p.sort)) {
-      const want = p.sort.filter(x => x && col(x.field)).map(x => ({
-        column: x.field,
-        dir: x.dir === 'desc' ? 'desc' : 'asc'
-      }));
-      // (Tabulator's sort list ends with the main sort: the page's first level goes last)
-      const now = t.getSorters().map(x => ({
-        column: x.field,
-        dir: x.dir
-      })).reverse();
-      if (want.length) {
-        if (JSON.stringify(want) !== JSON.stringify(now)) {
-          t.setSort(want.map(x => Object.assign({}, x)).reverse());
-          t.plxViewSort = want;
+    const wasRestoring = restoring.current;
+    restoring.current = true;
+    if (!batched) t.blockRedraw();
+    try {
+      if (typeof p.filter === 'function') {
+        if (!t.plxViewFilter) {
+          t.plxViewFilter = d => {
+            const fn = latest.current.filter;
+            return typeof fn === 'function' ? !!fn(d) : true;
+          };
+          t.addFilter(t.plxViewFilter);
+        } else if (t.plxViewFilterSource !== p.filter) t.refreshFilter();
+        t.plxViewFilterSource = p.filter;
+      } else if (t.plxViewFilter) {
+        t.removeFilter(t.plxViewFilter);
+        t.plxViewFilter = null;
+      }
+      if (Array.isArray(p.sort)) {
+        const want = p.sort.filter(x => x && col(x.field)).map(x => ({
+          column: x.field,
+          dir: x.dir === 'desc' ? 'desc' : 'asc'
+        }));
+        // (Tabulator's sort list ends with the main sort: the page's first level goes last)
+        const now = t.getSorters().map(x => ({
+          column: x.field,
+          dir: x.dir
+        })).reverse();
+        if (want.length) {
+          if (JSON.stringify(want) !== JSON.stringify(now)) {
+            t.setSort(want.map(x => Object.assign({}, x)).reverse());
+            t.plxViewSort = want;
+          }
+        } else if (t.plxViewSort) {
+          if (JSON.stringify(t.plxViewSort) === JSON.stringify(now)) t.clearSort();
+          t.plxViewSort = null;
         }
-      } else if (t.plxViewSort) {
-        if (JSON.stringify(t.plxViewSort) === JSON.stringify(now)) t.clearSort();
-        t.plxViewSort = null;
       }
-    }
-    if (p.groupBy !== undefined) {
-      const list = [].concat(p.groupBy || []).filter(x => typeof x === 'string' && col(x) || typeof x === 'function' && x.plxField && col(x.plxField));
-      const g = list.length ? list.length === 1 ? list[0] : list : false;
-      if (JSON.stringify(g) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, g);
-    }
-    if (Array.isArray(p.columnOrder)) {
-      const order = p.columnOrder.filter(f => col(f) && !col(f).getDefinition().frozen);
-      order.forEach((f, i) => {
-        if (!i) return;
-        const c = col(f),
-          prev = col(order[i - 1]);
-        if (c.getPrevColumn() !== prev) c.move(prev, true);
-      });
-      // the first of the order goes before the others (Make first column)
-      if (order.length > 1) {
-        const first = col(order[0]),
-          next = col(order[1]);
-        if (first.getNextColumn() !== next) first.move(next, false);
+      if (p.groupBy !== undefined) {
+        const list = [].concat(p.groupBy || []).filter(x => typeof x === 'string' && col(x) || typeof x === 'function' && x.plxField && col(x.plxField));
+        const g = list.length ? list.length === 1 ? list[0] : list : false;
+        if (JSON.stringify(g) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, g);
       }
-    }
-    if (Array.isArray(p.hiddenColumns)) {
-      t.getColumns().forEach(c => {
-        const f = c.getField();
-        if (!f) return;
-        const hide = p.hiddenColumns.indexOf(f) >= 0;
-        if (hide && c.isVisible()) c.hide();else if (!hide && !c.isVisible()) c.show();
-      });
+      if (Array.isArray(p.columnOrder)) {
+        const free = t.getColumns().filter(c => !c.getDefinition().frozen);
+        const wanted = [...new Set(p.columnOrder.map(f => col(f)).filter(c => c && !c.getDefinition().frozen).concat(free))];
+        for (let i = 0; i < wanted.length; i++) {
+          const current = t.getColumns().filter(c => !c.getDefinition().frozen);
+          if (current[i] !== wanted[i]) wanted[i].move(current[i], false);
+        }
+      }
+      if (Array.isArray(p.hiddenColumns)) {
+        t.getColumns().forEach(c => {
+          const f = c.getField();
+          if (!f) return;
+          const hide = p.hiddenColumns.indexOf(f) >= 0;
+          if (hide && c.isVisible()) c.hide();else if (!hide && !c.isVisible()) c.show();
+        });
+      }
+    } finally {
+      if (!batched) t.restoreRedraw();
+      restoring.current = wasRestoring;
     }
     saveView();
   };
@@ -18337,11 +17610,11 @@ function TableEngine(props) {
       t.plxTailEl.plxVer = ver;
     }
     const te = t.rowManager.tableElement;
-    if (t.rowManager.renderMode !== 'virtual') {
-      if (g) {
-        if (te.lastChild !== t.plxTailEl) te.appendChild(t.plxTailEl);
-      } else if (t.plxTailEl.parentNode) t.plxTailEl.parentNode.removeChild(t.plxTailEl);
-    }
+    const last = t.rowManager.getDisplayRows().at(-1),
+      visible = t.rowManager.renderMode !== 'virtual' || last?.element?.isConnected;
+    if (g && visible) {
+      if (te.lastChild !== t.plxTailEl) te.appendChild(t.plxTailEl);
+    } else if (t.plxTailEl.parentNode) t.plxTailEl.parentNode.removeChild(t.plxTailEl);
   };
   // every group row drawn now, again (a column's width, order or visibility changed)
   const redrawGroups = t => {
@@ -18378,7 +17651,7 @@ function TableEngine(props) {
     const t = tableRef.current,
       box = stickyRef.current,
       h = hostRef.current;
-    if (!t || !box || !h || !builtRef.current) return;
+    if (!t || !box || !h || !builtRef.current || !t.options.groupBy) return;
     const holder = h.querySelector('.tabulator-tableholder'),
       at = holder && t.rowManager.renderMode === 'virtual' ? (0, _strict.groupAt)(t, holder.scrollTop) : null;
     let chain = [];
@@ -18735,7 +18008,9 @@ function TableEngine(props) {
   _react.default.useEffect(() => {
     let alive = true,
       table = null,
-      unfloat = null;
+      unfloat = null,
+      unfocus = null,
+      drawFrame = 0;
     builtRef.current = false;
     measured.current = false;
     // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
@@ -18825,6 +18100,9 @@ function TableEngine(props) {
         // a grid with a room (a height, or fill and load-more) draws the rows in view (every row is the density's height);
         // pages, a wrapping column, group rows and a Narrow list draw them all
         renderVertical: virtual ? 'virtual' : 'basic',
+        rowHeight: !isStatic && !listNow ? (0, _tabulator.tablePx)('--plx-comp-data-table-record-height', host) : undefined,
+        // A bounded token buffer avoids rendering a whole extra viewport above and below auto-fit tables.
+        renderVerticalBuffer: (0, _tabulator.tablePx)(AHEAD, host),
         editTriggerEvent: 'dblclick',
         rowContextMenu,
         // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
@@ -18968,12 +18246,27 @@ function TableEngine(props) {
         delete opts.data;
       }
       opts.columns = defsOf(p.columns, host).concat(optsRowMenu ? [optsRowMenu] : []);
+      const initialView = isStatic ? null : openingView(p, opts, host);
+      if (virtual && p.height && p.height !== '100%') {
+        const px = (0, _tabulator.tablePx)(p.height, host),
+          header = (0, _tabulator.tablePx)('--plx-comp-data-table-height', host),
+          line = (0, _tabulator.tablePx)('--plx-comp-data-table-line-width', host);
+        if (px) opts.maxHeight = 'calc(' + px + 'px + ' + header + 'px + ' + line + 'px)';
+      } else if (virtual) opts.maxHeight = '100%';
       Tabulator.extendModule('filter', 'filters', {
         plxBytes: (query, value) => (0, _cells.byteMatches)(query, value)
       });
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
       tableRef.current = table;
+      table.plxNaturalRows = isStatic || listNow;
+      table.plxColumnShape = shape;
+      table.plxMenuColumn = optsRowMenu;
+      if (initialView) {
+        table.plxViewFilter = initialView.filter;
+        table.plxViewFilterSource = p.filter;
+        table.plxViewSort = initialView.sort;
+      }
       // what the virtual renderer and the group rows need from the grid (strict.js): its token boxes, the add rows, and
       // the callbacks that draw a group row's parts and the add row after the last group
       table.plxProbe = probeRef.current;
@@ -18997,6 +18290,20 @@ function TableEngine(props) {
           holder.tabIndex = 0;
         }
         if (body) body.setAttribute('role', 'presentation');
+        if (table) {
+          host.setAttribute('aria-rowcount', String(table.rowManager.getDisplayRows().length + 1));
+          const r = table.rowManager.renderer,
+            focus = r.plxFocus,
+            active = host.ownerDocument.activeElement;
+          if (focus && active !== holder && active !== host.ownerDocument.body && active !== focus) r.plxFocus = null;else if (focus && focus.isConnected) {
+            r.plxFocus = null;
+            focus.focus({
+              preventScroll: true
+            });
+          } else if (focus && holder) holder.focus({
+            preventScroll: true
+          });
+        }
         host.querySelectorAll('.tabulator-group').forEach(g => g.setAttribute('role', 'row'));
         // a grouped grid is a tree grid: its group rows open and close (aria-expanded, aria-level)
         if (table && !isStatic) host.setAttribute('role', host.querySelector('.tabulator-group') || table.options.groupBy ? 'treegrid' : 'grid');
@@ -19030,13 +18337,18 @@ function TableEngine(props) {
           h.setAttribute('aria-keyshortcuts', 'Alt+ArrowUp Alt+ArrowDown Alt+Home Alt+End');
         });
       };
-      table.on('scrollVertical', () => bump());
-      table.on('renderComplete', () => {
-        bump();
-        aria();
-        syncFoot(table);
-        watchEnd(table);
-      });
+      const afterDraw = () => {
+        if (!drawFrame) drawFrame = win.requestAnimationFrame(() => {
+          drawFrame = 0;
+          if (!alive || tableRef.current !== table) return;
+          bump();
+          aria();
+          syncFoot(table);
+          watchEnd(table);
+        });
+      };
+      table.on('renderComplete', afterDraw);
+      table.on('scrollVertical', afterDraw);
       table.on('tableBuilt', () => {
         if (!alive || tableRef.current !== table) return;
         aria();
@@ -19047,6 +18359,21 @@ function TableEngine(props) {
         watchEnd(table);
         // the body's scrollbars float over the rows and take no room (owner, 2026-10-15)
         if (!unfloat) unfloat = (0, _floatingScroll.floatingScroll)(host, host.querySelector('.tabulator-tableholder'));
+        const holder = host.querySelector('.tabulator-tableholder');
+        // Remember focus before native visibility/scroll redraws can detach its row.
+        const rememberFocus = event => {
+          const focused = host.ownerDocument.activeElement;
+          if (focused && focused.closest('.tabulator-row') && host.contains(focused)) table.rowManager.renderer.plxFocus = focused;else if (event.type === 'focusin') table.rowManager.renderer.plxFocus = null;
+        };
+        holder?.addEventListener('scroll', rememberFocus, {
+          capture: true,
+          passive: true
+        });
+        host.addEventListener('focusin', rememberFocus);
+        unfocus = () => {
+          holder?.removeEventListener('scroll', rememberFocus, true);
+          host.removeEventListener('focusin', rememberFocus);
+        };
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach(ev => table.on(ev, (...a) => {
           const h = (latest.current.on || {})[ev];
@@ -19077,8 +18404,6 @@ function TableEngine(props) {
           wireColumns(table);
           wireRows(table, host);
           wireGroups(table, host);
-          restoreView(table);
-          applyView(table);
           table.on('dataSorted', () => saveView());
           tintGrouped(table);
         }
@@ -19099,7 +18424,7 @@ function TableEngine(props) {
     // the grid; a set or chosen width is kept); a virtual grid takes the new row height for the rows it does not draw,
     // and keeps the row at the top of its view
     const region = frameRef.current && frameRef.current.closest('[data-plx-density]');
-    const densityKey = () => ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'].map(a => document.documentElement.getAttribute(a)).concat(region ? region.getAttribute('data-plx-density') : '').join('|');
+    const densityKey = () => ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'].map(a => document.documentElement.getAttribute(a)).concat(region ? region.getAttribute('data-plx-density') : '', frameRef.current?.getAttribute('data-plx-row-height'), frameRef.current?.getAttribute('data-plx-wrap-headers')).join('|');
     let lastDensity = densityKey();
     const mo = new MutationObserver(() => {
       const t = tableRef.current;
@@ -19107,7 +18432,7 @@ function TableEngine(props) {
       const now = densityKey();
       if (now === lastDensity) return;
       lastDensity = now;
-      (0, _strict.virtualResync)(t);
+      (0, _strict.syncGeometry)(t);
       (0, _strict.remeasure)(t, t.getColumns());
       titleTips();
     });
@@ -19118,6 +18443,10 @@ function TableEngine(props) {
     if (region && region !== document.documentElement) mo.observe(region, {
       attributes: true,
       attributeFilter: ['data-plx-density']
+    });
+    if (frameRef.current) mo.observe(frameRef.current, {
+      attributes: true,
+      attributeFilter: ['data-plx-row-height', 'data-plx-wrap-headers']
     });
     // a grid built while hidden (a closed tab, a section not shown) had no size to lay out in: once it is shown, it is
     // drawn again in place (its columns are measured then; no row is)
@@ -19213,8 +18542,10 @@ function TableEngine(props) {
     win.addEventListener('afterprint', afterPrint);
     return () => {
       alive = false;
+      if (drawFrame) win.cancelAnimationFrame(drawFrame);
       mo.disconnect();
       if (unfloat) unfloat();
+      if (unfocus) unfocus();
       if (ro) ro.disconnect();
       if (frame) cancelAnimationFrame(frame);
       builtRef.current = false;
@@ -19234,9 +18565,9 @@ function TableEngine(props) {
       cells.current = new Map();
       owners.current = new Map();
     };
-    // built once per column shape; the data is replaced in place below
+    // the engine stays for table column-set changes; narrow layouts rebuild and data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, index, narrow, narrowAt, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
+  }, [narrow === 'table' ? '' : shape, index, narrow, narrowAt, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', narrow === 'table' ? '' : keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
 
   // the footer's numbers, after each render of the rows: the page, its range and the total ("pages"), or the rows shown
   // and the total ("load-more"); a page's rows carry their place in the whole set
@@ -19708,12 +19039,43 @@ function TableEngine(props) {
   _react.default.useEffect(() => {
     const t = tableRef.current;
     if (!t || !builtRef.current) return;
-    (0, _strict.virtualResync)(t);
+    (0, _strict.syncGeometry)(t);
     if (fitRef.current) fitRef.current();
     titleTips();
     syncSticky(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowStep, wrapHead]);
+
+  // A table's column set changes in one native operation; its rows and engine stay alive.
+  // Narrow lists rebuild when their key-column layout changes (the renderer itself changes).
+  _react.default.useEffect(() => {
+    const t = tableRef.current;
+    if (!t || !builtRef.current || t.plxColumnShape === shape) return;
+    const p = latest.current,
+      previous = t.getColumns(),
+      order = previous.map(c => c.getField());
+    const defs = defsOf(p.columns, hostRef.current).concat(t.plxMenuColumn ? [t.plxMenuColumn] : []);
+    defs.forEach(d => {
+      const before = previous.find(c => c.getField() === d.field);
+      if (before) d.visible = before.isVisible();
+      if (resized.current[d.field]) d.width = viewPx(resized.current[d.field]);
+    });
+    const free = defs.filter(d => !d.frozen),
+      desired = (p.columnOrder || order).map(f => free.find(d => d.field === f)).filter(Boolean);
+    const ordered = [...new Set(desired.concat(free))];
+    let at = 0;
+    const columns = defs.map(d => d.frozen ? d : ordered[at++]);
+    t.blockRedraw();
+    try {
+      t.setColumns(columns);
+      t.plxColumnShape = shape;
+      applyView(t, true);
+      tintGrouped(t);
+    } finally {
+      t.restoreRedraw();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shape]);
 
   // the page's view changed (the command bar's panels): applied to the grid already built
   const viewKey = JSON.stringify([props.sort, props.groupBy, props.columnOrder, props.hiddenColumns]);
@@ -25499,6 +24861,276 @@ function setSingleKeyHotkeys(on) {
 }
 function singleKeyHotkeys() {
   return singleKeys;
+}
+  } },
+  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VIRTUAL_STICKY_CLASS = void 0;
+exports.VirtualGap = VirtualGap;
+exports.VirtualProbe = VirtualProbe;
+exports.gapPieces = gapPieces;
+exports.useVirtualizer = useVirtualizer;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useVirtualizer
+   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
+     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
+     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
+   Usage:
+     const v = useVirtualizer({ count: files.length });
+     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
+       <VirtualProbe />
+       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
+         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
+     </div>
+     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-table-row-height); overflow-y: auto; }
+   Props:
+     count: how many items there are
+     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
+       size; the token is the estimate for the items not rendered)
+     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
+     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
+     overscan: rows rendered beyond each edge of the view (default 4)
+     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
+     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
+     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
+       grid) not rendered
+     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
+     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
+       first in the viewport)
+   Behavior:
+     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
+     name it (aria-label) and give it its role (list, grid, listbox).
+     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
+     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
+     scroll anchoring keeps the content still while gaps replace items of another size.
+     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
+     "12 of 4,000" even though only a few are in the page.
+   Notes:
+     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
+     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
+     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
+     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
+*/
+
+const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
+
+// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
+function gapPieces(count) {
+  const out = [];
+  let n = Math.max(0, Math.floor(count));
+  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
+    out.push(p);
+    n -= p;
+  }
+  return out;
+}
+function VirtualGap({
+  count,
+  axis = 'y'
+}) {
+  if (!count) return null;
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-gap',
+    'data-plx-axis': axis,
+    'aria-hidden': 'true'
+  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
+    key: i,
+    className: 'plx-virtual-gap__piece',
+    'data-plx-span': String(p)
+  })));
+}
+function VirtualProbe({
+  axis = 'y'
+}) {
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-probe',
+    'data-plx-axis': axis,
+    'data-plx-virtual-probe': '',
+    'aria-hidden': 'true'
+  });
+}
+function useVirtualizer({
+  count = 0,
+  mode = 'fixed',
+  axis = 'y',
+  grid = false,
+  overscan = 4,
+  sticky
+} = {}) {
+  const viewportRef = _react.default.useRef(null);
+  const [view, setView] = _react.default.useState({
+    offset: 0,
+    size: 0,
+    pitch: 0,
+    columns: 1
+  });
+  const [focused, setFocused] = _react.default.useState(-1);
+  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
+  const shown = _react.default.useRef({
+    start: 0,
+    end: 0
+  }); // the rows rendered last
+  const horizontal = axis === 'x';
+
+  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
+  const measure = _react.default.useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
+    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
+    let columns = 1;
+    if (grid) {
+      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
+      if (items.length) {
+        const top = items[0].offsetTop;
+        let n = 0;
+        while (n < items.length && items[n].offsetTop === top) n++;
+        // no wrap seen while more items exist: guess wider, render more and look again
+        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
+      }
+    }
+    if (mode === 'measured') {
+      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
+        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
+      });
+    }
+    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
+    const size = horizontal ? el.clientWidth : el.clientHeight;
+    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
+      offset,
+      size,
+      pitch,
+      columns
+    });
+  }, [horizontal, grid, mode, count, view.columns]);
+  _react.default.useLayoutEffect(() => {
+    measure();
+  });
+  _react.default.useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return undefined;
+    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
+    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
+    const onScroll = () => measure();
+    const onFocus = e => {
+      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
+      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
+    };
+    const onBlur = e => {
+      if (!el.contains(e.relatedTarget)) setFocused(-1);
+    };
+    el.addEventListener('scroll', onScroll, {
+      passive: true
+    });
+    el.addEventListener('focusin', onFocus);
+    el.addEventListener('focusout', onBlur);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('focusin', onFocus);
+      el.removeEventListener('focusout', onBlur);
+      if (ro) ro.disconnect();
+    };
+  }, [measure]);
+  const columns = grid ? Math.max(1, view.columns) : 1;
+  const rows = Math.ceil(count / columns);
+  const pitch = view.pitch || 1;
+  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
+  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
+  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
+  let first;
+  const last = shown.current;
+  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
+    let pos = last.start * pitch,
+      i = last.start;
+    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
+      pos += sizes.current.get(i) || pitch;
+      i++;
+    }
+    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
+    first = Math.min(rows, i);
+  } else first = Math.min(rows, Math.floor(view.offset / pitch));
+  let fill = 0,
+    covered = 0;
+  const target = view.size || pitch * 10;
+  while (first + fill < rows && covered < target) {
+    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
+    fill++;
+  }
+  const startRow = Math.max(0, first - overscan);
+  const endRow = Math.min(rows, first + fill + overscan); // exclusive
+  const start = startRow * columns,
+    end = Math.min(count, endRow * columns);
+  shown.current = {
+    start: startRow,
+    end: endRow
+  };
+
+  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
+  const pinned = [];
+  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
+  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
+  if (header !== undefined && !grid) pinned.push(header);
+  const segments = [];
+  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
+  let at = 0;
+  const pushRows = (from, to) => {
+    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
+      key: 'i' + i,
+      index: i
+    });
+  };
+  const pushGap = (from, to) => {
+    if (to > from) segments.push({
+      key: 'g' + from,
+      gap: true,
+      count: to - from
+    });
+  };
+  rowsOut.filter(r => r < startRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, startRow);
+  pushRows(startRow, endRow);
+  at = endRow;
+  rowsOut.filter(r => r >= endRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, rows);
+  const itemProps = _react.default.useCallback(index => ({
+    'data-plx-virtual-index': index,
+    'aria-posinset': index + 1,
+    'aria-setsize': count
+  }), [count]);
+  const scrollToIndex = _react.default.useCallback(index => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const offset = Math.floor(index / columns) * pitch;
+    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
+    measure();
+  }, [columns, pitch, horizontal, measure]);
+  return {
+    viewportRef,
+    segments,
+    itemProps,
+    scrollToIndex,
+    range: {
+      start,
+      end
+    },
+    columns
+  };
 }
   } },
   "platform/hooks/useIntersection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -68222,7 +67854,7638 @@ const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(functio
   }, rest), children);
 });
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+// type Person = {
+//   firstName: string
+//   lastName: string
+//   age: number
+//   visits: number
+//   status: string
+//   progress: number
+//   createdAt: Date
+//   nested: {
+//     foo: [
+//       {
+//         bar: 'bar'
+//       }
+//     ]
+//     bar: { subBar: boolean }[]
+//     baz: {
+//       foo: 'foo'
+//       bar: {
+//         baz: 'baz'
+//       }
+//     }
+//   }
+// }
+
+// const test: DeepKeys<Person> = 'nested.foo.0.bar'
+// const test2: DeepKeys<Person> = 'nested.bar'
+
+// const helper = createColumnHelper<Person>()
+
+// helper.accessor('nested.foo', {
+//   cell: info => info.getValue(),
+// })
+
+// helper.accessor('nested.foo.0.bar', {
+//   cell: info => info.getValue(),
+// })
+
+// helper.accessor('nested.bar', {
+//   cell: info => info.getValue(),
+// })
+function createColumnHelper() {
+  return {
+    accessor: (accessor, column) => {
+      return typeof accessor === 'function' ? {
+        ...column,
+        accessorFn: accessor
+      } : {
+        ...column,
+        accessorKey: accessor
+      };
+    },
+    display: column => column,
+    group: column => column
+  };
+}
+exports.createColumnHelper = createColumnHelper;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+// Is this type a tuple?
+
+// If this type is a tuple, what indices are allowed?
+
+///
+function functionalUpdate(updater, input) {
+  return typeof updater === 'function' ? updater(input) : updater;
+}
+function noop() {
+  //
+}
+function makeStateUpdater(key, instance) {
+  return updater => {
+    instance.setState(old => {
+      return {
+        ...old,
+        [key]: functionalUpdate(updater, old[key])
+      };
+    });
+  };
+}
+function isFunction(d) {
+  return d instanceof Function;
+}
+function isNumberArray(d) {
+  return Array.isArray(d) && d.every(val => typeof val === 'number');
+}
+function flattenBy(arr, getChildren) {
+  const flat = [];
+  const recurse = subArr => {
+    subArr.forEach(item => {
+      flat.push(item);
+      const children = getChildren(item);
+      if (children != null && children.length) {
+        recurse(children);
+      }
+    });
+  };
+  recurse(arr);
+  return flat;
+}
+function memo(getDeps, fn, opts) {
+  let deps = [];
+  let result;
+  return depArgs => {
+    let depTime;
+    if (opts.key && opts.debug) depTime = Date.now();
+    const newDeps = getDeps(depArgs);
+    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
+    if (!depsChanged) {
+      return result;
+    }
+    deps = newDeps;
+    let resultTime;
+    if (opts.key && opts.debug) resultTime = Date.now();
+    result = fn(...newDeps);
+    opts == null || opts.onChange == null || opts.onChange(result);
+    if (opts.key && opts.debug) {
+      if (opts != null && opts.debug()) {
+        const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
+        const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
+        const resultFpsPercentage = resultEndTime / 16;
+        const pad = (str, num) => {
+          str = String(str);
+          while (str.length < num) {
+            str = ' ' + str;
+          }
+          return str;
+        };
+        console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
+            font-size: .6rem;
+            font-weight: bold;
+            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
+      }
+    }
+    return result;
+  };
+}
+function getMemoOptions(tableOptions, debugLevel, key, onChange) {
+  return {
+    debug: () => {
+      var _tableOptions$debugAl;
+      return (_tableOptions$debugAl = tableOptions == null ? void 0 : tableOptions.debugAll) != null ? _tableOptions$debugAl : tableOptions[debugLevel];
+    },
+    key: 'production' === 'development' && key,
+    onChange
+  };
+}
+exports.flattenBy = flattenBy;
+exports.functionalUpdate = functionalUpdate;
+exports.getMemoOptions = getMemoOptions;
+exports.isFunction = isFunction;
+exports.isNumberArray = isNumberArray;
+exports.makeStateUpdater = makeStateUpdater;
+exports.memo = memo;
+exports.noop = noop;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function createCell(table, row, column, columnId) {
+  const getRenderValue = () => {
+    var _cell$getValue;
+    return (_cell$getValue = cell.getValue()) != null ? _cell$getValue : table.options.renderFallbackValue;
+  };
+  const cell = {
+    id: `${row.id}_${column.id}`,
+    row,
+    column,
+    getValue: () => row.getValue(columnId),
+    renderValue: getRenderValue,
+    getContext: utils.memo(() => [table, column, row, cell], (table, column, row, cell) => ({
+      table,
+      column,
+      row,
+      cell: cell,
+      getValue: cell.getValue,
+      renderValue: cell.renderValue
+    }), utils.getMemoOptions(table.options, 'debugCells', 'cell.getContext'))
+  };
+  table._features.forEach(feature => {
+    feature.createCell == null || feature.createCell(cell, column, row, table);
+  }, {});
+  return cell;
+}
+exports.createCell = createCell;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function createColumn(table, columnDef, depth, parent) {
+  var _ref, _resolvedColumnDef$id;
+  const defaultColumn = table._getDefaultColumnDef();
+  const resolvedColumnDef = {
+    ...defaultColumn,
+    ...columnDef
+  };
+  const accessorKey = resolvedColumnDef.accessorKey;
+  let id = (_ref = (_resolvedColumnDef$id = resolvedColumnDef.id) != null ? _resolvedColumnDef$id : accessorKey ? typeof String.prototype.replaceAll === 'function' ? accessorKey.replaceAll('.', '_') : accessorKey.replace(/\./g, '_') : undefined) != null ? _ref : typeof resolvedColumnDef.header === 'string' ? resolvedColumnDef.header : undefined;
+  let accessorFn;
+  if (resolvedColumnDef.accessorFn) {
+    accessorFn = resolvedColumnDef.accessorFn;
+  } else if (accessorKey) {
+    // Support deep accessor keys
+    if (accessorKey.includes('.')) {
+      accessorFn = originalRow => {
+        let result = originalRow;
+        for (const key of accessorKey.split('.')) {
+          var _result;
+          result = (_result = result) == null ? void 0 : _result[key];
+          if ('production' !== 'production' && result === undefined) {
+            console.warn(`"${key}" in deeply nested key "${accessorKey}" returned undefined.`);
+          }
+        }
+        return result;
+      };
+    } else {
+      accessorFn = originalRow => originalRow[resolvedColumnDef.accessorKey];
+    }
+  }
+  if (!id) {
+    if ('production' !== 'production') {
+      throw new Error(resolvedColumnDef.accessorFn ? `Columns require an id when using an accessorFn` : `Columns require an id when using a non-string header`);
+    }
+    throw new Error();
+  }
+  let column = {
+    id: `${String(id)}`,
+    accessorFn,
+    parent: parent,
+    depth,
+    columnDef: resolvedColumnDef,
+    columns: [],
+    getFlatColumns: utils.memo(() => [true], () => {
+      var _column$columns;
+      return [column, ...((_column$columns = column.columns) == null ? void 0 : _column$columns.flatMap(d => d.getFlatColumns()))];
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'column.getFlatColumns')),
+    getLeafColumns: utils.memo(() => [table._getOrderColumnsFn()], orderColumns => {
+      var _column$columns2;
+      if ((_column$columns2 = column.columns) != null && _column$columns2.length) {
+        let leafColumns = column.columns.flatMap(column => column.getLeafColumns());
+        return orderColumns(leafColumns);
+      }
+      return [column];
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'column.getLeafColumns'))
+  };
+  for (const feature of table._features) {
+    feature.createColumn == null || feature.createColumn(column, table);
+  }
+
+  // Yes, we have to convert table to unknown, because we know more than the compiler here.
+  return column;
+}
+exports.createColumn = createColumn;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+const debug = 'debugHeaders';
+//
+
+function createHeader(table, column, options) {
+  var _options$id;
+  const id = (_options$id = options.id) != null ? _options$id : column.id;
+  let header = {
+    id,
+    column,
+    index: options.index,
+    isPlaceholder: !!options.isPlaceholder,
+    placeholderId: options.placeholderId,
+    depth: options.depth,
+    subHeaders: [],
+    colSpan: 0,
+    rowSpan: 0,
+    headerGroup: null,
+    getLeafHeaders: () => {
+      const leafHeaders = [];
+      const recurseHeader = h => {
+        if (h.subHeaders && h.subHeaders.length) {
+          h.subHeaders.map(recurseHeader);
+        }
+        leafHeaders.push(h);
+      };
+      recurseHeader(header);
+      return leafHeaders;
+    },
+    getContext: () => ({
+      table,
+      header: header,
+      column
+    })
+  };
+  table._features.forEach(feature => {
+    feature.createHeader == null || feature.createHeader(header, table);
+  });
+  return header;
+}
+const Headers = {
+  createTable: table => {
+    // Header Groups
+
+    table.getHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
+      var _left$map$filter, _right$map$filter;
+      const leftColumns = (_left$map$filter = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter : [];
+      const rightColumns = (_right$map$filter = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter : [];
+      const centerColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
+      const headerGroups = buildHeaderGroups(allColumns, [...leftColumns, ...centerColumns, ...rightColumns], table);
+      return headerGroups;
+    }, utils.getMemoOptions(table.options, debug, 'getHeaderGroups'));
+    table.getCenterHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
+      leafColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
+      return buildHeaderGroups(allColumns, leafColumns, table, 'center');
+    }, utils.getMemoOptions(table.options, debug, 'getCenterHeaderGroups'));
+    table.getLeftHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left], (allColumns, leafColumns, left) => {
+      var _left$map$filter2;
+      const orderedLeafColumns = (_left$map$filter2 = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter2 : [];
+      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'left');
+    }, utils.getMemoOptions(table.options, debug, 'getLeftHeaderGroups'));
+    table.getRightHeaderGroups = utils.memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.right], (allColumns, leafColumns, right) => {
+      var _right$map$filter2;
+      const orderedLeafColumns = (_right$map$filter2 = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter2 : [];
+      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'right');
+    }, utils.getMemoOptions(table.options, debug, 'getRightHeaderGroups'));
+
+    // Footer Groups
+
+    table.getFooterGroups = utils.memo(() => [table.getHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getFooterGroups'));
+    table.getLeftFooterGroups = utils.memo(() => [table.getLeftHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getLeftFooterGroups'));
+    table.getCenterFooterGroups = utils.memo(() => [table.getCenterHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getCenterFooterGroups'));
+    table.getRightFooterGroups = utils.memo(() => [table.getRightHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, utils.getMemoOptions(table.options, debug, 'getRightFooterGroups'));
+
+    // Flat Headers
+
+    table.getFlatHeaders = utils.memo(() => [table.getHeaderGroups()], headerGroups => {
+      return headerGroups.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getFlatHeaders'));
+    table.getLeftFlatHeaders = utils.memo(() => [table.getLeftHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getLeftFlatHeaders'));
+    table.getCenterFlatHeaders = utils.memo(() => [table.getCenterHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getCenterFlatHeaders'));
+    table.getRightFlatHeaders = utils.memo(() => [table.getRightHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getRightFlatHeaders'));
+
+    // Leaf Headers
+
+    table.getCenterLeafHeaders = utils.memo(() => [table.getCenterFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders;
+        return !((_header$subHeaders = header.subHeaders) != null && _header$subHeaders.length);
+      });
+    }, utils.getMemoOptions(table.options, debug, 'getCenterLeafHeaders'));
+    table.getLeftLeafHeaders = utils.memo(() => [table.getLeftFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders2;
+        return !((_header$subHeaders2 = header.subHeaders) != null && _header$subHeaders2.length);
+      });
+    }, utils.getMemoOptions(table.options, debug, 'getLeftLeafHeaders'));
+    table.getRightLeafHeaders = utils.memo(() => [table.getRightFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders3;
+        return !((_header$subHeaders3 = header.subHeaders) != null && _header$subHeaders3.length);
+      });
+    }, utils.getMemoOptions(table.options, debug, 'getRightLeafHeaders'));
+    table.getLeafHeaders = utils.memo(() => [table.getLeftHeaderGroups(), table.getCenterHeaderGroups(), table.getRightHeaderGroups()], (left, center, right) => {
+      var _left$0$headers, _left$, _center$0$headers, _center$, _right$0$headers, _right$;
+      return [...((_left$0$headers = (_left$ = left[0]) == null ? void 0 : _left$.headers) != null ? _left$0$headers : []), ...((_center$0$headers = (_center$ = center[0]) == null ? void 0 : _center$.headers) != null ? _center$0$headers : []), ...((_right$0$headers = (_right$ = right[0]) == null ? void 0 : _right$.headers) != null ? _right$0$headers : [])].map(header => {
+        return header.getLeafHeaders();
+      }).flat();
+    }, utils.getMemoOptions(table.options, debug, 'getLeafHeaders'));
+  }
+};
+function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
+  var _headerGroups$0$heade, _headerGroups$;
+  // Find the max depth of the columns:
+  // build the leaf column row
+  // build each buffer row going up
+  //    placeholder for non-existent level
+  //    real column for existing level
+
+  let maxDepth = 0;
+  const findMaxDepth = function (columns, depth) {
+    if (depth === void 0) {
+      depth = 1;
+    }
+    maxDepth = Math.max(maxDepth, depth);
+    columns.filter(column => column.getIsVisible()).forEach(column => {
+      var _column$columns;
+      if ((_column$columns = column.columns) != null && _column$columns.length) {
+        findMaxDepth(column.columns, depth + 1);
+      }
+    }, 0);
+  };
+  findMaxDepth(allColumns);
+  let headerGroups = [];
+  const createHeaderGroup = (headersToGroup, depth) => {
+    // The header group we are creating
+    const headerGroup = {
+      depth,
+      id: [headerFamily, `${depth}`].filter(Boolean).join('_'),
+      headers: []
+    };
+
+    // The parent columns we're going to scan next
+    const pendingParentHeaders = [];
+
+    // Scan each column for parents
+    headersToGroup.forEach(headerToGroup => {
+      // What is the latest (last) parent column?
+
+      const latestPendingParentHeader = [...pendingParentHeaders].reverse()[0];
+      const isLeafHeader = headerToGroup.column.depth === headerGroup.depth;
+      let column;
+      let isPlaceholder = false;
+      if (isLeafHeader && headerToGroup.column.parent) {
+        // The parent header is new
+        column = headerToGroup.column.parent;
+      } else {
+        // The parent header is repeated
+        column = headerToGroup.column;
+        isPlaceholder = true;
+      }
+      if (latestPendingParentHeader && (latestPendingParentHeader == null ? void 0 : latestPendingParentHeader.column) === column) {
+        // This column is repeated. Add it as a sub header to the next batch
+        latestPendingParentHeader.subHeaders.push(headerToGroup);
+      } else {
+        // This is a new header. Let's create it
+        const header = createHeader(table, column, {
+          id: [headerFamily, depth, column.id, headerToGroup == null ? void 0 : headerToGroup.id].filter(Boolean).join('_'),
+          isPlaceholder,
+          placeholderId: isPlaceholder ? `${pendingParentHeaders.filter(d => d.column === column).length}` : undefined,
+          depth,
+          index: pendingParentHeaders.length
+        });
+
+        // Add the headerToGroup as a subHeader of the new header
+        header.subHeaders.push(headerToGroup);
+        // Add the new header to the pendingParentHeaders to get grouped
+        // in the next batch
+        pendingParentHeaders.push(header);
+      }
+      headerGroup.headers.push(headerToGroup);
+      headerToGroup.headerGroup = headerGroup;
+    });
+    headerGroups.push(headerGroup);
+    if (depth > 0) {
+      createHeaderGroup(pendingParentHeaders, depth - 1);
+    }
+  };
+  const bottomHeaders = columnsToGroup.map((column, index) => createHeader(table, column, {
+    depth: maxDepth,
+    index
+  }));
+  createHeaderGroup(bottomHeaders, maxDepth - 1);
+  headerGroups.reverse();
+
+  // headerGroups = headerGroups.filter(headerGroup => {
+  //   return !headerGroup.headers.every(header => header.isPlaceholder)
+  // })
+
+  const recurseHeadersForSpans = headers => {
+    const filteredHeaders = headers.filter(header => header.column.getIsVisible());
+    return filteredHeaders.map(header => {
+      let colSpan = 0;
+      let rowSpan = 0;
+      let childRowSpans = [0];
+      if (header.subHeaders && header.subHeaders.length) {
+        childRowSpans = [];
+        recurseHeadersForSpans(header.subHeaders).forEach(_ref => {
+          let {
+            colSpan: childColSpan,
+            rowSpan: childRowSpan
+          } = _ref;
+          colSpan += childColSpan;
+          childRowSpans.push(childRowSpan);
+        });
+      } else {
+        colSpan = 1;
+      }
+      const minChildRowSpan = Math.min(...childRowSpans);
+      rowSpan = rowSpan + minChildRowSpan;
+      header.colSpan = colSpan;
+      header.rowSpan = rowSpan;
+      return {
+        colSpan,
+        rowSpan
+      };
+    });
+  };
+  recurseHeadersForSpans((_headerGroups$0$heade = (_headerGroups$ = headerGroups[0]) == null ? void 0 : _headerGroups$.headers) != null ? _headerGroups$0$heade : []);
+  return headerGroups;
+}
+exports.Headers = Headers;
+exports.buildHeaderGroups = buildHeaderGroups;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var cell = require('./cell.js');
+const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
+  let row = {
+    id,
+    index: rowIndex,
+    original,
+    depth,
+    parentId,
+    _valuesCache: {},
+    _uniqueValuesCache: {},
+    getValue: columnId => {
+      if (row._valuesCache.hasOwnProperty(columnId)) {
+        return row._valuesCache[columnId];
+      }
+      const column = table.getColumn(columnId);
+      if (!(column != null && column.accessorFn)) {
+        return undefined;
+      }
+      row._valuesCache[columnId] = column.accessorFn(row.original, rowIndex);
+      return row._valuesCache[columnId];
+    },
+    getUniqueValues: columnId => {
+      if (row._uniqueValuesCache.hasOwnProperty(columnId)) {
+        return row._uniqueValuesCache[columnId];
+      }
+      const column = table.getColumn(columnId);
+      if (!(column != null && column.accessorFn)) {
+        return undefined;
+      }
+      if (!column.columnDef.getUniqueValues) {
+        row._uniqueValuesCache[columnId] = [row.getValue(columnId)];
+        return row._uniqueValuesCache[columnId];
+      }
+      row._uniqueValuesCache[columnId] = column.columnDef.getUniqueValues(row.original, rowIndex);
+      return row._uniqueValuesCache[columnId];
+    },
+    renderValue: columnId => {
+      var _row$getValue;
+      return (_row$getValue = row.getValue(columnId)) != null ? _row$getValue : table.options.renderFallbackValue;
+    },
+    subRows: subRows != null ? subRows : [],
+    getLeafRows: () => utils.flattenBy(row.subRows, d => d.subRows),
+    getParentRow: () => row.parentId ? table.getRow(row.parentId, true) : undefined,
+    getParentRows: () => {
+      let parentRows = [];
+      let currentRow = row;
+      while (true) {
+        const parentRow = currentRow.getParentRow();
+        if (!parentRow) break;
+        parentRows.push(parentRow);
+        currentRow = parentRow;
+      }
+      return parentRows.reverse();
+    },
+    getAllCells: utils.memo(() => [table.getAllLeafColumns()], leafColumns => {
+      return leafColumns.map(column => {
+        return cell.createCell(table, row, column, column.id);
+      });
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getAllCells')),
+    _getAllCellsByColumnId: utils.memo(() => [row.getAllCells()], allCells => {
+      return allCells.reduce((acc, cell) => {
+        acc[cell.column.id] = cell;
+        return acc;
+      }, {});
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getAllCellsByColumnId'))
+  };
+  for (let i = 0; i < table._features.length; i++) {
+    const feature = table._features[i];
+    feature == null || feature.createRow == null || feature.createRow(row, table);
+  }
+  return row;
+};
+exports.createRow = createRow;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+//
+const ColumnFaceting = {
+  createColumn: (column, table) => {
+    column._getFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, column.id);
+    column.getFacetedRowModel = () => {
+      if (!column._getFacetedRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return column._getFacetedRowModel();
+    };
+    column._getFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, column.id);
+    column.getFacetedUniqueValues = () => {
+      if (!column._getFacetedUniqueValues) {
+        return new Map();
+      }
+      return column._getFacetedUniqueValues();
+    };
+    column._getFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, column.id);
+    column.getFacetedMinMaxValues = () => {
+      if (!column._getFacetedMinMaxValues) {
+        return undefined;
+      }
+      return column._getFacetedMinMaxValues();
+    };
+  }
+};
+exports.ColumnFaceting = ColumnFaceting;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+const includesString = (row, columnId, filterValue) => {
+  var _filterValue$toString, _row$getValue;
+  const search = filterValue == null || (_filterValue$toString = filterValue.toString()) == null ? void 0 : _filterValue$toString.toLowerCase();
+  return Boolean((_row$getValue = row.getValue(columnId)) == null || (_row$getValue = _row$getValue.toString()) == null || (_row$getValue = _row$getValue.toLowerCase()) == null ? void 0 : _row$getValue.includes(search));
+};
+includesString.autoRemove = val => testFalsey(val);
+const includesStringSensitive = (row, columnId, filterValue) => {
+  var _row$getValue2;
+  return Boolean((_row$getValue2 = row.getValue(columnId)) == null || (_row$getValue2 = _row$getValue2.toString()) == null ? void 0 : _row$getValue2.includes(filterValue));
+};
+includesStringSensitive.autoRemove = val => testFalsey(val);
+const equalsString = (row, columnId, filterValue) => {
+  var _row$getValue3;
+  return ((_row$getValue3 = row.getValue(columnId)) == null || (_row$getValue3 = _row$getValue3.toString()) == null ? void 0 : _row$getValue3.toLowerCase()) === (filterValue == null ? void 0 : filterValue.toLowerCase());
+};
+equalsString.autoRemove = val => testFalsey(val);
+const arrIncludes = (row, columnId, filterValue) => {
+  var _row$getValue4;
+  return (_row$getValue4 = row.getValue(columnId)) == null ? void 0 : _row$getValue4.includes(filterValue);
+};
+arrIncludes.autoRemove = val => testFalsey(val);
+const arrIncludesAll = (row, columnId, filterValue) => {
+  return !filterValue.some(val => {
+    var _row$getValue5;
+    return !((_row$getValue5 = row.getValue(columnId)) != null && _row$getValue5.includes(val));
+  });
+};
+arrIncludesAll.autoRemove = val => testFalsey(val) || !(val != null && val.length);
+const arrIncludesSome = (row, columnId, filterValue) => {
+  return filterValue.some(val => {
+    var _row$getValue6;
+    return (_row$getValue6 = row.getValue(columnId)) == null ? void 0 : _row$getValue6.includes(val);
+  });
+};
+arrIncludesSome.autoRemove = val => testFalsey(val) || !(val != null && val.length);
+const equals = (row, columnId, filterValue) => {
+  return row.getValue(columnId) === filterValue;
+};
+equals.autoRemove = val => testFalsey(val);
+const weakEquals = (row, columnId, filterValue) => {
+  return row.getValue(columnId) == filterValue;
+};
+weakEquals.autoRemove = val => testFalsey(val);
+const inNumberRange = (row, columnId, filterValue) => {
+  let [min, max] = filterValue;
+  const rowValue = row.getValue(columnId);
+  return rowValue >= min && rowValue <= max;
+};
+inNumberRange.resolveFilterValue = val => {
+  let [unsafeMin, unsafeMax] = val;
+  let parsedMin = typeof unsafeMin !== 'number' ? parseFloat(unsafeMin) : unsafeMin;
+  let parsedMax = typeof unsafeMax !== 'number' ? parseFloat(unsafeMax) : unsafeMax;
+  let min = unsafeMin === null || Number.isNaN(parsedMin) ? -Infinity : parsedMin;
+  let max = unsafeMax === null || Number.isNaN(parsedMax) ? Infinity : parsedMax;
+  if (min > max) {
+    const temp = min;
+    min = max;
+    max = temp;
+  }
+  return [min, max];
+};
+inNumberRange.autoRemove = val => testFalsey(val) || testFalsey(val[0]) && testFalsey(val[1]);
+
+// Export
+
+const filterFns = {
+  includesString,
+  includesStringSensitive,
+  equalsString,
+  arrIncludes,
+  arrIncludesAll,
+  arrIncludesSome,
+  equals,
+  weakEquals,
+  inNumberRange
+};
+// Utils
+
+function testFalsey(val) {
+  return val === undefined || val === null || val === '';
+}
+exports.filterFns = filterFns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var filterFns = require('../filterFns.js');
+var utils = require('../utils.js');
+
+//
+
+const ColumnFiltering = {
+  getDefaultColumnDef: () => {
+    return {
+      filterFn: 'auto'
+    };
+  },
+  getInitialState: state => {
+    return {
+      columnFilters: [],
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnFiltersChange: utils.makeStateUpdater('columnFilters', table),
+      filterFromLeafRows: false,
+      maxLeafRowFilterDepth: 100
+    };
+  },
+  createColumn: (column, table) => {
+    column.getAutoFilterFn = () => {
+      const firstRow = table.getCoreRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'string') {
+        return filterFns.filterFns.includesString;
+      }
+      if (typeof value === 'number') {
+        return filterFns.filterFns.inNumberRange;
+      }
+      if (typeof value === 'boolean') {
+        return filterFns.filterFns.equals;
+      }
+      if (value !== null && typeof value === 'object') {
+        return filterFns.filterFns.equals;
+      }
+      if (Array.isArray(value)) {
+        return filterFns.filterFns.arrIncludes;
+      }
+      return filterFns.filterFns.weakEquals;
+    };
+    column.getFilterFn = () => {
+      var _table$options$filter, _table$options$filter2;
+      return utils.isFunction(column.columnDef.filterFn) ? column.columnDef.filterFn : column.columnDef.filterFn === 'auto' ? column.getAutoFilterFn() :
+      // @ts-ignore
+      (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[column.columnDef.filterFn]) != null ? _table$options$filter : filterFns.filterFns[column.columnDef.filterFn];
+    };
+    column.getCanFilter = () => {
+      var _column$columnDef$ena, _table$options$enable, _table$options$enable2;
+      return ((_column$columnDef$ena = column.columnDef.enableColumnFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnFilters) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && !!column.accessorFn;
+    };
+    column.getIsFiltered = () => column.getFilterIndex() > -1;
+    column.getFilterValue = () => {
+      var _table$getState$colum;
+      return (_table$getState$colum = table.getState().columnFilters) == null || (_table$getState$colum = _table$getState$colum.find(d => d.id === column.id)) == null ? void 0 : _table$getState$colum.value;
+    };
+    column.getFilterIndex = () => {
+      var _table$getState$colum2, _table$getState$colum3;
+      return (_table$getState$colum2 = (_table$getState$colum3 = table.getState().columnFilters) == null ? void 0 : _table$getState$colum3.findIndex(d => d.id === column.id)) != null ? _table$getState$colum2 : -1;
+    };
+    column.setFilterValue = value => {
+      table.setColumnFilters(old => {
+        const filterFn = column.getFilterFn();
+        const previousFilter = old == null ? void 0 : old.find(d => d.id === column.id);
+        const newFilter = utils.functionalUpdate(value, previousFilter ? previousFilter.value : undefined);
+
+        //
+        if (shouldAutoRemoveFilter(filterFn, newFilter, column)) {
+          var _old$filter;
+          return (_old$filter = old == null ? void 0 : old.filter(d => d.id !== column.id)) != null ? _old$filter : [];
+        }
+        const newFilterObj = {
+          id: column.id,
+          value: newFilter
+        };
+        if (previousFilter) {
+          var _old$map;
+          return (_old$map = old == null ? void 0 : old.map(d => {
+            if (d.id === column.id) {
+              return newFilterObj;
+            }
+            return d;
+          })) != null ? _old$map : [];
+        }
+        if (old != null && old.length) {
+          return [...old, newFilterObj];
+        }
+        return [newFilterObj];
+      });
+    };
+  },
+  createRow: (row, _table) => {
+    row.columnFilters = {};
+    row.columnFiltersMeta = {};
+  },
+  createTable: table => {
+    table.setColumnFilters = updater => {
+      const leafColumns = table.getAllLeafColumns();
+      const updateFn = old => {
+        var _functionalUpdate;
+        return (_functionalUpdate = utils.functionalUpdate(updater, old)) == null ? void 0 : _functionalUpdate.filter(filter => {
+          const column = leafColumns.find(d => d.id === filter.id);
+          if (column) {
+            const filterFn = column.getFilterFn();
+            if (shouldAutoRemoveFilter(filterFn, filter.value, column)) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+      table.options.onColumnFiltersChange == null || table.options.onColumnFiltersChange(updateFn);
+    };
+    table.resetColumnFilters = defaultState => {
+      var _table$initialState$c, _table$initialState;
+      table.setColumnFilters(defaultState ? [] : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnFilters) != null ? _table$initialState$c : []);
+    };
+    table.getPreFilteredRowModel = () => table.getCoreRowModel();
+    table.getFilteredRowModel = () => {
+      if (!table._getFilteredRowModel && table.options.getFilteredRowModel) {
+        table._getFilteredRowModel = table.options.getFilteredRowModel(table);
+      }
+      if (table.options.manualFiltering || !table._getFilteredRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return table._getFilteredRowModel();
+    };
+  }
+};
+function shouldAutoRemoveFilter(filterFn, value, column) {
+  return (filterFn && filterFn.autoRemove ? filterFn.autoRemove(value, column) : false) || typeof value === 'undefined' || typeof value === 'string' && !value;
+}
+exports.ColumnFiltering = ColumnFiltering;
+exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('./utils.js');
+const sum = (columnId, _leafRows, childRows) => {
+  // It's faster to just add the aggregations together instead of
+  // process leaf nodes individually
+  return childRows.reduce((sum, next) => {
+    const nextValue = next.getValue(columnId);
+    return sum + (typeof nextValue === 'number' ? nextValue : 0);
+  }, 0);
+};
+const min = (columnId, _leafRows, childRows) => {
+  let min;
+  childRows.forEach(row => {
+    const value = row.getValue(columnId);
+    if (value != null && (min > value || min === undefined && value >= value)) {
+      min = value;
+    }
+  });
+  return min;
+};
+const max = (columnId, _leafRows, childRows) => {
+  let max;
+  childRows.forEach(row => {
+    const value = row.getValue(columnId);
+    if (value != null && (max < value || max === undefined && value >= value)) {
+      max = value;
+    }
+  });
+  return max;
+};
+const extent = (columnId, _leafRows, childRows) => {
+  let min;
+  let max;
+  childRows.forEach(row => {
+    const value = row.getValue(columnId);
+    if (value != null) {
+      if (min === undefined) {
+        if (value >= value) min = max = value;
+      } else {
+        if (min > value) min = value;
+        if (max < value) max = value;
+      }
+    }
+  });
+  return [min, max];
+};
+const mean = (columnId, leafRows) => {
+  let count = 0;
+  let sum = 0;
+  leafRows.forEach(row => {
+    let value = row.getValue(columnId);
+    if (value != null && (value = +value) >= value) {
+      ++count, sum += value;
+    }
+  });
+  if (count) return sum / count;
+  return;
+};
+const median = (columnId, leafRows) => {
+  if (!leafRows.length) {
+    return;
+  }
+  const values = leafRows.map(row => row.getValue(columnId));
+  if (!utils.isNumberArray(values)) {
+    return;
+  }
+  if (values.length === 1) {
+    return values[0];
+  }
+  const mid = Math.floor(values.length / 2);
+  const nums = values.sort((a, b) => a - b);
+  return values.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+};
+const unique = (columnId, leafRows) => {
+  return Array.from(new Set(leafRows.map(d => d.getValue(columnId))).values());
+};
+const uniqueCount = (columnId, leafRows) => {
+  return new Set(leafRows.map(d => d.getValue(columnId))).size;
+};
+const count = (_columnId, leafRows) => {
+  return leafRows.length;
+};
+const aggregationFns = {
+  sum,
+  min,
+  max,
+  extent,
+  mean,
+  median,
+  unique,
+  uniqueCount,
+  count
+};
+exports.aggregationFns = aggregationFns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var aggregationFns = require('../aggregationFns.js');
+var utils = require('../utils.js');
+
+//
+
+const ColumnGrouping = {
+  getDefaultColumnDef: () => {
+    return {
+      aggregatedCell: props => {
+        var _toString, _props$getValue;
+        return (_toString = (_props$getValue = props.getValue()) == null || _props$getValue.toString == null ? void 0 : _props$getValue.toString()) != null ? _toString : null;
+      },
+      aggregationFn: 'auto'
+    };
+  },
+  getInitialState: state => {
+    return {
+      grouping: [],
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onGroupingChange: utils.makeStateUpdater('grouping', table),
+      groupedColumnMode: 'reorder'
+    };
+  },
+  createColumn: (column, table) => {
+    column.toggleGrouping = () => {
+      table.setGrouping(old => {
+        // Find any existing grouping for this column
+        if (old != null && old.includes(column.id)) {
+          return old.filter(d => d !== column.id);
+        }
+        return [...(old != null ? old : []), column.id];
+      });
+    };
+    column.getCanGroup = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableGrouping) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableGrouping) != null ? _table$options$enable : true) && (!!column.accessorFn || !!column.columnDef.getGroupingValue);
+    };
+    column.getIsGrouped = () => {
+      var _table$getState$group;
+      return (_table$getState$group = table.getState().grouping) == null ? void 0 : _table$getState$group.includes(column.id);
+    };
+    column.getGroupedIndex = () => {
+      var _table$getState$group2;
+      return (_table$getState$group2 = table.getState().grouping) == null ? void 0 : _table$getState$group2.indexOf(column.id);
+    };
+    column.getToggleGroupingHandler = () => {
+      const canGroup = column.getCanGroup();
+      return () => {
+        if (!canGroup) return;
+        column.toggleGrouping();
+      };
+    };
+    column.getAutoAggregationFn = () => {
+      const firstRow = table.getCoreRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'number') {
+        return aggregationFns.aggregationFns.sum;
+      }
+      if (Object.prototype.toString.call(value) === '[object Date]') {
+        return aggregationFns.aggregationFns.extent;
+      }
+    };
+    column.getAggregationFn = () => {
+      var _table$options$aggreg, _table$options$aggreg2;
+      if (!column) {
+        throw new Error();
+      }
+      return utils.isFunction(column.columnDef.aggregationFn) ? column.columnDef.aggregationFn : column.columnDef.aggregationFn === 'auto' ? column.getAutoAggregationFn() : (_table$options$aggreg = (_table$options$aggreg2 = table.options.aggregationFns) == null ? void 0 : _table$options$aggreg2[column.columnDef.aggregationFn]) != null ? _table$options$aggreg : aggregationFns.aggregationFns[column.columnDef.aggregationFn];
+    };
+  },
+  createTable: table => {
+    table.setGrouping = updater => table.options.onGroupingChange == null ? void 0 : table.options.onGroupingChange(updater);
+    table.resetGrouping = defaultState => {
+      var _table$initialState$g, _table$initialState;
+      table.setGrouping(defaultState ? [] : (_table$initialState$g = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.grouping) != null ? _table$initialState$g : []);
+    };
+    table.getPreGroupedRowModel = () => table.getFilteredRowModel();
+    table.getGroupedRowModel = () => {
+      if (!table._getGroupedRowModel && table.options.getGroupedRowModel) {
+        table._getGroupedRowModel = table.options.getGroupedRowModel(table);
+      }
+      if (table.options.manualGrouping || !table._getGroupedRowModel) {
+        return table.getPreGroupedRowModel();
+      }
+      return table._getGroupedRowModel();
+    };
+  },
+  createRow: (row, table) => {
+    row.getIsGrouped = () => !!row.groupingColumnId;
+    row.getGroupingValue = columnId => {
+      if (row._groupingValuesCache.hasOwnProperty(columnId)) {
+        return row._groupingValuesCache[columnId];
+      }
+      const column = table.getColumn(columnId);
+      if (!(column != null && column.columnDef.getGroupingValue)) {
+        return row.getValue(columnId);
+      }
+      row._groupingValuesCache[columnId] = column.columnDef.getGroupingValue(row.original);
+      return row._groupingValuesCache[columnId];
+    };
+    row._groupingValuesCache = {};
+  },
+  createCell: (cell, column, row, table) => {
+    cell.getIsGrouped = () => column.getIsGrouped() && column.id === row.groupingColumnId;
+    cell.getIsPlaceholder = () => !cell.getIsGrouped() && column.getIsGrouped();
+    cell.getIsAggregated = () => {
+      var _row$subRows;
+      return !cell.getIsGrouped() && !cell.getIsPlaceholder() && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
+    };
+  }
+};
+function orderColumns(leafColumns, grouping, groupedColumnMode) {
+  if (!(grouping != null && grouping.length) || !groupedColumnMode) {
+    return leafColumns;
+  }
+  const nonGroupingColumns = leafColumns.filter(col => !grouping.includes(col.id));
+  if (groupedColumnMode === 'remove') {
+    return nonGroupingColumns;
+  }
+  const groupingColumns = grouping.map(g => leafColumns.find(col => col.id === g)).filter(Boolean);
+  return [...groupingColumns, ...nonGroupingColumns];
+}
+exports.ColumnGrouping = ColumnGrouping;
+exports.orderColumns = orderColumns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const ColumnVisibility = {
+  getInitialState: state => {
+    return {
+      columnVisibility: {},
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnVisibilityChange: utils.makeStateUpdater('columnVisibility', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.toggleVisibility = value => {
+      if (column.getCanHide()) {
+        table.setColumnVisibility(old => ({
+          ...old,
+          [column.id]: value != null ? value : !column.getIsVisible()
+        }));
+      }
+    };
+    column.getIsVisible = () => {
+      var _ref, _table$getState$colum;
+      const childColumns = column.columns;
+      return (_ref = childColumns.length ? childColumns.some(c => c.getIsVisible()) : (_table$getState$colum = table.getState().columnVisibility) == null ? void 0 : _table$getState$colum[column.id]) != null ? _ref : true;
+    };
+    column.getCanHide = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableHiding) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableHiding) != null ? _table$options$enable : true);
+    };
+    column.getToggleVisibilityHandler = () => {
+      return e => {
+        column.toggleVisibility == null || column.toggleVisibility(e.target.checked);
+      };
+    };
+  },
+  createRow: (row, table) => {
+    row._getAllVisibleCells = utils.memo(() => [row.getAllCells(), table.getState().columnVisibility], cells => {
+      return cells.filter(cell => cell.column.getIsVisible());
+    }, utils.getMemoOptions(table.options, 'debugRows', '_getAllVisibleCells'));
+    row.getVisibleCells = utils.memo(() => [row.getLeftVisibleCells(), row.getCenterVisibleCells(), row.getRightVisibleCells()], (left, center, right) => [...left, ...center, ...right], utils.getMemoOptions(table.options, 'debugRows', 'getVisibleCells'));
+  },
+  createTable: table => {
+    const makeVisibleColumnsMethod = (key, getColumns) => {
+      return utils.memo(() => [getColumns(), getColumns().filter(d => d.getIsVisible()).map(d => d.id).join('_')], columns => {
+        return columns.filter(d => d.getIsVisible == null ? void 0 : d.getIsVisible());
+      }, utils.getMemoOptions(table.options, 'debugColumns', key));
+    };
+    table.getVisibleFlatColumns = makeVisibleColumnsMethod('getVisibleFlatColumns', () => table.getAllFlatColumns());
+    table.getVisibleLeafColumns = makeVisibleColumnsMethod('getVisibleLeafColumns', () => table.getAllLeafColumns());
+    table.getLeftVisibleLeafColumns = makeVisibleColumnsMethod('getLeftVisibleLeafColumns', () => table.getLeftLeafColumns());
+    table.getRightVisibleLeafColumns = makeVisibleColumnsMethod('getRightVisibleLeafColumns', () => table.getRightLeafColumns());
+    table.getCenterVisibleLeafColumns = makeVisibleColumnsMethod('getCenterVisibleLeafColumns', () => table.getCenterLeafColumns());
+    table.setColumnVisibility = updater => table.options.onColumnVisibilityChange == null ? void 0 : table.options.onColumnVisibilityChange(updater);
+    table.resetColumnVisibility = defaultState => {
+      var _table$initialState$c;
+      table.setColumnVisibility(defaultState ? {} : (_table$initialState$c = table.initialState.columnVisibility) != null ? _table$initialState$c : {});
+    };
+    table.toggleAllColumnsVisible = value => {
+      var _value;
+      value = (_value = value) != null ? _value : !table.getIsAllColumnsVisible();
+      table.setColumnVisibility(table.getAllLeafColumns().reduce((obj, column) => ({
+        ...obj,
+        [column.id]: !value ? !(column.getCanHide != null && column.getCanHide()) : value
+      }), {}));
+    };
+    table.getIsAllColumnsVisible = () => !table.getAllLeafColumns().some(column => !(column.getIsVisible != null && column.getIsVisible()));
+    table.getIsSomeColumnsVisible = () => table.getAllLeafColumns().some(column => column.getIsVisible == null ? void 0 : column.getIsVisible());
+    table.getToggleAllColumnsVisibilityHandler = () => {
+      return e => {
+        var _target;
+        table.toggleAllColumnsVisible((_target = e.target) == null ? void 0 : _target.checked);
+      };
+    };
+  }
+};
+function _getVisibleLeafColumns(table, position) {
+  return !position ? table.getVisibleLeafColumns() : position === 'center' ? table.getCenterVisibleLeafColumns() : position === 'left' ? table.getLeftVisibleLeafColumns() : table.getRightVisibleLeafColumns();
+}
+exports.ColumnVisibility = ColumnVisibility;
+exports._getVisibleLeafColumns = _getVisibleLeafColumns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var ColumnGrouping = require('./ColumnGrouping.js');
+var ColumnVisibility = require('./ColumnVisibility.js');
+
+//
+
+const ColumnOrdering = {
+  getInitialState: state => {
+    return {
+      columnOrder: [],
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnOrderChange: utils.makeStateUpdater('columnOrder', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.getIndex = utils.memo(position => [ColumnVisibility._getVisibleLeafColumns(table, position)], columns => columns.findIndex(d => d.id === column.id), utils.getMemoOptions(table.options, 'debugColumns', 'getIndex'));
+    column.getIsFirstColumn = position => {
+      var _columns$;
+      const columns = ColumnVisibility._getVisibleLeafColumns(table, position);
+      return ((_columns$ = columns[0]) == null ? void 0 : _columns$.id) === column.id;
+    };
+    column.getIsLastColumn = position => {
+      var _columns;
+      const columns = ColumnVisibility._getVisibleLeafColumns(table, position);
+      return ((_columns = columns[columns.length - 1]) == null ? void 0 : _columns.id) === column.id;
+    };
+  },
+  createTable: table => {
+    table.setColumnOrder = updater => table.options.onColumnOrderChange == null ? void 0 : table.options.onColumnOrderChange(updater);
+    table.resetColumnOrder = defaultState => {
+      var _table$initialState$c;
+      table.setColumnOrder(defaultState ? [] : (_table$initialState$c = table.initialState.columnOrder) != null ? _table$initialState$c : []);
+    };
+    table._getOrderColumnsFn = utils.memo(() => [table.getState().columnOrder, table.getState().grouping, table.options.groupedColumnMode], (columnOrder, grouping, groupedColumnMode) => columns => {
+      // Sort grouped columns to the start of the column list
+      // before the headers are built
+      let orderedColumns = [];
+
+      // If there is no order, return the normal columns
+      if (!(columnOrder != null && columnOrder.length)) {
+        orderedColumns = columns;
+      } else {
+        const columnOrderCopy = [...columnOrder];
+
+        // If there is an order, make a copy of the columns
+        const columnsCopy = [...columns];
+
+        // And make a new ordered array of the columns
+
+        // Loop over the columns and place them in order into the new array
+        while (columnsCopy.length && columnOrderCopy.length) {
+          const targetColumnId = columnOrderCopy.shift();
+          const foundIndex = columnsCopy.findIndex(d => d.id === targetColumnId);
+          if (foundIndex > -1) {
+            orderedColumns.push(columnsCopy.splice(foundIndex, 1)[0]);
+          }
+        }
+
+        // If there are any columns left, add them to the end
+        orderedColumns = [...orderedColumns, ...columnsCopy];
+      }
+      return ColumnGrouping.orderColumns(orderedColumns, grouping, groupedColumnMode);
+    }, utils.getMemoOptions(table.options, 'debugTable', '_getOrderColumnsFn'));
+  }
+};
+exports.ColumnOrdering = ColumnOrdering;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const getDefaultColumnPinningState = () => ({
+  left: [],
+  right: []
+});
+const ColumnPinning = {
+  getInitialState: state => {
+    return {
+      columnPinning: getDefaultColumnPinningState(),
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onColumnPinningChange: utils.makeStateUpdater('columnPinning', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.pin = position => {
+      const columnIds = column.getLeafColumns().map(d => d.id).filter(Boolean);
+      table.setColumnPinning(old => {
+        var _old$left3, _old$right3;
+        if (position === 'right') {
+          var _old$left, _old$right;
+          return {
+            left: ((_old$left = old == null ? void 0 : old.left) != null ? _old$left : []).filter(d => !(columnIds != null && columnIds.includes(d))),
+            right: [...((_old$right = old == null ? void 0 : old.right) != null ? _old$right : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds]
+          };
+        }
+        if (position === 'left') {
+          var _old$left2, _old$right2;
+          return {
+            left: [...((_old$left2 = old == null ? void 0 : old.left) != null ? _old$left2 : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds],
+            right: ((_old$right2 = old == null ? void 0 : old.right) != null ? _old$right2 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
+          };
+        }
+        return {
+          left: ((_old$left3 = old == null ? void 0 : old.left) != null ? _old$left3 : []).filter(d => !(columnIds != null && columnIds.includes(d))),
+          right: ((_old$right3 = old == null ? void 0 : old.right) != null ? _old$right3 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
+        };
+      });
+    };
+    column.getCanPin = () => {
+      const leafColumns = column.getLeafColumns();
+      return leafColumns.some(d => {
+        var _d$columnDef$enablePi, _ref, _table$options$enable;
+        return ((_d$columnDef$enablePi = d.columnDef.enablePinning) != null ? _d$columnDef$enablePi : true) && ((_ref = (_table$options$enable = table.options.enableColumnPinning) != null ? _table$options$enable : table.options.enablePinning) != null ? _ref : true);
+      });
+    };
+    column.getIsPinned = () => {
+      const leafColumnIds = column.getLeafColumns().map(d => d.id);
+      const {
+        left,
+        right
+      } = table.getState().columnPinning;
+      const isLeft = leafColumnIds.some(d => left == null ? void 0 : left.includes(d));
+      const isRight = leafColumnIds.some(d => right == null ? void 0 : right.includes(d));
+      return isLeft ? 'left' : isRight ? 'right' : false;
+    };
+    column.getPinnedIndex = () => {
+      var _table$getState$colum, _table$getState$colum2;
+      const position = column.getIsPinned();
+      return position ? (_table$getState$colum = (_table$getState$colum2 = table.getState().columnPinning) == null || (_table$getState$colum2 = _table$getState$colum2[position]) == null ? void 0 : _table$getState$colum2.indexOf(column.id)) != null ? _table$getState$colum : -1 : 0;
+    };
+  },
+  createRow: (row, table) => {
+    row.getCenterVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allCells, left, right) => {
+      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
+      return allCells.filter(d => !leftAndRight.includes(d.column.id));
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getCenterVisibleCells'));
+    row.getLeftVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left], (allCells, left) => {
+      const cells = (left != null ? left : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
+        ...d,
+        position: 'left'
+      }));
+      return cells;
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getLeftVisibleCells'));
+    row.getRightVisibleCells = utils.memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.right], (allCells, right) => {
+      const cells = (right != null ? right : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
+        ...d,
+        position: 'right'
+      }));
+      return cells;
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getRightVisibleCells'));
+  },
+  createTable: table => {
+    table.setColumnPinning = updater => table.options.onColumnPinningChange == null ? void 0 : table.options.onColumnPinningChange(updater);
+    table.resetColumnPinning = defaultState => {
+      var _table$initialState$c, _table$initialState;
+      return table.setColumnPinning(defaultState ? getDefaultColumnPinningState() : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnPinning) != null ? _table$initialState$c : getDefaultColumnPinningState());
+    };
+    table.getIsSomeColumnsPinned = position => {
+      var _pinningState$positio;
+      const pinningState = table.getState().columnPinning;
+      if (!position) {
+        var _pinningState$left, _pinningState$right;
+        return Boolean(((_pinningState$left = pinningState.left) == null ? void 0 : _pinningState$left.length) || ((_pinningState$right = pinningState.right) == null ? void 0 : _pinningState$right.length));
+      }
+      return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
+    };
+    table.getLeftLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left], (allColumns, left) => {
+      return (left != null ? left : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'getLeftLeafColumns'));
+    table.getRightLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.right], (allColumns, right) => {
+      return (right != null ? right : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'getRightLeafColumns'));
+    table.getCenterLeafColumns = utils.memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, left, right) => {
+      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
+      return allColumns.filter(d => !leftAndRight.includes(d.id));
+    }, utils.getMemoOptions(table.options, 'debugColumns', 'getCenterLeafColumns'));
+  }
+};
+exports.ColumnPinning = ColumnPinning;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+function safelyAccessDocument(_document) {
+  return _document || (typeof document !== 'undefined' ? document : null);
+}
+exports.safelyAccessDocument = safelyAccessDocument;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var document = require('../utils/document.js');
+var ColumnVisibility = require('./ColumnVisibility.js');
+
+//
+
+//
+
+const defaultColumnSizing = {
+  size: 150,
+  minSize: 20,
+  maxSize: Number.MAX_SAFE_INTEGER
+};
+const getDefaultColumnSizingInfoState = () => ({
+  startOffset: null,
+  startSize: null,
+  deltaOffset: null,
+  deltaPercentage: null,
+  isResizingColumn: false,
+  columnSizingStart: []
+});
+const ColumnSizing = {
+  getDefaultColumnDef: () => {
+    return defaultColumnSizing;
+  },
+  getInitialState: state => {
+    return {
+      columnSizing: {},
+      columnSizingInfo: getDefaultColumnSizingInfoState(),
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      columnResizeMode: 'onEnd',
+      columnResizeDirection: 'ltr',
+      onColumnSizingChange: utils.makeStateUpdater('columnSizing', table),
+      onColumnSizingInfoChange: utils.makeStateUpdater('columnSizingInfo', table)
+    };
+  },
+  createColumn: (column, table) => {
+    column.getSize = () => {
+      var _column$columnDef$min, _ref, _column$columnDef$max;
+      const columnSize = table.getState().columnSizing[column.id];
+      return Math.min(Math.max((_column$columnDef$min = column.columnDef.minSize) != null ? _column$columnDef$min : defaultColumnSizing.minSize, (_ref = columnSize != null ? columnSize : column.columnDef.size) != null ? _ref : defaultColumnSizing.size), (_column$columnDef$max = column.columnDef.maxSize) != null ? _column$columnDef$max : defaultColumnSizing.maxSize);
+    };
+    column.getStart = utils.memo(position => [position, ColumnVisibility._getVisibleLeafColumns(table, position), table.getState().columnSizing], (position, columns) => columns.slice(0, column.getIndex(position)).reduce((sum, column) => sum + column.getSize(), 0), utils.getMemoOptions(table.options, 'debugColumns', 'getStart'));
+    column.getAfter = utils.memo(position => [position, ColumnVisibility._getVisibleLeafColumns(table, position), table.getState().columnSizing], (position, columns) => columns.slice(column.getIndex(position) + 1).reduce((sum, column) => sum + column.getSize(), 0), utils.getMemoOptions(table.options, 'debugColumns', 'getAfter'));
+    column.resetSize = () => {
+      table.setColumnSizing(_ref2 => {
+        let {
+          [column.id]: _,
+          ...rest
+        } = _ref2;
+        return rest;
+      });
+    };
+    column.getCanResize = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableResizing) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnResizing) != null ? _table$options$enable : true);
+    };
+    column.getIsResizing = () => {
+      return table.getState().columnSizingInfo.isResizingColumn === column.id;
+    };
+  },
+  createHeader: (header, table) => {
+    header.getSize = () => {
+      let sum = 0;
+      const recurse = header => {
+        if (header.subHeaders.length) {
+          header.subHeaders.forEach(recurse);
+        } else {
+          var _header$column$getSiz;
+          sum += (_header$column$getSiz = header.column.getSize()) != null ? _header$column$getSiz : 0;
+        }
+      };
+      recurse(header);
+      return sum;
+    };
+    header.getStart = () => {
+      if (header.index > 0) {
+        const prevSiblingHeader = header.headerGroup.headers[header.index - 1];
+        return prevSiblingHeader.getStart() + prevSiblingHeader.getSize();
+      }
+      return 0;
+    };
+    header.getResizeHandler = _contextDocument => {
+      const column = table.getColumn(header.column.id);
+      const canResize = column == null ? void 0 : column.getCanResize();
+      return e => {
+        if (!column || !canResize) {
+          return;
+        }
+        e.persist == null || e.persist();
+        if (isTouchStartEvent(e)) {
+          // lets not respond to multiple touches (e.g. 2 or 3 fingers)
+          if (e.touches && e.touches.length > 1) {
+            return;
+          }
+        }
+        const startSize = header.getSize();
+        const columnSizingStart = header ? header.getLeafHeaders().map(d => [d.column.id, d.column.getSize()]) : [[column.id, column.getSize()]];
+        const clientX = isTouchStartEvent(e) ? Math.round(e.touches[0].clientX) : e.clientX;
+        const newColumnSizing = {};
+        const updateOffset = (eventType, clientXPos) => {
+          if (typeof clientXPos !== 'number') {
+            return;
+          }
+          table.setColumnSizingInfo(old => {
+            var _old$startOffset, _old$startSize;
+            const deltaDirection = table.options.columnResizeDirection === 'rtl' ? -1 : 1;
+            const deltaOffset = (clientXPos - ((_old$startOffset = old == null ? void 0 : old.startOffset) != null ? _old$startOffset : 0)) * deltaDirection;
+            const deltaPercentage = Math.max(deltaOffset / ((_old$startSize = old == null ? void 0 : old.startSize) != null ? _old$startSize : 0), -0.999999);
+            old.columnSizingStart.forEach(_ref3 => {
+              let [columnId, headerSize] = _ref3;
+              newColumnSizing[columnId] = Math.round(Math.max(headerSize + headerSize * deltaPercentage, 0) * 100) / 100;
+            });
+            return {
+              ...old,
+              deltaOffset,
+              deltaPercentage
+            };
+          });
+          if (table.options.columnResizeMode === 'onChange' || eventType === 'end') {
+            table.setColumnSizing(old => ({
+              ...old,
+              ...newColumnSizing
+            }));
+          }
+        };
+        const onMove = clientXPos => updateOffset('move', clientXPos);
+        const onEnd = clientXPos => {
+          updateOffset('end', clientXPos);
+          table.setColumnSizingInfo(old => ({
+            ...old,
+            isResizingColumn: false,
+            startOffset: null,
+            startSize: null,
+            deltaOffset: null,
+            deltaPercentage: null,
+            columnSizingStart: []
+          }));
+        };
+        const contextDocument = document.safelyAccessDocument(_contextDocument);
+        const mouseEvents = {
+          moveHandler: e => onMove(e.clientX),
+          upHandler: e => {
+            contextDocument == null || contextDocument.removeEventListener('mousemove', mouseEvents.moveHandler);
+            contextDocument == null || contextDocument.removeEventListener('mouseup', mouseEvents.upHandler);
+            onEnd(e.clientX);
+          }
+        };
+        const touchEvents = {
+          moveHandler: e => {
+            if (e.cancelable) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            onMove(e.touches[0].clientX);
+            return false;
+          },
+          upHandler: e => {
+            var _e$touches$;
+            contextDocument == null || contextDocument.removeEventListener('touchmove', touchEvents.moveHandler);
+            contextDocument == null || contextDocument.removeEventListener('touchend', touchEvents.upHandler);
+            if (e.cancelable) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            onEnd((_e$touches$ = e.touches[0]) == null ? void 0 : _e$touches$.clientX);
+          }
+        };
+        const passiveIfSupported = passiveEventSupported() ? {
+          passive: false
+        } : false;
+        if (isTouchStartEvent(e)) {
+          contextDocument == null || contextDocument.addEventListener('touchmove', touchEvents.moveHandler, passiveIfSupported);
+          contextDocument == null || contextDocument.addEventListener('touchend', touchEvents.upHandler, passiveIfSupported);
+        } else {
+          contextDocument == null || contextDocument.addEventListener('mousemove', mouseEvents.moveHandler, passiveIfSupported);
+          contextDocument == null || contextDocument.addEventListener('mouseup', mouseEvents.upHandler, passiveIfSupported);
+        }
+        table.setColumnSizingInfo(old => ({
+          ...old,
+          startOffset: clientX,
+          startSize,
+          deltaOffset: 0,
+          deltaPercentage: 0,
+          columnSizingStart,
+          isResizingColumn: column.id
+        }));
+      };
+    };
+  },
+  createTable: table => {
+    table.setColumnSizing = updater => table.options.onColumnSizingChange == null ? void 0 : table.options.onColumnSizingChange(updater);
+    table.setColumnSizingInfo = updater => table.options.onColumnSizingInfoChange == null ? void 0 : table.options.onColumnSizingInfoChange(updater);
+    table.resetColumnSizing = defaultState => {
+      var _table$initialState$c;
+      table.setColumnSizing(defaultState ? {} : (_table$initialState$c = table.initialState.columnSizing) != null ? _table$initialState$c : {});
+    };
+    table.resetHeaderSizeInfo = defaultState => {
+      var _table$initialState$c2;
+      table.setColumnSizingInfo(defaultState ? getDefaultColumnSizingInfoState() : (_table$initialState$c2 = table.initialState.columnSizingInfo) != null ? _table$initialState$c2 : getDefaultColumnSizingInfoState());
+    };
+    table.getTotalSize = () => {
+      var _table$getHeaderGroup, _table$getHeaderGroup2;
+      return (_table$getHeaderGroup = (_table$getHeaderGroup2 = table.getHeaderGroups()[0]) == null ? void 0 : _table$getHeaderGroup2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getHeaderGroup : 0;
+    };
+    table.getLeftTotalSize = () => {
+      var _table$getLeftHeaderG, _table$getLeftHeaderG2;
+      return (_table$getLeftHeaderG = (_table$getLeftHeaderG2 = table.getLeftHeaderGroups()[0]) == null ? void 0 : _table$getLeftHeaderG2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getLeftHeaderG : 0;
+    };
+    table.getCenterTotalSize = () => {
+      var _table$getCenterHeade, _table$getCenterHeade2;
+      return (_table$getCenterHeade = (_table$getCenterHeade2 = table.getCenterHeaderGroups()[0]) == null ? void 0 : _table$getCenterHeade2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getCenterHeade : 0;
+    };
+    table.getRightTotalSize = () => {
+      var _table$getRightHeader, _table$getRightHeader2;
+      return (_table$getRightHeader = (_table$getRightHeader2 = table.getRightHeaderGroups()[0]) == null ? void 0 : _table$getRightHeader2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getRightHeader : 0;
+    };
+  }
+};
+let passiveSupported = null;
+function passiveEventSupported() {
+  if (typeof passiveSupported === 'boolean') return passiveSupported;
+  let supported = false;
+  try {
+    const options = {
+      get passive() {
+        supported = true;
+        return false;
+      }
+    };
+    const noop = () => {};
+    window.addEventListener('test', noop, options);
+    window.removeEventListener('test', noop);
+  } catch (err) {
+    supported = false;
+  }
+  passiveSupported = supported;
+  return passiveSupported;
+}
+function isTouchStartEvent(e) {
+  return e.type === 'touchstart';
+}
+exports.ColumnSizing = ColumnSizing;
+exports.defaultColumnSizing = defaultColumnSizing;
+exports.passiveEventSupported = passiveEventSupported;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+//
+const GlobalFaceting = {
+  createTable: table => {
+    table._getGlobalFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, '__global__');
+    table.getGlobalFacetedRowModel = () => {
+      if (table.options.manualFiltering || !table._getGlobalFacetedRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return table._getGlobalFacetedRowModel();
+    };
+    table._getGlobalFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, '__global__');
+    table.getGlobalFacetedUniqueValues = () => {
+      if (!table._getGlobalFacetedUniqueValues) {
+        return new Map();
+      }
+      return table._getGlobalFacetedUniqueValues();
+    };
+    table._getGlobalFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, '__global__');
+    table.getGlobalFacetedMinMaxValues = () => {
+      if (!table._getGlobalFacetedMinMaxValues) {
+        return;
+      }
+      return table._getGlobalFacetedMinMaxValues();
+    };
+  }
+};
+exports.GlobalFaceting = GlobalFaceting;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var filterFns = require('../filterFns.js');
+var utils = require('../utils.js');
+
+//
+
+const GlobalFiltering = {
+  getInitialState: state => {
+    return {
+      globalFilter: undefined,
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onGlobalFilterChange: utils.makeStateUpdater('globalFilter', table),
+      globalFilterFn: 'auto',
+      getColumnCanGlobalFilter: column => {
+        var _table$getCoreRowMode;
+        const value = (_table$getCoreRowMode = table.getCoreRowModel().flatRows[0]) == null || (_table$getCoreRowMode = _table$getCoreRowMode._getAllCellsByColumnId()[column.id]) == null ? void 0 : _table$getCoreRowMode.getValue();
+        return typeof value === 'string' || typeof value === 'number';
+      }
+    };
+  },
+  createColumn: (column, table) => {
+    column.getCanGlobalFilter = () => {
+      var _column$columnDef$ena, _table$options$enable, _table$options$enable2, _table$options$getCol;
+      return ((_column$columnDef$ena = column.columnDef.enableGlobalFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableGlobalFilter) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && ((_table$options$getCol = table.options.getColumnCanGlobalFilter == null ? void 0 : table.options.getColumnCanGlobalFilter(column)) != null ? _table$options$getCol : true) && !!column.accessorFn;
+    };
+  },
+  createTable: table => {
+    table.getGlobalAutoFilterFn = () => {
+      return filterFns.filterFns.includesString;
+    };
+    table.getGlobalFilterFn = () => {
+      var _table$options$filter, _table$options$filter2;
+      const {
+        globalFilterFn: globalFilterFn
+      } = table.options;
+      return utils.isFunction(globalFilterFn) ? globalFilterFn : globalFilterFn === 'auto' ? table.getGlobalAutoFilterFn() : (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[globalFilterFn]) != null ? _table$options$filter : filterFns.filterFns[globalFilterFn];
+    };
+    table.setGlobalFilter = updater => {
+      table.options.onGlobalFilterChange == null || table.options.onGlobalFilterChange(updater);
+    };
+    table.resetGlobalFilter = defaultState => {
+      table.setGlobalFilter(defaultState ? undefined : table.initialState.globalFilter);
+    };
+  }
+};
+exports.GlobalFiltering = GlobalFiltering;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const RowExpanding = {
+  getInitialState: state => {
+    return {
+      expanded: {},
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onExpandedChange: utils.makeStateUpdater('expanded', table),
+      paginateExpandedRows: true
+    };
+  },
+  createTable: table => {
+    let registered = false;
+    let queued = false;
+    table._autoResetExpanded = () => {
+      var _ref, _table$options$autoRe;
+      if (!registered) {
+        table._queue(() => {
+          registered = true;
+        });
+        return;
+      }
+      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetExpanded) != null ? _ref : !table.options.manualExpanding) {
+        if (queued) return;
+        queued = true;
+        table._queue(() => {
+          table.resetExpanded();
+          queued = false;
+        });
+      }
+    };
+    table.setExpanded = updater => table.options.onExpandedChange == null ? void 0 : table.options.onExpandedChange(updater);
+    table.toggleAllRowsExpanded = expanded => {
+      if (expanded != null ? expanded : !table.getIsAllRowsExpanded()) {
+        table.setExpanded(true);
+      } else {
+        table.setExpanded({});
+      }
+    };
+    table.resetExpanded = defaultState => {
+      var _table$initialState$e, _table$initialState;
+      table.setExpanded(defaultState ? {} : (_table$initialState$e = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.expanded) != null ? _table$initialState$e : {});
+    };
+    table.getCanSomeRowsExpand = () => {
+      return table.getPrePaginationRowModel().flatRows.some(row => row.getCanExpand());
+    };
+    table.getToggleAllRowsExpandedHandler = () => {
+      return e => {
+        e.persist == null || e.persist();
+        table.toggleAllRowsExpanded();
+      };
+    };
+    table.getIsSomeRowsExpanded = () => {
+      const expanded = table.getState().expanded;
+      return expanded === true || Object.values(expanded).some(Boolean);
+    };
+    table.getIsAllRowsExpanded = () => {
+      const expanded = table.getState().expanded;
+
+      // If expanded is true, save some cycles and return true
+      if (typeof expanded === 'boolean') {
+        return expanded === true;
+      }
+      if (!Object.keys(expanded).length) {
+        return false;
+      }
+
+      // If any row is not expanded, return false
+      if (table.getRowModel().flatRows.some(row => !row.getIsExpanded())) {
+        return false;
+      }
+
+      // They must all be expanded :shrug:
+      return true;
+    };
+    table.getExpandedDepth = () => {
+      let maxDepth = 0;
+      const rowIds = table.getState().expanded === true ? Object.keys(table.getRowModel().rowsById) : Object.keys(table.getState().expanded);
+      rowIds.forEach(id => {
+        const splitId = id.split('.');
+        maxDepth = Math.max(maxDepth, splitId.length);
+      });
+      return maxDepth;
+    };
+    table.getPreExpandedRowModel = () => table.getSortedRowModel();
+    table.getExpandedRowModel = () => {
+      if (!table._getExpandedRowModel && table.options.getExpandedRowModel) {
+        table._getExpandedRowModel = table.options.getExpandedRowModel(table);
+      }
+      if (table.options.manualExpanding || !table._getExpandedRowModel) {
+        return table.getPreExpandedRowModel();
+      }
+      return table._getExpandedRowModel();
+    };
+  },
+  createRow: (row, table) => {
+    row.toggleExpanded = expanded => {
+      table.setExpanded(old => {
+        var _expanded;
+        const exists = old === true ? true : !!(old != null && old[row.id]);
+        let oldExpanded = {};
+        if (old === true) {
+          Object.keys(table.getRowModel().rowsById).forEach(rowId => {
+            oldExpanded[rowId] = true;
+          });
+        } else {
+          oldExpanded = old;
+        }
+        expanded = (_expanded = expanded) != null ? _expanded : !exists;
+        if (!exists && expanded) {
+          return {
+            ...oldExpanded,
+            [row.id]: true
+          };
+        }
+        if (exists && !expanded) {
+          const {
+            [row.id]: _,
+            ...rest
+          } = oldExpanded;
+          return rest;
+        }
+        return old;
+      });
+    };
+    row.getIsExpanded = () => {
+      var _table$options$getIsR;
+      const expanded = table.getState().expanded;
+      return !!((_table$options$getIsR = table.options.getIsRowExpanded == null ? void 0 : table.options.getIsRowExpanded(row)) != null ? _table$options$getIsR : expanded === true || (expanded == null ? void 0 : expanded[row.id]));
+    };
+    row.getCanExpand = () => {
+      var _table$options$getRow, _table$options$enable, _row$subRows;
+      return (_table$options$getRow = table.options.getRowCanExpand == null ? void 0 : table.options.getRowCanExpand(row)) != null ? _table$options$getRow : ((_table$options$enable = table.options.enableExpanding) != null ? _table$options$enable : true) && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
+    };
+    row.getIsAllParentsExpanded = () => {
+      let isFullyExpanded = true;
+      let currentRow = row;
+      while (isFullyExpanded && currentRow.parentId) {
+        currentRow = table.getRow(currentRow.parentId, true);
+        isFullyExpanded = currentRow.getIsExpanded();
+      }
+      return isFullyExpanded;
+    };
+    row.getToggleExpandedHandler = () => {
+      const canExpand = row.getCanExpand();
+      return () => {
+        if (!canExpand) return;
+        row.toggleExpanded();
+      };
+    };
+  }
+};
+exports.RowExpanding = RowExpanding;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const defaultPageIndex = 0;
+const defaultPageSize = 10;
+const getDefaultPaginationState = () => ({
+  pageIndex: defaultPageIndex,
+  pageSize: defaultPageSize
+});
+const RowPagination = {
+  getInitialState: state => {
+    return {
+      ...state,
+      pagination: {
+        ...getDefaultPaginationState(),
+        ...(state == null ? void 0 : state.pagination)
+      }
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onPaginationChange: utils.makeStateUpdater('pagination', table)
+    };
+  },
+  createTable: table => {
+    let registered = false;
+    let queued = false;
+    table._autoResetPageIndex = () => {
+      var _ref, _table$options$autoRe;
+      if (!registered) {
+        table._queue(() => {
+          registered = true;
+        });
+        return;
+      }
+      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetPageIndex) != null ? _ref : !table.options.manualPagination) {
+        if (queued) return;
+        queued = true;
+        table._queue(() => {
+          table.resetPageIndex();
+          queued = false;
+        });
+      }
+    };
+    table.setPagination = updater => {
+      const safeUpdater = old => {
+        let newState = utils.functionalUpdate(updater, old);
+        return newState;
+      };
+      return table.options.onPaginationChange == null ? void 0 : table.options.onPaginationChange(safeUpdater);
+    };
+    table.resetPagination = defaultState => {
+      var _table$initialState$p;
+      table.setPagination(defaultState ? getDefaultPaginationState() : (_table$initialState$p = table.initialState.pagination) != null ? _table$initialState$p : getDefaultPaginationState());
+    };
+    table.setPageIndex = updater => {
+      table.setPagination(old => {
+        let pageIndex = utils.functionalUpdate(updater, old.pageIndex);
+        const maxPageIndex = typeof table.options.pageCount === 'undefined' || table.options.pageCount === -1 ? Number.MAX_SAFE_INTEGER : table.options.pageCount - 1;
+        pageIndex = Math.max(0, Math.min(pageIndex, maxPageIndex));
+        return {
+          ...old,
+          pageIndex
+        };
+      });
+    };
+    table.resetPageIndex = defaultState => {
+      var _table$initialState$p2, _table$initialState;
+      table.setPageIndex(defaultState ? defaultPageIndex : (_table$initialState$p2 = (_table$initialState = table.initialState) == null || (_table$initialState = _table$initialState.pagination) == null ? void 0 : _table$initialState.pageIndex) != null ? _table$initialState$p2 : defaultPageIndex);
+    };
+    table.resetPageSize = defaultState => {
+      var _table$initialState$p3, _table$initialState2;
+      table.setPageSize(defaultState ? defaultPageSize : (_table$initialState$p3 = (_table$initialState2 = table.initialState) == null || (_table$initialState2 = _table$initialState2.pagination) == null ? void 0 : _table$initialState2.pageSize) != null ? _table$initialState$p3 : defaultPageSize);
+    };
+    table.setPageSize = updater => {
+      table.setPagination(old => {
+        const pageSize = Math.max(1, utils.functionalUpdate(updater, old.pageSize));
+        const topRowIndex = old.pageSize * old.pageIndex;
+        const pageIndex = Math.floor(topRowIndex / pageSize);
+        return {
+          ...old,
+          pageIndex,
+          pageSize
+        };
+      });
+    };
+    //deprecated
+    table.setPageCount = updater => table.setPagination(old => {
+      var _table$options$pageCo;
+      let newPageCount = utils.functionalUpdate(updater, (_table$options$pageCo = table.options.pageCount) != null ? _table$options$pageCo : -1);
+      if (typeof newPageCount === 'number') {
+        newPageCount = Math.max(-1, newPageCount);
+      }
+      return {
+        ...old,
+        pageCount: newPageCount
+      };
+    });
+    table.getPageOptions = utils.memo(() => [table.getPageCount()], pageCount => {
+      let pageOptions = [];
+      if (pageCount && pageCount > 0) {
+        pageOptions = [...new Array(pageCount)].fill(null).map((_, i) => i);
+      }
+      return pageOptions;
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getPageOptions'));
+    table.getCanPreviousPage = () => table.getState().pagination.pageIndex > 0;
+    table.getCanNextPage = () => {
+      const {
+        pageIndex
+      } = table.getState().pagination;
+      const pageCount = table.getPageCount();
+      if (pageCount === -1) {
+        return true;
+      }
+      if (pageCount === 0) {
+        return false;
+      }
+      return pageIndex < pageCount - 1;
+    };
+    table.previousPage = () => {
+      return table.setPageIndex(old => old - 1);
+    };
+    table.nextPage = () => {
+      return table.setPageIndex(old => {
+        return old + 1;
+      });
+    };
+    table.firstPage = () => {
+      return table.setPageIndex(0);
+    };
+    table.lastPage = () => {
+      return table.setPageIndex(table.getPageCount() - 1);
+    };
+    table.getPrePaginationRowModel = () => table.getExpandedRowModel();
+    table.getPaginationRowModel = () => {
+      if (!table._getPaginationRowModel && table.options.getPaginationRowModel) {
+        table._getPaginationRowModel = table.options.getPaginationRowModel(table);
+      }
+      if (table.options.manualPagination || !table._getPaginationRowModel) {
+        return table.getPrePaginationRowModel();
+      }
+      return table._getPaginationRowModel();
+    };
+    table.getPageCount = () => {
+      var _table$options$pageCo2;
+      return (_table$options$pageCo2 = table.options.pageCount) != null ? _table$options$pageCo2 : Math.ceil(table.getRowCount() / table.getState().pagination.pageSize);
+    };
+    table.getRowCount = () => {
+      var _table$options$rowCou;
+      return (_table$options$rowCou = table.options.rowCount) != null ? _table$options$rowCou : table.getPrePaginationRowModel().rows.length;
+    };
+  }
+};
+exports.RowPagination = RowPagination;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const getDefaultRowPinningState = () => ({
+  top: [],
+  bottom: []
+});
+const RowPinning = {
+  getInitialState: state => {
+    return {
+      rowPinning: getDefaultRowPinningState(),
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onRowPinningChange: utils.makeStateUpdater('rowPinning', table)
+    };
+  },
+  createRow: (row, table) => {
+    row.pin = (position, includeLeafRows, includeParentRows) => {
+      const leafRowIds = includeLeafRows ? row.getLeafRows().map(_ref => {
+        let {
+          id
+        } = _ref;
+        return id;
+      }) : [];
+      const parentRowIds = includeParentRows ? row.getParentRows().map(_ref2 => {
+        let {
+          id
+        } = _ref2;
+        return id;
+      }) : [];
+      const rowIds = new Set([...parentRowIds, row.id, ...leafRowIds]);
+      table.setRowPinning(old => {
+        var _old$top3, _old$bottom3;
+        if (position === 'bottom') {
+          var _old$top, _old$bottom;
+          return {
+            top: ((_old$top = old == null ? void 0 : old.top) != null ? _old$top : []).filter(d => !(rowIds != null && rowIds.has(d))),
+            bottom: [...((_old$bottom = old == null ? void 0 : old.bottom) != null ? _old$bottom : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)]
+          };
+        }
+        if (position === 'top') {
+          var _old$top2, _old$bottom2;
+          return {
+            top: [...((_old$top2 = old == null ? void 0 : old.top) != null ? _old$top2 : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)],
+            bottom: ((_old$bottom2 = old == null ? void 0 : old.bottom) != null ? _old$bottom2 : []).filter(d => !(rowIds != null && rowIds.has(d)))
+          };
+        }
+        return {
+          top: ((_old$top3 = old == null ? void 0 : old.top) != null ? _old$top3 : []).filter(d => !(rowIds != null && rowIds.has(d))),
+          bottom: ((_old$bottom3 = old == null ? void 0 : old.bottom) != null ? _old$bottom3 : []).filter(d => !(rowIds != null && rowIds.has(d)))
+        };
+      });
+    };
+    row.getCanPin = () => {
+      var _ref3;
+      const {
+        enableRowPinning,
+        enablePinning
+      } = table.options;
+      if (typeof enableRowPinning === 'function') {
+        return enableRowPinning(row);
+      }
+      return (_ref3 = enableRowPinning != null ? enableRowPinning : enablePinning) != null ? _ref3 : true;
+    };
+    row.getIsPinned = () => {
+      const rowIds = [row.id];
+      const {
+        top,
+        bottom
+      } = table.getState().rowPinning;
+      const isTop = rowIds.some(d => top == null ? void 0 : top.includes(d));
+      const isBottom = rowIds.some(d => bottom == null ? void 0 : bottom.includes(d));
+      return isTop ? 'top' : isBottom ? 'bottom' : false;
+    };
+    row.getPinnedIndex = () => {
+      var _ref4, _visiblePinnedRowIds$;
+      const position = row.getIsPinned();
+      if (!position) return -1;
+      const visiblePinnedRowIds = (_ref4 = position === 'top' ? table.getTopRows() : table.getBottomRows()) == null ? void 0 : _ref4.map(_ref5 => {
+        let {
+          id
+        } = _ref5;
+        return id;
+      });
+      return (_visiblePinnedRowIds$ = visiblePinnedRowIds == null ? void 0 : visiblePinnedRowIds.indexOf(row.id)) != null ? _visiblePinnedRowIds$ : -1;
+    };
+  },
+  createTable: table => {
+    table.setRowPinning = updater => table.options.onRowPinningChange == null ? void 0 : table.options.onRowPinningChange(updater);
+    table.resetRowPinning = defaultState => {
+      var _table$initialState$r, _table$initialState;
+      return table.setRowPinning(defaultState ? getDefaultRowPinningState() : (_table$initialState$r = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.rowPinning) != null ? _table$initialState$r : getDefaultRowPinningState());
+    };
+    table.getIsSomeRowsPinned = position => {
+      var _pinningState$positio;
+      const pinningState = table.getState().rowPinning;
+      if (!position) {
+        var _pinningState$top, _pinningState$bottom;
+        return Boolean(((_pinningState$top = pinningState.top) == null ? void 0 : _pinningState$top.length) || ((_pinningState$bottom = pinningState.bottom) == null ? void 0 : _pinningState$bottom.length));
+      }
+      return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
+    };
+    table._getPinnedRows = (visibleRows, pinnedRowIds, position) => {
+      var _table$options$keepPi;
+      const rows = ((_table$options$keepPi = table.options.keepPinnedRows) != null ? _table$options$keepPi : true) ?
+      //get all rows that are pinned even if they would not be otherwise visible
+      //account for expanded parent rows, but not pagination or filtering
+      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => {
+        const row = table.getRow(rowId, true);
+        return row.getIsAllParentsExpanded() ? row : null;
+      }) :
+      //else get only visible rows that are pinned
+      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => visibleRows.find(row => row.id === rowId));
+      return rows.filter(Boolean).map(d => ({
+        ...d,
+        position
+      }));
+    };
+    table.getTopRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.top], (allRows, topPinnedRowIds) => table._getPinnedRows(allRows, topPinnedRowIds, 'top'), utils.getMemoOptions(table.options, 'debugRows', 'getTopRows'));
+    table.getBottomRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.bottom], (allRows, bottomPinnedRowIds) => table._getPinnedRows(allRows, bottomPinnedRowIds, 'bottom'), utils.getMemoOptions(table.options, 'debugRows', 'getBottomRows'));
+    table.getCenterRows = utils.memo(() => [table.getRowModel().rows, table.getState().rowPinning.top, table.getState().rowPinning.bottom], (allRows, top, bottom) => {
+      const topAndBottom = new Set([...(top != null ? top : []), ...(bottom != null ? bottom : [])]);
+      return allRows.filter(d => !topAndBottom.has(d.id));
+    }, utils.getMemoOptions(table.options, 'debugRows', 'getCenterRows'));
+  }
+};
+exports.RowPinning = RowPinning;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+
+//
+
+const RowSelection = {
+  getInitialState: state => {
+    return {
+      rowSelection: {},
+      ...state
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onRowSelectionChange: utils.makeStateUpdater('rowSelection', table),
+      enableRowSelection: true,
+      enableMultiRowSelection: true,
+      enableSubRowSelection: true
+      // enableGroupingRowSelection: false,
+      // isAdditiveSelectEvent: (e: unknown) => !!e.metaKey,
+      // isInclusiveSelectEvent: (e: unknown) => !!e.shiftKey,
+    };
+  },
+  createTable: table => {
+    table.setRowSelection = updater => table.options.onRowSelectionChange == null ? void 0 : table.options.onRowSelectionChange(updater);
+    table.resetRowSelection = defaultState => {
+      var _table$initialState$r;
+      return table.setRowSelection(defaultState ? {} : (_table$initialState$r = table.initialState.rowSelection) != null ? _table$initialState$r : {});
+    };
+    table.toggleAllRowsSelected = value => {
+      table.setRowSelection(old => {
+        value = typeof value !== 'undefined' ? value : !table.getIsAllRowsSelected();
+        const rowSelection = {
+          ...old
+        };
+        const preGroupedFlatRows = table.getPreGroupedRowModel().flatRows;
+
+        // We don't use `mutateRowIsSelected` here for performance reasons.
+        // All of the rows are flat already, so it wouldn't be worth it
+        if (value) {
+          preGroupedFlatRows.forEach(row => {
+            if (!row.getCanSelect()) {
+              return;
+            }
+            rowSelection[row.id] = true;
+          });
+        } else {
+          preGroupedFlatRows.forEach(row => {
+            delete rowSelection[row.id];
+          });
+        }
+        return rowSelection;
+      });
+    };
+    table.toggleAllPageRowsSelected = value => table.setRowSelection(old => {
+      const resolvedValue = typeof value !== 'undefined' ? value : !table.getIsAllPageRowsSelected();
+      const rowSelection = {
+        ...old
+      };
+      table.getRowModel().rows.forEach(row => {
+        mutateRowIsSelected(rowSelection, row.id, resolvedValue, true, table);
+      });
+      return rowSelection;
+    });
+
+    // addRowSelectionRange: rowId => {
+    //   const {
+    //     rows,
+    //     rowsById,
+    //     options: { selectGroupingRows, selectSubRows },
+    //   } = table
+
+    //   const findSelectedRow = (rows: Row[]) => {
+    //     let found
+    //     rows.find(d => {
+    //       if (d.getIsSelected()) {
+    //         found = d
+    //         return true
+    //       }
+    //       const subFound = findSelectedRow(d.subRows || [])
+    //       if (subFound) {
+    //         found = subFound
+    //         return true
+    //       }
+    //       return false
+    //     })
+    //     return found
+    //   }
+
+    //   const firstRow = findSelectedRow(rows) || rows[0]
+    //   const lastRow = rowsById[rowId]
+
+    //   let include = false
+    //   const selectedRowIds = {}
+
+    //   const addRow = (row: Row) => {
+    //     mutateRowIsSelected(selectedRowIds, row.id, true, {
+    //       rowsById,
+    //       selectGroupingRows: selectGroupingRows!,
+    //       selectSubRows: selectSubRows!,
+    //     })
+    //   }
+
+    //   table.rows.forEach(row => {
+    //     const isFirstRow = row.id === firstRow.id
+    //     const isLastRow = row.id === lastRow.id
+
+    //     if (isFirstRow || isLastRow) {
+    //       if (!include) {
+    //         include = true
+    //       } else if (include) {
+    //         addRow(row)
+    //         include = false
+    //       }
+    //     }
+
+    //     if (include) {
+    //       addRow(row)
+    //     }
+    //   })
+
+    //   table.setRowSelection(selectedRowIds)
+    // },
+    table.getPreSelectedRowModel = () => table.getCoreRowModel();
+    table.getSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getCoreRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getSelectedRowModel'));
+    table.getFilteredSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getFilteredRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getFilteredSelectedRowModel'));
+    table.getGroupedSelectedRowModel = utils.memo(() => [table.getState().rowSelection, table.getSortedRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, utils.getMemoOptions(table.options, 'debugTable', 'getGroupedSelectedRowModel'));
+
+    ///
+
+    // getGroupingRowCanSelect: rowId => {
+    //   const row = table.getRow(rowId)
+
+    //   if (!row) {
+    //     throw new Error()
+    //   }
+
+    //   if (typeof table.options.enableGroupingRowSelection === 'function') {
+    //     return table.options.enableGroupingRowSelection(row)
+    //   }
+
+    //   return table.options.enableGroupingRowSelection ?? false
+    // },
+
+    table.getIsAllRowsSelected = () => {
+      const preGroupedFlatRows = table.getFilteredRowModel().flatRows;
+      const {
+        rowSelection
+      } = table.getState();
+      let isAllRowsSelected = Boolean(preGroupedFlatRows.length && Object.keys(rowSelection).length);
+      if (isAllRowsSelected) {
+        if (preGroupedFlatRows.some(row => row.getCanSelect() && !rowSelection[row.id])) {
+          isAllRowsSelected = false;
+        }
+      }
+      return isAllRowsSelected;
+    };
+    table.getIsAllPageRowsSelected = () => {
+      const paginationFlatRows = table.getPaginationRowModel().flatRows.filter(row => row.getCanSelect());
+      const {
+        rowSelection
+      } = table.getState();
+      let isAllPageRowsSelected = !!paginationFlatRows.length;
+      if (isAllPageRowsSelected && paginationFlatRows.some(row => !rowSelection[row.id])) {
+        isAllPageRowsSelected = false;
+      }
+      return isAllPageRowsSelected;
+    };
+    table.getIsSomeRowsSelected = () => {
+      var _table$getState$rowSe;
+      const totalSelected = Object.keys((_table$getState$rowSe = table.getState().rowSelection) != null ? _table$getState$rowSe : {}).length;
+      return totalSelected > 0 && totalSelected < table.getFilteredRowModel().flatRows.length;
+    };
+    table.getIsSomePageRowsSelected = () => {
+      const paginationFlatRows = table.getPaginationRowModel().flatRows;
+      return table.getIsAllPageRowsSelected() ? false : paginationFlatRows.filter(row => row.getCanSelect()).some(d => d.getIsSelected() || d.getIsSomeSelected());
+    };
+    table.getToggleAllRowsSelectedHandler = () => {
+      return e => {
+        table.toggleAllRowsSelected(e.target.checked);
+      };
+    };
+    table.getToggleAllPageRowsSelectedHandler = () => {
+      return e => {
+        table.toggleAllPageRowsSelected(e.target.checked);
+      };
+    };
+  },
+  createRow: (row, table) => {
+    row.toggleSelected = (value, opts) => {
+      const isSelected = row.getIsSelected();
+      table.setRowSelection(old => {
+        var _opts$selectChildren;
+        value = typeof value !== 'undefined' ? value : !isSelected;
+        if (row.getCanSelect() && isSelected === value) {
+          return old;
+        }
+        const selectedRowIds = {
+          ...old
+        };
+        mutateRowIsSelected(selectedRowIds, row.id, value, (_opts$selectChildren = opts == null ? void 0 : opts.selectChildren) != null ? _opts$selectChildren : true, table);
+        return selectedRowIds;
+      });
+    };
+    row.getIsSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isRowSelected(row, rowSelection);
+    };
+    row.getIsSomeSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isSubRowSelected(row, rowSelection) === 'some';
+    };
+    row.getIsAllSubRowsSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isSubRowSelected(row, rowSelection) === 'all';
+    };
+    row.getCanSelect = () => {
+      var _table$options$enable;
+      if (typeof table.options.enableRowSelection === 'function') {
+        return table.options.enableRowSelection(row);
+      }
+      return (_table$options$enable = table.options.enableRowSelection) != null ? _table$options$enable : true;
+    };
+    row.getCanSelectSubRows = () => {
+      var _table$options$enable2;
+      if (typeof table.options.enableSubRowSelection === 'function') {
+        return table.options.enableSubRowSelection(row);
+      }
+      return (_table$options$enable2 = table.options.enableSubRowSelection) != null ? _table$options$enable2 : true;
+    };
+    row.getCanMultiSelect = () => {
+      var _table$options$enable3;
+      if (typeof table.options.enableMultiRowSelection === 'function') {
+        return table.options.enableMultiRowSelection(row);
+      }
+      return (_table$options$enable3 = table.options.enableMultiRowSelection) != null ? _table$options$enable3 : true;
+    };
+    row.getToggleSelectedHandler = () => {
+      const canSelect = row.getCanSelect();
+      return e => {
+        var _target;
+        if (!canSelect) return;
+        row.toggleSelected((_target = e.target) == null ? void 0 : _target.checked);
+      };
+    };
+  }
+};
+const mutateRowIsSelected = (selectedRowIds, id, value, includeChildren, table) => {
+  var _row$subRows;
+  const row = table.getRow(id, true);
+
+  // const isGrouped = row.getIsGrouped()
+
+  // if ( // TODO: enforce grouping row selection rules
+  //   !isGrouped ||
+  //   (isGrouped && table.options.enableGroupingRowSelection)
+  // ) {
+  if (value) {
+    if (!row.getCanMultiSelect()) {
+      Object.keys(selectedRowIds).forEach(key => delete selectedRowIds[key]);
+    }
+    if (row.getCanSelect()) {
+      selectedRowIds[id] = true;
+    }
+  } else {
+    delete selectedRowIds[id];
+  }
+  // }
+
+  if (includeChildren && (_row$subRows = row.subRows) != null && _row$subRows.length && row.getCanSelectSubRows()) {
+    row.subRows.forEach(row => mutateRowIsSelected(selectedRowIds, row.id, value, includeChildren, table));
+  }
+};
+function selectRowsFn(table, rowModel) {
+  const rowSelection = table.getState().rowSelection;
+  const newSelectedFlatRows = [];
+  const newSelectedRowsById = {};
+
+  // Filters top level and nested rows
+  const recurseRows = function (rows, depth) {
+    return rows.map(row => {
+      var _row$subRows2;
+      const isSelected = isRowSelected(row, rowSelection);
+      if (isSelected) {
+        newSelectedFlatRows.push(row);
+        newSelectedRowsById[row.id] = row;
+      }
+      if ((_row$subRows2 = row.subRows) != null && _row$subRows2.length) {
+        row = {
+          ...row,
+          subRows: recurseRows(row.subRows)
+        };
+      }
+      if (isSelected) {
+        return row;
+      }
+    }).filter(Boolean);
+  };
+  return {
+    rows: recurseRows(rowModel.rows),
+    flatRows: newSelectedFlatRows,
+    rowsById: newSelectedRowsById
+  };
+}
+function isRowSelected(row, selection) {
+  var _selection$row$id;
+  return (_selection$row$id = selection[row.id]) != null ? _selection$row$id : false;
+}
+function isSubRowSelected(row, selection, table) {
+  var _row$subRows3;
+  if (!((_row$subRows3 = row.subRows) != null && _row$subRows3.length)) return false;
+  let allChildrenSelected = true;
+  let someSelected = false;
+  row.subRows.forEach(subRow => {
+    // Bail out early if we know both of these
+    if (someSelected && !allChildrenSelected) {
+      return;
+    }
+    if (subRow.getCanSelect()) {
+      if (isRowSelected(subRow, selection)) {
+        someSelected = true;
+      } else {
+        allChildrenSelected = false;
+      }
+    }
+
+    // Check row selection of nested subrows
+    if (subRow.subRows && subRow.subRows.length) {
+      const subRowChildrenSelected = isSubRowSelected(subRow, selection);
+      if (subRowChildrenSelected === 'all') {
+        someSelected = true;
+      } else if (subRowChildrenSelected === 'some') {
+        someSelected = true;
+        allChildrenSelected = false;
+      } else {
+        allChildrenSelected = false;
+      }
+    }
+  });
+  return allChildrenSelected ? 'all' : someSelected ? 'some' : false;
+}
+exports.RowSelection = RowSelection;
+exports.isRowSelected = isRowSelected;
+exports.isSubRowSelected = isSubRowSelected;
+exports.selectRowsFn = selectRowsFn;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+const reSplitAlphaNumeric = /([0-9]+)/gm;
+const alphanumeric = (rowA, rowB, columnId) => {
+  return compareAlphanumeric(toString(rowA.getValue(columnId)).toLowerCase(), toString(rowB.getValue(columnId)).toLowerCase());
+};
+const alphanumericCaseSensitive = (rowA, rowB, columnId) => {
+  return compareAlphanumeric(toString(rowA.getValue(columnId)), toString(rowB.getValue(columnId)));
+};
+
+// The text filter is more basic (less numeric support)
+// but is much faster
+const text = (rowA, rowB, columnId) => {
+  return compareBasic(toString(rowA.getValue(columnId)).toLowerCase(), toString(rowB.getValue(columnId)).toLowerCase());
+};
+
+// The text filter is more basic (less numeric support)
+// but is much faster
+const textCaseSensitive = (rowA, rowB, columnId) => {
+  return compareBasic(toString(rowA.getValue(columnId)), toString(rowB.getValue(columnId)));
+};
+const datetime = (rowA, rowB, columnId) => {
+  const a = rowA.getValue(columnId);
+  const b = rowB.getValue(columnId);
+
+  // Can handle nullish values
+  // Use > and < because == (and ===) doesn't work with
+  // Date objects (would require calling getTime()).
+  return a > b ? 1 : a < b ? -1 : 0;
+};
+const basic = (rowA, rowB, columnId) => {
+  return compareBasic(rowA.getValue(columnId), rowB.getValue(columnId));
+};
+
+// Utils
+
+function compareBasic(a, b) {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+function toString(a) {
+  if (typeof a === 'number') {
+    if (isNaN(a) || a === Infinity || a === -Infinity) {
+      return '';
+    }
+    return String(a);
+  }
+  if (typeof a === 'string') {
+    return a;
+  }
+  return '';
+}
+
+// Mixed sorting is slow, but very inclusive of many edge cases.
+// It handles numbers, mixed alphanumeric combinations, and even
+// null, undefined, and Infinity
+function compareAlphanumeric(aStr, bStr) {
+  // Split on number groups, but keep the delimiter
+  // Then remove falsey split values
+  const a = aStr.split(reSplitAlphaNumeric).filter(Boolean);
+  const b = bStr.split(reSplitAlphaNumeric).filter(Boolean);
+
+  // While
+  while (a.length && b.length) {
+    const aa = a.shift();
+    const bb = b.shift();
+    const an = parseInt(aa, 10);
+    const bn = parseInt(bb, 10);
+    const combo = [an, bn].sort();
+
+    // Both are string
+    if (isNaN(combo[0])) {
+      if (aa > bb) {
+        return 1;
+      }
+      if (bb > aa) {
+        return -1;
+      }
+      continue;
+    }
+
+    // One is a string, one is a number
+    if (isNaN(combo[1])) {
+      return isNaN(an) ? -1 : 1;
+    }
+
+    // Both are numbers
+    if (an > bn) {
+      return 1;
+    }
+    if (bn > an) {
+      return -1;
+    }
+  }
+  return a.length - b.length;
+}
+
+// Exports
+
+const sortingFns = {
+  alphanumeric,
+  alphanumericCaseSensitive,
+  text,
+  textCaseSensitive,
+  datetime,
+  basic
+};
+exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
+exports.sortingFns = sortingFns;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var sortingFns = require('../sortingFns.js');
+var utils = require('../utils.js');
+
+//
+
+const RowSorting = {
+  getInitialState: state => {
+    return {
+      sorting: [],
+      ...state
+    };
+  },
+  getDefaultColumnDef: () => {
+    return {
+      sortingFn: 'auto',
+      sortUndefined: 1
+    };
+  },
+  getDefaultOptions: table => {
+    return {
+      onSortingChange: utils.makeStateUpdater('sorting', table),
+      isMultiSortEvent: e => {
+        return e.shiftKey;
+      }
+    };
+  },
+  createColumn: (column, table) => {
+    column.getAutoSortingFn = () => {
+      const firstRows = table.getFilteredRowModel().flatRows.slice(10);
+      let isString = false;
+      for (const row of firstRows) {
+        const value = row == null ? void 0 : row.getValue(column.id);
+        if (Object.prototype.toString.call(value) === '[object Date]') {
+          return sortingFns.sortingFns.datetime;
+        }
+        if (typeof value === 'string') {
+          isString = true;
+          if (value.split(sortingFns.reSplitAlphaNumeric).length > 1) {
+            return sortingFns.sortingFns.alphanumeric;
+          }
+        }
+      }
+      if (isString) {
+        return sortingFns.sortingFns.text;
+      }
+      return sortingFns.sortingFns.basic;
+    };
+    column.getAutoSortDir = () => {
+      const firstRow = table.getFilteredRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'string') {
+        return 'asc';
+      }
+      return 'desc';
+    };
+    column.getSortingFn = () => {
+      var _table$options$sortin, _table$options$sortin2;
+      if (!column) {
+        throw new Error();
+      }
+      return utils.isFunction(column.columnDef.sortingFn) ? column.columnDef.sortingFn : column.columnDef.sortingFn === 'auto' ? column.getAutoSortingFn() : (_table$options$sortin = (_table$options$sortin2 = table.options.sortingFns) == null ? void 0 : _table$options$sortin2[column.columnDef.sortingFn]) != null ? _table$options$sortin : sortingFns.sortingFns[column.columnDef.sortingFn];
+    };
+    column.toggleSorting = (desc, multi) => {
+      // if (column.columns.length) {
+      //   column.columns.forEach((c, i) => {
+      //     if (c.id) {
+      //       table.toggleColumnSorting(c.id, undefined, multi || !!i)
+      //     }
+      //   })
+      //   return
+      // }
+
+      // this needs to be outside of table.setSorting to be in sync with rerender
+      const nextSortingOrder = column.getNextSortingOrder();
+      const hasManualValue = typeof desc !== 'undefined' && desc !== null;
+      table.setSorting(old => {
+        // Find any existing sorting for this column
+        const existingSorting = old == null ? void 0 : old.find(d => d.id === column.id);
+        const existingIndex = old == null ? void 0 : old.findIndex(d => d.id === column.id);
+        let newSorting = [];
+
+        // What should we do with this sort action?
+        let sortAction;
+        let nextDesc = hasManualValue ? desc : nextSortingOrder === 'desc';
+
+        // Multi-mode
+        if (old != null && old.length && column.getCanMultiSort() && multi) {
+          if (existingSorting) {
+            sortAction = 'toggle';
+          } else {
+            sortAction = 'add';
+          }
+        } else {
+          // Normal mode
+          if (old != null && old.length && existingIndex !== old.length - 1) {
+            sortAction = 'replace';
+          } else if (existingSorting) {
+            sortAction = 'toggle';
+          } else {
+            sortAction = 'replace';
+          }
+        }
+
+        // Handle toggle states that will remove the sorting
+        if (sortAction === 'toggle') {
+          // If we are "actually" toggling (not a manual set value), should we remove the sorting?
+          if (!hasManualValue) {
+            // Is our intention to remove?
+            if (!nextSortingOrder) {
+              sortAction = 'remove';
+            }
+          }
+        }
+        if (sortAction === 'add') {
+          var _table$options$maxMul;
+          newSorting = [...old, {
+            id: column.id,
+            desc: nextDesc
+          }];
+          // Take latest n columns
+          newSorting.splice(0, newSorting.length - ((_table$options$maxMul = table.options.maxMultiSortColCount) != null ? _table$options$maxMul : Number.MAX_SAFE_INTEGER));
+        } else if (sortAction === 'toggle') {
+          // This flips (or sets) the
+          newSorting = old.map(d => {
+            if (d.id === column.id) {
+              return {
+                ...d,
+                desc: nextDesc
+              };
+            }
+            return d;
+          });
+        } else if (sortAction === 'remove') {
+          newSorting = old.filter(d => d.id !== column.id);
+        } else {
+          newSorting = [{
+            id: column.id,
+            desc: nextDesc
+          }];
+        }
+        return newSorting;
+      });
+    };
+    column.getFirstSortDir = () => {
+      var _ref, _column$columnDef$sor;
+      const sortDescFirst = (_ref = (_column$columnDef$sor = column.columnDef.sortDescFirst) != null ? _column$columnDef$sor : table.options.sortDescFirst) != null ? _ref : column.getAutoSortDir() === 'desc';
+      return sortDescFirst ? 'desc' : 'asc';
+    };
+    column.getNextSortingOrder = multi => {
+      var _table$options$enable, _table$options$enable2;
+      const firstSortDirection = column.getFirstSortDir();
+      const isSorted = column.getIsSorted();
+      if (!isSorted) {
+        return firstSortDirection;
+      }
+      if (isSorted !== firstSortDirection && ((_table$options$enable = table.options.enableSortingRemoval) != null ? _table$options$enable : true) && (
+      // If enableSortRemove, enable in general
+      multi ? (_table$options$enable2 = table.options.enableMultiRemove) != null ? _table$options$enable2 : true : true) // If multi, don't allow if enableMultiRemove))
+      ) {
+        return false;
+      }
+      return isSorted === 'desc' ? 'asc' : 'desc';
+    };
+    column.getCanSort = () => {
+      var _column$columnDef$ena, _table$options$enable3;
+      return ((_column$columnDef$ena = column.columnDef.enableSorting) != null ? _column$columnDef$ena : true) && ((_table$options$enable3 = table.options.enableSorting) != null ? _table$options$enable3 : true) && !!column.accessorFn;
+    };
+    column.getCanMultiSort = () => {
+      var _ref2, _column$columnDef$ena2;
+      return (_ref2 = (_column$columnDef$ena2 = column.columnDef.enableMultiSort) != null ? _column$columnDef$ena2 : table.options.enableMultiSort) != null ? _ref2 : !!column.accessorFn;
+    };
+    column.getIsSorted = () => {
+      var _table$getState$sorti;
+      const columnSort = (_table$getState$sorti = table.getState().sorting) == null ? void 0 : _table$getState$sorti.find(d => d.id === column.id);
+      return !columnSort ? false : columnSort.desc ? 'desc' : 'asc';
+    };
+    column.getSortIndex = () => {
+      var _table$getState$sorti2, _table$getState$sorti3;
+      return (_table$getState$sorti2 = (_table$getState$sorti3 = table.getState().sorting) == null ? void 0 : _table$getState$sorti3.findIndex(d => d.id === column.id)) != null ? _table$getState$sorti2 : -1;
+    };
+    column.clearSorting = () => {
+      //clear sorting for just 1 column
+      table.setSorting(old => old != null && old.length ? old.filter(d => d.id !== column.id) : []);
+    };
+    column.getToggleSortingHandler = () => {
+      const canSort = column.getCanSort();
+      return e => {
+        if (!canSort) return;
+        e.persist == null || e.persist();
+        column.toggleSorting == null || column.toggleSorting(undefined, column.getCanMultiSort() ? table.options.isMultiSortEvent == null ? void 0 : table.options.isMultiSortEvent(e) : false);
+      };
+    };
+  },
+  createTable: table => {
+    table.setSorting = updater => table.options.onSortingChange == null ? void 0 : table.options.onSortingChange(updater);
+    table.resetSorting = defaultState => {
+      var _table$initialState$s, _table$initialState;
+      table.setSorting(defaultState ? [] : (_table$initialState$s = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.sorting) != null ? _table$initialState$s : []);
+    };
+    table.getPreSortedRowModel = () => table.getGroupedRowModel();
+    table.getSortedRowModel = () => {
+      if (!table._getSortedRowModel && table.options.getSortedRowModel) {
+        table._getSortedRowModel = table.options.getSortedRowModel(table);
+      }
+      if (table.options.manualSorting || !table._getSortedRowModel) {
+        return table.getPreSortedRowModel();
+      }
+      return table._getSortedRowModel();
+    };
+  }
+};
+exports.RowSorting = RowSorting;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var column = require('./column.js');
+var headers = require('./headers.js');
+var ColumnFaceting = require('../features/ColumnFaceting.js');
+var ColumnFiltering = require('../features/ColumnFiltering.js');
+var ColumnGrouping = require('../features/ColumnGrouping.js');
+var ColumnOrdering = require('../features/ColumnOrdering.js');
+var ColumnPinning = require('../features/ColumnPinning.js');
+var ColumnSizing = require('../features/ColumnSizing.js');
+var ColumnVisibility = require('../features/ColumnVisibility.js');
+var GlobalFaceting = require('../features/GlobalFaceting.js');
+var GlobalFiltering = require('../features/GlobalFiltering.js');
+var RowExpanding = require('../features/RowExpanding.js');
+var RowPagination = require('../features/RowPagination.js');
+var RowPinning = require('../features/RowPinning.js');
+var RowSelection = require('../features/RowSelection.js');
+var RowSorting = require('../features/RowSorting.js');
+const builtInFeatures = [headers.Headers, ColumnVisibility.ColumnVisibility, ColumnOrdering.ColumnOrdering, ColumnPinning.ColumnPinning, ColumnFaceting.ColumnFaceting, ColumnFiltering.ColumnFiltering, GlobalFaceting.GlobalFaceting,
+//depends on ColumnFaceting
+GlobalFiltering.GlobalFiltering,
+//depends on ColumnFiltering
+RowSorting.RowSorting, ColumnGrouping.ColumnGrouping,
+//depends on RowSorting
+RowExpanding.RowExpanding, RowPagination.RowPagination, RowPinning.RowPinning, RowSelection.RowSelection, ColumnSizing.ColumnSizing];
+
+//
+
+function createTable(options) {
+  var _options$_features, _options$initialState;
+  if ('production' !== 'production' && (options.debugAll || options.debugTable)) {
+    console.info('Creating Table Instance...');
+  }
+  const _features = [...builtInFeatures, ...((_options$_features = options._features) != null ? _options$_features : [])];
+  let table = {
+    _features
+  };
+  const defaultOptions = table._features.reduce((obj, feature) => {
+    return Object.assign(obj, feature.getDefaultOptions == null ? void 0 : feature.getDefaultOptions(table));
+  }, {});
+  const mergeOptions = options => {
+    if (table.options.mergeOptions) {
+      return table.options.mergeOptions(defaultOptions, options);
+    }
+    return {
+      ...defaultOptions,
+      ...options
+    };
+  };
+  const coreInitialState = {};
+  let initialState = {
+    ...coreInitialState,
+    ...((_options$initialState = options.initialState) != null ? _options$initialState : {})
+  };
+  table._features.forEach(feature => {
+    var _feature$getInitialSt;
+    initialState = (_feature$getInitialSt = feature.getInitialState == null ? void 0 : feature.getInitialState(initialState)) != null ? _feature$getInitialSt : initialState;
+  });
+  const queued = [];
+  let queuedTimeout = false;
+  const coreInstance = {
+    _features,
+    options: {
+      ...defaultOptions,
+      ...options
+    },
+    initialState,
+    _queue: cb => {
+      queued.push(cb);
+      if (!queuedTimeout) {
+        queuedTimeout = true;
+
+        // Schedule a microtask to run the queued callbacks after
+        // the current call stack (render, etc) has finished.
+        Promise.resolve().then(() => {
+          while (queued.length) {
+            queued.shift()();
+          }
+          queuedTimeout = false;
+        }).catch(error => setTimeout(() => {
+          throw error;
+        }));
+      }
+    },
+    reset: () => {
+      table.setState(table.initialState);
+    },
+    setOptions: updater => {
+      const newOptions = utils.functionalUpdate(updater, table.options);
+      table.options = mergeOptions(newOptions);
+    },
+    getState: () => {
+      return table.options.state;
+    },
+    setState: updater => {
+      table.options.onStateChange == null || table.options.onStateChange(updater);
+    },
+    _getRowId: (row, index, parent) => {
+      var _table$options$getRow;
+      return (_table$options$getRow = table.options.getRowId == null ? void 0 : table.options.getRowId(row, index, parent)) != null ? _table$options$getRow : `${parent ? [parent.id, index].join('.') : index}`;
+    },
+    getCoreRowModel: () => {
+      if (!table._getCoreRowModel) {
+        table._getCoreRowModel = table.options.getCoreRowModel(table);
+      }
+      return table._getCoreRowModel();
+    },
+    // The final calls start at the bottom of the model,
+    // expanded rows, which then work their way up
+
+    getRowModel: () => {
+      return table.getPaginationRowModel();
+    },
+    //in next version, we should just pass in the row model as the optional 2nd arg
+    getRow: (id, searchAll) => {
+      let row = (searchAll ? table.getPrePaginationRowModel() : table.getRowModel()).rowsById[id];
+      if (!row) {
+        row = table.getCoreRowModel().rowsById[id];
+        if (!row) {
+          if ('production' !== 'production') {
+            throw new Error(`getRow could not find row with ID: ${id}`);
+          }
+          throw new Error();
+        }
+      }
+      return row;
+    },
+    _getDefaultColumnDef: utils.memo(() => [table.options.defaultColumn], defaultColumn => {
+      var _defaultColumn;
+      defaultColumn = (_defaultColumn = defaultColumn) != null ? _defaultColumn : {};
+      return {
+        header: props => {
+          const resolvedColumnDef = props.header.column.columnDef;
+          if (resolvedColumnDef.accessorKey) {
+            return resolvedColumnDef.accessorKey;
+          }
+          if (resolvedColumnDef.accessorFn) {
+            return resolvedColumnDef.id;
+          }
+          return null;
+        },
+        // footer: props => props.header.column.id,
+        cell: props => {
+          var _props$renderValue$to, _props$renderValue;
+          return (_props$renderValue$to = (_props$renderValue = props.renderValue()) == null || _props$renderValue.toString == null ? void 0 : _props$renderValue.toString()) != null ? _props$renderValue$to : null;
+        },
+        ...table._features.reduce((obj, feature) => {
+          return Object.assign(obj, feature.getDefaultColumnDef == null ? void 0 : feature.getDefaultColumnDef());
+        }, {}),
+        ...defaultColumn
+      };
+    }, utils.getMemoOptions(options, 'debugColumns', '_getDefaultColumnDef')),
+    _getColumnDefs: () => table.options.columns,
+    getAllColumns: utils.memo(() => [table._getColumnDefs()], columnDefs => {
+      const recurseColumns = function (columnDefs, parent, depth) {
+        if (depth === void 0) {
+          depth = 0;
+        }
+        return columnDefs.map(columnDef => {
+          const column$1 = column.createColumn(table, columnDef, depth, parent);
+          const groupingColumnDef = columnDef;
+          column$1.columns = groupingColumnDef.columns ? recurseColumns(groupingColumnDef.columns, column$1, depth + 1) : [];
+          return column$1;
+        });
+      };
+      return recurseColumns(columnDefs);
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllColumns')),
+    getAllFlatColumns: utils.memo(() => [table.getAllColumns()], allColumns => {
+      return allColumns.flatMap(column => {
+        return column.getFlatColumns();
+      });
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllFlatColumns')),
+    _getAllFlatColumnsById: utils.memo(() => [table.getAllFlatColumns()], flatColumns => {
+      return flatColumns.reduce((acc, column) => {
+        acc[column.id] = column;
+        return acc;
+      }, {});
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllFlatColumnsById')),
+    getAllLeafColumns: utils.memo(() => [table.getAllColumns(), table._getOrderColumnsFn()], (allColumns, orderColumns) => {
+      let leafColumns = allColumns.flatMap(column => column.getLeafColumns());
+      return orderColumns(leafColumns);
+    }, utils.getMemoOptions(options, 'debugColumns', 'getAllLeafColumns')),
+    getColumn: columnId => {
+      const column = table._getAllFlatColumnsById()[columnId];
+      if ('production' !== 'production' && !column) {
+        console.error(`[Table] Column with id '${columnId}' does not exist.`);
+      }
+      return column;
+    }
+  };
+  Object.assign(table, coreInstance);
+  for (let index = 0; index < table._features.length; index++) {
+    const feature = table._features[index];
+    feature == null || feature.createTable == null || feature.createTable(table);
+  }
+  return table;
+}
+exports.createTable = createTable;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var row = require('../core/row.js');
+var utils = require('../utils.js');
+function getCoreRowModel() {
+  return table => utils.memo(() => [table.options.data], data => {
+    const rowModel = {
+      rows: [],
+      flatRows: [],
+      rowsById: {}
+    };
+    const accessRows = function (originalRows, depth, parentRow) {
+      if (depth === void 0) {
+        depth = 0;
+      }
+      const rows = [];
+      for (let i = 0; i < originalRows.length; i++) {
+        // This could be an expensive check at scale, so we should move it somewhere else, but where?
+        // if (!id) {
+        //   if ('production' !== 'production') {
+        //     throw new Error(`getRowId expected an ID, but got ${id}`)
+        //   }
+        // }
+
+        // Make the row
+        const row$1 = row.createRow(table, table._getRowId(originalRows[i], i, parentRow), originalRows[i], i, depth, undefined, parentRow == null ? void 0 : parentRow.id);
+
+        // Keep track of every row in a flat array
+        rowModel.flatRows.push(row$1);
+        // Also keep track of every row by its ID
+        rowModel.rowsById[row$1.id] = row$1;
+        // Push table row into parent
+        rows.push(row$1);
+
+        // Get the original subrows
+        if (table.options.getSubRows) {
+          var _row$originalSubRows;
+          row$1.originalSubRows = table.options.getSubRows(originalRows[i], i);
+
+          // Then recursively access them
+          if ((_row$originalSubRows = row$1.originalSubRows) != null && _row$originalSubRows.length) {
+            row$1.subRows = accessRows(row$1.originalSubRows, depth + 1, row$1);
+          }
+        }
+      }
+      return rows;
+    };
+    rowModel.rows = accessRows(data);
+    return rowModel;
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getRowModel', () => table._autoResetPageIndex()));
+}
+exports.getCoreRowModel = getCoreRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getExpandedRowModel() {
+  return table => utils.memo(() => [table.getState().expanded, table.getPreExpandedRowModel(), table.options.paginateExpandedRows], (expanded, rowModel, paginateExpandedRows) => {
+    if (!rowModel.rows.length || expanded !== true && !Object.keys(expanded != null ? expanded : {}).length) {
+      return rowModel;
+    }
+    if (!paginateExpandedRows) {
+      // Only expand rows at this point if they are being paginated
+      return rowModel;
+    }
+    return expandRows(rowModel);
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getExpandedRowModel'));
+}
+function expandRows(rowModel) {
+  const expandedRows = [];
+  const handleRow = row => {
+    var _row$subRows;
+    expandedRows.push(row);
+    if ((_row$subRows = row.subRows) != null && _row$subRows.length && row.getIsExpanded()) {
+      row.subRows.forEach(handleRow);
+    }
+  };
+  rowModel.rows.forEach(handleRow);
+  return {
+    rows: expandedRows,
+    flatRows: rowModel.flatRows,
+    rowsById: rowModel.rowsById
+  };
+}
+exports.expandRows = expandRows;
+exports.getExpandedRowModel = getExpandedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getFacetedMinMaxValues() {
+  return (table, columnId) => utils.memo(() => {
+    var _table$getColumn;
+    return [(_table$getColumn = table.getColumn(columnId)) == null ? void 0 : _table$getColumn.getFacetedRowModel()];
+  }, facetedRowModel => {
+    if (!facetedRowModel) return undefined;
+    const uniqueValues = facetedRowModel.flatRows.flatMap(flatRow => {
+      var _flatRow$getUniqueVal;
+      return (_flatRow$getUniqueVal = flatRow.getUniqueValues(columnId)) != null ? _flatRow$getUniqueVal : [];
+    }).map(Number).filter(value => !Number.isNaN(value));
+    if (!uniqueValues.length) return;
+    let facetedMinValue = uniqueValues[0];
+    let facetedMaxValue = uniqueValues[uniqueValues.length - 1];
+    for (const value of uniqueValues) {
+      if (value < facetedMinValue) facetedMinValue = value;else if (value > facetedMaxValue) facetedMaxValue = value;
+    }
+    return [facetedMinValue, facetedMaxValue];
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getFacetedMinMaxValues'));
+}
+exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var row = require('../core/row.js');
+function filterRows(rows, filterRowImpl, table) {
+  if (table.options.filterFromLeafRows) {
+    return filterRowModelFromLeafs(rows, filterRowImpl, table);
+  }
+  return filterRowModelFromRoot(rows, filterRowImpl, table);
+}
+function filterRowModelFromLeafs(rowsToFilter, filterRow, table) {
+  var _table$options$maxLea;
+  const newFilteredFlatRows = [];
+  const newFilteredRowsById = {};
+  const maxDepth = (_table$options$maxLea = table.options.maxLeafRowFilterDepth) != null ? _table$options$maxLea : 100;
+  const recurseFilterRows = function (rowsToFilter, depth) {
+    if (depth === void 0) {
+      depth = 0;
+    }
+    const rows = [];
+
+    // Filter from children up first
+    for (let i = 0; i < rowsToFilter.length; i++) {
+      var _row$subRows;
+      let row$1 = rowsToFilter[i];
+      const newRow = row.createRow(table, row$1.id, row$1.original, row$1.index, row$1.depth, undefined, row$1.parentId);
+      newRow.columnFilters = row$1.columnFilters;
+      if ((_row$subRows = row$1.subRows) != null && _row$subRows.length && depth < maxDepth) {
+        newRow.subRows = recurseFilterRows(row$1.subRows, depth + 1);
+        row$1 = newRow;
+        if (filterRow(row$1) && !newRow.subRows.length) {
+          rows.push(row$1);
+          newFilteredRowsById[row$1.id] = row$1;
+          newFilteredFlatRows.push(row$1);
+          continue;
+        }
+        if (filterRow(row$1) || newRow.subRows.length) {
+          rows.push(row$1);
+          newFilteredRowsById[row$1.id] = row$1;
+          newFilteredFlatRows.push(row$1);
+          continue;
+        }
+      } else {
+        row$1 = newRow;
+        if (filterRow(row$1)) {
+          rows.push(row$1);
+          newFilteredRowsById[row$1.id] = row$1;
+          newFilteredFlatRows.push(row$1);
+        }
+      }
+    }
+    return rows;
+  };
+  return {
+    rows: recurseFilterRows(rowsToFilter),
+    flatRows: newFilteredFlatRows,
+    rowsById: newFilteredRowsById
+  };
+}
+function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
+  var _table$options$maxLea2;
+  const newFilteredFlatRows = [];
+  const newFilteredRowsById = {};
+  const maxDepth = (_table$options$maxLea2 = table.options.maxLeafRowFilterDepth) != null ? _table$options$maxLea2 : 100;
+
+  // Filters top level and nested rows
+  const recurseFilterRows = function (rowsToFilter, depth) {
+    if (depth === void 0) {
+      depth = 0;
+    }
+    // Filter from parents downward first
+
+    const rows = [];
+
+    // Apply the filter to any subRows
+    for (let i = 0; i < rowsToFilter.length; i++) {
+      let row$1 = rowsToFilter[i];
+      const pass = filterRow(row$1);
+      if (pass) {
+        var _row$subRows2;
+        if ((_row$subRows2 = row$1.subRows) != null && _row$subRows2.length && depth < maxDepth) {
+          const newRow = row.createRow(table, row$1.id, row$1.original, row$1.index, row$1.depth, undefined, row$1.parentId);
+          newRow.subRows = recurseFilterRows(row$1.subRows, depth + 1);
+          row$1 = newRow;
+        }
+        rows.push(row$1);
+        newFilteredFlatRows.push(row$1);
+        newFilteredRowsById[row$1.id] = row$1;
+      }
+    }
+    return rows;
+  };
+  return {
+    rows: recurseFilterRows(rowsToFilter),
+    flatRows: newFilteredFlatRows,
+    rowsById: newFilteredRowsById
+  };
+}
+exports.filterRows = filterRows;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var filterRowsUtils = require('./filterRowsUtils.js');
+function getFacetedRowModel() {
+  return (table, columnId) => utils.memo(() => [table.getPreFilteredRowModel(), table.getState().columnFilters, table.getState().globalFilter, table.getFilteredRowModel()], (preRowModel, columnFilters, globalFilter) => {
+    if (!preRowModel.rows.length || !(columnFilters != null && columnFilters.length) && !globalFilter) {
+      return preRowModel;
+    }
+    const filterableIds = [...columnFilters.map(d => d.id).filter(d => d !== columnId), globalFilter ? '__global__' : undefined].filter(Boolean);
+    const filterRowsImpl = row => {
+      // Horizontally filter rows through each column
+      for (let i = 0; i < filterableIds.length; i++) {
+        if (row.columnFilters[filterableIds[i]] === false) {
+          return false;
+        }
+      }
+      return true;
+    };
+    return filterRowsUtils.filterRows(preRowModel.rows, filterRowsImpl, table);
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getFacetedRowModel'));
+}
+exports.getFacetedRowModel = getFacetedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getFacetedUniqueValues() {
+  return (table, columnId) => utils.memo(() => {
+    var _table$getColumn;
+    return [(_table$getColumn = table.getColumn(columnId)) == null ? void 0 : _table$getColumn.getFacetedRowModel()];
+  }, facetedRowModel => {
+    if (!facetedRowModel) return new Map();
+    let facetedUniqueValues = new Map();
+    for (let i = 0; i < facetedRowModel.flatRows.length; i++) {
+      const values = facetedRowModel.flatRows[i].getUniqueValues(columnId);
+      for (let j = 0; j < values.length; j++) {
+        const value = values[j];
+        if (facetedUniqueValues.has(value)) {
+          var _facetedUniqueValues$;
+          facetedUniqueValues.set(value, ((_facetedUniqueValues$ = facetedUniqueValues.get(value)) != null ? _facetedUniqueValues$ : 0) + 1);
+        } else {
+          facetedUniqueValues.set(value, 1);
+        }
+      }
+    }
+    return facetedUniqueValues;
+  }, utils.getMemoOptions(table.options, 'debugTable', `getFacetedUniqueValues_${columnId}`));
+}
+exports.getFacetedUniqueValues = getFacetedUniqueValues;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var filterRowsUtils = require('./filterRowsUtils.js');
+function getFilteredRowModel() {
+  return table => utils.memo(() => [table.getPreFilteredRowModel(), table.getState().columnFilters, table.getState().globalFilter], (rowModel, columnFilters, globalFilter) => {
+    if (!rowModel.rows.length || !(columnFilters != null && columnFilters.length) && !globalFilter) {
+      for (let i = 0; i < rowModel.flatRows.length; i++) {
+        rowModel.flatRows[i].columnFilters = {};
+        rowModel.flatRows[i].columnFiltersMeta = {};
+      }
+      return rowModel;
+    }
+    const resolvedColumnFilters = [];
+    const resolvedGlobalFilters = [];
+    (columnFilters != null ? columnFilters : []).forEach(d => {
+      var _filterFn$resolveFilt;
+      const column = table.getColumn(d.id);
+      if (!column) {
+        return;
+      }
+      const filterFn = column.getFilterFn();
+      if (!filterFn) {
+        if ('production' !== 'production') {
+          console.warn(`Could not find a valid 'column.filterFn' for column with the ID: ${column.id}.`);
+        }
+        return;
+      }
+      resolvedColumnFilters.push({
+        id: d.id,
+        filterFn,
+        resolvedValue: (_filterFn$resolveFilt = filterFn.resolveFilterValue == null ? void 0 : filterFn.resolveFilterValue(d.value)) != null ? _filterFn$resolveFilt : d.value
+      });
+    });
+    const filterableIds = (columnFilters != null ? columnFilters : []).map(d => d.id);
+    const globalFilterFn = table.getGlobalFilterFn();
+    const globallyFilterableColumns = table.getAllLeafColumns().filter(column => column.getCanGlobalFilter());
+    if (globalFilter && globalFilterFn && globallyFilterableColumns.length) {
+      filterableIds.push('__global__');
+      globallyFilterableColumns.forEach(column => {
+        var _globalFilterFn$resol;
+        resolvedGlobalFilters.push({
+          id: column.id,
+          filterFn: globalFilterFn,
+          resolvedValue: (_globalFilterFn$resol = globalFilterFn.resolveFilterValue == null ? void 0 : globalFilterFn.resolveFilterValue(globalFilter)) != null ? _globalFilterFn$resol : globalFilter
+        });
+      });
+    }
+    let currentColumnFilter;
+    let currentGlobalFilter;
+
+    // Flag the prefiltered row model with each filter state
+    for (let j = 0; j < rowModel.flatRows.length; j++) {
+      const row = rowModel.flatRows[j];
+      row.columnFilters = {};
+      if (resolvedColumnFilters.length) {
+        for (let i = 0; i < resolvedColumnFilters.length; i++) {
+          currentColumnFilter = resolvedColumnFilters[i];
+          const id = currentColumnFilter.id;
+
+          // Tag the row with the column filter state
+          row.columnFilters[id] = currentColumnFilter.filterFn(row, id, currentColumnFilter.resolvedValue, filterMeta => {
+            row.columnFiltersMeta[id] = filterMeta;
+          });
+        }
+      }
+      if (resolvedGlobalFilters.length) {
+        for (let i = 0; i < resolvedGlobalFilters.length; i++) {
+          currentGlobalFilter = resolvedGlobalFilters[i];
+          const id = currentGlobalFilter.id;
+          // Tag the row with the first truthy global filter state
+          if (currentGlobalFilter.filterFn(row, id, currentGlobalFilter.resolvedValue, filterMeta => {
+            row.columnFiltersMeta[id] = filterMeta;
+          })) {
+            row.columnFilters.__global__ = true;
+            break;
+          }
+        }
+        if (row.columnFilters.__global__ !== true) {
+          row.columnFilters.__global__ = false;
+        }
+      }
+    }
+    const filterRowsImpl = row => {
+      // Horizontally filter rows through each column
+      for (let i = 0; i < filterableIds.length; i++) {
+        if (row.columnFilters[filterableIds[i]] === false) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    // Filter final rows using all of the active filters
+    return filterRowsUtils.filterRows(rowModel.rows, filterRowsImpl, table);
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getFilteredRowModel', () => table._autoResetPageIndex()));
+}
+exports.getFilteredRowModel = getFilteredRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var row = require('../core/row.js');
+var utils = require('../utils.js');
+function getGroupedRowModel() {
+  return table => utils.memo(() => [table.getState().grouping, table.getPreGroupedRowModel()], (grouping, rowModel) => {
+    if (!rowModel.rows.length || !grouping.length) {
+      rowModel.rows.forEach(row => {
+        row.depth = 0;
+        row.parentId = undefined;
+      });
+      return rowModel;
+    }
+
+    // Filter the grouping list down to columns that exist
+    const existingGrouping = grouping.filter(columnId => table.getColumn(columnId));
+    const groupedFlatRows = [];
+    const groupedRowsById = {};
+    // const onlyGroupedFlatRows: Row[] = [];
+    // const onlyGroupedRowsById: Record<RowId, Row> = {};
+    // const nonGroupedFlatRows: Row[] = [];
+    // const nonGroupedRowsById: Record<RowId, Row> = {};
+
+    // Recursively group the data
+    const groupUpRecursively = function (rows, depth, parentId) {
+      if (depth === void 0) {
+        depth = 0;
+      }
+      // Grouping depth has been been met
+      // Stop grouping and simply rewrite thd depth and row relationships
+      if (depth >= existingGrouping.length) {
+        return rows.map(row => {
+          row.depth = depth;
+          groupedFlatRows.push(row);
+          groupedRowsById[row.id] = row;
+          if (row.subRows) {
+            row.subRows = groupUpRecursively(row.subRows, depth + 1, row.id);
+          }
+          return row;
+        });
+      }
+      const columnId = existingGrouping[depth];
+
+      // Group the rows together for this level
+      const rowGroupsMap = groupBy(rows, columnId);
+
+      // Perform aggregations for each group
+      const aggregatedGroupedRows = Array.from(rowGroupsMap.entries()).map((_ref, index) => {
+        let [groupingValue, groupedRows] = _ref;
+        let id = `${columnId}:${groupingValue}`;
+        id = parentId ? `${parentId}>${id}` : id;
+
+        // First, Recurse to group sub rows before aggregation
+        const subRows = groupUpRecursively(groupedRows, depth + 1, id);
+        subRows.forEach(subRow => {
+          subRow.parentId = id;
+        });
+
+        // Flatten the leaf rows of the rows in this group
+        const leafRows = depth ? utils.flattenBy(groupedRows, row => row.subRows) : groupedRows;
+        const row$1 = row.createRow(table, id, leafRows[0].original, index, depth, undefined, parentId);
+        Object.assign(row$1, {
+          groupingColumnId: columnId,
+          groupingValue,
+          subRows,
+          leafRows,
+          getValue: columnId => {
+            // Don't aggregate columns that are in the grouping
+            if (existingGrouping.includes(columnId)) {
+              if (row$1._valuesCache.hasOwnProperty(columnId)) {
+                return row$1._valuesCache[columnId];
+              }
+              if (groupedRows[0]) {
+                var _groupedRows$0$getVal;
+                row$1._valuesCache[columnId] = (_groupedRows$0$getVal = groupedRows[0].getValue(columnId)) != null ? _groupedRows$0$getVal : undefined;
+              }
+              return row$1._valuesCache[columnId];
+            }
+            if (row$1._groupingValuesCache.hasOwnProperty(columnId)) {
+              return row$1._groupingValuesCache[columnId];
+            }
+
+            // Aggregate the values
+            const column = table.getColumn(columnId);
+            const aggregateFn = column == null ? void 0 : column.getAggregationFn();
+            if (aggregateFn) {
+              row$1._groupingValuesCache[columnId] = aggregateFn(columnId, leafRows, groupedRows);
+              return row$1._groupingValuesCache[columnId];
+            }
+          }
+        });
+        subRows.forEach(subRow => {
+          groupedFlatRows.push(subRow);
+          groupedRowsById[subRow.id] = subRow;
+          // if (subRow.getIsGrouped?.()) {
+          //   onlyGroupedFlatRows.push(subRow);
+          //   onlyGroupedRowsById[subRow.id] = subRow;
+          // } else {
+          //   nonGroupedFlatRows.push(subRow);
+          //   nonGroupedRowsById[subRow.id] = subRow;
+          // }
+        });
+        return row$1;
+      });
+      return aggregatedGroupedRows;
+    };
+    const groupedRows = groupUpRecursively(rowModel.rows, 0);
+    groupedRows.forEach(subRow => {
+      groupedFlatRows.push(subRow);
+      groupedRowsById[subRow.id] = subRow;
+      // if (subRow.getIsGrouped?.()) {
+      //   onlyGroupedFlatRows.push(subRow);
+      //   onlyGroupedRowsById[subRow.id] = subRow;
+      // } else {
+      //   nonGroupedFlatRows.push(subRow);
+      //   nonGroupedRowsById[subRow.id] = subRow;
+      // }
+    });
+    return {
+      rows: groupedRows,
+      flatRows: groupedFlatRows,
+      rowsById: groupedRowsById
+    };
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getGroupedRowModel', () => {
+    table._queue(() => {
+      table._autoResetExpanded();
+      table._autoResetPageIndex();
+    });
+  }));
+}
+function groupBy(rows, columnId) {
+  const groupMap = new Map();
+  return rows.reduce((map, row) => {
+    const resKey = `${row.getGroupingValue(columnId)}`;
+    const previous = map.get(resKey);
+    if (!previous) {
+      map.set(resKey, [row]);
+    } else {
+      previous.push(row);
+    }
+    return map;
+  }, groupMap);
+}
+exports.getGroupedRowModel = getGroupedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+var getExpandedRowModel = require('./getExpandedRowModel.js');
+function getPaginationRowModel(opts) {
+  return table => utils.memo(() => [table.getState().pagination, table.getPrePaginationRowModel(), table.options.paginateExpandedRows ? undefined : table.getState().expanded], (pagination, rowModel) => {
+    if (!rowModel.rows.length) {
+      return rowModel;
+    }
+    const {
+      pageSize,
+      pageIndex
+    } = pagination;
+    let {
+      rows,
+      flatRows,
+      rowsById
+    } = rowModel;
+    const pageStart = pageSize * pageIndex;
+    const pageEnd = pageStart + pageSize;
+    rows = rows.slice(pageStart, pageEnd);
+    let paginatedRowModel;
+    if (!table.options.paginateExpandedRows) {
+      paginatedRowModel = getExpandedRowModel.expandRows({
+        rows,
+        flatRows,
+        rowsById
+      });
+    } else {
+      paginatedRowModel = {
+        rows,
+        flatRows,
+        rowsById
+      };
+    }
+    paginatedRowModel.flatRows = [];
+    const handleRow = row => {
+      paginatedRowModel.flatRows.push(row);
+      if (row.subRows.length) {
+        row.subRows.forEach(handleRow);
+      }
+    };
+    paginatedRowModel.rows.forEach(handleRow);
+    return paginatedRowModel;
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getPaginationRowModel'));
+}
+exports.getPaginationRowModel = getPaginationRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var utils = require('../utils.js');
+function getSortedRowModel() {
+  return table => utils.memo(() => [table.getState().sorting, table.getPreSortedRowModel()], (sorting, rowModel) => {
+    if (!rowModel.rows.length || !(sorting != null && sorting.length)) {
+      return rowModel;
+    }
+    const sortingState = table.getState().sorting;
+    const sortedFlatRows = [];
+
+    // Filter out sortings that correspond to non existing columns
+    const availableSorting = sortingState.filter(sort => {
+      var _table$getColumn;
+      return (_table$getColumn = table.getColumn(sort.id)) == null ? void 0 : _table$getColumn.getCanSort();
+    });
+    const columnInfoById = {};
+    availableSorting.forEach(sortEntry => {
+      const column = table.getColumn(sortEntry.id);
+      if (!column) return;
+      columnInfoById[sortEntry.id] = {
+        sortUndefined: column.columnDef.sortUndefined,
+        invertSorting: column.columnDef.invertSorting,
+        sortingFn: column.getSortingFn()
+      };
+    });
+    const sortData = rows => {
+      // This will also perform a stable sorting using the row index
+      // if needed.
+      const sortedData = rows.map(row => ({
+        ...row
+      }));
+      sortedData.sort((rowA, rowB) => {
+        for (let i = 0; i < availableSorting.length; i += 1) {
+          var _sortEntry$desc;
+          const sortEntry = availableSorting[i];
+          const columnInfo = columnInfoById[sortEntry.id];
+          const sortUndefined = columnInfo.sortUndefined;
+          const isDesc = (_sortEntry$desc = sortEntry == null ? void 0 : sortEntry.desc) != null ? _sortEntry$desc : false;
+          let sortInt = 0;
+
+          // All sorting ints should always return in ascending order
+          if (sortUndefined) {
+            const aValue = rowA.getValue(sortEntry.id);
+            const bValue = rowB.getValue(sortEntry.id);
+            const aUndefined = aValue === undefined;
+            const bUndefined = bValue === undefined;
+            if (aUndefined || bUndefined) {
+              if (sortUndefined === 'first') return aUndefined ? -1 : 1;
+              if (sortUndefined === 'last') return aUndefined ? 1 : -1;
+              sortInt = aUndefined && bUndefined ? 0 : aUndefined ? sortUndefined : -sortUndefined;
+            }
+          }
+          if (sortInt === 0) {
+            sortInt = columnInfo.sortingFn(rowA, rowB, sortEntry.id);
+          }
+
+          // If sorting is non-zero, take care of desc and inversion
+          if (sortInt !== 0) {
+            if (isDesc) {
+              sortInt *= -1;
+            }
+            if (columnInfo.invertSorting) {
+              sortInt *= -1;
+            }
+            return sortInt;
+          }
+        }
+        return rowA.index - rowB.index;
+      });
+
+      // If there are sub-rows, sort them
+      sortedData.forEach(row => {
+        var _row$subRows;
+        sortedFlatRows.push(row);
+        if ((_row$subRows = row.subRows) != null && _row$subRows.length) {
+          row.subRows = sortData(row.subRows);
+        }
+      });
+      return sortedData;
+    };
+    return {
+      rows: sortData(rowModel.rows),
+      flatRows: sortedFlatRows,
+      rowsById: rowModel.rowsById
+    };
+  }, utils.getMemoOptions(table.options, 'debugTable', 'getSortedRowModel', () => table._autoResetPageIndex()));
+}
+exports.getSortedRowModel = getSortedRowModel;
+  } },
+  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+/**
+   * table-core
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var columnHelper = require('./columnHelper.js');
+var cell = require('./core/cell.js');
+var column = require('./core/column.js');
+var headers = require('./core/headers.js');
+var row = require('./core/row.js');
+var table = require('./core/table.js');
+var ColumnFaceting = require('./features/ColumnFaceting.js');
+var ColumnFiltering = require('./features/ColumnFiltering.js');
+var ColumnGrouping = require('./features/ColumnGrouping.js');
+var ColumnOrdering = require('./features/ColumnOrdering.js');
+var ColumnPinning = require('./features/ColumnPinning.js');
+var ColumnSizing = require('./features/ColumnSizing.js');
+var ColumnVisibility = require('./features/ColumnVisibility.js');
+var GlobalFaceting = require('./features/GlobalFaceting.js');
+var GlobalFiltering = require('./features/GlobalFiltering.js');
+var RowExpanding = require('./features/RowExpanding.js');
+var RowPagination = require('./features/RowPagination.js');
+var RowPinning = require('./features/RowPinning.js');
+var RowSelection = require('./features/RowSelection.js');
+var RowSorting = require('./features/RowSorting.js');
+var utils = require('./utils.js');
+var getCoreRowModel = require('./utils/getCoreRowModel.js');
+var getExpandedRowModel = require('./utils/getExpandedRowModel.js');
+var getFacetedMinMaxValues = require('./utils/getFacetedMinMaxValues.js');
+var getFacetedRowModel = require('./utils/getFacetedRowModel.js');
+var getFacetedUniqueValues = require('./utils/getFacetedUniqueValues.js');
+var getFilteredRowModel = require('./utils/getFilteredRowModel.js');
+var getGroupedRowModel = require('./utils/getGroupedRowModel.js');
+var getPaginationRowModel = require('./utils/getPaginationRowModel.js');
+var getSortedRowModel = require('./utils/getSortedRowModel.js');
+var aggregationFns = require('./aggregationFns.js');
+var filterFns = require('./filterFns.js');
+var sortingFns = require('./sortingFns.js');
+exports.createColumnHelper = columnHelper.createColumnHelper;
+exports.createCell = cell.createCell;
+exports.createColumn = column.createColumn;
+exports.Headers = headers.Headers;
+exports.buildHeaderGroups = headers.buildHeaderGroups;
+exports.createRow = row.createRow;
+exports.createTable = table.createTable;
+exports.ColumnFaceting = ColumnFaceting.ColumnFaceting;
+exports.ColumnFiltering = ColumnFiltering.ColumnFiltering;
+exports.shouldAutoRemoveFilter = ColumnFiltering.shouldAutoRemoveFilter;
+exports.ColumnGrouping = ColumnGrouping.ColumnGrouping;
+exports.orderColumns = ColumnGrouping.orderColumns;
+exports.ColumnOrdering = ColumnOrdering.ColumnOrdering;
+exports.ColumnPinning = ColumnPinning.ColumnPinning;
+exports.ColumnSizing = ColumnSizing.ColumnSizing;
+exports.defaultColumnSizing = ColumnSizing.defaultColumnSizing;
+exports.passiveEventSupported = ColumnSizing.passiveEventSupported;
+exports.ColumnVisibility = ColumnVisibility.ColumnVisibility;
+exports._getVisibleLeafColumns = ColumnVisibility._getVisibleLeafColumns;
+exports.GlobalFaceting = GlobalFaceting.GlobalFaceting;
+exports.GlobalFiltering = GlobalFiltering.GlobalFiltering;
+exports.RowExpanding = RowExpanding.RowExpanding;
+exports.RowPagination = RowPagination.RowPagination;
+exports.RowPinning = RowPinning.RowPinning;
+exports.RowSelection = RowSelection.RowSelection;
+exports.isRowSelected = RowSelection.isRowSelected;
+exports.isSubRowSelected = RowSelection.isSubRowSelected;
+exports.selectRowsFn = RowSelection.selectRowsFn;
+exports.RowSorting = RowSorting.RowSorting;
+exports.flattenBy = utils.flattenBy;
+exports.functionalUpdate = utils.functionalUpdate;
+exports.getMemoOptions = utils.getMemoOptions;
+exports.isFunction = utils.isFunction;
+exports.isNumberArray = utils.isNumberArray;
+exports.makeStateUpdater = utils.makeStateUpdater;
+exports.memo = utils.memo;
+exports.noop = utils.noop;
+exports.getCoreRowModel = getCoreRowModel.getCoreRowModel;
+exports.expandRows = getExpandedRowModel.expandRows;
+exports.getExpandedRowModel = getExpandedRowModel.getExpandedRowModel;
+exports.getFacetedMinMaxValues = getFacetedMinMaxValues.getFacetedMinMaxValues;
+exports.getFacetedRowModel = getFacetedRowModel.getFacetedRowModel;
+exports.getFacetedUniqueValues = getFacetedUniqueValues.getFacetedUniqueValues;
+exports.getFilteredRowModel = getFilteredRowModel.getFilteredRowModel;
+exports.getGroupedRowModel = getGroupedRowModel.getGroupedRowModel;
+exports.getPaginationRowModel = getPaginationRowModel.getPaginationRowModel;
+exports.getSortedRowModel = getSortedRowModel.getSortedRowModel;
+exports.aggregationFns = aggregationFns.aggregationFns;
+exports.filterFns = filterFns.filterFns;
+exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
+exports.sortingFns = sortingFns.sortingFns;
+  } },
+  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+/**
+   * react-table
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+'use strict';
+
+var React = require('react');
+var tableCore = require('@tanstack/table-core');
+function _interopNamespaceDefault(e) {
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () {
+            return e[k];
+          }
+        });
+      }
+    });
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+var React__namespace = /*#__PURE__*/_interopNamespaceDefault(React);
+
+//
+
+/**
+ * If rendering headers, cells, or footers with custom markup, use flexRender instead of `cell.getValue()` or `cell.renderValue()`.
+ */
+function flexRender(Comp, props) {
+  return !Comp ? null : isReactComponent(Comp) ? /*#__PURE__*/React__namespace.createElement(Comp, props) : Comp;
+}
+function isReactComponent(component) {
+  return isClassComponent(component) || typeof component === 'function' || isExoticComponent(component);
+}
+function isClassComponent(component) {
+  return typeof component === 'function' && (() => {
+    const proto = Object.getPrototypeOf(component);
+    return proto.prototype && proto.prototype.isReactComponent;
+  })();
+}
+function isExoticComponent(component) {
+  return typeof component === 'object' && typeof component.$$typeof === 'symbol' && ['react.memo', 'react.forward_ref'].includes(component.$$typeof.description);
+}
+function useReactTable(options) {
+  // Compose in the generic options to the user options
+  const resolvedOptions = {
+    state: {},
+    // Dummy state
+    onStateChange: () => {},
+    // noop
+    renderFallbackValue: null,
+    ...options
+  };
+
+  // Create a new table and store it in state
+  const [tableRef] = React__namespace.useState(() => ({
+    current: tableCore.createTable(resolvedOptions)
+  }));
+
+  // By default, manage table state here using the table's initial state
+  const [state, setState] = React__namespace.useState(() => tableRef.current.initialState);
+
+  // Compose the default state above with any user state. This will allow the user
+  // to only control a subset of the state if desired.
+  tableRef.current.setOptions(prev => ({
+    ...prev,
+    ...options,
+    state: {
+      ...state,
+      ...options.state
+    },
+    // Similarly, we'll maintain both our internal state and any user-provided
+    // state.
+    onStateChange: updater => {
+      setState(updater);
+      options.onStateChange == null || options.onStateChange(updater);
+    }
+  }));
+  return tableRef.current;
+}
+exports.flexRender = flexRender;
+exports.useReactTable = useReactTable;
+Object.keys(tableCore).forEach(function (k) {
+  if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
+    enumerable: true,
+    get: function () {
+      return tableCore[k];
+    }
+  });
+});
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+function getMeasurementKey(item) {
+  return typeof item === "object" ? item.key : item;
+}
+function createLazyMeasurementsView(cache, flat) {
+  const count = cache.length;
+  return new Proxy(cache, {
+    get(target, prop, receiver) {
+      if (typeof prop === "string") {
+        const c = prop.charCodeAt(0);
+        if (c >= 48 && c <= 57) {
+          const i = +prop;
+          if (Number.isInteger(i) && i >= 0 && i < count) {
+            let v = target[i];
+            if (typeof v !== "object") {
+              const s = flat[i * 2];
+              v = target[i] = {
+                index: i,
+                key: v,
+                start: s,
+                size: flat[i * 2 + 1],
+                end: s + flat[i * 2 + 1],
+                lane: 0
+              };
+            }
+            return v;
+          }
+        }
+        if (prop === "length") return count;
+      }
+      return Reflect.get(target, prop, receiver);
+    }
+  });
+}
+exports.createLazyMeasurementsView = createLazyMeasurementsView;
+exports.getMeasurementKey = getMeasurementKey;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+function memo(getDeps, fn, opts) {
+  let deps = opts.initialDeps ?? [];
+  let result;
+  let isInitial = true;
+  function memoizedFunction() {
+    var _a;
+    const debugEnabled = 'production' !== "production" && !!opts.key && !!((_a = opts.debug) == null ? void 0 : _a.call(opts));
+    let depTime = 0;
+    if (debugEnabled) depTime = Date.now();
+    const newDeps = getDeps();
+    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
+    if (!depsChanged) {
+      return result;
+    }
+    deps = newDeps;
+    let resultTime = 0;
+    if (debugEnabled) resultTime = Date.now();
+    result = fn(...newDeps);
+    if (debugEnabled) {
+      const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
+      const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
+      const resultFpsPercentage = resultEndTime / 16;
+      const pad = (str, num) => {
+        str = String(str);
+        while (str.length < num) {
+          str = " " + str;
+        }
+        return str;
+      };
+      console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
+            font-size: .6rem;
+            font-weight: bold;
+            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
+    }
+    if ((opts == null ? void 0 : opts.onChange) && !(isInitial && opts.skipInitialOnChange)) {
+      opts.onChange(result);
+    }
+    isInitial = false;
+    return result;
+  }
+  memoizedFunction.updateDeps = newDeps => {
+    deps = newDeps;
+  };
+  return memoizedFunction;
+}
+function notUndefined(value, msg) {
+  if (value === void 0) {
+    throw new Error(`Unexpected undefined${msg ? `: ${msg}` : ""}`);
+  } else {
+    return value;
+  }
+}
+const approxEqual = (a, b) => Math.abs(a - b) < 1.01;
+const debounce = (targetWindow, fn, ms) => {
+  let timeoutId;
+  return Object.assign(function (...args) {
+    targetWindow.clearTimeout(timeoutId);
+    timeoutId = targetWindow.setTimeout(() => fn.apply(this, args), ms);
+  }, {
+    // The handle is closure-local, so a caller that has already
+    // unsubscribed has no way to stop a queued call. Teardown paths use
+    // this to drop the pending invocation instead of letting it land.
+    cancel: () => {
+      targetWindow.clearTimeout(timeoutId);
+    }
+  });
+};
+exports.approxEqual = approxEqual;
+exports.debounce = debounce;
+exports.memo = memo;
+exports.notUndefined = notUndefined;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const utils = require("./utils.cjs");
+function classifyScrollEvent({
+  offset,
+  isScrolling,
+  elementMax,
+  holdOffset,
+  scrollOffset,
+  pendingWrite,
+  clampedMaxAtWrite
+}) {
+  var _a;
+  if (isScrolling && pendingWrite === null && offset === scrollOffset) {
+    return "spurious";
+  }
+  if (pendingWrite !== null && Math.abs(offset - pendingWrite.target) < 1.5) {
+    return "readBack";
+  }
+  if (pendingWrite !== null && !pendingWrite.smooth && elementMax !== null && pendingWrite.target > elementMax + holdOffset + 0.5 && Math.abs(offset - (elementMax + holdOffset)) < 1.5) {
+    return "clampedReadBack";
+  }
+  if (pendingWrite !== null && !pendingWrite.smooth && ((_a = pendingWrite.lowMaxes) == null ? void 0 : _a.some(max => Math.abs(offset - max) < 1.5))) {
+    return "clampedReadBack";
+  }
+  if (clampedMaxAtWrite !== null && Math.abs(offset - clampedMaxAtWrite) < 1.5) {
+    return "clampedEcho";
+  }
+  return "external";
+}
+const isAnimating = phase => phase === "smooth" || phase === "smoothFinishing";
+function externalRetiresCommand({
+  kind,
+  offset,
+  command,
+  target
+}) {
+  return kind !== "spurious" && kind !== "readBack" &&
+  // Our own write, clamped (`clampedReadBack`, #1310): the command is not
+  // retired by it, and reconcile retargets below the new max.
+  kind !== "clampedReadBack" && (command == null ? void 0 : command.index) != null &&
+  // Nothing has been written for a command waiting for the tail; these
+  // are the fling's events.
+  command.phase !== "queued" &&
+  // A non-smooth write lands at once, so any other scroll event is the
+  // user's, even before reconcile saw the target reached (the target may
+  // keep moving, or iOS ignored the write under a finger). A write the
+  // browser clamped because the sizer hasn't grown yet reads back at the
+  // max, which is also where the fresh target clamps, so the check below
+  // keeps it reconciling (#1294). While a smooth scroll's animation may
+  // still report, its events look like a user's, so it yields only once it
+  // has landed.
+  !isAnimating(command.phase) && !utils.approxEqual(offset, command.lastTargetOffset) && !utils.approxEqual(offset, target()) &&
+  // A compensation write's clamped echo (#1258) keeps the command. The
+  // order is deliberate, not tidiness: this clause stays after `target()`
+  // (and `clampedReadBack` before it) because `target()` can rebuild the
+  // measurements, so it must run for exactly the events it always did.
+  kind !== "clampedEcho";
+}
+const FLING_WINDOW_MS = 40;
+function flingSpedUp(samples) {
+  const last = samples[samples.length - 1];
+  if (last === void 0) return false;
+  let j = samples.length - 2;
+  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
+  if (j < 0) return false;
+  const mid = samples[j];
+  let k = j - 1;
+  while (k >= 0 && mid.t - samples[k].t < FLING_WINDOW_MS) k--;
+  if (k < 0) return false;
+  const first = samples[k];
+  const recent = (last.offset - mid.offset) / (last.t - mid.t);
+  const before = (mid.offset - first.offset) / (mid.t - first.t);
+  return recent * before >= 0 && Math.abs(recent) >= 2 * Math.abs(before) && Math.abs(recent) - Math.abs(before) >= 0.8;
+}
+function flingCaught(samples) {
+  const last = samples[samples.length - 1];
+  if (last === void 0) return false;
+  let j = samples.length - 2;
+  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
+  if (j < 0) return false;
+  const from = samples[j];
+  return Math.abs(last.offset - from.offset) / (last.t - from.t) >= 0.05;
+}
+exports.classifyScrollEvent = classifyScrollEvent;
+exports.externalRetiresCommand = externalRetiresCommand;
+exports.flingCaught = flingCaught;
+exports.flingSpedUp = flingSpedUp;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+let _isIOSResult;
+const isIOSWebKit = () => {
+  if (_isIOSResult !== void 0) return _isIOSResult;
+  if (typeof navigator === "undefined") return _isIOSResult = false;
+  if (/iP(hone|od|ad)/.test(navigator.userAgent)) return _isIOSResult = true;
+  const mtp = navigator.maxTouchPoints;
+  return _isIOSResult = navigator.platform === "MacIntel" && mtp !== void 0 && mtp > 0;
+};
+let _iosMomentumOverridesWritesResult;
+const iosMomentumOverridesWrites = () => {
+  if (_iosMomentumOverridesWritesResult !== void 0) {
+    return _iosMomentumOverridesWritesResult;
+  }
+  return _iosMomentumOverridesWritesResult = isIOSWebKit() && typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("overflow-anchor: auto");
+};
+const _resetIOSDetectionForTests = () => {
+  _isIOSResult = void 0;
+  _iosMomentumOverridesWritesResult = void 0;
+};
+const touchListenerOptions = {
+  capture: true,
+  passive: true
+};
+class IosGesture {
+  constructor(host) {
+    this.host = host;
+    this._touch = null;
+    this.inMotion = () => this._touch !== null && this._touch.phase !== "lateFling";
+    this.dragging = () => {
+      var _a;
+      return ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
+    };
+    this.tail = () => {
+      var _a;
+      return ((_a = this._touch) == null ? void 0 : _a.phase) === "tail" ? this._touch.moved ? "fling" : "tap" : null;
+    };
+    this.onScroll = ({
+      isScrolling,
+      ownReadBack,
+      moved,
+      external
+    }) => {
+      var _a, _b, _c;
+      if (isScrolling && ((_a = this._touch) == null ? void 0 : _a.phase) === "tail") {
+        this._openTail(this._touch.moved || !ownReadBack, false);
+      } else if (((_b = this._touch) == null ? void 0 : _b.phase) === "lateFling") {
+        if (this.host.now() > this._touch.until) {
+          this._touch = null;
+        } else if (external && isScrolling && moved) {
+          this._openTail(true, false);
+        }
+      }
+      if (!ownReadBack && isScrolling && moved && ((_c = this._touch) == null ? void 0 : _c.phase) === "down") {
+        this._touch.moved = true;
+        return true;
+      }
+      return false;
+    };
+    this.touchStart = () => {
+      this.end();
+      this._touch = {
+        phase: "down",
+        moved: false
+      };
+    };
+    this.touchEnd = () => {
+      var _a;
+      const moved = ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
+      this.end();
+      this._openTail(moved, moved);
+    };
+    this.end = () => {
+      var _a;
+      const win = this.host.getWindow();
+      if (((_a = this._touch) == null ? void 0 : _a.phase) === "tail" && win != null) {
+        win.clearTimeout(this._touch.timerId);
+      }
+      this._touch = null;
+    };
+    this.listen = target => {
+      const onTouchStart = () => this.touchStart();
+      const onTouchEnd = () => this.touchEnd();
+      target.addEventListener("touchstart", onTouchStart, touchListenerOptions);
+      target.addEventListener("touchend", onTouchEnd, touchListenerOptions);
+      target.addEventListener("touchcancel", onTouchEnd, touchListenerOptions);
+      return () => {
+        target.removeEventListener("touchstart", onTouchStart, touchListenerOptions);
+        target.removeEventListener("touchend", onTouchEnd, touchListenerOptions);
+        target.removeEventListener("touchcancel", onTouchEnd, touchListenerOptions);
+        this.end();
+      };
+    };
+    this._openTail = (moved, awaitingFling) => {
+      const win = this.host.getWindow();
+      if (!isIOSWebKit() || win == null) return;
+      this.end();
+      const tail = {
+        phase: "tail",
+        moved,
+        awaitingFling,
+        // Only fires while this tail is current: `end` clears it otherwise.
+        timerId: win.setTimeout(() => {
+          if (this.host.tailStillMoving()) {
+            this._openTail(tail.moved, tail.awaitingFling);
+            return;
+          }
+          this._touch = tail.awaitingFling ? {
+            phase: "lateFling",
+            until: this.host.now() + 1e3
+          } : null;
+          this.host.onTailClosed();
+        }, 150)
+      };
+      this._touch = tail;
+    };
+  }
+  get touch() {
+    return this._touch;
+  }
+}
+exports.IosGesture = IosGesture;
+exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
+exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
+exports.isIOSWebKit = isIOSWebKit;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const lazyMeasurements = require("./lazy-measurements.cjs");
+const utils = require("./utils.cjs");
+const scrollClassifier = require("./scroll-classifier.cjs");
+const iosGesture = require("./ios-gesture.cjs");
+const getRect = element => {
+  const {
+    clientWidth,
+    clientHeight
+  } = element;
+  return {
+    width: clientWidth,
+    height: clientHeight
+  };
+};
+const createFrameQueue = targetWindow => {
+  const ids = /* @__PURE__ */new Set();
+  return {
+    schedule: fn => {
+      const id = targetWindow.requestAnimationFrame(() => {
+        ids.delete(id);
+        fn();
+      });
+      ids.add(id);
+    },
+    cancel: () => {
+      ids.forEach(id => targetWindow.cancelAnimationFrame(id));
+      ids.clear();
+    }
+  };
+};
+const defaultKeyExtractor = index => index;
+const defaultRangeExtractor = range => {
+  const overscan = range.overscan * Math.max(range.lanes ?? 1, 1);
+  const start = Math.max(range.startIndex - overscan, 0);
+  const end = Math.min(range.endIndex + overscan, range.count - 1);
+  const len = end - start + 1;
+  const arr = new Array(len);
+  for (let i = 0; i < len; i++) {
+    arr[i] = start + i;
+  }
+  return arr;
+};
+const observeElementRect = (instance, cb) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const targetWindow = instance.targetWindow;
+  if (!targetWindow) {
+    return;
+  }
+  const handler = rect => {
+    const {
+      width,
+      height
+    } = rect;
+    cb({
+      width: Math.round(width),
+      height: Math.round(height)
+    });
+  };
+  handler(getRect(element));
+  if (!targetWindow.ResizeObserver) {
+    return () => {};
+  }
+  const frames = createFrameQueue(targetWindow);
+  const observer = new targetWindow.ResizeObserver(() => {
+    const run = () => {
+      handler(getRect(element));
+    };
+    instance.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+  });
+  observer.observe(element, {
+    box: "content-box"
+  });
+  return () => {
+    observer.unobserve(element);
+    frames.cancel();
+  };
+};
+const addEventListenerOptions = {
+  passive: true
+};
+const observeWindowRect = (instance, cb) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const handler = () => {
+    cb({
+      width: element.innerWidth,
+      height: element.innerHeight
+    });
+  };
+  handler();
+  element.addEventListener("resize", handler, addEventListenerOptions);
+  return () => {
+    element.removeEventListener("resize", handler);
+  };
+};
+const supportsScrollend = typeof window == "undefined" ? true : "onscrollend" in window;
+const observeOffset = (instance, cb, readOffset) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const targetWindow = instance.targetWindow;
+  if (!targetWindow) {
+    return;
+  }
+  const registerScrollendEvent = instance.options.useScrollendEvent && supportsScrollend;
+  let offset = 0;
+  const fallback = registerScrollendEvent ? null : utils.debounce(targetWindow, () => cb(readOffset(element), false), instance.options.isScrollingResetDelay);
+  const createHandler = isScrolling => () => {
+    offset = readOffset(element);
+    fallback == null ? void 0 : fallback();
+    cb(offset, isScrolling);
+  };
+  const handler = createHandler(true);
+  const endHandler = createHandler(false);
+  element.addEventListener("scroll", handler, addEventListenerOptions);
+  if (registerScrollendEvent) {
+    element.addEventListener("scrollend", endHandler, addEventListenerOptions);
+  }
+  return () => {
+    element.removeEventListener("scroll", handler);
+    if (registerScrollendEvent) {
+      element.removeEventListener("scrollend", endHandler);
+    }
+    fallback == null ? void 0 : fallback.cancel();
+  };
+};
+const observeElementOffset = (instance, cb) => observeOffset(instance, cb, el => {
+  const {
+    horizontal,
+    isRtl
+  } = instance.options;
+  return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
+});
+const observeWindowOffset = (instance, cb) => observeOffset(instance, cb, win => instance.options.horizontal ? win.scrollX : win.scrollY);
+const measureElement = (element, entry, instance) => {
+  if (instance.options.useCachedMeasurements) {
+    const index = instance.indexFromElement(element);
+    const key = instance.options.getItemKey(index);
+    return instance.itemSizeCache.get(key) ?? instance.options.estimateSize(index);
+  }
+  if (entry == null ? void 0 : entry.borderBoxSize) {
+    const box = entry.borderBoxSize[0];
+    if (box) {
+      const size = Math.round(box[instance.options.horizontal ? "inlineSize" : "blockSize"]);
+      return size;
+    }
+  }
+  if (!entry) {
+    const index = instance.indexFromElement(element);
+    const key = instance.options.getItemKey(index);
+    const cachedSize = instance.itemSizeCache.get(key);
+    if (cachedSize !== void 0) {
+      return cachedSize;
+    }
+  }
+  return element[instance.options.horizontal ? "offsetWidth" : "offsetHeight"];
+};
+const scrollWithAdjustments = (offset, {
+  adjustments = 0,
+  behavior
+}, instance) => {
+  var _a, _b;
+  (_b = (_a = instance.scrollElement) == null ? void 0 : _a.scrollTo) == null ? void 0 : _b.call(_a, {
+    [instance.options.horizontal ? "left" : "top"]: offset + adjustments,
+    behavior
+  });
+};
+const windowScroll = scrollWithAdjustments;
+const elementScroll = scrollWithAdjustments;
+const initialScrollPhase = (behavior, atTarget) => behavior === "smooth" ? atTarget ? "smoothLanded" : "smooth" : "instant";
+const isSmoothScroll = state => (state == null ? void 0 : state.phase) === "smooth" || (state == null ? void 0 : state.phase) === "smoothLanded";
+function isAppendWithTrim(prevCount, nextCount, getPreviousKey, getNextKey) {
+  if (nextCount === 0) return false;
+  const firstKey = getNextKey(0);
+  const removedKeys = /* @__PURE__ */new Set();
+  let removedCount = 0;
+  while (removedCount < prevCount) {
+    const key = getPreviousKey(removedCount);
+    if (key === firstKey) break;
+    removedKeys.add(key);
+    removedCount++;
+  }
+  const retainedCount = prevCount - removedCount;
+  if (retainedCount === 0 || retainedCount >= nextCount) return false;
+  for (let i = 0; i < retainedCount; i++) {
+    if (getNextKey(i) !== getPreviousKey(removedCount + i)) return false;
+  }
+  for (let i = retainedCount; i < nextCount; i++) {
+    if (removedKeys.has(getNextKey(i))) return false;
+  }
+  return true;
+}
+class Virtualizer {
+  constructor(opts) {
+    this.unsubs = [];
+    this.scrollElement = null;
+    this.targetWindow = null;
+    this.isScrolling = false;
+    this.scrollState = null;
+    this.measurementsCache = [];
+    this._singleLaneMeasurements = null;
+    this.itemSizeCache = /* @__PURE__ */new Map();
+    this.itemSizeCacheVersion = 0;
+    this.laneAssignments = /* @__PURE__ */new Map();
+    this.pendingMin = null;
+    this.prevLanes = void 0;
+    this.lanesChangedFlag = false;
+    this.lanesSettling = false;
+    this.pendingScrollAnchor = null;
+    this.scrollRect = null;
+    this.scrollOffset = null;
+    this.scrollDirection = null;
+    this._holdOffset = 0;
+    this._reportedOverscroll = false;
+    this._iosGesture = new iosGesture.IosGesture({
+      getWindow: () => this.targetWindow,
+      now: () => this.now(),
+      // The end of a fling can move less than a pixel per scroll event, so
+      // events can stop for 150ms while the fling is still running (seen on
+      // an iPhone, 27.0.1). A command waiting for it would then be written
+      // into the fling and overridden. The element having moved since the
+      // last event means it has not ended: wait again. Not while our own
+      // write has yet to report: that moved it.
+      tailStillMoving: () => {
+        const state = this.scrollState;
+        if ((state == null ? void 0 : state.phase) !== "queued" || this.pendingWrite !== null) {
+          return false;
+        }
+        const now = this._readElementOffset();
+        if (now === null || this._lastElementOffset === null || Math.abs(now - this._lastElementOffset) < 1) {
+          return false;
+        }
+        this._lastElementOffset = now;
+        state.samples = [...(state.samples ?? []), {
+          t: this.now(),
+          offset: now
+        }];
+        return true;
+      },
+      onTailClosed: () => {
+        const state = this.scrollState;
+        if ((state == null ? void 0 : state.phase) === "queued" && scrollClassifier.flingCaught(state.samples ?? [])) {
+          this.scrollState = null;
+        }
+        this._flushHoldIfReady(true);
+        this._writeAwaitingCommand();
+      }
+    });
+    this._lastElementOffset = null;
+    this.pendingWrite = null;
+    this._clampedAdjustment = null;
+    this.elementsCache = /* @__PURE__ */new Map();
+    this._resizeBatch = null;
+    this.now = () => {
+      var _a, _b, _c;
+      return ((_c = (_b = (_a = this.targetWindow) == null ? void 0 : _a.performance) == null ? void 0 : _b.now) == null ? void 0 : _c.call(_b)) ?? Date.now();
+    };
+    this.observer = /* @__PURE__ */(() => {
+      let _ro = null;
+      let _frames = null;
+      const get = () => {
+        if (_ro) {
+          return _ro;
+        }
+        const targetWindow = this.targetWindow;
+        if (!targetWindow || !targetWindow.ResizeObserver) {
+          return null;
+        }
+        const frames = _frames = createFrameQueue(targetWindow);
+        return _ro = new targetWindow.ResizeObserver(entries => {
+          const run = () => {
+            const batch = {
+              sync: false
+            };
+            this._resizeBatch = batch;
+            try {
+              entries.forEach(measureEntry);
+            } finally {
+              this._resizeBatch = null;
+              if (batch.notify) {
+                this.notify(batch.sync);
+                this._noteClampMax();
+                this._flushHoldIfReady(true);
+                this._retryClampedAdjustment();
+              }
+            }
+          };
+          this.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+        });
+      };
+      const measureEntry = entry => {
+        const node = entry.target;
+        const index = this.indexFromElement(node);
+        if (!node.isConnected) {
+          this.observer.unobserve(node);
+          for (const [cacheKey, cachedNode] of this.elementsCache) {
+            if (cachedNode === node) {
+              this.elementsCache.delete(cacheKey);
+              break;
+            }
+          }
+          return;
+        }
+        if (!this.isIndexInRange(index)) return;
+        if (this.shouldMeasureDuringScroll(index)) {
+          this.resizeItem(index, this.options.measureElement(node, entry, this));
+        }
+      };
+      return {
+        disconnect: () => {
+          var _a;
+          (_a = get()) == null ? void 0 : _a.disconnect();
+          _frames == null ? void 0 : _frames.cancel();
+          _ro = null;
+          _frames = null;
+        },
+        observe: target => {
+          var _a;
+          return (_a = get()) == null ? void 0 : _a.observe(target, {
+            box: "border-box"
+          });
+        },
+        unobserve: target => {
+          var _a;
+          return (_a = get()) == null ? void 0 : _a.unobserve(target);
+        }
+      };
+    })();
+    this.range = null;
+    this.setOptions = opts2 => {
+      var _a;
+      const merged = {
+        debug: false,
+        initialOffset: 0,
+        overscan: 1,
+        paddingStart: 0,
+        paddingEnd: 0,
+        scrollPaddingStart: 0,
+        scrollPaddingEnd: 0,
+        horizontal: false,
+        getItemKey: defaultKeyExtractor,
+        rangeExtractor: defaultRangeExtractor,
+        onChange: () => {},
+        measureElement,
+        initialRect: {
+          width: 0,
+          height: 0
+        },
+        scrollMargin: 0,
+        gap: 0,
+        indexAttribute: "data-index",
+        initialMeasurementsCache: [],
+        lanes: 1,
+        anchorTo: "start",
+        followOnAppend: false,
+        scrollEndThreshold: 1,
+        isScrollingResetDelay: 150,
+        enabled: true,
+        isRtl: false,
+        useScrollendEvent: false,
+        useAnimationFrameWithResizeObserver: false,
+        laneAssignmentMode: "estimate",
+        useCachedMeasurements: false
+      };
+      for (const key in opts2) {
+        const v = opts2[key];
+        if (v !== void 0) merged[key] = v;
+      }
+      const prevOptions = this.options;
+      let anchor = null;
+      let followOnAppend = null;
+      let edgeKeysChanged = false;
+      if (prevOptions !== void 0 && prevOptions.enabled && merged.enabled && merged.anchorTo === "end" && this.scrollElement !== null) {
+        const prevCount = prevOptions.count;
+        const nextCount = merged.count;
+        const measurements = this.getMeasurements();
+        const previousItems = ((_a = this._singleLaneMeasurements) == null ? void 0 : _a.items) ?? measurements;
+        const getPreviousKey = index => lazyMeasurements.getMeasurementKey(previousItems[index]);
+        const prevFirstKey = prevCount > 0 ? getPreviousKey(0) : null;
+        const prevLastKey = prevCount > 0 ? getPreviousKey(prevCount - 1) : null;
+        const didCountChange = nextCount !== prevCount;
+        const didEdgeKeysChange = didCountChange || prevCount > 0 && nextCount > 0 && (merged.getItemKey(0) !== prevFirstKey || merged.getItemKey(nextCount - 1) !== prevLastKey);
+        if (didEdgeKeysChange) {
+          edgeKeysChanged = true;
+          const item = prevCount > 0 ? this.getVirtualItemForOffset(this.getScrollOffset()) ?? measurements[0] : null;
+          if (item) {
+            anchor = [item.key, this.getScrollOffset() - item.start];
+          }
+          const behavior = merged.followOnAppend === true ? "auto" : merged.followOnAppend || null;
+          if (behavior && nextCount > 0 && this.isAtEnd(prevOptions.scrollEndThreshold) && (prevCount === 0 || merged.getItemKey(nextCount - 1) !== prevLastKey)) {
+            if (nextCount > prevCount || isAppendWithTrim(prevCount, nextCount, getPreviousKey, merged.getItemKey)) {
+              followOnAppend = behavior;
+            }
+          }
+        }
+      }
+      this.options = merged;
+      if (edgeKeysChanged) {
+        this.pendingMin = 0;
+        this.itemSizeCacheVersion++;
+      }
+      let anchorDelta = null;
+      if (anchor && this.scrollOffset !== null && !this._awaitingCommandReadBack()) {
+        const [anchorKey, anchorOffset] = anchor;
+        const newMeasurements = this.getMeasurements();
+        const {
+          count,
+          getItemKey
+        } = this.options;
+        let idx = 0;
+        while (idx < count && getItemKey(idx) !== anchorKey) {
+          idx++;
+        }
+        if (idx < count) {
+          const anchorItem = newMeasurements[idx];
+          if (anchorItem) {
+            const newOffset = Math.max(0, anchorItem.start + anchorOffset);
+            if (!followOnAppend && newOffset !== this.scrollOffset) {
+              anchorDelta = newOffset - this.scrollOffset;
+              this.scrollOffset = newOffset;
+            }
+          }
+        }
+      }
+      if (followOnAppend) {
+        this.pendingScrollAnchor = {
+          kind: "follow",
+          behavior: followOnAppend
+        };
+      } else if (anchorDelta !== null) {
+        if (this._canWriteScroll()) {
+          this.pendingScrollAnchor = {
+            kind: "anchor",
+            delta: anchorDelta
+          };
+        } else {
+          this._holdOffset += anchorDelta;
+          this._followOffsetTarget(anchorDelta);
+        }
+      }
+    };
+    this.notify = sync => {
+      var _a, _b;
+      (_b = (_a = this.options).onChange) == null ? void 0 : _b.call(_a, this, sync);
+    };
+    this.maybeNotify = utils.memo(() => {
+      this.calculateRange();
+      return [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null];
+    }, isScrolling => {
+      this.notify(isScrolling);
+    }, {
+      key: 'production' !== "production" && "maybeNotify",
+      debug: () => this.options.debug,
+      initialDeps: [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null]
+    });
+    this.cleanup = () => {
+      var _a;
+      this.unsubs.filter(Boolean).forEach(d => d());
+      this.unsubs = [];
+      this.observer.disconnect();
+      if (this.rafId != null && this.targetWindow) {
+        this.targetWindow.cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+      this.scrollState = null;
+      (_a = this._momentumStop) == null ? void 0 : _a.restore();
+      this._momentumStop = null;
+      this.isScrolling = false;
+      this.scrollDirection = null;
+      this._holdOffset = 0;
+      this._reportedOverscroll = false;
+      this._clampedAdjustment = null;
+      this.pendingWrite = null;
+      this.scrollElement = null;
+      this.targetWindow = null;
+    };
+    this._didMount = () => {
+      return () => {
+        this.cleanup();
+      };
+    };
+    this._willUpdate = () => {
+      var _a;
+      const scrollElement = this.options.enabled ? this.options.getScrollElement() : null;
+      if (this.scrollElement !== scrollElement) {
+        this.cleanup();
+        if (!scrollElement) {
+          this.maybeNotify();
+          return;
+        }
+        this.scrollElement = scrollElement;
+        if (this.scrollElement && "ownerDocument" in this.scrollElement) {
+          this.targetWindow = this.scrollElement.ownerDocument.defaultView;
+        } else {
+          this.targetWindow = ((_a = this.scrollElement) == null ? void 0 : _a.window) ?? null;
+        }
+        this.elementsCache.forEach(cached => {
+          this.observer.observe(cached);
+        });
+        this.unsubs.push(this.options.observeElementRect(this, rect => {
+          this.scrollRect = rect;
+          this.maybeNotify();
+        }));
+        this.unsubs.push(this.options.observeElementOffset(this, (offset, isScrolling) => {
+          var _a2, _b, _c, _d;
+          const elementMax = isScrolling ? this._elementMaxScrollOffset() : null;
+          const wasOverscrolled = this._reportedOverscroll;
+          this._reportedOverscroll = offset < 0 || elementMax !== null && offset > elementMax + 1;
+          const elementOffset = offset;
+          this._lastElementOffset = elementOffset;
+          offset = this._toLayoutOffset(offset);
+          const kind = this._classifyScrollEvent(offset, isScrolling, elementMax);
+          if (kind === "spurious") return;
+          if (kind === "readBack") {
+            offset = this.pendingWrite.target;
+          } else if (kind === "clampedReadBack" && ((_a2 = this.scrollState) == null ? void 0 : _a2.index) != null &&
+          // Not `elementMax`: an adapter can report the read-back at rest.
+          offset < this.getMaxScrollOffset() - 1.5) {
+            this.scrollState.lastTargetOffset = offset;
+          } else if (scrollClassifier.externalRetiresCommand({
+            kind,
+            offset,
+            command: this.scrollState,
+            target: () => this.getScrollStateTarget(this.scrollState)
+          })) {
+            this.scrollState = null;
+          }
+          this.pendingWrite = null;
+          if (this._clampedAdjustment !== null && Math.abs(offset - this._clampedAdjustment.maxAtWrite) >= 1.5) {
+            this._clampedAdjustment = null;
+          }
+          const prevOffset = this.getScrollOffset();
+          const prevDirection = this.scrollDirection;
+          this.scrollDirection = isScrolling ? prevOffset === offset ? this.scrollDirection : prevOffset < offset ? "forward" : "backward" : null;
+          this.scrollOffset = offset;
+          this.isScrolling = isScrolling;
+          const queued = this.scrollState;
+          if ((queued == null ? void 0 : queued.phase) === "queued" && kind === "external" && isScrolling) {
+            if (wasOverscrolled || this._reportedOverscroll) {
+              queued.samples = [];
+            } else {
+              const t = this.now();
+              queued.samples = [...(queued.samples ?? []).filter(sample => t - sample.t <= 200), {
+                t,
+                offset: elementOffset
+              }];
+              if (prevDirection !== null && this.scrollDirection !== prevDirection || scrollClassifier.flingSpedUp(queued.samples)) {
+                this.scrollState = null;
+              }
+            }
+          }
+          if (this._iosGesture.onScroll({
+            isScrolling,
+            ownReadBack: kind === "readBack",
+            moved: offset !== prevOffset,
+            // Neither our write's read-back nor a frame of our smooth
+            // animation: the user or a fling moved it.
+            external: kind === "external" && ((_b = this.scrollState) == null ? void 0 : _b.phase) !== "smooth" && ((_c = this.scrollState) == null ? void 0 : _c.phase) !== "smoothFinishing"
+          }) &&
+          // The user scrolls: a command still waiting for the tail is
+          // theirs to override, like a written one would be.
+          ((_d = this.scrollState) == null ? void 0 : _d.phase) === "queued") {
+            this.scrollState = null;
+          }
+          this._flushHoldIfReady(true);
+          if (this.scrollState) {
+            this.scheduleScrollReconcile();
+          }
+          this.maybeNotify();
+        }));
+        if ("addEventListener" in this.scrollElement) {
+          this.unsubs.push(this._iosGesture.listen(this.scrollElement));
+        }
+        this._scrollToOffset(this.getScrollOffset());
+      }
+      this._noteClampMax();
+      const anchor = this.pendingScrollAnchor;
+      this.pendingScrollAnchor = null;
+      if (anchor && this.scrollElement && this.options.enabled) {
+        if (anchor.kind === "anchor") {
+          if (!this._canWriteScroll()) {
+            this._holdOffset += anchor.delta;
+            this._followOffsetTarget(anchor.delta);
+            this.notify(false);
+          } else if (isSmoothScroll(this.scrollState) && !utils.approxEqual(this.getScrollOffset() - anchor.delta, this.scrollState.lastTargetOffset)) ;else {
+            this._followOffsetTarget(anchor.delta);
+            this._scrollToOffset(this.getScrollOffset());
+          }
+        } else {
+          this.scrollToEnd({
+            behavior: anchor.behavior
+          });
+        }
+      }
+      this._flushHoldIfReady(false);
+      this._retryClampedAdjustment();
+    };
+    this._classifyScrollEvent = (offset, isScrolling, elementMax) => {
+      var _a;
+      return scrollClassifier.classifyScrollEvent({
+        offset,
+        isScrolling,
+        elementMax,
+        holdOffset: this._holdOffset,
+        scrollOffset: this.scrollOffset,
+        pendingWrite: this.pendingWrite,
+        clampedMaxAtWrite: ((_a = this._clampedAdjustment) == null ? void 0 : _a.maxAtWrite) ?? null
+      });
+    };
+    this._retryClampedAdjustment = () => {
+      if (this._clampedAdjustment === null || !this.scrollElement || !this.options.enabled) {
+        return;
+      }
+      const {
+        target,
+        maxAtWrite
+      } = this._clampedAdjustment;
+      const max = this.getMaxScrollOffset();
+      if (max > maxAtWrite + 0.5) {
+        this._clampedAdjustment = target > max + 0.5 ? {
+          target,
+          maxAtWrite: max
+        } : null;
+        this._scrollToOffset(target);
+      }
+    };
+    this._writeAwaitingCommand = () => {
+      const state = this.scrollState;
+      if (state === null || state.phase !== "queued") return;
+      const {
+        behavior
+      } = state;
+      this.getMeasurements();
+      const offset = this.getScrollStateTarget(state);
+      state.lastTargetOffset = offset;
+      this._clampedAdjustment = null;
+      state.phase = initialScrollPhase(behavior, state.index != null && utils.approxEqual(offset, this.getScrollOffset()));
+      this._scrollToOffset(offset, {
+        behavior
+      });
+      this.scheduleScrollReconcile();
+    };
+    this._readElementOffset = () => {
+      const el = this.scrollElement;
+      if (el == null) return null;
+      const {
+        horizontal,
+        isRtl
+      } = this.options;
+      if (typeof el.scrollTop === "number") {
+        return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
+      }
+      if (typeof el.scrollY === "number") {
+        return horizontal ? el.scrollX : el.scrollY;
+      }
+      return null;
+    };
+    this._canWriteScroll = () => !(iosGesture.isIOSWebKit() && this._iosGesture.inMotion()) && !this._reportedOverscroll;
+    this._flushHoldIfReady = sync => {
+      var _a;
+      if (this._holdOffset === 0) return;
+      if (!this.scrollElement || !this.options.enabled) return;
+      if (!this._canWriteScroll()) return;
+      if (((_a = this.scrollState) == null ? void 0 : _a.phase) === "smooth") return;
+      this._holdOffset = 0;
+      if (this.scrollOffset !== null && this.scrollOffset < 0) {
+        this.scrollOffset = 0;
+      }
+      this.notify(sync);
+      const target = this.getCommandWrittenOffset() ?? this.getScrollOffset();
+      this._clampedAdjustment = this._clampedBy(target);
+      this._scrollToOffset(target);
+    };
+    this.rafId = null;
+    this.getSize = () => {
+      if (!this.options.enabled) {
+        this.scrollRect = null;
+        return 0;
+      }
+      this.scrollRect = this.scrollRect ?? this.options.initialRect;
+      return this.scrollRect[this.options.horizontal ? "width" : "height"];
+    };
+    this.getScrollOffset = () => {
+      if (!this.options.enabled) {
+        this.scrollOffset = null;
+        return 0;
+      }
+      this.scrollOffset = this.scrollOffset ?? (typeof this.options.initialOffset === "function" ? this.options.initialOffset() : this.options.initialOffset);
+      return this.scrollOffset;
+    };
+    this.getMeasurementOptions = utils.memo(() => [this.options.count, this.options.paddingStart, this.options.scrollMargin, this.options.getItemKey, this.options.enabled, this.options.lanes, this.options.laneAssignmentMode, this.options.gap], (count, paddingStart, scrollMargin, getItemKey, enabled, lanes, laneAssignmentMode, gap) => {
+      const lanesChanged = this.prevLanes !== void 0 && this.prevLanes !== lanes;
+      if (lanesChanged) {
+        this.lanesChangedFlag = true;
+      }
+      this.prevLanes = lanes;
+      this.pendingMin = null;
+      return {
+        count,
+        paddingStart,
+        scrollMargin,
+        getItemKey,
+        enabled,
+        lanes,
+        laneAssignmentMode,
+        gap
+      };
+    }, {
+      key: false
+    });
+    this.isIndexInRange = index => index >= 0 && index < this.options.count;
+    this.getMeasurements = utils.memo(() => [this.getMeasurementOptions(), this.itemSizeCacheVersion], ({
+      count,
+      paddingStart,
+      scrollMargin,
+      getItemKey,
+      enabled,
+      lanes,
+      laneAssignmentMode,
+      gap
+    }, _itemSizeCacheVersion) => {
+      var _a;
+      const itemSizeCache = this.itemSizeCache;
+      if (!enabled) {
+        this.measurementsCache = [];
+        this._singleLaneMeasurements = null;
+        this.itemSizeCache.clear();
+        this.laneAssignments.clear();
+        return [];
+      }
+      if (this.laneAssignments.size > count) {
+        for (const index of this.laneAssignments.keys()) {
+          if (index >= count) {
+            this.laneAssignments.delete(index);
+          }
+        }
+      }
+      if (this.lanesChangedFlag) {
+        this.lanesChangedFlag = false;
+        this.lanesSettling = true;
+        this.measurementsCache = [];
+        this._singleLaneMeasurements = null;
+        this.itemSizeCache.clear();
+        this.laneAssignments.clear();
+        this.pendingMin = null;
+      }
+      if (this.measurementsCache.length === 0 && !this.lanesSettling) {
+        this.measurementsCache = this.options.initialMeasurementsCache;
+        this.measurementsCache.forEach(item => {
+          this.itemSizeCache.set(item.key, item.size);
+        });
+      }
+      const min = this.lanesSettling ? 0 : this.pendingMin ?? 0;
+      this.pendingMin = null;
+      if (this.lanesSettling && this.measurementsCache.length === count) {
+        this.lanesSettling = false;
+      }
+      if (lanes === 1) {
+        const need = count * 2;
+        let flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+        if (!flat || flat.length < need) {
+          const next = new Float64Array(need);
+          if (flat && min > 0) next.set(flat.subarray(0, min * 2));
+          flat = next;
+        }
+        const items = min === 0 ? new Array(count) : this._singleLaneMeasurements.items.slice();
+        let runningStart;
+        if (min === 0) {
+          runningStart = paddingStart + scrollMargin;
+        } else {
+          const prevIdx = min - 1;
+          runningStart = flat[prevIdx * 2] + flat[prevIdx * 2 + 1] + gap;
+        }
+        for (let i = min; i < count; i++) {
+          const key = getItemKey(i);
+          items[i] = key;
+          const measuredSize = itemSizeCache.get(key);
+          const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
+          flat[i * 2] = runningStart;
+          flat[i * 2 + 1] = size;
+          runningStart += size + gap;
+        }
+        this._singleLaneMeasurements = {
+          flat,
+          items
+        };
+        const view = lazyMeasurements.createLazyMeasurementsView(items, flat);
+        this.measurementsCache = view;
+        return view;
+      }
+      const measurements = this.measurementsCache.slice(0, min);
+      const laneLastIndex = new Array(lanes).fill(void 0);
+      const laneEnds = new Float64Array(lanes);
+      let filledLanes = 0;
+      for (let m = 0; m < min; m++) {
+        const item = measurements[m];
+        if (item) {
+          if (laneLastIndex[item.lane] === void 0) filledLanes++;
+          laneLastIndex[item.lane] = m;
+          laneEnds[item.lane] = item.end;
+        }
+      }
+      for (let i = min; i < count; i++) {
+        const key = getItemKey(i);
+        const cachedLane = this.laneAssignments.get(i);
+        let lane;
+        let start;
+        const shouldCacheLane = laneAssignmentMode === "estimate" || itemSizeCache.has(key);
+        if (cachedLane !== void 0 && this.options.lanes > 1) {
+          lane = cachedLane;
+          const prevIndex = laneLastIndex[lane];
+          const prevInLane = prevIndex !== void 0 ? measurements[prevIndex] : void 0;
+          start = prevInLane ? prevInLane.end + gap : paddingStart + scrollMargin;
+        } else if (filledLanes === lanes) {
+          let bestLane = 0;
+          let bestEnd = laneEnds[0];
+          let bestIdx = laneLastIndex[0];
+          for (let l = 1; l < lanes; l++) {
+            const e = laneEnds[l];
+            if (e < bestEnd || e === bestEnd && laneLastIndex[l] < bestIdx) {
+              bestLane = l;
+              bestEnd = e;
+              bestIdx = laneLastIndex[l];
+            }
+          }
+          lane = bestLane;
+          start = bestEnd + gap;
+          if (shouldCacheLane) {
+            this.laneAssignments.set(i, lane);
+          }
+        } else {
+          lane = i % this.options.lanes;
+          start = paddingStart + scrollMargin;
+          if (shouldCacheLane) {
+            this.laneAssignments.set(i, lane);
+          }
+        }
+        const measuredSize = itemSizeCache.get(key);
+        const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
+        const end = start + size;
+        measurements[i] = {
+          index: i,
+          start,
+          size,
+          end,
+          key,
+          lane
+        };
+        if (laneLastIndex[lane] === void 0) filledLanes++;
+        laneLastIndex[lane] = i;
+        laneEnds[lane] = end;
+      }
+      this.measurementsCache = measurements;
+      return measurements;
+    }, {
+      key: 'production' !== "production" && "getMeasurements",
+      debug: () => this.options.debug
+    });
+    this.calculateRange = utils.memo(() => [this.getMeasurements(), this.getSize(), this.getScrollOffset(), this.options.lanes], (measurements, outerSize, scrollOffset, lanes) => {
+      if (measurements.length === 0 || outerSize === 0) {
+        this.range = null;
+        return null;
+      }
+      this.range = calculateRangeImpl(measurements, outerSize, scrollOffset, lanes,
+      // Pass the typed array so binary search + forward-walk can read
+      // start/end directly from Float64Array, skipping the Proxy traps.
+      lanes === 1 && this._singleLaneMeasurements !== null ? this._singleLaneMeasurements.flat : null);
+      return this.range;
+    }, {
+      key: 'production' !== "production" && "calculateRange",
+      debug: () => this.options.debug
+    });
+    this.getVirtualIndexes = utils.memo(() => {
+      let startIndex = null;
+      let endIndex = null;
+      const range = this.calculateRange();
+      if (range) {
+        startIndex = range.startIndex;
+        endIndex = range.endIndex;
+      }
+      this.maybeNotify.updateDeps([this.isScrolling, startIndex, endIndex]);
+      return [this.options.rangeExtractor, this.options.overscan, this.options.count, startIndex, endIndex, this.options.lanes];
+    }, (rangeExtractor, overscan, count, startIndex, endIndex, lanes) => {
+      return startIndex === null || endIndex === null ? [] : rangeExtractor({
+        startIndex,
+        endIndex,
+        overscan,
+        count,
+        lanes
+      });
+    }, {
+      key: 'production' !== "production" && "getVirtualIndexes",
+      debug: () => this.options.debug
+    });
+    this.indexFromElement = node => {
+      const attributeName = this.options.indexAttribute;
+      const indexStr = node.getAttribute(attributeName);
+      if (!indexStr) {
+        console.warn(`Missing attribute name '${attributeName}={index}' on measured element.`);
+        return -1;
+      }
+      return parseInt(indexStr, 10);
+    };
+    this.shouldMeasureDuringScroll = index => {
+      var _a;
+      if (!isSmoothScroll(this.scrollState)) {
+        return true;
+      }
+      const scrollIndex = this.scrollState.index ?? ((_a = this.getVirtualItemForOffset(this.scrollState.lastTargetOffset)) == null ? void 0 : _a.index);
+      if (scrollIndex !== void 0 && this.range) {
+        const bufferSize = Math.max(this.options.overscan, Math.ceil((this.range.endIndex - this.range.startIndex) / 2));
+        const minIndex = Math.max(0, scrollIndex - bufferSize);
+        const maxIndex = Math.min(this.options.count - 1, scrollIndex + bufferSize);
+        return index >= minIndex && index <= maxIndex;
+      }
+      return true;
+    };
+    this.measureElement = node => {
+      if (!node) {
+        this.elementsCache.forEach((cached, key2) => {
+          if (!cached.isConnected) {
+            this.observer.unobserve(cached);
+            this.elementsCache.delete(key2);
+          }
+        });
+        return;
+      }
+      const index = this.indexFromElement(node);
+      if (!this.isIndexInRange(index)) return;
+      const key = this.options.getItemKey(index);
+      const prevNode = this.elementsCache.get(key);
+      if (prevNode !== node) {
+        if (prevNode) {
+          this.observer.unobserve(prevNode);
+        }
+        this.observer.observe(node);
+        this.elementsCache.set(key, node);
+      }
+      if (node.isConnected && (!this.isScrolling || this.scrollState) && this.shouldMeasureDuringScroll(index)) {
+        this.resizeItem(index, this.options.measureElement(node, void 0, this));
+      }
+    };
+    this.resizeItem = (index, size) => {
+      var _a, _b, _c;
+      if (!this.isIndexInRange(index)) return;
+      if ((_a = this._resizeBatch) == null ? void 0 : _a.sync) this.getMeasurements();
+      let cachedSize;
+      let itemStart;
+      let key;
+      const flat = (_b = this._singleLaneMeasurements) == null ? void 0 : _b.flat;
+      if (this.options.lanes === 1 && flat != null) {
+        key = this.options.getItemKey(index);
+        itemStart = flat[index * 2];
+        cachedSize = flat[index * 2 + 1];
+      } else {
+        const item = this.measurementsCache[index];
+        if (!item) return;
+        key = item.key;
+        itemStart = item.start;
+        cachedSize = item.size;
+      }
+      const itemSize = this.itemSizeCache.get(key) ?? cachedSize;
+      const delta = size - itemSize;
+      if (delta !== 0) {
+        const wasAtEnd = this.options.anchorTo === "end" && !isSmoothScroll(this.scrollState) && this.getVirtualDistanceFromEnd() <= this.options.scrollEndThreshold;
+        const prevTotalSize = wasAtEnd ? this._getLayoutTotalSize() : 0;
+        const scrollOffset = this.getScrollOffset();
+        const isFirstMeasure = !this.itemSizeCache.has(key);
+        const defaultShouldAdjust = isFirstMeasure ?
+        // First measurement: compensate any item whose top sits above the
+        // fold — the estimate→actual delta must be corrected regardless of
+        // scroll direction, since the whole estimated block was above it.
+        itemStart < scrollOffset :
+        // Re-measurement: only compensate an item that is ENTIRELY above the
+        // fold. An item that merely *spans* the fold (top above, bottom
+        // below — e.g. a streaming chat message growing at its bottom)
+        // changes size *below* the anchor point, so shifting scrollTop by the
+        // delta would drag the viewport downward on every growth (#1218).
+        // Also skip during backward scroll to avoid the "items jump while
+        // scrolling up" cascade.
+        itemStart + itemSize <= scrollOffset && this.scrollDirection !== "backward";
+        const shouldAdjustScroll = !isSmoothScroll(this.scrollState) && (this.shouldAdjustScrollPositionOnItemSizeChange !== void 0 ? this.shouldAdjustScrollPositionOnItemSizeChange(
+        // The callback expects a VirtualItem; build one lazily only
+        // when the consumer actually supplied a custom predicate.
+        this.measurementsCache[index] ?? {
+          index,
+          key,
+          start: itemStart,
+          size: cachedSize,
+          end: itemStart + cachedSize,
+          lane: 0
+        }, delta, this) : defaultShouldAdjust);
+        if (this.pendingMin === null || index < this.pendingMin) {
+          this.pendingMin = index;
+        }
+        this.itemSizeCache.set(key, size);
+        this.itemSizeCacheVersion++;
+        let adjustedSync = false;
+        if (!this._awaitingCommandReadBack()) {
+          if (wasAtEnd) {
+            adjustedSync = this.applyScrollAdjustment(this._getLayoutTotalSize() - prevTotalSize);
+          } else if (shouldAdjustScroll) {
+            adjustedSync = this.applyScrollAdjustment(delta);
+          }
+        }
+        if (this._resizeBatch) {
+          this._resizeBatch.notify = true;
+          (_c = this._resizeBatch).sync || (_c.sync = adjustedSync);
+          return;
+        }
+        this.notify(adjustedSync);
+        this._noteClampMax();
+        this._flushHoldIfReady(true);
+        this._retryClampedAdjustment();
+      }
+    };
+    this.getVirtualItems = utils.memo(() => [this.getVirtualIndexes(), this.getMeasurements(), this._holdOffset], (indexes, measurements, hold) => {
+      const virtualItems = [];
+      for (let k = 0, len = indexes.length; k < len; k++) {
+        const i = indexes[k];
+        const measurement = measurements[i];
+        virtualItems.push(hold === 0 ? measurement : {
+          ...measurement,
+          start: measurement.start - hold,
+          end: measurement.end - hold
+        });
+      }
+      return virtualItems;
+    }, {
+      key: 'production' !== "production" && "getVirtualItems",
+      debug: () => this.options.debug
+    });
+    this.getVirtualItemForOffset = offset => {
+      var _a;
+      const measurements = this.getMeasurements();
+      if (measurements.length === 0) {
+        return void 0;
+      }
+      const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+      const useFlat = this.options.lanes === 1 && flat != null;
+      const idx = findNearestBinarySearch(0, measurements.length - 1, useFlat ? i => flat[i * 2] : i => utils.notUndefined(measurements[i]).start, offset);
+      return utils.notUndefined(measurements[idx]);
+    };
+    this._noteClampMax = () => {
+      if (!this._awaitingCommandReadBack()) return;
+      const elementMax = this._elementMaxScrollOffset();
+      if (elementMax === null) return;
+      const write = this.pendingWrite;
+      const max = Math.max(elementMax, 0) + this._holdOffset;
+      if (max >= write.target) return;
+      const lowMaxes = write.lowMaxes ?? (write.lowMaxes = []);
+      if (lowMaxes[lowMaxes.length - 1] !== max) lowMaxes.push(max);
+    };
+    this.getMaxScrollOffset = () => (this._elementMaxScrollOffset() ?? 0) + this._holdOffset;
+    this._toLayoutOffset = elementOffset => {
+      var _a;
+      let offset = elementOffset + this._holdOffset;
+      if (((_a = this.pendingScrollAnchor) == null ? void 0 : _a.kind) === "anchor") {
+        offset += this.pendingScrollAnchor.delta;
+      }
+      return offset;
+    };
+    this._elementMaxScrollOffset = () => {
+      const el = this.scrollElement;
+      if (el === null) return null;
+      if ("scrollHeight" in el) {
+        return this.options.horizontal ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
+      }
+      if ("document" in el) {
+        const doc = el.document.documentElement;
+        return this.options.horizontal ? doc.scrollWidth - el.innerWidth : doc.scrollHeight - el.innerHeight;
+      }
+      return null;
+    };
+    this._momentumStop = null;
+    this._stopMomentum = done => {
+      const el = this.scrollElement;
+      const win = this.targetWindow;
+      if (el === null || win === null) return;
+      const scroller = "document" in el ? el.document.scrollingElement : el;
+      if (!(scroller == null ? void 0 : scroller.style)) return;
+      if (this._momentumStop) {
+        this._momentumStop.done = done;
+        return;
+      }
+      const {
+        style
+      } = scroller;
+      const property = this.options.horizontal ? "overflow-x" : "overflow-y";
+      const value = style.getPropertyValue(property);
+      const priority = style.getPropertyPriority(property);
+      style.setProperty(property, "hidden", "important");
+      const stop = {
+        // False when the app replaced the hidden value: the fling may not
+        // have stopped.
+        restore: () => {
+          if (style.getPropertyValue(property) !== "hidden" || style.getPropertyPriority(property) !== "important") {
+            return false;
+          }
+          style.setProperty(property, value, priority);
+          return true;
+        },
+        done
+      };
+      this._momentumStop = stop;
+      win.requestAnimationFrame(() => win.requestAnimationFrame(() => {
+        if (this._momentumStop !== stop) return;
+        this._momentumStop = null;
+        if (stop.restore()) stop.done();
+      }));
+    };
+    this._clampedBy = target => {
+      const elementMax = this._elementMaxScrollOffset();
+      if (elementMax === null) return null;
+      const maxAtWrite = elementMax + this._holdOffset;
+      return target > maxAtWrite + 0.5 ? {
+        target,
+        maxAtWrite
+      } : null;
+    };
+    this.getVirtualDistanceFromEnd = () => {
+      return Math.max(this._getLayoutTotalSize() - this.getSize() - this.getScrollOffset(), 0);
+    };
+    this.getDistanceFromEnd = () => {
+      return Math.max(this.getMaxScrollOffset() - this.getScrollOffset(), 0);
+    };
+    this.isAtEnd = (threshold = this.options.scrollEndThreshold) => {
+      return this.getDistanceFromEnd() <= threshold;
+    };
+    this.getOffsetForAlignment = (toOffset, align, itemSize = 0) => {
+      if (!this.scrollElement) return 0;
+      const size = this.getSize();
+      const scrollOffset = this.getScrollOffset();
+      if (align === "auto") {
+        align = toOffset >= scrollOffset + size ? "end" : "start";
+      }
+      if (align === "center") {
+        toOffset += (itemSize - size) / 2;
+      } else if (align === "end") {
+        toOffset -= size;
+      }
+      const maxOffset = this.getMaxScrollOffset();
+      return Math.max(Math.min(maxOffset, toOffset), 0);
+    };
+    this.getOffsetForIndex = (index, align = "auto") => {
+      index = Math.max(0, Math.min(index, this.options.count - 1));
+      const size = this.getSize();
+      const scrollOffset = this.getScrollOffset();
+      const item = this.measurementsCache[index];
+      if (!item) return;
+      if (align === "auto") {
+        if (item.end >= scrollOffset + size - this.options.scrollPaddingEnd) {
+          align = "end";
+        } else if (item.start <= scrollOffset + this.options.scrollPaddingStart) {
+          align = "start";
+        } else {
+          return [scrollOffset, align];
+        }
+      }
+      if (align === "end" && index === this.options.count - 1) {
+        const maxOffset = this.getMaxScrollOffset();
+        const toOffset2 = maxOffset - this.options.paddingEnd + this.options.scrollPaddingEnd;
+        return [Math.max(Math.min(toOffset2, maxOffset), 0), align];
+      }
+      const toOffset = align === "end" ? item.end + this.options.scrollPaddingEnd : item.start - this.options.scrollPaddingStart;
+      return [this.getOffsetForAlignment(toOffset, align, item.size), align];
+    };
+    this.scrollToOffset = (toOffset, {
+      align = "start",
+      behavior = "auto"
+    } = {}) => {
+      this._startScroll({
+        index: null,
+        align
+      }, this.getOffsetForAlignment(toOffset, align), behavior, "absolute");
+    };
+    this.scrollToIndex = (index, {
+      align: initialAlign = "auto",
+      behavior = "auto"
+    } = {}) => {
+      index = Math.max(0, Math.min(index, this.options.count - 1));
+      const offsetInfo = this.getOffsetForIndex(index, initialAlign);
+      if (!offsetInfo) return;
+      const [offset, align] = offsetInfo;
+      this._startScroll({
+        index,
+        align
+      }, offset, behavior, "absolute");
+    };
+    this.scrollBy = (delta, {
+      behavior = "auto"
+    } = {}) => {
+      const offset = this.getOffsetForAlignment((this.getCommandWrittenOffset() ?? this.getScrollOffset()) + delta, "start");
+      this._startScroll({
+        index: null,
+        align: "start"
+      }, offset, behavior, "relative");
+    };
+    this.scrollToEnd = ({
+      behavior = "auto"
+    } = {}) => {
+      if (this.options.count > 0) {
+        this._startScroll({
+          index: this.options.count - 1,
+          align: "end",
+          toEnd: true
+        }, Math.max(this.getMaxScrollOffset(), 0), behavior, "absolute");
+        return;
+      }
+      this.scrollToOffset(Math.max(this.getTotalSize() - this.getSize(), 0), {
+        behavior
+      });
+    };
+    this.cancelScroll = () => {
+      if (this.rafId != null && this.targetWindow) {
+        this.targetWindow.cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+      this.scrollState = null;
+    };
+    this.getTotalSize = () => Math.max(this._getLayoutTotalSize() - this._holdOffset, 0);
+    this._getLayoutTotalSize = () => {
+      var _a, _b;
+      const measurements = this.getMeasurements();
+      let end;
+      if (measurements.length === 0) {
+        end = this.options.paddingStart;
+      } else if (this.options.lanes === 1) {
+        const lastIdx = measurements.length - 1;
+        const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+        if (flat != null) {
+          end = flat[lastIdx * 2] + flat[lastIdx * 2 + 1];
+        } else {
+          end = ((_b = measurements[lastIdx]) == null ? void 0 : _b.end) ?? 0;
+        }
+      } else {
+        const endByLane = Array(this.options.lanes).fill(null);
+        let endIndex = measurements.length - 1;
+        while (endIndex >= 0 && endByLane.some(val => val === null)) {
+          const item = measurements[endIndex];
+          if (endByLane[item.lane] === null) {
+            endByLane[item.lane] = item.end;
+          }
+          endIndex--;
+        }
+        end = Math.max(...endByLane.filter(val => val !== null));
+      }
+      return Math.max(end - this.options.scrollMargin + this.options.paddingEnd, 0);
+    };
+    this.takeSnapshot = () => {
+      const snapshot = [];
+      if (this.itemSizeCache.size === 0) return snapshot;
+      const m = this.getMeasurements();
+      for (const item of m) {
+        if (item && this.itemSizeCache.has(item.key)) {
+          snapshot.push({
+            index: item.index,
+            key: item.key,
+            start: item.start,
+            size: item.size,
+            end: item.end,
+            lane: item.lane
+          });
+        }
+      }
+      return snapshot;
+    };
+    this._scrollToOffset = (offset, {
+      adjustments,
+      behavior
+    } = {}) => {
+      const write = {
+        target: offset + (adjustments ?? 0),
+        smooth: behavior === "smooth"
+      };
+      this.pendingWrite = write;
+      this.options.scrollToFn(offset - this._holdOffset, {
+        behavior,
+        adjustments
+      }, this);
+      return write;
+    };
+    this.getCommandWrittenOffset = () => this.scrollState !== null && this.pendingWrite !== null && !this.pendingWrite.smooth ? this.pendingWrite.target : null;
+    this._awaitingCommandReadBack = () => {
+      const writtenOffset = this.getCommandWrittenOffset();
+      return !(iosGesture.isIOSWebKit() && this._iosGesture.dragging()) && writtenOffset !== null && !utils.approxEqual(writtenOffset, this.getScrollOffset());
+    };
+    this._followOffsetTarget = delta => {
+      if (this.scrollState !== null && this.scrollState.index == null) {
+        this.scrollState.lastTargetOffset += delta;
+      }
+    };
+    this.measure = () => {
+      this.pendingMin = null;
+      this.itemSizeCache.clear();
+      this.laneAssignments.clear();
+      this.itemSizeCacheVersion++;
+      this.notify(false);
+    };
+    this.setOptions(opts);
+  }
+  /**
+   * @deprecated Always 0: a scroll correction is folded into `scrollOffset`
+   * at once, so there is never an outstanding adjustment to add to it. Read
+   * `scrollOffset` alone.
+   */
+  get scrollAdjustments() {
+    return 0;
+  }
+  // Returns `true` when it performed a synchronous `scrollTop` write this
+  // tick, `false` when the delta was zero or the write was deferred (iOS).
+  // `resizeItem` uses that to decide whether the follow-up `notify` must be
+  // synchronous so the grown transforms commit in the same paint (#1227).
+  applyScrollAdjustment(delta, behavior) {
+    if (delta === 0) return false;
+    if ('production' !== "production" && this.options.debug) {
+      console.info("correction", delta);
+    }
+    this._followOffsetTarget(delta);
+    if (!this._canWriteScroll()) {
+      this._holdOffset += delta;
+      if (this.scrollOffset !== null) this.scrollOffset += delta;
+      return true;
+    } else {
+      const offset = this.getScrollOffset();
+      this._clampedAdjustment = this._clampedBy(offset + delta);
+      const write = this._scrollToOffset(offset, {
+        adjustments: delta,
+        behavior
+      });
+      if (this.scrollOffset !== null) {
+        if (this.pendingWrite === write) this.scrollOffset += delta;
+        if (this.scrollOffset < 0) this.scrollOffset = 0;
+      }
+      return true;
+    }
+  }
+  scheduleScrollReconcile() {
+    if (!this.targetWindow) {
+      this.scrollState = null;
+      return;
+    }
+    if (this.rafId != null) return;
+    this.rafId = this.targetWindow.requestAnimationFrame(() => {
+      this.rafId = null;
+      this.reconcileScroll();
+    });
+  }
+  getScrollStateTarget(state) {
+    const offsetInfo = state.toEnd ? [Math.max(this.getMaxScrollOffset(), 0)] : state.index != null ? this.getOffsetForIndex(state.index, state.align) : void 0;
+    return offsetInfo ? offsetInfo[0] : state.lastTargetOffset;
+  }
+  reconcileScroll() {
+    if (!this.scrollState) return;
+    const el = this.scrollElement;
+    if (!el) return;
+    const MAX_RECONCILE_MS = 5e3;
+    if (this.now() - this.scrollState.startedAt > MAX_RECONCILE_MS) {
+      this.scrollState = null;
+      return;
+    }
+    if (this.scrollState.phase === "queued") {
+      this.scheduleScrollReconcile();
+      return;
+    }
+    this.getMeasurements();
+    const targetOffset = this.getScrollStateTarget(this.scrollState);
+    const STABLE_FRAMES = this.scrollState.index == null ? 1 : this.options.useAnimationFrameWithResizeObserver ? 3 : 2;
+    const targetChanged = targetOffset !== this.scrollState.lastTargetOffset;
+    if (!targetChanged && utils.approxEqual(targetOffset, this.getScrollOffset())) {
+      if (this.scrollState.phase === "smooth") {
+        this.scrollState.phase = "smoothLanded";
+      } else if (this.scrollState.phase === "smoothFinishing") {
+        this.scrollState.phase = "instant";
+      }
+      this.scrollState.stableFrames++;
+      if (this.scrollState.stableFrames >= STABLE_FRAMES) {
+        if (this.getScrollOffset() !== targetOffset) {
+          this._scrollToOffset(targetOffset, {
+            behavior: "auto"
+          });
+        }
+        this.scrollState = null;
+        return;
+      }
+    } else {
+      this.scrollState.stableFrames = 0;
+      if (targetChanged) {
+        const viewport = this.getSize() || 600;
+        const distance = Math.abs(targetOffset - this.getScrollOffset());
+        const keepSmooth = isSmoothScroll(this.scrollState) && distance > viewport;
+        this.scrollState.lastTargetOffset = targetOffset;
+        if (keepSmooth) {
+          this.scrollState.phase = "smooth";
+        } else if (this.scrollState.phase === "smooth") {
+          this.scrollState.phase = "smoothFinishing";
+        } else if (this.scrollState.phase === "smoothLanded") {
+          this.scrollState.phase = "instant";
+        }
+        this._scrollToOffset(targetOffset, {
+          behavior: keepSmooth ? "smooth" : "auto"
+        });
+      }
+    }
+    this.scheduleScrollReconcile();
+  }
+  // Every scroll command starts here: it becomes the in-flight command,
+  // writes its first target and leaves reconcile to retarget and retire it.
+  //
+  // Targets are layout offsets. A held correction is not dropped by a
+  // command: the write lands the element `_holdOffset` short of the target,
+  // under the rows exposed shifted by the same amount, and the flush moves
+  // both together once a write is possible.
+  //
+  // An index or end target that is already at its offset starts a smooth
+  // scroll as landed; an offset target never does, so its first scroll
+  // event is read as the user's (see the scroll handler in `_willUpdate`).
+  _startScroll(target, offset, behavior, kind) {
+    const tail = this._iosGesture.tail();
+    if (kind === "absolute" && tail !== null) {
+      if (tail === "fling" && iosGesture.iosMomentumOverridesWrites()) {
+        this._stopMomentum(() => {
+          const state = this.scrollState;
+          if ((state == null ? void 0 : state.phase) !== "queued" ||
+          // A finger came down: it owns the scroll until it lifts.
+          this._iosGesture.tail() !== "fling" ||
+          // In a bounce WebKit can drop the write (#1287): the tail
+          // decides, as without the stop. (Not `flingCaught`: our stop
+          // also ends the fling at speed, so a slow frame would read as
+          // a catch and the tail would drop the command.)
+          this._reportedOverscroll) {
+            return;
+          }
+          this._iosGesture.end();
+          this._flushHoldIfReady(true);
+          this._writeAwaitingCommand();
+        });
+        this.scrollState = {
+          ...target,
+          startedAt: this.now(),
+          lastTargetOffset: offset,
+          stableFrames: 0,
+          phase: "queued",
+          behavior,
+          samples: []
+        };
+        this.scheduleScrollReconcile();
+        return;
+      }
+      this._iosGesture.end();
+    }
+    this.scrollState = {
+      ...target,
+      startedAt: this.now(),
+      lastTargetOffset: offset,
+      stableFrames: 0,
+      behavior,
+      phase: initialScrollPhase(behavior, target.index != null && utils.approxEqual(offset, this.getScrollOffset()))
+    };
+    this._scrollToOffset(offset, {
+      behavior
+    });
+    this.scheduleScrollReconcile();
+  }
+}
+const findNearestBinarySearch = (low, high, getCurrentValue, value) => {
+  while (low <= high) {
+    const middle = (low + high) / 2 | 0;
+    const currentValue = getCurrentValue(middle);
+    if (currentValue < value) {
+      low = middle + 1;
+    } else if (currentValue > value) {
+      high = middle - 1;
+    } else {
+      return middle;
+    }
+  }
+  if (low > 0) {
+    return low - 1;
+  } else {
+    return 0;
+  }
+};
+function findNearestBinarySearchFlat(flat, high, value) {
+  let low = 0;
+  while (low <= high) {
+    const middle = (low + high) / 2 | 0;
+    const currentValue = flat[middle * 2];
+    if (currentValue < value) {
+      low = middle + 1;
+    } else if (currentValue > value) {
+      high = middle - 1;
+    } else {
+      return middle;
+    }
+  }
+  return low > 0 ? low - 1 : 0;
+}
+function calculateRangeImpl(measurements, outerSize, scrollOffset, lanes, flat) {
+  const lastIndex = measurements.length - 1;
+  if (measurements.length <= lanes) {
+    return {
+      startIndex: 0,
+      endIndex: lastIndex
+    };
+  }
+  if (lanes === 1 && flat !== null) {
+    const startIndex2 = findNearestBinarySearchFlat(flat, lastIndex, scrollOffset);
+    let endIndex2 = startIndex2;
+    const limit = scrollOffset + outerSize;
+    while (endIndex2 < lastIndex && flat[endIndex2 * 2] + flat[endIndex2 * 2 + 1] < limit) {
+      endIndex2++;
+    }
+    return {
+      startIndex: startIndex2,
+      endIndex: endIndex2
+    };
+  }
+  const getStart = index => measurements[index].start;
+  let startIndex = findNearestBinarySearch(0, lastIndex, getStart, scrollOffset);
+  let endIndex = startIndex;
+  if (lanes === 1) {
+    while (endIndex < lastIndex && measurements[endIndex].end < scrollOffset + outerSize) {
+      endIndex++;
+    }
+  } else if (lanes > 1) {
+    const endPerLane = Array(lanes).fill(0);
+    while (endIndex < lastIndex && endPerLane.some(pos => pos < scrollOffset + outerSize)) {
+      const item = measurements[endIndex];
+      endPerLane[item.lane] = item.end;
+      endIndex++;
+    }
+    const startPerLane = Array(lanes).fill(scrollOffset + outerSize);
+    while (startIndex >= 0 && startPerLane.some(pos => pos >= scrollOffset)) {
+      const item = measurements[startIndex];
+      startPerLane[item.lane] = item.start;
+      startIndex--;
+    }
+    startIndex = Math.max(0, startIndex - startIndex % lanes);
+    endIndex = Math.min(lastIndex, endIndex + (lanes - 1 - endIndex % lanes));
+  }
+  return {
+    startIndex,
+    endIndex
+  };
+}
+exports.approxEqual = utils.approxEqual;
+exports.debounce = utils.debounce;
+exports.memo = utils.memo;
+exports.notUndefined = utils.notUndefined;
+exports._resetIOSDetectionForTests = iosGesture._resetIOSDetectionForTests;
+exports.Virtualizer = Virtualizer;
+exports.defaultKeyExtractor = defaultKeyExtractor;
+exports.defaultRangeExtractor = defaultRangeExtractor;
+exports.elementScroll = elementScroll;
+exports.measureElement = measureElement;
+exports.observeElementOffset = observeElementOffset;
+exports.observeElementRect = observeElementRect;
+exports.observeWindowOffset = observeWindowOffset;
+exports.observeWindowRect = observeWindowRect;
+exports.windowScroll = windowScroll;
+  } },
+  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const React = require("react");
+const reactDom = require("react-dom");
+const virtualCore = require("@tanstack/virtual-core");
+function _interopNamespaceDefault(e) {
+  const n = Object.create(null, {
+    [Symbol.toStringTag]: {
+      value: "Module"
+    }
+  });
+  if (e) {
+    for (const k in e) {
+      if (k !== "default") {
+        const d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: () => e[k]
+        });
+      }
+    }
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+const React__namespace = /* @__PURE__ */_interopNamespaceDefault(React);
+const useIsomorphicLayoutEffect = typeof document !== "undefined" ? React__namespace.useLayoutEffect : React__namespace.useEffect;
+function useVirtualizerBase({
+  useFlushSync = true,
+  directDomUpdates = false,
+  directDomUpdatesMode = "transform",
+  ...options
+}) {
+  const rerender = React__namespace.useReducer(x => x + 1, 0)[1];
+  const directRef = React__namespace.useRef({
+    enabled: directDomUpdates,
+    mode: directDomUpdatesMode,
+    container: null,
+    lastSize: null,
+    // Keyed by the element itself so a remounted node (same key, new DOM
+    // node — e.g. when `enabled` is toggled off then on) is treated as fresh
+    // and gets its style written.
+    lastPositions: /* @__PURE__ */new WeakMap(),
+    prevRange: null
+  });
+  directRef.current.enabled = directDomUpdates;
+  directRef.current.mode = directDomUpdatesMode;
+  const measuringFromRef = React__namespace.useRef(false);
+  const applyContainerSize = instance2 => {
+    const state = directRef.current;
+    if (!state.enabled || !state.container) return;
+    const totalSize = instance2.getTotalSize();
+    if (totalSize !== state.lastSize) {
+      state.lastSize = totalSize;
+      const sizeAxis = instance2.options.horizontal ? "width" : "height";
+      state.container.style[sizeAxis] = `${totalSize}px`;
+    }
+  };
+  const applyItemPosition = (instance2, item, el) => {
+    const state = directRef.current;
+    const horizontal = !!instance2.options.horizontal;
+    const next = item.start - instance2.options.scrollMargin;
+    if (state.lastPositions.get(el) === next) return;
+    state.lastPositions.set(el, next);
+    if (state.mode === "transform") {
+      el.style.transform = horizontal ? `translate3d(${next}px, 0, 0)` : `translate3d(0, ${next}px, 0)`;
+    } else {
+      el.style[horizontal ? "left" : "top"] = `${next}px`;
+    }
+  };
+  const applyDirectStyles = instance2 => {
+    const state = directRef.current;
+    if (!state.enabled || !state.container) return;
+    applyContainerSize(instance2);
+    for (const item of instance2.getVirtualItems()) {
+      const el = instance2.elementsCache.get(item.key);
+      if (el) applyItemPosition(instance2, item, el);
+    }
+  };
+  const resolvedOptions = {
+    ...options,
+    onChange: (instance2, sync) => {
+      var _a;
+      const state = directRef.current;
+      let shouldRerender = true;
+      if (state.enabled) {
+        applyDirectStyles(instance2);
+        const range = instance2.range;
+        const prev = state.prevRange;
+        shouldRerender = !prev || prev.isScrolling !== instance2.isScrolling || prev.startIndex !== (range == null ? void 0 : range.startIndex) || prev.endIndex !== (range == null ? void 0 : range.endIndex);
+        if (shouldRerender) {
+          state.prevRange = range ? {
+            startIndex: range.startIndex,
+            endIndex: range.endIndex,
+            isScrolling: instance2.isScrolling
+          } : null;
+        }
+      }
+      if (shouldRerender) {
+        if (useFlushSync && sync && !measuringFromRef.current) {
+          reactDom.flushSync(rerender);
+        } else {
+          rerender();
+        }
+      }
+      (_a = options.onChange) == null ? void 0 : _a.call(options, instance2, sync);
+    }
+  };
+  const [instance] = React__namespace.useState(() => {
+    const v = new virtualCore.Virtualizer(resolvedOptions);
+    const measureElement = v.measureElement;
+    v.measureElement = node => {
+      measuringFromRef.current = true;
+      try {
+        measureElement(node);
+      } finally {
+        measuringFromRef.current = false;
+      }
+      const state = directRef.current;
+      if (node !== null && state.enabled && state.container) {
+        const item = v.measurementsCache[v.indexFromElement(node)];
+        if (item) applyItemPosition(v, item, node);
+      }
+    };
+    return Object.assign(v, {
+      containerRef: node => {
+        const state = directRef.current;
+        state.container = node;
+        state.lastSize = null;
+        if (node !== null) {
+          applyDirectStyles(v);
+        }
+      }
+    });
+  });
+  instance.setOptions(resolvedOptions);
+  useIsomorphicLayoutEffect(() => {
+    return instance._didMount();
+  }, []);
+  useIsomorphicLayoutEffect(() => {
+    applyContainerSize(instance);
+    return instance._willUpdate();
+  });
+  useIsomorphicLayoutEffect(() => {
+    applyDirectStyles(instance);
+  });
+  return instance;
+}
+function useVirtualizer(options) {
+  return useVirtualizerBase({
+    observeElementRect: virtualCore.observeElementRect,
+    observeElementOffset: virtualCore.observeElementOffset,
+    scrollToFn: virtualCore.elementScroll,
+    ...options
+  });
+}
+function useWindowVirtualizer(options) {
+  return useVirtualizerBase({
+    getScrollElement: () => typeof document !== "undefined" ? window : null,
+    observeElementRect: virtualCore.observeWindowRect,
+    observeElementOffset: virtualCore.observeWindowOffset,
+    scrollToFn: virtualCore.windowScroll,
+    initialOffset: () => typeof document !== "undefined" ? window.scrollY : 0,
+    ...options
+  });
+}
+exports.useVirtualizer = useVirtualizer;
+exports.useWindowVirtualizer = useWindowVirtualizer;
+Object.keys(virtualCore).forEach(k => {
+  if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
+    enumerable: true,
+    get: () => virtualCore[k]
+  });
+});
+  } },
+  "platform/components/DataTableNext/environment.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.structuralStylesheet = structuralStylesheet;
+exports.tokenPixels = tokenPixels;
+/* Plenix · DataTableNext environment
+   Summary: Engine-independent CSS token resolution and structural stylesheet location.
+   Usage: Internal to DataTableNext; no legacy grid modules are imported.
+   Props: A token/length and optional element, or the configured vendor asset base.
+   Behavior: Reads dimensions from CSS and locates the existing structural stylesheet only.
+   Notes: Contains no script loader, prefetch, Tabulator constructor or prototype patches. */
+const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
+function structuralStylesheet() {
+  if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/') + 'tabulator/tabulator.min.css';
+  const src = SCRIPT || (typeof document !== 'undefined' ? [...document.scripts].map(s => s.src).find(s => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(s)) : '');
+  if (src) return new URL('tabulator/tabulator.min.css', new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src)).href;
+  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__ + 'tabulator/tabulator.min.css';
+  return 'platform/vendor/tabulator/tabulator.min.css';
+}
+function tokenPixels(token, el) {
+  if (!token || typeof document === 'undefined') return 0;
+  const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());
+  if (!m) {
+    if (typeof token === 'number' || /^\d+(?:\.\d+)?px$/.test(String(token))) return parseFloat(token) || 0;
+    const host = el || document.documentElement,
+      doc = host.ownerDocument || document,
+      win = doc.defaultView;
+    if (!win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
+    // Measure a caller CSS length in the container's inherited font and available width, without an inline style or a retained rule.
+    const sheet = new win.CSSStyleSheet(),
+      before = doc.adoptedStyleSheets,
+      probe = doc.createElement('span');
+    sheet.replaceSync('.plx-data-table__length-probe{inline-size:' + String(token) + ';}');
+    probe.className = 'plx-data-table__length-probe';
+    try {
+      doc.adoptedStyleSheets = before.concat(sheet);
+      host.appendChild(probe);
+      return probe.getBoundingClientRect().width || 0;
+    } finally {
+      probe.remove();
+      doc.adoptedStyleSheets = before;
+    }
+  }
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(m[1] || m[2]).trim();
+  if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+  return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
+}
+  } },
+  "platform/components/DataTableNext/state.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.normalizeSort = void 0;
+exports.opening = opening;
+exports.readView = readView;
+exports.visibilityOf = exports.valueAt = exports.recordKey = void 0;
+exports.writeView = writeView;
+/* Plenix · DataTableNext state
+   Summary: Opening views and dimensions for the independent TanStack trial.
+   Usage: Internal to DataTableNext.
+   Props: Existing DataTable view props and storageKey.
+   Behavior: Reads saved state before the first render; no post-build restoration.
+   Notes: Canonical row keys preserve the distinction between numeric and string IDs. */
+const recordKey = value => typeof value + ':' + String(value);
+exports.recordKey = recordKey;
+const normalizeSort = value => (Array.isArray(value) ? value : []).filter(x => x && (x.field || x.column)).map(x => ({
+  id: x.field || x.column,
+  desc: x.dir === 'desc'
+}));
+exports.normalizeSort = normalizeSort;
+function readView(key) {
+  try {
+    return key ? JSON.parse(localStorage.getItem('plx-data-table:' + key) || 'null') : null;
+  } catch (e) {
+    return null;
+  }
+}
+function writeView(key, view) {
+  if (key) try {
+    localStorage.setItem('plx-data-table:' + key, JSON.stringify(view));
+  } catch (e) {/* disabled storage */}
+}
+const visibilityOf = hidden => Object.fromEntries((Array.isArray(hidden) ? hidden : []).map(field => [field, false]));
+exports.visibilityOf = visibilityOf;
+const valueAt = (row, field) => String(field).split('.').reduce((value, key) => value == null ? undefined : value[key], row);
+exports.valueAt = valueAt;
+function opening(props) {
+  const saved = readView(props.storageKey) || {},
+    options = props.options || {},
+    known = new Set(props.columns.map(c => c.field));
+  const fields = values => Array.isArray(values) ? values.filter(f => known.has(f)) : undefined;
+  const widths = saved.widths && typeof saved.widths === 'object' ? Object.fromEntries(Object.entries(saved.widths).filter(([key, value]) => known.has(key) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0)) : {};
+  const step = ['short', 'medium', 'tall', 'extra-tall'].includes(saved.rowHeight) ? saved.rowHeight : props.rowHeight || 'short';
+  return {
+    sorting: normalizeSort(props.sort?.length ? props.sort : saved.sort || options.initialSort),
+    order: fields(props.columnOrder) || fields(saved.order) || props.columns.map(c => c.field),
+    visibility: visibilityOf(fields(props.hiddenColumns) || fields(saved.hidden)),
+    widths,
+    rowHeight: step,
+    wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false
+  };
+}
+  } },
+  "platform/components/DataTableNext/adapter.js": { deps: {"./state.js":"platform/components/DataTableNext/state.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createAdapter = createAdapter;
+var _state = require("./state.js");
+/* Plenix · DataTableNext compatibility
+   Summary: The row, cell and column methods used by current Plenix application callbacks.
+   Usage: Internal to DataTableNext; onReady receives the table adapter.
+   Props: React-owned model access and mutations, always read through a live ref.
+   Behavior: Adapts records without exposing a second imperative renderer.
+   Notes: Advanced Tabulator modules are outside this phase's compatibility surface. */
+
+function createAdapter(current) {
+  const row = key => {
+    const data = () => current.current.data.find(r => (0, _state.recordKey)(r[current.current.index]) === key);
+    return {
+      getData: data,
+      getIndex: () => data()?.[current.current.index],
+      getTable: () => api,
+      getElement: () => current.current.rowElements.get(key),
+      isSelected: () => !!current.current.selection[key],
+      select: () => current.current.pick(key, true),
+      deselect: () => current.current.pick(key, false),
+      toggleSelect: () => current.current.pick(key, !current.current.selection[key]),
+      getCell: field => cell(key, field),
+      getCells: () => current.current.fields.map(c => cell(key, c.field))
+    };
+  };
+  const column = field => ({
+    getField: () => field,
+    getDefinition: () => current.current.fields.find(c => c.field === field),
+    getTable: () => api,
+    getElement: () => current.current.headerElements.get(field),
+    getWidth: () => current.current.table.getColumn(field)?.getSize(),
+    isVisible: () => current.current.table.getColumn(field)?.getIsVisible(),
+    show: () => current.current.table.getColumn(field)?.toggleVisibility(true),
+    hide: () => current.current.table.getColumn(field)?.toggleVisibility(false),
+    setWidth: width => current.current.resize(field, width),
+    move: (target, after) => current.current.move(field, typeof target === 'string' ? target : target.getField(), after)
+  });
+  const cell = (key, field) => ({
+    getData: () => row(key).getData(),
+    getValue: () => (0, _state.valueAt)(row(key).getData(), field),
+    getRow: () => row(key),
+    getColumn: () => column(field),
+    getField: () => field,
+    getTable: () => api,
+    getElement: () => current.current.rowElements.get(key)?.querySelector('[tabulator-field="' + CSS.escape(field) + '"]')
+  });
+  const api = {
+    getData: active => active ? current.current.table.getPrePaginationRowModel().rows.map(r => r.original) : current.current.data.slice(),
+    getRows: active => (active ? current.current.table.getPrePaginationRowModel().rows : current.current.table.getCoreRowModel().rows).map(r => row(r.id)),
+    getRow: id => current.current.data.some(r => (0, _state.recordKey)(r[current.current.index]) === (0, _state.recordKey)(id)) ? row((0, _state.recordKey)(id)) : false,
+    getColumns: () => current.current.table.getAllLeafColumns().filter(c => !c.id.startsWith('__')).map(c => column(c.id)),
+    getColumn: column,
+    getSelectedData: () => current.current.data.filter(r => current.current.selection[(0, _state.recordKey)(r[current.current.index])]),
+    getSelectedRows: () => api.getSelectedData().map(r => row((0, _state.recordKey)(r[current.current.index]))),
+    getSorters: () => current.current.sorting.map(s => ({
+      field: s.id,
+      dir: s.desc ? 'desc' : 'asc',
+      column: column(s.id)
+    })),
+    setSort: (field, dir) => current.current.setSorting(Array.isArray(field) ? field.map(s => ({
+      id: s.column || s.field,
+      desc: s.dir === 'desc'
+    })) : [{
+      id: field,
+      desc: dir === 'desc'
+    }]),
+    clearSort: () => current.current.setSorting([]),
+    selectRow: id => current.current.pick((0, _state.recordKey)(id), true),
+    deselectRow: id => current.current.pick((0, _state.recordKey)(id), false),
+    setPage: page => current.current.setPage(page - 1),
+    getPage: () => current.current.page + 1,
+    setPageSize: size => current.current.setPageSize(size),
+    getPageSize: () => current.current.pageSize,
+    scrollToRow: id => {
+      const at = current.current.table.getRowModel().rows.findIndex(r => r.id === (0, _state.recordKey)(id));
+      if (at >= 0) current.current.virtual.scrollToIndex(at);
+      return Promise.resolve();
+    },
+    on: (name, fn) => {
+      const listeners = current.current.listeners;
+      if (!listeners.has(name)) listeners.set(name, new Set());
+      listeners.get(name).add(fn);
+    },
+    off: (name, fn) => current.current.listeners.get(name)?.delete(fn),
+    options: {},
+    row,
+    column,
+    cell
+  };
+  return api;
+}
+  } },
+  "platform/components/DataTableNext/DataTableNext.jsx": { deps: {"react":null,"@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataTableNext/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataTableNext/state.js","./adapter.js":"platform/components/DataTableNext/adapter.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataTableNext = DataTableNext;
+var _react = _interopRequireDefault(require("react"));
+var _reactTable = require("@tanstack/react-table");
+var _reactVirtual = require("@tanstack/react-virtual");
+var _cx = require("../../utils/cx.js");
+var _grid = require("../../utils/grid.js");
+var _sizeSteps = require("../../utils/sizeSteps.js");
+var _useVirtualizer = require("../../hooks/useVirtualizer.js");
+var _environment = require("./environment.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _Pagination = require("../Pagination/Pagination.jsx");
+var _EmptyState = require("../EmptyState/EmptyState.jsx");
+var _state = require("./state.js");
+var _adapter = require("./adapter.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTableNext (TanStack trial, phase 1)
+   Summary: A React-owned grid beside DataTable; no existing table switches engines.
+   Usage: <DataTableNext label="People" data={people} columns={columns} selectable />
+   Props: DataTable's core props: label/data/columns/index, controlled selection and view props, storageKey,
+     rowHeight/wrapHeaders/viewMenu, narrow/keyColumns/narrowAt, fill/pages, fetchRows, empty/error/onRetry,
+     rowMenu/rowMenuButton/headerMenu/columnMenu, strings, on and onReady. Column render receives a compatible cell.
+   Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
+     token-sized CSS gaps represent missing rows. Opening saved state is supplied on the very first render.
+   Notes: Phase 2 adds grouping, tree, editing, moving rows, load-more and remaining built-in rich cell kinds.
+     Existing DataTable CSS and public DataTable exports remain unchanged. */
+const EMPTY_ROWS = [];
+const B = 'plx-data-table',
+  interactive = 'a,button,input,select,textarea,label,[role="button"],[contenteditable="true"]';
+const defaults = {
+  empty: 'Nothing to show',
+  failed: 'The table could not load',
+  retry: 'Retry',
+  selectAll: 'Select all rows',
+  selectRow: 'Select row',
+  rowActions: 'Row actions',
+  clearSort: 'Clear sort',
+  hide: 'Hide field',
+  showAll: 'Show all fields',
+  narrower: 'Narrower',
+  wider: 'Wider',
+  fit: 'Fit to content',
+  moveLeft: 'Move left',
+  moveRight: 'Move right',
+  perPage: 'Rows per page',
+  view: 'View options',
+  wrapHeaders: 'Wrap headers',
+  rowHeight: 'Row height',
+  short: 'Short',
+  medium: 'Medium',
+  tall: 'Tall',
+  'extra-tall': 'Extra tall',
+  filter: 'Filter',
+  clearFilter: 'Clear filter'
+};
+const typeIcons = {
+  text: 'ed-text',
+  number: 'field-number',
+  bytes: 'attachment',
+  currency: 'field-currency',
+  date: 'calendar',
+  select: 'field-select',
+  checkbox: 'select',
+  file: 'attachment',
+  image: 'image-a-2',
+  link: 'link',
+  person: 'person',
+  'long-text': 'field-long-text'
+};
+const kinds = c => [].concat(c.kind || []);
+const typeOf = c => c.type || (kinds(c).includes('wrap') ? 'long-text' : c.sorter === 'number' ? 'number' : c.sorter === 'date' ? 'date' : 'text');
+const sorted = s => s.map(x => ({
+  field: x.id,
+  dir: x.desc ? 'desc' : 'asc'
+}));
+const lengthName = v => {
+  const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || ''));
+  return match?.[1];
+};
+const compare = (a, b, id) => {
+  const x = a.getValue(id),
+    y = b.getValue(id);
+  if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
+  return String(x).localeCompare(String(y), undefined, {
+    numeric: true
+  });
+};
+function Gap({
+  count
+}) {
+  return count > 0 ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-virtual-gap plx-data-table__gap",
+    "aria-hidden": "true"
+  }, (0, _useVirtualizer.gapPieces)(count).map((n, i) => /*#__PURE__*/_react.default.createElement("div", {
+    key: i,
+    className: "plx-virtual-gap__piece",
+    "data-plx-span": String(n)
+  }))) : null;
+}
+function Check({
+  checked,
+  mixed,
+  label,
+  onChange
+}) {
+  const ref = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    if (ref.current) ref.current.indeterminate = !!mixed;
+  }, [mixed]);
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: B + '__check',
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    ref: ref,
+    type: "checkbox",
+    checked: !!checked,
+    "aria-label": label,
+    onChange: onChange,
+    onClick: e => e.stopPropagation()
+  }));
+}
+// Calculate token widths during React's read-only render, then let React batch all style writes at commit.
+// Reading the grid in a separate layout effect for every new cell alternates reads and writes and forces layout.
+const Width = /*#__PURE__*/_react.default.forwardRef(function Width({
+  as: Element = 'div',
+  width,
+  frozenOffset,
+  children,
+  ...props
+}, forwarded) {
+  const ref = _react.default.useRef(null),
+    style = width == null ? undefined : {
+      width: (0, _grid.gridPx)(width, {
+        el: ref.current || document.documentElement
+      }),
+      ...(frozenOffset == null ? {} : {
+        insetInlineStart: (0, _grid.gridPx)(frozenOffset, {
+          el: ref.current || document.documentElement
+        })
+      })
+    };
+  return /*#__PURE__*/_react.default.createElement(Element, _extends({}, props, {
+    style: style,
+    ref: node => {
+      ref.current = node;
+      if (typeof forwarded === 'function') forwarded(node);else if (forwarded) forwarded.current = node;
+    }
+  }), children);
+});
+function NextEngine(props) {
+  const {
+    label,
+    data = EMPTY_ROWS,
+    columns,
+    index = 'id',
+    selectable = false,
+    selected,
+    keepHiddenSelection = true,
+    onSelectionChange,
+    options = {},
+    mode = 'fill',
+    height,
+    narrow = 'list',
+    narrowAt = '--plx-ref-size-600px',
+    keyColumns,
+    storageKey,
+    headerMenu = true,
+    rowMenu,
+    rowMenuButton = true,
+    columnMenu,
+    onReady,
+    on = {},
+    className,
+    empty,
+    error,
+    onRetry
+  } = props;
+  const S = {
+      ...defaults,
+      ...props.strings
+    },
+    initial = _react.default.useMemo(() => (0, _state.opening)(props), [storageKey]);
+  const frame = _react.default.useRef(null),
+    holder = _react.default.useRef(null),
+    header = _react.default.useRef(null),
+    live = _react.default.useRef({}),
+    ready = _react.default.useRef(false);
+  const selectionAnchor = _react.default.useRef(null);
+  const listeners = _react.default.useRef(new Map()),
+    rowElements = _react.default.useRef(new Map()),
+    headerElements = _react.default.useRef(new Map());
+  const [localSort, setSorting] = _react.default.useState(initial.sorting),
+    [order, setOrder] = _react.default.useState(initial.order),
+    [visibility, setVisibility] = _react.default.useState(initial.visibility);
+  const sortSignal = JSON.stringify(props.sort),
+    orderSignal = JSON.stringify(props.columnOrder),
+    hiddenSignal = JSON.stringify(props.hiddenColumns);
+  const [sortOwner, setSortOwner] = _react.default.useState(null),
+    [orderOwner, setOrderOwner] = _react.default.useState(null),
+    [hiddenOwner, setHiddenOwner] = _react.default.useState(null);
+  const [sizing, setSizing] = _react.default.useState(() => Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)])));
+  const [autoSizing, setAutoSizing] = _react.default.useState({});
+  const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
+    [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
+  const [filterField, setFilterField] = _react.default.useState(null);
+  const [ownSelection, setSelection] = _react.default.useState({}),
+    [filters, setFilters] = _react.default.useState([]),
+    [page, setPage] = _react.default.useState(0),
+    [pageSize, setPageSize] = _react.default.useState(props.pageSize || 50);
+  const [remote, setRemote] = _react.default.useState(null),
+    [remoteError, setRemoteError] = _react.default.useState(null),
+    [retry, setRetry] = _react.default.useState(0);
+  const [metrics, setMetrics] = _react.default.useState({
+      row: 0,
+      line: 0,
+      lead: 0,
+      menu: 0,
+      min: 0,
+      space: 0,
+      room: 0
+    }),
+    [isNarrow, setNarrow] = _react.default.useState(false),
+    [message, setMessage] = _react.default.useState('');
+  const effectiveStep = props.rowHeight || rowHeight,
+    effectiveWrap = props.wrapHeaders ?? wrapHeaders;
+  const selection = Array.isArray(selected) ? Object.fromEntries(selected.map(k => [(0, _state.recordKey)(k), true])) : ownSelection;
+  const sorting = sortOwner === sortSignal ? localSort : props.sort?.length ? (0, _state.normalizeSort)(props.sort) : localSort;
+  const columnOrder = orderOwner === orderSignal ? order : props.columnOrder || order,
+    columnVisibility = hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? (0, _state.visibilityOf)(props.hiddenColumns) : visibility;
+  const remoteMode = typeof props.fetchRows === 'function' && mode === 'pages',
+    source = remoteMode ? remote?.rows || EMPTY_ROWS : data;
+  const emit = (name, ...args) => {
+    live.current.props.on?.[name]?.(...args);
+    listeners.current.get(name)?.forEach(fn => fn(...args));
+  };
+  const api = _react.default.useMemo(() => (0, _adapter.createAdapter)(live), []);
+  const resize = (field, value) => {
+    const definition = columns.find(c => c.field === field),
+      at = frame.current;
+    const min = (0, _environment.tokenPixels)(definition?.minWidth || '--plx-ref-size-80px', at),
+      max = definition?.maxWidth ? (0, _environment.tokenPixels)(definition.maxWidth, at) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
+    const width = (0, _grid.snapToGrid)((0, _sizeSteps.snapSize)((0, _environment.tokenPixels)(value, at), min, max), {
+      el: at
+    });
+    setSizing(s => ({
+      ...s,
+      [field]: width
+    }));
+  };
+  const move = (field, target, after) => {
+    const current = live.current.table.getAllLeafColumns().map(c => c.id).filter(id => !id.startsWith('__') && id !== field);
+    const at = current.indexOf(target);
+    current.splice(Math.max(0, at + (after ? 1 : 0)), 0, field);
+    setOrderOwner(orderSignal);
+    setOrder(current);
+    emit('columnMoved', api.column(field), current.map(api.column));
+  };
+  const notifySelection = next => {
+    setSelection(next);
+    const active = new Set(live.current.table.getFilteredRowModel().rows.map(r => r.id)),
+      records = source.filter(r => next[(0, _state.recordKey)(r[index])]);
+    onSelectionChange?.(records.map(r => r[index]), {
+      count: records.length,
+      hidden: records.filter(r => !active.has((0, _state.recordKey)(r[index]))).length
+    });
+    emit('rowSelectionChanged', records, records.map(r => api.row((0, _state.recordKey)(r[index]))));
+  };
+  const pick = (key, value) => {
+    const next = {
+      ...live.current.selection
+    };
+    if (options.selectableRows === 1 && value) Object.keys(next).forEach(k => delete next[k]);
+    if (value) next[key] = true;else delete next[key];
+    notifySelection(next);
+  };
+  const changeSort = update => {
+    const next = typeof update === 'function' ? update(sorting) : update;
+    setSortOwner(sortSignal);
+    setSorting(next);
+    setPage(0);
+    emit('dataSorted', next.map(s => ({
+      field: s.id,
+      dir: s.desc ? 'desc' : 'asc'
+    })));
+  };
+  const leafDefs = _react.default.useMemo(() => columns.map(c => ({
+    id: c.field,
+    accessorFn: r => (0, _state.valueAt)(r, c.field),
+    header: c.title || c.field,
+    enableSorting: c.headerSort !== false,
+    filterFn: c.filter === 'list' ? 'equalsString' : 'includesString',
+    sortingFn: c.sorter === 'number' ? 'basic' : compare,
+    size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, (0, _environment.tokenPixels)(c.width, frame.current) || autoSizing[c.field] || metrics.min),
+    minSize: kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min,
+    maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
+    meta: c
+  })), [columns, metrics.min, autoSizing]);
+  const table = (0, _reactTable.useReactTable)({
+    data: source,
+    columns: leafDefs,
+    getRowId: r => (0, _state.recordKey)(r[index]),
+    state: {
+      sorting,
+      columnOrder,
+      columnVisibility,
+      columnSizing: sizing,
+      columnFilters: filters,
+      globalFilter: props.filter,
+      pagination: {
+        pageIndex: page,
+        pageSize
+      },
+      rowSelection: selection
+    },
+    onSortingChange: changeSort,
+    onColumnVisibilityChange: update => {
+      setHiddenOwner(hiddenSignal);
+      setVisibility(typeof update === 'function' ? update(columnVisibility) : update);
+    },
+    onColumnOrderChange: update => {
+      setOrderOwner(orderSignal);
+      setOrder(typeof update === 'function' ? update(columnOrder) : update);
+    },
+    onColumnSizingChange: setSizing,
+    onColumnFiltersChange: update => {
+      setFilters(update);
+      setPage(0);
+    },
+    getColumnCanGlobalFilter: () => true,
+    globalFilterFn: (row, id, fn) => typeof fn !== 'function' || !!fn(row.original),
+    globalFilter: props.filter,
+    manualPagination: remoteMode,
+    manualSorting: remoteMode,
+    manualFiltering: remoteMode,
+    pageCount: remoteMode ? Math.ceil((remote?.total || 0) / pageSize) : undefined,
+    getCoreRowModel: (0, _reactTable.getCoreRowModel)(),
+    getFilteredRowModel: (0, _reactTable.getFilteredRowModel)(),
+    getSortedRowModel: (0, _reactTable.getSortedRowModel)(),
+    getPaginationRowModel: mode === 'pages' ? (0, _reactTable.getPaginationRowModel)() : undefined,
+    autoResetPageIndex: false
+  });
+  const model = table.getRowModel().rows,
+    virtualized = mode === 'fill' && !isNarrow;
+  const virtual = (0, _reactVirtual.useVirtualizer)({
+    count: model.length,
+    getScrollElement: () => holder.current,
+    estimateSize: () => metrics.row + metrics.line,
+    getItemKey: i => model[i]?.id,
+    overscan: 4,
+    enabled: virtualized && metrics.row > 0,
+    initialRect: {
+      width: 0,
+      height: 0
+    }
+  });
+  const virtualItems = virtual.getVirtualItems(),
+    first = virtualized ? virtualItems[0]?.index || 0 : 0,
+    last = virtualized ? (virtualItems[virtualItems.length - 1]?.index ?? Math.min(model.length, 1) - 1) + 1 : model.length;
+  const shown = virtualized ? model.slice(first, last) : model;
+  const pinnedAt = columns.findIndex(c => c.rowLabel),
+    frozen = new Set(columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map(c => c.field));
+  const visible = table.getVisibleLeafColumns(),
+    ordered = visible.filter(c => frozen.has(c.id)).concat(visible.filter(c => !frozen.has(c.id)));
+  const widths = Object.fromEntries(ordered.map(column => [column.id, column.getSize()]));
+  const listable = column => !column.rowHandle && !kinds(column).some(kind => ['icon', 'actions'].includes(kind));
+  const keys = keyColumns?.length ? keyColumns : columns.filter(c => !kinds(c).some(k => ['icon', 'actions'].includes(k)) && !c.rowHandle).slice(0, 3).map(c => c.field);
+  const listed = narrow === 'auto' ? columns.some(listable) : narrow === 'list' && columns.some(column => listable(column) && !keys.includes(column.field));
+  live.current = {
+    props,
+    index,
+    data: source,
+    fields: columns,
+    table,
+    selection,
+    sorting,
+    setSorting: changeSort,
+    resize,
+    move,
+    pick,
+    setPage,
+    page,
+    pageSize,
+    setPageSize,
+    virtual,
+    rowElements: rowElements.current,
+    headerElements: headerElements.current,
+    listeners: listeners.current
+  };
+  _react.default.useLayoutEffect(() => {
+    const at = frame.current;
+    if (!at || !metrics.min) return;
+    const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
+      cs = getComputedStyle(at),
+      widths = {},
+      free = [];
+    columns.forEach(c => {
+      const explicit = kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.width, at);
+      if (explicit) {
+        widths[c.field] = explicit;
+        return;
+      }
+      const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-table-data-font-family' : '--plx-comp-data-table-font-family').trim() || cs.fontFamily;
+      ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size').trim() + ' ' + family;
+      let width = ctx.measureText(c.title || c.field).width;
+      source.forEach(record => {
+        const value = (0, _state.valueAt)(record, c.field);
+        if (typeof value === 'string' || typeof value === 'number') width = Math.max(width, ctx.measureText(String(value)).width);
+      });
+      widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, width + metrics.space * 2), {
+        round: 'up',
+        el: at
+      });
+      free.push(c.field);
+    });
+    const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0),
+      used = Object.values(widths).reduce((sum, width) => sum + width, 0),
+      step = (0, _grid.gridStep)(at);
+    const units = Math.max(0, Math.floor((available - used) / step)),
+      share = free.length ? Math.floor(units / free.length) : 0;
+    free.forEach((field, i) => widths[field] += (share + (i < units - share * free.length ? 1 : 0)) * step);
+    setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
+  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable]);
+  _react.default.useLayoutEffect(() => {
+    const at = frame.current;
+    if (!at) return;
+    const doc = at.ownerDocument;
+    // Reuse the existing structural stylesheet; no Tabulator script or engine is loaded by the trial.
+    const href = (0, _environment.structuralStylesheet)();
+    let link = [...doc.querySelectorAll('link[rel="stylesheet"]')].find(l => l.href === href);
+    if (!link) {
+      link = doc.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      doc.head.prepend(link);
+    }
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const next = {
+        row: (0, _environment.tokenPixels)('--plx-comp-data-table-record-height', at),
+        line: (0, _environment.tokenPixels)('--plx-comp-data-table-line-width', at),
+        lead: (0, _environment.tokenPixels)('--plx-comp-data-table-lead-column-width', at),
+        menu: (0, _environment.tokenPixels)('--plx-comp-data-table-row-menu-width', at),
+        min: (0, _environment.tokenPixels)('--plx-ref-size-80px', at),
+        space: (0, _environment.tokenPixels)('--plx-comp-data-table-cell-padding-inline', at),
+        room: at.clientWidth
+      };
+      setMetrics(old => Object.keys(next).every(k => next[k] === old[k]) ? old : next);
+      const threshold = narrow === 'auto' ? keys.reduce((sum, field) => sum + (live.current.table?.getColumn(field)?.getSize() || next.min), selectable ? next.lead : 0) : (0, _environment.tokenPixels)(narrowAt, at),
+        want = listed && at.clientWidth > 0 && at.clientWidth < threshold;
+      setNarrow(want);
+      if (!height && mode === 'fill' && holder.current) {
+        const top = holder.current.getBoundingClientRect().top;
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+          round: 'down',
+          el: at
+        });
+      }
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    measure();
+    const ro = new ResizeObserver(schedule);
+    ro.observe(at);
+    const mo = new MutationObserver(schedule);
+    mo.observe(doc.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction', 'data-plx-mode']
+    });
+    const region = at.closest('[data-plx-density]');
+    if (region && region !== doc.documentElement) mo.observe(region, {
+      attributes: true,
+      attributeFilter: ['data-plx-density']
+    });
+    return () => {
+      ro.disconnect();
+      mo.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|')]);
+  _react.default.useLayoutEffect(() => {
+    virtual.measure();
+  }, [metrics.row, metrics.line]);
+  _react.default.useEffect(() => {
+    if (!metrics.row || !Object.keys(autoSizing).length || ready.current) return;
+    ready.current = true;
+    api.options = options;
+    onReady?.(api);
+    emit('tableBuilt');
+  }, [metrics.row, autoSizing]);
+  _react.default.useEffect(() => {
+    if (!ready.current) return;
+    (0, _state.writeView)(storageKey, {
+      sort: sorting.map(s => ({
+        column: s.id,
+        dir: s.desc ? 'desc' : 'asc'
+      })),
+      order: columnOrder,
+      hidden: Object.keys(columnVisibility).filter(k => columnVisibility[k] === false),
+      widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + 'px'])),
+      rowHeight: effectiveStep,
+      wrapHeaders: effectiveWrap
+    });
+  }, [storageKey, JSON.stringify(sorting), JSON.stringify(columnOrder), JSON.stringify(columnVisibility), JSON.stringify(sizing), effectiveStep, effectiveWrap, metrics.row]);
+  _react.default.useEffect(() => {
+    if (!ready.current) return;
+    const active = new Set(table.getFilteredRowModel().rows.map(r => r.id)),
+      next = {
+        ...selection
+      };
+    const known = new Set(source.map(record => (0, _state.recordKey)(record[index])));
+    const hidden = Object.keys(next).filter(key => next[key] && known.has(key) && !active.has(key));
+    if (!keepHiddenSelection && hidden.length) {
+      hidden.forEach(key => delete next[key]);
+      notifySelection(next);
+    } else if (Object.keys(selection).some(key => selection[key])) {
+      const records = source.filter(r => selection[(0, _state.recordKey)(r[index])]);
+      onSelectionChange?.(records.map(r => r[index]), {
+        count: records.length,
+        hidden: hidden.length
+      });
+    }
+    emit('dataFiltered', filters.map(f => ({
+      field: f.id,
+      type: 'like',
+      value: f.value
+    })), table.getFilteredRowModel().rows.map(r => api.row(r.id)));
+  }, [props.filter, JSON.stringify(filters), source, keepHiddenSelection]);
+  const previousData = _react.default.useRef(source);
+  _react.default.useEffect(() => {
+    if (ready.current && previousData.current !== source) {
+      previousData.current = source;
+      emit('dataChanged', source);
+    }
+  }, [source]);
+  _react.default.useEffect(() => setPage(0), [sortSignal, props.filter]);
+  _react.default.useEffect(() => {
+    if (!remoteMode) return;
+    let alive = true;
+    const controller = new AbortController();
+    setRemoteError(null);
+    Promise.resolve().then(() => props.fetchRows({
+      page: page + 1,
+      size: pageSize,
+      sort: sorted(sorting),
+      filters: filters.map(f => ({
+        field: f.id,
+        type: 'like',
+        value: f.value
+      })),
+      search: props.search,
+      signal: controller.signal
+    })).then(result => {
+      if (alive) setRemote({
+        rows: result.rows || [],
+        total: result.total || 0
+      });
+    }, failure => {
+      if (alive) setRemoteError(failure);
+    });
+    return () => {
+      alive = false;
+      controller.abort();
+    };
+  }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
+  const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+  const selectionRows = table.getPrePaginationRowModel().rows,
+    selectedVisible = selectionRows.filter(r => selection[r.id]),
+    allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
+  const selectAll = value => {
+    const next = {
+      ...selection
+    };
+    selectionRows.forEach(r => {
+      if (value) next[r.id] = true;else delete next[r.id];
+    });
+    notifySelection(next);
+  };
+  const pickCheckbox = (row, event) => {
+    const wanted = event.target.checked,
+      from = selectionRows.findIndex(r => r.id === selectionAnchor.current),
+      to = selectionRows.indexOf(row);
+    if ((event.nativeEvent?.shiftKey || event.shiftKey) && from >= 0 && to >= 0) {
+      const next = {
+        ...selection
+      };
+      selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(record => {
+        if (wanted) next[record.id] = true;else delete next[record.id];
+      });
+      notifySelection(next);
+    } else pick(row.id, wanted);
+    selectionAnchor.current = row.id;
+  };
+  const fit = field => {
+    const c = columns.find(c => c.field === field),
+      ctx = document.createElement('canvas').getContext('2d'),
+      cs = getComputedStyle(frame.current);
+    ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size') + ' ' + cs.getPropertyValue('--plx-comp-data-table-font-family');
+    const values = [c.title || field, ...source.map(r => String((0, _state.valueAt)(r, field) ?? ''))];
+    resize(field, Math.max(...values.map(v => ctx.measureText(v).width)) + metrics.space * 2);
+  };
+  const menuItems = (items, row, extra) => items.map((item, i) => item.separator ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+    key: i
+  }) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: i,
+    icon: item.icon,
+    danger: item.danger,
+    disabled: typeof item.disabled === 'function' ? item.disabled(row) : item.disabled,
+    onSelect: () => {
+      (item.onSelect || item.action)?.(row, extra);
+    }
+  }, item.label));
+  const rowItems = row => typeof rowMenu === 'function' ? rowMenu(row) : rowMenu || [];
+  const headerItems = column => {
+    const c = column.columnDef.meta,
+      custom = typeof columnMenu === 'function' ? columnMenu(c) : columnMenu || [];
+    const direction = typeOf(c) === 'number' || typeOf(c) === 'currency' ? ['Sort 1 → 9', 'Sort 9 → 1'] : typeOf(c) === 'date' ? ['Sort oldest → newest', 'Sort newest → oldest'] : ['Sort A → Z', 'Sort Z → A'];
+    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, menuItems(custom, c, api.column(c.field)), custom.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => table.setSorting([{
+        id: c.field,
+        desc: false
+      }])
+    }, direction[0]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => table.setSorting([{
+        id: c.field,
+        desc: true
+      }])
+    }, direction[1]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => table.setSorting([])
+    }, S.clearSort), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => setFilterField(c.field)
+    }, "Filter by this field"), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => column.setFilterValue(undefined)
+    }, S.clearFilter), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), -1, column.columnDef.minSize, column.columnDef.maxSize))
+    }, S.narrower), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), 1, column.columnDef.minSize, column.columnDef.maxSize))
+    }, S.wider), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => fit(c.field)
+    }, S.fit), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => column.toggleVisibility(false),
+      disabled: frozen.has(c.field)
+    }, S.hide), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => setVisibility({})
+    }, S.showAll));
+  };
+  const startResize = (event, column) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const from = event.clientX,
+      width = column.getSize(),
+      doc = event.currentTarget.ownerDocument;
+    const move = e => resize(column.id, width + e.clientX - from);
+    const up = () => {
+      doc.removeEventListener('pointermove', move);
+      doc.removeEventListener('pointerup', up);
+    };
+    doc.addEventListener('pointermove', move);
+    doc.addEventListener('pointerup', up, {
+      once: true
+    });
+  };
+  const headerCell = column => {
+    const c = column.columnDef.meta,
+      pinned = frozen.has(c.field),
+      offset = (selectable ? metrics.lead : 0) + ordered.slice(0, ordered.indexOf(column)).filter(col => frozen.has(col.id)).reduce((sum, col) => sum + col.getSize(), 0);
+    const node = /*#__PURE__*/_react.default.createElement(Width, {
+      key: c.field,
+      ref: node => {
+        if (node) headerElements.current.set(c.field, node);else headerElements.current.delete(c.field);
+      },
+      width: widths[c.field],
+      frozenOffset: pinned ? offset : undefined,
+      role: "columnheader",
+      tabIndex: 0,
+      "tabulator-field": c.field,
+      "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
+      className: (0, _cx.cx)('tabulator-col plx-u-relative', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && 'is-filtered', pinned && 'tabulator-frozen', c.headerHozAlign && B + '__head-align-' + c.headerHozAlign),
+      "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
+      onClick: e => {
+        if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
+      },
+      onKeyDown: e => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+          e.preventDefault();
+          column.toggleSorting();
+        }
+      }
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "tabulator-col-content"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "tabulator-col-title-holder"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "tabulator-col-title",
+      title: c.title
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: B + '__title'
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: B + '__type-icon'
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: typeIcons[typeOf(c)] || 'ed-text'
+    })), c.title || c.field)), /*#__PURE__*/_react.default.createElement("div", {
+      className: "tabulator-col-sorter",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: 'tabulator-arrow' + (column.getIsSorted() === 'desc' ? ' desc' : '')
+    }))), headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      className: "tabulator-header-popup-button",
+      label: c.title + ' column actions',
+      trigger: /*#__PURE__*/_react.default.createElement("span", {
+        role: "button",
+        tabIndex: 0,
+        className: B + '__menu-chevron',
+        "aria-label": c.title + ' column actions'
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: "chevron-down"
+      }))
+    }, headerItems(column)) : null, c.filter || filterField === c.field || column.getIsFiltered() ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "tabulator-header-popup-button"
+    }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+      open: filterField === c.field,
+      onOpenChange: open => setFilterField(open ? c.field : null),
+      title: S.filter + ' ' + c.title,
+      size: "sm",
+      trigger: /*#__PURE__*/_react.default.createElement("span", {
+        role: "button",
+        tabIndex: 0,
+        "aria-label": S.filter + ' ' + c.title
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: "filter"
+      }))
+    }, c.filter === 'list' ? /*#__PURE__*/_react.default.createElement(_Input.Select, {
+      "aria-label": S.filter + ' ' + c.title,
+      value: column.getFilterValue() || '',
+      options: [{
+        value: '',
+        label: 'Any'
+      }, ...[...new Set(source.map(r => String((0, _state.valueAt)(r, c.field) ?? '')))].filter(Boolean).map(value => ({
+        value,
+        label: value
+      }))],
+      onChange: e => column.setFilterValue(e.target.value || undefined)
+    }) : /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      "aria-label": S.filter + ' ' + c.title,
+      value: column.getFilterValue() || '',
+      onChange: e => column.setFilterValue(e.target.value)
+    }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "sm",
+      onClick: () => column.setFilterValue(undefined)
+    }, S.clearFilter))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "tabulator-col-resize-handle",
+      role: "separator",
+      "aria-label": 'Resize ' + c.title,
+      "aria-orientation": "vertical",
+      tabIndex: 0,
+      "aria-valuenow": column.getSize(),
+      "aria-valuemin": column.columnDef.minSize,
+      "aria-valuemax": column.columnDef.maxSize,
+      onPointerDown: e => startResize(e, column),
+      onDoubleClick: () => fit(c.field),
+      onKeyDown: e => {
+        if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+          e.preventDefault();
+          resize(c.field, e.key === 'Home' ? column.columnDef.minSize : e.key === 'End' ? column.columnDef.maxSize : (0, _sizeSteps.stepSize)(column.getSize(), e.key === 'ArrowRight' ? 1 : -1, column.columnDef.minSize, column.columnDef.maxSize));
+        }
+      }
+    }) : null);
+    return headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
+      key: c.field,
+      target: node,
+      label: c.title + ' column actions'
+    }, headerItems(column)) : node;
+  };
+  const focusCell = (rowIndex, columnIndex) => {
+    const record = model[rowIndex],
+      column = ordered[columnIndex];
+    if (!record || !column) return;
+    if (virtualized) virtual.scrollToIndex(rowIndex, {
+      align: 'auto'
+    });
+    requestAnimationFrame(() => requestAnimationFrame(() => rowElements.current.get(record.id)?.querySelector('[tabulator-field="' + CSS.escape(column.id) + '"]')?.focus({
+      preventScroll: true
+    })));
+  };
+  const rowNode = row => {
+    const rowApi = api.row(row.id),
+      record = row.original;
+    let offset = selectable ? metrics.lead : 0;
+    const node = /*#__PURE__*/_react.default.createElement("div", {
+      key: row.id,
+      ref: node => {
+        if (node) rowElements.current.set(row.id, node);else rowElements.current.delete(row.id);
+      },
+      role: "row",
+      "aria-rowindex": (mode === 'pages' ? page * pageSize : 0) + model.indexOf(row) + 2,
+      "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : undefined,
+      tabIndex: on.rowClick || options.selectableRows ? 0 : undefined,
+      className: (0, _cx.cx)('tabulator-row', selection[row.id] && 'tabulator-selected'),
+      onClick: e => {
+        if (e.target.closest(interactive)) return;
+        if (options.selectableRows) pick(row.id, !selection[row.id]);
+        emit('rowClick', e, rowApi);
+      },
+      onKeyDown: e => {
+        if (e.key === 'Enter' && e.target === e.currentTarget) {
+          e.preventDefault();
+          emit('rowClick', e, rowApi);
+        }
+        if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
+          e.preventDefault();
+          const next = model.indexOf(row) + (e.key === 'ArrowDown' ? 1 : -1);
+          virtual.scrollToIndex(Math.max(0, next));
+          requestAnimationFrame(() => rowElements.current.get(model[next]?.id)?.focus());
+        }
+      }
+    }, selectable ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "tabulator-cell tabulator-row-header plx-data-table__w-lead tabulator-frozen",
+      role: "gridcell"
+    }, /*#__PURE__*/_react.default.createElement(Check, {
+      label: S.selectRow + ' ' + record[index],
+      checked: selection[row.id],
+      onChange: e => pickCheckbox(row, e)
+    })) : null, ordered.map(column => {
+      const c = column.columnDef.meta,
+        k = kinds(c),
+        pinned = frozen.has(c.field),
+        sticky = offset;
+      if (pinned) offset += column.getSize();
+      const cell = api.cell(row.id, c.field);
+      const value = (0, _state.valueAt)(record, c.field);
+      const content = c.render ? c.render(record, cell) : value == null || value === '' ? c.empty ?? '' : String(value);
+      return /*#__PURE__*/_react.default.createElement(Width, {
+        key: c.field,
+        width: isNarrow ? null : widths[c.field],
+        frozenOffset: pinned && !isNarrow ? sticky : undefined,
+        role: "gridcell",
+        tabIndex: -1,
+        "tabulator-field": c.field,
+        dir: "auto",
+        onKeyDown: event => {
+          if (event.target !== event.currentTarget) return;
+          const index = model.indexOf(row),
+            at = ordered.indexOf(column),
+            keys = {
+              ArrowDown: [index + 1, at],
+              ArrowUp: [index - 1, at],
+              ArrowLeft: [index, at - 1],
+              ArrowRight: [index, at + 1]
+            };
+          if (keys[event.key]) {
+            event.preventDefault();
+            focusCell(...keys[event.key]);
+          }
+        },
+        "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
+        className: (0, _cx.cx)('tabulator-cell', k.map(kind => B + '__cell--' + kind).join(' '), c.rowHandle && B + '__cell--handle', pinned && 'tabulator-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', c.hozAlign && B + '__cell--align-' + c.hozAlign)
+      }, c.render ? /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__portal'
+      }, /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__value'
+      }, content)) : k.includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__header-icon'
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: c.icon || 'circle-info',
+        label: c.title
+      })) : /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__value'
+      }, content));
+    }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "tabulator-cell plx-data-table__w-view",
+      role: "gridcell"
+    }) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
+      width: metrics.menu,
+      className: "tabulator-cell plx-data-table__cell--row-menu",
+      role: "gridcell"
+    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: S.rowActions,
+      trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        className: B + '__row-menu',
+        variant: "ghost",
+        size: "xs",
+        iconOnly: true,
+        icon: "more",
+        label: S.rowActions
+      })
+    }, menuItems(rowItems(record), record))) : null);
+    return rowMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
+      key: row.id,
+      target: node,
+      label: S.rowActions
+    }, menuItems(rowItems(record), record)) : node;
+  };
+  const failed = error || remoteError;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: frame,
+    className: (0, _cx.cx)(B, pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', className),
+    "data-plx-engine": "next",
+    "data-plx-render": virtualized ? 'virtual' : undefined,
+    "data-plx-row-height": !isNarrow ? effectiveStep : undefined,
+    "data-plx-wrap-headers": effectiveWrap ? '' : undefined,
+    "data-plx-height": lengthName(height),
+    "data-plx-fit": !height && mode === 'fill' ? '' : undefined
+  }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    className: B + '__error',
+    tone: "error",
+    title: S.failed,
+    action: onRetry || remoteError ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      onClick: () => {
+        setRetry(n => n + 1);
+        onRetry?.();
+      }
+    }, S.retry) : null
+  }, String(failed === true ? '' : failed.message || failed)) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__table tabulator',
+    role: "grid",
+    "aria-label": label,
+    "aria-rowcount": (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
+    "aria-colcount": ordered.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
+    hidden: !!failed
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-header",
+    ref: header
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-header-contents"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-headers",
+    role: "row"
+  }, selectable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-col tabulator-row-header plx-data-table__w-lead tabulator-frozen",
+    role: "columnheader"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-col-content"
+  }, /*#__PURE__*/_react.default.createElement(Check, {
+    label: S.selectAll,
+    checked: allVisible,
+    mixed: selectedVisible.length > 0 && !allVisible,
+    onChange: e => selectAll(e.target.checked)
+  }))) : null, ordered.map(headerCell), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-col plx-data-table__w-view",
+    role: "columnheader"
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: S.view,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "xs",
+      iconOnly: true,
+      icon: "settings-customize",
+      label: S.view
+    })
+  }, ['short', 'medium', 'tall', 'extra-tall'].map(step => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: step,
+    checked: effectiveStep === step,
+    onSelect: () => setRowHeight(step)
+  }, S[step])), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    checked: effectiveWrap,
+    onSelect: () => setWrapHeaders(v => !v)
+  }, S.wrapHeaders))) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
+    width: metrics.menu,
+    className: "tabulator-col",
+    role: "columnheader",
+    "aria-label": S.rowActions
+  }) : null))), /*#__PURE__*/_react.default.createElement("div", {
+    ref: holder,
+    className: "tabulator-tableholder",
+    role: "rowgroup",
+    tabIndex: 0,
+    onKeyDown: event => {
+      if (event.target === event.currentTarget && event.key === 'ArrowDown') {
+        event.preventDefault();
+        focusCell(first, 0);
+      }
+    },
+    onScroll: e => {
+      if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
+    }
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-table",
+    role: "presentation"
+  }, /*#__PURE__*/_react.default.createElement(Gap, {
+    count: first
+  }), shown.map(rowNode), /*#__PURE__*/_react.default.createElement(Gap, {
+    count: model.length - last
+  })), !model.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-placeholder"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "tabulator-placeholder-contents"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__empty'
+  }, empty || S.empty))) : null)), mode === 'pages' && !failed ? /*#__PURE__*/_react.default.createElement("div", {
+    className: B + '__footer'
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: B + '__range'
+  }, displayedTotal ? Math.min(page * pageSize + 1, displayedTotal) : 0, "\u2013", Math.min((page + 1) * pageSize, displayedTotal), " of ", displayedTotal), /*#__PURE__*/_react.default.createElement("label", {
+    className: B + '__page-size'
+  }, /*#__PURE__*/_react.default.createElement("span", null, S.perPage), /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: String(pageSize),
+    options: (props.pageSizes || [25, 50, 100]).map(n => ({
+      value: String(n),
+      label: String(n)
+    })),
+    onChange: e => {
+      setPage(0);
+      setPageSize(+e.target.value);
+    }
+  })), /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
+    className: B + '__pages',
+    label: label + ' pages',
+    page: page + 1,
+    pageCount: Math.max(1, Math.ceil(displayedTotal / pageSize)),
+    onPageChange: n => setPage(n - 1)
+  })) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-sr-only",
+    role: "status",
+    "aria-live": "polite"
+  }, message));
+}
+function DataTableNext(props) {
+  return /*#__PURE__*/_react.default.createElement(NextEngine, _extends({
+    key: props.storageKey || ''
+  }, props));
+}
+DataTableNext.preload = () => Promise.resolve();
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./components/DataTableNext/DataTableNext.jsx":"platform/components/DataTableNext/DataTableNext.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -68898,6 +76161,12 @@ Object.defineProperty(exports, "DataTable", {
   enumerable: true,
   get: function () {
     return _DataTable.DataTable;
+  }
+});
+Object.defineProperty(exports, "DataTableNext", {
+  enumerable: true,
+  get: function () {
+    return _DataTableNext.DataTableNext;
   }
 });
 Object.defineProperty(exports, "DataToolbar", {
@@ -71983,6 +79252,7 @@ var _browserSupport = require("./utils/browserSupport.js");
 var _LocaleProvider = require("./providers/LocaleProvider.jsx");
 var _SplitView = require("./patterns/SplitView/SplitView.jsx");
 var _Heading = require("./components/Heading/Heading.jsx");
+var _DataTableNext = require("./components/DataTableNext/DataTableNext.jsx");
   } }
   };
   var cache = {};

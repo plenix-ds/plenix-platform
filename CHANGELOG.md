@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.49.0] - 2026-10-16
+
+### Added
+- `DataTableNext` (#128, phase 1): the table on TanStack Table and TanStack Virtual (MIT, bundled into platform.js):
+  the same props and look as DataTable, with rendering, virtual scrolling, sort, filter, selection (hidden selection
+  too), column order, visibility and widths, pages, the narrow list, menus, keyboard and saved views. Measured on 600
+  rich rows it opens in 24–45 ms (Tabulator 100–206 ms) and sorts and filters 2–4× faster. The design system shows it
+  beside DataTable with `?engine=next`. Phase 2 (grouping, tree rows, editing, moving, load-more, copy, print) follows.
+### Changed
+- DataTable (Tabulator, #126 option B): the view is built into the table at creation (order, hidden columns, sort,
+  filters), later view changes redraw once, and the geometry patches are gone; frozen columns fixed. The runtime style
+  audit accepts inline sizes that equal a token on the grid and 1px lines equal to the border-width token.
+
 ## [0.48.0] - 2026-10-16
 
 ### Changed

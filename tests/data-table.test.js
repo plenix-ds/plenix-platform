@@ -10,10 +10,12 @@
 // (owner: one size in tables, batch 247; typefaces by kind, 2026-10-11; badges, tags, chips, buttons and keys keep their
 // component sizes, and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-table.test.js            (TEST_PORT: another port)
+//   DT_ENGINE=next: the independent phase-one renderer; DT_ONLY selects supported views.
 //   TEST_SCOPE=full: every view; by default (tests/changed.js) the views of the apps and design-system pages that changed,
 //   and every view when the DataTable or Table changed
 const { serve, launch, sleep, at } = require('./lib.js');
 const changed = require('./changed.js');
+const NEXT = process.env.DT_ENGINE === 'next';
 const PORT = +process.env.TEST_PORT || 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 // [page, the steps first (a control's visible text to press, or #section to go to without reloading), the grids expected]
 const ONLY = process.env.DT_ONLY ? new RegExp(process.env.DT_ONLY) : null;
@@ -71,7 +73,9 @@ const inScope = (url) => {
   if (ds) return changed.wants({ ids: [ds[1]], units: ['components/' + ds[1].replace(/(^|-)(\w)/g, (m, a, c) => c.toUpperCase())] });
   return APP_URLS.includes(url);
 };
-const VIEWS = STATES.filter((s) => inScope(s[0]));
+const PHASE_TWO = /\/data-display\/data-table$|\/(?:grouped-table|nested-grouped-table|grouped-table-with-summaries|load-more-infinite-scroll)$/;
+const VIEWS = STATES.filter((s) => inScope(s[0]) && (!NEXT || !PHASE_TWO.test(s[0])));
+if (NEXT) console.log('NEXT_PHASE1: overview (mixed phase-two demos), grouped and load-more variants are reserved for phase two');
 if (!VIEWS.length) changed.none('DATA_TABLES_OK 0/0 table views');
 changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
 
@@ -79,10 +83,11 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
   const server = await serve(PORT);
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
+  if (NEXT) await require('./next-engine')(page);
   const res = [];
   // the design system is a submodule (plenix-design-system): without it (CI without DS_TOKEN), its views are skipped
   const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
-  if (HAS_DS) {
+  if (HAS_DS && !NEXT) {
     // Each focused source bundle gets its own page; Tabulator patches stay isolated from the app-view checks.
     for (const [label, file] of [['Faceted quick-filter counts', './collection-facets.test.js'], ['Canonical multi-value groups', './multi-groups.test.js'], ['Remaining DataTable contracts', './data-table-rest.test.js']]) {
       const focused = await browser.newPage();
@@ -91,9 +96,61 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       finally { await focused.close(); }
     }
     await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' });
+    const viewChecks = await page.evaluate(async () => {
+      const h=React.createElement,host=document.createElement('div');document.body.appendChild(host);
+      const root=ReactDOM.createRoot(host),key='dt126-saved-view',storage='plx-data-table:'+key,wait=()=>new Promise(r=>setTimeout(r,100));let table,count=0;
+      const check=(yes,message)=>{if(!yes)throw Error(message);count++;};
+      const columns=['a','b','c','d'].map(field=>({field,title:field})),data=[{id:1,a:'Zulu'},{id:2,a:'Alpha'}];
+      const initial=['c','a','b','d'];localStorage.setItem(storage,JSON.stringify({order:initial,hidden:['a','b'],widths:{a:'160px',b:'240px'},sort:[{column:'a',dir:'asc'}]}));
+      let props={label:'Saved view regression',columns,data,storageKey:key,height:'--plx-ref-size-400px',narrow:'table',onReady:t=>{table=t;}};
+      const render=patch=>{props={...props,...patch};ReactDOM.flushSync(()=>root.render(h(Plenix.DataTable,props)));};
+      const order=()=>table.getColumns().map(c=>c.getField()).filter(Boolean);
+      try {
+        render({});await wait();
+        check(JSON.stringify(order())===JSON.stringify(initial),'saved order includes hidden columns on first draw');
+        check(host.querySelector('.tabulator-tableholder').clientHeight<400,'few records preserve maximum-height sizing without an empty viewport');
+        check(!table.getColumn('a').isVisible()&&!table.getColumn('b').isVisible(),'saved visibility on first draw');
+        check(table.getColumn('a').getWidth()===160&&table.getColumn('b').getWidth()===240,'saved widths on first draw');
+        check(table.getSorters()[0]?.field==='a'&&table.getSorters()[0]?.dir==='asc','saved initial sort');
+        let moved=0;table.on('columnMoved',()=>moved++);
+        render({columnOrder:initial,hiddenColumns:['a','b'],filter:()=>true});await wait();
+        check(moved===0,'matching order with hidden columns is a no-op');
+        const changed=['d','b','c','a'];render({columnOrder:changed});await wait();
+        check(JSON.stringify(order())===JSON.stringify(changed),'later hidden-column order changes as requested');
+        moved=0;render({filter:()=>true,columnOrder:changed.slice()});await wait();
+        check(moved===0,'unrelated view changes do not repeat hidden column moves');
+        const sameTable=table;let replacements=0;const original=table.setColumns.bind(table);table.setColumns=(...args)=>{replacements++;return original(...args);};
+        render({columns:columns.concat({field:'e',title:'New column'}),columnOrder:changed.concat('e')});await wait();
+        check(table===sameTable && replacements===1,'column-set change uses one setColumns and keeps the engine');
+        check(JSON.stringify(order())===JSON.stringify(changed.concat('e')),'new column joins the controlled order');
+        check(!table.getColumn('a').isVisible()&&!table.getColumn('b').isVisible(),'column-set change retains hidden state');
+        check(table.getSorters()[0]?.field==='a'&&table.getRows('active')[0].getData().a==='Alpha','column-set change retains the active saved sort');
+        const records=Array.from({length:600},(_,id)=>({id,a:'Record '+String(id).padStart(4,'0')}));
+        render({data:records});await wait();await wait();
+        const drawn=()=>host.querySelectorAll('.tabulator-row:not(.tabulator-group)').length;
+        check(drawn()>0&&drawn()<600,'native renderer virtualizes 600 records');
+        window.dispatchEvent(new Event('beforeprint'));await wait();
+        check(drawn()===600,'native print includes every loaded record');
+        window.dispatchEvent(new Event('afterprint'));await wait();
+        check(drawn()>0&&drawn()<600,'native renderer restores its virtual window after print');
+        // Reveal the fixture before measuring a scroll: native Tabulator redraws once on first visibility.
+        host.scrollIntoView({block:'start'});await wait();await wait();
+        const holder=host.querySelector('.tabulator-tableholder');holder.focus({preventScroll:true});holder.scrollTop=10000;await wait();await wait();
+        check(document.activeElement===holder&&+host.querySelector('.tabulator-row').getAttribute('aria-rowindex')>2,'native scrolling retains focus and logical row positions '+JSON.stringify({active:document.activeElement?.className,scroll:holder.scrollTop,index:host.querySelector('.tabulator-row')?.getAttribute('aria-rowindex'),renderer:table.options.renderVertical}));
+        host.style.inlineSize='320px';render({columns:[{field:'a',title:'First',width:240,frozen:true},{field:'b',title:'Second',width:240,frozen:true},{field:'c',title:'Third',width:240}],hiddenColumns:[],columnOrder:['a','b','c']});await wait();await wait();
+        const scroller=host.querySelector('.tabulator-tableholder'),cell=()=>host.querySelector('.tabulator-row [tabulator-field="a"]'),left=cell().getBoundingClientRect().left;
+        scroller.scrollLeft=200;await wait();check(Math.abs(cell().getBoundingClientRect().left-left)<1,'virtual rows clip content without trapping frozen columns');host.style.removeProperty('inline-size');
+        ReactDOM.flushSync(()=>root.render(h(Plenix.Table,{label:'Natural wrapping reference',data:[{id:1,a:'A long reference description that wraps over several natural lines without an inline row height.'}],columns:[{field:'a',title:'Description',kind:'wrap',width:'--plx-ref-size-160px'}],onReady:t=>{table=t;}})));await wait();await wait();
+        check([...host.querySelectorAll('.tabulator-cell')].every(cell=>!cell.style.height),'static wrapping Tables retain intrinsic CSS cell heights');
+        return count;
+      } finally {ReactDOM.flushSync(()=>root.unmount());host.remove();localStorage.removeItem(storage);}
+    });
+    res.push(['Saved and hidden-column views ('+viewChecks+' checks)',true]);
     const regressions = require('./data-table-high.test.js');
-    const checks = await regressions(page) + await regressions.warning(page, BASE);
-    console.log('DT_HIGH_OK ' + checks + ' regression checks');
+    try {
+      const checks = await regressions(page) + await regressions.warning(page, BASE);
+      console.log('DT_HIGH_OK ' + checks + ' regression checks');
+    } catch(error) {res.push(['Existing high-impact regressions',false,error.message]);}
   }
   if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its table views are skipped');
   for (const [url, steps, want] of VIEWS) {
@@ -317,7 +374,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
   // the keyboard (owner, 2026-10-14): a group row opens and closes with Enter and the arrow keys (aria-expanded follows,
   // the change is announced), the table has no view button and its header chevron opens the column menu, the column menu opens with
   // Shift + F10 on a focused header, its items take the arrow keys, Escape gives the focus back to the header
-  if (HAS_DS && (!ONLY || ONLY.test('grouped-table')) && changed.wants({ units: GRIDS })) {
+  if (HAS_DS && !NEXT && (!ONLY || ONLY.test('grouped-table')) && changed.wants({ units: GRIDS })) {
     const name = 'keyboard: group rows, the header chevron, the column menu';
     at(name);
     const bad = [];
@@ -329,7 +386,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     const state = () => page.evaluate(() => { const a = document.activeElement; return { role: a && a.getAttribute('role'), label: a && (a.getAttribute('aria-label') || a.textContent.trim().slice(0, 30)), expanded: a && a.getAttribute('aria-expanded'), live: Array.from(document.querySelectorAll('[aria-live]')).map((x) => x.textContent).join(' ') }; });
     const wait = () => new Promise((r) => setTimeout(r, 300));
     if (!bad.length) {
-      await page.evaluate(() => document.querySelector('main .plx-data-table .tabulator-group').focus());
+      await page.evaluate(() => document.querySelector('main .plx-data-table .tabulator-group').focus()); await wait();
       const s0 = await state();
       if (s0.role !== 'row' || s0.expanded !== 'true') bad.push('a group row is a focusable row with aria-expanded="true" (' + JSON.stringify(s0) + ')');
       await page.keyboard.press('Enter'); await wait();

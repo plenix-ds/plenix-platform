@@ -17,7 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const NAME = /^w(?:\d{2}[A-Z]|13[1-4])\.(records|labs|docs)\.js$|^w(?:\d{2}[A-Z]|13[1-4])\.css$/;
+const NAME = /^w(?:\d{2}[A-Z]|13[1-4]|DTN)\.(records|labs|docs)\.js$|^w(?:\d{2}[A-Z]|13[1-4]|DTN)\.css$/;
 
 module.exports = function buildSpecParts(root, { check = false } = {}) {
   const DS = path.join(root, 'platform', 'design-system');

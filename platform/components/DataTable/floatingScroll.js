@@ -72,13 +72,15 @@ export function floatingScroll(root, holder) {
     if (s === null) t.track.removeAttribute('data-plx-thumb'); else if (t.track.getAttribute('data-plx-thumb') !== s) t.track.setAttribute('data-plx-thumb', s);
   });
   const win = doc.defaultView;
-  const ro = win && win.ResizeObserver ? new win.ResizeObserver(size) : null;
+  let frame = 0;
+  const schedule = () => { if (!frame) frame = win.requestAnimationFrame(() => { frame = 0; size(); }); };
+  const ro = win && win.ResizeObserver ? new win.ResizeObserver(schedule) : null;
   if (ro) { ro.observe(holder); Array.from(holder.children).forEach((c) => ro.observe(c)); }
   const mo = win && win.MutationObserver ? new win.MutationObserver(() => {
     if (ro) Array.from(holder.children).forEach((c) => ro.observe(c));
-    size();
+    schedule();
   }) : null;
   if (mo) mo.observe(holder, { childList: true });
-  size();
-  return () => { if (ro) ro.disconnect(); if (mo) mo.disconnect(); tracks.forEach((t) => t.track.remove()); };
+  schedule();
+  return () => { if (frame) win.cancelAnimationFrame(frame); if (ro) ro.disconnect(); if (mo) mo.disconnect(); tracks.forEach((t) => t.track.remove()); };
 }
