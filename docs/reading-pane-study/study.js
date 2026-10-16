@@ -113,13 +113,14 @@ function Reading({
   return /*#__PURE__*/React.createElement("article", {
     className: "study-reading",
     "aria-label": item.subject
-  }, /*#__PURE__*/React.createElement(Stack, {
-    gap: "md"
-  }, onBack ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Button, {
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "study-reading__actions"
+  }, onBack ? /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
     variant: "ghost",
     icon: "arrow-left",
     onClick: onBack
-  }, "Back to Inbox")) : null, /*#__PURE__*/React.createElement(Toolbar, {
+  }, "Back to Inbox") : null, /*#__PURE__*/React.createElement(Toolbar, {
     label: "Message actions"
   }, /*#__PURE__*/React.createElement(Button, {
     size: "sm",
@@ -135,7 +136,11 @@ function Reading({
     size: "sm",
     variant: "ghost",
     icon: "trash"
-  }, "Delete")), /*#__PURE__*/React.createElement(Text, {
+  }, "Delete"))), /*#__PURE__*/React.createElement("div", {
+    className: "study-reading__body"
+  }, /*#__PURE__*/React.createElement(Stack, {
+    gap: "md"
+  }, /*#__PURE__*/React.createElement(Text, {
     as: "h2",
     variant: "title"
   }, item.subject), /*#__PURE__*/React.createElement(Inline, {
@@ -153,7 +158,7 @@ function Reading({
     as: "p"
   }, item.preview), /*#__PURE__*/React.createElement(Text, {
     as: "p"
-  }, "The second round is in the shared folder. The kitchen views changed the most; the hallway is the same as before.")));
+  }, "The second round is in the shared folder. The kitchen views changed the most; the hallway is the same as before."))));
 }
 function Mail({
   pane,
@@ -240,6 +245,11 @@ function Mail({
     axis: pane === 'bottom' ? 'vertical' : 'horizontal',
     defaultWidth: pane === 'right' ? 560 : undefined,
     defaultHeight: pane === 'bottom' ? 320 : undefined,
+    steps: pane === 'bottom' ? [200, 320, 400, 500] : [360, 400, 500, 560, 600, 720],
+    minWidth: 360,
+    maxWidth: 720,
+    minHeight: 200,
+    maxHeight: 500,
     className: "study-list"
   }, table), /*#__PURE__*/React.createElement(Reading, {
     item: item,

@@ -1,5 +1,5 @@
-## Batch 392 (2026-10-16): reading pane study, owner's review
-- Owner: "this looks like crap": equal full heights, a divider to resize, equal widths stacked, matching frames.
-- Fixed: the page fills the multi-pane main area (flex 1); DataTable mode fill; Resizable's edge drawn as the divider;
-  the reading pane uses the data-table frame tokens. Measured at 1440 × 800: side by side both panes 563px tall to the
-  window's bottom; stacked both 1152px wide. Released as {V}.
+## Batch 393 (2026-10-16): handlebar divider, inset line
+- Owner: "this looks like crap" + the handlebars article + a thin line under the actions that does not touch the edges.
+- Handlebar: Resizable's edge narrowed to the handle box (16 × 48, centered); steps snap; min/max set (the default max
+  was the starting width, so it could not grow). Checked by keyboard (560 → 600 snapped); the mouse drag is Resizable's
+  own (its lab); the in-app browser could not drive a drag under viewport emulation. Released as {V}.

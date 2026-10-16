@@ -20,22 +20,28 @@
 
 /* the reading pane: the same frame as the table (its border, corners and width tokens), the rest of the room, its
    own scrolling */
-.study-reading{background-color:var(--plx-sys-surface-default);border-color:var(--plx-comp-data-table-border-color);border-radius:var(--plx-comp-data-table-radius);border-style:solid;border-width:var(--plx-comp-data-table-border-width);box-sizing:border-box;flex:1 1 0%;min-block-size:0;min-inline-size:var(--plx-ref-size-320px);overflow-y:auto;padding:var(--plx-ref-space-24px);}
+.study-reading{background-color:var(--plx-sys-surface-default);border-color:var(--plx-comp-data-table-border-color);border-radius:var(--plx-comp-data-table-radius);border-style:solid;border-width:var(--plx-comp-data-table-border-width);box-sizing:border-box;flex:1 1 0%;min-block-size:0;min-inline-size:var(--plx-ref-size-320px);display:flex;flex-direction:column;overflow-y:auto;}
 .study-panes--bottom>.study-reading,.study-panes--off>.study-reading{inline-size:100%;min-inline-size:0;}
 
-/* the divider: the list's resize edge, drawn as a line in the middle of the gap with a grip, the focus color while
-   dragged, hovered or focused */
+.study-reading__actions{align-items:center;display:flex;gap:var(--plx-ref-space-8px);padding-block:var(--plx-ref-space-12px);padding-inline:var(--plx-ref-space-16px);position:relative;}
+/* the thin line under the actions: inset from the pane's edges (owner, 2026-10-16: it does not touch the edges) */
+.study-reading__actions::after{background-color:var(--plx-comp-data-table-border-color);block-size:var(--plx-sys-border-width-default);content:"";inset-block-end:0;inset-inline-end:var(--plx-ref-space-16px);inset-inline-start:var(--plx-ref-space-16px);position:absolute;}
+.study-reading__body{padding:var(--plx-ref-space-24px);}
+.study-reading>.plx-empty-state{margin:auto;}
+
+/* the divider is a handlebar (owner, 2026-10-16, prototypr "Handlebars in UI design"): no line, a pill handle in the
+   middle of the gutter. Only the handle grabs (a precise target: the edge is the handle's 16 × 48 box); once grabbed, the drag
+   follows the pointer anywhere along the axis; on release the list snaps to its steps. The handle darkens on hover and
+   takes the focus color while focused or dragged. */
 .study-panes .plx-resizable__edge{align-items:center;display:flex;justify-content:center;}
-.study-panes .plx-resizable__edge--inline{inline-size:var(--plx-ref-space-16px);inset-inline-end:calc(-1 * var(--plx-ref-space-16px));}
-.study-panes .plx-resizable__edge--block{block-size:var(--plx-ref-space-16px);inset-block-end:calc(-1 * var(--plx-ref-space-16px));}
-.study-panes .plx-resizable__edge::before{background-color:var(--plx-comp-data-table-border-color);content:"";position:absolute;}
-.study-panes .plx-resizable__edge--inline::before{block-size:100%;inline-size:var(--plx-sys-border-width-default);}
-.study-panes .plx-resizable__edge--block::before{block-size:var(--plx-sys-border-width-default);inline-size:100%;}
-.study-panes .plx-resizable__edge::after{background-color:var(--plx-sys-content-muted);border-radius:var(--plx-sys-radius-pill);content:"";position:relative;}
-.study-panes .plx-resizable__edge--inline::after{block-size:var(--plx-ref-space-32px);inline-size:var(--plx-ref-space-4px);}
-.study-panes .plx-resizable__edge--block::after{block-size:var(--plx-ref-space-4px);inline-size:var(--plx-ref-space-32px);}
-.study-panes .plx-resizable__edge:hover::before,.study-panes .plx-resizable__edge:focus-visible::before{background-color:var(--plx-sys-focus-ring-color);}
-.study-panes .plx-resizable__edge:hover::after,.study-panes .plx-resizable__edge:focus-visible::after{background-color:var(--plx-sys-focus-ring-color);}
+.study-panes .plx-resizable__edge--inline{block-size:var(--plx-ref-space-48px);inline-size:var(--plx-ref-space-16px);inset-block-end:auto;inset-block-start:calc(50% - var(--plx-ref-space-24px));inset-inline-end:calc(-1 * var(--plx-ref-space-16px));}
+.study-panes .plx-resizable__edge--block{block-size:var(--plx-ref-space-16px);inline-size:var(--plx-ref-space-48px);inset-block-end:calc(-1 * var(--plx-ref-space-16px));inset-inline-end:auto;inset-inline-start:calc(50% - var(--plx-ref-space-24px));}
+.study-panes .plx-resizable__edge::after{background-color:var(--plx-sys-border-strong);border-radius:var(--plx-sys-radius-pill);content:"";}
+.study-panes .plx-resizable__edge--inline::after{block-size:var(--plx-ref-space-40px);inline-size:var(--plx-ref-space-4px);}
+.study-panes .plx-resizable__edge--block::after{block-size:var(--plx-ref-space-4px);inline-size:var(--plx-ref-space-40px);}
+.study-panes .plx-resizable__edge:hover::after{background-color:var(--plx-sys-content-muted);}
+.study-panes .plx-resizable__edge:focus-visible::after,.study-panes .plx-resizable__edge:active::after{background-color:var(--plx-sys-focus-ring-color);}
+.study-panes .plx-resizable__edge:focus-visible{outline:none;}
 
 /* not room for both side by side (the list at its size plus a 320px reading pane): they stack */
 @container (width < 900px){.study-panes--right{flex-direction:column;}.study-panes--right>.study-list{block-size:auto;inline-size:100%;}}

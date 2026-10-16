@@ -34,15 +34,17 @@ function Reading({ item, count, onBack }) {
   if (!item) return <div className="study-reading"><EmptyState icon="mail" title="Select an item to read" description="Nothing is selected." /></div>;
   return (
     <article className="study-reading" aria-label={item.subject}>
-      <Stack gap="md">
-        {onBack ? <div><Button variant="ghost" icon="arrow-left" onClick={onBack}>Back to Inbox</Button></div> : null}
+      <div className="study-reading__actions">
+        {onBack ? <Button size="sm" variant="ghost" icon="arrow-left" onClick={onBack}>Back to Inbox</Button> : null}
         <Toolbar label="Message actions"><Button size="sm" icon="reply">Reply</Button><Button size="sm" icon="forward">Forward</Button><Button size="sm" variant="ghost" icon="archive">Archive</Button><Button size="sm" variant="ghost" icon="trash">Delete</Button></Toolbar>
+      </div>
+      <div className="study-reading__body"><Stack gap="md">
         <Text as="h2" variant="title">{item.subject}</Text>
         <Inline gap="sm" align="center"><Persona name={item.from} size="sm" /><Text variant="data">{item.received}</Text>{item.flagged ? <Badge tone="waiting" icon="flag">Flagged</Badge> : null}</Inline>
         <Divider />
         <Text as="p">{item.preview}</Text>
         <Text as="p">The second round is in the shared folder. The kitchen views changed the most; the hallway is the same as before.</Text>
-      </Stack>
+      </Stack></div>
     </article>
   );
 }
@@ -67,7 +69,9 @@ function Mail({ pane, rows }) {
   return (
     <div className="study-mail">{bar}
       <div className={'study-panes study-panes--' + pane}>
-        <Resizable label="Message list" axis={pane === 'bottom' ? 'vertical' : 'horizontal'} defaultWidth={pane === 'right' ? 560 : undefined} defaultHeight={pane === 'bottom' ? 320 : undefined} className="study-list">
+        <Resizable label="Message list" axis={pane === 'bottom' ? 'vertical' : 'horizontal'} defaultWidth={pane === 'right' ? 560 : undefined} defaultHeight={pane === 'bottom' ? 320 : undefined}
+          steps={pane === 'bottom' ? [200, 320, 400, 500] : [360, 400, 500, 560, 600, 720]}
+          minWidth={360} maxWidth={720} minHeight={200} maxHeight={500} className="study-list">
           {table}
         </Resizable>
         <Reading item={item} count={count} />

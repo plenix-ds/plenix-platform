@@ -1,5 +1,6 @@
 ### Changed
-- docs/reading-pane-study, after the owner's review (2026-10-16): the table and the reading pane fill the window's height
-  and match it, each scrolling on its own; a divider between them resizes (a line with a grip, the focus color on hover
-  and focus; drag, arrow keys or the size menu); stacked, both are the full width; the reading pane takes the table's
-  frame (its border, corners and width tokens); the command bar spans both panes, as Outlook's ribbon does.
+- docs/reading-pane-study (owner, 2026-10-16): the divider is a handlebar, after prototypr's "Handlebars in UI design": a
+  pill in the middle of the gutter, no line; only the handle grabs (16 × 48), the drag then follows along the axis, and
+  the list snaps to set widths (360–720px) or heights (200–500px); the handle darkens on hover and takes the focus color
+  when focused. The reading pane's actions sit in their own row with a thin line under them, inset from the pane's
+  edges.
