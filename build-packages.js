@@ -236,6 +236,9 @@ copyDir(path.join(S, 'fonts'), path.join(CDN, 'fonts'));   // the hosted typefac
 copy(path.join(S, 'theme-boot.js'), path.join(CDN, 'theme-boot.js'));
 copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
+// The CDN and npm declarations share the same generated source, including its export-coverage gate.
+copy(path.join(R, 'index.d.ts'), path.join(CDN, 'plenix.d.ts'));
+write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nChanges: [CHANGELOG.md](CHANGELOG.md). Component documentation: [docs/index.json](docs/index.json).\n');
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
 // the DataTable's engine (Tabulator, MIT): loaded by the DataTable from ./vendor/tabulator/ next to plenix.js, and shipped in the
@@ -260,7 +263,7 @@ const cdnVersions = cdnChangelog(fs.readFileSync(path.join(ROOT, 'CHANGELOG.md')
 if (!cdnVersions.some((entry) => entry.version === VERSION)) cdnVersions.unshift({ version: VERSION, date: null, breaking: [] });
 json(path.join(REL, 'cdn', 'index.json'), { latest: VERSION, versions: cdnVersions });
 json(path.join(CDN, 'index.json'), { version: VERSION, breaking: cdnVersions.find((entry) => entry.version === VERSION).breaking,
-  files: { changelog: 'CHANGELOG.md', docs: fs.existsSync(path.join(P, 'design-system', 'inventory.js')) ? 'docs/index.json' : null, tokens: 'tokens.json', tokenCheck: 'token-check.js' } });
+  files: { types: 'plenix.d.ts', readme: 'README.md', changelog: 'CHANGELOG.md', docs: fs.existsSync(path.join(P, 'design-system', 'inventory.js')) ? 'docs/index.json' : null, tokens: 'tokens.json', tokenCheck: 'token-check.js' } });
 json(path.join(CDN, 'tokens.json'), { version: VERSION, count: index.tokens.length, tokens: index.tokens.map((token) => ({
   name: token.name, tier: token.tier, purpose: token.description || '', type: token.type,
   value: token.resolved || Object.fromEntries(token.sets.map((set) => [set.selector, set.value])),
@@ -291,7 +294,7 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
     write(path.join(CDN, 'docs', name), cdnRecordDoc(record, docs[record.id] || {}, source));
     cdnDocs.push({ id: record.id, title: record.title || record.leaf || record.id, href: name, source: record.src || null });
   }
-  json(path.join(CDN, 'docs', 'index.json'), { version: VERSION, count: cdnDocs.length, records: cdnDocs });
+  json(path.join(CDN, 'docs', 'index.json'), { version: VERSION, types: '../plenix.d.ts', count: cdnDocs.length, records: cdnDocs });
 
   const components = recs.map((r) => Object.assign(pick(docs[r.id] || {}, ['purpose', 'anatomy', 'behavior', 'a11y', 'content']), pick(r, ['id', 'title', 'sec', 'sub', 'leaf', 'level', 'status', 'icon', 'text', 'purpose', 'use', 'avoid', 'related', 'aliases', 'covers', 'map', 'plenix', 'src'])));
   const sections = (win.DSTaxonomy || []).map((s) => pick(s, ['id', 'n', 'title', 'question', 'icon', 'subs', 'leaves', 'groups']));
@@ -352,9 +355,9 @@ function cdnOfflineBundle() {
     if (fs.statSync(file).isDirectory()) for (const name of fs.readdirSync(file).sort()) add(relative + '/' + name);
     else assets.set(relative, fs.readFileSync(file));
   };
-  for (const name of ['plenix.esm.js', 'plenix.js', 'plenix.css', 'plenix.min.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
+  for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix.css', 'plenix.min.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
   const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
-  const manifest = { version: VERSION, algorithm: 'sha256', description: 'Hashes cover every runtime file. This manifest is excluded from its own list; the CDN index hashes the complete archive.', files: [...assets].map(([name, data]) => ({ path: name, bytes: data.length, sha256: hash(data) })) };
+  const manifest = { version: VERSION, algorithm: 'sha256', description: 'Hashes cover every runtime file, TypeScript declarations and the README. This manifest is excluded from its own list; the CDN index hashes the complete archive.', files: [...assets].map(([name, data]) => ({ path: name, bytes: data.length, sha256: hash(data) })) };
   const manifestName = 'bundle-manifest.json';
   const manifestData = Buffer.from(JSON.stringify(manifest, null, 2) + '\n');
   assets.set(manifestName, manifestData);
