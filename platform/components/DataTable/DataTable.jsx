@@ -217,7 +217,7 @@ import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
 import { MultiTable } from './MultiTable.jsx';
 import { cx } from '../../utils/cx.js';
 import { loadTabulator, tablePx } from './tabulator.js';
-import { remeasure, reshare, virtualResync, virtualPrint, groupAt } from './strict.js';
+import { remeasure, reshare, syncGeometry, virtualPrint, groupAt } from './strict.js';
 import { snapSize, stepSize, SIZE_STEPS } from '../../utils/sizeSteps.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
 import { EmptyState } from '../EmptyState/EmptyState.jsx';
@@ -493,25 +493,41 @@ export function TableEngine(props) {
       closed: Array.from(closedRef.current),
     });
   };
-  // the kept view onto a grid just built: what still fits its columns (a field that is gone is skipped)
-  const restoreView = (t) => {
-    const key = latest.current.storageKey, v = key ? readView(key) : null;
+  // Opening state is expressed in Tabulator's construction options, before its first draw.
+  const openingView = (p, opts, host) => {
+    const saved = p.storageKey ? readView(p.storageKey) : null, defs = opts.columns;
+    const fields = new Set(defs.map(c => c.field).filter(Boolean));
+    const order = Array.isArray(p.columnOrder) ? p.columnOrder : saved && saved.order;
+    if (Array.isArray(order)) {
+      const free = defs.filter(c => !c.frozen), desired = order.map(f => free.find(c => c.field === f)).filter(Boolean);
+      const ordered = [...new Set(desired.concat(free))]; let at = 0;
+      opts.columns = defs.map(c => c.frozen ? c : ordered[at++]);
+    }
     resized.current = {};
-    if (!v) return;
-    restoring.current = true;
-    try {
-      const col = (f) => t.getColumns().find((c) => c.getField() === f);
-      const order = (v.order || []).filter(col);
-      order.forEach((f, i) => { const c = col(f), prev = i ? col(order[i - 1]) : null; if (c && prev && !c.getDefinition().frozen && !prev.getDefinition().frozen) c.move(prev, true); });
-      Object.keys(v.widths || {}).forEach((f) => { const c = col(f), px = viewPx(v.widths[f]); if (c && px) { c.setWidth(px); resized.current[f] = Math.round(px) + 'px'; } });
-      (v.hidden || []).forEach((f) => { const c = col(f); if (c) c.hide(); });
-      const sort = (v.sort || []).filter((s) => col(s.column) && (s.dir === 'asc' || s.dir === 'desc'));
-      if (sort.length) t.setSort(sort);
-      // the grouping kept (a field that is gone is not grouped by); its closed groups come with groupStartOpen
-      const want = [].concat(v.groupBy || []).filter(col);
-      if (v.groupBy !== undefined && JSON.stringify(want.length ? (want.length === 1 ? want[0] : want) : false) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, want.length ? (want.length === 1 ? want[0] : want) : false);
-    } catch (e) { /* a view kept for another column set: what fits is restored */ }
-    restoring.current = false;
+    const hidden = Array.isArray(p.hiddenColumns) ? p.hiddenColumns : saved && saved.hidden;
+    for (const c of opts.columns) {
+      if (Array.isArray(hidden) && c.field) c.visible = !hidden.includes(c.field);
+      const px = saved && saved.widths && tablePx(saved.widths[c.field], host);
+      if (px && !c.frozen) { c.width = px; resized.current[c.field] = Math.round(px) + 'px'; }
+    }
+    const controlledSort = Array.isArray(p.sort) ? p.sort.filter(x => x && fields.has(x.field)).map(x => ({column:x.field,dir:x.dir==='desc'?'desc':'asc'})).reverse() : null;
+    const savedSort = saved && Array.isArray(saved.sort) ? saved.sort.filter(x => fields.has(x.column) && ['asc','desc'].includes(x.dir)) : null;
+    const wantSort = controlledSort && controlledSort.length ? controlledSort : savedSort && savedSort.length ? savedSort : null;
+    const sortIdentity = list => (list || []).map(x => ({column:typeof x.column==='string'?x.column:x.column?.getField?.()||x.field,dir:x.dir}));
+    opts.initialSort = sortIdentity(opts.initialSort);
+    const ownsSort = controlledSort && controlledSort.length && JSON.stringify(controlledSort)!==JSON.stringify(opts.initialSort || savedSort || []);
+    if (wantSort) opts.initialSort = wantSort;
+    const group = p.groupBy !== undefined ? p.groupBy : saved && saved.groupBy;
+    if (group !== undefined && group !== null) {
+      const valid = [].concat(group || []).filter(x => fields.has(typeof x === 'function' ? x.plxField : x));
+      opts.groupBy = valid.length ? valid.length === 1 ? valid[0] : valid : false;
+    }
+    let filter = null;
+    if (typeof p.filter === 'function') {
+      filter = d => typeof latest.current.filter === 'function' ? !!latest.current.filter(d) : true;
+      opts.initialFilter = [].concat(opts.initialFilter || [], [{field:filter}]);
+    }
+    return {filter, sort:ownsSort ? controlledSort.map(x=>({...x})).reverse() : null};
   };
   // a column's width is Tabulator's (its resize handle, the header menu, Fit to content): the person's width is kept in
   // the view, and the resize handle says it (aria-valuenow)
@@ -579,9 +595,13 @@ export function TableEngine(props) {
     const p = latest.current;
     if (!t || isStatic) return;
     const col = (f) => t.getColumns().find((c) => c.getField() === f);
+    const wasRestoring = restoring.current; restoring.current = true;
+    t.blockRedraw();
+    try {
     if (typeof p.filter === 'function') {
       if (!t.plxViewFilter) { t.plxViewFilter = (d) => { const fn = latest.current.filter; return typeof fn === 'function' ? !!fn(d) : true; }; t.addFilter(t.plxViewFilter); }
-      else t.refreshFilter();
+      else if (t.plxViewFilterSource !== p.filter) t.refreshFilter();
+      t.plxViewFilterSource = p.filter;
     } else if (t.plxViewFilter) { t.removeFilter(t.plxViewFilter); t.plxViewFilter = null; }
     if (Array.isArray(p.sort)) {
       const want = p.sort.filter((x) => x && col(x.field)).map((x) => ({ column: x.field, dir: x.dir === 'desc' ? 'desc' : 'asc' }));
@@ -602,14 +622,17 @@ export function TableEngine(props) {
       if (JSON.stringify(g) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, g);
     }
     if (Array.isArray(p.columnOrder)) {
-      const order = p.columnOrder.filter((f) => col(f) && !col(f).getDefinition().frozen);
-      order.forEach((f, i) => { if (!i) return; const c = col(f), prev = col(order[i - 1]); if (c.getPrevColumn() !== prev) c.move(prev, true); });
-      // the first of the order goes before the others (Make first column)
-      if (order.length > 1) { const first = col(order[0]), next = col(order[1]); if (first.getNextColumn() !== next) first.move(next, false); }
+      const free = t.getColumns().filter(c => !c.getDefinition().frozen);
+      const wanted = [...new Set(p.columnOrder.map(f => col(f)).filter(c => c && !c.getDefinition().frozen).concat(free))];
+      for (let i = 0; i < wanted.length; i++) {
+        const current = t.getColumns().filter(c => !c.getDefinition().frozen);
+        if (current[i] !== wanted[i]) wanted[i].move(current[i], false);
+      }
     }
     if (Array.isArray(p.hiddenColumns)) {
       t.getColumns().forEach((c) => { const f = c.getField(); if (!f) return; const hide = p.hiddenColumns.indexOf(f) >= 0; if (hide && c.isVisible()) c.hide(); else if (!hide && !c.isVisible()) c.show(); });
     }
+    } finally { t.restoreRedraw(); restoring.current = wasRestoring; }
     saveView();
   };
   // the columns a group row's cells follow: the first cell spans the mark columns at the start and the first value column
@@ -696,7 +719,9 @@ export function TableEngine(props) {
     const g = t.plxTailFor, ver = t.plxColsVer || 0;
     if (g && (t.plxTailEl.plxFor !== g || t.plxTailEl.plxVer !== ver)) { cellsInto(t.plxTailEl, t, (cell, col) => { if (!col) cell.appendChild(addButton(g)); }); t.plxTailEl.plxFor = g; t.plxTailEl.plxVer = ver; }
     const te = t.rowManager.tableElement;
-    if (t.rowManager.renderMode !== 'virtual') { if (g) { if (te.lastChild !== t.plxTailEl) te.appendChild(t.plxTailEl); } else if (t.plxTailEl.parentNode) t.plxTailEl.parentNode.removeChild(t.plxTailEl); }
+    const last=t.rowManager.getDisplayRows().at(-1), visible=t.rowManager.renderMode!=='virtual'||last?.element?.isConnected;
+    if(g && visible){if(te.lastChild!==t.plxTailEl)te.appendChild(t.plxTailEl);}
+    else if(t.plxTailEl.parentNode)t.plxTailEl.parentNode.removeChild(t.plxTailEl);
   };
   // every group row drawn now, again (a column's width, order or visibility changed)
   const redrawGroups = (t) => {
@@ -723,7 +748,7 @@ export function TableEngine(props) {
   const stickyKey = React.useRef('');
   const syncSticky = (force) => {
     const t = tableRef.current, box = stickyRef.current, h = hostRef.current;
-    if (!t || !box || !h || !builtRef.current) return;
+    if (!t || !box || !h || !builtRef.current || !t.options.groupBy) return;
     const holder = h.querySelector('.tabulator-tableholder'), at = holder && t.rowManager.renderMode === 'virtual' ? groupAt(t, holder.scrollTop) : null;
     let chain = [];
     if (at) { const top = at.row.type === 'group' ? at.row.parent : at.row.modules && at.row.modules.group; for (let x = top; x; x = x.parent) chain.unshift(x); }
@@ -906,7 +931,7 @@ export function TableEngine(props) {
   const shape = JSON.stringify(columns.map((c) => Object.keys(c).sort().map((k) => (typeof c[k] === 'function' ? k + '()' : k + '=' + JSON.stringify(c[k])))));
 
   React.useEffect(() => {
-    let alive = true, table = null, unfloat = null;
+    let alive = true, table = null, unfloat = null, drawFrame = 0;
     builtRef.current = false; measured.current = false;
     // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
     // (a frame that loaded again meanwhile) gets no grid
@@ -960,6 +985,7 @@ export function TableEngine(props) {
         // a grid with a room (a height, or fill and load-more) draws the rows in view (every row is the density's height);
         // pages, a wrapping column, group rows and a Narrow list draw them all
         renderVertical: virtual ? 'virtual' : 'basic',
+        rowHeight: !isStatic && !listNow ? tablePx('--plx-comp-data-table-record-height',host) : undefined,
         editTriggerEvent: 'dblclick',
         rowContextMenu,
         // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
@@ -1031,10 +1057,16 @@ export function TableEngine(props) {
         delete opts.data;
       }
       opts.columns = defsOf(p.columns, host).concat(optsRowMenu ? [optsRowMenu] : []);
+      const initialView = isStatic ? null : openingView(p, opts, host);
+      if (virtual && p.height && p.height !== '100%') {
+        const px=tablePx(p.height,host), header=tablePx('--plx-comp-data-table-height',host), line=tablePx('--plx-comp-data-table-line-width',host);
+        if (px) opts.height='calc('+px+'px + '+header+'px + '+line+'px)';
+      } else if (virtual) opts.maxHeight='100%';
       Tabulator.extendModule('filter','filters',{plxBytes:(query,value)=>byteMatches(query,value)});
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
       tableRef.current = table;
+      if (initialView) { table.plxViewFilter = initialView.filter; table.plxViewFilterSource = p.filter; table.plxViewSort = initialView.sort; }
       // what the virtual renderer and the group rows need from the grid (strict.js): its token boxes, the add rows, and
       // the callbacks that draw a group row's parts and the add row after the last group
       table.plxProbe = probeRef.current;
@@ -1052,6 +1084,13 @@ export function TableEngine(props) {
         host.setAttribute('aria-label', latest.current.label || '');
         if (holder) { holder.setAttribute('role', 'rowgroup'); holder.tabIndex = 0; }
         if (body) body.setAttribute('role', 'presentation');
+        if (table) {
+          host.setAttribute('aria-rowcount',String(table.rowManager.getDisplayRows().length+1));
+          const r=table.rowManager.renderer, focus=r.plxFocus, active=host.ownerDocument.activeElement;
+          if (focus && active!==holder && active!==host.ownerDocument.body && active!==focus) r.plxFocus=null;
+          else if (focus && focus.isConnected) {r.plxFocus=null;focus.focus({preventScroll:true});}
+          else if (focus && holder) holder.focus({preventScroll:true});
+        }
         host.querySelectorAll('.tabulator-group').forEach((g) => g.setAttribute('role', 'row'));
         // a grouped grid is a tree grid: its group rows open and close (aria-expanded, aria-level)
         if (table && !isStatic) host.setAttribute('role', host.querySelector('.tabulator-group') || table.options.groupBy ? 'treegrid' : 'grid');
@@ -1074,13 +1113,21 @@ export function TableEngine(props) {
           h.setAttribute('aria-keyshortcuts', 'Alt+ArrowUp Alt+ArrowDown Alt+Home Alt+End');
         });
       };
-      table.on('scrollVertical',()=>bump());
-      table.on('renderComplete', () => { bump(); aria(); syncFoot(table); watchEnd(table); });
+      const afterDraw = () => { if (!drawFrame) drawFrame = win.requestAnimationFrame(() => {
+        drawFrame = 0; if (!alive || tableRef.current !== table) return;
+        bump(); aria(); syncFoot(table); watchEnd(table);
+      }); };
+      table.on('renderComplete', afterDraw);
+      table.on('scrollVertical',afterDraw);
       table.on('tableBuilt', () => {
         if (!alive || tableRef.current !== table) return;
         aria(); builtRef.current = true; narrowRef.current?.(); fitRoom(); syncFoot(table); watchEnd(table);
         // the body's scrollbars float over the rows and take no room (owner, 2026-10-15)
         if (!unfloat) unfloat = floatingScroll(host, host.querySelector('.tabulator-tableholder'));
+        host.querySelector('.tabulator-tableholder')?.addEventListener('scroll',()=>{
+          const focused=host.ownerDocument.activeElement;
+          if (focused && focused.closest('.tabulator-row') && host.contains(focused)) table.rowManager.renderer.plxFocus=focused;
+        },{capture:true,passive:true});
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h && !(ev === 'rowClick' && a[0].target.closest(INTERACTIVE))) h(...a); }));
         const selectionChanged = (activeRows = rowsOf(table, 'active')) => {
@@ -1101,7 +1148,7 @@ export function TableEngine(props) {
         syncSelection(table);
         if (!isStatic) {
           wireColumns(table); wireRows(table, host); wireGroups(table, host);
-          restoreView(table); applyView(table); table.on('dataSorted', () => saveView());
+          table.on('dataSorted', () => saveView());
           tintGrouped(table);
         }
         if (!alive || tableRef.current !== table) return;
@@ -1117,16 +1164,17 @@ export function TableEngine(props) {
     // the grid; a set or chosen width is kept); a virtual grid takes the new row height for the rows it does not draw,
     // and keeps the row at the top of its view
     const region = frameRef.current && frameRef.current.closest('[data-plx-density]');
-    const densityKey = () => ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'].map((a) => document.documentElement.getAttribute(a)).concat(region ? region.getAttribute('data-plx-density') : '').join('|');
+    const densityKey = () => ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'].map((a) => document.documentElement.getAttribute(a)).concat(region ? region.getAttribute('data-plx-density') : '',frameRef.current?.getAttribute('data-plx-row-height'),frameRef.current?.getAttribute('data-plx-wrap-headers')).join('|');
     let lastDensity = densityKey();
     const mo = new MutationObserver(() => {
       const t = tableRef.current; if (!t || !builtRef.current) return;
       const now = densityKey(); if (now === lastDensity) return;
       lastDensity = now;
-      virtualResync(t); remeasure(t, t.getColumns()); titleTips();
+      syncGeometry(t); remeasure(t, t.getColumns()); titleTips();
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'] });
     if (region && region !== document.documentElement) mo.observe(region, { attributes: true, attributeFilter: ['data-plx-density'] });
+    if (frameRef.current) mo.observe(frameRef.current,{attributes:true,attributeFilter:['data-plx-row-height','data-plx-wrap-headers']});
     // a grid built while hidden (a closed tab, a section not shown) had no size to lay out in: once it is shown, it is
     // drawn again in place (its columns are measured then; no row is)
     // and a grid whose width changes shares the room among its columns again (nothing is measured)
@@ -1178,7 +1226,7 @@ export function TableEngine(props) {
     win.addEventListener('beforeprint', beforePrint); win.addEventListener('afterprint', afterPrint);
 
     return () => {
-      alive = false; mo.disconnect(); if (unfloat) unfloat(); if (ro) ro.disconnect(); if (frame) cancelAnimationFrame(frame); builtRef.current = false;
+      alive = false; if (drawFrame) win.cancelAnimationFrame(drawFrame); mo.disconnect(); if (unfloat) unfloat(); if (ro) ro.disconnect(); if (frame) cancelAnimationFrame(frame); builtRef.current = false;
       win.removeEventListener('beforeprint', beforePrint); win.removeEventListener('afterprint', afterPrint); win.removeEventListener('resize', onWindow);
       if (ioRef.current) { ioRef.current.disconnect(); ioRef.current = null; }
       if (table) { try { table.destroy(); } catch (e) { /* already gone */ } }
@@ -1443,7 +1491,7 @@ export function TableEngine(props) {
   // takes is measured again (the header may have grown), and the names cut with "…" are found again
   React.useEffect(() => {
     const t = tableRef.current; if (!t || !builtRef.current) return;
-    virtualResync(t);
+    syncGeometry(t);
     if (fitRef.current) fitRef.current();
     titleTips(); syncSticky(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -91,9 +91,37 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       finally { await focused.close(); }
     }
     await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' });
+    const viewChecks = await page.evaluate(async () => {
+      const h=React.createElement,host=document.createElement('div');document.body.appendChild(host);
+      const root=ReactDOM.createRoot(host),key='dt126-saved-view',storage='plx-data-table:'+key,wait=()=>new Promise(r=>setTimeout(r,100));let table,count=0;
+      const check=(yes,message)=>{if(!yes)throw Error(message);count++;};
+      const columns=['a','b','c','d'].map(field=>({field,title:field})),data=[{id:1,a:'Zulu'},{id:2,a:'Alpha'}];
+      const initial=['c','a','b','d'];localStorage.setItem(storage,JSON.stringify({order:initial,hidden:['a','b'],widths:{a:'160px',b:'240px'},sort:[{column:'a',dir:'asc'}]}));
+      let props={label:'Saved view regression',columns,data,storageKey:key,height:'--plx-ref-size-400px',narrow:'table',onReady:t=>{table=t;}};
+      const render=patch=>{props={...props,...patch};ReactDOM.flushSync(()=>root.render(h(Plenix.DataTable,props)));};
+      const order=()=>table.getColumns().map(c=>c.getField()).filter(Boolean);
+      try {
+        render({});await wait();
+        check(JSON.stringify(order())===JSON.stringify(initial),'saved order includes hidden columns on first draw');
+        check(!table.getColumn('a').isVisible()&&!table.getColumn('b').isVisible(),'saved visibility on first draw');
+        check(table.getColumn('a').getWidth()===160&&table.getColumn('b').getWidth()===240,'saved widths on first draw');
+        check(table.getSorters()[0]?.field==='a'&&table.getSorters()[0]?.dir==='asc','saved initial sort');
+        let moved=0;table.on('columnMoved',()=>moved++);
+        render({columnOrder:initial,hiddenColumns:['a','b'],filter:()=>true});await wait();
+        check(moved===0,'matching order with hidden columns is a no-op');
+        const changed=['d','b','c','a'];render({columnOrder:changed});await wait();
+        check(JSON.stringify(order())===JSON.stringify(changed),'later hidden-column order changes as requested');
+        moved=0;render({filter:()=>true,columnOrder:changed.slice()});await wait();
+        check(moved===0,'unrelated view changes do not repeat hidden column moves');
+        return count;
+      } finally {ReactDOM.flushSync(()=>root.unmount());host.remove();localStorage.removeItem(storage);}
+    });
+    res.push(['Saved and hidden-column views ('+viewChecks+' checks)',true]);
     const regressions = require('./data-table-high.test.js');
-    const checks = await regressions(page) + await regressions.warning(page, BASE);
-    console.log('DT_HIGH_OK ' + checks + ' regression checks');
+    try {
+      const checks = await regressions(page) + await regressions.warning(page, BASE);
+      console.log('DT_HIGH_OK ' + checks + ' regression checks');
+    } catch(error) {res.push(['Existing high-impact regressions',false,error.message]);}
   }
   if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its table views are skipped');
   for (const [url, steps, want] of VIEWS) {
