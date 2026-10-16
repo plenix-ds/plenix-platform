@@ -13,9 +13,9 @@
      Tag.removeLabel: the × button's accessible name; default "Remove " + the tag text
      Tag.onRename(text): makes the tag renamable: its text becomes a button; activating it turns it into a field (Enter or leaving it keeps
        the new text, Escape cancels); renameLabel: the button's accessible name (default "Rename " + the tag text)
-     Tag.category: the tag's category color, one of the 20 category colors (CATEGORY_COLORS: red, green, yellow, blue, orange,
-       purple, cyan, magenta, lime, pink, teal, lavender, brown, beige, maroon, mint, olive, apricot, navy, grey); set as
-       data-plx-category: background shade 100, a 1px border in shade 300, text in shade 700. Without it the tag is gray.
+     Tag.category: the tag's category color, one of the 19 category colors (CATEGORY_COLORS: red, green, yellow, blue, orange,
+       purple, cyan, magenta, lime, pink, teal, lavender, beige, maroon, mint, olive, apricot, navy, grey); set as
+       data-plx-category: background shade 100, a 1px border in shade 300, text in shade 700. Without it the tag is gray. Legacy category="brown" uses Orange.
      Tag.className: more classes on the tag
      Tag.children: the tag text
      Chip.selected: the chip is pressed (aria-pressed); default false
@@ -66,7 +66,7 @@ export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, cl
   const text = typeof children === 'string' ? children : '';
   const done = (keep) => { setEditing(false); if (keep && draft.trim() && draft.trim() !== text) onRename(draft.trim()); };
   return (
-    <span className={cx('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className)} data-plx-category={category || undefined} {...rest}>
+    <span className={cx('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className)} data-plx-category={(category === 'brown' ? 'orange' : category) || undefined} {...rest}>
       {onRename && editing ? (
         <input className="plx-tag__input" value={draft} aria-label={renameLabel || 'Rename ' + (text || 'tag')} autoFocus size={Math.max(4, draft.length)}
           onChange={(e) => setDraft(e.target.value)} onBlur={() => done(true)}

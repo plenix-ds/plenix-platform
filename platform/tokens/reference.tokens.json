@@ -913,20 +913,20 @@
       "$type": "color",
       "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-orange-900": {
-      "$value": "#5c2800",
+    "color-brown-800": {
+      "$value": "#4d3800",
       "$type": "color",
-      "$description": "Orange 900: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner revised 70-color proposal, 2026-10-16)."
     },
-    "color-orange-800": {
+    "color-brown-700": {
       "$value": "#7a3400",
       "$type": "color",
-      "$description": "Orange 800: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner revised 70-color proposal, 2026-10-16)."
     },
-    "color-orange-700": {
+    "color-brown-500": {
       "$value": "#963f00",
       "$type": "color",
-      "$description": "Orange 700: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner revised 70-color proposal, 2026-10-16)."
     },
     "color-orange-500": {
       "$value": "#d96800",
@@ -952,70 +952,34 @@
       "$value": "#3a2e22",
       "$type": "color"
     },
-    "color-brown-800": {
-      "$value": "#7d3c00",
-      "$type": "color"
-    },
-    "color-brown-500": {
-      "$value": "#c05a00",
-      "$type": "color"
-    },
-    "color-brown-300": {
-      "$value": "#dfaa7c",
-      "$type": "color"
-    },
-    "color-brown-200": {
-      "$value": "#eed2ba",
-      "$type": "color"
-    },
-    "color-brown-100": {
-      "$value": "#fef3e2",
-      "$type": "color"
-    },
-    "color-yellow-900": {
-      "$value": "#4d3800",
-      "$type": "color",
-      "$description": "Yellow 900: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-700": {
+    "color-brown-600": {
       "$value": "#765600",
       "$type": "color",
-      "$description": "Yellow 700: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner revised 70-color proposal, 2026-10-16)."
     },
-    "color-yellow-600": {
-      "$value": "#808000",
-      "$type": "color",
-      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    "color-green-500": {
+      "$value": "#107c10",
+      "$type": "color"
     },
     "color-yellow-500": {
-      "$value": "#b88700",
-      "$type": "color",
-      "$description": "Yellow 500: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-400": {
       "$value": "#d5a300",
       "$type": "color",
-      "$description": "Yellow 400: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner revised 70-color proposal, 2026-10-16)."
     },
     "color-yellow-300": {
       "$value": "#e8c34a",
       "$type": "color",
       "$description": "Yellow 300: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-yellow-250": {
-      "$value": "#d2cd9c",
-      "$type": "color",
-      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
-    },
     "color-yellow-200": {
       "$value": "#f4dfa0",
       "$type": "color",
       "$description": "Yellow 200: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-yellow-175": {
+    "color-yellow-150": {
       "$value": "#ffe119",
       "$type": "color",
-      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+      "$description": "Canonical palette (owner revised 70-color proposal, 2026-10-16)."
     },
     "color-yellow-100": {
       "$value": "#fff8df",
@@ -1026,10 +990,6 @@
       "$value": "#1b5e0c",
       "$type": "color"
     },
-    "color-green-500": {
-      "$value": "#107c10",
-      "$type": "color"
-    },
     "color-green-300": {
       "$value": "#58ad58",
       "$type": "color"
@@ -1037,11 +997,6 @@
     "color-green-200": {
       "$value": "#9bd39b",
       "$type": "color"
-    },
-    "color-green-150": {
-      "$value": "#bfef45",
-      "$type": "color",
-      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
     "color-green-100": {
       "$value": "#dff6dd",
@@ -1072,11 +1027,6 @@
       "$type": "color",
       "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-cyan-500": {
-      "$value": "#42d4f4",
-      "$type": "color",
-      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
-    },
     "color-cyan-300": {
       "$value": "#6bddf8",
       "$type": "color",
@@ -1096,11 +1046,6 @@
       "$value": "#1f2a3a",
       "$type": "color"
     },
-    "color-blue-800": {
-      "$value": "#2d4498",
-      "$type": "color",
-      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
-    },
     "color-blue-700": {
       "$value": "#005a9e",
       "$type": "color"
@@ -1112,11 +1057,6 @@
     "color-blue-600": {
       "$value": "#1f5bb8",
       "$type": "color"
-    },
-    "color-blue-500": {
-      "$value": "#4363d8",
-      "$type": "color",
-      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
     "color-blue-400": {
       "$value": "#2a6fdb",
@@ -1167,503 +1107,599 @@
       "$type": "color",
       "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
+    "color-orange-900": {
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-800 (kept for one release)."
+    },
+    "color-orange-800": {
+      "$value": "{plx-ref.color-brown-700}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-700 (kept for one release)."
+    },
+    "color-orange-700": {
+      "$value": "{plx-ref.color-brown-500}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-500 (kept for one release)."
+    },
+    "color-brown-300": {
+      "$value": "{plx-ref.color-orange-300}",
+      "$type": "color",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
+    },
+    "color-brown-200": {
+      "$value": "{plx-ref.color-orange-200}",
+      "$type": "color",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
+    },
+    "color-brown-100": {
+      "$value": "{plx-ref.color-orange-100}",
+      "$type": "color",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
+    },
+    "color-yellow-900": {
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-800 (kept for one release)."
+    },
+    "color-yellow-700": {
+      "$value": "{plx-ref.color-brown-600}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-600 (kept for one release)."
+    },
+    "color-yellow-600": {
+      "$value": "{plx-ref.color-green-500}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-500 (kept for one release)."
+    },
+    "color-yellow-400": {
+      "$value": "{plx-ref.color-yellow-500}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-500 (kept for one release)."
+    },
+    "color-yellow-250": {
+      "$value": "{plx-ref.color-orange-200}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-200 (kept for one release)."
+    },
+    "color-yellow-175": {
+      "$value": "{plx-ref.color-yellow-150}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-150 (kept for one release)."
+    },
+    "color-green-150": {
+      "$value": "{plx-ref.color-yellow-150}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-150 (kept for one release)."
+    },
+    "color-cyan-500": {
+      "$value": "{plx-ref.color-cyan-300}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-cyan-300 (kept for one release)."
+    },
+    "color-blue-800": {
+      "$value": "{plx-ref.color-blue-700}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-700 (kept for one release)."
+    },
+    "color-blue-500": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-400 (kept for one release)."
+    },
     "color-brown-950": {
       "$value": "{plx-ref.color-brown-900}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-900.",
-      "$description": "Deprecated alias of brown-900 (was #4a2400; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-900 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-purple-visited": {
       "$value": "{plx-ref.color-purple-900}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-900.",
-      "$description": "Deprecated alias of purple-900 (was #551a8b; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-900 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-purple-visited-light": {
       "$value": "{plx-ref.color-purple-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
-      "$description": "Deprecated alias of purple-300 (was #d7aefb; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-red": {
       "$value": "{plx-ref.color-red-500}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-500.",
-      "$description": "Deprecated alias of red-500 (was #e6194b; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-500 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-red-100": {
       "$value": "{plx-ref.color-red-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-100.",
-      "$description": "Deprecated alias of red-100 (was #ffefef; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-red-300": {
       "$value": "{plx-ref.color-red-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-200.",
-      "$description": "Deprecated alias of red-200 (was #ffb4b6; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-red-700": {
       "$value": "{plx-ref.color-red-800}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-800.",
-      "$description": "Deprecated alias of red-800 (was #891f31; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-800 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-green": {
       "$value": "{plx-ref.color-green-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-300.",
-      "$description": "Deprecated alias of green-300 (was #3cb44b; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-green-100": {
       "$value": "{plx-ref.color-green-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
-      "$description": "Deprecated alias of green-100 (was #e6fae5; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-green-300": {
       "$value": "{plx-ref.color-green-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-200.",
-      "$description": "Deprecated alias of green-200 (was #9cde9e; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-green-700": {
       "$value": "{plx-ref.color-green-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-700.",
-      "$description": "Deprecated alias of green-700 (was #025e17; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-yellow": {
-      "$value": "{plx-ref.color-yellow-175}",
+      "$value": "{plx-ref.color-yellow-150}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-175.",
-      "$description": "Deprecated alias of yellow-175 (was #ffe119; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-150 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-yellow-100": {
       "$value": "{plx-ref.color-yellow-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
-      "$description": "Deprecated alias of yellow-100 (was #f9f4da; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-yellow-300": {
       "$value": "{plx-ref.color-yellow-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-300.",
-      "$description": "Deprecated alias of yellow-300 (was #dccc75; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-yellow-700": {
-      "$value": "{plx-ref.color-yellow-700}",
+      "$value": "{plx-ref.color-brown-600}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-700.",
-      "$description": "Deprecated alias of yellow-700 (was #594d02; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-600 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-blue": {
-      "$value": "{plx-ref.color-blue-500}",
+      "$value": "{plx-ref.color-blue-400}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-500.",
-      "$description": "Deprecated alias of blue-500 (was #4363d8; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-400 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-blue-100": {
       "$value": "{plx-ref.color-blue-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-100.",
-      "$description": "Deprecated alias of blue-100 (was #eff3fe; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-blue-300": {
       "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-300.",
-      "$description": "Deprecated alias of blue-300 (was #b5c9fe; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-blue-700": {
-      "$value": "{plx-ref.color-blue-800}",
+      "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-800.",
-      "$description": "Deprecated alias of blue-800 (was #2d4498; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-orange": {
       "$value": "{plx-ref.color-orange-500}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-500.",
-      "$description": "Deprecated alias of orange-500 (was #f58231; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-500 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-orange-100": {
       "$value": "{plx-ref.color-orange-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-100.",
-      "$description": "Deprecated alias of orange-100 (was #fff0e8; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-orange-300": {
       "$value": "{plx-ref.color-orange-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-300.",
-      "$description": "Deprecated alias of orange-300 (was #ffb890; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-orange-700": {
-      "$value": "{plx-ref.color-orange-800}",
+      "$value": "{plx-ref.color-brown-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-800.",
-      "$description": "Deprecated alias of orange-800 (was #793802; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-purple": {
       "$value": "{plx-ref.color-purple-500}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-500.",
-      "$description": "Deprecated alias of purple-500 (was #911eb4; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-500 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-purple-100": {
       "$value": "{plx-ref.color-purple-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-100.",
-      "$description": "Deprecated alias of purple-100 (was #faeffe; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-purple-300": {
       "$value": "{plx-ref.color-purple-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
-      "$description": "Deprecated alias of purple-300 (was #e7b4fb; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-purple-700": {
       "$value": "{plx-ref.color-purple-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-700.",
-      "$description": "Deprecated alias of purple-700 (was #6a2e7f; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-cyan": {
-      "$value": "{plx-ref.color-cyan-500}",
+      "$value": "{plx-ref.color-cyan-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-500.",
-      "$description": "Deprecated alias of cyan-500 (was #42d4f4; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-cyan-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-cyan-100": {
       "$value": "{plx-ref.color-cyan-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-100.",
-      "$description": "Deprecated alias of cyan-100 (was #e2f8fe; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-cyan-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-cyan-300": {
       "$value": "{plx-ref.color-cyan-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-300.",
-      "$description": "Deprecated alias of cyan-300 (was #6bddf8; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-cyan-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-cyan-700": {
       "$value": "{plx-ref.color-cyan-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-700.",
-      "$description": "Deprecated alias of cyan-700 (was #045766; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-cyan-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-magenta": {
       "$value": "{plx-ref.color-magenta-500}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-500.",
-      "$description": "Deprecated alias of magenta-500 (was #f032e6; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-magenta-500 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-magenta-100": {
       "$value": "{plx-ref.color-magenta-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-100.",
-      "$description": "Deprecated alias of magenta-100 (was #ffedfc; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-magenta-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-magenta-300": {
       "$value": "{plx-ref.color-magenta-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-300.",
-      "$description": "Deprecated alias of magenta-300 (was #f4b0ec; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-magenta-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-magenta-700": {
       "$value": "{plx-ref.color-magenta-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-700.",
-      "$description": "Deprecated alias of magenta-700 (was #752870; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-magenta-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lime": {
-      "$value": "{plx-ref.color-green-150}",
+      "$value": "{plx-ref.color-yellow-150}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-150.",
-      "$description": "Deprecated alias of green-150 (was #bfef45; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-150 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lime-100": {
       "$value": "{plx-ref.color-green-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
-      "$description": "Deprecated alias of green-100 (was #eef8df; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lime-300": {
       "$value": "{plx-ref.color-green-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-200.",
-      "$description": "Deprecated alias of green-200 (was #bbd786; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lime-700": {
       "$value": "{plx-ref.color-green-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-700.",
-      "$description": "Deprecated alias of green-700 (was #415601; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-pink": {
       "$value": "{plx-ref.color-pink-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-300.",
-      "$description": "Deprecated alias of pink-300 (was #fabed4; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-pink-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-pink-100": {
       "$value": "{plx-ref.color-pink-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-100.",
-      "$description": "Deprecated alias of pink-100 (was #ffeef4; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-pink-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-pink-300": {
       "$value": "{plx-ref.color-pink-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-300.",
-      "$description": "Deprecated alias of pink-300 (was #f3b7cd; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-pink-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-pink-700": {
       "$value": "{plx-ref.color-pink-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-700.",
-      "$description": "Deprecated alias of pink-700 (was #6c3b4f; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-pink-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-teal": {
       "$value": "{plx-ref.color-teal-500}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-500.",
-      "$description": "Deprecated alias of teal-500 (was #469990; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-teal-500 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-teal-100": {
       "$value": "{plx-ref.color-teal-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-100.",
-      "$description": "Deprecated alias of teal-100 (was #dafcf7; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-teal-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-teal-300": {
       "$value": "{plx-ref.color-teal-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-300.",
-      "$description": "Deprecated alias of teal-300 (was #8adcd2; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-teal-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-teal-700": {
       "$value": "{plx-ref.color-teal-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-700.",
-      "$description": "Deprecated alias of teal-700 (was #065a53; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-teal-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lavender": {
       "$value": "{plx-ref.color-purple-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
-      "$description": "Deprecated alias of purple-300 (was #dcbeff; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lavender-100": {
       "$value": "{plx-ref.color-purple-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-100.",
-      "$description": "Deprecated alias of purple-100 (was #f6f0fe; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lavender-300": {
       "$value": "{plx-ref.color-purple-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
-      "$description": "Deprecated alias of purple-300 (was #d9bbfc; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-lavender-700": {
       "$value": "{plx-ref.color-purple-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-700.",
-      "$description": "Deprecated alias of purple-700 (was #5a3e76; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-purple-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-brown": {
-      "$value": "{plx-ref.color-brown-500}",
+      "$value": "{plx-ref.color-orange-500}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-500.",
-      "$description": "Deprecated alias of brown-500 (was #9a6324; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-500 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-brown-100": {
-      "$value": "{plx-ref.color-brown-100}",
+      "$value": "{plx-ref.color-orange-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-100.",
-      "$description": "Deprecated alias of brown-100 (was #fff1e4; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-brown-300": {
-      "$value": "{plx-ref.color-brown-300}",
+      "$value": "{plx-ref.color-orange-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-300.",
-      "$description": "Deprecated alias of brown-300 (was #fabd80; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-brown-700": {
-      "$value": "{plx-ref.color-brown-800}",
+      "$value": "{plx-ref.color-brown-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-800.",
-      "$description": "Deprecated alias of brown-800 (was #6f4102; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-beige": {
       "$value": "{plx-ref.color-yellow-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
-      "$description": "Deprecated alias of yellow-100 (was #fffac8; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-beige-100": {
       "$value": "{plx-ref.color-yellow-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
-      "$description": "Deprecated alias of yellow-100 (was #f7f5da; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-beige-300": {
-      "$value": "{plx-ref.color-yellow-250}",
+      "$value": "{plx-ref.color-orange-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-250.",
-      "$description": "Deprecated alias of yellow-250 (was #d2cd9c; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-beige-700": {
-      "$value": "{plx-ref.color-yellow-700}",
+      "$value": "{plx-ref.color-brown-600}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-700.",
-      "$description": "Deprecated alias of yellow-700 (was #544e22; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-600 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-maroon": {
       "$value": "{plx-ref.color-red-800}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-800.",
-      "$description": "Deprecated alias of red-800 (was #800000; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-800 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-maroon-100": {
       "$value": "{plx-ref.color-red-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-100.",
-      "$description": "Deprecated alias of red-100 (was #fff0ed; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-maroon-300": {
       "$value": "{plx-ref.color-red-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-200.",
-      "$description": "Deprecated alias of red-200 (was #ffb5a9; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-maroon-700": {
       "$value": "{plx-ref.color-red-800}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-800.",
-      "$description": "Deprecated alias of red-800 (was #892219; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-red-800 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-mint": {
       "$value": "{plx-ref.color-green-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
-      "$description": "Deprecated alias of green-100 (was #aaffc3; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-mint-100": {
       "$value": "{plx-ref.color-green-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
-      "$description": "Deprecated alias of green-100 (was #e3fbe9; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-mint-300": {
       "$value": "{plx-ref.color-green-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-200.",
-      "$description": "Deprecated alias of green-200 (was #91e0a8; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-mint-700": {
       "$value": "{plx-ref.color-green-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-700.",
-      "$description": "Deprecated alias of green-700 (was #045d2f; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-olive": {
-      "$value": "{plx-ref.color-yellow-600}",
+      "$value": "{plx-ref.color-green-500}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-600.",
-      "$description": "Deprecated alias of yellow-600 (was #808000; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-green-500 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-olive-100": {
       "$value": "{plx-ref.color-yellow-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
-      "$description": "Deprecated alias of yellow-100 (was #f4f6db; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-yellow-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-olive-300": {
-      "$value": "{plx-ref.color-yellow-250}",
+      "$value": "{plx-ref.color-orange-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-250.",
-      "$description": "Deprecated alias of yellow-250 (was #cfd17a; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-olive-700": {
-      "$value": "{plx-ref.color-yellow-700}",
+      "$value": "{plx-ref.color-brown-600}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-700.",
-      "$description": "Deprecated alias of yellow-700 (was #515102; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-600 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-apricot": {
       "$value": "{plx-ref.color-orange-200}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-200.",
-      "$description": "Deprecated alias of orange-200 (was #ffd8b1; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-200 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-apricot-100": {
       "$value": "{plx-ref.color-orange-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-100.",
-      "$description": "Deprecated alias of orange-100 (was #fff1e4; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-apricot-300": {
       "$value": "{plx-ref.color-orange-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-300.",
-      "$description": "Deprecated alias of orange-300 (was #e9c39c; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-orange-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-apricot-700": {
-      "$value": "{plx-ref.color-brown-800}",
+      "$value": "{plx-ref.color-brown-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-800.",
-      "$description": "Deprecated alias of brown-800 (was #664522; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-navy": {
       "$value": "{plx-ref.color-blue-950}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-950.",
-      "$description": "Deprecated alias of blue-950 (was #000075; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-950 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-navy-100": {
       "$value": "{plx-ref.color-blue-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-100.",
-      "$description": "Deprecated alias of blue-100 (was #eef4fe; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-navy-300": {
       "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-300.",
-      "$description": "Deprecated alias of blue-300 (was #b1cbfe; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-navy-700": {
-      "$value": "{plx-ref.color-blue-800}",
+      "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-800.",
-      "$description": "Deprecated alias of blue-800 (was #244698; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-blue-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-grey": {
       "$value": "{plx-ref.color-gray-400}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-400.",
-      "$description": "Deprecated alias of gray-400 (was #a9a9a9; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-gray-400 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-grey-100": {
       "$value": "{plx-ref.color-gray-100}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-100.",
-      "$description": "Deprecated alias of gray-100 (was #f3f3f3; rename or exact alias)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-gray-100 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-grey-300": {
       "$value": "{plx-ref.color-gray-300}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-300.",
-      "$description": "Deprecated alias of gray-300 (was #cacaca; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-gray-300 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     },
     "color-category-grey-700": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
-      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-700.",
-      "$description": "Deprecated alias of gray-700 (was #4d4d4d; merge with value change)."
+      "$deprecated": "Retired palette alias: use --plx-ref-color-gray-700 (kept for one release).",
+      "$description": "Deprecated alias; migrated by original token identity."
     }
   }
 }

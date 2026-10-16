@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.48.0] - 2026-10-16
+
+### Changed
+- The palette is 70 colors (the owner's revised chart, #124): 70 canonical colors in 12 families, every family darker
+  by number; the 13 retired colors are aliases for one release. No new hex values.
+- Light `status-away` is brown-600 #765600 (3:1 kept).
+- The Brown category is retired: Orange is the one category (19 categories); `category-brown*` are aliases of
+  `category-orange*` for one release. Lime and the Blue category stay.
+- A category border never equals its base: light and dark cyan and pink borders take their family's 700, light
+  lavender purple-500. docs/palette.md and docs/pills-and-colors.md regenerated.
+
 ## [0.47.0] - 2026-10-16
 
 ### Added
