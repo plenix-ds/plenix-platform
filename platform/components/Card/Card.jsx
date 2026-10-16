@@ -58,8 +58,17 @@
      MediaCard.onOpen(): makes the title a button that runs this
      MediaCard.actions: controls beside the title
      MediaCard.className: more classes on the <article>
-     MediaCard.strings: the words it announces, for other languages: { select: "Select {title}", item: "item" } (the selection
-       box's default name; {title} is the title, or the item word when the title is not text)
+     MediaCard.strings: the words it announces, for other languages: { select: "Select {title}", item: "item", assets:
+       "{n} assets", asset: "{n} asset" } (the selection box's default name; {title} is the title, or the item word when the
+       title is not text; a collection's count)
+     MediaCard.type: an asset's format ("PNG", "MP4", "PDF"; library wave 12, Asset): a neutral Badge at the media's top end,
+       with the file type's icon when typeIcon names one
+     MediaCard.typeIcon: the type Badge's icon (an icon name: fileIcon(name) gives the file type's)
+     MediaCard.status: an asset's workflow status (Asset): a Badge element, or { tone, icon, label } for one (a Badge with
+       its icon, never a dot), under the meta
+     MediaCard.stack: true draws a collection (Collection): two sheets behind the card, a pile of assets; the card is the
+       collection's cover (default false)
+     MediaCard.count: a collection's number of assets: the meta reads "24 assets" (the data font) unless meta is given
    Behavior:
      Panel is a section landmark named by its title.
      With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
@@ -70,17 +79,23 @@
      MediaCard images load lazily.
      A selectable MediaCard's title is at least 24px tall (44px with touch): its target extends invisibly above and below the
        text (Platforms Standard 3.1).
+     An asset (type, status) shows its format over the picture and its status under the meta: the selection and opening
+       stay as they are. A collection (stack) draws its two sheets as decoration (hidden from assistive technology): the
+       title names it and the meta says how many assets it holds.
    Notes:
      MediaCard meta is technical data and uses the data font.
+     Without type, status and stack the MediaCard draws exactly what it drew before (library wave 12 added them).
      Other props pass through to the outer element.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { Badge } from '../Badge/Badge.jsx';
+import { formatNumber } from '../../utils/format.js';
 
 const PANEL_STRINGS = { collapse: 'Collapse {title}', expand: 'Expand {title}', section: 'section' };
-const MEDIA_CARD_STRINGS = { select: 'Select {title}', item: 'item' };
+const MEDIA_CARD_STRINGS = { select: 'Select {title}', item: 'item', assets: '{n} assets', asset: '{n} asset' };
 const CARD_STRINGS = { expand: 'Expand {title}', collapse: 'Collapse {title}', card: 'card' };
 
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);
@@ -149,20 +164,24 @@ export function Card({ title, meta, actions, selected = false, href, onOpen, hea
 }
 
 export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4/3', selected = false, selecting = false, onSelectChange,
-  selectLabel, href, onOpen, actions, strings, className, onClick, onDoubleClick, ...rest }) {
+  selectLabel, href, onOpen, actions, type, typeIcon, status, stack = false, count, strings, className, onClick, onDoubleClick, ...rest }) {
   const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
+  // a collection's count (library wave 12): "24 assets" in the data font, unless the page gives its own meta
+  const line = meta || (typeof count === 'number' ? (count === 1 ? t.asset : t.assets).split('{n}').join(formatNumber(count)) : null);
+  const statusEl = status ? (React.isValidElement(status) ? status : <Badge tone={status.tone} icon={status.icon}>{status.label}</Badge>) : null;
   const selectable = !!onSelectChange;
   // a selectable card (owner, batch 272: "clicking the card selects it"): a click anywhere but its controls toggles the
   // selection; the title, or a double-click, opens it
   const inControl = (e) => !!(e.target.closest && e.target.closest('a, button, input, select, textarea, [role=menu], .plx-card__actions'));
   const click = (e) => { if (onClick) onClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; onSelectChange(!selected); };
   const dblClick = (e) => { if (onDoubleClick) onDoubleClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; if (onOpen) onOpen(); else if (href) location.href = href; };
-  return (
+  const card = (
     <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className)}
       onClick={click} onDoubleClick={dblClick} {...rest}>
       <div className="plx-media-card__media" data-plx-aspect={aspect}>
         {src ? <img src={src} alt={alt} loading="lazy" decoding="async" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? (typeof icon === 'string' ? <Icon name={icon} size="lg" /> : icon) : null}</span>}
         {badge ? <span className="plx-media-card__badge">{badge}</span> : null}
+        {type ? <span className="plx-media-card__type"><Badge tone="neutral" size="sm" icon={typeIcon}>{type}</Badge></span> : null}
       </div>
       {onSelectChange ? (
         <input type="checkbox" className="plx-media-card__select" checked={selected} aria-label={selectLabel || t.select.split('{title}').join(typeof title === 'string' ? title : t.item)}
@@ -171,10 +190,20 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
       <div className="plx-media-card__info">
         <div className="plx-media-card__text">
           <Opener href={href} onOpen={onOpen} className="plx-card__opener plx-media-card__title">{title}</Opener>
-          {meta ? <span className="plx-media-card__meta">{meta}</span> : null}
+          {line ? <span className="plx-media-card__meta">{line}</span> : null}
+          {statusEl ? <span className="plx-media-card__status">{statusEl}</span> : null}
         </div>
         {actions ? <div className="plx-card__actions">{actions}</div> : null}
       </div>
     </article>
+  );
+  // a collection (library wave 12): two sheets behind the cover card, decoration only
+  if (!stack) return card;
+  return (
+    <div className="plx-media-card-stack">
+      <span className="plx-media-card-stack__back" aria-hidden="true" />
+      <span className="plx-media-card-stack__middle" aria-hidden="true" />
+      {card}
+    </div>
   );
 }

@@ -1,0 +1,11 @@
+{
+  "$description": "Library part w12A (wave 12, lane A): the iOS and Android counterparts of files and assets. Assets and collections are cards in a collection (Collections and File management on iOS; Card and Collection on Android); the file list is a list or a table (Lists and tables and Outline views on iOS; List and Data table on Android); the file browser is the system's file management with a sidebar of folders (File management, Sidebars and Outline views on iOS; File and photo pickers and Tree on Android); the upload manager is progress (Progress indicators on both); the version comparison is a split view (Split views on iOS; Window classes on Android). Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "specialized|Asset": { "ios": ["ios-data-display|Collections", "ios-specialized|File management"], "android": ["android-data-display|Card", "android-data-display|Collection"] },
+    "specialized|Collection": { "ios": ["ios-data-display|Collections"], "android": ["android-data-display|Collection"] },
+    "specialized|File list": { "ios": ["ios-data-display|Lists and tables", "ios-data-display|Outline views"], "android": ["android-data-display|List", "android-data-display|Data table"] },
+    "specialized|File browser": { "ios": ["ios-specialized|File management", "ios-navigation|Sidebars", "ios-data-display|Outline views"], "android": ["android-specialized|File and photo pickers", "android-data-display|Tree"] },
+    "specialized|Upload manager": { "ios": ["ios-feedback|Progress indicators", "ios-specialized|File management"], "android": ["android-feedback|Progress indicators", "android-specialized|File and photo pickers"] },
+    "specialized|Version comparison": { "ios": ["ios-layout|Split views"], "android": ["android-layout|Window classes"] }
+  }
+}

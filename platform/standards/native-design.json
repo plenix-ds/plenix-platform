@@ -3440,6 +3440,182 @@
     ]
    }
   },
+  "android-data-display|Data table": {
+   "summary": "Plenix on Android shows files people compare by column the way the web’s file table does: a header row of column names that sort, then a row per file with its name and its facts in DM Mono, the owner, and the status as a badge with its icon. Material 3 has no data table component; Plenix builds it from a lazy list of rows with fixed columns on wide windows, and on a phone it becomes the list of each file’s name, size and date (the web’s narrow table). It keeps Android’s touch targets, its selection with a long press and TalkBack’s row and column reading, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the lines between rows.",
+   "variants": [
+    {
+     "name": "File table",
+     "material": "No Material data table: a LazyColumn of rows",
+     "web": "specialized|File list",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-row-cell-text",
+     "border": "plx-comp-file-row-border-color",
+     "compose": "LazyColumn with a stickyHeader of sort buttons and a PlenixFileTableRow per file",
+     "views": "RecyclerView with a header row and a GridLayoutManager span per column",
+     "use": "Comparing files by size, date, owner and status on tablets and foldables."
+    },
+    {
+     "name": "Narrow list",
+     "material": "Two-line list items",
+     "web": "specialized|File list",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-name-text",
+     "border": "plx-comp-file-row-border-color",
+     "compose": "ListItem(headlineContent = the name, supportingContent = the size and date)",
+     "views": "a two-line MaterialListItem layout",
+     "use": "Phones: the key columns as lines."
+    },
+    {
+     "name": "Selected rows",
+     "material": "Selection with a long press",
+     "web": "specialized|File list",
+     "background": "plx-comp-file-row-selected-background",
+     "content": "plx-comp-file-row-cell-text",
+     "border": null,
+     "compose": "Modifier.combinedClickable(onLongClick = select) and a Checkbox in the first column",
+     "views": "SelectionTracker with a checkbox column",
+     "use": "Choosing files for Download, Move to or Delete."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Header",
+     "about": "The column names in DM Sans; a sortable column is a button with its direction arrow."
+    },
+    {
+     "part": "B",
+     "name": "Name",
+     "about": "The file’s type icon and its name in DM Mono, cut in the middle so the extension stays."
+    },
+    {
+     "part": "C",
+     "name": "Facts",
+     "about": "The size and the date in DM Mono at the data size, the size at the end of its column."
+    },
+    {
+     "part": "D",
+     "name": "Status",
+     "about": "A badge with its icon and its word."
+    },
+    {
+     "part": "E",
+     "name": "Selection",
+     "about": "A checkbox in the first column; a long press starts selecting."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "File names in the data font",
+     "token": "plx-comp-file-name-data-font-family",
+     "value": "DM Mono at the body size (the data role)",
+     "material": "Roboto, body medium",
+     "compose": "Text(file.name, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textBodySize, maxLines = 1, overflow = TextOverflow.MiddleEllipsis)",
+     "views": "typeface from R.font.dm_mono (PlenixFonts.MONO) and ellipsize middle",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "C",
+     "attribute": "Facts in the data font",
+     "token": "plx-comp-file-row-data-font-family",
+     "value": "The size and date in DM Mono at the data size, muted (the data role)",
+     "material": "Body small",
+     "compose": "Text(facts, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize, color = PlenixColors.contentMuted)",
+     "views": "typeface from R.font.dm_mono (PlenixFonts.MONO), textSize from PlenixPlatform.textDataSize",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "E",
+     "attribute": "Selected row",
+     "token": "plx-comp-file-row-selected-background",
+     "value": "The selected fill (PlenixColors.stateSelected)",
+     "material": "Secondary container",
+     "compose": "Modifier.background(if (selected) PlenixColors.stateSelected else PlenixColors.surfaceDefault)",
+     "views": "isActivated with the selected fill",
+     "follows": "Material 3: Lists",
+     "followsUrl": "https://m3.material.io/components/lists/overview"
+    },
+    {
+     "part": "A",
+     "attribute": "Row height",
+     "token": "plx-sys-control-target-min",
+     "value": "At least the touch target (PlenixPlatform.controlTargetMin)",
+     "material": "48dp target",
+     "compose": "Modifier.heightIn(min = PlenixPlatform.controlTargetMin)",
+     "views": "minHeight from PlenixPlatform.controlTargetMin",
+     "follows": "Material 3: Accessibility (target size)",
+     "followsUrl": "https://m3.material.io/foundations/designing/structure"
+    },
+    {
+     "part": "C",
+     "attribute": "Line between rows",
+     "token": "plx-comp-file-row-border-color",
+     "value": "The divider color (PlenixColors.borderDivider) at the thin width",
+     "material": "Divider",
+     "compose": "HorizontalDivider(thickness = PlenixBorder.borderWidthThin, color = PlenixColors.borderDivider)",
+     "views": "MaterialDividerItemDecoration with the divider color",
+     "follows": "Material 3: Divider",
+     "followsUrl": "https://m3.material.io/components/divider/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-file-row-background",
+     "compose": "the row on the default surface",
+     "views": "the row"
+    },
+    {
+     "state": "Sorted",
+     "token": "plx-comp-file-row-cell-text",
+     "compose": "the header button shows its arrow; TalkBack says sorted ascending or descending",
+     "views": "the header’s arrow and its content description"
+    },
+    {
+     "state": "Selected",
+     "token": "plx-comp-file-row-selected-background",
+     "compose": "the checkbox checked and the selected fill",
+     "views": "isActivated"
+    },
+    {
+     "state": "Narrow",
+     "token": "plx-comp-file-row-background",
+     "compose": "under the medium window class: two-line list items",
+     "views": "a list layout for compact widths"
+    }
+   ],
+   "code": {
+    "compose": [
+     "@Composable",
+     "fun PlenixFileTableRow(file: FileItem, selected: Boolean, onSelect: (Boolean) -> Unit) {",
+     "    val mono = FontFamily(Font(R.font.dm_mono)) // DM Mono, PlenixFonts.MONO",
+     "    Row(",
+     "        modifier = Modifier",
+     "            .fillMaxWidth()",
+     "            .heightIn(min = PlenixPlatform.controlTargetMin)",
+     "            .background(if (selected) PlenixColors.stateSelected else PlenixColors.surfaceDefault),",
+     "        verticalAlignment = Alignment.CenterVertically,",
+     "        horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineMd)",
+     "    ) {",
+     "        Checkbox(checked = selected, onCheckedChange = onSelect)",
+     "        Text(file.name, fontFamily = mono, fontSize = PlenixPlatform.textBodySize, maxLines = 1, modifier = Modifier.weight(1f))",
+     "        Text(file.size, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize, color = PlenixColors.contentMuted)",
+     "        Text(file.modified, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize, color = PlenixColors.contentMuted)",
+     "    }",
+     "    HorizontalDivider(thickness = PlenixBorder.borderWidthThin, color = PlenixColors.borderDivider)",
+     "}"
+    ],
+    "views": [
+     "name.typeface = ResourcesCompat.getFont(context, R.font.dm_mono) // DM Mono, PlenixFonts.MONO",
+     "size.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+     "row.minimumHeight = PlenixPlatform.controlTargetMin.roundToPx()",
+     "row.isActivated = selection.isSelected(file.id)"
+    ]
+   }
+  },
   "android-data-display|List": {
    "summary": "A Plenix list on Android is a LazyColumn of Material 3 ListItem rows, kept native in behavior (ripple, row semantics for TalkBack, font scale) and styled with the Plenix tokens: rows at least 48 dp tall on the default surface, DM Sans text at the body and secondary roles, a 20 dp leading icon in its tone, 1 dp divider lines and the Plenix pressed and selected fills. Material’s default is a 56 dp row in the surface color with Roboto text; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
@@ -3794,6 +3970,194 @@
      "    dividerThickness = context.px(PlenixComponent.activityListItemBorderBottomWidth)",
      "    isLastItemDecorated = false",
      "})"
+    ]
+   }
+  },
+  "android-data-display|Tree": {
+   "summary": "Plenix on Android shows a library’s folders the way the web’s file browser does: a tree of folders in a list, each row an expand control, the folder icon and its name in DM Sans, the open folder in the selected fill, and its contents beside it on a large screen (a list-detail layout) or as the next screen on a phone, where the path above the list leads back. Material 3 has no tree component; Plenix builds it from list items with Material’s expand and collapse, its touch targets and TalkBack’s expanded state, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the line between rows. Files move by dragging them onto a folder (a long press) or with Move to in the row’s menu.",
+   "variants": [
+    {
+     "name": "Folder tree",
+     "material": "Expandable list items (no Material tree)",
+     "web": "specialized|File browser",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-name-text",
+     "border": "plx-comp-file-browser-tree-border-color",
+     "compose": "LazyColumn of PlenixFolderRow items, each with its depth’s indent and an expand IconButton",
+     "views": "RecyclerView with an expandable adapter and an expand ImageButton",
+     "use": "Deep libraries on tablets and foldables, beside the contents."
+    },
+    {
+     "name": "Folder contents",
+     "material": "List items in the detail pane",
+     "web": "specialized|File list",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-row-cell-text",
+     "border": "plx-comp-file-row-border-color",
+     "compose": "ListDetailPaneScaffold with the tree in the list pane and the files in the detail pane",
+     "views": "SlidingPaneLayout with the tree and the files",
+     "use": "The open folder’s files, with their facts and actions."
+    },
+    {
+     "name": "Path",
+     "material": "Top app bar title and Up",
+     "web": "specialized|File browser",
+     "background": null,
+     "content": "plx-comp-file-name-text",
+     "border": null,
+     "compose": "TopAppBar(title = folder name, navigationIcon = Up) and a row of the parent folders",
+     "views": "MaterialToolbar with Up and a HorizontalScrollView of the parents",
+     "use": "On phones, where each folder is its own screen."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Expand control",
+     "about": "An icon button that opens and closes the folder, at the touch target size; TalkBack says expanded or collapsed."
+    },
+    {
+     "part": "B",
+     "name": "Folder icon",
+     "about": "The folder icon in the muted color; the open folder icon while it is the selected row."
+    },
+    {
+     "part": "C",
+     "name": "Folder name",
+     "about": "The folder’s name in DM Sans at the body size."
+    },
+    {
+     "part": "D",
+     "name": "Selected folder",
+     "about": "The open folder in the selected fill."
+    },
+    {
+     "part": "E",
+     "name": "Depth",
+     "about": "Each level indented by the inline medium space."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "Folder icon color",
+     "token": "plx-comp-file-folder-icon-color",
+     "value": "The muted content color (PlenixColors.contentMuted)",
+     "material": "On-surface variant",
+     "compose": "Icon(Icons.Outlined.Folder, contentDescription = null, tint = PlenixColors.contentMuted)",
+     "views": "imageTintList = ColorStateList.valueOf(PlenixColors.contentMuted.toArgb())",
+     "follows": "Material 3: Lists",
+     "followsUrl": "https://m3.material.io/components/lists/overview"
+    },
+    {
+     "part": "C",
+     "attribute": "Folder name",
+     "token": "plx-comp-file-name-font-family",
+     "value": "DM Sans at the body size: a folder’s name is UI text",
+     "material": "Body large",
+     "compose": "Text(folder.name, fontSize = PlenixPlatform.textBodySize)",
+     "views": "textSize from PlenixPlatform.textBodySize with the DM Sans font",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "D",
+     "attribute": "Selected folder",
+     "token": "plx-comp-file-row-selected-background",
+     "value": "The selected fill (PlenixColors.stateSelected)",
+     "material": "Secondary container",
+     "compose": "Modifier.background(if (selected) PlenixColors.stateSelected else PlenixColors.surfaceDefault)",
+     "views": "isActivated with the selected fill as the background",
+     "follows": "Material 3: Lists",
+     "followsUrl": "https://m3.material.io/components/lists/overview"
+    },
+    {
+     "part": "A",
+     "attribute": "Row height",
+     "token": "plx-sys-control-target-min",
+     "value": "At least the touch target (PlenixPlatform.controlTargetMin)",
+     "material": "48dp target",
+     "compose": "Modifier.heightIn(min = PlenixPlatform.controlTargetMin)",
+     "views": "minHeight from PlenixPlatform.controlTargetMin",
+     "follows": "Material 3: Accessibility (target size)",
+     "followsUrl": "https://m3.material.io/foundations/designing/structure"
+    },
+    {
+     "part": "E",
+     "attribute": "Indent per level",
+     "token": "plx-sys-space-inline-md",
+     "value": "The inline medium space per level (PlenixSpace.spaceInlineMd)",
+     "material": "None",
+     "compose": "Modifier.padding(start = PlenixSpace.spaceInlineMd * depth)",
+     "views": "paddingStart from PlenixSpace.spaceInlineMd times the depth",
+     "follows": "Material 3: Lists",
+     "followsUrl": "https://m3.material.io/components/lists/overview"
+    },
+    {
+     "part": "D",
+     "attribute": "Line between rows",
+     "token": "plx-comp-file-row-border-color",
+     "value": "The divider color (PlenixColors.borderDivider) at the thin width",
+     "material": "Divider",
+     "compose": "HorizontalDivider(thickness = PlenixBorder.borderWidthThin, color = PlenixColors.borderDivider)",
+     "views": "MaterialDividerItemDecoration with the divider color",
+     "follows": "Material 3: Divider",
+     "followsUrl": "https://m3.material.io/components/divider/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Collapsed",
+     "token": "plx-comp-file-folder-icon-color",
+     "compose": "expanded = false: the children are not composed",
+     "views": "collapsed group"
+    },
+    {
+     "state": "Expanded",
+     "token": "plx-comp-file-folder-icon-color",
+     "compose": "expanded = true: the children follow, indented",
+     "views": "expanded group"
+    },
+    {
+     "state": "Selected",
+     "token": "plx-comp-file-row-selected-background",
+     "compose": "selected: the selected fill",
+     "views": "isActivated"
+    },
+    {
+     "state": "Drop target",
+     "token": "plx-sys-state-selected-border",
+     "compose": "Modifier.dragAndDropTarget: the selected border while a file is over it",
+     "views": "OnDragListener ACTION_DRAG_ENTERED"
+    }
+   ],
+   "code": {
+    "compose": [
+     "@Composable",
+     "fun PlenixFolderRow(folder: Folder, depth: Int, selected: Boolean, expanded: Boolean, onToggle: () -> Unit, onOpen: () -> Unit) {",
+     "    Row(",
+     "        modifier = Modifier",
+     "            .fillMaxWidth()",
+     "            .heightIn(min = PlenixPlatform.controlTargetMin)",
+     "            .background(if (selected) PlenixColors.stateSelected else PlenixColors.surfaceDefault)",
+     "            .clickable(onClick = onOpen)",
+     "            .padding(start = PlenixSpace.spaceInlineMd * depth)",
+     "            .semantics { stateDescription = if (expanded) \"Expanded\" else \"Collapsed\" },",
+     "        verticalAlignment = Alignment.CenterVertically,",
+     "        horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineSm)",
+     "    ) {",
+     "        if (folder.children.isNotEmpty()) IconButton(onClick = onToggle) { Icon(if (expanded) Icons.Filled.ExpandMore else Icons.Filled.ChevronRight, contentDescription = null) }",
+     "        Icon(if (selected) Icons.Filled.FolderOpen else Icons.Outlined.Folder, contentDescription = null, tint = PlenixColors.contentMuted)",
+     "        Text(folder.name, fontSize = PlenixPlatform.textBodySize, color = PlenixColors.contentDefault)",
+     "    }",
+     "    HorizontalDivider(thickness = PlenixBorder.borderWidthThin, color = PlenixColors.borderDivider)",
+     "}"
+    ],
+    "views": [
+     "row.minimumHeight = PlenixPlatform.controlTargetMin.roundToPx()",
+     "row.isActivated = folder.id == openFolder",
+     "icon.imageTintList = ColorStateList.valueOf(PlenixColors.contentMuted.toArgb())",
+     "row.setPaddingRelative(PlenixSpace.spaceInlineMd.roundToPx() * depth, 0, 0, 0)"
     ]
    }
   },
@@ -14513,6 +14877,214 @@
     ]
    }
   },
+  "ios-data-display|Outline views": {
+   "summary": "Plenix on iOS shows a library’s folders the way the web’s file browser does: an outline of folders in the sidebar or the primary column, each row a folder symbol and its name in DM Sans, the open folder in the selected fill, and its contents in a list beside or after it, files with their names and facts in DM Mono. Apple’s default is the system’s hierarchical list with its disclosure indicators; Plenix keeps the outline’s structure, its disclosure, its keyboard and VoiceOver behavior, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the line between rows. Files move by dragging them onto a folder or with Move to in the row’s menu.",
+   "variants": [
+    {
+     "name": "Folder outline",
+     "apple": "OutlineGroup or a List with children in the sidebar",
+     "web": "specialized|File browser",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-name-text",
+     "border": "plx-comp-file-browser-tree-border-color",
+     "swiftui": "List(selection: $folder) { OutlineGroup(folders, children: \\.children) { PlenixFolderLabel(folder: $0) } }.listStyle(.sidebar)",
+     "uikit": "UICollectionView list with NSDiffableDataSourceSectionSnapshot (expandable items) and the outlineDisclosure accessory",
+     "appkit": "NSOutlineView with the folders (a macOS build of the tokens is needed)",
+     "use": "Deep libraries on iPad and in a split view."
+    },
+    {
+     "name": "Folder contents",
+     "apple": "List rows beside the outline",
+     "web": "specialized|File list",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-row-cell-text",
+     "border": "plx-comp-file-row-border-color",
+     "swiftui": "List(files, selection: $selection) { PlenixFileRow(file: $0) } in the detail column",
+     "uikit": "UICollectionView list in the secondary column",
+     "appkit": "NSTableView in the content pane (a macOS build of the tokens is needed)",
+     "use": "The open folder’s files, with their facts and actions."
+    },
+    {
+     "name": "Breadcrumbs as the path",
+     "apple": "The navigation title and the back button",
+     "web": "specialized|File browser",
+     "background": null,
+     "content": "plx-comp-file-name-text",
+     "border": null,
+     "swiftui": ".navigationTitle(folder.name) with a toolbar title menu of the parent folders",
+     "uikit": "navigationItem.titleMenuProvider listing the parent folders",
+     "appkit": "NSPathControl (a macOS build of the tokens is needed)",
+     "use": "On iPhone, where the outline is the stack of screens."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Disclosure",
+     "about": "The system’s outline disclosure: open and closed, with the keyboard and VoiceOver’s expand and collapse."
+    },
+    {
+     "part": "B",
+     "name": "Folder symbol",
+     "about": "The folder symbol in the muted color; the open folder’s symbol while it is the selected row."
+    },
+    {
+     "part": "C",
+     "name": "Folder name",
+     "about": "The folder’s name in DM Sans at the body size."
+    },
+    {
+     "part": "D",
+     "name": "Selected folder",
+     "about": "The open folder in the selected fill."
+    },
+    {
+     "part": "E",
+     "name": "Contents",
+     "about": "The open folder’s files, each a file row with its name and facts in DM Mono."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "Folder symbol color",
+     "token": "plx-comp-file-folder-icon-color",
+     "value": "The muted content color (Plenix.Colors.contentMuted)",
+     "apple": "The accent tint",
+     "swiftui": "Image(systemName: isOpen ? \"folder.fill\" : \"folder\").foregroundStyle(Plenix.Colors.contentMuted).accessibilityHidden(true)",
+     "uikit": "content.imageProperties.tintColor = Plenix.Colors.contentMuted",
+     "appkit": "the folder image tinted with the muted color (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "C",
+     "attribute": "Folder name",
+     "token": "plx-comp-file-name-font-family",
+     "value": "DM Sans at the body size: a folder’s name is UI text",
+     "apple": "SF Pro, body",
+     "swiftui": "Text(folder.name).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+     "uikit": "content.textProperties.font = UIFont(name: Plenix.Font.sans, size: Plenix.Platform.textBodySize)",
+     "appkit": "NSFont(name: Plenix.Font.sans, …) (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Selected folder",
+     "token": "plx-comp-file-row-selected-background",
+     "value": "The selected fill (Plenix.Colors.stateSelected) with the default text",
+     "apple": "The accent-colored selection",
+     "swiftui": ".listRowBackground(folder.id == open ? Plenix.Colors.stateSelected : Color.clear)",
+     "uikit": "backgroundConfiguration.backgroundColor = isSelected ? Plenix.Colors.stateSelected : .clear",
+     "appkit": "the row view’s selection (a macOS build of the tokens is needed)",
+     "follows": "Platform considerations"
+    },
+    {
+     "part": "A",
+     "attribute": "Row height",
+     "token": "plx-sys-control-target-min",
+     "value": "At least the touch target (Plenix.Platform.controlTargetMin)",
+     "apple": "The system row height",
+     "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "uikit": "the list’s estimated row height at Plenix.Platform.controlTargetMin",
+     "appkit": "rowHeight from the target size (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "E",
+     "attribute": "File names in the data font",
+     "token": "plx-comp-file-name-data-font-family",
+     "value": "The data font: DM Mono at the body size for file names, the data size for facts",
+     "apple": "SF Pro",
+     "swiftui": "Text(file.name).font(Plenix.Font.mono(Plenix.Platform.textBodySize, relativeTo: .body)).truncationMode(.middle)",
+     "uikit": "textProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textBodySize)",
+     "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Line between rows",
+     "token": "plx-comp-file-row-border-color",
+     "value": "The divider color (Plenix.Colors.borderDivider)",
+     "apple": "The system separator",
+     "swiftui": ".listRowSeparatorTint(Plenix.Colors.borderDivider)",
+     "uikit": "separatorConfiguration.color = Plenix.Colors.borderDivider",
+     "appkit": "gridColor (a macOS build of the tokens is needed)",
+     "follows": "Platform considerations"
+    }
+   ],
+   "states": [
+    {
+     "state": "Closed",
+     "token": "plx-comp-file-folder-icon-color",
+     "swiftui": "the disclosure closed, the folder symbol",
+     "uikit": "collapsed item",
+     "appkit": "collapsed item"
+    },
+    {
+     "state": "Open",
+     "token": "plx-comp-file-folder-icon-color",
+     "swiftui": "the disclosure open, its child folders shown",
+     "uikit": "expanded item",
+     "appkit": "expanded item"
+    },
+    {
+     "state": "Selected",
+     "token": "plx-comp-file-row-selected-background",
+     "swiftui": "the open folder in the selected fill",
+     "uikit": "isSelected",
+     "appkit": "selected row"
+    },
+    {
+     "state": "Drop target",
+     "token": "plx-sys-state-selected-border",
+     "swiftui": ".dropDestination(for:) isTargeted: the selected border around the folder",
+     "uikit": "UIDropInteraction proposal .move",
+     "appkit": "the outline view’s drop highlight"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// The Plenix folder outline on iOS: the system outline, the Plenix look; files drop onto folders.",
+     "struct PlenixFolderOutline: View {",
+     "    let folders: [Folder]",
+     "    @Binding var open: Folder.ID?",
+     "    var onMove: (FileItem, Folder) -> Void",
+     "",
+     "    var body: some View {",
+     "        List(selection: $open) {",
+     "            OutlineGroup(folders, children: \\.children) { folder in",
+     "                Label {",
+     "                    Text(folder.name).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+     "                } icon: {",
+     "                    Image(systemName: folder.id == open ? \"folder.fill\" : \"folder\").foregroundStyle(Plenix.Colors.contentMuted)",
+     "                }",
+     "                .frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "                .dropDestination(for: FileItem.self) { items, _ in items.forEach { onMove($0, folder) }; return true }",
+     "                .listRowBackground(folder.id == open ? Plenix.Colors.stateSelected : Color.clear)",
+     "            }",
+     "        }",
+     "        .listStyle(.sidebar)",
+     "        .listRowSeparatorTint(Plenix.Colors.borderDivider)",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "var content = UIListContentConfiguration.sidebarCell()",
+     "content.text = folder.name",
+     "content.textProperties.font = UIFont(name: Plenix.Font.sans, size: Plenix.Platform.textBodySize)!",
+     "content.image = UIImage(systemName: \"folder\")",
+     "content.imageProperties.tintColor = Plenix.Colors.contentMuted",
+     "cell.contentConfiguration = content",
+     "cell.accessories = folder.children.isEmpty ? [] : [.outlineDisclosure()]"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "outlineView.style = .sourceList"
+    ]
+   }
+  },
   "ios-feedback|Feedback": {
    "summary": "Record workflows communicate saving, saved, offline, failed, draft and archived states through text and a symbol. Private edits can autosave; a failed write retains the latest value and a Retry action. Draft deletion requires confirmation; archiving stays reversible.",
    "variants": [
@@ -17566,6 +18138,202 @@
      "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
      "let tokens = NSTokenField()",
      "tokens.tokenStyle = .rounded"
+    ]
+   }
+  },
+  "ios-layout|Split views": {
+   "summary": "Plenix on iOS compares two versions of one item the way the web’s version comparison does: on iPad and in landscape the two versions side by side in the columns of a split view, each headed by its version and date in DM Mono, the changed values marked with a Changed badge; on iPhone one version after the other with a segmented control to switch, a slider over two pictures, or the text’s lines with the added and removed ones marked by a sign and a word. Apple’s default is the split view’s plain columns; Plenix keeps the split view, its column widths and its gestures, and changes the look: Plenix surfaces, DM Sans and DM Mono, and the success and danger soft surfaces for added and removed lines.",
+   "variants": [
+    {
+     "name": "Side by side",
+     "apple": "A two-column split view",
+     "web": "specialized|Version comparison",
+     "background": "plx-comp-comparison-view-pane-background",
+     "content": "plx-comp-comparison-view-title-text",
+     "border": "plx-comp-comparison-view-pane-border-color",
+     "swiftui": "NavigationSplitView or HStack of two PlenixVersionPane views in a regular width",
+     "uikit": "UISplitViewController(style: .doubleColumn) with a version pane in each column",
+     "appkit": "NSSplitView with two panes (a macOS build of the tokens is needed)",
+     "use": "iPad and landscape: two versions read together."
+    },
+    {
+     "name": "Slider",
+     "apple": "A Slider over two images",
+     "web": "specialized|Version comparison",
+     "background": "plx-comp-comparison-view-pane-background",
+     "content": "plx-comp-comparison-view-meta-text",
+     "border": null,
+     "swiftui": "ZStack of the two images, the first masked to the slider’s value, and a Slider under them",
+     "uikit": "two UIImageViews, the first with a mask layer, and a UISlider",
+     "appkit": "two NSImageViews and an NSSlider (a macOS build of the tokens is needed)",
+     "use": "Small visual changes in pictures of the same size."
+    },
+    {
+     "name": "Text diff",
+     "apple": "A List of lines",
+     "web": "specialized|Version comparison",
+     "background": "plx-comp-version-compare-lines-background",
+     "content": "plx-comp-version-compare-line-text",
+     "border": "plx-comp-version-compare-lines-border-color",
+     "swiftui": "List(lines) { PlenixDiffLine(line: $0) } with Previous and Next change in the toolbar",
+     "uikit": "UICollectionView list of diff lines",
+     "appkit": "NSTableView of lines (a macOS build of the tokens is needed)",
+     "use": "Documents, captions and descriptions."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Version header",
+     "about": "The version’s name in DM Sans and its date and author in DM Mono, always shown."
+    },
+    {
+     "part": "B",
+     "name": "Version pickers",
+     "about": "Two menus, Compare and With, each listing the versions with their dates; Swap exchanges them."
+    },
+    {
+     "part": "C",
+     "name": "Changed badge",
+     "about": "A badge with its icon and the word Changed beside each value that differs from the first version."
+    },
+    {
+     "part": "D",
+     "name": "Diff line",
+     "about": "A text line in DM Mono with both line numbers, a sign, and Added or Removed for VoiceOver."
+    },
+    {
+     "part": "E",
+     "name": "Change steps",
+     "about": "Previous change and Next change in the toolbar move to each change."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Version date in the data font",
+     "token": "plx-comp-comparison-view-meta-font-family",
+     "value": "Dates and versions are technical values: DM Mono at the data size, muted (the data role)",
+     "apple": "The secondary text",
+     "swiftui": "Text(version.date, style: .date).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentMuted)",
+     "uikit": "secondaryTextProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
+     "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "A",
+     "attribute": "Pane surface",
+     "token": "plx-comp-comparison-view-pane-background",
+     "value": "The default surface (Plenix.Colors.surfaceDefault) with the default border",
+     "apple": "The system background",
+     "swiftui": ".background(Plenix.Colors.surfaceDefault).overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusSurface8px).stroke(Plenix.Colors.borderDefault))",
+     "uikit": "view.backgroundColor = Plenix.Colors.surfaceDefault; layer.borderColor = Plenix.Colors.borderDefault.cgColor",
+     "appkit": "the pane’s layer colors (a macOS build of the tokens is needed)",
+     "follows": "iPadOS"
+    },
+    {
+     "part": "D",
+     "attribute": "Added line",
+     "token": "plx-comp-version-compare-added-background",
+     "value": "The success soft surface (Plenix.Colors.feedbackSuccessSoft) and a plus in the success content color",
+     "apple": "None",
+     "swiftui": ".listRowBackground(Plenix.Colors.feedbackSuccessSoft)",
+     "uikit": "backgroundConfiguration.backgroundColor = Plenix.Colors.feedbackSuccessSoft",
+     "appkit": "the row’s background (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Removed line",
+     "token": "plx-comp-version-compare-removed-background",
+     "value": "The danger soft surface (Plenix.Colors.feedbackDangerSoft) and a minus in the danger content color",
+     "apple": "None",
+     "swiftui": ".listRowBackground(Plenix.Colors.feedbackDangerSoft)",
+     "uikit": "backgroundConfiguration.backgroundColor = Plenix.Colors.feedbackDangerSoft",
+     "appkit": "the row’s background (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Line text in the data font",
+     "token": "plx-comp-version-compare-line-font-family",
+     "value": "The compared text in DM Mono at the data size (the data role)",
+     "apple": "SF Mono",
+     "swiftui": "Text(line.text).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .body))",
+     "uikit": "label.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
+     "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Space between the panes",
+     "token": "plx-comp-comparison-view-pane-gap",
+     "value": "The inline medium space (Plenix.Space.spaceInlineMd)",
+     "apple": "The split view’s divider",
+     "swiftui": "HStack(spacing: Plenix.Space.spaceInlineMd)",
+     "uikit": "stackView.spacing = Plenix.Space.spaceInlineMd",
+     "appkit": "the split view’s divider (a macOS build of the tokens is needed)",
+     "follows": "iOS"
+    }
+   ],
+   "states": [
+    {
+     "state": "Two versions",
+     "token": "plx-comp-comparison-view-pane-background",
+     "swiftui": "both panes shown",
+     "uikit": "both columns visible",
+     "appkit": "both panes"
+    },
+    {
+     "state": "Compact width",
+     "token": "plx-comp-comparison-view-pane-background",
+     "swiftui": "one pane at a time with a segmented control",
+     "uikit": "the split view collapsed to one column",
+     "appkit": "not applicable"
+    },
+    {
+     "state": "Change in focus",
+     "token": "plx-comp-version-compare-focus-outline-color",
+     "swiftui": "the change’s first line scrolled into view and focused (AccessibilityFocusState)",
+     "uikit": "scrollToItem and UIAccessibility.post(.layoutChanged)",
+     "appkit": "scrollRowToVisible"
+    },
+    {
+     "state": "No changes",
+     "token": "plx-comp-version-compare-summary-text",
+     "swiftui": "ContentUnavailableView saying the text is the same",
+     "uikit": "an empty-state configuration",
+     "appkit": "an empty view"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// One line of the Plenix text diff on iOS: the numbers, the sign, the text in DM Mono, a word for VoiceOver.",
+     "struct PlenixDiffLine: View {",
+     "    let line: DiffLine",
+     "",
+     "    var body: some View {",
+     "        HStack(spacing: Plenix.Space.spaceInlineSm) {",
+     "            Text(line.sign).foregroundStyle(line.kind == .added ? Plenix.Colors.feedbackSuccessContent : Plenix.Colors.feedbackDangerContent).accessibilityHidden(true)",
+     "            Text(line.text).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .body))",
+     "        }",
+     "        .accessibilityLabel(line.kind == .added ? \"Added: \\(line.text)\" : line.kind == .removed ? \"Removed: \\(line.text)\" : line.text)",
+     "        .listRowBackground(line.kind == .added ? Plenix.Colors.feedbackSuccessSoft : line.kind == .removed ? Plenix.Colors.feedbackDangerSoft : Plenix.Colors.surfaceDefault)",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "let split = UISplitViewController(style: .doubleColumn)",
+     "split.preferredDisplayMode = .oneBesideSecondary",
+     "split.setViewController(VersionPaneController(version: base), for: .primary)",
+     "split.setViewController(VersionPaneController(version: target), for: .secondary)",
+     "split.view.backgroundColor = Plenix.Colors.surfaceDefault"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "splitView.isVertical = true"
     ]
    }
   },

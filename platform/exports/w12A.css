@@ -1,0 +1,5 @@
+/* Library part w12A (wave 12, lane A): FileList, FileBrowser, UploadManager and VersionCompare (MediaCard's in card.css). */
+@import url("../patterns/FileList/file-list.css");
+@import url("../patterns/FileBrowser/file-browser.css");
+@import url("../patterns/UploadManager/upload-manager.css");
+@import url("../patterns/VersionCompare/version-compare.css");

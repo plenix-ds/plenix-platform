@@ -541,6 +541,7 @@ public enum Plenix {
         public static let colorSwatchRoundRadius: CGFloat = 9999
         public static let comboboxListMarginBlockStart: CGFloat = 4
         public static let comboboxOptionPaddingInline: CGFloat = 12
+        public static let comparisonViewPaneGap: CGFloat = 12
         public static let countPillBorderWidth: CGFloat = 1
         public static let countPillMinHeight: CGFloat = 16
         public static let countPillMinWidth: CGFloat = 16

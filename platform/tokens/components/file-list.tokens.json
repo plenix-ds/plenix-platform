@@ -1,0 +1,13 @@
+{
+  "$description": "FileList (platform/patterns/FileList), library wave 12, lane A: its pattern tokens. The space between the bar and the rows, the bar's height and gap, and the count in the data font. The rows are FileRow's, the table the DataTable's, the Sort menu Menu's.",
+  "plx-comp": {
+    "file-list-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "FileList: the space between its parts (space-stack-sm)." },
+    "file-list-sortable-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "FileList sortable: the space between the Sort bar and the rows (space-stack-xs)." },
+    "file-list-bar-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "FileList: the gap between the count and the Sort menu (space-inline-md)." },
+    "file-list-bar-min-height": { "$value": "{plx-sys.control-height-toolbar}", "$type": "dimension", "$description": "FileList: the bar's least height, a toolbar control's (control-height-toolbar)." },
+    "file-list-count-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "FileList: the count's color (content-muted)." },
+    "file-list-count-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "FileList: the count is a number: the data font (DM Mono)." },
+    "file-list-count-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "FileList: the count's size (12px)." },
+    "file-list-count-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "FileList: the count's line height (16px)." }
+  }
+}

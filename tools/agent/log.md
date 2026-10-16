@@ -1,8 +1,8 @@
-## Batch 385 (2026-10-15): Codex PRs #99 and #100 (wave 11 B and C)
-- GitHub Actions could not start on either PR (billing / spending limit on the account: the owner's to fix), so the
-  integrator checked them here: take-pr.js (31 + 31 files, no clashes, no generated files), build, SYSTEM_OK, SPEC_OK
-  (693 records), natives ALL OK, their 21 labs LABS_OK, the 14 pages open without console errors. The big test suite
-  waits for the very end (owner).
-- Labs are thin (1 token, 4–12 checks each): the patterns compose existing components.
-- Needs the owner: workflow wording; spacing from existing roles; the informational New badge; status tones (queued
-  active, requested waiting, denied negative); upgrade terms and offboarding consequences are the caller's. Released as {V}.
+## Batch 386 (2026-10-15): wave 12 lane A
+- Merged with take-lane.js (26 files); 4 new native pages. Quick gates: SYSTEM_OK, SPEC_OK (698 records); the lane ran
+  its labs (6/6), typography, a11y, keyboard, data tables and pages (199/199) in its worktree.
+- Needs the owner (wave 12 A): the format label as a neutral Badge; the collection look (two 4px sheets); text diff
+  colors (success/danger soft; in dark mode both soft roles are gray-700, so lines differ only by the sign and its
+  color); the docked upload panel (400px, raised shadow); the list drops owner under 720px and date under 560px.
+- Known: on the spec page several file browsers sit together, so a keyboard drag may target another example's folder.
+  Released as {V}.

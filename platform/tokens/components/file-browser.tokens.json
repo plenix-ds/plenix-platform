@@ -1,0 +1,17 @@
+{
+  "$description": "FileBrowser (platform/patterns/FileBrowser), library wave 12, lane A: its pattern tokens. The space between the breadcrumbs, the bar and the body; the tree's pane (the line at its end, its padding, its tallest height before it scrolls, the focus ring of its scrolling region); the content's least height (room for the empty state and the drop overlay). The breadcrumbs, the command bar, the tree, the list, the cards and the overlay are their components'.",
+  "plx-comp": {
+    "file-browser-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "FileBrowser: the space between the breadcrumbs, the bar and the body (space-stack-sm)." },
+    "file-browser-body-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "FileBrowser: the gap between the body's parts (space-inline-md)." },
+    "file-browser-tree-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "FileBrowser with the tree: the gap between the tree's line and the content (space-inline-md)." },
+    "file-browser-tree-border-color": { "$value": "{plx-sys.border-divider}", "$type": "color", "$description": "FileBrowser: the line at the tree pane's end (border-divider)." },
+    "file-browser-tree-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "FileBrowser: that line's width (border-width-thin)." },
+    "file-browser-tree-padding-block": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "FileBrowser: the tree's padding top and bottom (space-inset-xs)." },
+    "file-browser-tree-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "FileBrowser: the space between the tree and its pane's line (space-inset-sm)." },
+    "file-browser-tree-max-height": { "$value": "{plx-ref.size-600px}", "$type": "dimension", "$description": "FileBrowser: the tree's tallest height; past it the tree scrolls (600px)." },
+    "file-browser-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "FileBrowser: the focus ring of the tree's scrolling region (focus-ring-color)." },
+    "file-browser-focus-outline-width": { "$value": "{plx-sys.focus-ring-width}", "$type": "dimension", "$description": "FileBrowser: that ring's width (focus-ring-width)." },
+    "file-browser-focus-outline-offset": { "$value": "{plx-sys.focus-ring-offset}", "$type": "dimension", "$description": "FileBrowser: that ring's offset (focus-ring-offset)." },
+    "file-browser-content-min-height": { "$value": "{plx-ref.size-200px}", "$type": "dimension", "$description": "FileBrowser: the content's least height, room for the empty state and the drop overlay (200px)." }
+  }
+}

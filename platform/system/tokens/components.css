@@ -3460,6 +3460,20 @@
   --plx-comp-file-chip-padding-inline: var(--plx-sys-space-inset-sm);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-file-browser-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-file-browser-body-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-file-browser-tree-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-file-browser-tree-border-color: var(--plx-sys-border-divider);
+  --plx-comp-file-browser-tree-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-file-browser-tree-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-file-browser-tree-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-file-browser-tree-max-height: var(--plx-ref-size-600px);
+  --plx-comp-file-browser-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-file-browser-focus-outline-width: var(--plx-sys-focus-ring-width);
+  --plx-comp-file-browser-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-file-browser-content-min-height: var(--plx-ref-size-200px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-file-input-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-file-input-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-file-input-summary-text: var(--plx-sys-content-subtle);
@@ -3472,6 +3486,16 @@
   --plx-comp-file-input-item-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-file-input-icon-size: var(--plx-sys-control-icon-inline);
   --plx-comp-file-input-icon-color: var(--plx-sys-content-muted);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-file-list-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-file-list-sortable-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-file-list-bar-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-file-list-bar-min-height: var(--plx-sys-control-height-toolbar);
+  --plx-comp-file-list-count-text: var(--plx-sys-content-muted);
+  --plx-comp-file-list-count-font-family: var(--plx-sys-font-data);
+  --plx-comp-file-list-count-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-file-list-count-line-height: var(--plx-sys-label-height-16px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-file-row-background: var(--plx-sys-surface-default);
@@ -3926,6 +3950,18 @@
   --plx-comp-lollipop-dot-radius: var(--plx-ref-size-4px);
   --plx-comp-lollipop-dot-outline: var(--plx-sys-surface-default);
   --plx-comp-lollipop-dot-outline-width: var(--plx-sys-border-width-thin);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-media-card-type-inset-block-start: var(--plx-sys-space-inset-xs);
+  --plx-comp-media-card-type-inset-inline-end: var(--plx-sys-space-inset-xs);
+  --plx-comp-media-card-status-padding-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-media-card-stack-sheet-height: var(--plx-ref-size-4px);
+  --plx-comp-media-card-stack-sheet-background: var(--plx-comp-media-card-background);
+  --plx-comp-media-card-stack-sheet-border-color: var(--plx-comp-media-card-border-color);
+  --plx-comp-media-card-stack-sheet-border-width: var(--plx-comp-media-card-border-width);
+  --plx-comp-media-card-stack-sheet-radius: var(--plx-sys-radius-card-4px);
+  --plx-comp-media-card-stack-back-inset: var(--plx-ref-size-16px);
+  --plx-comp-media-card-stack-middle-inset: var(--plx-ref-size-8px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-mega-menu-sections-margin-block-start: var(--plx-sys-space-stack-xs);
@@ -5063,6 +5099,42 @@
   --plx-comp-trial-upgrade-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-upload-manager-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-upload-manager-dialog-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-upload-manager-background: var(--plx-sys-surface-default);
+  --plx-comp-upload-manager-border-color: var(--plx-sys-border-default);
+  --plx-comp-upload-manager-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-upload-manager-radius: var(--plx-sys-radius-surface-8px);
+  --plx-comp-upload-manager-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-upload-manager-padding-inline: var(--plx-sys-space-inset-md);
+  --plx-comp-upload-manager-docked-width: var(--plx-ref-size-400px);
+  --plx-comp-upload-manager-docked-inset: var(--plx-sys-space-layout-md);
+  --plx-comp-upload-manager-docked-shadow: var(--plx-sys-shadow-raised);
+  --plx-comp-upload-manager-docked-z-index: var(--plx-sys-layer-sticky);
+  --plx-comp-upload-manager-head-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-upload-manager-head-min-height: var(--plx-sys-control-height-toolbar);
+  --plx-comp-upload-manager-title-text: var(--plx-sys-content-default);
+  --plx-comp-upload-manager-title-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-upload-manager-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-upload-manager-title-line-height: var(--plx-sys-label-height-20px);
+  --plx-comp-upload-manager-actions-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-upload-manager-counts-text: var(--plx-sys-content-muted);
+  --plx-comp-upload-manager-counts-font-family: var(--plx-sys-font-data);
+  --plx-comp-upload-manager-counts-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-upload-manager-counts-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-upload-manager-drop-text: var(--plx-sys-content-default);
+  --plx-comp-upload-manager-drop-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-upload-manager-drop-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-upload-manager-drop-line-height: var(--plx-sys-label-height-20px);
+  --plx-comp-upload-manager-hint-text: var(--plx-sys-content-muted);
+  --plx-comp-upload-manager-hint-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-upload-manager-hint-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-upload-manager-queue-max-height: var(--plx-ref-size-320px);
+  --plx-comp-upload-manager-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-upload-manager-focus-outline-width: var(--plx-sys-focus-ring-width);
+  --plx-comp-upload-manager-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-user-card-gap: var(--plx-sys-space-stack-md);
   --plx-comp-user-card-identity-gap: var(--plx-sys-space-stack-sm);
   --plx-comp-user-card-text-gap: var(--plx-sys-space-stack-xs);
@@ -5084,6 +5156,38 @@
   --plx-comp-user-card-cover-avatar-ring-width: var(--plx-sys-border-width-medium);
   --plx-comp-user-card-compact-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-user-card-compact-name-font-size: var(--plx-ref-font-size-13);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-version-compare-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-version-compare-pickers-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-version-compare-picker-width: var(--plx-ref-size-240px);
+  --plx-comp-version-compare-diff-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-version-compare-summary-text: var(--plx-sys-content-muted);
+  --plx-comp-version-compare-summary-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-version-compare-summary-line-height: var(--plx-sys-label-height-20px);
+  --plx-comp-version-compare-steps-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-version-compare-lines-background: var(--plx-sys-surface-default);
+  --plx-comp-version-compare-lines-border-color: var(--plx-sys-border-default);
+  --plx-comp-version-compare-lines-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-version-compare-lines-radius: var(--plx-sys-radius-surface-8px);
+  --plx-comp-version-compare-lines-max-height: var(--plx-ref-size-560px);
+  --plx-comp-version-compare-line-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-version-compare-line-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-version-compare-line-text: var(--plx-sys-content-default);
+  --plx-comp-version-compare-line-font-family: var(--plx-sys-font-data);
+  --plx-comp-version-compare-line-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-version-compare-line-height: var(--plx-sys-label-height-20px);
+  --plx-comp-version-compare-number-width: var(--plx-ref-size-32px);
+  --plx-comp-version-compare-number-text: var(--plx-sys-content-subtle);
+  --plx-comp-version-compare-sign-width: var(--plx-ref-size-12px);
+  --plx-comp-version-compare-added-background: var(--plx-sys-feedback-success-soft);
+  --plx-comp-version-compare-added-sign-text: var(--plx-sys-feedback-success-content);
+  --plx-comp-version-compare-removed-background: var(--plx-sys-feedback-danger-soft);
+  --plx-comp-version-compare-removed-sign-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-version-compare-fold-background: var(--plx-sys-surface-sunken);
+  --plx-comp-version-compare-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-version-compare-focus-outline-width: var(--plx-sys-focus-ring-width);
+  --plx-comp-version-compare-focus-outline-offset: var(--plx-sys-focus-ring-offset);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-version-label-color: var(--plx-sys-content-default);

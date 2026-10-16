@@ -363,335 +363,6 @@ function useUid(prefix) {
   return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
 }
   } },
-  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Card = Card;
-exports.MediaCard = MediaCard;
-exports.Panel = Panel;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Panel, Card, MediaCard
-   Summary: Surfaces. Panel is a titled section of a page or a settings screen; Card is one record in a list or grid;
-     MediaCard is an asset tile.
-   Usage:
-     <Panel title="Storage" description="…" actions={<Button…/>} footer={…} flush headingLevel={2}>…</Panel>
-     <Card title="Brand kit" meta="12 assets" actions={<…/>} selected onOpen={() => …}>…</Card>
-     <Card title="Kitchen renovation" meta="Personal · 12 files" expandable>…</Card>
-     <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
-       selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
-   Props:
-     Card.accent: a color from the data (a project's color): a 3px start edge in it; a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
-     Panel.title: the heading; it also names the section landmark
-     Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
-       icon always sits on the left of its heading)
-     Panel.description: a line of text under the title
-     Panel.actions: controls at the end of the header
-     Panel.footer: content in a footer below the body
-     Panel.flush: true removes the body padding (default false)
-     Panel.headingLevel: the heading level of the title (default 2)
-     Panel.collapsible: true adds a Collapse/Expand button at the end of the header (default false)
-     Panel.defaultExpanded: whether a collapsible panel starts open (default true)
-     Panel.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
-     Panel.onToggle(next): runs when a collapsible panel opens or closes
-     Panel.children: the body
-     Panel.className: more classes on the <section>
-     Panel.strings: the words it announces, for other languages: { collapse: "Collapse {title}", expand: "Expand {title}",
-       section: "section" } ({title} is the title, or the section word when the title is not text)
-     Card.title: the card title; with onOpen or href it is the card's link or button
-     Card.meta: a line of details under the title
-     Card.actions: controls at the end of the header
-     Card.selected: shows the selected state; with onOpen or href the card's link or button also gets aria-current="true" (default false)
-     Card.href: makes the title a link
-     Card.onOpen(): makes the title a button that runs this
-     Card.headingLevel: the heading level of the title (default 3)
-     Card.children: the body
-     Card.className: more classes on the <article>
-     Card.expandable: true adds an Expand/Collapse button at the end of the header that shows or hides the body; the title,
-       the meta and the actions stay (Expandable card, library wave 8); default false
-     Card.defaultExpanded: whether an expandable card starts open (default false: its summary only)
-     Card.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
-     Card.onToggle(next): runs when an expandable card opens or closes
-     Card.strings: the words it announces, for other languages: { expand: "Expand {title}", collapse: "Collapse {title}",
-       card: "card" } ({title} is the title, or the card word when the title is not text)
-     MediaCard.src: the image URL; without it the tile shows the icon
-     MediaCard.alt: the image's alternative text (default "")
-     MediaCard.icon: an <Icon> (or an icon name) shown when there is no image
-     MediaCard.title: the asset name; with onOpen or href it is the tile's link or button
-     MediaCard.meta: technical data (size, type, date)
-     MediaCard.badge: a badge over the media
-     MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
-     MediaCard.selected: whether the asset is selected (default false)
-     MediaCard.selecting: true while anything in the view is selected (default false)
-     MediaCard.onSelectChange(checked): runs when the selection box changes, or when the card is clicked anywhere but its
-       title, box and actions (it toggles the selection); without it there is no selection box and a click opens the card.
-       A selectable card opens from its title or a double-click.
-     MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
-     MediaCard.href: makes the title a link
-     MediaCard.onOpen(): makes the title a button that runs this
-     MediaCard.actions: controls beside the title
-     MediaCard.className: more classes on the <article>
-     MediaCard.strings: the words it announces, for other languages: { select: "Select {title}", item: "item" } (the selection
-       box's default name; {title} is the title, or the item word when the title is not text)
-   Behavior:
-     Panel is a section landmark named by its title.
-     With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
-     An expandable card's toggle is a button with aria-expanded and aria-controls (the body); it sits above the title's
-       target, so a card can both open and expand: the toggle shows more, the title opens the record. Closed, the card keeps
-       its header and meta (its summary) and its body is hidden from everyone.
-     The MediaCard selection box appears on hover, focus and selection, and always while anything is selected (selecting).
-     MediaCard images load lazily.
-     A selectable MediaCard's title is at least 24px tall (44px with touch): its target extends invisibly above and below the
-       text (Platforms Standard 3.1).
-   Notes:
-     MediaCard meta is technical data and uses the data font.
-     Other props pass through to the outer element.
-*/
-const PANEL_STRINGS = {
-  collapse: 'Collapse {title}',
-  expand: 'Expand {title}',
-  section: 'section'
-};
-const MEDIA_CARD_STRINGS = {
-  select: 'Select {title}',
-  item: 'item'
-};
-const CARD_STRINGS = {
-  expand: 'Expand {title}',
-  collapse: 'Collapse {title}',
-  card: 'card'
-};
-const H = ({
-  level,
-  ...props
-}) => /*#__PURE__*/_react.default.createElement(level ? 'h' + level : 'div', props);
-function Panel({
-  icon,
-  title,
-  description,
-  actions,
-  footer,
-  flush = false,
-  headingLevel = 2,
-  collapsible = false,
-  defaultExpanded = true,
-  expanded,
-  onToggle,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  const t = Object.assign({}, PANEL_STRINGS, strings);
-  const id = (0, _layer.useUid)('plx-panel');
-  const [own, setOwn] = _react.default.useState(defaultExpanded);
-  const open = !collapsible || (expanded === undefined ? own : expanded);
-  const toggle = () => {
-    if (expanded === undefined) setOwn(!open);
-    if (onToggle) onToggle(!open);
-  };
-  return /*#__PURE__*/_react.default.createElement("section", _extends({
-    "aria-labelledby": title ? id : undefined,
-    className: (0, _cx.cx)('plx-panel', collapsible && !open && 'is-collapsed', className)
-  }, rest), title || actions || collapsible ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-panel__header"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-panel__heading"
-  }, title ? /*#__PURE__*/_react.default.createElement(H, {
-    level: headingLevel,
-    id: id,
-    className: (0, _cx.cx)('plx-panel__title', icon && 'plx-panel__title--icon')
-  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-panel__icon",
-    "aria-hidden": "true"
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon) : null, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
-    className: "plx-panel__description"
-  }, description) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-panel__actions"
-  }, actions) : null, collapsible ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-panel__toggle",
-    "aria-expanded": open,
-    "aria-controls": id + '-body',
-    "aria-label": (open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.section),
-    onClick: toggle
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-down"
-  })) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
-    id: id + '-body',
-    hidden: !open,
-    className: (0, _cx.cx)('plx-panel__body', flush && 'plx-panel__body--flush')
-  }, children), footer && open ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-panel__footer"
-  }, footer) : null);
-}
-function Opener({
-  href,
-  onOpen,
-  current,
-  className,
-  children
-}) {
-  if (href) return /*#__PURE__*/_react.default.createElement("a", {
-    href: href,
-    className: className,
-    "aria-current": current ? 'true' : undefined
-  }, children);
-  if (onOpen) return /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: className,
-    "aria-current": current ? 'true' : undefined,
-    onClick: onOpen
-  }, children);
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: className
-  }, children);
-}
-function Card({
-  title,
-  meta,
-  actions,
-  selected = false,
-  href,
-  onOpen,
-  headingLevel = 3,
-  accent,
-  expandable = false,
-  defaultExpanded = false,
-  expanded,
-  onToggle,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  const interactive = !!(href || onOpen);
-  const t = Object.assign({}, CARD_STRINGS, strings);
-  const id = (0, _layer.useUid)('plx-card');
-  const [own, setOwn] = _react.default.useState(defaultExpanded);
-  const open = !expandable || (expanded === undefined ? own : expanded);
-  const toggle = () => {
-    if (expanded === undefined) setOwn(!open);
-    if (onToggle) onToggle(!open);
-  };
-  const hasBody = children !== undefined && children !== null;
-  return /*#__PURE__*/_react.default.createElement("article", _extends({
-    className: (0, _cx.cx)('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className),
-    "data-plx-color": accent || undefined
-  }, rest), title || expandable ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-card__header"
-  }, title ? /*#__PURE__*/_react.default.createElement(H, {
-    level: headingLevel,
-    className: "plx-card__title"
-  }, /*#__PURE__*/_react.default.createElement(Opener, {
-    href: href,
-    onOpen: onOpen,
-    current: selected,
-    className: "plx-card__opener"
-  }, title)) : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-card__actions"
-  }, actions) : null, expandable ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-card__toggle",
-    "aria-expanded": open,
-    "aria-controls": hasBody ? id + '-body' : undefined,
-    "aria-label": (open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.card),
-    onClick: toggle
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-down"
-  })) : null) : null, meta ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-card__meta"
-  }, meta) : null, hasBody ? /*#__PURE__*/_react.default.createElement("div", {
-    id: expandable ? id + '-body' : undefined,
-    hidden: !open,
-    className: "plx-card__body"
-  }, children) : null);
-}
-function MediaCard({
-  src,
-  alt = '',
-  icon,
-  title,
-  meta,
-  badge,
-  aspect = '4/3',
-  selected = false,
-  selecting = false,
-  onSelectChange,
-  selectLabel,
-  href,
-  onOpen,
-  actions,
-  strings,
-  className,
-  onClick,
-  onDoubleClick,
-  ...rest
-}) {
-  const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
-  const selectable = !!onSelectChange;
-  // a selectable card (owner, batch 272: "clicking the card selects it"): a click anywhere but its controls toggles the
-  // selection; the title, or a double-click, opens it
-  const inControl = e => !!(e.target.closest && e.target.closest('a, button, input, select, textarea, [role=menu], .plx-card__actions'));
-  const click = e => {
-    if (onClick) onClick(e);
-    if (!selectable || e.defaultPrevented || inControl(e)) return;
-    onSelectChange(!selected);
-  };
-  const dblClick = e => {
-    if (onDoubleClick) onDoubleClick(e);
-    if (!selectable || e.defaultPrevented || inControl(e)) return;
-    if (onOpen) onOpen();else if (href) location.href = href;
-  };
-  return /*#__PURE__*/_react.default.createElement("article", _extends({
-    className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className),
-    onClick: click,
-    onDoubleClick: dblClick
-  }, rest), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-media-card__media",
-    "data-plx-aspect": aspect
-  }, src ? /*#__PURE__*/_react.default.createElement("img", {
-    src: src,
-    alt: alt,
-    loading: "lazy",
-    decoding: "async",
-    className: "plx-media-card__image"
-  }) : /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-media-card__placeholder"
-  }, icon ? typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon,
-    size: "lg"
-  }) : icon : null), badge ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-media-card__badge"
-  }, badge) : null), onSelectChange ? /*#__PURE__*/_react.default.createElement("input", {
-    type: "checkbox",
-    className: "plx-media-card__select",
-    checked: selected,
-    "aria-label": selectLabel || t.select.split('{title}').join(typeof title === 'string' ? title : t.item),
-    onChange: e => onSelectChange(e.target.checked)
-  }) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-media-card__info"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-media-card__text"
-  }, /*#__PURE__*/_react.default.createElement(Opener, {
-    href: href,
-    onOpen: onOpen,
-    className: "plx-card__opener plx-media-card__title"
-  }, title), meta ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-media-card__meta"
-  }, meta) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-card__actions"
-  }, actions) : null));
-}
-  } },
   "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -1114,6 +785,382 @@ function formatPhone(e164, o = {}) {
 function dateTimeAttr(date) {
   const d = toDate(date);
   return d ? d.toISOString() : '';
+}
+  } },
+  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Card = Card;
+exports.MediaCard = MediaCard;
+exports.Panel = Panel;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Panel, Card, MediaCard
+   Summary: Surfaces. Panel is a titled section of a page or a settings screen; Card is one record in a list or grid;
+     MediaCard is an asset tile.
+   Usage:
+     <Panel title="Storage" description="…" actions={<Button…/>} footer={…} flush headingLevel={2}>…</Panel>
+     <Card title="Brand kit" meta="12 assets" actions={<…/>} selected onOpen={() => …}>…</Card>
+     <Card title="Kitchen renovation" meta="Personal · 12 files" expandable>…</Card>
+     <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
+       selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
+   Props:
+     Card.accent: a color from the data (a project's color): a 3px start edge in it; a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
+     Panel.title: the heading; it also names the section landmark
+     Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
+       icon always sits on the left of its heading)
+     Panel.description: a line of text under the title
+     Panel.actions: controls at the end of the header
+     Panel.footer: content in a footer below the body
+     Panel.flush: true removes the body padding (default false)
+     Panel.headingLevel: the heading level of the title (default 2)
+     Panel.collapsible: true adds a Collapse/Expand button at the end of the header (default false)
+     Panel.defaultExpanded: whether a collapsible panel starts open (default true)
+     Panel.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
+     Panel.onToggle(next): runs when a collapsible panel opens or closes
+     Panel.children: the body
+     Panel.className: more classes on the <section>
+     Panel.strings: the words it announces, for other languages: { collapse: "Collapse {title}", expand: "Expand {title}",
+       section: "section" } ({title} is the title, or the section word when the title is not text)
+     Card.title: the card title; with onOpen or href it is the card's link or button
+     Card.meta: a line of details under the title
+     Card.actions: controls at the end of the header
+     Card.selected: shows the selected state; with onOpen or href the card's link or button also gets aria-current="true" (default false)
+     Card.href: makes the title a link
+     Card.onOpen(): makes the title a button that runs this
+     Card.headingLevel: the heading level of the title (default 3)
+     Card.children: the body
+     Card.className: more classes on the <article>
+     Card.expandable: true adds an Expand/Collapse button at the end of the header that shows or hides the body; the title,
+       the meta and the actions stay (Expandable card, library wave 8); default false
+     Card.defaultExpanded: whether an expandable card starts open (default false: its summary only)
+     Card.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
+     Card.onToggle(next): runs when an expandable card opens or closes
+     Card.strings: the words it announces, for other languages: { expand: "Expand {title}", collapse: "Collapse {title}",
+       card: "card" } ({title} is the title, or the card word when the title is not text)
+     MediaCard.src: the image URL; without it the tile shows the icon
+     MediaCard.alt: the image's alternative text (default "")
+     MediaCard.icon: an <Icon> (or an icon name) shown when there is no image
+     MediaCard.title: the asset name; with onOpen or href it is the tile's link or button
+     MediaCard.meta: technical data (size, type, date)
+     MediaCard.badge: a badge over the media
+     MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
+     MediaCard.selected: whether the asset is selected (default false)
+     MediaCard.selecting: true while anything in the view is selected (default false)
+     MediaCard.onSelectChange(checked): runs when the selection box changes, or when the card is clicked anywhere but its
+       title, box and actions (it toggles the selection); without it there is no selection box and a click opens the card.
+       A selectable card opens from its title or a double-click.
+     MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
+     MediaCard.href: makes the title a link
+     MediaCard.onOpen(): makes the title a button that runs this
+     MediaCard.actions: controls beside the title
+     MediaCard.className: more classes on the <article>
+     MediaCard.strings: the words it announces, for other languages: { select: "Select {title}", item: "item", assets:
+       "{n} assets", asset: "{n} asset" } (the selection box's default name; {title} is the title, or the item word when the
+       title is not text; a collection's count)
+     MediaCard.type: an asset's format ("PNG", "MP4", "PDF"; library wave 12, Asset): a neutral Badge at the media's top end,
+       with the file type's icon when typeIcon names one
+     MediaCard.typeIcon: the type Badge's icon (an icon name: fileIcon(name) gives the file type's)
+     MediaCard.status: an asset's workflow status (Asset): a Badge element, or { tone, icon, label } for one (a Badge with
+       its icon, never a dot), under the meta
+     MediaCard.stack: true draws a collection (Collection): two sheets behind the card, a pile of assets; the card is the
+       collection's cover (default false)
+     MediaCard.count: a collection's number of assets: the meta reads "24 assets" (the data font) unless meta is given
+   Behavior:
+     Panel is a section landmark named by its title.
+     With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
+     An expandable card's toggle is a button with aria-expanded and aria-controls (the body); it sits above the title's
+       target, so a card can both open and expand: the toggle shows more, the title opens the record. Closed, the card keeps
+       its header and meta (its summary) and its body is hidden from everyone.
+     The MediaCard selection box appears on hover, focus and selection, and always while anything is selected (selecting).
+     MediaCard images load lazily.
+     A selectable MediaCard's title is at least 24px tall (44px with touch): its target extends invisibly above and below the
+       text (Platforms Standard 3.1).
+     An asset (type, status) shows its format over the picture and its status under the meta: the selection and opening
+       stay as they are. A collection (stack) draws its two sheets as decoration (hidden from assistive technology): the
+       title names it and the meta says how many assets it holds.
+   Notes:
+     MediaCard meta is technical data and uses the data font.
+     Without type, status and stack the MediaCard draws exactly what it drew before (library wave 12 added them).
+     Other props pass through to the outer element.
+*/
+const PANEL_STRINGS = {
+  collapse: 'Collapse {title}',
+  expand: 'Expand {title}',
+  section: 'section'
+};
+const MEDIA_CARD_STRINGS = {
+  select: 'Select {title}',
+  item: 'item',
+  assets: '{n} assets',
+  asset: '{n} asset'
+};
+const CARD_STRINGS = {
+  expand: 'Expand {title}',
+  collapse: 'Collapse {title}',
+  card: 'card'
+};
+const H = ({
+  level,
+  ...props
+}) => /*#__PURE__*/_react.default.createElement(level ? 'h' + level : 'div', props);
+function Panel({
+  icon,
+  title,
+  description,
+  actions,
+  footer,
+  flush = false,
+  headingLevel = 2,
+  collapsible = false,
+  defaultExpanded = true,
+  expanded,
+  onToggle,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const t = Object.assign({}, PANEL_STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-panel');
+  const [own, setOwn] = _react.default.useState(defaultExpanded);
+  const open = !collapsible || (expanded === undefined ? own : expanded);
+  const toggle = () => {
+    if (expanded === undefined) setOwn(!open);
+    if (onToggle) onToggle(!open);
+  };
+  return /*#__PURE__*/_react.default.createElement("section", _extends({
+    "aria-labelledby": title ? id : undefined,
+    className: (0, _cx.cx)('plx-panel', collapsible && !open && 'is-collapsed', className)
+  }, rest), title || actions || collapsible ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-panel__header"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-panel__heading"
+  }, title ? /*#__PURE__*/_react.default.createElement(H, {
+    level: headingLevel,
+    id: id,
+    className: (0, _cx.cx)('plx-panel__title', icon && 'plx-panel__title--icon')
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-panel__icon",
+    "aria-hidden": "true"
+  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  }) : icon) : null, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-panel__description"
+  }, description) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-panel__actions"
+  }, actions) : null, collapsible ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-panel__toggle",
+    "aria-expanded": open,
+    "aria-controls": id + '-body',
+    "aria-label": (open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.section),
+    onClick: toggle
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down"
+  })) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+    id: id + '-body',
+    hidden: !open,
+    className: (0, _cx.cx)('plx-panel__body', flush && 'plx-panel__body--flush')
+  }, children), footer && open ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-panel__footer"
+  }, footer) : null);
+}
+function Opener({
+  href,
+  onOpen,
+  current,
+  className,
+  children
+}) {
+  if (href) return /*#__PURE__*/_react.default.createElement("a", {
+    href: href,
+    className: className,
+    "aria-current": current ? 'true' : undefined
+  }, children);
+  if (onOpen) return /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: className,
+    "aria-current": current ? 'true' : undefined,
+    onClick: onOpen
+  }, children);
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: className
+  }, children);
+}
+function Card({
+  title,
+  meta,
+  actions,
+  selected = false,
+  href,
+  onOpen,
+  headingLevel = 3,
+  accent,
+  expandable = false,
+  defaultExpanded = false,
+  expanded,
+  onToggle,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const interactive = !!(href || onOpen);
+  const t = Object.assign({}, CARD_STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-card');
+  const [own, setOwn] = _react.default.useState(defaultExpanded);
+  const open = !expandable || (expanded === undefined ? own : expanded);
+  const toggle = () => {
+    if (expanded === undefined) setOwn(!open);
+    if (onToggle) onToggle(!open);
+  };
+  const hasBody = children !== undefined && children !== null;
+  return /*#__PURE__*/_react.default.createElement("article", _extends({
+    className: (0, _cx.cx)('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className),
+    "data-plx-color": accent || undefined
+  }, rest), title || expandable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-card__header"
+  }, title ? /*#__PURE__*/_react.default.createElement(H, {
+    level: headingLevel,
+    className: "plx-card__title"
+  }, /*#__PURE__*/_react.default.createElement(Opener, {
+    href: href,
+    onOpen: onOpen,
+    current: selected,
+    className: "plx-card__opener"
+  }, title)) : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-card__actions"
+  }, actions) : null, expandable ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-card__toggle",
+    "aria-expanded": open,
+    "aria-controls": hasBody ? id + '-body' : undefined,
+    "aria-label": (open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.card),
+    onClick: toggle
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down"
+  })) : null) : null, meta ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-card__meta"
+  }, meta) : null, hasBody ? /*#__PURE__*/_react.default.createElement("div", {
+    id: expandable ? id + '-body' : undefined,
+    hidden: !open,
+    className: "plx-card__body"
+  }, children) : null);
+}
+function MediaCard({
+  src,
+  alt = '',
+  icon,
+  title,
+  meta,
+  badge,
+  aspect = '4/3',
+  selected = false,
+  selecting = false,
+  onSelectChange,
+  selectLabel,
+  href,
+  onOpen,
+  actions,
+  type,
+  typeIcon,
+  status,
+  stack = false,
+  count,
+  strings,
+  className,
+  onClick,
+  onDoubleClick,
+  ...rest
+}) {
+  const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
+  // a collection's count (library wave 12): "24 assets" in the data font, unless the page gives its own meta
+  const line = meta || (typeof count === 'number' ? (count === 1 ? t.asset : t.assets).split('{n}').join((0, _format.formatNumber)(count)) : null);
+  const statusEl = status ? /*#__PURE__*/_react.default.isValidElement(status) ? status : /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: status.tone,
+    icon: status.icon
+  }, status.label) : null;
+  const selectable = !!onSelectChange;
+  // a selectable card (owner, batch 272: "clicking the card selects it"): a click anywhere but its controls toggles the
+  // selection; the title, or a double-click, opens it
+  const inControl = e => !!(e.target.closest && e.target.closest('a, button, input, select, textarea, [role=menu], .plx-card__actions'));
+  const click = e => {
+    if (onClick) onClick(e);
+    if (!selectable || e.defaultPrevented || inControl(e)) return;
+    onSelectChange(!selected);
+  };
+  const dblClick = e => {
+    if (onDoubleClick) onDoubleClick(e);
+    if (!selectable || e.defaultPrevented || inControl(e)) return;
+    if (onOpen) onOpen();else if (href) location.href = href;
+  };
+  const card = /*#__PURE__*/_react.default.createElement("article", _extends({
+    className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className),
+    onClick: click,
+    onDoubleClick: dblClick
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-media-card__media",
+    "data-plx-aspect": aspect
+  }, src ? /*#__PURE__*/_react.default.createElement("img", {
+    src: src,
+    alt: alt,
+    loading: "lazy",
+    decoding: "async",
+    className: "plx-media-card__image"
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-media-card__placeholder"
+  }, icon ? typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    size: "lg"
+  }) : icon : null), badge ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-media-card__badge"
+  }, badge) : null, type ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-media-card__type"
+  }, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    size: "sm",
+    icon: typeIcon
+  }, type)) : null), onSelectChange ? /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    className: "plx-media-card__select",
+    checked: selected,
+    "aria-label": selectLabel || t.select.split('{title}').join(typeof title === 'string' ? title : t.item),
+    onChange: e => onSelectChange(e.target.checked)
+  }) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-media-card__info"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-media-card__text"
+  }, /*#__PURE__*/_react.default.createElement(Opener, {
+    href: href,
+    onOpen: onOpen,
+    className: "plx-card__opener plx-media-card__title"
+  }, title), line ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-media-card__meta"
+  }, line) : null, statusEl ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-media-card__status"
+  }, statusEl) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-card__actions"
+  }, actions) : null));
+  // a collection (library wave 12): two sheets behind the cover card, decoration only
+  if (!stack) return card;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-media-card-stack"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-media-card-stack__back",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-media-card-stack__middle",
+    "aria-hidden": "true"
+  }), card);
 }
   } },
   "platform/utils/dataviz.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -55409,7 +55456,2069 @@ function ShortcutsDialog({
   })));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/patterns/FileList/FileList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FileList = FileList;
+exports.sortFiles = sortFiles;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _File = require("../../components/File/File.jsx");
+var _FileRow = require("../../components/FileRow/FileRow.jsx");
+var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _RenameAction = require("../RenameAction/RenameAction.jsx");
+var _DeleteFlow = require("../DeleteFlow/DeleteFlow.jsx");
+var _dnd = require("../../utils/dnd.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileList
+   Summary: Many files and folders at once (12 Specialized › Files, assets, and DAM › File list): a list of FileRows (list),
+     the same files as a DataTable people sort, filter and resize by column (table), or the list with its own Sort menu
+     above the rows, by name, size, date or owner, folders first (sortable). Every row selects, opens, downloads, renames
+     and deletes the same way (FileRow, RenameAction, DeleteFlow); files can be dragged onto folders (the drag-and-drop
+     engine) with Move to as the way without dragging. Built from Platform components only.
+   Usage:
+     <FileList label="Files in Brand kit" files={files} onOpen={open} selectable selected={sel} onSelectionChange={setSel} />
+     <FileList label="Files" view="table" files={files} columns={['size', 'modified', 'owner', 'status']} onRename={rename} onDelete={remove} />
+     <FileList label="Files" sortable defaultSort={{ field: 'modified', dir: 'desc' }} files={files} />
+     <FileList label="Files" files={files} dragType="file" onMove={(file, folder) => move(file, folder)} />
+   Props:
+     files: the files and folders: [{ id, name, kind: "file" | "folder", size (bytes), count (a folder's items), modified
+       ("YYYY-MM-DD" or a Date), owner, status: { tone, icon, label } (a Badge), type (MIME), src (a small picture) }]
+       (required)
+     label: the list's or the table's accessible name ("Files in Brand kit") (required)
+     view: "list" (default: FileRows) | "table" (the DataTable)
+     sortable: the list draws its Sort menu above the rows (the field and the direction) with the count; the table always
+       sorts by its headers (default false)
+     sort: the order, kept by the page: { field: "name" | "size" | "modified" | "owner", dir: "asc" | "desc" }; folders
+       always come first in the list
+     defaultSort: the first order when the list keeps it (default { field: "name", dir: "asc" })
+     onSortChange(sort): runs when people choose another order
+     columns: the facts after the name: any of "size", "modified", "owner", "status" (default ["size", "modified"], plus
+       "owner" and "status" when a file has them); a list row always shows the size and the date (FileRow's cells)
+     selectable: a checkbox on every row (and select all in the table's header); default false
+     selected: the selected files' ids, kept by the page
+     onSelectionChange(ids): runs when people check or clear rows
+     onOpen(file): a name opens the file or the folder (a button)
+     hrefFor(file): a name is a link to the file's page instead
+     onDownload(file): the row's Download button (files only; in the table, its right-click menu)
+     onRename(file, name): Rename… in More actions: the rename dialog keeps the extension and refuses a name in use
+     onDelete(file): Delete in More actions: the confirmation (DeleteFlow), then this
+     deleteVariant: DeleteFlow's variant: "confirm" (default) | "trash" | "undo"
+     onRestore(file): the Undo of deleteVariant "undo" or "trash"
+     dragType: files are dragged onto folders as items of this type (the drag-and-drop engine): a row drags anywhere but
+       its controls (a long press with touch), or Space on the focused row picks it up and the arrow keys move between
+       folders; the list only
+     onMove(file, folder): folders take the files dropped on them (with dragType)
+     moveTargets: the folders a file can move to without dragging: [{ id, name }], a Move to submenu in More actions
+       (with onMove)
+     rowHeight: the table's row height step ("short" default, "medium", "tall", "extra-tall")
+     empty: what an empty list shows (default an EmptyState: strings.empty)
+     strings: the words: { sort: "Sort", sortBy: "Sort by {field}", field: "Sort by", order: "Order", asc: "Ascending",
+       desc: "Descending", name: "Name", size: "Size", modified: "Modified", owner: "Owner", status: "Status",
+       count: "{n} items", one: "1 item", empty: "Nothing here yet", open: "Open", download: "Download", rename: "Rename…",
+       delete: "Delete", moveTo: "Move to", file: "file", files: "files", folder: "folder", folders: "folders", items:
+       "{n} items", item: "{n} item" }
+     className: more classes on the list
+   Behavior:
+     The list is a FileRowList: each row is one Tab stop per control (the checkbox, the name, Download, More actions),
+       never one big target; the row takes the hover and selected fills.
+     Sort reorders the rows at once, folders first, and says the order in its button ("Sort by size"); the direction is
+       its own choice in the menu.
+     The table is the DataTable: the name, then the facts in the data font (the size from bytes, the date in the reader's
+       locale), the owner and the status Badge; its headers sort, its right-click menu opens, downloads, renames and
+       deletes; selected rows take the DataTable's selected fill.
+     Dragging (dragType, onMove): a file follows the pointer and a folder it can go to shows the drop outline; Escape puts
+       it back. Every move is announced, and Move to in More actions does the same without dragging.
+     Rename and Delete open their dialogs once, at the list's level, and say what happened in a toast.
+     The list's own width decides the facts its rows keep: under 720px the owner gives way, under 560px the date; the
+       name, the size, the status and the actions stay.
+   Notes:
+     Choose the list for files people open one at a time, and the table where they compare by column (size, date,
+     owner). Pictures people recognize by sight belong in a grid of MediaCards (FileBrowser's grid).
+*/
+const STRINGS = {
+  sort: 'Sort',
+  sortBy: 'Sort by {field}',
+  field: 'Sort by',
+  order: 'Order',
+  asc: 'Ascending',
+  desc: 'Descending',
+  name: 'Name',
+  size: 'Size',
+  modified: 'Modified',
+  owner: 'Owner',
+  status: 'Status',
+  count: '{n} items',
+  one: '1 item',
+  empty: 'Nothing here yet',
+  open: 'Open',
+  download: 'Download',
+  rename: 'Rename…',
+  delete: 'Delete',
+  moveTo: 'Move to',
+  file: 'file',
+  files: 'files',
+  folder: 'folder',
+  folders: 'folders',
+  items: '{n} items',
+  item: '{n} item'
+};
+const FIELDS = ['name', 'size', 'modified', 'owner'];
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const idOf = f => f.id === undefined ? f.name : f.id;
+// a calendar day written YYYY-MM-DD is that day where the reader is
+const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
+const stamp = v => v instanceof Date ? v.toISOString() : String(v || '');
+
+// the order of the list: folders first, then the field, then the name
+function sortFiles(files, sort) {
+  const s = Object.assign({
+    field: 'name',
+    dir: 'asc'
+  }, sort);
+  const sign = s.dir === 'desc' ? -1 : 1;
+  const byName = (a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, {
+    numeric: true,
+    sensitivity: 'base'
+  });
+  const by = (a, b) => {
+    if (s.field === 'size') return (a.kind === 'folder' ? a.count || 0 : Number(a.size) || 0) - (b.kind === 'folder' ? b.count || 0 : Number(b.size) || 0);
+    if (s.field === 'modified') return stamp(a.modified).localeCompare(stamp(b.modified));
+    if (s.field === 'owner') return String(a.owner || '').localeCompare(String(b.owner || ''));
+    return byName(a, b);
+  };
+  return files.slice().sort((a, b) => {
+    const fa = a.kind === 'folder' ? 0 : 1,
+      fb = b.kind === 'folder' ? 0 : 1;
+    if (fa !== fb) return fa - fb;
+    return sign * by(a, b) || byName(a, b);
+  });
+}
+
+// one row of the list: a file drags onto folders, a folder takes files (the engine's props on the <li>)
+function DragRow({
+  file,
+  dragType,
+  onMove,
+  children
+}) {
+  const folder = file.kind === 'folder';
+  const drag = (0, _dnd.useDraggable)({
+    data: file,
+    type: dragType,
+    name: file.name,
+    handle: false,
+    disabled: !dragType || folder || !onMove
+  });
+  const drop = (0, _dnd.useDropTarget)({
+    name: file.name,
+    accepts: (data, type) => type === dragType && idOf(data) !== idOf(file),
+    onDrop: data => onMove && onMove(data, file),
+    disabled: !dragType || !folder || !onMove
+  });
+  const props = folder ? drop.props : dragType && onMove ? drag.props : {};
+  return /*#__PURE__*/_react.default.createElement("li", _extends({}, props, {
+    className: (0, _cx.cx)('plx-file-list__item', props.className)
+  }), children);
+}
+function FileList({
+  files = [],
+  label,
+  view = 'list',
+  sortable = false,
+  sort,
+  defaultSort,
+  onSortChange,
+  columns,
+  selectable = false,
+  selected = [],
+  onSelectionChange,
+  onOpen,
+  hrefFor,
+  onDownload,
+  onRename,
+  onDelete,
+  deleteVariant = 'confirm',
+  onRestore,
+  dragType,
+  onMove,
+  moveTargets,
+  rowHeight,
+  empty,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [own, setOwn] = _react.default.useState(Object.assign({
+    field: 'name',
+    dir: 'asc'
+  }, defaultSort));
+  const order = Object.assign({
+    field: 'name',
+    dir: 'asc'
+  }, sort === undefined ? own : sort);
+  const setOrder = next => {
+    if (sort === undefined) setOwn(next);
+    if (onSortChange) onSortChange(next);
+  };
+  const [ask, setAsk] = _react.default.useState(null); // { kind: "rename" | "delete", file }
+  const facts = columns || ['size', 'modified'].concat(files.some(f => f.owner) ? ['owner'] : [], files.some(f => f.status) ? ['status'] : []);
+  const table = view === 'table';
+  const rows = table ? files : sortFiles(files, order);
+  const keys = selected || [];
+  const toggle = (f, on) => {
+    if (!onSelectionChange) return;
+    const id = idOf(f);
+    onSelectionChange(on ? keys.concat(id) : keys.filter(x => x !== id));
+  };
+  const others = f => files.filter(x => idOf(x) !== idOf(f)).map(x => x.name);
+  // the folders a file can move to: not itself, not where it is now (a file without a parent is at the root, id null)
+  const targetsFor = f => (moveTargets || []).filter(x => idOf(x) !== idOf(f) && idOf(x) !== (f.parent === undefined ? null : f.parent));
+  const countText = files.length === 1 ? t.one : fill(t.count, {
+    n: (0, _format.formatNumber)(files.length)
+  });
+
+  // the sort menu above the list: the field, then the direction
+  const fieldLabel = t[order.field] || t.name;
+  const sortMenu = sortable && !table ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: t.sort,
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: order.dir === 'desc' ? 'sort-descending' : 'sort-ascending',
+      caret: true
+    }, fill(t.sortBy, {
+      field: fieldLabel.toLowerCase()
+    }))
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: t.field,
+    value: order.field,
+    onChange: v => setOrder(Object.assign({}, order, {
+      field: v
+    }))
+  }, FIELDS.filter(k => k === 'name' || facts.indexOf(k) >= 0).map(k => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: k,
+    value: k
+  }, t[k]))), /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: t.order,
+    value: order.dir,
+    onChange: v => setOrder(Object.assign({}, order, {
+      dir: v
+    }))
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    value: "asc",
+    icon: "sort-ascending"
+  }, t.asc), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    value: "desc",
+    icon: "sort-descending"
+  }, t.desc))) : null;
+  const dialogs = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, onRename && ask && ask.kind === 'rename' ? /*#__PURE__*/_react.default.createElement(_RenameAction.RenameAction, {
+    variant: "dialog",
+    open: true,
+    onClose: () => setAsk(null),
+    value: ask.file.name,
+    extension: ask.file.kind !== 'folder',
+    names: others(ask.file),
+    onRename: name => onRename(ask.file, name)
+  }) : null, onDelete && ask && ask.kind === 'delete' ? /*#__PURE__*/_react.default.createElement(_DeleteFlow.DeleteFlow, {
+    variant: deleteVariant,
+    open: true,
+    onClose: () => setAsk(null),
+    items: [{
+      id: idOf(ask.file),
+      label: ask.file.name
+    }],
+    noun: ask.file.kind === 'folder' ? t.folder : t.file,
+    plural: ask.file.kind === 'folder' ? t.folders : t.files,
+    onDelete: () => onDelete(ask.file),
+    onRestore: onRestore ? () => onRestore(ask.file) : undefined
+  }) : null);
+  if (!files.length) {
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-file-list', 'plx-file-list--' + (table ? 'table' : 'list'), sortable && !table && 'plx-file-list--sortable', className)
+    }, empty || /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+      icon: "folder-open",
+      title: t.empty
+    }));
+  }
+  let body;
+  if (table) {
+    const sizeText = f => f.kind === 'folder' ? typeof f.count === 'number' ? fill(f.count === 1 ? t.item : t.items, {
+      n: (0, _format.formatNumber)(f.count)
+    }) : '' : typeof f.size === 'number' ? (0, _format.formatBytes)(f.size) : f.size || '';
+    // folders stay first whichever way the name sorts (Tabulator turns the result around for a descending sort)
+    const byName = (a, b, ra, rb, col, dir) => {
+      const fa = ra.getData().kind === 'folder',
+        fb = rb.getData().kind === 'folder';
+      if (fa !== fb) return (fa ? -1 : 1) * (dir === 'desc' ? -1 : 1);
+      return String(a || '').localeCompare(String(b || ''), undefined, {
+        numeric: true,
+        sensitivity: 'base'
+      });
+    };
+    const cols = [{
+      title: t.name,
+      field: 'name',
+      kind: 'name',
+      type: 'file',
+      width: '--plx-ref-size-280px',
+      sorter: byName,
+      render: f => /*#__PURE__*/_react.default.createElement(_File.File, {
+        name: f.name,
+        kind: f.kind,
+        type: f.type,
+        src: f.src,
+        icon: f.icon,
+        href: hrefFor ? hrefFor(f) : undefined,
+        onOpen: !hrefFor && onOpen ? () => onOpen(f) : undefined
+      })
+    }];
+    if (facts.indexOf('size') >= 0) cols.push({
+      title: t.size,
+      field: 'size',
+      kind: 'data',
+      type: 'number',
+      sorter: 'number',
+      hozAlign: 'right',
+      headerHozAlign: 'right',
+      render: f => sizeText(f)
+    });
+    if (facts.indexOf('modified') >= 0) cols.push({
+      title: t.modified,
+      field: 'modified',
+      kind: 'data',
+      type: 'date',
+      render: f => f.modified ? (0, _format.formatDate)(day(f.modified), {
+        dateStyle: 'medium'
+      }) : ''
+    });
+    if (facts.indexOf('owner') >= 0) cols.push({
+      title: t.owner,
+      field: 'owner',
+      type: 'person'
+    });
+    if (facts.indexOf('status') >= 0) cols.push({
+      title: t.status,
+      field: 'statusLabel',
+      kind: 'center',
+      type: 'select',
+      render: f => f.status ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+        tone: f.status.tone,
+        icon: f.status.icon
+      }, f.status.label) : null
+    });
+    const menu = f => [].concat(onOpen ? [{
+      label: t.open,
+      icon: f.kind === 'folder' ? 'folder-open' : 'open',
+      onSelect: () => onOpen(f)
+    }] : [], onDownload && f.kind !== 'folder' ? [{
+      label: t.download,
+      icon: 'download-tray',
+      onSelect: () => onDownload(f)
+    }] : [], onRename ? [{
+      label: t.rename,
+      icon: 'rename',
+      onSelect: () => setAsk({
+        kind: 'rename',
+        file: f
+      })
+    }] : [], onDelete ? [{
+      separator: true
+    }, {
+      label: t.delete,
+      icon: 'trash',
+      danger: true,
+      onSelect: () => setAsk({
+        kind: 'delete',
+        file: f
+      })
+    }] : []);
+    body = /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+      label: label,
+      index: "id",
+      data: rows.map(f => Object.assign({}, f, {
+        id: idOf(f),
+        statusLabel: f.status ? f.status.label : ''
+      })),
+      columns: cols,
+      selectable: selectable,
+      selected: selectable ? keys : undefined,
+      onSelectionChange: selectable ? onSelectionChange : undefined,
+      sort: [{
+        field: order.field === 'owner' ? 'owner' : order.field,
+        dir: order.dir
+      }],
+      rowHeight: rowHeight,
+      rowMenu: onOpen || onDownload || onRename || onDelete ? menu : undefined
+    });
+  } else {
+    body = /*#__PURE__*/_react.default.createElement(_FileRow.FileRowList, {
+      label: label,
+      className: "plx-file-list__rows"
+    }, rows.map(f => {
+      const id = idOf(f);
+      const moves = onMove ? targetsFor(f) : [];
+      return /*#__PURE__*/_react.default.createElement(DragRow, {
+        key: id,
+        file: f,
+        dragType: dragType,
+        onMove: onMove
+      }, /*#__PURE__*/_react.default.createElement(_FileRow.FileRow, {
+        file: f,
+        selectable: selectable,
+        selected: keys.indexOf(id) >= 0,
+        onSelectChange: on => toggle(f, on),
+        href: hrefFor ? hrefFor(f) : undefined,
+        onOpen: !hrefFor && onOpen ? () => onOpen(f) : undefined,
+        owner: facts.indexOf('owner') >= 0 ? f.owner : undefined,
+        status: facts.indexOf('status') >= 0 && f.status ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+          tone: f.status.tone,
+          icon: f.status.icon
+        }, f.status.label) : undefined,
+        onDownload: onDownload && f.kind !== 'folder' ? () => onDownload(f) : undefined,
+        onRename: onRename ? name => onRename(f, name) : undefined,
+        names: others(f),
+        onDelete: onDelete ? () => onDelete(f) : undefined,
+        deleteVariant: deleteVariant,
+        onRestore: onRestore ? () => onRestore(f) : undefined,
+        actions: moves.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+          label: t.moveTo,
+          icon: "move"
+        }, moves.map(x => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+          key: String(idOf(x)),
+          icon: "folder",
+          onSelect: () => onMove(f, x)
+        }, x.name))) : undefined
+      }));
+    }));
+  }
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-file-list', 'plx-file-list--' + (table ? 'table' : 'list'), sortable && !table && 'plx-file-list--sortable', className)
+  }, sortMenu ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-file-list__bar"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-file-list__count"
+  }, countText), sortMenu) : null, body, table ? dialogs : null);
+}
+  } },
+  "platform/patterns/FileBrowser/FileBrowser.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FileBrowser = FileBrowser;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Breadcrumbs = require("../../components/Breadcrumbs/Breadcrumbs.jsx");
+var _Tree = require("../../components/Tree/Tree.jsx");
+var _Card = require("../../components/Card/Card.jsx");
+var _File = require("../../components/File/File.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _DropZone = require("../../components/DropZone/DropZone.jsx");
+var _Resizable = require("../../components/Resizable/Resizable.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _CommandBar = require("../CommandBar/CommandBar.jsx");
+var _SortPanel = require("../SortPanel/SortPanel.jsx");
+var _ViewMenu = require("../ViewMenu/ViewMenu.jsx");
+var _ContentGrid = require("../ContentGrid/ContentGrid.jsx");
+var _DeleteFlow = require("../DeleteFlow/DeleteFlow.jsx");
+var _FileList = require("../FileList/FileList.jsx");
+var _dnd = require("../../utils/dnd.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileBrowser
+   Summary: Finding, organizing and acting on files by place (12 Specialized › Files, assets, and DAM › File browser): the
+     location as Breadcrumbs (breadcrumbs), the command bar over the folder (New folder and Upload; the search; Sort and
+     View; the count; with items selected: Download, Move to and Delete), an optional folder tree at the start (tree), and
+     the folder's content as a FileList (list) or a grid of MediaCards (grid). Files drag onto folders, in the list, the
+     grid and the tree, with Move to as the way without dragging; files dropped from the computer upload into the open
+     folder. Built from Platform components only: CommandBar, SortPanel and ViewMenu as they are.
+   Usage:
+     <FileBrowser label="Files" root={{ name: 'Library' }} items={items} defaultFolder="brand"
+       tree onOpenFile={open} onCreateFolder={(name, parent) => add(name, parent)} onUpload={(files, folder) => upload(files, folder)}
+       onRename={(item, name) => rename(item, name)} onDelete={(list) => remove(list)} onMove={(list, folder) => move(list, folder)}
+       onDownload={(list) => download(list)} />
+   Props:
+     items: every file and folder, flat: [{ id, name, kind: "file" | "folder", parent (the folder's id; null or missing at
+       the root), size, count, modified, owner, status, type, src }] (FileList's file shape plus parent) (required)
+     root: the top of the hierarchy: { id (default null), name (default strings.root) }
+     folder: the open folder's id, kept by the page (null: the root)
+     defaultFolder: the first open folder when the browser keeps it (default the root)
+     onFolderChange(id): runs when people open another folder
+     view: "list" (a FileList) | "grid" (MediaCards in a ContentGrid), kept by the page
+     defaultView: the first view when the browser keeps it (default "list"; View in the bar changes it)
+     onViewChange(view): runs when people choose another view
+     listView: the list's look: "list" (default: FileRows) | "table" (the DataTable)
+     tree: the folder tree at the start, its width resizable (default false); hidden on a narrow browser (under 600px of
+       its own width), where the breadcrumbs lead
+     breadcrumbs: the location above the bar (default true)
+     selectable: rows and cards select for the bar's selection commands (default true)
+     selected: the selected items' ids, kept by the page
+     onSelectionChange(ids): runs when people select or clear items
+     onOpenFile(file): opening a file (a folder opens in place)
+     hrefFor(item): an item's name is a link to its page instead
+     onCreateFolder(name, parentId): New folder in the bar asks for a name and runs this
+     onUpload(files, folderId): Upload in the bar opens the system's file picker; files dropped from the computer onto the
+       content upload into the open folder
+     onDownload(items): Download in a row and in the selection's commands
+     onRename(item, name): Rename… in a row's More actions
+     onDelete(items): Delete in a row and in the selection's commands (it asks first)
+     onMove(items, folderId): dragging onto a folder, Move to in a row and in the selection's commands (null: the root)
+     actions: more commands for the bar, after New folder and Upload (CommandBar's actions)
+     strings: { label: "Files", root: "Library", newFolder: "New folder", folderName: "Folder name", create: "Create",
+       upload: "Upload", search: "Search this folder", folders: "Folders", path: "Location", count: "{n} items", one:
+       "1 item", empty: "This folder is empty", emptyText: "Upload files or create a folder.", noMatch: "Nothing matches
+       “{q}”", download: "Download", moveTo: "Move to", delete: "Delete", noun: "item", plural: "items", drop: "Drop
+       files to upload to {folder}", nameTaken: "A file or folder named “{name}” is already here.", nameEmpty: "Give the
+       folder a name.", items: "{n} items", item: "{n} item" }
+     className: more classes on the browser
+   Behavior:
+     Opening a folder (its name, a breadcrumb, the tree) moves into it: the search clears, the selection clears, the view,
+       the sort and the tree stay. The open folder is the tree's selected item; its parents open in the tree.
+     The bar is the CommandBar: with nothing selected, New folder, Upload, the search, Sort, View and the count; with items
+       selected, Download, Move to (a menu of folders) and Delete (asks first), and "× N selected".
+     The search finds names in the open folder and every folder inside it.
+     Dragging: a file follows the pointer and every folder that takes it (a row, a card, a tree item) shows its drop
+       outline; the keyboard picks a focused file up with Space and moves between folders with the arrow keys. Each move
+       is announced. Files dragged in from the computer show the drop overlay over the content.
+     The tree pane is a Resizable: its edge drags in size-token steps, the arrow keys step it, and its menu offers
+       Narrower, Wider and Reset size; the tree itself is one Tab stop with the arrow keys (Tree).
+   Notes:
+     The browser never changes the items by itself: every change goes to the page through its handlers, which keep items.
+     A picker that only chooses a file is the File picker, not this. Assets with rights and renditions show as asset
+     cards (MediaCard type and status) in the grid.
+*/
+const STRINGS = {
+  label: 'Files',
+  root: 'Library',
+  newFolder: 'New folder',
+  folderName: 'Folder name',
+  create: 'Create',
+  upload: 'Upload',
+  search: 'Search this folder',
+  folders: 'Folders',
+  path: 'Location',
+  count: '{n} items',
+  one: '1 item',
+  empty: 'This folder is empty',
+  emptyText: 'Upload files or create a folder.',
+  noMatch: 'Nothing matches “{q}”',
+  download: 'Download',
+  moveTo: 'Move to',
+  delete: 'Delete',
+  noun: 'item',
+  plural: 'items',
+  drop: 'Drop files to upload to {folder}',
+  nameTaken: 'A file or folder named “{name}” is already here.',
+  nameEmpty: 'Give the folder a name.',
+  items: '{n} items',
+  item: '{n} item'
+};
+const ROOT = '__plx-root';
+const DRAG = 'plx-file';
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const keyOf = id => id === null || id === undefined ? ROOT : id;
+// the fields Sort offers (utils/fields.js)
+const SORT_FIELDS = [{
+  value: 'name',
+  label: 'Name',
+  kind: 'text'
+}, {
+  value: 'size',
+  label: 'Size',
+  kind: 'number'
+}, {
+  value: 'modified',
+  label: 'Modified',
+  kind: 'date'
+}];
+const CARD_SIZE = {
+  s: 'sm',
+  m: 'md',
+  l: 'lg'
+};
+
+// a folder's name in the tree: a drop target for dragged files
+function TreeTarget({
+  id,
+  name,
+  onMove,
+  children
+}) {
+  const drop = (0, _dnd.useDropTarget)({
+    name,
+    accepts: (data, type) => type === DRAG && keyOf(data.parent) !== id,
+    onDrop: data => onMove([data], id === ROOT ? null : id),
+    disabled: !onMove
+  });
+  return /*#__PURE__*/_react.default.createElement("span", _extends({}, drop.props, {
+    className: (0, _cx.cx)('plx-file-browser__target', drop.props.className)
+  }), children);
+}
+
+// one card of the grid: a file drags onto folders, a folder takes files
+function GridItem({
+  item,
+  onMove,
+  children
+}) {
+  const folder = item.kind === 'folder';
+  const drag = (0, _dnd.useDraggable)({
+    data: item,
+    type: DRAG,
+    name: item.name,
+    handle: false,
+    disabled: folder || !onMove
+  });
+  const drop = (0, _dnd.useDropTarget)({
+    name: item.name,
+    accepts: (data, type) => type === DRAG && data.id !== item.id,
+    onDrop: data => onMove([data], item.id),
+    disabled: !folder || !onMove
+  });
+  const props = !onMove ? {} : folder ? drop.props : drag.props;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({}, props, {
+    className: (0, _cx.cx)('plx-file-browser__card', props.className)
+  }), children);
+}
+function FileBrowser({
+  items = [],
+  root,
+  folder,
+  defaultFolder,
+  onFolderChange,
+  view,
+  defaultView = 'list',
+  onViewChange,
+  listView = 'list',
+  tree = false,
+  breadcrumbs = true,
+  selectable = true,
+  selected,
+  onSelectionChange,
+  onOpenFile,
+  hrefFor,
+  onCreateFolder,
+  onUpload,
+  onDownload,
+  onRename,
+  onDelete,
+  onMove,
+  actions = [],
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const top = {
+    id: root && root.id !== undefined ? root.id : null,
+    name: root && root.name || t.root
+  };
+  const [ownFolder, setOwnFolder] = _react.default.useState(defaultFolder === undefined ? top.id : defaultFolder);
+  const current = keyOf(folder === undefined ? ownFolder : folder);
+  const [ownView, setOwnView] = _react.default.useState({
+    layout: defaultView === 'grid' ? 'gallery' : 'list',
+    size: 'm',
+    height: 'short'
+  });
+  const layout = view === undefined ? ownView.layout : view === 'grid' ? 'gallery' : 'list';
+  const [ownSel, setOwnSel] = _react.default.useState([]);
+  const sel = selected === undefined ? ownSel : selected;
+  const setSel = next => {
+    if (selected === undefined) setOwnSel(next);
+    if (onSelectionChange) onSelectionChange(next);
+  };
+  const [sort, setSort] = _react.default.useState([]);
+  const [q, setQ] = _react.default.useState('');
+  const [asking, setAsking] = _react.default.useState(null); // "folder" | "delete"
+  const [over, setOver] = _react.default.useState(false);
+  const depth = _react.default.useRef(0);
+  const picker = _react.default.useRef(null);
+
+  // the hierarchy
+  const folders = items.filter(x => x.kind === 'folder');
+  const byId = {};
+  items.forEach(x => {
+    byId[x.id] = x;
+  });
+  const kids = id => items.filter(x => keyOf(x.parent) === id);
+  const nameOf = id => id === ROOT ? top.name : byId[id] ? byId[id].name : top.name;
+  const pathTo = id => {
+    const out = [];
+    let at = id;
+    const seen = {};
+    while (at !== ROOT && byId[at] && !seen[at]) {
+      seen[at] = true;
+      out.unshift(at);
+      at = keyOf(byId[at].parent);
+    }
+    return [ROOT].concat(out);
+  };
+  const inside = id => {
+    const out = [];
+    const walk = p => kids(p).forEach(x => {
+      out.push(x);
+      if (x.kind === 'folder') walk(x.id);
+    });
+    walk(id);
+    return out;
+  };
+  const path = pathTo(current);
+  const go = id => {
+    const k = keyOf(id);
+    if (folder === undefined) setOwnFolder(k === ROOT ? top.id : k);
+    if (onFolderChange) onFolderChange(k === ROOT ? top.id : k);
+    setQ('');
+    setSel([]);
+  };
+  const setLayout = v => {
+    if (view === undefined) setOwnView(v);
+    if (onViewChange) onViewChange(v.layout === 'gallery' ? 'grid' : 'list');
+  };
+  const viewValue = Object.assign({}, ownView, {
+    layout
+  });
+
+  // what the open folder shows: its children (with a folder's count), or the search's matches inside it
+  const withCount = x => x.kind === 'folder' && typeof x.count !== 'number' ? Object.assign({}, x, {
+    count: kids(x.id).length
+  }) : x;
+  const query = q.trim().toLowerCase();
+  const shown = (query ? inside(current).filter(x => String(x.name).toLowerCase().indexOf(query) >= 0) : kids(current)).map(withCount);
+  const order = sort[0] ? {
+    field: sort[0].field,
+    dir: sort[0].dir
+  } : {
+    field: 'name',
+    dir: 'asc'
+  };
+  const move = onMove ? (list, to) => onMove(list, to === ROOT ? null : to) : undefined;
+  const chosen = sel.map(id => byId[id]).filter(Boolean);
+  // where the selection can go: every folder but the chosen folders, the ones inside them and the open one
+  const blocked = {};
+  chosen.forEach(x => {
+    blocked[x.id] = true;
+    if (x.kind === 'folder') inside(x.id).forEach(y => {
+      blocked[y.id] = true;
+    });
+  });
+  const targets = [{
+    id: ROOT,
+    name: top.name
+  }].concat(folders).filter(f => !blocked[f.id] && keyOf(f.id) !== current);
+  const countText = shown.length === 1 ? t.one : fill(t.count, {
+    n: (0, _format.formatNumber)(shown.length)
+  });
+  const bar = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
+    label: nameOf(current),
+    count: countText,
+    actions: [].concat(onCreateFolder ? [{
+      id: 'new-folder',
+      label: t.newFolder,
+      icon: 'folder-add',
+      onSelect: () => setAsking('folder')
+    }] : [], onUpload ? [{
+      id: 'upload',
+      label: t.upload,
+      icon: 'upload',
+      onSelect: () => picker.current && picker.current.click()
+    }] : [], actions),
+    find: /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarSearch, {
+      value: q,
+      onChange: e => setQ(e.target.value),
+      onClear: () => setQ(''),
+      placeholder: t.search,
+      "aria-label": t.search
+    }),
+    view: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_SortPanel.SortPanel, {
+      fields: SORT_FIELDS,
+      value: sort,
+      onChange: v => setSort(v.slice(0, 1))
+    }), /*#__PURE__*/_react.default.createElement(_ViewMenu.ViewMenu, {
+      value: viewValue,
+      onChange: setLayout
+    })),
+    selection: selectable ? {
+      count: sel.length,
+      noun: t.noun,
+      plural: t.plural,
+      onClear: () => setSel([]),
+      actions: [].concat(onDownload ? [{
+        id: 'download',
+        label: t.download,
+        icon: 'download-tray',
+        onSelect: () => onDownload(chosen)
+      }] : [], move ? [{
+        id: 'move',
+        label: t.moveTo,
+        icon: 'move',
+        items: targets.map(f => ({
+          id: String(f.id),
+          label: f.name,
+          icon: 'folder',
+          onSelect: () => {
+            move(chosen, keyOf(f.id));
+            setSel([]);
+          }
+        }))
+      }] : [], onDelete ? [{
+        id: 'delete',
+        label: t.delete,
+        icon: 'trash',
+        danger: true,
+        onSelect: () => setAsking('delete')
+      }] : [])
+    } : undefined
+  });
+  const empty = /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    icon: "folder-open",
+    title: query ? fill(t.noMatch, {
+      q: q.trim()
+    }) : t.empty,
+    action: !query && onUpload ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: "upload",
+      onClick: () => picker.current && picker.current.click()
+    }, t.upload) : undefined
+  }, query ? null : t.emptyText);
+  let content;
+  if (layout === 'gallery') {
+    const cards = (0, _FileList.sortFiles)(shown, order);
+    content = cards.length ? /*#__PURE__*/_react.default.createElement(_ContentGrid.ContentGrid, {
+      label: nameOf(current),
+      size: CARD_SIZE[viewValue.size] || 'md',
+      className: "plx-file-browser__grid"
+    }, cards.map(x => {
+      const isFolder = x.kind === 'folder';
+      const ext = (0, _File.fileExtension)(x.name);
+      const facts = isFolder ? fill(x.count === 1 ? t.item : t.items, {
+        n: (0, _format.formatNumber)(x.count || 0)
+      }) : [ext ? ext.toUpperCase() : null, typeof x.size === 'number' ? (0, _format.formatBytes)(x.size) : null].filter(Boolean).join(' · ');
+      return /*#__PURE__*/_react.default.createElement(GridItem, {
+        key: x.id,
+        item: x,
+        onMove: move
+      }, /*#__PURE__*/_react.default.createElement(_Card.MediaCard, {
+        src: x.src,
+        alt: "",
+        icon: isFolder ? 'folder' : (0, _File.fileIcon)(x.name, x.type),
+        title: x.name,
+        meta: facts,
+        aspect: "4/3",
+        status: x.status,
+        selected: sel.indexOf(x.id) >= 0,
+        selecting: sel.length > 0,
+        onSelectChange: selectable ? on => setSel(on ? sel.concat(x.id) : sel.filter(y => y !== x.id)) : undefined,
+        href: hrefFor ? hrefFor(x) : undefined,
+        onOpen: hrefFor ? undefined : isFolder ? () => go(x.id) : onOpenFile ? () => onOpenFile(x) : undefined
+      }));
+    })) : empty;
+  } else {
+    content = /*#__PURE__*/_react.default.createElement(_FileList.FileList, {
+      label: nameOf(current),
+      files: shown,
+      view: listView,
+      sort: order,
+      onSortChange: o => setSort([o]),
+      selectable: selectable,
+      selected: sel,
+      onSelectionChange: setSel,
+      hrefFor: hrefFor,
+      onOpen: x => x.kind === 'folder' ? go(x.id) : onOpenFile && onOpenFile(x),
+      onDownload: onDownload ? x => onDownload([x]) : undefined,
+      onRename: onRename,
+      onDelete: onDelete ? x => onDelete([x]) : undefined,
+      dragType: move ? DRAG : undefined,
+      onMove: move ? (x, to) => move([x], to.id) : undefined,
+      moveTargets: move ? [{
+        id: top.id,
+        name: top.name
+      }].concat(folders) : undefined,
+      rowHeight: viewValue.height,
+      empty: empty
+    });
+  }
+
+  // the tree: the root and every folder, the open folder's parents open
+  const node = f => {
+    const sub = folders.filter(x => keyOf(x.parent) === f.id);
+    return {
+      id: f.id,
+      label: /*#__PURE__*/_react.default.createElement(TreeTarget, {
+        id: f.id,
+        name: f.name,
+        onMove: move
+      }, f.name),
+      icon: 'folder',
+      children: sub.length ? sub.map(node) : undefined
+    };
+  };
+  const [open, setOpen] = _react.default.useState([]);
+  const expanded = Array.from(new Set(open.concat(path.slice(0, -1))));
+  const treeEl = tree ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-file-browser__tree"
+  }, /*#__PURE__*/_react.default.createElement(_Resizable.Resizable, {
+    label: t.folders,
+    axis: "horizontal",
+    defaultWidth: 240,
+    minWidth: 160,
+    maxWidth: 400,
+    className: "plx-file-browser__pane"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-file-browser__tree-scroll",
+    tabIndex: 0,
+    role: "region",
+    "aria-label": t.folders
+  }, /*#__PURE__*/_react.default.createElement(_Tree.Tree, {
+    label: t.folders,
+    nodes: [node({
+      id: ROOT,
+      name: top.name
+    })],
+    selected: current,
+    onSelect: go,
+    expanded: expanded,
+    onExpandedChange: setOpen
+  })))) : null;
+
+  // files dragged in from the computer: the drop overlay over the content, then onUpload
+  const hasFiles = e => Array.from(e.dataTransfer && e.dataTransfer.types || []).indexOf('Files') >= 0;
+  const dropProps = onUpload ? {
+    onDragEnter: e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth.current += 1;
+      setOver(true);
+    },
+    onDragOver: e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    },
+    onDragLeave: e => {
+      if (!hasFiles(e)) return;
+      depth.current = Math.max(0, depth.current - 1);
+      if (!depth.current) setOver(false);
+    },
+    onDrop: e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth.current = 0;
+      setOver(false);
+      const list = Array.from(e.dataTransfer.files || []);
+      if (list.length) onUpload(list, current === ROOT ? top.id : current);
+    }
+  } : {};
+  const names = kids(current).map(x => String(x.name).toLowerCase());
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-file-browser', 'plx-file-browser--' + (layout === 'gallery' ? 'grid' : 'list'), tree && 'plx-file-browser--tree', breadcrumbs && 'plx-file-browser--breadcrumbs', className),
+    "aria-label": t.label
+  }, breadcrumbs ? /*#__PURE__*/_react.default.createElement(_Breadcrumbs.Breadcrumbs, {
+    label: t.path,
+    className: "plx-file-browser__path",
+    items: path.map(id => ({
+      label: nameOf(id),
+      href: hrefFor && id !== ROOT && byId[id] ? hrefFor(byId[id]) : '#' + encodeURIComponent(id === ROOT ? 'root' : String(id)),
+      onClick: e => {
+        if (!hrefFor) {
+          e.preventDefault();
+          go(id);
+        }
+      }
+    }))
+  }) : null, bar, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-file-browser__body"
+  }, treeEl, /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: "plx-file-browser__content"
+  }, dropProps), content, onUpload && over ? /*#__PURE__*/_react.default.createElement(_DropZone.DropZone, {
+    overlay: true,
+    active: true,
+    className: "plx-file-browser__drop"
+  }, fill(t.drop, {
+    folder: nameOf(current)
+  })) : null)), onUpload ? /*#__PURE__*/_react.default.createElement("input", {
+    ref: picker,
+    type: "file",
+    multiple: true,
+    hidden: true,
+    "aria-label": t.upload,
+    onChange: e => {
+      const list = Array.from(e.target.files || []);
+      if (list.length) onUpload(list, current === ROOT ? top.id : current);
+      e.target.value = '';
+    }
+  }) : null, onCreateFolder ? /*#__PURE__*/_react.default.createElement(_Dialog.PromptDialog, {
+    open: asking === 'folder',
+    title: t.newFolder,
+    label: t.folderName,
+    confirmLabel: t.create,
+    validate: v => !v.trim() ? t.nameEmpty : names.indexOf(v.trim().toLowerCase()) >= 0 ? fill(t.nameTaken, {
+      name: v.trim()
+    }) : '',
+    onSubmit: v => {
+      setAsking(null);
+      onCreateFolder(v.trim(), current === ROOT ? top.id : current);
+    },
+    onCancel: () => setAsking(null)
+  }) : null, onDelete ? /*#__PURE__*/_react.default.createElement(_DeleteFlow.DeleteFlow, {
+    open: asking === 'delete',
+    onClose: () => setAsking(null),
+    items: chosen.map(x => ({
+      id: x.id,
+      label: x.name
+    })),
+    noun: t.noun,
+    plural: t.plural,
+    onDelete: () => {
+      onDelete(chosen);
+      setSel([]);
+    }
+  }) : null);
+}
+  } },
+  "platform/patterns/UploadManager/UploadManager.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.UploadManager = UploadManager;
+exports.useUploadQueue = useUploadQueue;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _announce = require("../../utils/announce.jsx");
+var _layer = require("../../utils/layer.js");
+var _FileRow = require("../../components/FileRow/FileRow.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _ProgressBar = require("../../components/ProgressBar/ProgressBar.jsx");
+var _DropZone = require("../../components/DropZone/DropZone.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · UploadManager, useUploadQueue
+   Summary: Files on their way up (12 Specialized › Files, assets, and DAM › Upload manager): a drop zone that also opens
+     the system's file and folder pickers, then a queue with a FileRow per file and its own progress (per file progress),
+     Cancel while it moves, the reason and Try again when it fails (retry), and the overall progress and counts at the
+     top. A panel people keep working beside (panel; docked to the window's bottom end, or in place), or a dialog that
+     starts the upload (dialog). useUploadQueue runs the uploads, a few at a time, and checks each file's type and size
+     first. Built from Platform components only: the Asset Manager's upload dialog, promoted.
+   Usage:
+     const queue = useUploadQueue({ upload: (file, { onProgress, signal }) => send(file, onProgress, signal), accept: 'image/*,.pdf', maxSize: 500e6 });
+     <UploadManager queue={queue} variant="panel" docked onClose={() => queue.clear()} />
+     <UploadManager queue={queue} variant="dialog" open={open} onClose={() => setOpen(false)} hint="PNG, JPG or PDF, up to 500 MB each." />
+     <UploadManager items={rows} onCancel={stop} onRetry={again} onRemove={drop} />     (the page keeps the rows)
+   Props:
+     queue: a useUploadQueue() (the page keeps it, so uploads go on while the dialog is closed or the panel moves)
+     upload(file, { onProgress(percent), signal }): without queue, the manager keeps its own queue and runs this for each
+       file (a promise; a rejection's message is the reason shown)
+     items: the rows kept by the page instead of a queue: [{ id, name, size, type, status: "queued" | "uploading" | "done" |
+       "error" | "canceled", progress (0–100), error (the reason), retry (false: the failure cannot be retried, a type or
+       a size refused) }]
+     onAdd(files): with items, runs with the files people drop or choose
+     onCancel(id): with items, Cancel on a moving row
+     onRetry(id): with items, Try again on a failed row and Upload again on a canceled one
+     onRemove(id): with items, Remove from the list in a finished row's More actions
+     onCancelAll(): with items, Cancel all in the head
+     onClear(): with items, Clear finished in the head
+     variant: "panel" (default) | "dialog"
+     docked: the panel sits over the page at the window's bottom end (on a narrow window across its bottom); default false
+     dropZone: the drop zone at the top (default: the dialog's, not the panel's)
+     accept: the types the manager's own queue takes ("image/*,.pdf"), also the file picker's
+     maxSize: the largest file the manager's own queue takes, in bytes
+     concurrency: how many files the manager's own queue uploads at once (default 3)
+     folders: the drop zone also takes whole folders (Choose a folder; a dropped folder's files keep their path); default true
+     hint: the limits, said before people choose ("PNG, JPG or PDF, up to 500 MB each.")
+     title: the dialog's title (default strings.dialogTitle)
+     open: the dialog is shown (default true)
+     onClose(): the dialog's Done and close button; the panel's Close (shown when nothing is moving)
+     defaultCollapsed: the panel starts with its list hidden (default false)
+     strings: { dialogTitle: "Upload files", queue: "Uploads", drop: "Drag and drop files or folders here", or: "or",
+       chooseFiles: "Choose files", chooseFolder: "Choose a folder", uploading: "Uploading {n} files", uploadingOne:
+       "Uploading 1 file", done: "{n} uploads complete", doneOne: "1 upload complete", failed: "{n} uploads failed",
+       failedOne: "1 upload failed", none: "No uploads", progress: "{done} of {total} uploaded", overall: "Overall
+       progress", waiting: "Waiting", uploaded: "Uploaded", canceled: "Canceled", cancelAll: "Cancel all", clear: "Clear
+       finished", hide: "Hide the uploads", show: "Show the uploads", close: "Close", finish: "Done", remove: "Remove
+       from the list", again: "Upload again", tooLarge: "This file is larger than {max}.", wrongType: "This type of file
+       can’t be uploaded here.", error: "The upload failed. Try again.", failedNamed: "{name} failed: {reason}" }
+     className: more classes on the manager
+     useUploadQueue(options): the queue: options { upload, accept, maxSize, concurrency: default 3, strings }; it returns
+       { items, add(files), cancel(id), retry(id), remove(id), cancelAll(), clear() }; add takes File objects, or
+       { file, path } from a dropped folder
+   Behavior:
+     Files are checked as they are added: a type the accept list refuses or a file over maxSize fails at once with the
+       reason in words, and no Try again (choose another file). The others wait, then upload a few at a time.
+     Each row is a FileRow: waiting and uploading rows show a bar named "Uploading {name}" and its percent in the data
+       font, with Cancel; a finished row shows its status Badge with its icon; a failed one the danger icon, the reason
+       and Try again; More actions removes a finished row from the list (and uploads a canceled one again).
+     The head says what is happening ("Uploading 3 files", "5 uploads complete", "1 upload failed") with the overall bar
+       and "4 of 7 uploaded" in the data font (canceled and refused files are not counted; the percent is by size);
+       Cancel all while files move, Clear finished afterwards.
+     Starting, finishing and failing are announced politely (the live region), each failure with its file and reason.
+     The drop zone takes files and whole folders; Choose files and Choose a folder open the system's pickers. The queue
+       scrolls past its height and is a named region in the Tab order.
+     The panel hides and shows its list (its toggle says which); the dialog's uploads go on after it closes when the page
+       keeps the queue.
+   Notes:
+     One small file in a form is the file input's own business (FileInput); use the manager for many or large files and
+     for uploads that outlast the moment. Say the limits before people choose.
+*/
+
+const STRINGS = {
+  dialogTitle: 'Upload files',
+  queue: 'Uploads',
+  drop: 'Drag and drop files or folders here',
+  or: 'or',
+  chooseFiles: 'Choose files',
+  chooseFolder: 'Choose a folder',
+  uploading: 'Uploading {n} files',
+  uploadingOne: 'Uploading 1 file',
+  done: '{n} uploads complete',
+  doneOne: '1 upload complete',
+  failed: '{n} uploads failed',
+  failedOne: '1 upload failed',
+  none: 'No uploads',
+  progress: '{done} of {total} uploaded',
+  overall: 'Overall progress',
+  waiting: 'Waiting',
+  uploaded: 'Uploaded',
+  canceled: 'Canceled',
+  cancelAll: 'Cancel all',
+  clear: 'Clear finished',
+  hide: 'Hide the uploads',
+  show: 'Show the uploads',
+  close: 'Close',
+  finish: 'Done',
+  remove: 'Remove from the list',
+  again: 'Upload again',
+  tooLarge: 'This file is larger than {max}.',
+  wrongType: 'This type of file can’t be uploaded here.',
+  error: 'The upload failed. Try again.',
+  failedNamed: '{name} failed: {reason}'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const clamp = n => Math.max(0, Math.min(100, Number(n) || 0));
+const MOVING = {
+  queued: true,
+  uploading: true
+};
+
+// does the accept list ("image/*,.pdf") take this file?
+function accepted(accept, file) {
+  if (!accept) return true;
+  const name = String(file.name || '').toLowerCase(),
+    type = String(file.type || '').toLowerCase();
+  return String(accept).split(',').map(x => x.trim().toLowerCase()).filter(Boolean).some(a => a.charAt(0) === '.' ? name.endsWith(a) : /\/\*$/.test(a) ? type.indexOf(a.slice(0, -1)) === 0 : type === a);
+}
+
+// a dropped folder arrives as a directory entry: every file inside joins the queue with its folder path
+function walkEntry(entry, prefix, out) {
+  return new Promise(resolve => {
+    if (entry.isFile) entry.file(file => {
+      out.push({
+        file,
+        path: prefix
+      });
+      resolve();
+    }, () => resolve());else if (entry.isDirectory) {
+      const reader = entry.createReader(),
+        all = [];
+      const read = () => reader.readEntries(batch => {
+        if (batch.length) {
+          all.push(...batch);
+          read();
+        } else Promise.all(all.map(e => walkEntry(e, prefix + entry.name + '/', out))).then(resolve);
+      }, () => resolve());
+      read();
+    } else resolve();
+  });
+}
+function droppedFiles(dataTransfer) {
+  const entries = Array.from(dataTransfer.items || []).map(it => it.kind === 'file' && it.webkitGetAsEntry ? it.webkitGetAsEntry() : null);
+  if (!entries.length || entries.some(e => !e)) return Promise.resolve(Array.from(dataTransfer.files || []).map(file => ({
+    file,
+    path: ''
+  })));
+  const out = [];
+  return Promise.all(entries.map(e => walkEntry(e, '', out))).then(() => out);
+}
+let nextId = 0;
+function useUploadQueue(options) {
+  const o = options || {};
+  const t = Object.assign({}, STRINGS, o.strings);
+  const [items, setItems] = _react.default.useState([]);
+  const controllers = _react.default.useRef({});
+  const latest = _react.default.useRef(o);
+  latest.current = o;
+  const update = (id, patch) => setItems(list => list.map(x => x.id === id ? Object.assign({}, x, patch) : x));
+  const start = it => {
+    const ac = typeof AbortController !== 'undefined' ? new AbortController() : {
+      signal: {
+        aborted: false
+      },
+      abort() {
+        this.signal.aborted = true;
+      }
+    };
+    controllers.current[it.id] = ac;
+    update(it.id, {
+      status: 'uploading',
+      progress: 0,
+      error: undefined
+    });
+    const run = latest.current.upload;
+    Promise.resolve().then(() => run ? run(it.file || it, {
+      onProgress: p => {
+        if (!ac.signal.aborted) update(it.id, {
+          progress: clamp(p)
+        });
+      },
+      signal: ac.signal
+    }) : undefined).then(() => {
+      if (!ac.signal.aborted) update(it.id, {
+        status: 'done',
+        progress: 100
+      });
+    }, e => {
+      if (!ac.signal.aborted) update(it.id, {
+        status: 'error',
+        error: e && e.message || t.error,
+        retry: true
+      });
+    }).then(() => {
+      delete controllers.current[it.id];
+    });
+  };
+  // the runner: a few at a time (concurrency), the next as one finishes
+  _react.default.useEffect(() => {
+    const free = Math.max(0, (latest.current.concurrency || 3) - items.filter(x => x.status === 'uploading').length);
+    items.filter(x => x.status === 'queued').slice(0, free).forEach(start);
+  }, [items]);
+  const stop = id => {
+    const c = controllers.current[id];
+    if (c) {
+      c.abort();
+      delete controllers.current[id];
+    }
+  };
+  return {
+    items,
+    add: files => {
+      const max = latest.current.maxSize;
+      const added = Array.from(files || []).map(x => {
+        const file = x && x.file ? x.file : x;
+        const path = x && x.file ? x.path || '' : '';
+        const row = {
+          id: 'upl-' + ++nextId,
+          name: path + file.name,
+          size: file.size,
+          type: file.type,
+          file,
+          status: 'queued',
+          progress: 0
+        };
+        if (!accepted(latest.current.accept, file)) return Object.assign(row, {
+          status: 'error',
+          error: t.wrongType,
+          retry: false
+        });
+        if (max && file.size > max) return Object.assign(row, {
+          status: 'error',
+          error: fill(t.tooLarge, {
+            max: (0, _format.formatBytes)(max)
+          }),
+          retry: false
+        });
+        return row;
+      });
+      setItems(list => list.concat(added));
+    },
+    cancel: id => {
+      stop(id);
+      update(id, {
+        status: 'canceled',
+        progress: 0
+      });
+    },
+    retry: id => update(id, {
+      status: 'queued',
+      progress: 0,
+      error: undefined
+    }),
+    remove: id => {
+      stop(id);
+      setItems(list => list.filter(x => x.id !== id));
+    },
+    cancelAll: () => {
+      setItems(list => list.map(x => {
+        if (!MOVING[x.status]) return x;
+        stop(x.id);
+        return Object.assign({}, x, {
+          status: 'canceled',
+          progress: 0
+        });
+      }));
+    },
+    clear: () => setItems(list => list.filter(x => MOVING[x.status]))
+  };
+}
+function UploadManager({
+  queue,
+  upload,
+  items,
+  onAdd,
+  onCancel,
+  onRetry,
+  onRemove,
+  onCancelAll,
+  onClear,
+  variant = 'panel',
+  docked = false,
+  dropZone,
+  accept,
+  maxSize,
+  concurrency,
+  folders = true,
+  hint,
+  title,
+  open = true,
+  onClose,
+  defaultCollapsed = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const own = useUploadQueue({
+    upload,
+    accept,
+    maxSize,
+    concurrency,
+    strings
+  });
+  const q = queue || (items ? {
+    items,
+    add: onAdd,
+    cancel: onCancel,
+    retry: onRetry,
+    remove: onRemove,
+    cancelAll: onCancelAll,
+    clear: onClear
+  } : own);
+  const rows = q.items || [];
+  const id = (0, _layer.useUid)('plx-upload-manager');
+  const [collapsed, setCollapsed] = _react.default.useState(!!defaultCollapsed);
+  const [over, setOver] = _react.default.useState(false);
+  const depth = _react.default.useRef(0);
+  const filesInput = _react.default.useRef(null),
+    folderInput = _react.default.useRef(null);
+  const dialog = variant === 'dialog';
+  const withZone = dropZone === undefined ? dialog : !!dropZone;
+
+  // the counts and the overall progress (weighted by size)
+  const n = s => rows.filter(x => x.status === s).length;
+  const moving = rows.filter(x => MOVING[x.status]).length,
+    done = n('done'),
+    failed = n('error'),
+    total = rows.length;
+  const weight = x => typeof x.size === 'number' && x.size > 0 ? x.size : 1;
+  const live = rows.filter(x => x.status !== 'canceled' && !(x.status === 'error' && x.retry === false));
+  const sum = live.reduce((a, x) => a + weight(x), 0);
+  const overall = sum ? live.reduce((a, x) => a + weight(x) * (x.status === 'done' ? 100 : x.status === 'error' ? 0 : clamp(x.progress)), 0) / sum : 0;
+  const headline = moving ? moving === 1 ? t.uploadingOne : fill(t.uploading, {
+    n: (0, _format.formatNumber)(moving)
+  }) : failed ? failed === 1 ? t.failedOne : fill(t.failed, {
+    n: (0, _format.formatNumber)(failed)
+  }) : done ? done === 1 ? t.doneOne : fill(t.done, {
+    n: (0, _format.formatNumber)(done)
+  }) : t.none;
+
+  // what changes is said politely: the start, each failure, the end
+  const was = _react.default.useRef({});
+  _react.default.useEffect(() => {
+    const before = was.current,
+      now = {};
+    rows.forEach(x => {
+      now[x.id] = x.status;
+      if (x.status === 'error' && before[x.id] !== 'error') (0, _announce.announce)(fill(t.failedNamed, {
+        name: x.name,
+        reason: x.error || t.error
+      }));
+    });
+    const wasMoving = Object.keys(before).some(k => MOVING[before[k]]);
+    if (!wasMoving && moving) (0, _announce.announce)(headline);
+    if (wasMoving && !moving && total) (0, _announce.announce)(headline);
+    was.current = now;
+  });
+  const add = list => {
+    if (list && list.length && q.add) q.add(list);
+  };
+  const fromInput = e => {
+    add(Array.from(e.target.files || []).map(file => ({
+      file,
+      path: (file.webkitRelativePath || '').split('/').slice(0, -1).map(p => p + '/').join('')
+    })));
+    e.target.value = '';
+  };
+  const zone = withZone ? /*#__PURE__*/_react.default.createElement(_DropZone.DropZone, {
+    active: over,
+    className: "plx-upload-manager__zone",
+    onDragEnter: e => {
+      e.preventDefault();
+      depth.current += 1;
+      setOver(true);
+    },
+    onDragOver: e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    },
+    onDragLeave: () => {
+      depth.current = Math.max(0, depth.current - 1);
+      if (!depth.current) setOver(false);
+    },
+    onDrop: e => {
+      e.preventDefault();
+      depth.current = 0;
+      setOver(false);
+      droppedFiles(e.dataTransfer).then(add);
+    }
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "upload-2",
+    size: "lg"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-upload-manager__drop"
+  }, t.drop), hint ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-upload-manager__hint"
+  }, hint) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-upload-manager__choose"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    icon: "text-card",
+    onClick: () => filesInput.current && filesInput.current.click()
+  }, t.chooseFiles), folders ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    icon: "folder-open",
+    onClick: () => folderInput.current && folderInput.current.click()
+  }, t.chooseFolder) : null), /*#__PURE__*/_react.default.createElement("input", {
+    ref: filesInput,
+    type: "file",
+    multiple: true,
+    hidden: true,
+    accept: accept,
+    onChange: fromInput,
+    "aria-label": t.chooseFiles
+  }), folders ? /*#__PURE__*/_react.default.createElement("input", {
+    ref: folderInput,
+    type: "file",
+    multiple: true,
+    hidden: true,
+    webkitdirectory: "",
+    directory: "",
+    onChange: fromInput,
+    "aria-label": t.chooseFolder
+  }) : null) : null;
+  const row = x => {
+    const file = {
+      id: x.id,
+      name: x.name,
+      size: x.size,
+      type: x.type
+    };
+    if (MOVING[x.status]) {
+      return /*#__PURE__*/_react.default.createElement(_FileRow.FileRow, {
+        key: x.id,
+        as: "li",
+        file: file,
+        progress: x.status === 'queued' ? 0 : clamp(x.progress),
+        progressLabel: x.status === 'queued' ? t.waiting : undefined,
+        onCancel: q.cancel ? () => q.cancel(x.id) : undefined
+      });
+    }
+    const removeItem = q.remove ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: "remove",
+      icon: "close",
+      onSelect: () => q.remove(x.id)
+    }, t.remove) : null;
+    if (x.status === 'error') {
+      return /*#__PURE__*/_react.default.createElement(_FileRow.FileRow, {
+        key: x.id,
+        as: "li",
+        file: file,
+        error: x.error || t.error,
+        onRetry: x.retry !== false && q.retry ? () => q.retry(x.id) : undefined,
+        actions: removeItem || undefined
+      });
+    }
+    const canceled = x.status === 'canceled';
+    return /*#__PURE__*/_react.default.createElement(_FileRow.FileRow, {
+      key: x.id,
+      as: "li",
+      file: file,
+      status: canceled ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+        tone: "neutral",
+        icon: "close"
+      }, t.canceled) : /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+        tone: "success",
+        icon: "circle-check"
+      }, t.uploaded),
+      actions: canceled && q.retry ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        icon: "refresh",
+        onSelect: () => q.retry(x.id)
+      }, t.again), removeItem) : removeItem || undefined
+    });
+  };
+  const list = rows.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-upload-manager__queue",
+    tabIndex: 0,
+    role: "region",
+    "aria-label": t.queue
+  }, /*#__PURE__*/_react.default.createElement(_FileRow.FileRowList, {
+    label: t.queue
+  }, rows.map(row))) : null;
+  const summary = total ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-upload-manager__summary"
+  }, /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+    className: "plx-upload-manager__bar",
+    size: "sm",
+    value: Math.round(overall),
+    label: t.overall,
+    labelHidden: true,
+    tone: failed && !moving ? 'danger' : moving ? 'info' : 'success'
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-upload-manager__counts"
+  }, fill(t.progress, {
+    done: (0, _format.formatNumber)(done),
+    total: (0, _format.formatNumber)(live.length)
+  }), " \xB7 ", (0, _format.formatPercent)(overall / 100))) : null;
+  const finishing = total && !moving;
+  const bulk = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, moving && q.cancelAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    onClick: q.cancelAll
+  }, t.cancelAll) : null, finishing && q.clear ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    onClick: q.clear
+  }, t.clear) : null);
+  if (dialog) {
+    return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+      open: open,
+      onClose: onClose,
+      title: title || t.dialogTitle,
+      icon: "upload",
+      size: "md",
+      className: (0, _cx.cx)('plx-upload-manager', 'plx-upload-manager--dialog', className),
+      footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, bulk, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        variant: "primary",
+        onClick: onClose
+      }, t.finish))
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-upload-manager__body"
+    }, zone, total ? /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-upload-manager__headline"
+    }, headline) : null, summary, list));
+  }
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-upload-manager', 'plx-upload-manager--panel', docked && 'plx-upload-manager--docked', collapsed && 'is-collapsed', className),
+    "aria-labelledby": id + '-title'
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-upload-manager__head"
+  }, /*#__PURE__*/_react.default.createElement("h2", {
+    id: id + '-title',
+    className: "plx-upload-manager__title"
+  }, headline), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-upload-manager__actions"
+  }, bulk, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    iconOnly: true,
+    icon: collapsed ? 'chevron-up' : 'chevron-down',
+    label: collapsed ? t.show : t.hide,
+    "aria-expanded": !collapsed,
+    "aria-controls": id + '-list',
+    onClick: () => setCollapsed(!collapsed)
+  }), onClose && !moving ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    iconOnly: true,
+    icon: "close",
+    label: t.close,
+    onClick: onClose
+  }) : null)), summary, /*#__PURE__*/_react.default.createElement("div", {
+    id: id + '-list',
+    className: "plx-upload-manager__body",
+    hidden: collapsed
+  }, zone, list));
+}
+  } },
+  "platform/patterns/VersionCompare/VersionCompare.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VersionCompare = VersionCompare;
+exports.diffLines = diffLines;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _announce = require("../../utils/announce.jsx");
+var _layer = require("../../utils/layer.js");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _SegmentedControl = require("../../components/SegmentedControl/SegmentedControl.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _ComparisonView = require("../ComparisonView/ComparisonView.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · VersionCompare, diffLines
+   Summary: What changed between two versions of one item (12 Specialized › Files, assets, and DAM › Version comparison):
+     the two version pickers (Compare … with …, and Swap) above the ComparisonView of the two, side by side with their
+     changed attributes marked (side by side), or their pictures over each other with the line people move (slider), or
+     the text's lines with the added and removed ones marked and Previous and Next change to step through them (text
+     diff). Built from Platform components only: Select, Field, Button, SegmentedControl and ComparisonView.
+   Usage:
+     <VersionCompare label="Compare versions of Easter banner" versions={[
+         { id: 'v2', label: 'Version 2', date: '2026-10-02', author: 'Maya Chen', image: { src: v2, alt: 'Easter banner, version 2' }, values: { size: '2.4 MB' }, text: '…' },
+         { id: 'v3', label: 'Version 3', date: '2026-10-09', author: 'Alex Kim', image: { src: v3, alt: 'Easter banner, version 3' }, values: { size: '3.1 MB' }, text: '…' }]}
+       attributes={[{ key: 'size', label: 'Size', kind: 'data' }]} defaultBase="v2" defaultTarget="v3" />
+   Props:
+     versions: the versions, newest last or in any order: [{ id, label ("Version 3"), date ("YYYY-MM-DD" or a Date), author,
+       image { src, alt }, media (a node instead of the picture), values (the attributes by key), text (the content as
+       text, for the text diff) }] (required)
+     attributes: the attributes compared side by side: [{ key, label, kind: "data" }] (ComparisonView's)
+     base: the baseline version's id (Compare), kept by the page
+     defaultBase: the first baseline when the view keeps it (default the second to last version)
+     target: the other version's id (With), kept by the page
+     defaultTarget: the first other version when the view keeps it (default the last version)
+     onChange(pair): runs with { base, target } when people pick or swap
+     mode: "columns" (side by side) | "slider" | "text", kept by the page
+     defaultMode: the first view when the view keeps it (default "columns")
+     onModeChange(mode): runs when people switch views
+     modes: the views people can switch between (default: side by side, plus the slider when both versions have a picture
+       and the text diff when both have text)
+     context: the unchanged lines kept around each change in the text diff; longer runs fold into "Show N unchanged
+       lines" (default 3)
+     ratio: the pictures' shape ("16-9" default, "4-3", "3-2", "1-1")
+     scroll: the panes scroll together at a fixed height (ComparisonView; default false)
+     label: the view's accessible name (default strings.label)
+     strings: { label: "Version comparison", compare: "Compare", with: "With", swap: "Swap", swapLabel: "Swap the two
+       versions", view: "View", columns: "Side by side", slider: "Slider", text: "Text", by: "by {author}", diff:
+       "Changes from {base} to {target}", added: "Added", removed: "Removed", same: "No changes in the text", summary:
+       "{added} added, {removed} removed", lines: "{n} lines", line: "1 line", previous: "Previous change", next: "Next
+       change", at: "Change {n} of {total}", unchanged: "Show {n} unchanged lines", empty: "Choose two versions to compare." }
+     className: more classes on the view
+   Behavior:
+     Each picker lists every version but the one the other picker shows; Swap exchanges them. The first (Compare) is
+       the baseline: the second's changed values carry ComparisonView's Changed badge, its added lines are marked
+       Added, the first's removed lines Removed.
+     The text diff compares line by line (the longest common subsequence): an added line has a plus and "Added" for
+       screen readers, a removed one a minus and "Removed", never only a color; both line numbers are in the data font.
+       Unchanged runs longer than the context fold into a button that shows them. Previous change and Next change move
+       the focus to the change's first line and say which change it is ("Change 2 of 5"); the lines are a named region in
+       the Tab order that scrolls with the arrow keys.
+     Side by side and the slider are ComparisonView's (Show only differences, linked scrolling, the Platform Slider).
+     On a narrow view the pickers stack, then the panes (ComparisonView).
+   Notes:
+     Label each side by its version and date, always. A list of changed fields alone (only metadata changed) is the
+     side-by-side view with Show only differences on; versions of different items are not compared here.
+*/
+
+const STRINGS = {
+  label: 'Version comparison',
+  compare: 'Compare',
+  with: 'With',
+  swap: 'Swap',
+  swapLabel: 'Swap the two versions',
+  view: 'View',
+  columns: 'Side by side',
+  slider: 'Slider',
+  text: 'Text',
+  by: 'by {author}',
+  diff: 'Changes from {base} to {target}',
+  added: 'Added',
+  removed: 'Removed',
+  same: 'No changes in the text',
+  summary: '{added} added, {removed} removed',
+  lines: '{n} lines',
+  line: '1 line',
+  previous: 'Previous change',
+  next: 'Next change',
+  at: 'Change {n} of {total}',
+  unchanged: 'Show {n} unchanged lines',
+  empty: 'Choose two versions to compare.'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
+
+// the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
+function diffLines(before, after) {
+  const A = String(before || '').split('\n'),
+    B = String(after || '').split('\n');
+  const n = A.length,
+    m = B.length;
+  const out = [];
+  if (n * m > 4000000) {
+    // too large to compare line by line: everything before removed, everything after added
+    A.forEach((text, i) => out.push({
+      kind: 'del',
+      text,
+      a: i + 1
+    }));
+    B.forEach((text, j) => out.push({
+      kind: 'add',
+      text,
+      b: j + 1
+    }));
+    return out;
+  }
+  // the longest common subsequence, from the end
+  const L = Array.from({
+    length: n + 1
+  }, () => new Uint32Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  let i = 0,
+    j = 0;
+  while (i < n && j < m) {
+    if (A[i] === B[j]) {
+      out.push({
+        kind: 'same',
+        text: A[i],
+        a: i + 1,
+        b: j + 1
+      });
+      i++;
+      j++;
+    } else if (L[i + 1][j] >= L[i][j + 1]) {
+      out.push({
+        kind: 'del',
+        text: A[i],
+        a: i + 1
+      });
+      i++;
+    } else {
+      out.push({
+        kind: 'add',
+        text: B[j],
+        b: j + 1
+      });
+      j++;
+    }
+  }
+  while (i < n) {
+    out.push({
+      kind: 'del',
+      text: A[i],
+      a: i + 1
+    });
+    i++;
+  }
+  while (j < m) {
+    out.push({
+      kind: 'add',
+      text: B[j],
+      b: j + 1
+    });
+    j++;
+  }
+  return out;
+}
+function TextDiff({
+  base,
+  target,
+  context,
+  t,
+  uid
+}) {
+  const lines = _react.default.useMemo(() => diffLines(base.text, target.text), [base.text, target.text]);
+  const [shown, setShown] = _react.default.useState({}); // the folded runs people opened, by their first index
+  const [at, setAt] = _react.default.useState(-1);
+  const refs = _react.default.useRef({});
+  _react.default.useEffect(() => {
+    setShown({});
+    setAt(-1);
+  }, [base.id, target.id]);
+  const added = lines.filter(x => x.kind === 'add').length,
+    removed = lines.filter(x => x.kind === 'del').length;
+  const count = k => k === 1 ? t.line : fill(t.lines, {
+    n: (0, _format.formatNumber)(k)
+  });
+  // where each change starts (a run of added and removed lines)
+  const starts = lines.reduce((a, x, i) => x.kind !== 'same' && (i === 0 || lines[i - 1].kind === 'same') ? a.concat(i) : a, []);
+  // the rows: unchanged runs longer than the context on both sides fold
+  const rows = [];
+  let k = 0;
+  while (k < lines.length) {
+    if (lines[k].kind !== 'same') {
+      rows.push({
+        line: lines[k],
+        i: k
+      });
+      k++;
+      continue;
+    }
+    let e = k;
+    while (e < lines.length && lines[e].kind === 'same') e++;
+    const lead = k === 0 ? 0 : context,
+      tail = e === lines.length ? 0 : context;
+    if (e - k > lead + tail + 1 && !shown[k]) {
+      for (let x = k; x < k + lead; x++) rows.push({
+        line: lines[x],
+        i: x
+      });
+      rows.push({
+        fold: true,
+        from: k + lead,
+        n: e - k - lead - tail,
+        key: k
+      });
+      for (let x = e - tail; x < e; x++) rows.push({
+        line: lines[x],
+        i: x
+      });
+    } else for (let x = k; x < e; x++) rows.push({
+      line: lines[x],
+      i: x
+    });
+    k = e;
+  }
+  const go = step => {
+    if (!starts.length) return;
+    const next = at < 0 ? step > 0 ? 0 : starts.length - 1 : (at + step + starts.length) % starts.length;
+    setAt(next);
+    const el = refs.current[starts[next]];
+    if (el) {
+      el.focus();
+      if (el.scrollIntoView) el.scrollIntoView({
+        block: 'nearest'
+      });
+    }
+    (0, _announce.announce)(fill(t.at, {
+      n: (0, _format.formatNumber)(next + 1),
+      total: (0, _format.formatNumber)(starts.length)
+    }));
+  };
+  if (!added && !removed) return /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    icon: "circle-check",
+    title: t.same
+  });
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-version-compare__diff"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-version-compare__diff-bar"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-version-compare__summary"
+  }, fill(t.summary, {
+    added: count(added),
+    removed: count(removed)
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-version-compare__steps"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "chevron-up",
+    onClick: () => go(-1)
+  }, t.previous), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "chevron-down",
+    onClick: () => go(1)
+  }, t.next))), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-version-compare__lines",
+    tabIndex: 0,
+    role: "region",
+    "aria-label": fill(t.diff, {
+      base: base.label,
+      target: target.label
+    })
+  }, /*#__PURE__*/_react.default.createElement("ol", {
+    className: "plx-version-compare__list"
+  }, rows.map(r => {
+    if (r.fold) {
+      return /*#__PURE__*/_react.default.createElement("li", {
+        key: 'fold' + r.key,
+        className: "plx-version-compare__fold"
+      }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        size: "xs",
+        variant: "ghost",
+        icon: "chevron-down",
+        onClick: () => setShown(Object.assign({}, shown, {
+          [r.key]: true
+        }))
+      }, fill(t.unchanged, {
+        n: (0, _format.formatNumber)(r.n)
+      })));
+    }
+    const x = r.line,
+      isStart = starts.indexOf(r.i) >= 0;
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: r.i,
+      id: uid + '-l' + r.i,
+      ref: isStart ? el => {
+        refs.current[r.i] = el;
+      } : undefined,
+      tabIndex: isStart ? -1 : undefined,
+      className: (0, _cx.cx)('plx-version-compare__line', x.kind === 'add' && 'plx-version-compare__line--added', x.kind === 'del' && 'plx-version-compare__line--removed')
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-version-compare__number",
+      "aria-hidden": "true"
+    }, x.a || ''), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-version-compare__number",
+      "aria-hidden": "true"
+    }, x.b || ''), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-version-compare__sign",
+      "aria-hidden": "true"
+    }, x.kind === 'add' ? '+' : x.kind === 'del' ? '−' : ''), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-version-compare__text"
+    }, x.kind === 'add' ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.added + ': ') : x.kind === 'del' ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.removed + ': ') : null, x.text || ' '));
+  }))));
+}
+function VersionCompare({
+  versions = [],
+  attributes = [],
+  base,
+  defaultBase,
+  target,
+  defaultTarget,
+  onChange,
+  mode,
+  defaultMode = 'columns',
+  onModeChange,
+  modes,
+  context = 3,
+  ratio = '16-9',
+  scroll = false,
+  label,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = (0, _layer.useUid)('plx-version-compare');
+  const ids = versions.map(v => v.id);
+  const [own, setOwn] = _react.default.useState({
+    base: defaultBase !== undefined ? defaultBase : ids[ids.length - 2],
+    target: defaultTarget !== undefined ? defaultTarget : ids[ids.length - 1]
+  });
+  const pair = {
+    base: base !== undefined ? base : own.base,
+    target: target !== undefined ? target : own.target
+  };
+  const setPair = next => {
+    if (base === undefined && target === undefined) setOwn(next);
+    if (onChange) onChange(next);
+  };
+  const a = versions.find(v => v.id === pair.base),
+    b = versions.find(v => v.id === pair.target);
+  const all = ['columns'].concat(a && b && a.image && b.image ? ['slider'] : [], a && b && typeof a.text === 'string' && typeof b.text === 'string' ? ['text'] : []);
+  const choices = (modes && modes.length ? modes : all).filter(m => ['columns', 'slider', 'text'].indexOf(m) >= 0);
+  const [ownMode, setOwnMode] = _react.default.useState(defaultMode);
+  const want = mode !== undefined ? mode : ownMode;
+  const current = choices.indexOf(want) >= 0 ? want : choices[0] || 'columns';
+  const setMode = m => {
+    if (mode === undefined) setOwnMode(m);
+    if (onModeChange) onModeChange(m);
+  };
+  const metaOf = v => [v.date ? (0, _format.formatDate)(day(v.date), {
+    dateStyle: 'medium'
+  }) : null, v.author ? fill(t.by, {
+    author: v.author
+  }) : null].filter(Boolean).join(' · ');
+  const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(day(v.date), {
+    dateStyle: 'medium'
+  }) : null].filter(Boolean).join(' · ');
+  const pick = (which, other) => versions.filter(v => v.id !== pair[other]).map(v => ({
+    value: v.id,
+    label: optionLabel(v)
+  }));
+  const item = v => ({
+    id: v.id,
+    title: v.label,
+    meta: metaOf(v),
+    image: v.image,
+    media: v.media,
+    values: v.values || {}
+  });
+  const body = !a || !b ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    icon: "doc-search",
+    title: t.empty
+  }) : current === 'text' ? /*#__PURE__*/_react.default.createElement(TextDiff, {
+    base: a,
+    target: b,
+    context: context,
+    t: t,
+    uid: uid
+  }) : /*#__PURE__*/_react.default.createElement(_ComparisonView.ComparisonView, {
+    label: label || t.label,
+    items: [item(a), item(b)],
+    attributes: attributes,
+    mode: current,
+    modes: [current],
+    ratio: ratio,
+    scroll: scroll
+  });
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-version-compare', 'plx-version-compare--' + current, className),
+    "aria-label": label || t.label
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-version-compare__pickers"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.compare,
+    className: "plx-version-compare__picker"
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: pair.base || '',
+    options: pick('base', 'target'),
+    onChange: e => setPair({
+      base: e.target.value,
+      target: pair.target
+    })
+  })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    className: "plx-version-compare__swap",
+    variant: "ghost",
+    size: "sm",
+    "aria-label": t.swapLabel,
+    onClick: () => setPair({
+      base: pair.target,
+      target: pair.base
+    })
+  }, t.swap), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.with,
+    className: "plx-version-compare__picker"
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: pair.target || '',
+    options: pick('target', 'base'),
+    onChange: e => setPair({
+      base: pair.base,
+      target: e.target.value
+    })
+  })), choices.length > 1 ? /*#__PURE__*/_react.default.createElement(_SegmentedControl.SegmentedControl, {
+    className: "plx-version-compare__modes",
+    label: t.view,
+    size: "sm",
+    value: current,
+    onChange: setMode,
+    options: choices.map(m => ({
+      value: m,
+      label: t[m]
+    }))
+  }) : null), body);
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56123,10 +58232,22 @@ Object.defineProperty(exports, "File", {
     return _File.File;
   }
 });
+Object.defineProperty(exports, "FileBrowser", {
+  enumerable: true,
+  get: function () {
+    return _FileBrowser.FileBrowser;
+  }
+});
 Object.defineProperty(exports, "FileInput", {
   enumerable: true,
   get: function () {
     return _FileInput.FileInput;
+  }
+});
+Object.defineProperty(exports, "FileList", {
+  enumerable: true,
+  get: function () {
+    return _FileList.FileList;
   }
 });
 Object.defineProperty(exports, "FileRow", {
@@ -57233,6 +59354,12 @@ Object.defineProperty(exports, "TrialUpgrade", {
     return _TrialUpgrade.TrialUpgrade;
   }
 });
+Object.defineProperty(exports, "UploadManager", {
+  enumerable: true,
+  get: function () {
+    return _UploadManager.UploadManager;
+  }
+});
 Object.defineProperty(exports, "UserCard", {
   enumerable: true,
   get: function () {
@@ -57243,6 +59370,12 @@ Object.defineProperty(exports, "VIRTUAL_STICKY_CLASS", {
   enumerable: true,
   get: function () {
     return _useVirtualizer.VIRTUAL_STICKY_CLASS;
+  }
+});
+Object.defineProperty(exports, "VersionCompare", {
+  enumerable: true,
+  get: function () {
+    return _VersionCompare.VersionCompare;
   }
 });
 Object.defineProperty(exports, "VersionLabel", {
@@ -57483,6 +59616,12 @@ Object.defineProperty(exports, "dateTimeAttr", {
   enumerable: true,
   get: function () {
     return _format.dateTimeAttr;
+  }
+});
+Object.defineProperty(exports, "diffLines", {
+  enumerable: true,
+  get: function () {
+    return _VersionCompare.diffLines;
   }
 });
 Object.defineProperty(exports, "directionOf", {
@@ -57977,6 +60116,12 @@ Object.defineProperty(exports, "snapToGrid", {
     return _grid.snapToGrid;
   }
 });
+Object.defineProperty(exports, "sortFiles", {
+  enumerable: true,
+  get: function () {
+    return _FileList.sortFiles;
+  }
+});
 Object.defineProperty(exports, "subscribeHotkeys", {
   enumerable: true,
   get: function () {
@@ -58251,6 +60396,12 @@ Object.defineProperty(exports, "useUnsavedGuard", {
   enumerable: true,
   get: function () {
     return _UnsavedGuard.useUnsavedGuard;
+  }
+});
+Object.defineProperty(exports, "useUploadQueue", {
+  enumerable: true,
+  get: function () {
+    return _UploadManager.useUploadQueue;
   }
 });
 Object.defineProperty(exports, "useViewState", {
@@ -58545,6 +60696,10 @@ var _AccessRequest = require("./patterns/AccessRequest/AccessRequest.jsx");
 var _TrialUpgrade = require("./patterns/TrialUpgrade/TrialUpgrade.jsx");
 var _Offboarding = require("./patterns/Offboarding/Offboarding.jsx");
 var _ShortcutsDialog = require("./patterns/ShortcutsDialog/ShortcutsDialog.jsx");
+var _FileList = require("./patterns/FileList/FileList.jsx");
+var _FileBrowser = require("./patterns/FileBrowser/FileBrowser.jsx");
+var _UploadManager = require("./patterns/UploadManager/UploadManager.jsx");
+var _VersionCompare = require("./patterns/VersionCompare/VersionCompare.jsx");
   } }
   };
   var cache = {};

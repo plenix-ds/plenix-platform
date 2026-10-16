@@ -548,6 +548,7 @@ object PlenixComponent {
     val colorSwatchRoundRadius = 9999.dp
     val comboboxListMarginBlockStart = 4.dp
     val comboboxOptionPaddingInline = 12.dp
+    val comparisonViewPaneGap = 12.dp
     val countPillBorderWidth = 1.dp
     val countPillMinHeight = 16.dp
     val countPillMinWidth = 16.dp

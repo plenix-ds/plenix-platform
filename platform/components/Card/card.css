@@ -71,3 +71,13 @@
 .plx-card__toggle .plx-icon{transition-duration:var(--plx-comp-card-toggle-icon-duration);transition-property:transform;transition-timing-function:var(--plx-comp-card-toggle-icon-easing);}
 .plx-card.is-collapsed .plx-card__toggle .plx-icon{transform:rotate(-90deg);}
 .plx-card.is-collapsed .plx-card__toggle .plx-icon:dir(rtl){transform:rotate(90deg);}
+/* an asset (library wave 12, Asset): its format as a neutral Badge at the media's top end (the selection box holds the top
+   start), its status Badge under the meta */
+.plx-media-card__type{display:inline-flex;inset-block-start:var(--plx-comp-media-card-type-inset-block-start);inset-inline-end:var(--plx-comp-media-card-type-inset-inline-end);position:absolute;}
+.plx-media-card__status{display:flex;padding-block-start:var(--plx-comp-media-card-status-padding-block-start);}
+/* a collection (library wave 12, Collection): two sheets above the cover card, each narrower than the one in front, so the
+   card reads as a pile; the card's own top border closes each sheet */
+.plx-media-card-stack{display:flex;flex-direction:column;min-inline-size:0;}
+.plx-media-card-stack__back,.plx-media-card-stack__middle{background-color:var(--plx-comp-media-card-stack-sheet-background);block-size:var(--plx-comp-media-card-stack-sheet-height);border-block-end-style:none;border-block-start-color:var(--plx-comp-media-card-stack-sheet-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-media-card-stack-sheet-border-width);border-inline-end-color:var(--plx-comp-media-card-stack-sheet-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-media-card-stack-sheet-border-width);border-inline-start-color:var(--plx-comp-media-card-stack-sheet-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-media-card-stack-sheet-border-width);border-start-end-radius:var(--plx-comp-media-card-stack-sheet-radius);border-start-start-radius:var(--plx-comp-media-card-stack-sheet-radius);box-sizing:border-box;display:block;}
+.plx-media-card-stack__back{margin-inline-end:var(--plx-comp-media-card-stack-back-inset);margin-inline-start:var(--plx-comp-media-card-stack-back-inset);}
+.plx-media-card-stack__middle{margin-inline-end:var(--plx-comp-media-card-stack-middle-inset);margin-inline-start:var(--plx-comp-media-card-stack-middle-inset);}

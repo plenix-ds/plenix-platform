@@ -1,0 +1,60 @@
+{
+  "android-data-display|Tree": {
+    "summary": "Plenix on Android shows a library’s folders the way the web’s file browser does: a tree of folders in a list, each row an expand control, the folder icon and its name in DM Sans, the open folder in the selected fill, and its contents beside it on a large screen (a list-detail layout) or as the next screen on a phone, where the path above the list leads back. Material 3 has no tree component; Plenix builds it from list items with Material’s expand and collapse, its touch targets and TalkBack’s expanded state, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the line between rows. Files move by dragging them onto a folder (a long press) or with Move to in the row’s menu.",
+    "variants": [
+      { "name": "Folder tree", "material": "Expandable list items (no Material tree)", "web": "specialized|File browser", "background": "plx-comp-file-row-background", "content": "plx-comp-file-name-text", "border": "plx-comp-file-browser-tree-border-color", "compose": "LazyColumn of PlenixFolderRow items, each with its depth’s indent and an expand IconButton", "views": "RecyclerView with an expandable adapter and an expand ImageButton", "use": "Deep libraries on tablets and foldables, beside the contents." },
+      { "name": "Folder contents", "material": "List items in the detail pane", "web": "specialized|File list", "background": "plx-comp-file-row-background", "content": "plx-comp-file-row-cell-text", "border": "plx-comp-file-row-border-color", "compose": "ListDetailPaneScaffold with the tree in the list pane and the files in the detail pane", "views": "SlidingPaneLayout with the tree and the files", "use": "The open folder’s files, with their facts and actions." },
+      { "name": "Path", "material": "Top app bar title and Up", "web": "specialized|File browser", "background": null, "content": "plx-comp-file-name-text", "border": null, "compose": "TopAppBar(title = folder name, navigationIcon = Up) and a row of the parent folders", "views": "MaterialToolbar with Up and a HorizontalScrollView of the parents", "use": "On phones, where each folder is its own screen." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Expand control", "about": "An icon button that opens and closes the folder, at the touch target size; TalkBack says expanded or collapsed." },
+      { "part": "B", "name": "Folder icon", "about": "The folder icon in the muted color; the open folder icon while it is the selected row." },
+      { "part": "C", "name": "Folder name", "about": "The folder’s name in DM Sans at the body size." },
+      { "part": "D", "name": "Selected folder", "about": "The open folder in the selected fill." },
+      { "part": "E", "name": "Depth", "about": "Each level indented by the inline medium space." }
+    ],
+    "attributes": [
+      { "part": "B", "attribute": "Folder icon color", "token": "plx-comp-file-folder-icon-color", "value": "The muted content color (PlenixColors.contentMuted)", "material": "On-surface variant", "compose": "Icon(Icons.Outlined.Folder, contentDescription = null, tint = PlenixColors.contentMuted)", "views": "imageTintList = ColorStateList.valueOf(PlenixColors.contentMuted.toArgb())", "follows": "Material 3: Lists", "followsUrl": "https://m3.material.io/components/lists/overview" },
+      { "part": "C", "attribute": "Folder name", "token": "plx-comp-file-name-font-family", "value": "DM Sans at the body size: a folder’s name is UI text", "material": "Body large", "compose": "Text(folder.name, fontSize = PlenixPlatform.textBodySize)", "views": "textSize from PlenixPlatform.textBodySize with the DM Sans font", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/overview" },
+      { "part": "D", "attribute": "Selected folder", "token": "plx-comp-file-row-selected-background", "value": "The selected fill (PlenixColors.stateSelected)", "material": "Secondary container", "compose": "Modifier.background(if (selected) PlenixColors.stateSelected else PlenixColors.surfaceDefault)", "views": "isActivated with the selected fill as the background", "follows": "Material 3: Lists", "followsUrl": "https://m3.material.io/components/lists/overview" },
+      { "part": "A", "attribute": "Row height", "token": "plx-sys-control-target-min", "value": "At least the touch target (PlenixPlatform.controlTargetMin)", "material": "48dp target", "compose": "Modifier.heightIn(min = PlenixPlatform.controlTargetMin)", "views": "minHeight from PlenixPlatform.controlTargetMin", "follows": "Material 3: Accessibility (target size)", "followsUrl": "https://m3.material.io/foundations/designing/structure" },
+      { "part": "E", "attribute": "Indent per level", "token": "plx-sys-space-inline-md", "value": "The inline medium space per level (PlenixSpace.spaceInlineMd)", "material": "None", "compose": "Modifier.padding(start = PlenixSpace.spaceInlineMd * depth)", "views": "paddingStart from PlenixSpace.spaceInlineMd times the depth", "follows": "Material 3: Lists", "followsUrl": "https://m3.material.io/components/lists/overview" },
+      { "part": "D", "attribute": "Line between rows", "token": "plx-comp-file-row-border-color", "value": "The divider color (PlenixColors.borderDivider) at the thin width", "material": "Divider", "compose": "HorizontalDivider(thickness = PlenixBorder.borderWidthThin, color = PlenixColors.borderDivider)", "views": "MaterialDividerItemDecoration with the divider color", "follows": "Material 3: Divider", "followsUrl": "https://m3.material.io/components/divider/overview" }
+    ],
+    "states": [
+      { "state": "Collapsed", "token": "plx-comp-file-folder-icon-color", "compose": "expanded = false: the children are not composed", "views": "collapsed group" },
+      { "state": "Expanded", "token": "plx-comp-file-folder-icon-color", "compose": "expanded = true: the children follow, indented", "views": "expanded group" },
+      { "state": "Selected", "token": "plx-comp-file-row-selected-background", "compose": "selected: the selected fill", "views": "isActivated" },
+      { "state": "Drop target", "token": "plx-sys-state-selected-border", "compose": "Modifier.dragAndDropTarget: the selected border while a file is over it", "views": "OnDragListener ACTION_DRAG_ENTERED" }
+    ],
+    "code": {
+      "compose": [
+        "@Composable",
+        "fun PlenixFolderRow(folder: Folder, depth: Int, selected: Boolean, expanded: Boolean, onToggle: () -> Unit, onOpen: () -> Unit) {",
+        "    Row(",
+        "        modifier = Modifier",
+        "            .fillMaxWidth()",
+        "            .heightIn(min = PlenixPlatform.controlTargetMin)",
+        "            .background(if (selected) PlenixColors.stateSelected else PlenixColors.surfaceDefault)",
+        "            .clickable(onClick = onOpen)",
+        "            .padding(start = PlenixSpace.spaceInlineMd * depth)",
+        "            .semantics { stateDescription = if (expanded) \"Expanded\" else \"Collapsed\" },",
+        "        verticalAlignment = Alignment.CenterVertically,",
+        "        horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineSm)",
+        "    ) {",
+        "        if (folder.children.isNotEmpty()) IconButton(onClick = onToggle) { Icon(if (expanded) Icons.Filled.ExpandMore else Icons.Filled.ChevronRight, contentDescription = null) }",
+        "        Icon(if (selected) Icons.Filled.FolderOpen else Icons.Outlined.Folder, contentDescription = null, tint = PlenixColors.contentMuted)",
+        "        Text(folder.name, fontSize = PlenixPlatform.textBodySize, color = PlenixColors.contentDefault)",
+        "    }",
+        "    HorizontalDivider(thickness = PlenixBorder.borderWidthThin, color = PlenixColors.borderDivider)",
+        "}"
+      ],
+      "views": [
+        "row.minimumHeight = PlenixPlatform.controlTargetMin.roundToPx()",
+        "row.isActivated = folder.id == openFolder",
+        "icon.imageTintList = ColorStateList.valueOf(PlenixColors.contentMuted.toArgb())",
+        "row.setPaddingRelative(PlenixSpace.spaceInlineMd.roundToPx() * depth, 0, 0, 0)"
+      ]
+    }
+  }
+}

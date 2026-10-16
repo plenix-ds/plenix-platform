@@ -1,0 +1,23 @@
+/* Plenix · FileBrowser (platform/patterns/FileBrowser): files by place. The breadcrumbs above the command bar, then the
+   body: the folder tree's pane at the start (a line at its end; hidden under 600px of the browser's own width) and the
+   content (a FileList, or a grid of MediaCards), which holds the drop overlay while files come in from the computer. The
+   breadcrumbs, the bar, the tree, the list, the cards and the overlay are their components'. Anatomy and API:
+   FileBrowser.jsx. */
+.plx-file-browser{container-type:inline-size;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-file-browser-gap);}
+.plx-file-browser--list,.plx-file-browser--grid,.plx-file-browser--breadcrumbs{min-inline-size:0;}
+.plx-file-browser__path{min-inline-size:0;}
+.plx-file-browser__body{align-items:stretch;column-gap:var(--plx-comp-file-browser-body-gap);display:flex;min-inline-size:0;}
+.plx-file-browser--tree .plx-file-browser__body{column-gap:var(--plx-comp-file-browser-tree-gap);}
+/* the tree's pane: a line at its end, the Resizable inside it as tall as the content */
+.plx-file-browser__tree{border-inline-end-color:var(--plx-comp-file-browser-tree-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-file-browser-tree-border-width);display:flex;flex-shrink:0;}
+.plx-file-browser__pane{block-size:auto;}
+.plx-file-browser__tree-scroll{block-size:100%;box-sizing:border-box;max-block-size:var(--plx-comp-file-browser-tree-max-height);overflow-x:hidden;overflow-y:auto;padding-block-end:var(--plx-comp-file-browser-tree-padding-block);padding-block-start:var(--plx-comp-file-browser-tree-padding-block);padding-inline-end:var(--plx-comp-file-browser-tree-padding-inline);}
+.plx-file-browser__tree-scroll:focus-visible{outline-color:var(--plx-comp-file-browser-focus-outline-color);outline-offset:var(--plx-comp-file-browser-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-file-browser-focus-outline-width);}
+.plx-file-browser__target{display:inline-block;min-inline-size:0;}
+/* the content: the list or the grid; positioned, so the drop overlay covers it */
+.plx-file-browser__content{flex-basis:0;flex-grow:1;min-block-size:var(--plx-comp-file-browser-content-min-height);min-inline-size:0;position:relative;}
+.plx-file-browser__card{display:flex;flex-direction:column;min-inline-size:0;}
+/* a narrow browser: the breadcrumbs lead; the tree's pane steps out */
+@container (max-width: 600px){
+  .plx-file-browser__tree{display:none;}
+}

@@ -1,0 +1,29 @@
+/* Plenix · UploadManager (platform/patterns/UploadManager): files on their way up. The panel's frame (in place, or docked
+   at the window's bottom end over the page), its head (what is happening and its actions), the summary (the overall bar
+   and the counts in the data font), and the body: the drop zone's content (its words, the limits, the two pickers) and
+   the queue, which scrolls past its height. The rows are FileRow's, the zone DropZone's, the dialog Dialog's. Anatomy and
+   API: UploadManager.jsx. */
+.plx-upload-manager{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-upload-manager-gap);}
+/* the panel: a frame of its own */
+.plx-upload-manager--panel{background-color:var(--plx-comp-upload-manager-background);border-block-end-color:var(--plx-comp-upload-manager-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-upload-manager-border-width);border-block-start-color:var(--plx-comp-upload-manager-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-upload-manager-border-width);border-end-end-radius:var(--plx-comp-upload-manager-radius);border-end-start-radius:var(--plx-comp-upload-manager-radius);border-inline-end-color:var(--plx-comp-upload-manager-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-upload-manager-border-width);border-inline-start-color:var(--plx-comp-upload-manager-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-upload-manager-border-width);border-start-end-radius:var(--plx-comp-upload-manager-radius);border-start-start-radius:var(--plx-comp-upload-manager-radius);box-sizing:border-box;padding-block-end:var(--plx-comp-upload-manager-padding-block);padding-block-start:var(--plx-comp-upload-manager-padding-block);padding-inline-end:var(--plx-comp-upload-manager-padding-inline);padding-inline-start:var(--plx-comp-upload-manager-padding-inline);}
+/* docked: over the page at the window's bottom end, raised; on a narrow window across its bottom */
+.plx-upload-manager--docked{box-shadow:var(--plx-comp-upload-manager-docked-shadow);inline-size:var(--plx-comp-upload-manager-docked-width);inset-block-end:var(--plx-comp-upload-manager-docked-inset);inset-inline-end:var(--plx-comp-upload-manager-docked-inset);max-inline-size:calc(100% - var(--plx-comp-upload-manager-docked-inset) * 2);position:fixed;z-index:var(--plx-comp-upload-manager-docked-z-index);}
+@media (width < 600px){
+  .plx-upload-manager--docked{inline-size:auto;inset-inline-start:var(--plx-comp-upload-manager-docked-inset);}
+}
+.plx-upload-manager--dialog .plx-upload-manager__body{row-gap:var(--plx-comp-upload-manager-dialog-gap);}
+.plx-upload-manager__head{align-items:center;column-gap:var(--plx-comp-upload-manager-head-gap);display:flex;min-block-size:var(--plx-comp-upload-manager-head-min-height);}
+.plx-upload-manager__title,.plx-upload-manager__headline{color:var(--plx-comp-upload-manager-title-text);flex-basis:0;flex-grow:1;font-size:var(--plx-comp-upload-manager-title-font-size);font-weight:var(--plx-comp-upload-manager-title-font-weight);line-height:var(--plx-comp-upload-manager-title-line-height);margin-block-end:0;margin-block-start:0;min-inline-size:0;}
+.plx-upload-manager__actions{align-items:center;column-gap:var(--plx-comp-upload-manager-actions-gap);display:inline-flex;flex-shrink:0;}
+.plx-upload-manager__summary{align-items:center;column-gap:var(--plx-comp-upload-manager-head-gap);display:flex;min-inline-size:0;}
+.plx-upload-manager__bar{flex-basis:0;flex-grow:1;min-inline-size:0;}
+.plx-upload-manager__counts{color:var(--plx-comp-upload-manager-counts-text);flex-shrink:0;font-family:var(--plx-comp-upload-manager-counts-font-family);font-size:var(--plx-comp-upload-manager-counts-font-size);line-height:var(--plx-comp-upload-manager-counts-line-height);}
+.plx-upload-manager__body{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-upload-manager-gap);}
+.plx-upload-manager__body[hidden]{display:none;}
+/* the drop zone's content: the icon, the words, the limits and the two pickers */
+.plx-upload-manager__drop{color:var(--plx-comp-upload-manager-drop-text);font-size:var(--plx-comp-upload-manager-drop-font-size);font-weight:var(--plx-comp-upload-manager-drop-font-weight);line-height:var(--plx-comp-upload-manager-drop-line-height);}
+.plx-upload-manager__hint{color:var(--plx-comp-upload-manager-hint-text);font-size:var(--plx-comp-upload-manager-hint-font-size);line-height:var(--plx-comp-upload-manager-hint-line-height);}
+.plx-upload-manager__choose{column-gap:var(--plx-comp-upload-manager-actions-gap);display:inline-flex;flex-wrap:wrap;justify-content:center;row-gap:var(--plx-comp-upload-manager-actions-gap);}
+/* the queue: it scrolls past its height and is a named region in the Tab order */
+.plx-upload-manager__queue{max-block-size:var(--plx-comp-upload-manager-queue-max-height);min-inline-size:0;overflow-x:hidden;overflow-y:auto;}
+.plx-upload-manager__queue:focus-visible{outline-color:var(--plx-comp-upload-manager-focus-outline-color);outline-offset:var(--plx-comp-upload-manager-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-upload-manager-focus-outline-width);}

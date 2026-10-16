@@ -291,4 +291,8 @@ export { AccessRequest } from './patterns/AccessRequest/AccessRequest.jsx';
 export { TrialUpgrade } from './patterns/TrialUpgrade/TrialUpgrade.jsx';
 export { Offboarding } from './patterns/Offboarding/Offboarding.jsx';
 export { ShortcutsDialog } from './patterns/ShortcutsDialog/ShortcutsDialog.jsx';
+export { FileList, sortFiles } from './patterns/FileList/FileList.jsx';
+export { FileBrowser } from './patterns/FileBrowser/FileBrowser.jsx';
+export { UploadManager, useUploadQueue } from './patterns/UploadManager/UploadManager.jsx';
+export { VersionCompare, diffLines } from './patterns/VersionCompare/VersionCompare.jsx';
 /* END library parts */

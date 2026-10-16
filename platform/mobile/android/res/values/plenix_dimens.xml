@@ -151,6 +151,7 @@
     <dimen name="plx_component_color_swatch_round_radius">9999dp</dimen>
     <dimen name="plx_component_combobox_list_margin_block_start">4dp</dimen>
     <dimen name="plx_component_combobox_option_padding_inline">12dp</dimen>
+    <dimen name="plx_component_comparison_view_pane_gap">12dp</dimen>
     <dimen name="plx_component_count_pill_border_width">1dp</dimen>
     <dimen name="plx_component_count_pill_min_height">16dp</dimen>
     <dimen name="plx_component_count_pill_min_width">16dp</dimen>
