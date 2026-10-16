@@ -66993,7 +66993,126 @@ function useAnalytics() {
   return _react.default.useContext(Context);
 }
   } },
-  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReadingPane = ReadingPane;
+exports.SplitView = SplitView;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Resizable = require("../../components/Resizable/Resizable.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SplitView, ReadingPane
+   Summary: Two panels that share their room (02 Page structures › Workspace structures › Split workspace): a list or
+     table and the item chosen in it, side by side or stacked, both the full height (or width) of their room, each
+     scrolling on its own, with a divider between them to resize (owner, 2026-10-16: the Outlook-style layout).
+     ReadingPane is the second panel's surface: the table's frame, an actions row with a thin line under it that stops
+     short of the edges, and the item below.
+   Usage:
+     <AppShell page="master-detail" …>
+       <SplitView label="Inbox" orientation="side-by-side" firstLabel="Message list" defaultSize={560}
+         first={<DataTable label="Inbox" … />}
+         second={<ReadingPane label={item.subject} actions={<Toolbar …/>}>…</ReadingPane>} />
+     </AppShell>
+     <SplitView orientation="stacked" defaultSize={320} first={…} second={…} />
+   Props:
+     orientation: "side-by-side" (default; the first panel at the start, the divider between, the second fills the rest)
+       | "stacked" (the first on top; both the full width)
+     first, second: the two panels' content (the first is usually a DataTable, which brings its own frame; the second a
+       ReadingPane)
+     label: the split view's accessible name (a group); firstLabel: what the divider resizes ("Message list"; default
+       "First panel"), its name is "{firstLabel} width" or "… height"
+     defaultSize: the first panel's starting width (side by side) or height (stacked), a size token in pixels; size /
+       onSizeChange(px): the parent keeps it (keep it in the view to remember it per person)
+     minSize, maxSize: its limits in pixels (defaults: 360–720 side by side, 200–500 stacked)
+     steps: the only sizes allowed, smallest first (size tokens); the divider snaps to them on release
+     className: more classes on the split view
+     ReadingPane.label: its region's name (the item's title); actions: the actions row (a Toolbar); empty: what shows
+       when nothing is chosen (an EmptyState); children: the item; className
+   Behavior:
+     Each panel scrolls on its own; the page never scrolls as a whole (the multi-pane page kind). The divider is the whole
+       gap between the panels: the resize pointer anywhere along it, a thin line down its middle and a small pill
+       centered on the line; the pill darkens on hover, line and pill take the focus color while focused or dragged.
+     Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
+       limits. There is no size menu (owner, 2026-10-16).
+     Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
+       query), whatever the orientation.
+   Notes:
+     Built on Resizable (the first panel); the divider's look is SplitView's (split-view.css). Colors, sizes and spacing
+     are --plx-comp-split-view-* and --plx-comp-reading-pane-* tokens on existing roles; the reading pane's frame is the
+     data table's (data-table-border, shape-md, border-width-thin).
+*/
+const LIMITS = {
+  'side-by-side': [360, 720, 560],
+  stacked: [200, 500, 320]
+};
+function SplitView({
+  orientation = 'side-by-side',
+  first,
+  second,
+  label,
+  firstLabel = 'First panel',
+  defaultSize,
+  size,
+  onSizeChange,
+  minSize,
+  maxSize,
+  steps,
+  className,
+  ...rest
+}) {
+  const side = orientation !== 'stacked';
+  const [lo, hi, start] = LIMITS[side ? 'side-by-side' : 'stacked'];
+  const box = side ? {
+    axis: 'horizontal',
+    defaultWidth: defaultSize != null ? defaultSize : start,
+    width: size,
+    minWidth: minSize || lo,
+    maxWidth: maxSize || hi,
+    onResize: onSizeChange ? s => onSizeChange(s.width) : undefined
+  } : {
+    axis: 'vertical',
+    defaultHeight: defaultSize != null ? defaultSize : start,
+    height: size,
+    minHeight: minSize || lo,
+    maxHeight: maxSize || hi,
+    onResize: onSizeChange ? s => onSizeChange(s.height) : undefined
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-split-view__panels"
+  }, /*#__PURE__*/_react.default.createElement(_Resizable.Resizable, _extends({
+    label: firstLabel,
+    steps: steps,
+    className: "plx-split-view__first"
+  }, box), first), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-split-view__second"
+  }, second)));
+}
+function ReadingPane({
+  label,
+  actions,
+  empty,
+  className,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement("section", {
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-reading-pane', className)
+  }, actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-reading-pane__actions"
+  }, actions) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-reading-pane__body"
+  }, children || empty || null));
+}
+  } },
+  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67029,6 +67148,7 @@ var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Link = require("../../components/Link/Link.jsx");
 var _Card = require("../../components/Card/Card.jsx");
+var _SplitView = require("../../patterns/SplitView/SplitView.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · page templates
    Summary: Reusable page compositions from existing Platform components, preserving the layout standard.
@@ -67039,6 +67159,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      rows, columns: DataTable data; items: feature cards; onOpen: card action; empty: custom empty state.
      initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel: FormFlow contract; fields: render function.
      pane, paneTitle, detailOpen, onBack: SecondaryPane master-detail contract.
+     SplitWorkspace: the list and the chosen item in a SplitView (02 Page structures › Split workspace): rows and columns
+       (the list as a DataTable, which brings its own frame) or pane (framed as a ReadingPane titled paneTitle); the
+       item is children, shown in a ReadingPane while detailOpen (default true), else empty (default: an EmptyState);
+       actions: the reading pane's actions row; toolbar: a CommandBar above both; orientation, defaultSize, size,
+       onSizeChange: SplitView's.
      sections: [{id,title,content}] for detail navigation; query, onQueryChange: controlled search.
      strings: visible fallback words, all overridable; error: 404, 403 or 500; onRetry: retry callback.
      auth: Auth properties; form: authentication form slot; toolbar, tools, inspector: workspace slots.
@@ -67054,7 +67179,10 @@ const WORDS = {
   home: 'Go home',
   search: 'Search results',
   tools: 'Tools',
-  inspector: 'Options'
+  inspector: 'Options',
+  detail: 'Details',
+  noSelection: 'Nothing selected',
+  noSelectionDescription: 'Choose an item to see it here.'
 };
 function Frame({
   page = 'workspace',
@@ -67228,8 +67356,63 @@ function MasterDetailPage({
     onBack: onBack
   }, pane), /*#__PURE__*/_react.default.createElement(_AppShell.PageContent, null, children)));
 }
-function SplitWorkspace(props) {
-  return /*#__PURE__*/_react.default.createElement(MasterDetailPage, props);
+function SplitWorkspace({
+  pane,
+  paneTitle,
+  rows,
+  columns,
+  detailOpen = true,
+  title,
+  actions,
+  toolbar,
+  empty,
+  orientation,
+  defaultSize,
+  size,
+  onSizeChange,
+  strings,
+  children,
+  header,
+  sideNav,
+  footer,
+  mainId
+}) {
+  const t = {
+      ...WORDS,
+      ...strings
+    },
+    id = _react.default.useId(),
+    list = paneTitle || t.pane;
+  const first = columns ? /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: list,
+    data: rows || [],
+    columns: columns
+  }) : /*#__PURE__*/_react.default.createElement(_SplitView.ReadingPane, {
+    label: list
+  }, pane);
+  const second = /*#__PURE__*/_react.default.createElement(_SplitView.ReadingPane, {
+    label: title || t.detail,
+    actions: detailOpen ? actions : null,
+    empty: empty || /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+      title: t.noSelection
+    }, t.noSelectionDescription)
+  }, detailOpen ? children : null);
+  return /*#__PURE__*/_react.default.createElement(_AppShell.AppShell, {
+    page: "master-detail",
+    header: header,
+    sideNav: sideNav,
+    footer: footer,
+    mainId: mainId || 'plx-template-' + id
+  }, /*#__PURE__*/_react.default.createElement(_AppShell.PageContent, null, toolbar, /*#__PURE__*/_react.default.createElement(_SplitView.SplitView, {
+    label: title || list,
+    firstLabel: list,
+    orientation: orientation,
+    defaultSize: defaultSize,
+    size: size,
+    onSizeChange: onSizeChange,
+    first: first,
+    second: second
+  })));
 }
 function SinglePaneWorkspace({
   toolbar,
@@ -67631,125 +67814,6 @@ function useLocale() {
     format: bind(language)
   }), [language]);
   return value || fallback;
-}
-  } },
-  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ReadingPane = ReadingPane;
-exports.SplitView = SplitView;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Resizable = require("../../components/Resizable/Resizable.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SplitView, ReadingPane
-   Summary: Two panels that share their room (02 Page structures › Workspace structures › Split workspace): a list or
-     table and the item chosen in it, side by side or stacked, both the full height (or width) of their room, each
-     scrolling on its own, with a divider between them to resize (owner, 2026-10-16: the Outlook-style layout).
-     ReadingPane is the second panel's surface: the table's frame, an actions row with a thin line under it that stops
-     short of the edges, and the item below.
-   Usage:
-     <AppShell page="master-detail" …>
-       <SplitView label="Inbox" orientation="side-by-side" firstLabel="Message list" defaultSize={560}
-         first={<DataTable label="Inbox" … />}
-         second={<ReadingPane label={item.subject} actions={<Toolbar …/>}>…</ReadingPane>} />
-     </AppShell>
-     <SplitView orientation="stacked" defaultSize={320} first={…} second={…} />
-   Props:
-     orientation: "side-by-side" (default; the first panel at the start, the divider between, the second fills the rest)
-       | "stacked" (the first on top; both the full width)
-     first, second: the two panels' content (the first is usually a DataTable, which brings its own frame; the second a
-       ReadingPane)
-     label: the split view's accessible name (a group); firstLabel: what the divider resizes ("Message list"; default
-       "First panel"), its name is "{firstLabel} width" or "… height"
-     defaultSize: the first panel's starting width (side by side) or height (stacked), a size token in pixels; size /
-       onSizeChange(px): the parent keeps it (keep it in the view to remember it per person)
-     minSize, maxSize: its limits in pixels (defaults: 360–720 side by side, 200–500 stacked)
-     steps: the only sizes allowed, smallest first (size tokens); the divider snaps to them on release
-     className: more classes on the split view
-     ReadingPane.label: its region's name (the item's title); actions: the actions row (a Toolbar); empty: what shows
-       when nothing is chosen (an EmptyState); children: the item; className
-   Behavior:
-     Each panel scrolls on its own; the page never scrolls as a whole (the multi-pane page kind). The divider is the whole
-       gap between the panels: the resize pointer anywhere along it, a thin line down its middle and a small pill
-       centered on the line; the pill darkens on hover, line and pill take the focus color while focused or dragged.
-     Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
-       limits. There is no size menu (owner, 2026-10-16).
-     Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
-       query), whatever the orientation.
-   Notes:
-     Built on Resizable (the first panel); the divider's look is SplitView's (split-view.css). Colors, sizes and spacing
-     are --plx-comp-split-view-* and --plx-comp-reading-pane-* tokens on existing roles; the reading pane's frame is the
-     data table's (data-table-border, shape-md, border-width-thin).
-*/
-const LIMITS = {
-  'side-by-side': [360, 720, 560],
-  stacked: [200, 500, 320]
-};
-function SplitView({
-  orientation = 'side-by-side',
-  first,
-  second,
-  label,
-  firstLabel = 'First panel',
-  defaultSize,
-  size,
-  onSizeChange,
-  minSize,
-  maxSize,
-  steps,
-  className,
-  ...rest
-}) {
-  const side = orientation !== 'stacked';
-  const [lo, hi, start] = LIMITS[side ? 'side-by-side' : 'stacked'];
-  const box = side ? {
-    axis: 'horizontal',
-    defaultWidth: defaultSize != null ? defaultSize : start,
-    width: size,
-    minWidth: minSize || lo,
-    maxWidth: maxSize || hi,
-    onResize: onSizeChange ? s => onSizeChange(s.width) : undefined
-  } : {
-    axis: 'vertical',
-    defaultHeight: defaultSize != null ? defaultSize : start,
-    height: size,
-    minHeight: minSize || lo,
-    maxHeight: maxSize || hi,
-    onResize: onSizeChange ? s => onSizeChange(s.height) : undefined
-  };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "group",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)
-  }, rest), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-split-view__panels"
-  }, /*#__PURE__*/_react.default.createElement(_Resizable.Resizable, _extends({
-    label: firstLabel,
-    steps: steps,
-    className: "plx-split-view__first"
-  }, box), first), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-split-view__second"
-  }, second)));
-}
-function ReadingPane({
-  label,
-  actions,
-  empty,
-  className,
-  children
-}) {
-  return /*#__PURE__*/_react.default.createElement("section", {
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-reading-pane', className)
-  }, actions ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-reading-pane__actions"
-  }, actions) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-reading-pane__body"
-  }, children || empty || null));
 }
   } },
   "platform/components/Heading/Heading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

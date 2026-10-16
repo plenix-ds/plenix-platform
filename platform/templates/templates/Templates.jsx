@@ -7,6 +7,11 @@
      rows, columns: DataTable data; items: feature cards; onOpen: card action; empty: custom empty state.
      initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel: FormFlow contract; fields: render function.
      pane, paneTitle, detailOpen, onBack: SecondaryPane master-detail contract.
+     SplitWorkspace: the list and the chosen item in a SplitView (02 Page structures › Split workspace): rows and columns
+       (the list as a DataTable, which brings its own frame) or pane (framed as a ReadingPane titled paneTitle); the
+       item is children, shown in a ReadingPane while detailOpen (default true), else empty (default: an EmptyState);
+       actions: the reading pane's actions row; toolbar: a CommandBar above both; orientation, defaultSize, size,
+       onSizeChange: SplitView's.
      sections: [{id,title,content}] for detail navigation; query, onQueryChange: controlled search.
      strings: visible fallback words, all overridable; error: 404, 403 or 500; onRetry: retry callback.
      auth: Auth properties; form: authentication form slot; toolbar, tools, inspector: workspace slots.
@@ -28,7 +33,8 @@ import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { Panel } from '../../components/Card/Card.jsx';
-const WORDS = { empty: 'No records yet', emptyDescription: 'Create a record to get started.', pane: 'Records', sections: 'On this page', retry: 'Try again', home: 'Go home', search: 'Search results', tools: 'Tools', inspector: 'Options' };
+import { SplitView, ReadingPane } from '../../patterns/SplitView/SplitView.jsx';
+const WORDS = { empty: 'No records yet', emptyDescription: 'Create a record to get started.', pane: 'Records', sections: 'On this page', retry: 'Try again', home: 'Go home', search: 'Search results', tools: 'Tools', inspector: 'Options', detail: 'Details', noSelection: 'Nothing selected', noSelectionDescription: 'Choose an item to see it here.' };
 function Frame({ page = 'workspace', title, description, actions, header, sideNav, footer, mainId, children }) {
   const id = React.useId();
   return <AppShell page={page} header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}>
@@ -50,7 +56,12 @@ export function MasterDetailPage({ pane, paneTitle, detailOpen = false, onBack, 
   const t = { ...WORDS, ...strings }, id = React.useId();
   return <AppShell page="master-detail" header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}><div className="plx-page-panes"><SecondaryPane title={paneTitle || t.pane} detailOpen={detailOpen} onBack={onBack}>{pane}</SecondaryPane><PageContent>{children}</PageContent></div></AppShell>;
 }
-export function SplitWorkspace(props) { return <MasterDetailPage {...props} />; }
+export function SplitWorkspace({ pane, paneTitle, rows, columns, detailOpen = true, title, actions, toolbar, empty, orientation, defaultSize, size, onSizeChange, strings, children, header, sideNav, footer, mainId }) {
+  const t = { ...WORDS, ...strings }, id = React.useId(), list = paneTitle || t.pane;
+  const first = columns ? <DataTable label={list} data={rows || []} columns={columns} /> : <ReadingPane label={list}>{pane}</ReadingPane>;
+  const second = <ReadingPane label={title || t.detail} actions={detailOpen ? actions : null} empty={empty || <EmptyState title={t.noSelection}>{t.noSelectionDescription}</EmptyState>}>{detailOpen ? children : null}</ReadingPane>;
+  return <AppShell page="master-detail" header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}><PageContent>{toolbar}<SplitView label={title || list} firstLabel={list} orientation={orientation} defaultSize={defaultSize} size={size} onSizeChange={onSizeChange} first={first} second={second} /></PageContent></AppShell>;
+}
 export function SinglePaneWorkspace({ toolbar, children, ...rest }) { return <Frame {...rest}><Stack gap="md">{toolbar}{children}</Stack></Frame>; }
 export function FullScreenWorkspace({ tools, inspector, toolbar, children, strings, mainId }) {
   const t = { ...WORDS, ...strings }, id = React.useId();

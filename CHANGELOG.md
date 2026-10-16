@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.45.0] - 2026-10-16
+
+### Changed
+- `SplitWorkspace` is built on `SplitView` (it was MasterDetailPage under another name): the list and the chosen item
+  share the page, side by side or stacked, with the divider between them. The list is `rows` and `columns` (a
+  DataTable) or `pane` (framed as a ReadingPane titled `paneTitle`); the item is `children` in a ReadingPane while
+  `detailOpen` (now default true), else `empty` (default: an EmptyState, "Nothing selected"); new props `actions` (the
+  reading pane's actions row), `toolbar` (a CommandBar above both), `orientation`, `defaultSize`, `size`,
+  `onSizeChange`. Apps to check: `onBack` is no longer used (both panels show at once; under 900px they stack).
+
 ## [0.44.0] - 2026-10-16
 
 ### Added
