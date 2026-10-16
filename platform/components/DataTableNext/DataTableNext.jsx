@@ -15,7 +15,7 @@ import { cx } from '../../utils/cx.js';
 import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
 import { SIZE_STEPS, stepSize, snapSize } from '../../utils/sizeSteps.js';
 import { gapPieces } from '../../hooks/useVirtualizer.js';
-import { tablePx, vendorBase } from '../DataTable/tabulator.js';
+import { tokenPixels, structuralStylesheet } from './environment.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Menu, MenuItem, MenuDivider, ContextMenu } from '../Menu/Menu.jsx';
@@ -73,7 +73,7 @@ function NextEngine(props) {
   const remoteMode=typeof props.fetchRows==='function'&&mode==='pages',source=remoteMode?(remote?.rows||EMPTY_ROWS):data;
   const emit=(name,...args)=>{live.current.props.on?.[name]?.(...args);listeners.current.get(name)?.forEach(fn=>fn(...args));};
   const api=React.useMemo(()=>createAdapter(live),[]);
-  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=tablePx(definition?.minWidth||'--plx-ref-size-80px',at),max=definition?.maxWidth?tablePx(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1];const width=snapToGrid(snapSize(tablePx(value,at),min,max),{el:at});setSizing(s=>({...s,[field]:width}));};
+  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=tokenPixels(definition?.minWidth||'--plx-ref-size-80px',at),max=definition?.maxWidth?tokenPixels(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1];const width=snapToGrid(snapSize(tokenPixels(value,at),min,max),{el:at});setSizing(s=>({...s,[field]:width}));};
   const move=(field,target,after)=>{const current=live.current.table.getAllLeafColumns().map(c=>c.id).filter(id=>!id.startsWith('__')&&id!==field);const at=current.indexOf(target);current.splice(Math.max(0,at+(after?1:0)),0,field);setOrderOwner(orderSignal);setOrder(current);emit('columnMoved',api.column(field),current.map(api.column));};
   const notifySelection=next=>{
     setSelection(next);const active=new Set(live.current.table.getFilteredRowModel().rows.map(r=>r.id)),records=source.filter(r=>next[recordKey(r[index])]);
@@ -84,8 +84,8 @@ function NextEngine(props) {
   const changeSort=update=>{const next=typeof update==='function'?update(sorting):update;setSortOwner(sortSignal);setSorting(next);setPage(0);emit('dataSorted',next.map(s=>({field:s.id,dir:s.desc?'desc':'asc'})));};
   const leafDefs=React.useMemo(()=>columns.map(c=>({id:c.field,accessorFn:r=>valueAt(r,c.field),header:c.title||c.field,
     enableSorting:c.headerSort!==false,filterFn:c.filter==='list'?'equalsString':'includesString',sortingFn:c.sorter==='number'?'basic':compare,
-    size:kinds(c).includes('icon')?metrics.lead:Math.max(metrics.min,tablePx(c.width,frame.current)||autoSizing[c.field]||metrics.min),minSize:kinds(c).includes('icon')?metrics.lead:tablePx(c.minWidth,frame.current)||metrics.min,
-    maxSize:kinds(c).includes('icon')?metrics.lead:c.maxWidth?tablePx(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],meta:c})),[columns,metrics.min,autoSizing]);
+    size:kinds(c).includes('icon')?metrics.lead:Math.max(metrics.min,tokenPixels(c.width,frame.current)||autoSizing[c.field]||metrics.min),minSize:kinds(c).includes('icon')?metrics.lead:tokenPixels(c.minWidth,frame.current)||metrics.min,
+    maxSize:kinds(c).includes('icon')?metrics.lead:c.maxWidth?tokenPixels(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],meta:c})),[columns,metrics.min,autoSizing]);
   const table=useReactTable({data:source,columns:leafDefs,getRowId:r=>recordKey(r[index]),
     state:{sorting,columnOrder,columnVisibility,columnSizing:sizing,columnFilters:filters,globalFilter:props.filter,pagination:{pageIndex:page,pageSize},rowSelection:selection},
     onSortingChange:changeSort,
@@ -111,7 +111,7 @@ function NextEngine(props) {
     const at=frame.current;if(!at||!metrics.min)return;
     const ctx=at.ownerDocument.createElement('canvas').getContext('2d'),cs=getComputedStyle(at),widths={},free=[];
     columns.forEach(c=>{
-      const explicit=kinds(c).includes('icon')?metrics.lead:tablePx(c.width,at);if(explicit){widths[c.field]=explicit;return;}
+      const explicit=kinds(c).includes('icon')?metrics.lead:tokenPixels(c.width,at);if(explicit){widths[c.field]=explicit;return;}
       const family=cs.getPropertyValue(kinds(c).includes('data')?'--plx-comp-data-table-data-font-family':'--plx-comp-data-table-font-family').trim()||cs.fontFamily;
       ctx.font=cs.getPropertyValue('--plx-comp-data-table-font-size').trim()+' '+family;
       let width=ctx.measureText(c.title||c.field).width;
@@ -127,12 +127,12 @@ function NextEngine(props) {
   React.useLayoutEffect(()=>{
     const at=frame.current;if(!at)return;const doc=at.ownerDocument;
     // Reuse the existing structural stylesheet; no Tabulator script or engine is loaded by the trial.
-    const href=vendorBase()+'tabulator/tabulator.min.css';let link=[...doc.querySelectorAll('link[rel="stylesheet"]')].find(l=>l.href===href);
+    const href=structuralStylesheet();let link=[...doc.querySelectorAll('link[rel="stylesheet"]')].find(l=>l.href===href);
     if(!link){link=doc.createElement('link');link.rel='stylesheet';link.href=href;doc.head.prepend(link);}
     let raf=0;
-    const measure=()=>{raf=0;const next={row:tablePx('--plx-comp-data-table-record-height',at),line:tablePx('--plx-comp-data-table-line-width',at),lead:tablePx('--plx-comp-data-table-lead-column-width',at),menu:tablePx('--plx-comp-data-table-row-menu-width',at),min:tablePx('--plx-ref-size-80px',at),space:tablePx('--plx-comp-data-table-cell-padding-inline',at),room:at.clientWidth};
+    const measure=()=>{raf=0;const next={row:tokenPixels('--plx-comp-data-table-record-height',at),line:tokenPixels('--plx-comp-data-table-line-width',at),lead:tokenPixels('--plx-comp-data-table-lead-column-width',at),menu:tokenPixels('--plx-comp-data-table-row-menu-width',at),min:tokenPixels('--plx-ref-size-80px',at),space:tokenPixels('--plx-comp-data-table-cell-padding-inline',at),room:at.clientWidth};
       setMetrics(old=>Object.keys(next).every(k=>next[k]===old[k])?old:next);
-      const threshold=narrow==='auto'?keys.reduce((sum,field)=>sum+(live.current.table?.getColumn(field)?.getSize()||next.min),selectable?next.lead:0):tablePx(narrowAt,at),want=listed&&at.clientWidth>0&&at.clientWidth<threshold;setNarrow(want);
+      const threshold=narrow==='auto'?keys.reduce((sum,field)=>sum+(live.current.table?.getColumn(field)?.getSize()||next.min),selectable?next.lead:0):tokenPixels(narrowAt,at),want=listed&&at.clientWidth>0&&at.clientWidth<threshold;setNarrow(want);
       if(!height&&mode==='fill'&&holder.current){const top=holder.current.getBoundingClientRect().top;holder.current.style.maxBlockSize=gridPx(Math.max(next.row*8,doc.defaultView.innerHeight-top),{round:'down',el:at});}
     };
     const schedule=()=>{if(!raf)raf=requestAnimationFrame(measure);};measure();

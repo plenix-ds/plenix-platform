@@ -2,7 +2,7 @@
 
 This is a separate React/TanStack core. Existing applications and the DataTable implementation are unchanged.
 TanStack Table 8.21.3 and TanStack Virtual 3.14.21 are pinned and bundled, with React/ReactDOM supplied by Plenix.
-The existing Tabulator structural **stylesheet** is reused; the trial does not load Tabulator JavaScript.
+The existing Tabulator structural **stylesheet** is reused. The standalone trial has no import of legacy DataTable JavaScript, loader, prefetch or prototype patches. Token/path helpers live in its own environment.js. The combined Platform still includes the existing engine for existing tables.
 
 Implemented: opening saved views; plain/custom React cells; sort/function and header filters; canonical selection and
 hidden-selection policy; column order, visibility, widths, fit and resize; row-height/density and narrow-list layout;
@@ -30,3 +30,7 @@ The shim is not a full Tabulator module API: advanced modules, mutable row/cell 
   Reviewed captures are in tests/data-table-next-review; they are review artifacts, not replacement visual baselines.
 - The DS overlay appends a side-by-side trial to the existing DataTable record
   only with `?engine=next`; normal examples, taxonomy, stylesheets and other lane records remain unchanged.
+
+## Engine independence
+
+`node tests/data-table-next-independent.test.js` audits the transitive standalone module graph (including TanStack Table/Virtual), rejects any legacy DataTable/vendor engine JavaScript, blocks engine requests, and traps reads/writes of window.Tabulator. It exercises 600-row virtualization, sorting, filtering and selection without loading the Platform JavaScript bundle. Existing CSS/class names are styling compatibility only.
