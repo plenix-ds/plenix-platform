@@ -944,7 +944,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
-     MediaCard.onSelectChange(checked): runs when the selection box changes, or when the card is clicked anywhere but its
+     MediaCard.onSelectChange(checked, event): the event carries Shift, Ctrl and ⌘ (pass it to useSelection().choose(key, event) for ranges); runs when the selection box changes, or when the card is clicked anywhere but its
        title, box and actions (it toggles the selection); without it there is no selection box and a click opens the card.
        A selectable card opens from its title or a double-click.
      MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
@@ -1189,7 +1189,7 @@ function MediaCard({
   const click = e => {
     if (onClick) onClick(e);
     if (!selectable || e.defaultPrevented || inControl(e)) return;
-    onSelectChange(!selected);
+    onSelectChange(!selected, e);
   };
   const dblClick = e => {
     if (onDoubleClick) onDoubleClick(e);
@@ -1227,7 +1227,7 @@ function MediaCard({
     className: "plx-media-card__select",
     checked: selected,
     "aria-label": selectLabel || t.select.split('{title}').join(typeof title === 'string' ? title : t.item),
-    onChange: e => onSelectChange(e.target.checked)
+    onChange: e => onSelectChange(e.target.checked, e.nativeEvent)
   }) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-media-card__info"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -57607,7 +57607,7 @@ function FileList({
   }, countText), sortMenu) : null, body, table ? dialogs : null);
 }
   } },
-  "platform/patterns/FileBrowser/FileBrowser.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FileBrowser/FileBrowser.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57633,6 +57633,7 @@ var _ContentGrid = require("../ContentGrid/ContentGrid.jsx");
 var _DeleteFlow = require("../DeleteFlow/DeleteFlow.jsx");
 var _FileList = require("../FileList/FileList.jsx");
 var _dnd = require("../../utils/dnd.js");
+var _useSelection = require("../../hooks/useSelection.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileBrowser
    Summary: Finding, organizing and acting on files by place (12 Specialized › Files, assets, and DAM › File browser): the
@@ -57899,6 +57900,13 @@ function FileBrowser({
     field: 'name',
     dir: 'asc'
   };
+  // the grid's selection model: a click toggles a card, Shift extends from the last one picked, Ctrl or ⌘ toggles
+  const pick = (0, _useSelection.useSelection)({
+    items: (0, _FileList.sortFiles)(shown, order).map(x => x.id),
+    mode: 'multiple',
+    selected: sel,
+    onChange: setSel
+  });
   const move = onMove ? (list, to) => onMove(list, to === ROOT ? null : to) : undefined;
   const chosen = sel.map(id => byId[id]).filter(Boolean);
   // where the selection can go: every folder but the chosen folders, the ones inside them and the open one
@@ -58014,7 +58022,7 @@ function FileBrowser({
         status: x.status,
         selected: sel.indexOf(x.id) >= 0,
         selecting: sel.length > 0,
-        onSelectChange: selectable ? on => setSel(on ? sel.concat(x.id) : sel.filter(y => y !== x.id)) : undefined,
+        onSelectChange: selectable ? (on, e) => pick.choose(x.id, e) : undefined,
         href: hrefFor ? hrefFor(x) : undefined,
         onOpen: hrefFor ? undefined : isFolder ? () => go(x.id) : onOpenFile ? () => onOpenFile(x) : undefined
       }));

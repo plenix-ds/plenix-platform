@@ -79,6 +79,7 @@ import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
 import { FileList, sortFiles } from '../FileList/FileList.jsx';
 import { useDraggable, useDropTarget } from '../../utils/dnd.js';
+import { useSelection } from '../../hooks/useSelection.js';
 
 const STRINGS = {
   label: 'Files', root: 'Library', newFolder: 'New folder', folderName: 'Folder name', create: 'Create', upload: 'Upload', search: 'Search this folder',
@@ -152,6 +153,8 @@ export function FileBrowser({ items = [], root, folder, defaultFolder, onFolderC
   const query = q.trim().toLowerCase();
   const shown = (query ? inside(current).filter((x) => String(x.name).toLowerCase().indexOf(query) >= 0) : kids(current)).map(withCount);
   const order = sort[0] ? { field: sort[0].field, dir: sort[0].dir } : { field: 'name', dir: 'asc' };
+  // the grid's selection model: a click toggles a card, Shift extends from the last one picked, Ctrl or ⌘ toggles
+  const pick = useSelection({ items: sortFiles(shown, order).map((x) => x.id), mode: 'multiple', selected: sel, onChange: setSel });
   const move = onMove ? (list, to) => onMove(list, to === ROOT ? null : to) : undefined;
   const chosen = sel.map((id) => byId[id]).filter(Boolean);
   // where the selection can go: every folder but the chosen folders, the ones inside them and the open one
@@ -194,7 +197,7 @@ export function FileBrowser({ items = [], root, folder, defaultFolder, onFolderC
             <GridItem key={x.id} item={x} onMove={move}>
               <MediaCard src={x.src} alt="" icon={isFolder ? 'folder' : fileIcon(x.name, x.type)} title={x.name} meta={facts} aspect="4/3"
                 status={x.status} selected={sel.indexOf(x.id) >= 0} selecting={sel.length > 0}
-                onSelectChange={selectable ? (on) => setSel(on ? sel.concat(x.id) : sel.filter((y) => y !== x.id)) : undefined}
+                onSelectChange={selectable ? (on, e) => pick.choose(x.id, e) : undefined}
                 href={hrefFor ? hrefFor(x) : undefined} onOpen={hrefFor ? undefined : isFolder ? () => go(x.id) : onOpenFile ? () => onOpenFile(x) : undefined} />
             </GridItem>
           );

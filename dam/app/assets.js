@@ -6595,6 +6595,13 @@ function HomePage() {
   const gridSize = GRID_SIZE[view === 'find' ? 'L' : cv.view.size];
   // the cards show what the bar finds, in its order (the table applies the same through its props)
   const shown = rows => rows.filter(cv.test).sort((0, _plenixPlatform.compareLevels)(fieldsOf, cv.tableProps.sort));
+  // the grid picks with the Platform's selection model: a click toggles, Shift extends from the last one picked, Ctrl or ⌘ toggles
+  const assetPick = (0, _plenixPlatform.useSelection)({
+    items: (view === 'find' ? found : shown(D.ASSETS)).map(x => x.id),
+    mode: 'multiple',
+    selected: selAssets,
+    onChange: setSelAssets
+  });
   const tableProps = view === 'find' ? {} : cv.tableProps;
   let content;
   if (view === 'categories') {
@@ -6723,7 +6730,7 @@ function HomePage() {
       }),
       selected: selAssets.indexOf(a.id) >= 0,
       selecting: selAssets.length > 0,
-      onSelectChange: () => toggle(selAssets, setSelAssets, a.id),
+      onSelectChange: (on, e) => assetPick.choose(a.id, e),
       selectLabel: 'Select ' + a.name,
       onOpen: () => openAsset(a.id),
       "aria-current": asset === a.id ? 'true' : undefined

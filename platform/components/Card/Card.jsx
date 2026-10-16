@@ -56,7 +56,7 @@
      MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
-     MediaCard.onSelectChange(checked): runs when the selection box changes, or when the card is clicked anywhere but its
+     MediaCard.onSelectChange(checked, event): the event carries Shift, Ctrl and ⌘ (pass it to useSelection().choose(key, event) for ranges); runs when the selection box changes, or when the card is clicked anywhere but its
        title, box and actions (it toggles the selection); without it there is no selection box and a click opens the card.
        A selectable card opens from its title or a double-click.
      MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
@@ -179,7 +179,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
   // a selectable card (owner, batch 272: "clicking the card selects it"): a click anywhere but its controls toggles the
   // selection; the title, or a double-click, opens it
   const inControl = (e) => !!(e.target.closest && e.target.closest('a, button, input, select, textarea, [role=menu], .plx-card__actions'));
-  const click = (e) => { if (onClick) onClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; onSelectChange(!selected); };
+  const click = (e) => { if (onClick) onClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; onSelectChange(!selected, e); };
   const dblClick = (e) => { if (onDoubleClick) onDoubleClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; if (onOpen) onOpen(); else if (href) location.href = href; };
   const card = (
     <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className)}
@@ -191,7 +191,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
       </div>
       {onSelectChange ? (
         <input type="checkbox" className="plx-media-card__select" checked={selected} aria-label={selectLabel || t.select.split('{title}').join(typeof title === 'string' ? title : t.item)}
-          onChange={(e) => onSelectChange(e.target.checked)} />
+          onChange={(e) => onSelectChange(e.target.checked, e.nativeEvent)} />
       ) : null}
       <div className="plx-media-card__info">
         <div className="plx-media-card__text">

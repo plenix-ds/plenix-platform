@@ -12,7 +12,7 @@
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
 import React from 'react';
-import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
+import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, useSelection, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -224,6 +224,8 @@ export function HomePage() {
   const gridSize = GRID_SIZE[view === 'find' ? 'L' : cv.view.size];
   // the cards show what the bar finds, in its order (the table applies the same through its props)
   const shown = (rows) => rows.filter(cv.test).sort(compareLevels(fieldsOf, cv.tableProps.sort));
+  // the grid picks with the Platform's selection model: a click toggles, Shift extends from the last one picked, Ctrl or ⌘ toggles
+  const assetPick = useSelection({ items: (view === 'find' ? found : shown(D.ASSETS)).map((x) => x.id), mode: 'multiple', selected: selAssets, onChange: setSelAssets });
   const tableProps = view === 'find' ? {} : cv.tableProps;
   let content;
   if (view === 'categories') {
@@ -259,7 +261,7 @@ export function HomePage() {
       <ContentGrid size={gridSize} label="Search results">
         {(view === 'find' ? list : shown(list)).map((a) => (
           <MediaCard key={a.id} src={a.thumb} title={a.name} meta={a.cat} badge={<Icon name={a.typeIcon} size="md" label={a.badge} />}
-            selected={selAssets.indexOf(a.id) >= 0} selecting={selAssets.length > 0} onSelectChange={() => toggle(selAssets, setSelAssets, a.id)} selectLabel={'Select ' + a.name}
+            selected={selAssets.indexOf(a.id) >= 0} selecting={selAssets.length > 0} onSelectChange={(on, e) => assetPick.choose(a.id, e)} selectLabel={'Select ' + a.name}
             onOpen={() => openAsset(a.id)} aria-current={asset === a.id ? 'true' : undefined} />
         ))}
       </ContentGrid>

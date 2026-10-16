@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.46.0] - 2026-10-16
+
+### Added
+- Range selection in card grids (#51): `MediaCard.onSelectChange(checked, event)` now passes the click, so a grid can
+  hand it to `useSelection().choose(key, event)`: a click toggles a card, Shift extends from the last one picked, Ctrl
+  or ⌘ toggles one. FileBrowser's grid and the Asset Manager's search grid use it.
+### Changed
+- FileBrowser's grid selection runs on `useSelection` (the shared selection model). RowButton (a native button) and Tree
+  (its own roving tree focus, the ARIA tree pattern) already follow the shared focus rules and keep their code.
+
 ## [0.45.1] - 2026-10-16
 
 ### Fixed
