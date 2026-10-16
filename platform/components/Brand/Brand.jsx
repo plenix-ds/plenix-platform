@@ -34,6 +34,7 @@
      Other props pass through to the outer <span>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { appById } from '../../providers/apps.js';
@@ -41,6 +42,7 @@ import { appById } from '../../providers/apps.js';
 const STRINGS = { name: 'Plenix' };
 
 export function BrandMark({ kind = 'mark', tone, size, app, showName = true, clearSpace = false, label, strings, className, ...rest }) {
+  devWarn('BrandMark', { tone, size }, { tone: ['brand','mono','on-accent'], size: ['sm','md','lg','xl'] });
   const s = { ...STRINGS, ...strings };
   if (kind === 'mark') {
     const cls = cx('plx-brand-mark', tone && 'plx-brand-mark--tone-' + tone, size && 'plx-brand-mark--size-' + size, className);

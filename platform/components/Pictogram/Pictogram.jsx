@@ -19,12 +19,14 @@
      Other props pass through to the <span>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 const SIZES = ['48', '64', '96'];
 
 export function Pictogram({ icon, size = '64', twoTone = false, label, className, ...rest }) {
+  devWarn('Pictogram', { size }, { size: ['48','64','96',48,64,96] });
   const s = SIZES.indexOf(String(size)) >= 0 ? String(size) : '64';
   return (
     <span className={cx('plx-pictogram', 'plx-pictogram--' + s, twoTone && 'plx-pictogram--two-tone', className)}

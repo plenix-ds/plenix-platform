@@ -26,6 +26,7 @@
      The button is a Button (secondary, with the arrow-up icon: Material's arrow_upward); its target is at least the standard control height.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
 import { useIntersection } from '../../hooks/useIntersection.js';
@@ -35,6 +36,7 @@ const STRINGS = { label: 'Back to top' };
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function BackToTop({ variant = 'floating', scrollRef, focusRef, strings, className }) {
+  devWarn('BackToTop', { variant }, { variant: ['floating','inline'] });
   const t = Object.assign({}, STRINGS, strings);
   const floating = variant !== 'inline';
   const sentinel = React.useRef(null);

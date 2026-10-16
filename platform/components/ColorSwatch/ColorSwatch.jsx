@@ -39,6 +39,7 @@
      Other props pass through to the <button> or <span>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { DATA_COLORS } from './dataColors.js';
 import { CATEGORY_COLORS } from './categoryColors.js';
@@ -49,6 +50,7 @@ import { useOverflow, splitAt } from '../../utils/overflow.js';
 const nameOf = (h) => h.charAt(0).toUpperCase() + h.slice(1);
 
 export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, showLabel = false, onClick, className, ...rest }) {
+  devWarn('ColorSwatch', { tone, size }, { tone: ['accent','surface','frost'], size: ['sm','md'] });
   if (showLabel && label) {
     // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
     const chip = <ColorSwatch color={color} category={category} tone={tone} size={size} shape={shape} />;
@@ -63,6 +65,7 @@ export function ColorSwatch({ color, category, tone, size = 'md', shape = 'squar
 
 // the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
 export function ColorPicker({ value, onChange, label = 'Color', size = 'md', palette = 'data', colors, invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
+  devWarn('ColorPicker', { size }, { size: ['sm','md'] });
   const all = palette === 'category' ? CATEGORY_COLORS : DATA_COLORS;
   const list = Array.isArray(colors) ? colors.filter((h) => all.indexOf(h) >= 0) : all;
   const cat = palette === 'category';

@@ -6,6 +6,7 @@
    Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Stack, Inline } from '../Stack/Stack.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -13,4 +14,6 @@ import { Text } from '../Text/Text.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Link } from '../Link/Link.jsx';
-export function AIDisclaimer({variant='footer',children,href,strings,className,...rest}){const t=Object.assign({message:'AI-generated content may be inaccurate. Review important details.',learn:'About AI-generated content'},strings);return <Inline as={variant==='inline'?'span':'footer'} wrap className={cx('plx-ai-disclaimer',className)} {...rest}><Icon name="sparkle"/><Text variant="secondary">{children||t.message}</Text>{href?<Link href={href}>{t.learn}</Link>:null}</Inline>;}
+export function AIDisclaimer({variant='footer',children,href,strings,className,...rest}){
+  devWarn('AIDisclaimer', { variant }, { variant: ['footer','inline'] });
+  const t=Object.assign({message:'AI-generated content may be inaccurate. Review important details.',learn:'About AI-generated content'},strings);return <Inline as={variant==='inline'?'span':'footer'} wrap className={cx('plx-ai-disclaimer',className)} {...rest}><Icon name="sparkle"/><Text variant="secondary">{children||t.message}</Text>{href?<Link href={href}>{t.learn}</Link>:null}</Inline>;}

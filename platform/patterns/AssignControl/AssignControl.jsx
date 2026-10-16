@@ -38,6 +38,7 @@
      A delegation ends by itself after its last day; End delegation ends it sooner.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { announce } from '../../utils/announce.jsx';
@@ -63,6 +64,7 @@ const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undef
 
 export function AssignControl({ label = 'Assignee', people = [], value = null, onChange, me, clearable = true, variant = 'assign',
   delegation, onDelegate, onEndDelegation, strings, className, ...rest }) {
+  devWarn('AssignControl', { variant }, { variant: ['assign','delegate'] });
   const t = Object.assign({}, STRINGS, strings);
   const toast = useOptionalToast();
   const say = (text) => { if (toast) toast.show(text, { tone: 'success' }); else announce(text); };

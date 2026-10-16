@@ -47,6 +47,7 @@
      The count is the number of items, in the question and in the button's toast, never "these items".
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { announce } from '../../utils/announce.jsx';
@@ -70,6 +71,7 @@ const SHOWN = 5;
 
 export function DeleteFlow({ items = [], noun = 'item', plural, variant = 'confirm', consequence, confirmPhrase, retention,
   onDelete, onRestore, onCommit, trigger, open, onClose, strings, className }) {
+  devWarn('DeleteFlow', { variant }, { variant: ['confirm','type','undo','trash'] });
   const t = Object.assign({}, STRINGS, strings);
   const toast = useOptionalToast();
   const many = plural || noun + 's';

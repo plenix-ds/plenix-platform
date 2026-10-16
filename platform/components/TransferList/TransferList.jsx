@@ -42,6 +42,7 @@
        option's aria-selected says it is checked.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { announce } from '../../utils/announce.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -126,6 +127,7 @@ function Side({ id, title, items, checked, setChecked, onMove, search, virtual, 
 
 export function TransferList({ label, options = [], value = [], onChange, titles, search = false, ordered = false, virtualized, size = 'md', disabled = false,
   strings, className }) {
+  devWarn('TransferList', { size }, { size: ['sm','md','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   const id = 'plx-tl' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const title = Object.assign({ source: t.source, target: t.target }, titles);

@@ -34,6 +34,7 @@
      A kind sets defaults only: an explicit tone, icon, title or children wins.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
@@ -58,6 +59,7 @@ const TONE_ICONS = { error: 'warning', warning: 'warning', success: 'circle-chec
 const ROLES = { error: 'alert', warning: 'status', success: 'status' };
 
 export function EmptyState({ size = 'inline', tone, kind, icon, title, action, strings, className, children, ...rest }) {
+  devWarn('EmptyState', { size, tone }, { size: ['inline','page'], tone: ['neutral','error','warning','success'] });
   const preset = KINDS[kind];
   const words = preset ? Object.assign({}, STRINGS[kind], strings && strings[kind]) : null;
   const t = tone || (preset ? preset.tone : 'neutral');

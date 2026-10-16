@@ -56,6 +56,7 @@
      Other props go on the <article>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatCurrency, formatNumber } from '../../utils/format.js';
 import { Image } from '../../components/Image/Image.jsx';
@@ -76,6 +77,7 @@ const RATIOS = ['1-1', '4-3', '3-4'];
 // the price line: the price now in the data font, and on sale the old price struck through after it ("Now …, was …" to
 // assistive technology); shared with the Commerce templates
 export function ProductPrice({ price, currency = 'USD', compareAtPrice, size = 'md', strings, className }) {
+  devWarn('ProductPrice', { size }, { size: ['md','sm'] });
   const t = Object.assign({}, STRINGS, strings);
   const onSale = typeof compareAtPrice === 'number' && compareAtPrice > price;
   return (

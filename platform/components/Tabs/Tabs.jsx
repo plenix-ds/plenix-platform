@@ -45,6 +45,7 @@
        and pass idBase so the tabs point at it.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
@@ -86,6 +87,7 @@ function useTabsFit(rootRef, listRef, count, key) {
 }
 
 export function Tabs({ variant = 'contained', orientation = 'horizontal', items, value, defaultValue, onChange, label, idBase, className, panelClassName, strings }) {
+  devWarn('Tabs', { variant }, { variant: ['contained','folder','segmented'] });
   const words = Object.assign({}, STRINGS, strings);
   const uid = useUid('plx-tabs');
   const base = idBase || uid;

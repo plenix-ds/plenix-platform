@@ -22,11 +22,13 @@
      To switch between panels of content, use Tabs (variant "segmented").
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 export function SegmentedControl({ options, value, onChange, label, size = 'md', className, ...rest }) {
+  devWarn('SegmentedControl', { size }, { size: ['md','sm'] });
   const refs = React.useRef([]);
   const index = Math.max(0, options.findIndex((o) => o.value === value));
   const move = (e, i) => {

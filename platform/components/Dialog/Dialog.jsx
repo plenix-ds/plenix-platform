@@ -75,6 +75,7 @@
      The layer renders in a portal on document.body.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { focusables, useLayer, useUid } from '../../utils/layer.js';
@@ -152,10 +153,12 @@ function ModalShell({ kind, open, onClose, title, description, icon, size, side,
 }
 
 export function Dialog({ size = 'md', ...props }) {
+  devWarn('Dialog', { size }, { size: ['sm','md','lg','xl','full'] });
   return <ModalShell kind="dialog" size={size} {...props} />;
 }
 
 export function Drawer({ size = 'md', side = 'end', ...props }) {
+  devWarn('Drawer', { size }, { size: ['sm','md','lg'] });
   return <ModalShell kind="drawer" size={size} side={side} {...props} />;
 }
 
@@ -172,6 +175,7 @@ export function ConfirmDialog({ open, title, message, confirmLabel = 'Confirm', 
 
 export function PromptDialog({ open, title, message, label, defaultValue = '', placeholder, description, confirmLabel = 'Save', cancelLabel = 'Cancel',
   validate, onSubmit, onCancel, inputProps, size = 'sm' }) {
+  devWarn('PromptDialog', { size }, { size: ['sm','md','lg','xl','full'] });
   const formId = useUid('plx-prompt');
   const input = React.useRef(null);
   const [value, setValue] = React.useState(defaultValue);

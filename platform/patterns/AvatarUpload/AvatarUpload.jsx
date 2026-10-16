@@ -34,6 +34,7 @@
        change it.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
@@ -47,6 +48,7 @@ const STRINGS = { change: 'Change photo', add: 'Add photo', remove: 'Remove phot
 
 export function AvatarUpload({ name, src, onChange, crop = true, removable = true, size = '2xl', accept = 'image/png,image/jpeg,image/webp', maxSize,
   description, disabled = false, strings, className, id, 'aria-describedby': describedBy }) {
+  devWarn('AvatarUpload', { size }, { size: ['xl','2xl'] });
   const t = Object.assign({}, STRINGS, strings);
   const [pending, setPending] = React.useState(null);   // { url, file } waiting for its crop
   const [error, setError] = React.useState('');

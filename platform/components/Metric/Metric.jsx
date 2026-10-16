@@ -38,12 +38,14 @@
      Missing data: show a dash ("–") as the value, never 0.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Card } from '../Card/Card.jsx';
 import { Sparkline } from '../../charts/Sparkline.jsx';
 
 export function Metric({ value, label, unit, change, changeTone = 'neutral', description, size = 'md', trend, trendVariant = 'line', trendLabel, trendColor,
   card = false, href, className, ...rest }) {
+  devWarn('Metric', { size }, { size: ['md','lg'] });
   const figure = (
     <div className="plx-metric__figure">
       <span className="plx-metric__value">{value}</span>

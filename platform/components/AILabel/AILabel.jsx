@@ -12,6 +12,7 @@
    Notes: Identification does not imply accuracy, certainty or verified sources. No new accent or color is introduced.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Badge } from '../Badge/Badge.jsx';
 import { Inline } from '../Stack/Stack.jsx';
 import { Icon } from '../Icon/Icon.jsx';
@@ -20,6 +21,7 @@ import { Button } from '../Button/Button.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { cx } from '../../utils/cx.js';
 export const AILabel=React.forwardRef(function AILabel({variant='badge',children,explanation,strings,className},ref){
+  devWarn('AILabel', { variant }, { variant: ['badge','inline','explanation'] });
  const t={label:'AI-generated',explain:'About this AI content',...strings},label=children||t.label,cls=cx('plx-ai','plx-ai-label',className);
  if(variant==='explanation'&&explanation)return <Popover label={t.explain} title={t.explain} trigger={<Button ref={ref} className={cls} variant="ghost" size="sm" icon="sparkle">{label}</Button>}><Text>{explanation}</Text></Popover>;
  return variant==='inline'?<Inline as="span" className={cls}><Icon name="sparkle"/><Text as="span">{label}</Text></Inline>:<Badge className={cls} tone="neutral" icon="sparkle">{label}</Badge>;

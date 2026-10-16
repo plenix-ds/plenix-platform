@@ -13,6 +13,7 @@
    Notes: A citation identifies a reference; it does not assert that the source was verified or supports every claim.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Stack,Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
@@ -22,6 +23,7 @@ import { Link } from '../Link/Link.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 function hrefOf(value){if(typeof value!=='string'||!value.trim())return null;try{const u=new URL(value,'https://plenix.invalid/');return ['http:','https:'].includes(u.protocol)?value:null;}catch(e){return null;}}
 export const Citation=React.forwardRef(function Citation({source,sources=[],variant='inline',index=1,strings,className},ref){
+  devWarn('Citation', { variant }, { variant: ['inline','card','list'] });
  const t={source:'Source',open:'Open source',unavailable:'Source unavailable',...strings};
  const card=(s,key)=>{const title=s?.title||t.unavailable,href=hrefOf(s?.href);return <Stack key={key} className="plx-citation__source" gap="xs">{href?<Link href={href} variant="external" target="_blank" rel="noopener noreferrer" strings={strings}>{title}</Link>:<Text>{title}</Text>}{s?.author?<Text>{s.author}</Text>:null}{s?.excerpt?<Text>{s.excerpt}</Text>:null}</Stack>;};
  if(variant==='list')return <Stack className={cx('plx-citation',className)} role="list" aria-label={t.source}>{sources.map((s,i)=><Stack key={s.id||i} role="listitem">{card(s,s.id||i)}</Stack>)}</Stack>;

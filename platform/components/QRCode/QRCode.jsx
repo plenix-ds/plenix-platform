@@ -27,6 +27,7 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { qrEncode } from '../../utils/qr.js';
 
@@ -35,6 +36,7 @@ const QUIET = 4;          // the quiet zone, in modules
 const LOGO_SHARE = 0.25;  // the share of the code's width the logo's clear square takes
 
 export function QRCode({ value, label, level = 'M', size = 'md', logo, caption, showValue = false, onAccent = false, className, ...rest }) {
+  devWarn('QRCode', { size }, { size: ['sm','md','lg'] });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const lv = logo ? 'H' : level;
   const code = React.useMemo(() => {

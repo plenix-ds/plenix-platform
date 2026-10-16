@@ -9,6 +9,7 @@
    Notes: The caller owns schema and server validation. Saved prop updates reset a clean draft; dirty edits are retained.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { InlineEdit } from '../../components/InlineEdit/InlineEdit.jsx';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -21,6 +22,7 @@ import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
 
 export function MetadataEditor({ fields = [], values = {}, onSave, variant = 'inline', disabled = false, strings, className }) {
+  devWarn('MetadataEditor', { variant }, { variant: ['inline','form','bulk'] });
   const t = Object.assign({ save: 'Save metadata', reset: 'Reset', apply: 'Apply {field}', required: 'Enter a value.', failed: 'Metadata could not be saved. Your changes are still available.', saved: 'Metadata saved', unsaved: 'Your metadata changes will be lost.' }, strings);
   const [draft, setDraft] = React.useState(values), [touched, setTouched] = React.useState({}), [error, setError] = React.useState(''), [busy, setBusy] = React.useState(false), [saved, setSaved] = React.useState(false);
   const lock = React.useRef(false), dirty = Object.values(touched).some(Boolean);

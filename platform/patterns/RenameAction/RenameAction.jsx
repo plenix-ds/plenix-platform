@@ -44,6 +44,7 @@
        the menu item with open and onClose. Leading and trailing spaces are taken off before the rules run.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { announce } from '../../utils/announce.jsx';
 import { useUid } from '../../utils/layer.js';
@@ -63,6 +64,7 @@ export function baseNameEnd(name) { const i = String(name).lastIndexOf('.'); ret
 
 export function RenameAction({ value = '', onRename, variant = 'inline', label, names = [], extension = false, validate, maxLength = 255, data = false,
   open: openProp, onClose, triggerProps, disabled = false, strings, className, ...rest }) {
+  devWarn('RenameAction', { variant }, { variant: ['inline','dialog'] });
   const t = Object.assign({}, STRINGS, strings);
   const name = label || t.label;
   const formId = useUid('plx-rename');

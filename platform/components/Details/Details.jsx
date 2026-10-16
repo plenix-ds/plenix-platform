@@ -27,12 +27,14 @@
      Start closed; put only optional detail inside: what everyone needs stays on the page. Never nest one in another.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 const VARIANTS = ['default', 'bordered', 'inline'];
 
 export function Details({ summary, children, variant = 'default', open: openProp, defaultOpen = false, onToggle, name, className, ...rest }) {
+  devWarn('Details', { variant }, { variant: ['default','bordered','inline'] });
   const controlled = openProp !== undefined;
   const [own, setOwn] = React.useState(!!defaultOpen);
   const open = controlled ? !!openProp : own;

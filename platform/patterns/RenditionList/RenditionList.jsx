@@ -7,6 +7,7 @@
    Notes: Links retain browser download behavior. File preparation belongs to the caller.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
@@ -18,6 +19,7 @@ import { Menu,MenuItem } from '../../components/Menu/Menu.jsx';
 import { formatBytes } from '../../utils/format.js';
 const STRINGS={label:'Renditions',name:'Name',format:'Format',size:'Size',download:'Download',empty:'No renditions.'};
 export function RenditionList({items=[],variant='table',strings,className}){
+  devWarn('RenditionList', { variant }, { variant: ['table','menu'] });
  const t={...STRINGS,...strings};
  const download=r=><DownloadButton href={r.href} fileName={r.fileName||r.name} format={r.format} size={r.size} onDownload={r.onDownload} progress={r.progress} strings={{download:t.download}} disabled={!r.href&&!r.onDownload}/>;
  if(!items.length)return <Text className={cx('plx-rendition-list',className)}>{t.empty}</Text>;

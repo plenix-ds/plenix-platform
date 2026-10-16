@@ -6,6 +6,7 @@
    Notes: Reuses MediaCard, Carousel and ContentGrid; recommendations and their order belong to the caller.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Carousel } from '../../components/Carousel/Carousel.jsx';
 import { MediaCard } from '../../components/Card/Card.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
@@ -14,6 +15,7 @@ import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
 
 export function RelatedAssets({ items = [], variant = 'strip', label, onOpen, strings, className }) {
+  devWarn('RelatedAssets', { variant }, { variant: ['strip','grid'] });
   const t = Object.assign({ empty: 'No related assets' }, strings);
   const cards = items.map((a) => <MediaCard key={a.id} src={a.src} alt={a.alt} title={a.title} meta={a.meta} href={a.href} onOpen={!a.href && onOpen ? () => onOpen(a) : undefined} />);
   return <Stack className={cx('plx-related-assets', className)}>{!items.length ? <EmptyState title={t.empty} /> : variant === 'grid'

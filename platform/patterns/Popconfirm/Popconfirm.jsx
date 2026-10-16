@@ -30,6 +30,7 @@
        (the toast's action) instead of asking first.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Button } from '../../components/Button/Button.jsx';
@@ -38,6 +39,7 @@ import { Popover } from '../../components/Popover/Popover.jsx';
 const STRINGS = { cancel: 'Cancel' };
 
 export function Popconfirm({ trigger, title, description, confirmLabel, cancelLabel, tone = 'default', onConfirm, onCancel, placement = 'bottom-start', strings, className }) {
+  devWarn('Popconfirm', { tone }, { tone: ['default','danger'] });
   const t = Object.assign({}, STRINGS, strings);
   const id = useUid('plx-popconfirm');
   const [open, setOpen] = React.useState(false);

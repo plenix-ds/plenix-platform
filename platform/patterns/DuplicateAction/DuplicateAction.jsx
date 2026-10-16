@@ -38,6 +38,7 @@
      Duplicate never copies people's comments or members unless they choose it: those belong to the original's history.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { announce } from '../../utils/announce.jsx';
@@ -68,6 +69,7 @@ export function copyName(name, taken = [], strings) {
 
 export function DuplicateAction({ name = '', noun = 'item', variant = 'copy', taken = [], onDuplicate, onUndo, source, options = [],
   trigger, open, onClose, size, strings, className }) {
+  devWarn('DuplicateAction', { variant, size }, { variant: ['copy','rename'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   const toast = useOptionalToast();
   const [shown, setShown] = React.useState(false);

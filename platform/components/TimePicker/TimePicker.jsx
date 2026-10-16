@@ -38,6 +38,7 @@
      Show the time zone in the description when people in several zones use the data.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
 
@@ -70,6 +71,7 @@ const show = (mins, cycle, t) => {
 
 export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label,
   invalid, disabled, id, name, strings, className, ...rest }, ref) {
+  devWarn('TimePicker', { variant }, { variant: ['list','segments'] });
   const t = Object.assign({}, STRINGS, strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
   const [own, setOwn] = React.useState(defaultValue);

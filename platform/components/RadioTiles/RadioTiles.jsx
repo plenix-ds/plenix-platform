@@ -20,10 +20,12 @@
      The preview is decorative (aria-hidden); the label and description name the option.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 export function RadioTiles({ legend, legendHidden = false, options = [], value, onChange, name, size = 'md', className, ...rest }) {
+  devWarn('RadioTiles', { size }, { size: ['sm','md','lg'] });
   const auto = 'plx-rt' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   return (
     <fieldset className={cx('plx-radio-tiles', 'plx-radio-tiles--' + size, className)} {...rest}>

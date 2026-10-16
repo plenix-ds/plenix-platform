@@ -26,6 +26,7 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 const SIZES = ['sm', 'md', 'lg'];
@@ -41,6 +42,7 @@ function arc(pct) {
 }
 
 export function ProgressCircle({ value, max = 100, label, size = 'md', tone = 'info', showValue = false, locale, className, ...rest }) {
+  devWarn('ProgressCircle', { size, tone }, { size: ['sm','md','lg'], tone: ['info','success','warning','danger','neutral'] });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const known = typeof value === 'number' && !Number.isNaN(value);

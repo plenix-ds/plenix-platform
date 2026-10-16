@@ -96,6 +96,7 @@
      Other props go on the header element (AppHeader) or the button (AppHeader.Item, AppHeader.Action).
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
@@ -114,6 +115,7 @@ import { useMedia, below, tokenPx } from '../AppShell/AppShell.jsx';
 
 export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel = 'Pinned applications',
   action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, back, title, className, ...rest }) {
+  devWarn('AppHeader', { tone }, { tone: ['accent','frost','plain'] });
   const { pinnedApps } = useSession();
   const [searching, setSearching] = React.useState(false);
   const panel = React.useRef(null), toggle = React.useRef(null), view = React.useRef(null);

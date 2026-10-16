@@ -24,6 +24,7 @@
      Without a title, actions or onDismiss the markup is the plain inline message (the icon and the text).
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -31,6 +32,7 @@ import { Button } from '../Button/Button.jsx';
 const ICONS = { info: 'info-circle', success: 'circle-check', warning: 'warning', danger: 'alert' };
 const STRINGS = { dismiss: 'Dismiss' };
 export function Notice({ tone = 'info', icon, title, actions, onDismiss, strings, className, children, ...rest }) {
+  devWarn('Notice', { tone }, { tone: ['info','success','warning','danger'] });
   const t = Object.assign({}, STRINGS, strings);
   const section = title || actions;
   return (

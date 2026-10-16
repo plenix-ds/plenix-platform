@@ -9,6 +9,7 @@
    Notes: Preserve source order when it matters. Asset grid already belongs to the DAM template record.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
 import { MediaCard } from '../../components/Card/Card.jsx';
 import { MediaViewer } from '../../components/MediaViewer/MediaViewer.jsx';
@@ -17,6 +18,7 @@ import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
 
 export function AssetGallery({ items = [], layout = 'masonry', size = 'md', lightbox = false, onOpen, label, strings, className }) {
+  devWarn('AssetGallery', { size }, { size: ['xs','sm','md','lg'] });
   const t = Object.assign({ empty: 'No images', preview: 'Image preview' }, strings);
   const [active, setActive] = React.useState(null);
   const index = items.findIndex((a) => a.id === active);

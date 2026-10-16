@@ -31,6 +31,7 @@
      A badge is text: give a count enough context nearby or an accessible name on its control.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
@@ -39,6 +40,7 @@ const SIZES = ['md', 'sm'];
 
 // variant is taken out so it never reaches the <span>: every badge is the soft pill
 export function Badge({ tone = 'neutral', variant, size = 'md', icon, className, children, ...rest }) {
+  devWarn('Badge', { tone, variant, size }, { tone: ['neutral','success','active','waiting','action-required','negative','info','warning','danger'], variant: ['solid','soft'], size: ['md','sm'] });
   const named = ALIASES[tone] || tone;
   const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';

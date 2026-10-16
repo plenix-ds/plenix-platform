@@ -32,6 +32,7 @@
      Other props pass through to the <a>. forwardRef: the ref is the <a>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
@@ -40,6 +41,7 @@ const STRINGS = { newTab: 'opens in a new tab' };
 
 export const Link = React.forwardRef(function Link({ href, variant = 'inline', external = false, back = false, onAccent = false, visited = false,
   as: Tag = 'a', strings, className, children, ...rest }, ref) {
+  devWarn('Link', { variant }, { variant: ['inline','standalone','subtle'] });
   const s = Object.assign({}, STRINGS, strings);
   const kind = back ? 'standalone' : variant;
   const newTab = external ? { target: '_blank', rel: 'noopener noreferrer' } : null;

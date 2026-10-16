@@ -12,6 +12,7 @@
      The caller must authorize and persist decisions and reflect them in steps. This UI never grants approval on its own.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { ReviewFlow, WorkflowStatus } from '../ReviewFlow/ReviewFlow.jsx';
 import { ProgressSteps } from '../../components/ProgressSteps/ProgressSteps.jsx';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
@@ -27,6 +28,7 @@ const statusOf = (step) => {
   return votes.includes('rejected') ? 'rejected' : votes.includes('changes-requested') ? 'changes-requested' : votes.length && votes.every((v) => v === 'approved') ? 'approved' : 'in-review';
 };
 export function ApprovalWorkflow({ title, steps = [], reviewerId, variant = 'sequential', onDecision, strings, reviewStrings, className }) {
+  devWarn('ApprovalWorkflow', { variant }, { variant: ['sequential','parallel','status'] });
   const t = Object.assign({ approve: 'Approve', changes: 'Request changes', reject: 'Reject', comment: 'Comment', reason: 'Explain why this needs changes.', failed: 'Could not save this decision. Your comment is still available.', steps: 'Approval stages', recorded: 'Decision recorded' }, strings);
   const [comments, setComments] = React.useState({}), [errors, setErrors] = React.useState({}), [pending, setPending] = React.useState({});
   const locks = React.useRef(new Set());

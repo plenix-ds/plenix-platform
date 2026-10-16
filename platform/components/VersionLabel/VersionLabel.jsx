@@ -23,6 +23,7 @@
      Other props pass through to the <span>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Badge } from '../Badge/Badge.jsx';
 import { Link } from '../Link/Link.jsx';
@@ -32,6 +33,7 @@ const STRINGS = { version: 'Version', prefix: 'v', latest: 'Latest', draft: 'Dra
 const STATUSES = ['latest', 'draft'];
 
 export function VersionLabel({ version, status, size = 'md', href, strings, className, ...rest }) {
+  devWarn('VersionLabel', { size }, { size: ['md','sm'] });
   const words = Object.assign({}, STRINGS, strings);
   const s = size === 'sm' ? 'sm' : 'md';
   const numbered = typeof version === 'number' || /^\d+$/.test(String(version));

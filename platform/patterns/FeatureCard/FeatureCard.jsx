@@ -28,6 +28,7 @@
        to Card's <article>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Card } from '../../components/Card/Card.jsx';
 import { IconTile } from '../../components/IconTile/IconTile.jsx';
@@ -36,6 +37,7 @@ import { Image } from '../../components/Image/Image.jsx';
 const VARIANTS = ['icon', 'image', 'horizontal'];
 
 export function FeatureCard({ title, description, variant = 'icon', icon, hue, tone, image, imageAlt = '', href, onOpen, headingLevel = 3, className, ...rest }) {
+  devWarn('FeatureCard', { variant, tone }, { variant: ['icon','image','horizontal'], tone: ['info','success','warning','danger','neutral'] });
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'icon';
   const picture = v === 'image' || (v === 'horizontal' && image && !icon);
   const media = picture && image

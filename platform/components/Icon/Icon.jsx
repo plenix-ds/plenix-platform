@@ -37,9 +37,11 @@
        keeps the text color and size of where it sits.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 export function Icon({ name, size, filled = false, label, className, ...rest }) {
+  devWarn('Icon', { size }, { size: ['xs','sm','md','lg','xl'] });
   return (
     <span className={cx('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled && 'plx-icon--filled', className)}
       role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest} />
@@ -50,6 +52,7 @@ export function Icon({ name, size, filled = false, label, className, ...rest }) 
 const STATUS_ICONS = { info: 'circle-info', success: 'circle-check', warning: 'warning', danger: 'alert', neutral: 'circle-info' };
 const STATUS_WORDS = { info: 'Information', success: 'Success', warning: 'Warning', danger: 'Error', neutral: 'Note' };
 export function StatusIcon({ tone = 'info', size = 'md', label, children, strings, className, ...rest }) {
+  devWarn('StatusIcon', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md','lg'] });
   const t = STATUS_ICONS[tone] ? tone : 'info';
   const words = Object.assign({}, STATUS_WORDS, strings);
   const shown = children !== undefined && children !== null && children !== false;

@@ -22,9 +22,11 @@
      RecordPage.Header.className: more classes on the header
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 function Header({ title, description, meta, media, actions, size = 'lg', surface = 'none', headingLevel = 1, className }) {
+  devWarn('RecordPage.Header', { size }, { size: ['lg','md'] });
   const H = 'h' + headingLevel;
   return (
     <div className={cx('plx-record-page__header', 'plx-record-page__header--' + size, surface === 'card' && 'plx-record-page__header--card', className)}>

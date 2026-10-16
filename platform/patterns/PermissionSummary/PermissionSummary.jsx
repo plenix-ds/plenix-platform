@@ -32,6 +32,7 @@
        permission: Manage access shows the rest. A role's full grid of rights is the permissions editor's.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatList } from '../../utils/format.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
@@ -44,6 +45,7 @@ const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undef
 const lower = (x) => String(x).charAt(0).toLowerCase() + String(x).slice(1);
 
 export function PermissionSummary({ access, icon = 'lock', detail, can = [], cannot = [], variant = 'list', onManage, manageHref, live = false, strings, className, ...rest }) {
+  devWarn('PermissionSummary', { variant }, { variant: ['list','compact'] });
   const t = Object.assign({}, STRINGS, strings);
   const compact = variant === 'compact';
   const yes = (children) => ({ icon: 'check', tone: 'success', children });
