@@ -9,6 +9,7 @@
    Notes: A supplied ready URL is a real Link; onDownload initiates an explicit application download. No transfers start on render.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Panel } from '../../components/Card/Card.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
@@ -18,6 +19,7 @@ import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
 
 export function DownloadManager({ items = [], onCancel, onRetry, onDownload, title, variant = 'panel', strings, className }) {
+  devWarn('DownloadManager', { variant }, { variant: ['panel','progress','ready'] });
   const t = Object.assign({ title: 'Downloads', empty: 'No downloads', queued: 'Queued', progress: 'Downloading', ready: 'Ready', failed: 'Download failed', actionFailed: 'Could not complete the download action. Try again.' }, strings);
   const [pending, setPending] = React.useState({}), [errors, setErrors] = React.useState({});
   const locks = React.useRef(new Set());

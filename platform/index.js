@@ -330,4 +330,6 @@ export { AIExplanation } from './patterns/AIExplanation/AIExplanation.jsx';
 export { PromptSuggestions } from './components/PromptSuggestions/PromptSuggestions.jsx';
 export { SuggestedEdit } from './components/SuggestedEdit/SuggestedEdit.jsx';
 export { RefineMenu } from './components/RefineMenu/RefineMenu.jsx';
+export { browserSupport } from './utils/browserSupport.js';
+export { LocaleProvider, useLocale, createTranslator } from './providers/LocaleProvider.jsx';
 /* END library parts */

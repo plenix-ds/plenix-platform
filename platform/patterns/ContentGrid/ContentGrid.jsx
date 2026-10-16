@@ -26,11 +26,13 @@
      Masonry and justified rows are for browsing pictures; when the order matters (sorted results) use the grid.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
 
 export function ContentGrid({ size = 'md', layout = 'grid', label, className, children }) {
+  devWarn('ContentGrid', { size }, { size: ['xs','sm','md','lg'] });
   const justified = layout === 'justified';
   return (
     <ul aria-label={label} className={cx('plx-content-grid', 'plx-content-grid--' + size, layout !== 'grid' ? 'plx-content-grid--' + layout : null, className)}>

@@ -52,6 +52,7 @@
      Decisions are final for the reviewer; to change one, decide again (the history keeps both).
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber, formatDate } from '../../utils/format.js';
@@ -81,6 +82,7 @@ export const WORKFLOW_STATUSES = {
 };
 
 export function WorkflowStatus({ status = 'draft', label, size, strings, className, ...rest }) {
+  devWarn('WorkflowStatus', { size }, { size: ['md','sm'] });
   const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
   const words = label || (strings && strings[status]) || s.label;
   return <Badge tone={s.tone} icon={s.icon} size={size} className={cx('plx-workflow-status', className)} {...rest}>{words}</Badge>;

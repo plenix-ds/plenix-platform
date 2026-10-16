@@ -32,6 +32,7 @@
        (a primary Button) instead.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
@@ -40,6 +41,7 @@ const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
 export const FloatingActionButton = React.forwardRef(function FloatingActionButton({ icon, label, extended = false, size = 'md', variant = 'primary',
   placement = 'corner', disabled = false, onClick, className, ...rest }, ref) {
+  devWarn('FloatingActionButton', { size, variant }, { size: ['md','sm','lg'], variant: ['primary','secondary'] });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   return (
     <button ref={ref} type="button" disabled={disabled || undefined} aria-label={extended ? undefined : label} onClick={onClick}

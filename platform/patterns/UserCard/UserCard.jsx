@@ -38,6 +38,7 @@
        preview on hover is the hover card. Other props pass through to Card's <article>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Card } from '../../components/Card/Card.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
@@ -54,6 +55,7 @@ const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'di
 
 export function UserCard({ name, src, color, secondary, role, presence, details, actions, cover, variant = 'default', href,
   headingLevel = 3, strings, className, ...rest }) {
+  devWarn('UserCard', { variant }, { variant: ['default','compact'] });
   const compact = variant === 'compact';
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
   const words = Object.assign({}, STRINGS, strings);

@@ -17,9 +17,11 @@
      Other props pass through to the <span>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 export function Count({ value, max, variant = 'plain', tone = 'danger', label, moreThan = 'More than {max}', className, ...rest }) {
+  devWarn('Count', { variant, tone }, { variant: ['plain','pill'], tone: ['info','success','warning','danger','neutral'] });
   if (value === null || value === undefined || value === '') return null;
   const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
   return (

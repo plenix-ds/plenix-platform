@@ -54,6 +54,69 @@ const manifest = (name, description, extra) => Object.assign({
 const readme = (name, body) => write(path.join(PKG, name, 'README.md'),
   '# ' + SCOPE + '/' + name + '\n\n' + body.trim() + '\n\nPart of the Plenix design system, version ' + VERSION + '. Documentation: ' + SITE + '/\n');
 
+// CDN documentation helpers: pure header/changelog parsing is also exercised by tests/cdn-devx.test.js.
+function cdnChangelog(text) {
+  const versions = []; let release = null, section = '', current = '';
+  const flush = () => { if (release && current) release.breaking.push(current.trim()); current = ''; };
+  for (const line of text.replace(/\r\n?/g, '\n').split('\n')) {
+    const heading = /^##\s+\[?(\d+\.\d+\.\d+(?:-[\w.]+)?)\]?(?:\s*-\s*(\d{4}-\d{2}-\d{2}))?/.exec(line);
+    if (/^##\s/.test(line)) { flush(); section = ''; release = heading ? { version: heading[1], date: heading[2] || null, breaking: [] } : null; if (release) versions.push(release); continue; }
+    if (/^###\s/.test(line)) { flush(); section = /^###\s+(Changed|Removed)\s*$/i.test(line) ? 'breaking' : ''; continue; }
+    if (!release || !section) continue;
+    const bullet = /^\s*[-*]\s+(.*)/.exec(line);
+    if (bullet) { flush(); current = bullet[1]; }
+    else if (line.trim()) current += (current ? ' ' : '') + line.trim();
+    else flush();
+  }
+  flush(); return versions;
+}
+function cdnHeader(source) {
+  const comment = (/^\s*\/\*([\s\S]*?)\*\//.exec(source.replace(/\r\n?/g, '\n')) || [])[1] || '';
+  const out = { summary: '', usage: '', props: [] }; let section = '';
+  for (const line of comment.split('\n')) {
+    const heading = /^\s{3}(Summary|Usage|Props|Behavior|Notes):\s?(.*)$/.exec(line);
+    const indent = heading ? 5 : (/^\s*/.exec(line) || [''])[0].length;
+    if (heading) section = heading[1].toLowerCase();
+    const text = heading ? heading[2] : line.replace(/^\s{5}/, '');
+    if (section === 'summary' && text.trim()) out.summary += (out.summary ? ' ' : '') + text.trim();
+    if (section === 'usage') out.usage += (out.usage ? '\n' : '') + text;
+    if (section === 'props' && text.trim()) {
+      const prop = indent <= 5 && /^(\S+?(?:\([^)]*\))?):\s(.*)$/.exec(text.trim());
+      if (prop) out.props.push([prop[1], prop[2]]); else if (out.props.length) out.props[out.props.length - 1][1] += ' ' + text.trim();
+    }
+  }
+  out.usage = out.usage.trim(); return out;
+}
+function cdnCode(value, language = '') {
+  const fence = '`'.repeat(Math.max(3, ...[...String(value).matchAll(/`+/g)].map((m) => m[0].length + 1)));
+  return fence + language + '\n' + value + '\n' + fence;
+}
+function cdnRecordDoc(record, written, source) {
+  const head = cdnHeader(source), lines = ['# ' + (record.title || record.leaf || record.id), '', 'Version: ' + VERSION, '', '## Purpose', '', record.purpose || written.purpose || record.text || head.summary || record.leaf, '', '## Usage', ''];
+  if (head.usage) lines.push(cdnCode(head.usage, 'jsx'));
+  else if (record.use && record.use.length) lines.push(...record.use.map((s) => '- ' + s));
+  else lines.push('This record describes a design-system standard; use its source guidance and examples below.');
+  lines.push('', '## Props', '');
+  if (head.props.length) for (const [name, description] of head.props) lines.push('- **' + name.replace(/\*/g, '\\*') + '**: ' + description);
+  else lines.push('No structured props are declared in this source header.');
+  lines.push('', '## Examples', '');
+  if (head.usage) lines.push(cdnCode(head.usage, 'jsx'), '');
+  for (const group of record.examples || []) {
+    if (!Array.isArray(group)) continue;
+    lines.push('### ' + group[0], '');
+    if (Array.isArray(group[1])) for (const example of group[1]) {
+      if (!Array.isArray(example)) continue;
+      lines.push('- ' + example[0]);
+      if (typeof example[3] === 'string' && example[3]) lines.push('', cdnCode(example[3], 'jsx'), '');
+    }
+  }
+  lines.push('[Live examples](' + SITE + '/#/' + record.sec + '/' + record.id + ')');
+  if (record.src) lines.push('', 'Source: platform/' + record.src);
+  return lines.join('\n').trim() + '\n';
+}
+// End CDN documentation helpers.
+
+
 // ---------- tokens ----------
 const T = path.join(PKG, 'tokens');
 const index = JSON.parse(fs.readFileSync(path.join(P, 'tokens', 'tokens.index.json'), 'utf8'));
@@ -190,6 +253,21 @@ for (const f of ['platform-ios.tokens.json', 'platform-android.tokens.json']) co
 copyDir(path.join(I, 'svg'), path.join(CDN, 'icons'));
 copy(path.join(I, 'icons.json'), path.join(CDN, 'icons', 'icons.json'));
 
+// Developer-facing CDN metadata, always available even when the private design system is absent.
+copy(path.join(ROOT, 'CHANGELOG.md'), path.join(CDN, 'CHANGELOG.md'));
+copy(path.join(P, 'dev', 'token-check.js'), path.join(CDN, 'token-check.js'));
+const cdnVersions = cdnChangelog(fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8'));
+if (!cdnVersions.some((entry) => entry.version === VERSION)) cdnVersions.unshift({ version: VERSION, date: null, breaking: [] });
+json(path.join(REL, 'cdn', 'index.json'), { latest: VERSION, versions: cdnVersions });
+json(path.join(CDN, 'index.json'), { version: VERSION, breaking: cdnVersions.find((entry) => entry.version === VERSION).breaking,
+  files: { changelog: 'CHANGELOG.md', docs: fs.existsSync(path.join(P, 'design-system', 'inventory.js')) ? 'docs/index.json' : null, tokens: 'tokens.json', tokenCheck: 'token-check.js' } });
+json(path.join(CDN, 'tokens.json'), { version: VERSION, count: index.tokens.length, tokens: index.tokens.map((token) => ({
+  name: token.name, tier: token.tier, purpose: token.description || '', type: token.type,
+  value: token.resolved || Object.fromEntries(token.sets.map((set) => [set.selector, set.value])),
+  values: token.sets.map((set) => ({ selector: set.selector, value: set.value, file: set.file }))
+})) });
+
+
 // ---------- API: read-only JSON for tools, agents and other systems ----------
 let apiNote = 'skipped (platform/design-system is not checked out)';
 const DS = path.join(P, 'design-system');
@@ -203,6 +281,18 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
   const pick = (o, ks) => Object.fromEntries(ks.filter((k) => o[k] !== undefined && o[k] !== '').map((k) => [k, o[k]]));
   // each record with its written sections (inventory-docs.js, batch 208); a record's own fields win
   const docs = win.DSDocs || {};
+  // Static Markdown uses the same records and source headers as the API. Never execute a live example to document it.
+  const cdnDocs = [];
+  for (const record of recs) {
+    if (!record.id) continue;
+    const file = record.src && path.resolve(P, record.src), inside = file && file.startsWith(P + path.sep);
+    const source = inside && fs.existsSync(file) && fs.statSync(file).isFile() ? fs.readFileSync(file, 'utf8') : '';
+    const name = encodeURIComponent(record.id) + '.md';
+    write(path.join(CDN, 'docs', name), cdnRecordDoc(record, docs[record.id] || {}, source));
+    cdnDocs.push({ id: record.id, title: record.title || record.leaf || record.id, href: name, source: record.src || null });
+  }
+  json(path.join(CDN, 'docs', 'index.json'), { version: VERSION, count: cdnDocs.length, records: cdnDocs });
+
   const components = recs.map((r) => Object.assign(pick(docs[r.id] || {}, ['purpose', 'anatomy', 'behavior', 'a11y', 'content']), pick(r, ['id', 'title', 'sec', 'sub', 'leaf', 'level', 'status', 'icon', 'text', 'purpose', 'use', 'avoid', 'related', 'aliases', 'covers', 'map', 'plenix', 'src'])));
   const sections = (win.DSTaxonomy || []).map((s) => pick(s, ['id', 'n', 'title', 'question', 'icon', 'subs', 'leaves', 'groups']));
   const meta = { version: VERSION, generated: new Date().toISOString().slice(0, 10), docs: SITE + '/' };

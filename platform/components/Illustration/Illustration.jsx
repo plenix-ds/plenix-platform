@@ -23,10 +23,12 @@
      The set and its geometry are in illustrations.js; other props pass through to the <svg>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { illustrationByName } from './illustrations.js';
 
 export function Illustration({ name, size = 'md', tone = 'default', label, className, ...rest }) {
+  devWarn('Illustration', { size, tone }, { size: ['sm','md','lg'], tone: ['default','on-accent'] });
   const art = illustrationByName(name);
   if (!art) return null;
   const named = label === true ? art.title : label;

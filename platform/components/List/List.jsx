@@ -28,12 +28,14 @@
      A nested list starts under its statement's text (the same keyline); nest one level only (two at most).
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 const kindOf = (ordered) => (ordered === 'alpha' ? 'alpha' : ordered ? 'decimal' : null);
 
 export function List({ items, label, ordered, variant = 'icons', className, children }) {
+  devWarn('List', { variant }, { variant: ['icons','steps','bullets'] });
   const kind = kindOf(ordered || (variant === 'steps' ? 'decimal' : null));
   const Tag = kind ? 'ol' : 'ul';
   return (
@@ -46,6 +48,7 @@ export function List({ items, label, ordered, variant = 'icons', className, chil
 }
 
 List.Item = function ListItem({ icon, tone = 'neutral', items, ordered, className, children }) {
+  devWarn('List.Item', { tone }, { tone: ['info','success','warning','danger','neutral'] });
   const text = <span className="plx-list__text">{children}</span>;
   return (
     <li className={cx('plx-list__item', 'plx-list__item--' + tone, className)}>

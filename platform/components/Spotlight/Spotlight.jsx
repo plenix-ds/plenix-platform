@@ -33,6 +33,7 @@
        window it covers only the window (fixed); give a contained spotlight a positioned parent.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useLayer } from '../../utils/layer.js';
 import { Portal } from '../../utils/portal.jsx';
@@ -43,6 +44,7 @@ const VARIANTS = ['cutout', 'beacon'];
 const SIDES = ['top', 'bottom', 'start', 'end'];
 
 export function Spotlight({ target, open = false, variant = 'cutout', contained = false, onDismiss, className }) {
+  devWarn('Spotlight', { variant }, { variant: ['cutout','beacon'] });
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'cutout';
   const root = React.useRef(null);
   const shown = !!open;

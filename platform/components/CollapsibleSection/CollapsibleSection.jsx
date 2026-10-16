@@ -28,6 +28,7 @@
        chevron at the end.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
@@ -58,6 +59,7 @@ export function CollapsibleSection({ title, icon, expanded, defaultExpanded = tr
 
 // "Show more (n)" / "Show less" with its chevron after the label: down to show more, up to show less (batch 276)
 export function ShowMore({ expanded = false, count, onToggle, size = '2xs', ...rest }) {
+  devWarn('ShowMore', { size }, { size: ['md','sm','xs','2xs','lg'] });
   return (
     <Button size={size} iconEnd={expanded ? 'chevron-up' : 'chevron-down'} aria-expanded={expanded} onClick={() => { if (onToggle) onToggle(!expanded); }} {...rest}>
       {expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : '')}

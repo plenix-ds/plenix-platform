@@ -66,6 +66,7 @@
      for uploads that outlast the moment. Say the limits before people choose.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatBytes, formatNumber, formatPercent } from '../../utils/format.js';
 import { announce } from '../../utils/announce.jsx';
@@ -169,6 +170,7 @@ export function useUploadQueue(options) {
 
 export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, onRemove, onCancelAll, onClear, variant = 'panel', docked = false, dropZone, accept, maxSize,
   concurrency, folders = true, hint, title, open = true, onClose, defaultCollapsed = false, strings, className }) {
+  devWarn('UploadManager', { variant }, { variant: ['panel','dialog'] });
   const t = Object.assign({}, STRINGS, strings);
   const own = useUploadQueue({ upload, accept, maxSize, concurrency, strings });
   const q = queue || (items ? { items, add: onAdd, cancel: onCancel, retry: onRetry, remove: onRemove, cancelAll: onCancelAll, clear: onClear } : own);

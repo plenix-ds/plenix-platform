@@ -7,6 +7,7 @@
    Notes: The caller owns upload and persistence. Limits apply to device files, not an authorization policy.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
@@ -18,6 +19,7 @@ import { MenuItem } from '../../components/Menu/Menu.jsx';
 import { Tag, TagList } from '../../components/Tag/Tag.jsx';
 const STRINGS={label:'Attachments',remove:'Remove {name}',invalid:'Choose a supported file within the size limit.',limit:'Too many attachments.',empty:'No attachments.'};
 export function AttachmentPicker({value=[],onChange,variant='inline',accept='',multiple=true,maxFiles,maxSize,disabled=false,strings,className}){
+  devWarn('AttachmentPicker', { variant }, { variant: ['inline','chips'] });
  const t={...STRINGS,...strings},[error,setError]=React.useState(''),[inputKey,setInputKey]=React.useState(0);
  const remove=(i)=>{if(!disabled){setError('');onChange?.(value.filter((_,n)=>n!==i));}};
  const add=(files)=>{setInputKey(n=>n+1);const rules=accept.toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);

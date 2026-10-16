@@ -14,6 +14,7 @@
    Notes: Uses existing Button and sparkle icon roles only; there is no suggestion color or implicit acceptance.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Stack,Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
@@ -21,6 +22,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { cx } from '../../utils/cx.js';
 export const SuggestedAction=React.forwardRef(function SuggestedAction({variant='chip',children,description,onAction,disabled=false,strings,className},ref){
+  devWarn('SuggestedAction', { variant }, { variant: ['chip','card'] });
  const t={failed:'The action failed. Try again.',pending:'Working',...strings},[busy,setBusy]=React.useState(false),[error,setError]=React.useState(''),lock=React.useRef(false),live=React.useRef(true);
  React.useEffect(()=>{live.current=true;return()=>{live.current=false;};},[]);
  const act=async()=>{if(lock.current||disabled||!onAction)return;lock.current=true;setBusy(true);setError('');try{await onAction();}catch(e){if(live.current)setError(e?.message||t.failed);}finally{lock.current=false;if(live.current)setBusy(false);}};

@@ -35,6 +35,7 @@
      Opening a file in the browser is a Link, not a download.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
 import { ProgressCircle } from '../ProgressCircle/ProgressCircle.jsx';
@@ -45,6 +46,7 @@ const STRINGS = { download: 'Download', downloading: 'Downloading', ready: 'Down
 
 export const DownloadButton = React.forwardRef(function DownloadButton({ href, fileName, onDownload, format, size, progress, iconOnly = false,
   variant = 'secondary', buttonSize = 'md', locale, strings, children, className, ...rest }, ref) {
+  devWarn('DownloadButton', { variant }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'] });
   const t = Object.assign({}, STRINGS, strings);
   const busy = progress !== undefined && progress !== null && progress !== false;
   const known = busy && typeof progress === 'number';

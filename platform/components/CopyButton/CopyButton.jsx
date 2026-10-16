@@ -35,6 +35,7 @@
        form is for a value people may also read or select (a share link, an API endpoint).
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useClipboard } from '../../utils/clipboard.js';
 import { Button } from '../Button/Button.jsx';
@@ -43,6 +44,7 @@ const STRINGS = { copy: 'Copy', copied: 'Copied', failed: 'Couldn’t copy. Sele
 
 export const CopyButton = React.forwardRef(function CopyButton({ value, label, showLabel = false, field = false, fieldLabel, variant, size = 'md', timeout,
   onCopy, disabled = false, strings, className, ...rest }, ref) {
+  devWarn('CopyButton', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   const clip = useClipboard({ timeout, strings: { copied: t.copied, failed: t.failed } });
   const input = React.useRef(null);

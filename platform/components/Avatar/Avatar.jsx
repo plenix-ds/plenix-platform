@@ -36,6 +36,7 @@
      initialsOf(name) is also exported for pages that need the same initials.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { StatusDot } from '../StatusDot/StatusDot.jsx';
 
@@ -56,6 +57,7 @@ export function initialsOf(name) {
 }
 
 export function Avatar({ name, src, initials, size = 'sm', color, category, label, presence, strings, className, ...rest }) {
+  devWarn('Avatar', { size }, { size: ['2xs','xs','sm','md','lg','xl','2xl'] });
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;

@@ -1,0 +1,124 @@
+{
+  "description": "Explicit existing-copy debt only; new or additional findings fail. Review before changing.",
+  "findings": [
+    {
+      "file": "platform/patterns/AppHeader/AppHeader.jsx",
+      "rule": "action-verb",
+      "text": "My account",
+      "count": 1,
+      "reason": "Existing navigation command label; retain the owner-approved wording."
+    },
+    {
+      "file": "platform/patterns/AppHeader/AppHeader.jsx",
+      "rule": "action-verb",
+      "text": "Plenix settings",
+      "count": 1,
+      "reason": "Existing navigation command label; retain the owner-approved wording."
+    },
+    {
+      "file": "platform/design-system/inventory-docs.js",
+      "rule": "glossary",
+      "text": "Start with a verb and name the result, in sentence case, one to three words (\"Save\", \"Add member\"). Do not use \"Click here\" or \"OK\" alone.",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "inclusive",
+      "text": "Do not use terms like whitelist, blacklist, master, or slave; use allowlist, blocklist, primary, and replica.",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "glossary",
+      "text": "Do not use vague labels such as \"OK\", \"Yes\", or \"Click here\".",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "glossary",
+      "text": "Describe the destination; never use \"click here\" or \"read more\" alone.",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "glossary",
+      "text": "Do not use \"Click here\" or \"More\" alone.",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "american",
+      "text": "Keep focus on the edited item after saving or cancelling.",
+      "count": 1,
+      "reason": "Existing spelling outside this lane; correct in a later copy adoption task."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "american",
+      "text": "Confirm before cancelling if data would be lost.",
+      "count": 1,
+      "reason": "Existing spelling outside this lane; correct in a later copy adoption task."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "american",
+      "text": "Return focus to the read view after saving or cancelling.",
+      "count": 1,
+      "reason": "Existing spelling outside this lane; correct in a later copy adoption task."
+    },
+    {
+      "file": "platform/design-system/inventory-guidance.js",
+      "rule": "glossary",
+      "text": "Write link text that describes the destination, not \"Click here\".",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/parts/w02A.docs.js",
+      "rule": "glossary",
+      "text": "Name the destination (\"Upload guide\", \"All projects\"), in sentence case, without \"click here\", \"read more\" or a trailing period.",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/parts/w02A.records.js",
+      "rule": "glossary",
+      "text": "“Click here” or “Read more” as the words: say where it goes",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/parts/w02C.docs.js",
+      "rule": "glossary",
+      "text": "Headings describe the section they introduce; link text names its destination, never “Click here”.",
+      "count": 1,
+      "reason": "Existing guidance quotes a prohibited example to explain the rule."
+    },
+    {
+      "file": "platform/design-system/parts/w06C.docs.js",
+      "rule": "american",
+      "text": "Opening selects the text in the field; after saving or cancelling with the keyboard or the buttons, focus returns to the value.",
+      "count": 1,
+      "reason": "Existing spelling outside this lane; correct in a later copy adoption task."
+    },
+    {
+      "file": "platform/design-system/parts/w10A.docs.js",
+      "rule": "american",
+      "text": "The field takes focus with the name selected (up to the extension). After saving or cancelling, focus returns to the name or to the button that opened the dialog; an invalid name keeps focus in the field.",
+      "count": 1,
+      "reason": "Existing spelling outside this lane; correct in a later copy adoption task."
+    },
+    {
+      "file": "platform/design-system/parts/w10C.records.js",
+      "rule": "american",
+      "text": "Confirm before cancelling if data would be lost.",
+      "count": 1,
+      "reason": "Existing spelling outside this lane; correct in a later copy adoption task."
+    }
+  ]
+}

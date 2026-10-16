@@ -9,6 +9,7 @@
    Notes: No automatic expiry, navigation, analytics or persistence. Dialog uses native Platform focus management.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { Banner } from '../Banner/Banner.jsx';
 import { Card } from '../Card/Card.jsx';
 import { Dialog } from '../Dialog/Dialog.jsx';
@@ -18,6 +19,7 @@ import { Notice } from '../Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
 
 export function Announcement({ id, variant = 'banner', open = true, title, children, actions, dismissible = true, onDismiss, tone = 'info', strings, className }) {
+  devWarn('Announcement', { variant, tone }, { variant: ['banner','card','dialog'], tone: ['info','success','warning','danger','neutral'] });
   const t = Object.assign({ dismiss: 'Dismiss announcement', failed: 'Could not dismiss this announcement. Try again.' }, strings);
   const [closed, setClosed] = React.useState(false), [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false), epoch = React.useRef(0);

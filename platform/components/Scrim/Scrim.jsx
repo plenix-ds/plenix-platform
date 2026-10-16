@@ -26,12 +26,14 @@
      Other props pass through to the <div>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useScrollLock } from '../../utils/scrollLock.js';
 
 const VARIANTS = ['modal', 'light', 'inverse'];
 
 export function Scrim({ variant = 'modal', contained = false, lockScroll, onClick, className, ...rest }) {
+  devWarn('Scrim', { variant }, { variant: ['modal','light','inverse'] });
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'modal';
   useScrollLock(lockScroll !== undefined ? !!lockScroll : !contained);
   return (

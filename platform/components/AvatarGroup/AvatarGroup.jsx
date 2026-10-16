@@ -25,6 +25,7 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Avatar } from '../Avatar/Avatar.jsx';
 
@@ -32,6 +33,7 @@ const SIZES = ['xs', 'sm', 'md', 'lg'];
 const STRINGS = { more: '+{n}', moreLabel: '{n} more' };
 
 export function AvatarGroup({ people = [], label, max = 4, size = 'sm', layout = 'stack', onMore, strings, className, ...rest }) {
+  devWarn('AvatarGroup', { size }, { size: ['xs','sm','md','lg'] });
   const s = SIZES.indexOf(size) >= 0 ? size : 'sm';
   const l = layout === 'grid' ? 'grid' : 'stack';
   const words = Object.assign({}, STRINGS, strings);

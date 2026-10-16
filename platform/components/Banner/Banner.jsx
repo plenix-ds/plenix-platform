@@ -26,6 +26,7 @@
      Other props pass through to the banner element.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon, StatusIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -33,6 +34,7 @@ import { Button } from '../Button/Button.jsx';
 const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];
 
 export function Banner({ tone = 'info', title, children, actions, onDismiss, placement = 'page', icon, strings, className, ...rest }) {
+  devWarn('Banner', { tone }, { tone: ['info','success','warning','danger','neutral'] });
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const words = Object.assign({ dismiss: 'Dismiss' }, strings);
   return (

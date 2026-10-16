@@ -1,0 +1,314 @@
+{
+  "android-implementation|Behavior": {
+    "summary": "W15C additions: localized content, accessible writing and build evidence, using native APIs and existing design roles.",
+    "variants": [
+      {
+        "name": "W15C: Internationalization",
+        "web": "interaction|Internationalization",
+        "use": "Use a locale-scoped string catalog, native plural resources and locale-aware number/date formatters. Preserve bare calendar dates as calendar dates.",
+        "compose": "Use a locale-scoped string catalog, native plural resources and locale-aware number/date formatters. Preserve bare calendar dates as calendar dates.",
+        "views": "Use a locale-scoped string catalog, native plural resources and locale-aware number/date formatters. Preserve bare calendar dates as calendar dates."
+      },
+      {
+        "name": "W15C: Writing messages",
+        "web": "foundations|Writing messages",
+        "use": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "compose": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "views": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable."
+      },
+      {
+        "name": "W15C: Empty-state and onboarding copy",
+        "web": "foundations|Empty-state and onboarding copy",
+        "use": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "compose": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "views": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable."
+      },
+      {
+        "name": "W15C: Lifecycle journeys",
+        "web": "patterns|Lifecycle journeys",
+        "use": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "compose": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "views": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable."
+      }
+    ],
+    "anatomy": [
+      "Application locale and catalog",
+      "Accessible content",
+      "Named actions and recovery",
+      "Build or review evidence"
+    ],
+    "attributes": [
+      {
+        "attribute": "Locale and content source",
+        "value": "Application-owned complete messages and platform locale formatting",
+        "compose": "Read localized resources and format values in the active locale; preserve the person’s draft.",
+        "views": "Read localized resources and format values in the active locale; preserve the person’s draft."
+      }
+    ],
+    "states": [
+      {
+        "name": "Missing translation",
+        "behavior": "Fall back to a known language and retain a meaningful label."
+      },
+      {
+        "name": "Failed operation",
+        "behavior": "Preserve entered values and provide one clear recovery action."
+      }
+    ],
+    "code": {
+      "compose": [
+        "val title = context.getString(R.string.save)",
+        "val selected = context.resources.getQuantityString(R.plurals.selected, model.count, model.count)",
+        "CompositionLocalProvider(LocalLayoutDirection provides if (model.isRightToLeft) LayoutDirection.Rtl else LayoutDirection.Ltr) { Text(text = title) }"
+      ],
+      "views": [
+        "saveButton.text = context.getString(R.string.save)",
+        "root.layoutDirection = if (model.isRightToLeft) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR"
+      ]
+    }
+  },
+  "android-foundations|Overview": {
+    "summary": "W15C additions: localized content, accessible writing and build evidence, using native APIs and existing design roles.",
+    "variants": [
+      {
+        "name": "W15C: Design principles",
+        "web": "foundations|Design principles",
+        "use": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "compose": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "views": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable."
+      }
+    ],
+    "anatomy": [
+      "Application locale and catalog",
+      "Accessible content",
+      "Named actions and recovery",
+      "Build or review evidence"
+    ],
+    "attributes": [
+      {
+        "attribute": "Locale and content source",
+        "value": "Application-owned complete messages and platform locale formatting",
+        "compose": "Read localized resources and format values in the active locale; preserve the person’s draft.",
+        "views": "Read localized resources and format values in the active locale; preserve the person’s draft."
+      }
+    ],
+    "states": [
+      {
+        "name": "Missing translation",
+        "behavior": "Fall back to a known language and retain a meaningful label."
+      },
+      {
+        "name": "Failed operation",
+        "behavior": "Preserve entered values and provide one clear recovery action."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ],
+      "views": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ]
+    }
+  },
+  "android-foundations|Text roles": {
+    "summary": "W15C additions: localized content, accessible writing and build evidence, using native APIs and existing design roles.",
+    "variants": [
+      {
+        "name": "W15C: Visual hierarchy",
+        "web": "foundations|Visual hierarchy",
+        "use": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "compose": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "views": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable."
+      },
+      {
+        "name": "W15C: Voice and tone",
+        "web": "foundations|Voice and tone",
+        "use": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "compose": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "views": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable."
+      }
+    ],
+    "anatomy": [
+      "Application locale and catalog",
+      "Accessible content",
+      "Named actions and recovery",
+      "Build or review evidence"
+    ],
+    "attributes": [
+      {
+        "attribute": "Locale and content source",
+        "value": "Application-owned complete messages and platform locale formatting",
+        "compose": "Read localized resources and format values in the active locale; preserve the person’s draft.",
+        "views": "Read localized resources and format values in the active locale; preserve the person’s draft."
+      }
+    ],
+    "states": [
+      {
+        "name": "Missing translation",
+        "behavior": "Fall back to a known language and retain a meaningful label."
+      },
+      {
+        "name": "Failed operation",
+        "behavior": "Preserve entered values and provide one clear recovery action."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ],
+      "views": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ]
+    }
+  },
+  "android-interaction|Conformance": {
+    "summary": "W15C additions: localized content, accessible writing and build evidence, using native APIs and existing design roles.",
+    "variants": [
+      {
+        "name": "W15C: WCAG guidance",
+        "web": "interaction|WCAG guidance",
+        "use": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "compose": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable.",
+        "views": "Use complete action labels, a clear hierarchy, recoverable messages and the native accessibility semantics; keep the journey understandable."
+      }
+    ],
+    "anatomy": [
+      "Application locale and catalog",
+      "Accessible content",
+      "Named actions and recovery",
+      "Build or review evidence"
+    ],
+    "attributes": [
+      {
+        "attribute": "Locale and content source",
+        "value": "Application-owned complete messages and platform locale formatting",
+        "compose": "Read localized resources and format values in the active locale; preserve the person’s draft.",
+        "views": "Read localized resources and format values in the active locale; preserve the person’s draft."
+      }
+    ],
+    "states": [
+      {
+        "name": "Missing translation",
+        "behavior": "Fall back to a known language and retain a meaningful label."
+      },
+      {
+        "name": "Failed operation",
+        "behavior": "Preserve entered values and provide one clear recovery action."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ],
+      "views": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ]
+    }
+  },
+  "android-implementation|Build outputs": {
+    "summary": "W15C additions: localized content, accessible writing and build evidence, using native APIs and existing design roles.",
+    "variants": [
+      {
+        "name": "W15C: Performance",
+        "web": "implementation|Performance",
+        "use": "Measure generated artifacts in CI; keep a failure visible until the measured output is within the reviewed budget.",
+        "compose": "Measure generated artifacts in CI; keep a failure visible until the measured output is within the reviewed budget.",
+        "views": "Measure generated artifacts in CI; keep a failure visible until the measured output is within the reviewed budget."
+      },
+      {
+        "name": "W15C: Design-system MCP tooling",
+        "web": "implementation|Design-system MCP tooling",
+        "use": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
+        "compose": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
+        "views": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog."
+      }
+    ],
+    "anatomy": [
+      "Application locale and catalog",
+      "Accessible content",
+      "Named actions and recovery",
+      "Build or review evidence"
+    ],
+    "attributes": [
+      {
+        "attribute": "Locale and content source",
+        "value": "Application-owned complete messages and platform locale formatting",
+        "compose": "Read localized resources and format values in the active locale; preserve the person’s draft.",
+        "views": "Read localized resources and format values in the active locale; preserve the person’s draft."
+      }
+    ],
+    "states": [
+      {
+        "name": "Missing translation",
+        "behavior": "Fall back to a known language and retain a meaningful label."
+      },
+      {
+        "name": "Failed operation",
+        "behavior": "Preserve entered values and provide one clear recovery action."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ],
+      "views": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ]
+    }
+  },
+  "android-implementation|Implementations and controls": {
+    "summary": "W15C additions: localized content, accessible writing and build evidence, using native APIs and existing design roles.",
+    "variants": [
+      {
+        "name": "W15C: Web components",
+        "web": "implementation|Web components",
+        "use": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
+        "compose": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
+        "views": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog."
+      }
+    ],
+    "anatomy": [
+      "Application locale and catalog",
+      "Accessible content",
+      "Named actions and recovery",
+      "Build or review evidence"
+    ],
+    "attributes": [
+      {
+        "attribute": "Locale and content source",
+        "value": "Application-owned complete messages and platform locale formatting",
+        "compose": "Read localized resources and format values in the active locale; preserve the person’s draft.",
+        "views": "Read localized resources and format values in the active locale; preserve the person’s draft."
+      }
+    ],
+    "states": [
+      {
+        "name": "Missing translation",
+        "behavior": "Fall back to a known language and retain a meaningful label."
+      },
+      {
+        "name": "Failed operation",
+        "behavior": "Preserve entered values and provide one clear recovery action."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ],
+      "views": [
+        "// Use Android string and plural resources and locale-aware formatters.",
+        "// Web-component and MCP transports remain web/Node implementation tools."
+      ]
+    }
+  }
+}

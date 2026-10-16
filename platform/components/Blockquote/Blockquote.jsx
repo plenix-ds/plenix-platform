@@ -22,9 +22,11 @@
      Other props pass through to the <figure>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 export function Blockquote({ variant = 'default', citation, cite, className, children, ...rest }) {
+  devWarn('Blockquote', { variant }, { variant: ['default','pull'] });
   return (
     <figure className={cx('plx-blockquote', variant === 'pull' && 'plx-blockquote--pull', className)} {...rest}>
       <blockquote className="plx-blockquote__quote" cite={cite}>{children}</blockquote>

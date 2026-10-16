@@ -41,6 +41,7 @@
      Other props of RetryNotice pass through to the Notice.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { tokenMs } from '../../utils/tokenTime.js';
 import { announce } from '../../utils/announce.jsx';
@@ -117,6 +118,7 @@ const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).m
 const plain = (template, values) => template.replace(/\{(\w+)\}/g, (all, k) => (values[k] !== undefined ? String(values[k]) : all));
 
 export function RetryNotice({ retry, title, tone = 'danger', showCount = false, onDismiss, strings, className, children, ...rest }) {
+  devWarn('RetryNotice', { tone }, { tone: ['danger','warning'] });
   const t = Object.assign({}, STRINGS, strings);
   const r = retry || {};
   const failing = r.status === 'failed' || r.status === 'waiting' || (r.status === 'running' && r.attempt > 1);

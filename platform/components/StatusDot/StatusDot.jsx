@@ -25,6 +25,7 @@
      Avatar's presence prop draws this dot at the avatar's corner.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { Icon } from '../Icon/Icon.jsx';
@@ -34,6 +35,7 @@ const GLYPHS = { online: 'check', away: 'clock', dnd: 'remove', offline: 'close-
 const SIZES = ['md', 'lg'];
 
 export function StatusDot({ tone = 'neutral', size = 'sm', icon = false, label, className, ...rest }) {
+  devWarn('StatusDot', { tone, size }, { tone: ['info','success','warning','danger','neutral','online','away','busy','dnd','offline'], size: ['sm','md','lg'] });
   const s = SIZES.indexOf(size) >= 0 ? size : null;
   const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
   return (

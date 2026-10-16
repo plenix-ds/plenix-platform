@@ -20,6 +20,7 @@
      The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 
@@ -30,6 +31,7 @@ export function Skeleton({ width, height, className, ...rest }) {
 }
 
 export function Spinner({ size = 'md', label = 'Loading', className, ...rest }) {
+  devWarn('Spinner', { size }, { size: ['sm','md','lg'] });
   return (
     <span className={cx('plx-spinner', 'plx-spinner--' + size, className)} role="status" {...rest}>
       <VisuallyHidden>{label}</VisuallyHidden>

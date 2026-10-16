@@ -23,6 +23,7 @@
      Other props pass through to the <span>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
@@ -31,6 +32,7 @@ const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
 const SIZES = ['sm', 'md', 'lg'];
 
 export function IconTile({ icon, hue = 'gray', tone, size = 'md', filled = false, label, className, ...rest }) {
+  devWarn('IconTile', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md','lg'] });
   const look = TONES.indexOf(tone) >= 0 ? tone : HUES.indexOf(hue) >= 0 ? hue : 'gray';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   return (

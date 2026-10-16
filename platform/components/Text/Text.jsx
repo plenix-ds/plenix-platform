@@ -46,6 +46,7 @@
        label, down to show more and up to show less.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Button } from '../Button/Button.jsx';
@@ -58,6 +59,7 @@ const textClass = (variant, truncate, clamp, open, tabular, className) => cx('pl
   truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
 
 export function Text({ as: As = 'span', variant = 'body', truncate = false, lines, expandable = false, defaultExpanded = false, tabular = false, strings, className, children, ...rest }) {
+  devWarn('Text', { variant }, { variant: ['body','secondary','caption','data','label','strong','heading','accent','success','eyebrow','danger','link','title','display','lead'] });
   const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
   if (expandable && clamp) {
     return <ExpandableText As={As} variant={variant} clamp={clamp} defaultExpanded={defaultExpanded} tabular={tabular} strings={strings} className={className} rest={rest}>{children}</ExpandableText>;

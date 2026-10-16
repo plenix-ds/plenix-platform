@@ -58,6 +58,7 @@
      ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { focusables, useLayer, useUid } from '../../utils/layer.js';
 import { useFloating, FLOATING_ANCHOR, PLACEMENTS } from '../../utils/floating.js';
@@ -80,6 +81,7 @@ const ms = (el, name) => {
 
 export function Popover({ trigger, triggerOn = 'click', open: openProp, defaultOpen = false, onOpenChange, title, label, footer, closeButton = false,
   placement = 'bottom-start', size = 'md', arrow = false, role = 'dialog', initialFocus, focusOnOpen, sheetOnNarrow = true, strings, className, children, ...rest }) {
+  devWarn('Popover', { size }, { size: ['md','sm','lg','auto'] });
   const t = Object.assign({}, STRINGS, strings);
   const id = useUid('plx-popover');
   const controlled = openProp !== undefined;

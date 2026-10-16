@@ -5,6 +5,49 @@
  */
 (function () {
   var defs = {
+  "platform/utils/devWarn.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.devWarn = devWarn;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · devWarn
+   Summary: Warn once per invalid component discriminator during development.
+   Usage: devWarn('Tabs', { variant }, { variant: ['contained', 'folder', 'segmented'] });
+   Props: component: public name; values: supplied props; choices: valid values by prop.
+   Behavior: Optional null/undefined values are ignored. Each complete message is warned once per module instance.
+   Notes: Requires React 18's development runtime marker; unknown/production React defaults off. An explicit runtime
+     NODE_ENV=production always disables warnings. Runtime env is read indirectly so package bundlers cannot replace it
+     with their build mode. The existing react=dev loader selects development React; no new production opt-in exists.
+     This is a runtime guard, not compile-time removal. Never changes rendering, props or CSS.
+*/
+
+const messages = new Set();
+function development() {
+  if (typeof process === 'object' && process) {
+    const env = Reflect.get(process, 'env');
+    if (env && Reflect.get(env, 'NODE_ENV') === 'production') return false;
+  }
+  const internal = _react.default && _react.default.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+  return !!(internal && internal.ReactDebugCurrentFrame);
+}
+function devWarn(component, values, choices) {
+  if (!development()) return;
+  for (const prop of Object.keys(choices)) {
+    const value = values[prop],
+      valid = choices[prop];
+    if (value == null || valid.includes(value)) continue;
+    const message = '[Plenix] ' + component + ': unknown ' + prop + ' "' + String(value) + '". Valid values: ' + Array.from(new Set(valid.map(String))).join(', ') + '.';
+    if (!messages.has(message)) {
+      messages.add(message);
+      console.warn(message);
+    }
+  }
+}
+  } },
   "platform/utils/cx.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -17,7 +60,7 @@ function cx(...parts) {
   return parts.filter(Boolean).join(' ');
 }
   } },
-  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26,6 +69,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Icon = Icon;
 exports.StatusIcon = StatusIcon;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
@@ -74,6 +118,11 @@ function Icon({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Icon', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg', 'xl']
+  });
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled && 'plx-icon--filled', className),
     role: label ? 'img' : undefined,
@@ -106,6 +155,13 @@ function StatusIcon({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('StatusIcon', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
+    size: ['sm', 'md', 'lg']
+  });
   const t = STATUS_ICONS[tone] ? tone : 'info';
   const words = Object.assign({}, STATUS_WORDS, strings);
   const shown = children !== undefined && children !== null && children !== false;
@@ -120,7 +176,7 @@ function StatusIcon({
   }, children) : null);
 }
   } },
-  "platform/components/Badge/Badge.jsx": { deps: {"react":null,"../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Badge/Badge.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -128,6 +184,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Badge = Badge;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
@@ -180,6 +237,15 @@ function Badge({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Badge', {
+    tone,
+    variant,
+    size
+  }, {
+    tone: ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative', 'info', 'warning', 'danger'],
+    variant: ['solid', 'soft'],
+    size: ['md', 'sm']
+  });
   const named = ALIASES[tone] || tone;
   const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
@@ -220,7 +286,7 @@ function VisuallyHidden({
   }, rest), children);
 }
   } },
-  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -228,6 +294,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Count = Count;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
@@ -258,6 +325,13 @@ function Count({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Count', {
+    variant,
+    tone
+  }, {
+    variant: ['plain', 'pill'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
   if (value === null || value === undefined || value === '') return null;
   const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
@@ -434,6 +508,7 @@ exports.regionName = regionName;
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
+     Bare YYYY-MM-DD values represent local calendar dates; timestamps with a zone retain their instant.
      A value that is not a finite number or a valid date comes back as an empty string, never "NaN" or "Invalid Date".
    Notes:
      Never build a separator, a symbol position or a date order by hand: these functions are the only place they are made.
@@ -498,7 +573,15 @@ const FORMATS = exports.FORMATS = {
   }
 };
 const ok = n => typeof n === 'number' && isFinite(n);
+// A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
 const toDate = d => {
+  if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    const [year, month, day] = d.split('-').map(Number),
+      x = new Date(0);
+    x.setFullYear(year, month - 1, day);
+    x.setHours(0, 0, 0, 0);
+    return x.getFullYear() === year && x.getMonth() === month - 1 && x.getDate() === day ? x : null;
+  }
   const x = d instanceof Date ? d : new Date(d);
   return isNaN(x.getTime()) ? null : x;
 };
@@ -2396,7 +2479,7 @@ function Sparkline({
   }, marks) : null);
 }
   } },
-  "platform/components/Metric/Metric.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Card/Card.jsx":"platform/components/Card/Card.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Metric/Metric.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Card/Card.jsx":"platform/components/Card/Card.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2404,6 +2487,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Metric = Metric;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Card = require("../Card/Card.jsx");
 var _Sparkline = require("../../charts/Sparkline.jsx");
@@ -2464,6 +2548,11 @@ function Metric({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Metric', {
+    size
+  }, {
+    size: ['md', 'lg']
+  });
   const figure = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-metric__figure"
   }, /*#__PURE__*/_react.default.createElement("span", {
@@ -2517,7 +2606,7 @@ Metric.Group = function MetricGroup({
   }, c) : null));
 };
   } },
-  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2525,6 +2614,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressBar = ProgressBar;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressBar
@@ -2567,6 +2657,13 @@ function ProgressBar({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('ProgressBar', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
+    size: ['sm', 'md']
+  });
   const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
@@ -2698,7 +2795,7 @@ function EventChip({
   }, title));
 }
   } },
-  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2706,6 +2803,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RadioTiles = RadioTiles;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -2741,6 +2839,11 @@ function RadioTiles({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('RadioTiles', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
   const auto = 'plx-rt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
     className: (0, _cx.cx)('plx-radio-tiles', 'plx-radio-tiles--' + size, className)
@@ -2782,7 +2885,7 @@ function RadioTiles({
   })));
 }
   } },
-  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2790,6 +2893,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.StatusDot = StatusDot;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _Icon = require("../Icon/Icon.jsx");
@@ -2836,6 +2940,13 @@ function StatusDot({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('StatusDot', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral', 'online', 'away', 'busy', 'dnd', 'offline'],
+    size: ['sm', 'md', 'lg']
+  });
   const s = SIZES.indexOf(size) >= 0 ? size : null;
   const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
   return /*#__PURE__*/_react.default.createElement("span", _extends({
@@ -3568,7 +3679,7 @@ function Kbd({
   }, rest), children);
 }
   } },
-  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3577,6 +3688,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Avatar = Avatar;
 exports.initialsOf = initialsOf;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _StatusDot = require("../StatusDot/StatusDot.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -3668,6 +3780,11 @@ function Avatar({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Avatar', {
+    size
+  }, {
+    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
+  });
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
@@ -3866,7 +3983,7 @@ function Bleed({
   }, rest), children);
 }
   } },
-  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3875,6 +3992,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Skeleton = Skeleton;
 exports.Spinner = Spinner;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -3920,13 +4038,18 @@ function Spinner({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Spinner', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
     role: "status"
   }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
 }
   } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3935,6 +4058,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Button = void 0;
 exports.ButtonGroup = ButtonGroup;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
@@ -4012,6 +4136,13 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
   strings,
   ...rest
 }, ref) {
+  (0, _devWarn.devWarn)('Button', {
+    variant,
+    size
+  }, {
+    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
@@ -4074,7 +4205,7 @@ function ButtonGroup({
   }, rest), children);
 }
   } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4082,6 +4213,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Text = Text;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Button = require("../Button/Button.jsx");
@@ -4154,6 +4286,11 @@ function Text({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Text', {
+    variant
+  }, {
+    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
+  });
   const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
   if (expandable && clamp) {
     return /*#__PURE__*/_react.default.createElement(ExpandableText, {
@@ -4269,7 +4406,7 @@ function Thumbnail({
   }));
 }
   } },
-  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4277,6 +4414,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Notice = Notice;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -4326,6 +4464,11 @@ function Notice({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Notice', {
+    tone
+  }, {
+    tone: ['info', 'success', 'warning', 'danger']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const section = title || actions;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -4422,7 +4565,7 @@ exports.appById = appById;
 const appHref = (app, root = '') => root + app.path.split('/').map(encodeURIComponent).join('/').replace(/%23/g, '#');
 exports.appHref = appHref;
   } },
-  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/apps.js":"platform/providers/apps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/apps.js":"platform/providers/apps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4430,6 +4573,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BrandMark = BrandMark;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _apps = require("../../providers/apps.js");
@@ -4484,6 +4628,13 @@ function BrandMark({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('BrandMark', {
+    tone,
+    size
+  }, {
+    tone: ['brand', 'mono', 'on-accent'],
+    size: ['sm', 'md', 'lg', 'xl']
+  });
   const s = {
     ...STRINGS,
     ...strings
@@ -5723,7 +5874,7 @@ function useTruncated(ref) {
   return cut;
 }
   } },
-  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5732,6 +5883,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ColorPicker = ColorPicker;
 exports.ColorSwatch = ColorSwatch;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _dataColors = require("./dataColors.js");
 var _categoryColors = require("./categoryColors.js");
@@ -5793,6 +5945,13 @@ function ColorSwatch({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('ColorSwatch', {
+    tone,
+    size
+  }, {
+    tone: ['accent', 'surface', 'frost'],
+    size: ['sm', 'md']
+  });
   if (showLabel && label) {
     // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
     const chip = /*#__PURE__*/_react.default.createElement(ColorSwatch, {
@@ -5845,6 +6004,11 @@ function ColorPicker({
   ...rest
 }) {
   // invalid and required: from Field, not for a group
+  (0, _devWarn.devWarn)('ColorPicker', {
+    size
+  }, {
+    size: ['sm', 'md']
+  });
   const all = palette === 'category' ? _categoryColors.CATEGORY_COLORS : _dataColors.DATA_COLORS;
   const list = Array.isArray(colors) ? colors.filter(h => all.indexOf(h) >= 0) : all;
   const cat = palette === 'category';
@@ -7462,7 +7626,7 @@ function Breadcrumbs({
   })));
 }
   } },
-  "platform/components/List/List.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/List/List.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7470,6 +7634,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.List = List;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -7512,6 +7677,11 @@ function List({
   className,
   children
 }) {
+  (0, _devWarn.devWarn)('List', {
+    variant
+  }, {
+    variant: ['icons', 'steps', 'bullets']
+  });
   const kind = kindOf(ordered || (variant === 'steps' ? 'decimal' : null));
   const Tag = kind ? 'ol' : 'ul';
   return /*#__PURE__*/_react.default.createElement(Tag, {
@@ -7533,6 +7703,11 @@ List.Item = function ListItem({
   className,
   children
 }) {
+  (0, _devWarn.devWarn)('List.Item', {
+    tone
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
   const text = /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-list__text"
   }, children);
@@ -7784,7 +7959,7 @@ function SectionHeading({
   }, actions) : null);
 }
   } },
-  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7793,6 +7968,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.CollapsibleSection = CollapsibleSection;
 exports.ShowMore = ShowMore;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -7887,6 +8063,11 @@ function ShowMore({
   size = '2xs',
   ...rest
 }) {
+  (0, _devWarn.devWarn)('ShowMore', {
+    size
+  }, {
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
   return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
     size: size,
     iconEnd: expanded ? 'chevron-up' : 'chevron-down',
@@ -7897,7 +8078,7 @@ function ShowMore({
   }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
 }
   } },
-  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7905,6 +8086,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressSteps = ProgressSteps;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
@@ -7969,6 +8151,11 @@ function ProgressSteps({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('ProgressSteps', {
+    variant
+  }, {
+    variant: ['default', 'compact']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
   if (variant === 'compact') {
@@ -8190,7 +8377,7 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   }, o.label)) : children));
 });
   } },
-  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8198,6 +8385,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Chat = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -8258,6 +8446,11 @@ function Typing({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Chat.Typing', {
+    variant
+  }, {
+    variant: ['typing', 'thinking', 'steps']
+  });
   const t = Object.assign({
     thinking: 'Thinking'
   }, strings);
@@ -8423,7 +8616,7 @@ const Chat = exports.Chat = {
   Typing
 };
   } },
-  "platform/components/EmptyState/EmptyState.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EmptyState/EmptyState.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8431,6 +8624,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EmptyState = EmptyState;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -8544,6 +8738,13 @@ function EmptyState({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('EmptyState', {
+    size,
+    tone
+  }, {
+    size: ['inline', 'page'],
+    tone: ['neutral', 'error', 'warning', 'success']
+  });
   const preset = KINDS[kind];
   const words = preset ? Object.assign({}, STRINGS[kind], strings && strings[kind]) : null;
   const t = tone || (preset ? preset.tone : 'neutral');
@@ -8828,7 +9029,7 @@ const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(fun
   }), children);
 });
   } },
-  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8836,6 +9037,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SegmentedControl = SegmentedControl;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -8872,6 +9074,11 @@ function SegmentedControl({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('SegmentedControl', {
+    size
+  }, {
+    size: ['md', 'sm']
+  });
   const refs = _react.default.useRef([]);
   const index = Math.max(0, options.findIndex(o => o.value === value));
   const move = (e, i) => {
@@ -10394,7 +10601,7 @@ Toolbar.Spacer = function ToolbarSpacer() {
   });
 };
   } },
-  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10405,6 +10612,7 @@ exports.Dialog = Dialog;
 exports.Drawer = Drawer;
 exports.PromptDialog = PromptDialog;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
@@ -10618,6 +10826,11 @@ function Dialog({
   size = 'md',
   ...props
 }) {
+  (0, _devWarn.devWarn)('Dialog', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg', 'xl', 'full']
+  });
   return /*#__PURE__*/_react.default.createElement(ModalShell, _extends({
     kind: "dialog",
     size: size
@@ -10628,6 +10841,11 @@ function Drawer({
   side = 'end',
   ...props
 }) {
+  (0, _devWarn.devWarn)('Drawer', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
   return /*#__PURE__*/_react.default.createElement(ModalShell, _extends({
     kind: "drawer",
     size: size,
@@ -10681,6 +10899,11 @@ function PromptDialog({
   inputProps,
   size = 'sm'
 }) {
+  (0, _devWarn.devWarn)('PromptDialog', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg', 'xl', 'full']
+  });
   const formId = (0, _layer.useUid)('plx-prompt');
   const input = _react.default.useRef(null);
   const [value, setValue] = _react.default.useState(defaultValue);
@@ -11957,7 +12180,7 @@ function useUndo() {
   }), [toast]);
 }
   } },
-  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11966,6 +12189,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Tabs = Tabs;
 exports.tabsPanelId = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
@@ -12073,6 +12297,11 @@ function Tabs({
   panelClassName,
   strings
 }) {
+  (0, _devWarn.devWarn)('Tabs', {
+    variant
+  }, {
+    variant: ['contained', 'folder', 'segmented']
+  });
   const words = Object.assign({}, STRINGS, strings);
   const uid = (0, _layer.useUid)('plx-tabs');
   const base = idBase || uid;
@@ -16416,6 +16645,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      </ActionBar>
    Props:
      label: names the group of buttons for screen readers; default "Actions"
+     sticky: true (default) keeps page actions at the scroll bottom; false keeps an embedded bar in normal flow
      className: more classes on the bar
      children: the buttons, in reading order, the primary action last (it sits at the right edge); a destructive action
        first, away from the primary
@@ -16431,13 +16661,14 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 function ActionBar({
   label = 'Actions',
+  sticky = true,
   className,
   children
 }) {
   return /*#__PURE__*/_react.default.createElement("div", {
     role: "group",
     "aria-label": label,
-    className: (0, _cx.cx)('plx-action-bar', className)
+    className: (0, _cx.cx)('plx-action-bar', !sticky && 'plx-action-bar--static', className)
   }, children);
 }
   } },
@@ -17410,7 +17641,7 @@ function useDensity() {
   return [document.documentElement.getAttribute('data-plx-density') || 'standard', set];
 }
   } },
-  "platform/patterns/AppHeader/AppHeader.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../../providers/apps.js":"platform/providers/apps.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useDensity.js":"platform/hooks/useDensity.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/AppHeader/AppHeader.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../../providers/apps.js":"platform/providers/apps.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useDensity.js":"platform/hooks/useDensity.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17419,6 +17650,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.AppHeader = AppHeader;
 exports.SIGN_OUT = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
@@ -17555,6 +17787,11 @@ function AppHeader({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('AppHeader', {
+    tone
+  }, {
+    tone: ['accent', 'frost', 'plain']
+  });
   const {
     pinnedApps
   } = (0, _SessionProvider.useSession)();
@@ -18221,186 +18458,7 @@ function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = f
   return Math.max(min, Math.min(step, max));
 }
   } },
-  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BarActions = BarActions;
-exports.foldOrder = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · BarActions
-   (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
-   page's actions, and BulkActions, the selection's actions.)
-   Usage:
-     <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 2)} moreLabel="More actions" dangerClass="plx-command-bar__danger" />
-   Summary: A row of commands drawn by the button rule (owner, 2026-10-14): ghost buttons with their icon and label; icons
-     only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
-     from the end, the danger commands last. More shows only when something has folded.
-   Props:
-     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange }]
-     actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
-       onSelect(next) runs with the new state; folded into More it is a checked menu item
-     actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
-       (named "label: choice"), onChange(value) runs on a pick; folded into More it is a submenu of radio items
-     actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
-     actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
-       only disabled, with a why-tooltip)
-     iconOnly: draw the commands as icons with tooltips
-     fold: how many commands are in More (from the end: the others first, the danger commands last)
-     off(action): whether a command (or a menu item) is disabled now; default action.disabled
-     why(action): the tooltip of a disabled command; default action.why
-     moreLabel: the More button's name ("More actions")
-     dangerClass: the class that draws a ghost button in the danger color
-     extra: more menu nodes for More, after the folded commands (the bar's folded quick filters); More shows for them too
-   Notes:
-     The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
-     and keeps its label. */
-
-// a menu's items: Menu children, or descriptors drawn as MenuItems
-const itemsOf = (a, off) => {
-  const list = a.items;
-  if (!Array.isArray(list) || !list.length || /*#__PURE__*/_react.default.isValidElement(list[0])) return list;
-  return list.map(it => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: it.id || it.label,
-    icon: it.icon,
-    danger: it.danger,
-    disabled: off(it),
-    onSelect: it.onSelect
-  }, it.label));
-};
-
-// the commands that fold, in their folding order: the others from the end, then the danger ones from the end
-const foldOrder = actions => {
-  const plain = actions.filter(a => !a.danger && !a.primary),
-    danger = actions.filter(a => a.danger && !a.primary);
-  return plain.slice().reverse().concat(danger.slice().reverse());
-};
-exports.foldOrder = foldOrder;
-function BarActions({
-  actions = [],
-  iconOnly = false,
-  fold = 0,
-  off = a => !!a.disabled,
-  why = a => a.why,
-  moreLabel = 'More actions',
-  dangerClass,
-  size = 'sm',
-  extra = []
-}) {
-  const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
-  const kept = actions.filter(a => !folded.has(a.id || a.label));
-  const away = actions.filter(a => folded.has(a.id || a.label));
-  // a choices command: its options as radio items, and the current one's label
-  const radios = a => /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: a.label,
-    value: a.value,
-    onChange: v => a.onChange && a.onChange(v)
-  }, (a.choices || []).map(c => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: c.value,
-    value: c.value,
-    icon: c.icon
-  }, c.label)));
-  const current = a => {
-    const c = (a.choices || []).find(x => x.value === a.value);
-    return c ? c.label : '';
-  };
-  const one = a => {
-    const disabled = off(a);
-    const filled = !!a.primary;
-    const only = iconOnly && !filled && !!a.icon;
-    const menu = !!a.items || !!a.choices;
-    // a choices command shows its current choice and is named by both ("Profile: Raphael")
-    const name = a.choices ? a.label + ': ' + current(a) : a.label;
-    const text = a.choices ? current(a) || a.label : a.label;
-    const click = a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
-    const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: size,
-      variant: filled ? 'primary' : 'ghost',
-      icon: a.icon,
-      iconOnly: only,
-      label: only || a.choices ? name : undefined,
-      caret: menu && !only,
-      pressed: a.toggle ? !!a.pressed : undefined,
-      disabled: disabled,
-      className: a.danger && !filled ? dangerClass : undefined,
-      onClick: click
-    }, text);
-    const el = a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: a.label,
-      trigger: button
-    }, radios(a)) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: a.label,
-      trigger: button
-    }, itemsOf(a, off)) : button;
-    const tip = disabled ? why(a) : only ? name : null;
-    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
-      key: a.id || a.label
-    }, tip ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: tip
-    }, el) : el);
-  };
-  const plain = kept.filter(a => !a.danger),
-    danger = kept.filter(a => a.danger);
-  const allOff = away.length > 0 && !extra.length && away.every(a => off(a));
-  const more = away.length || extra.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    key: "plx-more",
-    content: allOff ? why(away[0]) : moreLabel
-  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: moreLabel,
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: size,
-      variant: "ghost",
-      icon: "more",
-      iconOnly: true,
-      label: moreLabel,
-      disabled: allOff
-    })
-  }, away.map((a, i) => {
-    const sep = a.danger && i > 0 && !away[i - 1].danger ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
-      key: (a.id || a.label) + '-sep'
-    }) : null;
-    // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
-    const item = a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: a.id || a.label,
-      label: a.label + ': ' + current(a),
-      icon: a.icon,
-      disabled: off(a)
-    }, radios(a)) : a.toggle ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: a.icon,
-      checked: !!a.pressed,
-      disabled: off(a),
-      onSelect: () => a.onSelect && a.onSelect(!a.pressed)
-    }, a.label) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
-      key: a.id || a.label,
-      label: a.label
-    }, itemsOf(a, off)) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: a.icon,
-      danger: a.danger,
-      disabled: off(a),
-      onSelect: a.onSelect
-    }, a.label);
-    return sep ? [sep, item] : item;
-  }), away.length && extra.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
-    key: "plx-extra-sep"
-  }) : null, extra)) : null;
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /*#__PURE__*/_react.default.createElement("span", {
-    key: "plx-danger-divider",
-    className: (0, _cx.cx)('plx-bar-actions__divider'),
-    "aria-hidden": "true"
-  }) : null, danger.map(one));
-}
-  } },
-  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18408,6 +18466,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Popover = Popover;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _floating = require("../../utils/floating.js");
@@ -18510,6 +18569,11 @@ function Popover({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Popover', {
+    size
+  }, {
+    size: ['md', 'sm', 'lg', 'auto']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const id = (0, _layer.useUid)('plx-popover');
   const controlled = openProp !== undefined;
@@ -18678,6 +18742,341 @@ function Popover({
     initialFocus: initialFocus,
     closeLabel: t.close
   }, children) : null);
+}
+  } },
+  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BarActions = BarActions;
+exports.foldOrder = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+var _Loading = require("../../components/Loading/Loading.jsx");
+var _layer = require("../../utils/layer.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarActions
+   (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
+   page's actions, and BulkActions, the selection's actions.)
+   Usage:
+     <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 2)} moreLabel="More actions" dangerClass="plx-command-bar__danger" />
+   Summary: A row of commands drawn by the button rule (owner, 2026-10-14): ghost buttons with their icon and label; icons
+     only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
+     from the end, the danger commands last. More shows only when something has folded.
+   Props:
+     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange, loading, tooltip, panel }]
+     actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
+       onSelect(next) runs with the new state; folded into More it is a checked menu item
+     actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
+       (named "label: choice"), onChange(value) runs on a pick; folded into More it is a submenu of radio items
+     actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
+     actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
+       only disabled, with a why-tooltip)
+     actions[].loading: uses the existing Button spinner and busy state; folded commands are busy and cannot be chosen
+     actions[].tooltip: additional help on hover and keyboard focus, with labels or icons; disabled why takes precedence
+     actions[].panel({ close }): returns a small form in the existing Popover; Escape returns focus to the action
+     iconOnly: draw the commands as icons with tooltips
+     fold: how many commands are in More (from the end: the others first, the danger commands last)
+     off(action): whether a command (or a menu item) is disabled now; default action.disabled
+     why(action): the tooltip of a disabled command; default action.why
+     moreLabel: the More button's name ("More actions")
+     dangerClass: the class that draws a ghost button in the danger color
+     extra: more menu nodes for More, after the folded commands (the bar's folded quick filters); More shows for them too
+   Notes:
+     The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
+     and keeps its label. */
+// Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
+function HintTarget({
+  children,
+  'aria-describedby': description
+}) {
+  const wrap = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    const button = wrap.current && wrap.current.querySelector('button,a[href]');
+    if (!button || !description) return undefined;
+    const before = button.getAttribute('aria-describedby');
+    const ids = [...new Set((before || '').split(' ').concat(description.split(' ')).filter(Boolean))];
+    button.setAttribute('aria-describedby', ids.join(' '));
+    return () => {
+      if (before) button.setAttribute('aria-describedby', before);else button.removeAttribute('aria-describedby');
+    };
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: "plx-bar-actions__hint-target"
+  }, children);
+}
+function ActionHint({
+  content,
+  children,
+  className
+}) {
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: content,
+    className: className
+  }, /*#__PURE__*/_react.default.createElement(HintTarget, null, children));
+}
+
+// MenuItem intentionally has no public ref. This adapter exposes its real button to Popover's focus/anchor handling.
+const PanelMenuTrigger = /*#__PURE__*/_react.default.forwardRef(function PanelMenuTrigger(props, ref) {
+  const wrap = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector('[data-plx-menu-item]'));
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: "plx-bar-actions__panel-item"
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, _extends({}, props, {
+    keepOpen: true
+  })));
+});
+function ActionPanel({
+  action,
+  trigger
+}) {
+  const [open, setOpen] = _react.default.useState(false);
+  const holder = _react.default.useRef(null);
+  const unavailable = !!action.disabled || !!action.loading;
+  const show = open && !unavailable;
+  const close = () => setOpen(false);
+  // If dismissing a narrow sheet also closes More, its item is gone: return to the surviving More trigger.
+  _react.default.useEffect(() => {
+    if (!show) return undefined;
+    const menu = holder.current && holder.current.closest('[role="menu"]');
+    const more = menu && menu.parentElement.querySelector(':scope > button');
+    return () => {
+      requestAnimationFrame(() => {
+        if (more && more.isConnected && document.activeElement === document.body) more.focus({
+          preventScroll: true
+        });
+      });
+    };
+  }, [show]);
+  _react.default.useEffect(() => {
+    if (unavailable) setOpen(false);
+  }, [unavailable]);
+  const contain = e => {
+    const dialog = e.target.closest('[role="dialog"]');
+    if (!dialog) return;
+    // The non-modal form is outside the toolbar's roving order. Tab past its last control leaves the whole bar.
+    if (e.type === 'keydown' && e.key === 'Tab' && !e.shiftKey && dialog.getAttribute('aria-modal') !== 'true') {
+      const controls = (0, _layer.focusables)(dialog).filter(el => el.tabIndex >= 0);
+      const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
+      if (toolbar && e.target === controls[controls.length - 1]) {
+        const next = (0, _layer.focusables)(document.body).find(el => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+        if (next) {
+          e.preventDefault();
+          next.focus();
+        }
+      }
+    }
+    e.stopPropagation();
+  };
+  const leave = e => {
+    const next = e.relatedTarget,
+      menu = e.currentTarget.closest('[role="menu"]');
+    if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
+    const more = menu.parentElement.querySelector(':scope > button');
+    if (more) more.click();
+  };
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: holder,
+    className: "plx-bar-actions__panel",
+    onKeyDown: contain,
+    onFocus: contain,
+    onMouseDown: contain,
+    onBlur: leave
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: trigger,
+    title: action.label,
+    closeButton: true,
+    open: show,
+    onOpenChange: next => {
+      if (!next || !unavailable) setOpen(next);
+    }
+  }, show ? action.panel({
+    close
+  }) : null));
+}
+
+// a menu's items: Menu children, or descriptors drawn as MenuItems
+const itemsOf = (a, off) => {
+  const list = a.items;
+  if (!Array.isArray(list) || !list.length || /*#__PURE__*/_react.default.isValidElement(list[0])) return list;
+  return list.map(it => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: it.id || it.label,
+    icon: it.icon,
+    danger: it.danger,
+    disabled: off(it),
+    onSelect: it.onSelect
+  }, it.label));
+};
+
+// the commands that fold, in their folding order: the others from the end, then the danger ones from the end
+const foldOrder = actions => {
+  const plain = actions.filter(a => !a.danger && !a.primary),
+    danger = actions.filter(a => a.danger && !a.primary);
+  return plain.slice().reverse().concat(danger.slice().reverse());
+};
+exports.foldOrder = foldOrder;
+function BarActions({
+  actions = [],
+  iconOnly = false,
+  fold = 0,
+  off = a => !!a.disabled,
+  why = a => a.why,
+  moreLabel = 'More actions',
+  dangerClass,
+  size = 'sm',
+  extra = []
+}) {
+  const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
+  const kept = actions.filter(a => !folded.has(a.id || a.label));
+  const away = actions.filter(a => folded.has(a.id || a.label));
+  // a choices command: its options as radio items, and the current one's label
+  const radios = a => /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: a.label,
+    value: a.value,
+    onChange: v => a.onChange && a.onChange(v)
+  }, (a.choices || []).map(c => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: c.value,
+    value: c.value,
+    icon: c.icon
+  }, c.label)));
+  const current = a => {
+    const c = (a.choices || []).find(x => x.value === a.value);
+    return c ? c.label : '';
+  };
+  const one = a => {
+    const disabled = off(a),
+      loading = !!a.loading;
+    const filled = !!a.primary;
+    const only = iconOnly && !filled && !!a.icon;
+    const panel = typeof a.panel === 'function';
+    const menu = !!a.items || !!a.choices;
+    // a choices command shows its current choice and is named by both ("Profile: Raphael")
+    const name = a.choices ? a.label + ': ' + current(a) : a.label;
+    const text = a.choices ? current(a) || a.label : a.label;
+    const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
+    const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: size,
+      variant: filled ? 'primary' : 'ghost',
+      icon: a.icon,
+      iconOnly: only,
+      label: only || a.choices ? name : undefined,
+      caret: menu && !only,
+      "aria-haspopup": panel ? 'dialog' : menu ? 'menu' : undefined,
+      expanded: loading && (panel || menu) ? false : undefined,
+      pressed: a.toggle ? !!a.pressed : undefined,
+      disabled: disabled,
+      loading: loading,
+      className: a.danger && !filled ? dangerClass : undefined,
+      onClick: click
+    }, text);
+    const el = loading ? button : panel ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
+      action: Object.assign({}, a, {
+        disabled
+      }),
+      trigger: button
+    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: a.label,
+      trigger: button
+    }, radios(a)) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: a.label,
+      trigger: button
+    }, itemsOf(a, off)) : button;
+    const tip = disabled && why(a) || a.tooltip || (only ? name : null);
+    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+      key: a.id || a.label
+    }, tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
+      content: tip
+    }, el) : el);
+  };
+  const plain = kept.filter(a => !a.danger),
+    danger = kept.filter(a => a.danger);
+  const allOff = away.length > 0 && !extra.length && away.every(a => off(a));
+  const more = away.length || extra.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    key: "plx-more",
+    content: allOff ? why(away[0]) : moreLabel
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: moreLabel,
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: size,
+      variant: "ghost",
+      icon: "more",
+      iconOnly: true,
+      label: moreLabel,
+      disabled: allOff
+    })
+  }, away.map((a, i) => {
+    const sep = a.danger && i > 0 && !away[i - 1].danger ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+      key: (a.id || a.label) + '-sep'
+    }) : null;
+    // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
+    const busy = !!a.loading,
+      disabled = off(a) || busy;
+    const item = busy ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+        size: "sm",
+        label: a.label
+      }),
+      danger: a.danger,
+      checked: a.toggle ? !!a.pressed : undefined,
+      "aria-label": a.choices ? a.label + ': ' + current(a) : a.label,
+      "aria-busy": true,
+      disabled: true
+    }, a.choices ? a.label + ': ' + current(a) : a.label) : typeof a.panel === 'function' ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
+      key: a.id || a.label,
+      action: Object.assign({}, a, {
+        disabled
+      }),
+      trigger: /*#__PURE__*/_react.default.createElement(PanelMenuTrigger, {
+        icon: a.icon,
+        danger: a.danger,
+        disabled: disabled
+      }, a.label)
+    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: a.id || a.label,
+      label: a.label + ': ' + current(a),
+      icon: a.icon,
+      disabled: off(a)
+    }, radios(a)) : a.toggle ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: a.icon,
+      checked: !!a.pressed,
+      disabled: off(a),
+      onSelect: () => a.onSelect && a.onSelect(!a.pressed)
+    }, a.label) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
+      key: a.id || a.label,
+      label: a.label
+    }, itemsOf(a, off)) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: a.icon,
+      danger: a.danger,
+      disabled: off(a),
+      onSelect: a.onSelect
+    }, a.label);
+    const tip = off(a) && why(a) || a.tooltip;
+    const described = tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
+      key: a.id || a.label,
+      content: tip,
+      className: "plx-bar-actions__tooltip"
+    }, item) : item;
+    return sep ? [sep, described] : described;
+  }), away.length && extra.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+    key: "plx-extra-sep"
+  }) : null, extra)) : null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /*#__PURE__*/_react.default.createElement("span", {
+    key: "plx-danger-divider",
+    className: (0, _cx.cx)('plx-bar-actions__divider'),
+    "aria-hidden": "true"
+  }) : null, danger.map(one));
 }
   } },
   "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -19411,7 +19810,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      label: the bar's accessible name (the collection: "Assets")
      actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
-       pressed, choices, value, onChange }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
+       pressed, choices, value, onChange, loading, tooltip, panel }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
        setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
        (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
        submenu of radio items. No other controls go in the bar.
@@ -19419,6 +19818,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
      actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
      actions[].why: the tooltip of a disabled command, saying why
+     actions[].loading: spinner, busy and inert, including folded commands
+     actions[].tooltip: help shown on hover and focus with labels or icons (disabled why takes precedence)
+     actions[].panel({ close }): a small form in a Popover anchored to the action, including selection and More items;
+       focus enters the form and returns on Escape or close. Use close() after the form succeeds.
      actions[].primary: the page's one primary command (filled; it keeps its label); default none
      find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
      quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
@@ -19437,7 +19840,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
-     sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
+     sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
+       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow.
      narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
        decides)
      strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
@@ -19551,7 +19955,7 @@ function CommandBar({
   end,
   selection,
   layout = 'auto',
-  sticky = true,
+  sticky = 'auto',
   narrow = false,
   strings,
   className
@@ -19571,7 +19975,7 @@ function CommandBar({
   const folds = (0, _BarActions.foldOrder)(shown).length + quick.length;
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
   const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
   const ctx = _react.default.useMemo(() => ({
     iconOnly: step >= ICONS,
@@ -19716,7 +20120,7 @@ function CommandBar({
     ref: root,
     className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
     "data-plx-layout": shape,
-    "data-plx-position": sticky ? undefined : 'static',
+    "data-plx-position": sticky === true ? 'sticky' : sticky === false ? 'static' : 'auto',
     onKeyDown: onKeyDown
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-command-bar__bar"
@@ -20234,7 +20638,7 @@ function BulkActions({
   }))));
 }
   } },
-  "platform/patterns/ContentGrid/ContentGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ContentGrid/ContentGrid.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20242,6 +20646,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ContentGrid = ContentGrid;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ContentGrid
@@ -20280,6 +20685,11 @@ function ContentGrid({
   className,
   children
 }) {
+  (0, _devWarn.devWarn)('ContentGrid', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg']
+  });
   const justified = layout === 'justified';
   return /*#__PURE__*/_react.default.createElement("ul", {
     "aria-label": label,
@@ -20370,7 +20780,7 @@ PropertyList.Item = function PropertyListItem({
   }, children));
 };
   } },
-  "platform/patterns/RecordPage/RecordPage.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RecordPage/RecordPage.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20378,6 +20788,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RecordPage = RecordPage;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · RecordPage, RecordPage.Header
@@ -20415,6 +20826,11 @@ function Header({
   headingLevel = 1,
   className
 }) {
+  (0, _devWarn.devWarn)('RecordPage.Header', {
+    size
+  }, {
+    size: ['lg', 'md']
+  });
   const H = 'h' + headingLevel;
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-record-page__header', 'plx-record-page__header--' + size, surface === 'card' && 'plx-record-page__header--card', className)
@@ -23865,7 +24281,7 @@ function useScrollLock(active, ref) {
   }, [active, ref]);
 }
   } },
-  "platform/components/Link/Link.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Link/Link.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23873,6 +24289,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Link = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
@@ -23926,6 +24343,11 @@ const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link
   children,
   ...rest
 }, ref) {
+  (0, _devWarn.devWarn)('Link', {
+    variant
+  }, {
+    variant: ['inline', 'standalone', 'subtle']
+  });
   const s = Object.assign({}, STRINGS, strings);
   const kind = back ? 'standalone' : variant;
   const newTab = external ? {
@@ -23992,7 +24414,7 @@ const Code = exports.Code = /*#__PURE__*/_react.default.forwardRef(function Code
   }), children);
 });
   } },
-  "platform/components/Blockquote/Blockquote.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Blockquote/Blockquote.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24000,6 +24422,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Blockquote = Blockquote;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Blockquote
@@ -24033,6 +24456,11 @@ function Blockquote({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Blockquote', {
+    variant
+  }, {
+    variant: ['default', 'pull']
+  });
   return /*#__PURE__*/_react.default.createElement("figure", _extends({
     className: (0, _cx.cx)('plx-blockquote', variant === 'pull' && 'plx-blockquote--pull', className)
   }, rest), /*#__PURE__*/_react.default.createElement("blockquote", {
@@ -24043,7 +24471,7 @@ function Blockquote({
   }, citation) : null);
 }
   } },
-  "platform/components/RichText/RichText.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RichText/RichText.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24051,6 +24479,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RichText = RichText;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichText
@@ -24099,6 +24528,11 @@ function RichText({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('RichText', {
+    variant
+  }, {
+    variant: ['article', 'compact']
+  });
   const content = html != null ? {
     dangerouslySetInnerHTML: {
       __html: html
@@ -24919,7 +25353,7 @@ const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(funct
   }, reason)) : null, children));
 });
   } },
-  "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24927,6 +25361,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.IconTile = IconTile;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -24967,6 +25402,13 @@ function IconTile({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('IconTile', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
+    size: ['sm', 'md', 'lg']
+  });
   const look = TONES.indexOf(tone) >= 0 ? tone : HUES.indexOf(hue) >= 0 ? hue : 'gray';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   return /*#__PURE__*/_react.default.createElement("span", _extends({
@@ -24982,7 +25424,7 @@ function IconTile({
   }));
 }
   } },
-  "platform/components/Pictogram/Pictogram.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Pictogram/Pictogram.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24990,6 +25432,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Pictogram = Pictogram;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -25022,6 +25465,11 @@ function Pictogram({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Pictogram', {
+    size
+  }, {
+    size: ['48', '64', '96', 48, 64, 96]
+  });
   const s = SIZES.indexOf(String(size)) >= 0 ? String(size) : '64';
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-pictogram', 'plx-pictogram--' + s, twoTone && 'plx-pictogram--two-tone', className),
@@ -25272,7 +25720,7 @@ const ILLUSTRATIONS = exports.ILLUSTRATIONS = [{
 const illustrationByName = name => ILLUSTRATIONS.find(x => x.name === name) || null;
 exports.illustrationByName = illustrationByName;
   } },
-  "platform/components/Illustration/Illustration.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./illustrations.js":"platform/components/Illustration/illustrations.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Illustration/Illustration.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./illustrations.js":"platform/components/Illustration/illustrations.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25280,6 +25728,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Illustration = Illustration;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _illustrations = require("./illustrations.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -25315,6 +25764,13 @@ function Illustration({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Illustration', {
+    size,
+    tone
+  }, {
+    size: ['sm', 'md', 'lg'],
+    tone: ['default', 'on-accent']
+  });
   const art = (0, _illustrations.illustrationByName)(name);
   if (!art) return null;
   const named = label === true ? art.title : label;
@@ -25657,7 +26113,7 @@ function encodeBarcode(value, format = 'code128') {
   return code128(value);
 }
   } },
-  "platform/components/Barcode/Barcode.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barcode.js":"platform/utils/barcode.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Barcode/Barcode.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/barcode.js":"platform/utils/barcode.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25665,6 +26121,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Barcode = Barcode;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _barcode = require("../../utils/barcode.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -25718,6 +26175,11 @@ function Barcode({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Barcode', {
+    size
+  }, {
+    size: ['md', 'sm', 'lg']
+  });
   const t = Object.assign({}, STRINGS, strings, {
     formats: Object.assign({}, STRINGS.formats, strings && strings.formats)
   });
@@ -25763,7 +26225,7 @@ function Barcode({
   }, code.text) : null);
 }
   } },
-  "platform/patterns/Retry/Retry.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Retry/Retry.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25772,6 +26234,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.RetryNotice = RetryNotice;
 exports.useRetry = useRetry;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _tokenTime = require("../../utils/tokenTime.js");
 var _announce = require("../../utils/announce.jsx");
@@ -25964,6 +26427,11 @@ function RetryNotice({
   children,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('RetryNotice', {
+    tone
+  }, {
+    tone: ['danger', 'warning']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const r = retry || {};
   const failing = r.status === 'failed' || r.status === 'waiting' || r.status === 'running' && r.attempt > 1;
@@ -26011,7 +26479,7 @@ function RetryNotice({
   }, count) : null) : null);
 }
   } },
-  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26019,6 +26487,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AvatarGroup = AvatarGroup;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Avatar = require("../Avatar/Avatar.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -26064,6 +26533,11 @@ function AvatarGroup({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('AvatarGroup', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg']
+  });
   const s = SIZES.indexOf(size) >= 0 ? size : 'sm';
   const l = layout === 'grid' ? 'grid' : 'stack';
   const words = Object.assign({}, STRINGS, strings);
@@ -26099,7 +26573,7 @@ function AvatarGroup({
   }, more) : more);
 }
   } },
-  "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26107,6 +26581,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Persona = Persona;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Avatar = require("../Avatar/Avatar.jsx");
 var _Badge = require("../Badge/Badge.jsx");
@@ -26162,6 +26637,11 @@ function Persona({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Persona', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg', 'xl']
+  });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
   const words = Object.assign({}, STRINGS, strings);
@@ -26196,7 +26676,7 @@ function Persona({
   }, secondary) : null));
 }
   } },
-  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26204,6 +26684,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressCircle = ProgressCircle;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressCircle
@@ -26257,6 +26738,13 @@ function ProgressCircle({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('ProgressCircle', {
+    size,
+    tone
+  }, {
+    size: ['sm', 'md', 'lg'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const known = typeof value === 'number' && !Number.isNaN(value);
@@ -26594,7 +27082,7 @@ function qrEncode(text, options = {}) {
   };
 }
   } },
-  "platform/components/QRCode/QRCode.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/qr.js":"platform/utils/qr.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/QRCode/QRCode.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/qr.js":"platform/utils/qr.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26602,6 +27090,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.QRCode = QRCode;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _qr = require("../../utils/qr.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -26649,6 +27138,11 @@ function QRCode({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('QRCode', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const lv = logo ? 'H' : level;
   const code = _react.default.useMemo(() => {
@@ -26707,7 +27201,7 @@ function QRCode({
   }, String(value)) : null) : null);
 }
   } },
-  "platform/components/VersionLabel/VersionLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/VersionLabel/VersionLabel.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26715,6 +27209,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.VersionLabel = VersionLabel;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Badge = require("../Badge/Badge.jsx");
 var _Link = require("../Link/Link.jsx");
@@ -26760,6 +27255,11 @@ function VersionLabel({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('VersionLabel', {
+    size
+  }, {
+    size: ['md', 'sm']
+  });
   const words = Object.assign({}, STRINGS, strings);
   const s = size === 'sm' ? 'sm' : 'md';
   const numbered = typeof version === 'number' || /^\d+$/.test(String(version));
@@ -26780,7 +27280,7 @@ function VersionLabel({
   }, words[status]) : null);
 }
   } },
-  "platform/components/Banner/Banner.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Banner/Banner.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26788,6 +27288,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Banner = Banner;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -26832,6 +27333,11 @@ function Banner({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Banner', {
+    tone
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const words = Object.assign({
     dismiss: 'Dismiss'
@@ -26868,7 +27374,7 @@ function Banner({
   }) : null);
 }
   } },
-  "platform/components/Scrim/Scrim.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/scrollLock.js":"platform/utils/scrollLock.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Scrim/Scrim.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/scrollLock.js":"platform/utils/scrollLock.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26876,6 +27382,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Scrim = Scrim;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _scrollLock = require("../../utils/scrollLock.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -26915,6 +27422,11 @@ function Scrim({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Scrim', {
+    variant
+  }, {
+    variant: ['modal', 'light', 'inverse']
+  });
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'modal';
   (0, _scrollLock.useScrollLock)(lockScroll !== undefined ? !!lockScroll : !contained);
   return /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -27176,7 +27688,7 @@ function Time({
   }, el) : el;
 }
   } },
-  "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27184,6 +27696,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ContextualHelp = ContextualHelp;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
 var _Icon = require("../Icon/Icon.jsx");
@@ -27235,6 +27748,13 @@ function ContextualHelp({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('ContextualHelp', {
+    variant,
+    size
+  }, {
+    variant: ['info', 'inline'],
+    size: ['sm', 'md', 'lg']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const more = v => link && link.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
     href: link.href,
@@ -27278,7 +27798,7 @@ function ContextualHelp({
   }, more('standalone')) : null));
 }
   } },
-  "platform/components/Spotlight/Spotlight.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/portal.jsx":"platform/utils/portal.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Spotlight/Spotlight.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/portal.jsx":"platform/utils/portal.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27286,6 +27806,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Spotlight = Spotlight;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _portal = require("../../utils/portal.jsx");
@@ -27337,6 +27858,11 @@ function Spotlight({
   onDismiss,
   className
 }) {
+  (0, _devWarn.devWarn)('Spotlight', {
+    variant
+  }, {
+    variant: ['cutout', 'beacon']
+  });
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'cutout';
   const root = _react.default.useRef(null);
   const shown = !!open;
@@ -27581,7 +28107,7 @@ function TeachingBubble({
   }, primaryAction.label) : null) : null) : null));
 }
   } },
-  "platform/patterns/Popconfirm/Popconfirm.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Popconfirm/Popconfirm.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27589,6 +28115,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Popconfirm = Popconfirm;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Button = require("../../components/Button/Button.jsx");
@@ -27642,6 +28169,11 @@ function Popconfirm({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('Popconfirm', {
+    tone
+  }, {
+    tone: ['default', 'danger']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const id = (0, _layer.useUid)('plx-popconfirm');
   const [open, setOpen] = _react.default.useState(false);
@@ -27819,7 +28351,7 @@ function MegaMenu({
   }, featured) : null)));
 }
   } },
-  "platform/components/CopyButton/CopyButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/clipboard.js":"platform/utils/clipboard.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CopyButton/CopyButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/clipboard.js":"platform/utils/clipboard.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27827,6 +28359,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CopyButton = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _clipboard = require("../../utils/clipboard.js");
 var _Button = require("../Button/Button.jsx");
@@ -27887,6 +28420,13 @@ const CopyButton = exports.CopyButton = /*#__PURE__*/_react.default.forwardRef(f
   className,
   ...rest
 }, ref) {
+  (0, _devWarn.devWarn)('CopyButton', {
+    variant,
+    size
+  }, {
+    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const clip = (0, _clipboard.useClipboard)({
     timeout,
@@ -27930,7 +28470,7 @@ const CopyButton = exports.CopyButton = /*#__PURE__*/_react.default.forwardRef(f
   }), button);
 });
   } },
-  "platform/components/Details/Details.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Details/Details.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27938,6 +28478,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Details = Details;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -27981,6 +28522,11 @@ function Details({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('Details', {
+    variant
+  }, {
+    variant: ['default', 'bordered', 'inline']
+  });
   const controlled = openProp !== undefined;
   const [own, setOwn] = _react.default.useState(!!defaultOpen);
   const open = controlled ? !!openProp : own;
@@ -28015,7 +28561,7 @@ function Details({
   }, children));
 }
   } },
-  "platform/components/FloatingActionButton/FloatingActionButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/FloatingActionButton/FloatingActionButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28023,6 +28569,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FloatingActionButton = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -28075,6 +28622,13 @@ const FloatingActionButton = exports.FloatingActionButton = /*#__PURE__*/_react.
   className,
   ...rest
 }, ref) {
+  (0, _devWarn.devWarn)('FloatingActionButton', {
+    size,
+    variant
+  }, {
+    size: ['md', 'sm', 'lg'],
+    variant: ['primary', 'secondary']
+  });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   return /*#__PURE__*/_react.default.createElement("button", _extends({
     ref: ref,
@@ -28091,7 +28645,7 @@ const FloatingActionButton = exports.FloatingActionButton = /*#__PURE__*/_react.
   }, label) : null);
 });
   } },
-  "platform/components/SplitButton/SplitButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SplitButton/SplitButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28099,6 +28653,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SplitButton = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
 var _Menu = require("../Menu/Menu.jsx");
@@ -28155,6 +28710,13 @@ const SplitButton = exports.SplitButton = /*#__PURE__*/_react.default.forwardRef
   strings,
   className
 }, ref) {
+  (0, _devWarn.devWarn)('SplitButton', {
+    variant,
+    size
+  }, {
+    variant: ['secondary', 'primary'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const v = variant === 'primary' ? 'primary' : 'secondary';
   const more = menuLabel || t.more.replace('{label}', typeof label === 'string' ? label.toLowerCase() : '').replace(/\s+/g, ' ');
@@ -28700,7 +29262,7 @@ function CommandPalette({
   }) : null));
 }
   } },
-  "platform/components/DownloadButton/DownloadButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DownloadButton/DownloadButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28708,6 +29270,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DownloadButton = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
 var _ProgressCircle = require("../ProgressCircle/ProgressCircle.jsx");
@@ -28771,6 +29334,11 @@ const DownloadButton = exports.DownloadButton = /*#__PURE__*/_react.default.forw
   className,
   ...rest
 }, ref) {
+  (0, _devWarn.devWarn)('DownloadButton', {
+    variant
+  }, {
+    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const busy = progress !== undefined && progress !== null && progress !== false;
   const known = busy && typeof progress === 'number';
@@ -28828,7 +29396,7 @@ const DownloadButton = exports.DownloadButton = /*#__PURE__*/_react.default.forw
   }, facts.join(' · ')) : null));
 });
   } },
-  "platform/components/BackToTop/BackToTop.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/BackToTop/BackToTop.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28836,6 +29404,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BackToTop = BackToTop;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
 var _useIntersection = require("../../hooks/useIntersection.js");
@@ -28879,6 +29448,11 @@ function BackToTop({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('BackToTop', {
+    variant
+  }, {
+    variant: ['floating', 'inline']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const floating = variant !== 'inline';
   const sentinel = _react.default.useRef(null);
@@ -33872,7 +34446,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33880,6 +34454,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parseTime = exports.TimePicker = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -33988,6 +34563,11 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
   className,
   ...rest
 }, ref) {
+  (0, _devWarn.devWarn)('TimePicker', {
+    variant
+  }, {
+    variant: ['list', 'segments']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
   const [own, setOwn] = _react.default.useState(defaultValue);
@@ -35222,7 +35802,7 @@ function ImageUpload({
   }, errors.join(' ')) : null);
 }
   } },
-  "platform/patterns/AvatarUpload/AvatarUpload.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AvatarUpload/AvatarUpload.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35230,6 +35810,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AvatarUpload = AvatarUpload;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Avatar = require("../../components/Avatar/Avatar.jsx");
 var _FileInput = require("../../components/FileInput/FileInput.jsx");
@@ -35299,6 +35880,11 @@ function AvatarUpload({
   id,
   'aria-describedby': describedBy
 }) {
+  (0, _devWarn.devWarn)('AvatarUpload', {
+    size
+  }, {
+    size: ['xl', '2xl']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const [pending, setPending] = _react.default.useState(null); // { url, file } waiting for its crop
   const [error, setError] = _react.default.useState('');
@@ -36292,7 +36878,7 @@ function TreeSelect({
   }, t.empty)))));
 }
   } },
-  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36300,6 +36886,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TransferList = TransferList;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _announce = require("../../utils/announce.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -36536,6 +37123,11 @@ function TransferList({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('TransferList', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const id = 'plx-tl' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const title = Object.assign({
@@ -38744,7 +39336,7 @@ function ChartAnnotation({
   }, label) : null);
 }
   } },
-  "platform/patterns/FeatureCard/FeatureCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FeatureCard/FeatureCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38752,6 +39344,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FeatureCard = FeatureCard;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Card = require("../../components/Card/Card.jsx");
 var _IconTile = require("../../components/IconTile/IconTile.jsx");
@@ -38802,6 +39395,13 @@ function FeatureCard({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('FeatureCard', {
+    variant,
+    tone
+  }, {
+    variant: ['icon', 'image', 'horizontal'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'icon';
   const picture = v === 'image' || v === 'horizontal' && image && !icon;
   const media = picture && image ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
@@ -38829,7 +39429,7 @@ function FeatureCard({
   }, media));
 }
   } },
-  "platform/patterns/UserCard/UserCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/UserCard/UserCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38837,6 +39437,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.UserCard = UserCard;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Card = require("../../components/Card/Card.jsx");
 var _Avatar = require("../../components/Avatar/Avatar.jsx");
@@ -38915,6 +39516,11 @@ function UserCard({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('UserCard', {
+    variant
+  }, {
+    variant: ['default', 'compact']
+  });
   const compact = variant === 'compact';
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
   const words = Object.assign({}, STRINGS, strings);
@@ -39550,7 +40156,7 @@ function PeopleGroup({
   }, t.showMembers) : null);
 }
   } },
-  "platform/patterns/PermissionSummary/PermissionSummary.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PermissionSummary/PermissionSummary.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39558,6 +40164,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PermissionSummary = PermissionSummary;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
@@ -39621,6 +40228,11 @@ function PermissionSummary({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('PermissionSummary', {
+    variant
+  }, {
+    variant: ['list', 'compact']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const compact = variant === 'compact';
   const yes = children => ({
@@ -48514,7 +49126,7 @@ function SortableList({
   }));
 }
   } },
-  "platform/patterns/RenameAction/RenameAction.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RenameAction/RenameAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48523,6 +49135,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.RenameAction = RenameAction;
 exports.baseNameEnd = baseNameEnd;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _announce = require("../../utils/announce.jsx");
 var _layer = require("../../utils/layer.js");
@@ -48615,6 +49228,11 @@ function RenameAction({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('RenameAction', {
+    variant
+  }, {
+    variant: ['inline', 'dialog']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const name = label || t.label;
   const formId = (0, _layer.useUid)('plx-rename');
@@ -48772,7 +49390,7 @@ function RenameAction({
   })))));
 }
   } },
-  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48785,6 +49403,7 @@ exports.WorkflowStatus = WorkflowStatus;
 exports.localDay = void 0;
 exports.useOptionalToast = useOptionalToast;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
@@ -48901,6 +49520,11 @@ function WorkflowStatus({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('WorkflowStatus', {
+    size
+  }, {
+    size: ['md', 'sm']
+  });
   const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
   const words = label || strings && strings[status] || s.label;
   return /*#__PURE__*/_react.default.createElement(_Badge.Badge, _extends({
@@ -49200,7 +49824,7 @@ function ReviewQueue({
   }));
 }
   } },
-  "platform/patterns/DeleteFlow/DeleteFlow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DeleteFlow/DeleteFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -49208,6 +49832,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DeleteFlow = DeleteFlow;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _announce = require("../../utils/announce.jsx");
@@ -49305,6 +49930,11 @@ function DeleteFlow({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('DeleteFlow', {
+    variant
+  }, {
+    variant: ['confirm', 'type', 'undo', 'trash']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const many = plural || noun + 's';
@@ -49459,7 +50089,7 @@ function DeleteFlow({
   })) : null)) : null);
 }
   } },
-  "platform/patterns/DuplicateAction/DuplicateAction.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DuplicateAction/DuplicateAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -49468,6 +50098,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.DuplicateAction = DuplicateAction;
 exports.copyName = copyName;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _announce = require("../../utils/announce.jsx");
@@ -49567,6 +50198,13 @@ function DuplicateAction({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('DuplicateAction', {
+    variant,
+    size
+  }, {
+    variant: ['copy', 'rename'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const [shown, setShown] = _react.default.useState(false);
@@ -49963,7 +50601,7 @@ function Publish({
   })))) : null);
 }
   } },
-  "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -49971,6 +50609,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AssignControl = AssignControl;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _announce = require("../../utils/announce.jsx");
@@ -50063,6 +50702,11 @@ function AssignControl({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('AssignControl', {
+    variant
+  }, {
+    variant: ['assign', 'delegate']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const say = text => {
@@ -50484,7 +51128,7 @@ function Wizard({
   }, at === all.length - 1 ? t.complete : t.next)));
 }
   } },
-  "platform/patterns/WizardDialog/WizardDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WizardDialog/WizardDialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -50492,6 +51136,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.WizardDialog = WizardDialog;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Wizard = require("../Wizard/Wizard.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
@@ -50518,6 +51163,11 @@ function WizardDialog({
   strings,
   ...props
 }) {
+  (0, _devWarn.devWarn)('WizardDialog', {
+    size
+  }, {
+    size: ['md', 'lg', 'full']
+  });
   const t = Object.assign({
     close: 'Close',
     unsaved: 'Your changes will be lost.'
@@ -56736,7 +57386,7 @@ function FileBrowser({
   }) : null);
 }
   } },
-  "platform/patterns/UploadManager/UploadManager.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/UploadManager/UploadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56745,6 +57395,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.UploadManager = UploadManager;
 exports.useUploadQueue = useUploadQueue;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _announce = require("../../utils/announce.jsx");
@@ -57050,6 +57701,11 @@ function UploadManager({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('UploadManager', {
+    variant
+  }, {
+    variant: ['panel', 'dialog']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const own = useUploadQueue({
     upload,
@@ -57767,7 +58423,7 @@ function VersionCompare({
   }) : null), body);
 }
   } },
-  "platform/patterns/AssetGallery/AssetGallery.jsx": { deps: {"react":null,"../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AssetGallery/AssetGallery.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57775,6 +58431,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AssetGallery = AssetGallery;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _ContentGrid = require("../ContentGrid/ContentGrid.jsx");
 var _Card = require("../../components/Card/Card.jsx");
 var _MediaViewer = require("../../components/MediaViewer/MediaViewer.jsx");
@@ -57803,6 +58460,11 @@ function AssetGallery({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('AssetGallery', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg']
+  });
   const t = Object.assign({
     empty: 'No images',
     preview: 'Image preview'
@@ -57840,7 +58502,7 @@ function AssetGallery({
   }));
 }
   } },
-  "platform/patterns/DownloadManager/DownloadManager.jsx": { deps: {"react":null,"../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DownloadManager/DownloadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57848,6 +58510,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DownloadManager = DownloadManager;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Card = require("../../components/Card/Card.jsx");
 var _FileRow = require("../../components/FileRow/FileRow.jsx");
 var _Badge = require("../../components/Badge/Badge.jsx");
@@ -57877,6 +58540,11 @@ function DownloadManager({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('DownloadManager', {
+    variant
+  }, {
+    variant: ['panel', 'progress', 'ready']
+  });
   const t = Object.assign({
     title: 'Downloads',
     empty: 'No downloads',
@@ -58138,7 +58806,7 @@ const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef
   }, error) : null);
 });
   } },
-  "platform/patterns/MetadataEditor/MetadataEditor.jsx": { deps: {"react":null,"../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/MetadataEditor/MetadataEditor.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58146,6 +58814,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MetadataEditor = MetadataEditor;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _InlineEdit = require("../../components/InlineEdit/InlineEdit.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Field = require("../../components/Field/Field.jsx");
@@ -58177,6 +58846,11 @@ function MetadataEditor({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('MetadataEditor', {
+    variant
+  }, {
+    variant: ['inline', 'form', 'bulk']
+  });
   const t = Object.assign({
     save: 'Save metadata',
     reset: 'Reset',
@@ -58293,7 +58967,7 @@ function MetadataEditor({
   }, t.saved) : null);
 }
   } },
-  "platform/patterns/RelatedAssets/RelatedAssets.jsx": { deps: {"react":null,"../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RelatedAssets/RelatedAssets.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58301,6 +58975,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RelatedAssets = RelatedAssets;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Carousel = require("../../components/Carousel/Carousel.jsx");
 var _Card = require("../../components/Card/Card.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
@@ -58324,6 +58999,11 @@ function RelatedAssets({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('RelatedAssets', {
+    variant
+  }, {
+    variant: ['strip', 'grid']
+  });
   const t = Object.assign({
     empty: 'No related assets'
   }, strings);
@@ -58349,7 +59029,7 @@ function RelatedAssets({
   }, cards));
 }
   } },
-  "platform/patterns/AttachmentPicker/AttachmentPicker.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AttachmentPicker/AttachmentPicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58357,6 +59037,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AttachmentPicker = AttachmentPicker;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
@@ -58395,6 +59076,11 @@ function AttachmentPicker({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('AttachmentPicker', {
+    variant
+  }, {
+    variant: ['inline', 'chips']
+  });
   const t = {
       ...STRINGS,
       ...strings
@@ -58607,7 +59293,7 @@ function FilePicker({
   }))) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty)));
 }
   } },
-  "platform/patterns/RenditionList/RenditionList.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RenditionList/RenditionList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58615,6 +59301,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RenditionList = RenditionList;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
@@ -58648,6 +59335,11 @@ function RenditionList({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('RenditionList', {
+    variant
+  }, {
+    variant: ['table', 'menu']
+  });
   const t = {
     ...STRINGS,
     ...strings
@@ -58990,7 +59682,7 @@ function DocumentViewer({
   }, text) : !loading && !error ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : null));
 }
   } },
-  "platform/patterns/VersionHistory/VersionHistory.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/VersionHistory/VersionHistory.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58998,6 +59690,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.VersionHistory = VersionHistory;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
@@ -59036,6 +59729,11 @@ function VersionHistory({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('VersionHistory', {
+    variant
+  }, {
+    variant: ['list', 'restore', 'preview']
+  });
   const t = {
       ...STRINGS,
       ...strings
@@ -59135,7 +59833,7 @@ function VersionHistory({
   }, error) : null));
 }
   } },
-  "platform/patterns/ProductCard/ProductCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ProductCard/ProductCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -59144,6 +59842,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ProductCard = ProductCard;
 exports.ProductPrice = ProductPrice;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _Image = require("../../components/Image/Image.jsx");
@@ -59236,6 +59935,11 @@ function ProductPrice({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('ProductPrice', {
+    size
+  }, {
+    size: ['md', 'sm']
+  });
   const t = Object.assign({}, STRINGS, strings);
   const onSale = typeof compareAtPrice === 'number' && compareAtPrice > price;
   return /*#__PURE__*/_react.default.createElement("span", {
@@ -63103,7 +63807,7 @@ const MentionInput = exports.MentionInput = /*#__PURE__*/_react.default.forwardR
   }) : null));
 });
   } },
-  "platform/components/Announcement/Announcement.jsx": { deps: {"react":null,"../Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Announcement/Announcement.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63111,6 +63815,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Announcement = Announcement;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Banner = require("../Banner/Banner.jsx");
 var _Card = require("../Card/Card.jsx");
 var _Dialog = require("../Dialog/Dialog.jsx");
@@ -63143,6 +63848,13 @@ function Announcement({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('Announcement', {
+    variant,
+    tone
+  }, {
+    variant: ['banner', 'card', 'dialog'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
   const t = Object.assign({
     dismiss: 'Dismiss announcement',
     failed: 'Could not dismiss this announcement. Try again.'
@@ -63214,7 +63926,7 @@ function Announcement({
   }, content);
 }
   } },
-  "platform/patterns/AuditLog/AuditLog.jsx": { deps: {"react":null,"../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AuditLog/AuditLog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63222,6 +63934,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuditLog = AuditLog;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _DataTable = require("../../components/DataTable/DataTable.jsx");
 var _Persona = require("../../components/Persona/Persona.jsx");
 var _Time = require("../../components/Time/Time.jsx");
@@ -63249,6 +63962,11 @@ function AuditLog({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('AuditLog', {
+    variant
+  }, {
+    variant: ['table', 'diff']
+  });
   const t = Object.assign({
     actor: 'Actor',
     at: 'Time',
@@ -63339,7 +64057,7 @@ function AuditLog({
   })));
 }
   } },
-  "platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx": { deps: {"react":null,"../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63347,6 +64065,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ApprovalWorkflow = ApprovalWorkflow;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
 var _ProgressSteps = require("../../components/ProgressSteps/ProgressSteps.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
@@ -63385,6 +64104,11 @@ function ApprovalWorkflow({
   reviewStrings,
   className
 }) {
+  (0, _devWarn.devWarn)('ApprovalWorkflow', {
+    variant
+  }, {
+    variant: ['sequential', 'parallel', 'status']
+  });
   const t = Object.assign({
     approve: 'Approve',
     changes: 'Request changes',
@@ -63507,7 +64231,7 @@ function ApprovalWorkflow({
   }, errors[step.id]) : null)));
 }
   } },
-  "platform/components/AILabel/AILabel.jsx": { deps: {"react":null,"../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AILabel/AILabel.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63515,6 +64239,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AILabel = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Badge = require("../Badge/Badge.jsx");
 var _Stack = require("../Stack/Stack.jsx");
 var _Icon = require("../Icon/Icon.jsx");
@@ -63544,6 +64269,11 @@ const AILabel = exports.AILabel = /*#__PURE__*/_react.default.forwardRef(functio
   strings,
   className
 }, ref) {
+  (0, _devWarn.devWarn)('AILabel', {
+    variant
+  }, {
+    variant: ['badge', 'inline', 'explanation']
+  });
   const t = {
       label: 'AI-generated',
       explain: 'About this AI content',
@@ -63832,7 +64562,7 @@ function PromptHistory({
   }) : null)) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty));
 }
   } },
-  "platform/components/Citation/Citation.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Citation/Citation.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63840,6 +64570,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Citation = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
@@ -63880,6 +64611,11 @@ const Citation = exports.Citation = /*#__PURE__*/_react.default.forwardRef(funct
   strings,
   className
 }, ref) {
+  (0, _devWarn.devWarn)('Citation', {
+    variant
+  }, {
+    variant: ['inline', 'card', 'list']
+  });
   const t = {
     source: 'Source',
     open: 'Open source',
@@ -63928,7 +64664,7 @@ const Citation = exports.Citation = /*#__PURE__*/_react.default.forwardRef(funct
   }, card(source, 0));
 });
   } },
-  "platform/components/SuggestedAction/SuggestedAction.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SuggestedAction/SuggestedAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63936,6 +64672,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SuggestedAction = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
@@ -63968,6 +64705,11 @@ const SuggestedAction = exports.SuggestedAction = /*#__PURE__*/_react.default.fo
   strings,
   className
 }, ref) {
+  (0, _devWarn.devWarn)('SuggestedAction', {
+    variant
+  }, {
+    variant: ['chip', 'card']
+  });
   const t = {
       failed: 'The action failed. Try again.',
       pending: 'Working',
@@ -64163,7 +64905,7 @@ function AISearch({
   }, item.title) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, item.title), item.description ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, item.description) : null)) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty)) : null);
 }
   } },
-  "platform/patterns/Recommendation/Recommendation.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Recommendation/Recommendation.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64171,6 +64913,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Recommendation = Recommendation;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
@@ -64203,6 +64946,11 @@ function Recommendation({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('Recommendation', {
+    variant
+  }, {
+    variant: ['row', 'reason']
+  });
   const t = {
     label: 'Recommended for you',
     open: 'Open',
@@ -64340,7 +65088,7 @@ const AIButton = exports.AIButton = /*#__PURE__*/_react.default.forwardRef(funct
   }, error) : null);
 });
   } },
-  "platform/components/AIDisclaimer/AIDisclaimer.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AIDisclaimer/AIDisclaimer.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64348,6 +65096,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AIDisclaimer = AIDisclaimer;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Stack = require("../Stack/Stack.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -64371,6 +65120,11 @@ function AIDisclaimer({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('AIDisclaimer', {
+    variant
+  }, {
+    variant: ['footer', 'inline']
+  });
   const t = Object.assign({
     message: 'AI-generated content may be inaccurate. Review important details.',
     learn: 'About AI-generated content'
@@ -64388,7 +65142,7 @@ function AIDisclaimer({
   }, t.learn) : null);
 }
   } },
-  "platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64396,6 +65150,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConfidenceIndicator = ConfidenceIndicator;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Stack = require("../Stack/Stack.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -64420,6 +65175,11 @@ function ConfidenceIndicator({
   className,
   ...rest
 }) {
+  (0, _devWarn.devWarn)('ConfidenceIndicator', {
+    variant
+  }, {
+    variant: ['qualitative', 'numeric']
+  });
   const t = Object.assign({
       high: 'High confidence',
       medium: 'Medium confidence',
@@ -64504,7 +65264,7 @@ function AIExplanation({
   }, f.label), f.detail ? ' — ' + f.detail : null))) : null, confidence ? /*#__PURE__*/_react.default.createElement(_ConfidenceIndicator.ConfidenceIndicator, confidence) : null));
 }
   } },
-  "platform/components/PromptSuggestions/PromptSuggestions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/PromptSuggestions/PromptSuggestions.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64512,6 +65272,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PromptSuggestions = PromptSuggestions;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Stack = require("../Stack/Stack.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -64537,6 +65298,11 @@ function PromptSuggestions({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('PromptSuggestions', {
+    variant
+  }, {
+    variant: ['chips', 'cards']
+  });
   const t = Object.assign({
       label: 'Prompt suggestions',
       empty: 'No prompt suggestions',
@@ -64591,7 +65357,7 @@ function PromptSuggestions({
   }, error) : null);
 }
   } },
-  "platform/components/SuggestedEdit/SuggestedEdit.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SuggestedEdit/SuggestedEdit.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64599,6 +65365,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SuggestedEdit = SuggestedEdit;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Stack = require("../Stack/Stack.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -64624,6 +65391,11 @@ function SuggestedEdit({
   strings,
   className
 }) {
+  (0, _devWarn.devWarn)('SuggestedEdit', {
+    variant
+  }, {
+    variant: ['diff', 'accept', 'reject', 'all']
+  });
   const t = Object.assign({
       label: 'Suggested edits',
       before: 'Before',
@@ -64861,7 +65633,254 @@ function RefineMenu({
   }))));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/utils/browserSupport.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.browserSupport = browserSupport;
+/* Plenix · browserSupport
+   Summary: Reports the capabilities used by the Platform, without browser sniffing or changing the page.
+   Usage:
+     const report = browserSupport(window); // application decides how to explain a missing capability
+   Props:
+     environment: a window-like object; defaults to window when a browser is present
+   Behavior:
+     Returns boolean feature flags and a missing list. No polyfill is downloaded and no browser is blocked.
+   Notes:
+     The support policy and existing fallbacks are documented in platform/standards/browsers.json. */
+function browserSupport(environment = typeof window === 'undefined' ? {} : window) {
+  const e = environment || {},
+    callable = (object, name) => !!object && typeof object[name] === 'function';
+  const prototype = constructor => constructor && constructor.prototype && typeof constructor.prototype === 'object' ? constructor.prototype : {};
+  const supports = (name, value) => callable(e.CSS, 'supports') && !!e.CSS.supports(name, value);
+  const features = {
+    modules: 'noModule' in prototype(e.HTMLScriptElement),
+    grid: supports('display', 'grid'),
+    dialog: callable(prototype(e.HTMLDialogElement), 'showModal'),
+    popover: callable(prototype(e.HTMLElement), 'showPopover'),
+    anchor: supports('anchor-name', '--plx-anchor'),
+    container: supports('container-type', 'inline-size'),
+    intl: callable(e.Intl, 'NumberFormat') && callable(e.Intl, 'DateTimeFormat')
+  };
+  return {
+    features,
+    missing: Object.keys(features).filter(key => !features[key])
+  };
+}
+  } },
+  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
+var _default = exports.default = {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "next": "Next",
+    "back": "Back"
+  },
+  "collection": {
+    "selected": {
+      "=0": "Nothing selected",
+      "one": "{count} item selected",
+      "other": "{count} items selected"
+    }
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "step": "Step {n} of {total}",
+    "error": "Could not save. Try again."
+  },
+  "dialog": {
+    "close": "Close"
+  },
+  "text": {
+    "more": "Show more",
+    "less": "Show less"
+  },
+  "emptyState": {
+    "title": "No items yet",
+    "description": "Create an item to get started.",
+    "action": "Create item"
+  }
+};
+  } },
+  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LocaleProvider = LocaleProvider;
+exports.createTranslator = createTranslator;
+exports.useLocale = useLocale;
+var _react = _interopRequireDefault(require("react"));
+var _DirectionProvider = require("./DirectionProvider.jsx");
+var _direction = require("../utils/direction.js");
+var F = _interopRequireWildcard(require("../utils/format.js"));
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · LocaleProvider, useLocale, createTranslator
+   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
+     their strings explicitly from the catalog; a region never changes another region's locale.
+   Usage:
+     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
+     const { t, strings, format } = useLocale();
+     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
+   Props:
+     locale: a BCP 47 language tag; default the page's formatLocale()
+     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
+     messages: the current locale's catalog, as a convenience
+     fallbackLocale: locale searched after the requested locale and its language; default "en"
+     timeZone: optional Intl time zone for this provider's date/time formatters
+     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
+     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
+     children: the region's content
+     useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
+       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
+   Behavior:
+     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
+     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
+     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
+     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
+     strings(section, values) combines that section across fallbacks for a component's strings prop.
+   Notes:
+     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
+     unmodified components keep their existing defaults. Catalog translations are application-owned. */
+
+const canonical = (value, fallback = 'en') => {
+  try {
+    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
+const messageAt = (catalog, key) => {
+  if (own(catalog, key)) return catalog[key];
+  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
+};
+const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
+  const language = canonical(locale),
+    fallback = canonical(fallbackLocale);
+  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
+  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
+  const sources = chain.map(key => normalized[key]).filter(Boolean).concat(_en.default);
+  const cardinal = new Intl.PluralRules(language),
+    ordinal = new Intl.PluralRules(language, {
+      type: 'ordinal'
+    });
+  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
+  const choose = (value, values, options) => {
+    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+    const exact = '=' + Number(values.count),
+      category = plural(values.count, options);
+    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
+    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
+  };
+  const t = (key, values = {}, options = {}) => {
+    for (const source of sources) {
+      const result = choose(messageAt(source, key), values, options);
+      if (result !== undefined) return result;
+    }
+    return String(key);
+  };
+  const strings = (section, values = {}) => {
+    const keys = new Set();
+    sources.forEach(source => {
+      const node = messageAt(source, section);
+      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
+      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
+    });
+    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
+  };
+  return {
+    locale: language,
+    dir: (0, _direction.directionOf)(language),
+    t,
+    strings,
+    plural
+  };
+}
+const FORMATTERS = {
+  number: ['formatNumber', 1],
+  unit: ['formatUnit', 2],
+  bytes: ['formatBytes', 1],
+  duration: ['formatDuration', 1],
+  compact: ['formatCompact', 1],
+  date: ['formatDate', 1],
+  time: ['formatTime', 1],
+  dateTime: ['formatDateTime', 1],
+  relative: ['formatRelative', 1],
+  range: ['formatRange', 2],
+  currency: ['formatCurrency', 2],
+  percent: ['formatPercent', 1],
+  list: ['formatList', 1],
+  personName: ['formatPersonName', 1],
+  address: ['formatAddress', 1],
+  phone: ['formatPhone', 1],
+  regionName: ['regionName', 1]
+};
+const bind = (locale, timeZone) => Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
+  length: count
+}, (_, index) => args[index]), Object.assign({
+  locale,
+  timeZone
+}, args[count]))]));
+const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
+function LocaleProvider({
+  locale,
+  catalogs,
+  messages,
+  fallbackLocale = 'en',
+  timeZone,
+  dir,
+  root = false,
+  children
+}) {
+  const language = canonical(locale || F.formatLocale());
+  const value = _react.default.useMemo(() => {
+    const sources = Object.assign({}, catalogs, messages ? {
+      [language]: messages
+    } : {});
+    return Object.assign(createTranslator(language, sources, fallbackLocale), {
+      dir: dir || (0, _direction.directionOf)(language),
+      format: bind(language, timeZone)
+    });
+  }, [language, catalogs, messages, fallbackLocale, timeZone, dir]);
+  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
+    value: value
+  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
+    locale: language,
+    dir: value.dir,
+    root: root
+  }, children));
+}
+function useLocale() {
+  const value = _react.default.useContext(LocaleContext);
+  const language = canonical(F.formatLocale());
+  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
+    format: bind(language)
+  }), [language]);
+  return value || fallback;
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -65969,6 +66988,12 @@ Object.defineProperty(exports, "LoadingOverlay", {
   enumerable: true,
   get: function () {
     return _LoadingOverlay.LoadingOverlay;
+  }
+});
+Object.defineProperty(exports, "LocaleProvider", {
+  enumerable: true,
+  get: function () {
+    return _LocaleProvider.LocaleProvider;
   }
 });
 Object.defineProperty(exports, "LollipopChart", {
@@ -67165,6 +68190,12 @@ Object.defineProperty(exports, "boxStats", {
     return _BoxPlot.boxStats;
   }
 });
+Object.defineProperty(exports, "browserSupport", {
+  enumerable: true,
+  get: function () {
+    return _browserSupport.browserSupport;
+  }
+});
 Object.defineProperty(exports, "cardBrand", {
   enumerable: true,
   get: function () {
@@ -67253,6 +68284,12 @@ Object.defineProperty(exports, "copyText", {
   enumerable: true,
   get: function () {
     return _clipboard.copyText;
+  }
+});
+Object.defineProperty(exports, "createTranslator", {
+  enumerable: true,
+  get: function () {
+    return _LocaleProvider.createTranslator;
   }
 });
 Object.defineProperty(exports, "datavizCategory", {
@@ -67987,6 +69024,12 @@ Object.defineProperty(exports, "useIntersection", {
     return _useIntersection.useIntersection;
   }
 });
+Object.defineProperty(exports, "useLocale", {
+  enumerable: true,
+  get: function () {
+    return _LocaleProvider.useLocale;
+  }
+});
 Object.defineProperty(exports, "usePressable", {
   enumerable: true,
   get: function () {
@@ -68420,6 +69463,8 @@ var _AIExplanation = require("./patterns/AIExplanation/AIExplanation.jsx");
 var _PromptSuggestions = require("./components/PromptSuggestions/PromptSuggestions.jsx");
 var _SuggestedEdit = require("./components/SuggestedEdit/SuggestedEdit.jsx");
 var _RefineMenu = require("./components/RefineMenu/RefineMenu.jsx");
+var _browserSupport = require("./utils/browserSupport.js");
+var _LocaleProvider = require("./providers/LocaleProvider.jsx");
   } }
   };
   var cache = {};

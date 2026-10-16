@@ -27,6 +27,7 @@
      Encoding is platform/utils/barcode.js (encodeBarcode). Other props pass through to the outer <div>.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { encodeBarcode, BARCODE_QUIET_ZONE } from '../../utils/barcode.js';
 
@@ -36,6 +37,7 @@ const STRINGS = { label: 'Barcode {format}: {value}', invalid: 'Not a valid {for
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (all, k) => (v[k] !== undefined ? v[k] : all));
 
 export function Barcode({ value, format = 'code128', size = 'md', showText = true, label, strings, className, ...rest }) {
+  devWarn('Barcode', { size }, { size: ['md','sm','lg'] });
   const t = Object.assign({}, STRINGS, strings, { formats: Object.assign({}, STRINGS.formats, strings && strings.formats) });
   const code = React.useMemo(() => encodeBarcode(value, format), [value, format]);
   const name = t.formats[format] || format;

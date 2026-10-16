@@ -45,6 +45,7 @@
      For one choice from several, use SegmentedControl instead of ButtonGroup.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
@@ -55,6 +56,7 @@ const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
   expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', className, children, onClick, strings, ...rest }, ref) {
+  devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',
     caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);

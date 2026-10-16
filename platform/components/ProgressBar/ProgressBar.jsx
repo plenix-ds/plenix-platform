@@ -26,9 +26,11 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
+import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 export function ProgressBar({ value, max = 100, label, labelHidden = false, showValue = false, tone = 'info', color, size = 'md', locale, className, ...rest }) {
+  devWarn('ProgressBar', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md'] });
   const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, (value / (max || 100)) * 100)) : null;

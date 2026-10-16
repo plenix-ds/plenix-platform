@@ -1,0 +1,337 @@
+{
+  "ios-foundations|Writing": {
+    "summary": "W15B localized writing, sentence case, consistent terminology and specific action labels.",
+    "variants": [
+      {
+        "name": "W15B: Style and grammar",
+        "web": "foundations|Style and grammar",
+        "swiftui": "Use localized SwiftUI Text keys; keep sentences whole for translators.",
+        "uikit": "Load complete localized strings through NSLocalizedString before assigning labels.",
+        "appkit": "Use NSLocalizedString with translator comments for complete label strings.",
+        "use": "Store complete sentences in localized resources; use American English source copy and preserve placeholders."
+      },
+      {
+        "name": "W15B: Capitalization",
+        "web": "foundations|Capitalization",
+        "swiftui": "Text preserves resource capitalization; do not apply uppercased() to UI copy.",
+        "uikit": "Keep localized button titles as authored instead of uppercasing them.",
+        "appkit": "Preserve localized control title capitalization.",
+        "use": "Use sentence case in resource values; preserve proper product names and acronyms."
+      },
+      {
+        "name": "W15B: Terminology",
+        "web": "foundations|Terminology",
+        "swiftui": "Reuse one localized key for the same action or concept.",
+        "uikit": "Share localized keys instead of introducing screen-specific synonyms.",
+        "appkit": "Use the same localization catalog terms across menus and controls.",
+        "use": "Use the reviewed glossary consistently for the same concept across screens and resource keys."
+      },
+      {
+        "name": "W15B: Action labels",
+        "web": "foundations|Action labels",
+        "swiftui": "Use Button with a localized action title; retain the native activation behavior.",
+        "uikit": "Use setTitle for the visible action and avoid a conflicting accessibilityLabel.",
+        "appkit": "Use an NSButton title naming the action; preserve keyboard activation.",
+        "use": "Name the action and result with a verb such as Save changes; visible and accessible labels agree."
+      },
+      {
+        "name": "W15B: Text alternatives",
+        "web": "foundations|Text alternatives",
+        "swiftui": "Use Image accessibilityLabel for meaning and accessibilityHidden(true) for decoration.",
+        "uikit": "Assign an informative UIImageView accessibilityLabel; set decorative isAccessibilityElement to false.",
+        "appkit": "Set informative NSImageView accessibilityLabel; remove decorative images from accessibility with setAccessibilityElement(false).",
+        "use": "Describe the meaning of an informative image; decorative images have no separate accessibility stop."
+      }
+    ],
+    "anatomy": [
+      "Localized resource keys and translator comments",
+      "Reviewed terms and sentence-case values",
+      "Visible and accessible labels with matching meaning"
+    ],
+    "attributes": [
+      {
+        "attribute": "Localized copy",
+        "value": "W15B localized writing, sentence case, consistent terminology and specific action labels.",
+        "swiftui": "Use localized SwiftUI Text keys; keep sentences whole for translators. Text preserves resource capitalization; do not apply uppercased() to UI copy. Reuse one localized key for the same action or concept. Use Button with a localized action title; retain the native activation behavior. Use Image accessibilityLabel for meaning and accessibilityHidden(true) for decoration.",
+        "uikit": "Load complete localized strings through NSLocalizedString before assigning labels. Keep localized button titles as authored instead of uppercasing them. Share localized keys instead of introducing screen-specific synonyms. Use setTitle for the visible action and avoid a conflicting accessibilityLabel. Assign an informative UIImageView accessibilityLabel; set decorative isAccessibilityElement to false.",
+        "appkit": "Use NSLocalizedString with translator comments for complete label strings. Preserve localized control title capitalization. Use the same localization catalog terms across menus and controls. Use an NSButton title naming the action; preserve keyboard activation. Set informative NSImageView accessibilityLabel; remove decorative images from accessibility with setAccessibilityElement(false)."
+      }
+    ],
+    "states": [
+      {
+        "name": "Localized",
+        "description": "Review full translated labels, pronunciation and large text without changing meaning."
+      },
+      {
+        "name": "Assistive technology",
+        "description": "Verify meaningful labels and remove decorative stops."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "Text(\"Changes saved\")",
+        "Image(systemName: \"checkmark\").accessibilityHidden(true)",
+        "Image(\"profilePhoto\").accessibilityLabel(Text(\"Profile photo\"))"
+      ],
+      "uikit": [
+        "saveButton.setTitle(NSLocalizedString(\"Save changes\", comment: \"Save the edited page\"), for: .normal)",
+        "informativeImage.isAccessibilityElement = true",
+        "informativeImage.accessibilityLabel = NSLocalizedString(\"Profile photo\", comment: \"Image description\")",
+        "decorativeImage.isAccessibilityElement = false"
+      ],
+      "appkit": [
+        "saveButton.title = NSLocalizedString(\"Save changes\", comment: \"Save the edited page\")",
+        "informativeImage.setAccessibilityLabel(NSLocalizedString(\"Profile photo\", comment: \"Image description\"))",
+        "decorativeImage.setAccessibilityElement(false)"
+      ]
+    }
+  },
+  "ios-foundations|Inclusion": {
+    "summary": "W15B specific, inclusive localized language without assumptions about identity or ability.",
+    "variants": [
+      {
+        "name": "W15B: Inclusive language",
+        "web": "foundations|Inclusive language",
+        "swiftui": "Use reviewed localized labels and test VoiceOver pronunciation with the intended language.",
+        "uikit": "Use reviewed localized strings rather than assumptions about identity, age or ability.",
+        "appkit": "Review localized menu and control names for inclusive, specific terms.",
+        "use": "Describe the actual situation without stereotypes or assumptions; use specific role and capability terms."
+      }
+    ],
+    "anatomy": [
+      "Localized resource keys and translator comments",
+      "Reviewed terms and sentence-case values",
+      "Visible and accessible labels with matching meaning"
+    ],
+    "attributes": [
+      {
+        "attribute": "Localized copy",
+        "value": "W15B specific, inclusive localized language without assumptions about identity or ability.",
+        "swiftui": "Use reviewed localized labels and test VoiceOver pronunciation with the intended language.",
+        "uikit": "Use reviewed localized strings rather than assumptions about identity, age or ability.",
+        "appkit": "Review localized menu and control names for inclusive, specific terms."
+      }
+    ],
+    "states": [
+      {
+        "name": "Localized",
+        "description": "Review full translated labels, pronunciation and large text without changing meaning."
+      },
+      {
+        "name": "Assistive technology",
+        "description": "Verify meaningful labels and remove decorative stops."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "Text(\"Choose a team member\")"
+      ],
+      "uikit": [
+        "memberLabel.text = NSLocalizedString(\"Choose a team member\", comment: \"Assignment prompt\")"
+      ],
+      "appkit": [
+        "memberLabel.stringValue = NSLocalizedString(\"Choose a team member\", comment: \"Assignment prompt\")"
+      ]
+    }
+  },
+  "ios-actions|Buttons": {
+    "summary": "W15B page actions use native buttons and safe-area-aware layout without obscuring focused content.",
+    "variants": [
+      {
+        "name": "W15B: Page actions bar",
+        "web": "page-structures|Page actions bar",
+        "swiftui": "Place page actions with safeAreaInset(edge: .bottom); use native Buttons and allow labels to wrap.",
+        "uikit": "Constrain the actions container to the safe area and keep scroll content clear of it and the keyboard.",
+        "appkit": "Place native buttons in the window content layout; keep normal key-view order and avoid floating over focused fields.",
+        "use": "Keep save and cancel reachable without covering fields, keyboard focus or system safe areas."
+      }
+    ],
+    "anatomy": [
+      "Localized cancel and primary actions",
+      "Safe-area-aware action container",
+      "Scrollable content clear of actions and keyboard"
+    ],
+    "attributes": [
+      {
+        "attribute": "Reachable page actions",
+        "value": "W15B page actions use native buttons and safe-area-aware layout without obscuring focused content.",
+        "swiftui": "Place page actions with safeAreaInset(edge: .bottom); use native Buttons and allow labels to wrap.",
+        "uikit": "Constrain the actions container to the safe area and keep scroll content clear of it and the keyboard.",
+        "appkit": "Place native buttons in the window content layout; keep normal key-view order and avoid floating over focused fields."
+      }
+    ],
+    "states": [
+      {
+        "name": "Default",
+        "description": "Actions remain reachable and follow native keyboard order."
+      },
+      {
+        "name": "Keyboard and narrow window",
+        "description": "Insets and scroll content keep focused fields visible; labels remain readable."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "content.safeAreaInset(edge: .bottom) {",
+        "    HStack { Button(\"Cancel\", action: cancel); Button(\"Save changes\", action: save) }",
+        "}"
+      ],
+      "uikit": [
+        "let actions = UIStackView(arrangedSubviews: [cancelButton, saveButton])",
+        "actions.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true",
+        "// Also constrain the remaining edges and keep scrolling content clear of actions and keyboard."
+      ],
+      "appkit": [
+        "cancelButton.title = NSLocalizedString(\"Cancel\", comment: \"Dismiss changes\")",
+        "saveButton.title = NSLocalizedString(\"Save changes\", comment: \"Save the edited page\")",
+        "// Lay out buttons in the content area with the native key-view loop."
+      ]
+    }
+  },
+  "ios-implementation|How to build": {
+    "summary": "W15B native implementation and web-package boundaries; browser adapters and web linters remain web tooling.",
+    "variants": [
+      {
+        "name": "W15B: Platforms standard",
+        "web": "implementation|Platforms standard",
+        "swiftui": "Import generated PlenixTokens and use SwiftUI layout, navigation and environment values.",
+        "uikit": "Use generated tokens with Auto Layout and native navigation and input controls.",
+        "appkit": "Use generated tokens with AppKit layout, menu commands and key-view navigation.",
+        "use": "Use the existing platform standard and generated tokens; retain native layout, navigation and input behavior."
+      },
+      {
+        "name": "W15B: Mobile web",
+        "web": "implementation|Mobile web",
+        "swiftui": "For hosted web content, test its responsive viewport in WKWebView; native screens use SwiftUI safe areas.",
+        "uikit": "Test hosted content in WKWebView separately from native UIKit layouts.",
+        "appkit": "Mobile web guidance applies to browser content, not native AppKit layout.",
+        "use": "This is browser implementation guidance, not a native adapter; validate narrow layouts and touch input in the actual browser."
+      },
+      {
+        "name": "W15B: Desktop",
+        "web": "implementation|Desktop",
+        "swiftui": "Support macOS commands, keyboard shortcuts and resizable SwiftUI scenes.",
+        "uikit": "Use native keyboard and pointer interaction where supported; do not copy desktop dimensions into touch layouts.",
+        "appkit": "Use NSWindow resizing, menu commands and the native key-view loop.",
+        "use": "Keep desktop keyboard operation, focus restoration and resizable layouts distinct from narrow-screen behavior."
+      },
+      {
+        "name": "W15B: Native implementation",
+        "web": "implementation|Native implementation",
+        "swiftui": "Consume generated Swift tokens with native SwiftUI views.",
+        "uikit": "Consume generated Swift tokens with UIKit controls and accessibility APIs.",
+        "appkit": "Consume generated Swift tokens with AppKit controls and accessibility APIs.",
+        "use": "Generate tokens through the existing build; use platform controls and additive native guidance instead of browser wrappers."
+      },
+      {
+        "name": "W15B: Browser support policy",
+        "web": "implementation|Browser support policy",
+        "swiftui": "WKWebView uses the system WebKit engine; verify required browser capabilities in hosted content.",
+        "uikit": "Evaluate capability checks inside WKWebView, not through UIKit version assumptions.",
+        "appkit": "Validate hosted WKWebView content separately; AppKit controls do not implement browser fallbacks.",
+        "use": "Browser queries and capability fallbacks apply to web builds only; browser engines inside native hosts need separate testing."
+      },
+      {
+        "name": "W15B: Vue",
+        "web": "implementation|Vue",
+        "swiftui": "Use native SwiftUI components for native screens; Vue belongs only inside separately hosted web content.",
+        "uikit": "Use UIKit for native screens; any Vue UI remains web content in WKWebView.",
+        "appkit": "Use AppKit for native screens; Vue remains browser content if hosted.",
+        "use": "The Vue package mounts the React web runtime; it does not create native controls or replace native token builds."
+      },
+      {
+        "name": "W15B: Lint tooling",
+        "web": "implementation|Lint tooling",
+        "swiftui": "Run the Swift compiler and native accessibility review; the web ESLint plugin does not lint SwiftUI.",
+        "uikit": "Compile UIKit sources and run native accessibility checks separately from web lint.",
+        "appkit": "Compile AppKit sources and inspect native keyboard and accessibility behavior.",
+        "use": "ESLint and Stylelint check web JavaScript and CSS; native compiler and accessibility checks remain separate."
+      }
+    ],
+    "anatomy": [
+      "Generated native tokens",
+      "Native framework controls and build checks",
+      "Separate browser runtime and package boundary"
+    ],
+    "attributes": [
+      {
+        "attribute": "Runtime boundary",
+        "value": "W15B native implementation and web-package boundaries; browser adapters and web linters remain web tooling.",
+        "swiftui": "Import generated PlenixTokens and use SwiftUI layout, navigation and environment values. For hosted web content, test its responsive viewport in WKWebView; native screens use SwiftUI safe areas. Support macOS commands, keyboard shortcuts and resizable SwiftUI scenes. Consume generated Swift tokens with native SwiftUI views. WKWebView uses the system WebKit engine; verify required browser capabilities in hosted content. Use native SwiftUI components for native screens; Vue belongs only inside separately hosted web content. Run the Swift compiler and native accessibility review; the web ESLint plugin does not lint SwiftUI.",
+        "uikit": "Use generated tokens with Auto Layout and native navigation and input controls. Test hosted content in WKWebView separately from native UIKit layouts. Use native keyboard and pointer interaction where supported; do not copy desktop dimensions into touch layouts. Consume generated Swift tokens with UIKit controls and accessibility APIs. Evaluate capability checks inside WKWebView, not through UIKit version assumptions. Use UIKit for native screens; any Vue UI remains web content in WKWebView. Compile UIKit sources and run native accessibility checks separately from web lint.",
+        "appkit": "Use generated tokens with AppKit layout, menu commands and key-view navigation. Mobile web guidance applies to browser content, not native AppKit layout. Use NSWindow resizing, menu commands and the native key-view loop. Consume generated Swift tokens with AppKit controls and accessibility APIs. Validate hosted WKWebView content separately; AppKit controls do not implement browser fallbacks. Use AppKit for native screens; Vue remains browser content if hosted. Compile AppKit sources and inspect native keyboard and accessibility behavior."
+      }
+    ],
+    "states": [
+      {
+        "name": "Build and review",
+        "description": "Compile native targets and run native checks; test browser packages separately in their actual runtime."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Native target: compile generated PlenixTokens.swift with SwiftUI views.",
+        "// Vue and browser fallbacks run only in separately tested hosted web content."
+      ],
+      "uikit": [
+        "// Compile UIKit sources and generated PlenixTokens.swift in the native target.",
+        "// Test hosted WKWebView capability checks separately from UIKit controls."
+      ],
+      "appkit": [
+        "// Compile AppKit sources and generated PlenixTokens.swift in the native target.",
+        "// Web ESLint and Stylelint packages do not validate native Swift sources."
+      ]
+    }
+  },
+  "ios-interaction|Accessibility": {
+    "summary": "W15B native accessibility testing covers assistive technology, focus, scaled text and changed states.",
+    "variants": [
+      {
+        "name": "W15B: Accessibility testing",
+        "web": "interaction|Accessibility testing",
+        "swiftui": "Test VoiceOver order and labels, Dynamic Type, keyboard focus and reduced motion on real changed states.",
+        "uikit": "Use Accessibility Inspector and VoiceOver; test UIAccessibility labels, traits, error announcements and focus return.",
+        "appkit": "Use macOS Accessibility Inspector, VoiceOver and full keyboard access, including modal focus return.",
+        "use": "Combine automated checks with native assistive-technology, keyboard, large-text and error-state review."
+      }
+    ],
+    "anatomy": [
+      "Accessible name and role",
+      "Traversal and focus restoration",
+      "Large text, errors and reduced-motion states"
+    ],
+    "attributes": [
+      {
+        "attribute": "Native review",
+        "value": "W15B native accessibility testing covers assistive technology, focus, scaled text and changed states.",
+        "swiftui": "Test VoiceOver order and labels, Dynamic Type, keyboard focus and reduced motion on real changed states.",
+        "uikit": "Use Accessibility Inspector and VoiceOver; test UIAccessibility labels, traits, error announcements and focus return.",
+        "appkit": "Use macOS Accessibility Inspector, VoiceOver and full keyboard access, including modal focus return."
+      }
+    ],
+    "states": [
+      {
+        "name": "Default and expanded",
+        "description": "Inspect actual accessible labels, roles, traversal and selected states."
+      },
+      {
+        "name": "Error and modal",
+        "description": "Check error announcements and focus return with the native screen reader."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "Button(\"Save changes\", action: save)",
+        "// Test VoiceOver, Dynamic Type and keyboard focus in success and error states."
+      ],
+      "uikit": [
+        "saveButton.accessibilityLabel = NSLocalizedString(\"Save changes\", comment: \"Save action\")",
+        "UIAccessibility.post(notification: .announcement, argument: NSLocalizedString(\"Changes saved\", comment: \"Save result\"))"
+      ],
+      "appkit": [
+        "saveButton.setAccessibilityLabel(NSLocalizedString(\"Save changes\", comment: \"Save action\"))",
+        "// Test VoiceOver and full keyboard access, including modal focus return."
+      ]
+    }
+  }
+}
