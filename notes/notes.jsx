@@ -4,7 +4,7 @@
    Narrow the list and the note show one at a time (SecondaryPane detailOpen), Back returns to the list. The note's text
    is a draft until Save: while it differs, leaving the note asks (useUnsavedGuard). The list's scroll position
    is kept between visits (useViewState: plenix.notes.view). */
-import { Button, Divider, EmptyState, EntityHeader, Icon, PageContent, RowButton, SecondaryPane, Stack, Tag, TagList, Text, Textarea, useAppLayout, useUnsavedGuard, useViewState } from 'plenix-platform';
+import { Button, Divider, EmptyState, EntityHeader, Icon, PageContent, RowButton, SecondaryPane, Stack, Tag, TagList, Text, Textarea, useAppLayout, useUnsavedGuard, useViewState, Field } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_NOTES } from '../suite/shared.jsx';
 const { useState } = React;
@@ -55,7 +55,7 @@ export function NotesScreen({ screen }) {
                 : [{ icon: 'circle-plus', label: 'Create tasks', primary: true }, { icon: 'pencil', label: 'Edit' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />
             <TagList label="Tags">{note.tags.map((t) => <Tag key={t}>{t}</Tag>)}</TagList>
             <Divider />
-            <Textarea aria-label="Note text" rows={8} value={editing !== null ? editing : textOf(note)} onChange={(e) => setDraft({ id: note.id, text: e.target.value })} />
+            <Field label="Note text" hideLabel><Textarea rows={8} value={editing !== null ? editing : textOf(note)} onChange={(e) => setDraft({ id: note.id, text: e.target.value })} /></Field>
             <ClassificationWidget value={meta[note.id]} onChange={(m) => setMeta((prev) => ({ ...prev, [note.id]: m }))} />
           </Stack>
         ) : <EmptyState size="page" icon="doc-text" title="Select a note to read" />}

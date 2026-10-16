@@ -2321,12 +2321,14 @@ function Sidebar({
   }, /*#__PURE__*/_react.default.createElement(Section, {
     title: "Categories",
     icon: "grid-2x2"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Filter categories",
+    hideLabel: true
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     value: filter,
     onChange: e => setFilter(e.target.value),
-    placeholder: "Filter categories...",
-    "aria-label": "Filter categories"
-  }), /*#__PURE__*/_react.default.createElement(AddLink, {
+    placeholder: "Filter categories..."
+  })), /*#__PURE__*/_react.default.createElement(AddLink, {
     label: "Add category",
     onClick: () => onAdd('newCatModal')
   }), /*#__PURE__*/_react.default.createElement(PinnedList, {
@@ -2572,15 +2574,17 @@ function CategoryInspector({
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     variant: "data",
     className: "plx-u-leading-16px"
-  }, collection ? D.COLLECTION_DETAIL.count : c.count)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-    "aria-label": "Title",
+  }, collection ? D.COLLECTION_DETAIL.count : c.count)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Title",
+    hideLabel: true
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     emphasis: true,
     value: f.name,
     onChange: e => setF({
       ...f,
       name: e.target.value
     })
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
     variant: "folder",
     label: "Details",
     items: [{
@@ -2730,15 +2734,17 @@ function AssetDetail({
     alt: ""
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, {
     gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Title",
+    hideLabel: true
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-    "aria-label": "Title",
     emphasis: true,
     value: f.title,
     onChange: e => setF({
       ...f,
       title: e.target.value
     })
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     variant: "secondary"
   }, asset.cat)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
     variant: "folder",

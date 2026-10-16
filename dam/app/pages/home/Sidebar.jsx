@@ -6,7 +6,7 @@
    that is current; onOpen(kind, name) opens it (kind: categories | collections | saved | import | trash). onAdd(dialogId)
    opens an "Add …" dialog. It is the page's navigation pane: its Collapse button makes it a rail of Home, Files, Categories, Collections and Expand. */
 import React from 'react';
-import { NavList, NavPane, CollapsibleSection, ShowMore, Button, Input, ToolRail, Stack } from 'plenix-platform';
+import { NavList, NavPane, CollapsibleSection, ShowMore, Button, Input, ToolRail, Stack, Field } from 'plenix-platform';
 import * as D from './homeData.js';
 
 
@@ -48,7 +48,7 @@ export function Sidebar({ mode = 'browse', active, onOpen, onAdd, onFiles, files
         <Button size="sm" variant="ghost" icon="folder-open" pressed={!!filesOpen} onClick={onFiles}>Files</Button>
       </>}>
       <Section title="Categories" icon="grid-2x2">
-        <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Filter categories..." aria-label="Filter categories" />
+        <Field label="Filter categories" hideLabel><Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Filter categories..." /></Field>
         <AddLink label="Add category" onClick={() => onAdd('newCatModal')} />
         <PinnedList items={cats} setItems={setCats} kind="categories" icon="folder" label="Categories" active={active} onOpen={onOpen} limit={mode === 'browse' ? D.CATEGORIES_SHOWN : 0} filter={filter} />
       </Section>

@@ -1,5 +1,5 @@
 {
-  "$description": "The Plenix layout standard: how each kind of page is laid out. This is the design system's definition; build-standards.js generates the code the applications run from it (providers/pageLayouts.js and system/layout-modes.css). Edit here, never the generated files: change a value, rebuild, and every page of that kind, in every app, follows.",
+  "$description": "The Plenix layout standard: how each kind of page is laid out. This is the design system's definition; build-standards.js generates the code the applications run from it (providers/pageLayouts.js and system/layout-modes.css). Edit here, never the generated files: change a value, rebuild, and every page of that kind, in every app, follows. The composition standard (owner, 2026-10-15/16, GitHub #55) lives here too: each kind of page lists its regions in order, each region the patterns it is built from, and the fields rule (which patterns stretch a field to its column and which size it to its content). A screen is built from these patterns, never from loose components; check-system.js enforces it.",
   "modes": {
     "fluid": {
       "description": "The page content uses the main region's full width."
@@ -20,17 +20,278 @@
     },
     "focus": {
       "description": "One task: the navigation and the inspector panel are hidden; the header and the footer stay.",
-      "hide": ["navigation", "inspector"]
+      "hide": [
+        "navigation",
+        "inspector"
+      ]
     }
   },
   "pages": {
-    "workspace": { "mode": "fluid", "use": "Lists, grids, browse and search: most application screens (the default)" },
-    "dashboard": { "mode": "fluid", "use": "An overview of widgets and sections" },
-    "settings": { "mode": "contained", "use": "Settings and preferences (every SettingsLayout page)" },
-    "form": { "mode": "contained", "use": "A form on its own page: create or edit one thing" },
-    "detail": { "mode": "hybrid", "use": "One record or document, with text to read" },
-    "master-detail": { "mode": "multi-pane", "use": "A list beside the chosen item, each scrolling on its own (mail, chat)" },
-    "editor": { "mode": "focus", "use": "One task that needs all the room (image editor)" }
+    "workspace": {
+      "mode": "fluid",
+      "use": "Lists, grids, browse and search: most application screens (the default)",
+      "regions": [
+        "page-header",
+        "command-bar",
+        "collection"
+      ]
+    },
+    "dashboard": {
+      "mode": "fluid",
+      "use": "An overview of widgets and sections",
+      "regions": [
+        "page-header",
+        "widgets"
+      ]
+    },
+    "settings": {
+      "mode": "contained",
+      "use": "Settings and preferences (every SettingsLayout page)",
+      "regions": [
+        "settings"
+      ]
+    },
+    "form": {
+      "mode": "contained",
+      "use": "A form on its own page: create or edit one thing",
+      "regions": [
+        "page-header",
+        "form"
+      ]
+    },
+    "detail": {
+      "mode": "hybrid",
+      "use": "One record or document, with text to read",
+      "regions": [
+        "entity-header",
+        "record-sections"
+      ]
+    },
+    "master-detail": {
+      "mode": "multi-pane",
+      "use": "A list beside the chosen item, each scrolling on its own (mail, chat)",
+      "regions": [
+        "command-bar",
+        "split"
+      ]
+    },
+    "editor": {
+      "mode": "focus",
+      "use": "One task that needs all the room (image editor)",
+      "regions": [
+        "canvas"
+      ]
+    }
   },
-  "default": "workspace"
+  "default": "workspace",
+  "regions": {
+    "page-header": {
+      "use": "The page’s title and its own actions",
+      "patterns": [
+        "EntityHeader",
+        "PageContent"
+      ]
+    },
+    "entity-header": {
+      "use": "One record’s context, name, facts and its own actions (three parts)",
+      "patterns": [
+        "EntityHeader"
+      ]
+    },
+    "command-bar": {
+      "use": "Acting on a list, and narrowing it (search, filters, sort, group, view): one bar that swaps to the selection’s commands",
+      "patterns": [
+        "CommandBar"
+      ]
+    },
+    "collection": {
+      "use": "The list itself: a table, cards, or a grid of media",
+      "patterns": [
+        "DataTable",
+        "ContentGrid",
+        "Card"
+      ]
+    },
+    "split": {
+      "use": "A list beside the item chosen in it, each scrolling on its own",
+      "patterns": [
+        "SplitView"
+      ]
+    },
+    "form": {
+      "use": "Collecting input: one thing to create or edit, in one or two columns",
+      "patterns": [
+        "Form",
+        "FormSection",
+        "Fieldset",
+        "Field",
+        "FormActions",
+        "Wizard"
+      ]
+    },
+    "settings": {
+      "use": "Settings and preferences, grouped in cards",
+      "patterns": [
+        "SettingsLayout",
+        "SettingsSection",
+        "SettingsRow"
+      ]
+    },
+    "record-sections": {
+      "use": "A record’s content under its header: facts, activity, related lists",
+      "patterns": [
+        "RecordPage",
+        "Panel",
+        "PropertyList",
+        "ActivityList",
+        "DataTable"
+      ]
+    },
+    "widgets": {
+      "use": "An overview of independent summaries",
+      "patterns": [
+        "WidgetGrid",
+        "Panel",
+        "Card"
+      ]
+    },
+    "canvas": {
+      "use": "One task that needs all the room, with its tools",
+      "patterns": [
+        "Toolbar",
+        "ActionBar"
+      ]
+    }
+  },
+  "decide": [
+    {
+      "question": "Is it collecting input (create or edit one thing)?",
+      "region": "form",
+      "build": "Form, with a chosen number of columns (1 or 2)"
+    },
+    {
+      "question": "Is it narrowing a list (search, filters, sort, group, view)?",
+      "region": "command-bar",
+      "build": "The CommandBar’s find side"
+    },
+    {
+      "question": "Is it acting on a list or on its selected rows?",
+      "region": "command-bar",
+      "build": "The CommandBar, swapping to the selection’s commands"
+    },
+    {
+      "question": "Is it a list beside the item chosen in it?",
+      "region": "split",
+      "build": "SplitView (side by side or stacked) with a ReadingPane"
+    },
+    {
+      "question": "Is it a set of commands with no list?",
+      "region": null,
+      "build": "A Menu (or the page header’s actions)"
+    },
+    {
+      "question": "Is it one record?",
+      "region": "record-sections",
+      "build": "RecordPage: the EntityHeader, then its sections"
+    },
+    {
+      "question": "Is it settings?",
+      "region": "settings",
+      "build": "SettingsLayout with SettingsSection cards"
+    },
+    {
+      "question": "Is it an overview?",
+      "region": "widgets",
+      "build": "WidgetGrid of Panels"
+    }
+  ],
+  "fields": {
+    "$description": "Fields (Input, Select, Combobox, SearchField, NumberInput, Textarea, the pickers) are layout-neutral: they take their natural width, and the pattern they sit in sizes them. \"stretch\" patterns make a field fill its column; \"content\" patterns size it to its content. A field anywhere else is a composition error (check-system.js).",
+    "components": [
+      "Input",
+      "Select",
+      "Combobox",
+      "SearchField",
+      "NumberInput",
+      "Textarea",
+      "DatePicker",
+      "TimePicker",
+      "TreeSelect",
+      "CountrySelect",
+      "TimeZoneSelect",
+      "EntityPicker",
+      "RelativeDateInput",
+      "InputGroup",
+      "FileInput",
+      "MentionInput"
+    ],
+    "stretch": [
+      "Form",
+      "FormSection",
+      "Fieldset",
+      "Field",
+      "SettingsRow",
+      "Dialog",
+      "PromptDialog",
+      "ConfirmDialog",
+      "Drawer",
+      "Sheet",
+      "SidePanel",
+      "Popover",
+      "InlineEdit",
+      "FilterPanel",
+      "SortPanel",
+      "GroupPanel",
+      "Wizard"
+    ],
+    "content": [
+      "CommandBar",
+      "Toolbar",
+      "DataToolbar",
+      "FilterBar",
+      "ActionBar",
+      "AppHeader"
+    ],
+    "classes": {
+      "Form": "plx-form",
+      "FormSection": "plx-form-section",
+      "Fieldset": "plx-fieldset",
+      "Field": "plx-field",
+      "SettingsRow": "plx-settings__row",
+      "Dialog": "plx-dialog",
+      "PromptDialog": "plx-dialog",
+      "ConfirmDialog": "plx-dialog",
+      "Drawer": "plx-dialog",
+      "Sheet": "plx-sheet",
+      "SidePanel": "plx-side-panel",
+      "Popover": "plx-popover",
+      "InlineEdit": "plx-inline-edit",
+      "FilterPanel": "plx-find-panel",
+      "SortPanel": "plx-find-panel",
+      "GroupPanel": "plx-find-panel",
+      "Wizard": "plx-wizard",
+      "CommandBar": "plx-command-bar",
+      "Toolbar": "plx-toolbar",
+      "DataToolbar": "plx-data-toolbar",
+      "FilterBar": "plx-filter-bar",
+      "ActionBar": "plx-action-bar",
+      "AppHeader": "plx-app-header",
+      "Input": "plx-input",
+      "Select": "plx-select",
+      "Combobox": "plx-combobox",
+      "SearchField": "plx-search",
+      "NumberInput": "plx-number-input",
+      "Textarea": "plx-input",
+      "DatePicker": "plx-date-picker",
+      "TimePicker": "plx-time-picker",
+      "TreeSelect": "plx-tree-select",
+      "CountrySelect": "plx-country-select",
+      "TimeZoneSelect": "plx-combobox",
+      "EntityPicker": "plx-entity-picker",
+      "RelativeDateInput": "plx-relative-date-input",
+      "InputGroup": "plx-input-group",
+      "FileInput": "plx-file-input",
+      "MentionInput": "plx-mention-input"
+    }
+  }
 }

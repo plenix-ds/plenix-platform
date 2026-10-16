@@ -1277,7 +1277,10 @@ function SearchScreen({
     variant: "title"
   }, "Search everything"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "secondary"
-  }, "Files, notes, tasks, bookmarks, contacts \u2014 unified across all projects.")), /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
+  }, "Files, notes, tasks, bookmarks, contacts \u2014 unified across all projects.")), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
+    label: "Search everything",
+    hideLabel: true
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
     ref: ref,
     label: "Search everything",
     value: q,
@@ -1286,7 +1289,7 @@ function SearchScreen({
     placeholder: "Try: contractor quote from last month\u2026",
     loading: loading,
     shortcut: "Enter"
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+  })), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
     gap: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
     variant: "primary",

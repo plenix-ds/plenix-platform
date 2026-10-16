@@ -1,6 +1,6 @@
 /* Plenix suite · search (suite/search.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the answer as a Notice, the results as Cards. */
-import { Button, Card, Chat, Inline, Notice, PageContent, SearchField, Skeleton, Stack, Tag, TagList, Text } from 'plenix-platform';
+import { Button, Card, Chat, Inline, Notice, PageContent, SearchField, Skeleton, Stack, Tag, TagList, Text, Field } from 'plenix-platform';
 import { aiSearch } from './shared.jsx';
 const { useState, useRef, useEffect } = React;
 
@@ -18,7 +18,7 @@ export function SearchScreen({ initialQuery = '' }) {
           <Text as="h1" variant="title">Search everything</Text>
           <Text variant="secondary">Files, notes, tasks, bookmarks, contacts — unified across all projects.</Text>
         </Stack>
-        <SearchField ref={ref} label="Search everything" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && run()} placeholder="Try: contractor quote from last month…" loading={loading} shortcut="Enter" />
+        <Field label="Search everything" hideLabel><SearchField ref={ref} label="Search everything" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && run()} placeholder="Try: contractor quote from last month…" loading={loading} shortcut="Enter" /></Field>
         <Inline gap="sm">
           <Button variant="primary" onClick={run} disabled={!q.trim() || loading}>{loading ? 'Searching…' : 'Search'}</Button>
           {q ? <Button onClick={() => { setQ(''); setRes(null); }}>Clear</Button> : null}

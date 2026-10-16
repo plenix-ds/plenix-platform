@@ -75,7 +75,7 @@ export function CategoryInspector({ collection = false, act, onDialog }) {
         <Icon name={collection ? 'briefcase' : 'folder'} size="lg" />
         <Text variant="data" className="plx-u-leading-16px">{collection ? D.COLLECTION_DETAIL.count : c.count}</Text>
       </Preview>
-      <Input aria-label="Title" emphasis value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
+      <Field label="Title" hideLabel><Input emphasis value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></Field>
       <Tabs variant="folder" label="Details" items={[
         { value: 'details', label: 'Details', content: (
           <Stack>
@@ -115,7 +115,7 @@ function AssetDetail({ asset, act, onDialog, onPreview }) {
         <img className="plx-preview__media" src={asset.thumb} alt="" />
       </Preview>
       <Stack gap="xs">
-        <Input aria-label="Title" emphasis value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />
+        <Field label="Title" hideLabel><Input emphasis value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} /></Field>
         <Text variant="secondary">{asset.cat}</Text>
       </Stack>
       <Tabs variant="folder" label="Asset details" items={[

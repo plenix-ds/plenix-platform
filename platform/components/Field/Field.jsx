@@ -6,6 +6,8 @@
      </Field>
    Props:
      label: the label text
+     hideLabel: the label is read by screen readers and still labels the control, but is not drawn (a title field, a search
+       box whose purpose is plain from where it sits); default false (owner, 2026-10-16, the composition standard)
      description: help text under the control (under the label with "row")
      error: the error message under the control; it marks the field invalid
      required: marks the field and the control required; the label shows " *" (default false)
@@ -46,7 +48,7 @@ export const FieldLayoutContext = React.createContext(null);
 const COUNTER_STRINGS = { left: '{n} characters left', over: '{n} characters too many' };
 const fill = (t, n) => String(t).replace('{n}', formatNumber(n));
 
-export function Field({ label, description, error, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
+export function Field({ label, hideLabel = false, description, error, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
   const id = React.useId();
   const formLayout = React.useContext(FieldLayoutContext);
   const lay = layout || formLayout || 'stacked';
@@ -86,7 +88,7 @@ export function Field({ label, description, error, required = false, info, infoL
   const control = React.cloneElement(child, props);
   return (
     <div className={cx('plx-field', 'plx-field--' + lay, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)} {...rest}>
-      <div className="plx-field__head">
+      <div className={cx('plx-field__head', hideLabel && 'plx-visually-hidden')}>
         <Tooltip content={label} disabled={!cut} className="plx-field__label-tip">
           <label ref={labelRef} className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
         </Tooltip>

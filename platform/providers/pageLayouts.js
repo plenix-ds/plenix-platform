@@ -13,31 +13,58 @@
 export const PAGE_LAYOUTS = {
   workspace: {
     layout: "fluid",
-    use: "Lists, grids, browse and search: most application screens (the default)"
+    use: "Lists, grids, browse and search: most application screens (the default)",
+    regions: [
+      "page-header",
+      "command-bar",
+      "collection"
+    ]
   },
   dashboard: {
     layout: "fluid",
-    use: "An overview of widgets and sections"
+    use: "An overview of widgets and sections",
+    regions: [
+      "page-header",
+      "widgets"
+    ]
   },
   settings: {
     layout: "contained",
-    use: "Settings and preferences (every SettingsLayout page)"
+    use: "Settings and preferences (every SettingsLayout page)",
+    regions: [
+      "settings"
+    ]
   },
   form: {
     layout: "contained",
-    use: "A form on its own page: create or edit one thing"
+    use: "A form on its own page: create or edit one thing",
+    regions: [
+      "page-header",
+      "form"
+    ]
   },
   detail: {
     layout: "hybrid",
-    use: "One record or document, with text to read"
+    use: "One record or document, with text to read",
+    regions: [
+      "entity-header",
+      "record-sections"
+    ]
   },
   "master-detail": {
     layout: "multi-pane",
-    use: "A list beside the chosen item, each scrolling on its own (mail, chat)"
+    use: "A list beside the chosen item, each scrolling on its own (mail, chat)",
+    regions: [
+      "command-bar",
+      "split"
+    ]
   },
   editor: {
     layout: "focus",
-    use: "One task that needs all the room (image editor)"
+    use: "One task that needs all the room (image editor)",
+    regions: [
+      "canvas"
+    ]
   }
 };
 
@@ -46,3 +73,175 @@ export const DEFAULT_PAGE = "workspace";
 export function pageLayout(kind) {
   return (PAGE_LAYOUTS[kind] || PAGE_LAYOUTS[DEFAULT_PAGE]).layout;
 }
+
+// the composition standard: what each region is for and the patterns it is built from; the guide; the fields rule
+export const PAGE_REGIONS = {
+  "page-header": {
+    "use": "The page’s title and its own actions",
+    "patterns": [
+      "EntityHeader",
+      "PageContent"
+    ]
+  },
+  "entity-header": {
+    "use": "One record’s context, name, facts and its own actions (three parts)",
+    "patterns": [
+      "EntityHeader"
+    ]
+  },
+  "command-bar": {
+    "use": "Acting on a list, and narrowing it (search, filters, sort, group, view): one bar that swaps to the selection’s commands",
+    "patterns": [
+      "CommandBar"
+    ]
+  },
+  "collection": {
+    "use": "The list itself: a table, cards, or a grid of media",
+    "patterns": [
+      "DataTable",
+      "ContentGrid",
+      "Card"
+    ]
+  },
+  "split": {
+    "use": "A list beside the item chosen in it, each scrolling on its own",
+    "patterns": [
+      "SplitView"
+    ]
+  },
+  "form": {
+    "use": "Collecting input: one thing to create or edit, in one or two columns",
+    "patterns": [
+      "Form",
+      "FormSection",
+      "Fieldset",
+      "Field",
+      "FormActions",
+      "Wizard"
+    ]
+  },
+  "settings": {
+    "use": "Settings and preferences, grouped in cards",
+    "patterns": [
+      "SettingsLayout",
+      "SettingsSection",
+      "SettingsRow"
+    ]
+  },
+  "record-sections": {
+    "use": "A record’s content under its header: facts, activity, related lists",
+    "patterns": [
+      "RecordPage",
+      "Panel",
+      "PropertyList",
+      "ActivityList",
+      "DataTable"
+    ]
+  },
+  "widgets": {
+    "use": "An overview of independent summaries",
+    "patterns": [
+      "WidgetGrid",
+      "Panel",
+      "Card"
+    ]
+  },
+  "canvas": {
+    "use": "One task that needs all the room, with its tools",
+    "patterns": [
+      "Toolbar",
+      "ActionBar"
+    ]
+  }
+};
+
+export const COMPOSITION_GUIDE = [
+  {
+    "question": "Is it collecting input (create or edit one thing)?",
+    "region": "form",
+    "build": "Form, with a chosen number of columns (1 or 2)"
+  },
+  {
+    "question": "Is it narrowing a list (search, filters, sort, group, view)?",
+    "region": "command-bar",
+    "build": "The CommandBar’s find side"
+  },
+  {
+    "question": "Is it acting on a list or on its selected rows?",
+    "region": "command-bar",
+    "build": "The CommandBar, swapping to the selection’s commands"
+  },
+  {
+    "question": "Is it a list beside the item chosen in it?",
+    "region": "split",
+    "build": "SplitView (side by side or stacked) with a ReadingPane"
+  },
+  {
+    "question": "Is it a set of commands with no list?",
+    "region": null,
+    "build": "A Menu (or the page header’s actions)"
+  },
+  {
+    "question": "Is it one record?",
+    "region": "record-sections",
+    "build": "RecordPage: the EntityHeader, then its sections"
+  },
+  {
+    "question": "Is it settings?",
+    "region": "settings",
+    "build": "SettingsLayout with SettingsSection cards"
+  },
+  {
+    "question": "Is it an overview?",
+    "region": "widgets",
+    "build": "WidgetGrid of Panels"
+  }
+];
+
+export const FIELD_RULES = {
+  "components": [
+    "Input",
+    "Select",
+    "Combobox",
+    "SearchField",
+    "NumberInput",
+    "Textarea",
+    "DatePicker",
+    "TimePicker",
+    "TreeSelect",
+    "CountrySelect",
+    "TimeZoneSelect",
+    "EntityPicker",
+    "RelativeDateInput",
+    "InputGroup",
+    "FileInput",
+    "MentionInput"
+  ],
+  "stretch": [
+    "Form",
+    "FormSection",
+    "Fieldset",
+    "Field",
+    "SettingsRow",
+    "Dialog",
+    "PromptDialog",
+    "ConfirmDialog",
+    "Drawer",
+    "Sheet",
+    "SidePanel",
+    "Popover",
+    "InlineEdit",
+    "FilterPanel",
+    "SortPanel",
+    "GroupPanel",
+    "Wizard"
+  ],
+  "content": [
+    "CommandBar",
+    "Toolbar",
+    "DataToolbar",
+    "FilterBar",
+    "ActionBar",
+    "AppHeader"
+  ]
+};

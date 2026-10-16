@@ -82,7 +82,7 @@ export { ThemeProvider, useTheme } from './providers/ThemeProvider.jsx';
 export { THEMES, DEFAULT_THEME } from './providers/themes.js';
 export { SessionProvider, useSession, DEMO_SESSION, choosePicture } from './providers/SessionProvider.jsx';
 export { PLENIX_APPS, appById, appHref } from './providers/apps.js';
-export { PAGE_LAYOUTS, pageLayout } from './providers/pageLayouts.js';
+export { PAGE_LAYOUTS, pageLayout, PAGE_REGIONS, COMPOSITION_GUIDE, FIELD_RULES } from './providers/pageLayouts.js';
 export { useDensity } from './hooks/useDensity.js';
 export { useInteraction } from './hooks/useInteraction.js';
 export { useScreenLocation, navigate, goToParent, screenHref, parseScreen, useViewState } from './providers/ScreenLocation.js';

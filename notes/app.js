@@ -1277,7 +1277,10 @@ function SearchScreen({
     variant: "title"
   }, "Search everything"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "secondary"
-  }, "Files, notes, tasks, bookmarks, contacts \u2014 unified across all projects.")), /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
+  }, "Files, notes, tasks, bookmarks, contacts \u2014 unified across all projects.")), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
+    label: "Search everything",
+    hideLabel: true
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
     ref: ref,
     label: "Search everything",
     value: q,
@@ -1286,7 +1289,7 @@ function SearchScreen({
     placeholder: "Try: contractor quote from last month\u2026",
     loading: loading,
     shortcut: "Enter"
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+  })), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
     gap: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
     variant: "primary",
@@ -2596,15 +2599,17 @@ function NotesScreen({
     label: "Tags"
   }, note.tags.map(t => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
     key: t
-  }, t))), /*#__PURE__*/React.createElement(_plenixPlatform.Divider, null), /*#__PURE__*/React.createElement(_plenixPlatform.Textarea, {
-    "aria-label": "Note text",
+  }, t))), /*#__PURE__*/React.createElement(_plenixPlatform.Divider, null), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
+    label: "Note text",
+    hideLabel: true
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Textarea, {
     rows: 8,
     value: editing !== null ? editing : textOf(note),
     onChange: e => setDraft({
       id: note.id,
       text: e.target.value
     })
-  }), /*#__PURE__*/React.createElement(_classification.ClassificationWidget, {
+  })), /*#__PURE__*/React.createElement(_classification.ClassificationWidget, {
     value: meta[note.id],
     onChange: m => setMeta(prev => ({
       ...prev,
