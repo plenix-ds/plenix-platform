@@ -1,0 +1,10 @@
+{
+  "$description": "MentionInput: spacing between regions.",
+  "plx-comp": {
+    "mention-input-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "MentionInput: region spacing."
+    }
+  }
+}

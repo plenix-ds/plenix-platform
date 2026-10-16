@@ -1,0 +1,10 @@
+{
+  "$description": "ApprovalWorkflow: spacing between regions.",
+  "plx-comp": {
+    "approval-workflow-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "ApprovalWorkflow: region spacing."
+    }
+  }
+}

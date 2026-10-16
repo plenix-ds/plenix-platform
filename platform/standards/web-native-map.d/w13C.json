@@ -1,0 +1,37 @@
+{
+  "$description": "Wave13C mention, announcement, audit and approval counterparts.",
+  "map": {
+    "specialized|Mention": {
+      "ios": [
+        "ios-forms|Entering data"
+      ],
+      "android": [
+        "android-patterns|Form"
+      ]
+    },
+    "specialized|Announcement": {
+      "ios": [
+        "ios-feedback|Notifications"
+      ],
+      "android": [
+        "android-specialized|Notifications"
+      ]
+    },
+    "specialized|Audit history": {
+      "ios": [
+        "ios-data-display|Lists and tables"
+      ],
+      "android": [
+        "android-data-display|Data table"
+      ]
+    },
+    "specialized|Approval workflow": {
+      "ios": [
+        "ios-patterns|Ratings and reviews"
+      ],
+      "android": [
+        "android-patterns|Form"
+      ]
+    }
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "android-patterns|Form": {
+    "summary": "Mention a directory entity in plain or formatted text while retaining its identity.",
+    "variants": [
+      {
+        "name": "MentionInput: In a text area",
+        "web": "specialized|Mention",
+        "compose": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+        "views": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+        "use": "Mention a directory entity in plain or formatted text while retaining its identity."
+      },
+      {
+        "name": "MentionInput: In rich text",
+        "web": "specialized|Mention",
+        "compose": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+        "views": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+        "use": "Mention a directory entity in plain or formatted text while retaining its identity."
+      },
+      {
+        "name": "ApprovalWorkflow: Sequential",
+        "web": "specialized|Approval workflow",
+        "compose": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+        "views": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+        "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+      },
+      {
+        "name": "ApprovalWorkflow: Parallel",
+        "web": "specialized|Approval workflow",
+        "compose": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+        "views": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+        "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+      },
+      {
+        "name": "ApprovalWorkflow: Status",
+        "web": "specialized|Approval workflow",
+        "compose": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+        "views": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+        "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+      }
+    ],
+    "anatomy": [
+      "Named text editor",
+      "Mention trigger or Add mention button",
+      "EntityPicker or rich-text suggestion list",
+      "Overall WorkflowStatus",
+      "Sequential ProgressSteps",
+      "Read-only ReviewFlow per stage",
+      "Assigned reviewer comment and explicit decisions"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension."
+      }
+    ],
+    "states": [
+      {
+        "name": "MentionInput recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      },
+      {
+        "name": "ApprovalWorkflow recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Bind Material controls to the retained screen model.",
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.title)",
+        "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "// Retain editable values in the ViewModel.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "android-specialized|Notifications": {
+    "summary": "Show an announcement with explicit actions in the appropriate existing surface.",
+    "variants": [
+      {
+        "name": "Announcement: Banner",
+        "web": "specialized|Announcement",
+        "compose": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+        "views": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+        "use": "Show an announcement with explicit actions in the appropriate existing surface."
+      },
+      {
+        "name": "Announcement: Card",
+        "web": "specialized|Announcement",
+        "compose": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+        "views": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+        "use": "Show an announcement with explicit actions in the appropriate existing surface."
+      },
+      {
+        "name": "Announcement: Dialog",
+        "web": "specialized|Announcement",
+        "compose": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+        "views": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+        "use": "Show an announcement with explicit actions in the appropriate existing surface."
+      }
+    ],
+    "anatomy": [
+      "Title and content",
+      "Banner, Card or Dialog",
+      "Optional actions",
+      "Dismiss action and failure notice"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension."
+      }
+    ],
+    "states": [
+      {
+        "name": "Announcement recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Bind Material controls to the retained screen model.",
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.title)",
+        "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "// Retain editable values in the ViewModel.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "android-data-display|Data table": {
+    "summary": "Read immutable actor, time, action and target events and inspect their changes.",
+    "variants": [
+      {
+        "name": "AuditLog: Table",
+        "web": "specialized|Audit history",
+        "compose": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+        "views": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+        "use": "Read immutable actor, time, action and target events and inspect their changes."
+      },
+      {
+        "name": "AuditLog: With diff",
+        "web": "specialized|Audit history",
+        "compose": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+        "views": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+        "use": "Read immutable actor, time, action and target events and inspect their changes."
+      }
+    ],
+    "anatomy": [
+      "Audit DataTable",
+      "Actor Persona",
+      "Timestamp Time",
+      "Optional before-and-after Dialog DataTable"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension."
+      }
+    ],
+    "states": [
+      {
+        "name": "AuditLog recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Bind Material controls to the retained screen model.",
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.title)",
+        "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "// Retain editable values in the ViewModel.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  }
+}
