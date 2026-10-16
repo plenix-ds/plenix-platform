@@ -5,7 +5,7 @@
      <SearchWorkspace title="Search results" query={query} onQueryChange={setQuery} placeholder="Search…"
        filters={[…]} onFilterChange={(id, value) => …} onClearAll={() => …} count={128} noun="asset"
        sort={{ value, options, onChange }} view={{ value, options, onChange }} onSave={() => …}
-       headStart={<…/>} headEnd={<…/>} bulk={<BulkActions…/>}>{results}</SearchWorkspace>
+       headStart={<…/>} headEnd={<…/>} selection={{ count: selected.length, actions, onClear: clear }}>{results}</SearchWorkspace>
    Props:
      title: strings.title ("Search", the default) before a query, "Search results" after one, or a saved search's name (the capability decides)
      query: the search field's text (default "")
@@ -22,7 +22,10 @@
      onSave(): shows Save search (only capabilities that keep saved searches)
      headStart: extra controls at the start of the title row (a menu button, a details toggle)
      headEnd: extra controls at the end of the title row
-     bulk: a BulkActions bar shown above the results
+     selection: CommandBar selection state ({ count, actions, onClear, noun, label }); preferred.
+       onSelectAll and total: optional legacy Select all command, retained in the normal and selected bar.
+     bulk: deprecated for one release; accepts selection state as above or a legacy React bar node.
+       selection takes precedence; legacy nodes remain above results until callers migrate.
      className: more classes
      children: the results
      locale: the language the count is formatted in (default: the page's language, document.documentElement.lang)
@@ -33,7 +36,7 @@
        noMatchQueryFilters: "Nothing matches “{query}” with these filters.", noMatchFilters: "Nothing matches these filters." }
    Behavior:
      Set filters are repeated as removable chips under the toolbar ("Type: PNG ×") with Clear all.
-     The count line is announced politely.
+     The count line is announced politely. The results CommandBar swaps to selection commands while count is above zero.
      When count is 0 the results area says there is nothing to show for the query.
    Notes:
      The application shell (header, left navigation, a details panel where the capability has one) stays, and only the center changes.
@@ -43,7 +46,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
-import { SegmentedControl } from '../../components/SegmentedControl/SegmentedControl.jsx';
+import { CommandBar, CommandBarButton } from '../CommandBar/CommandBar.jsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Chip } from '../../components/Tag/Tag.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
@@ -52,6 +55,8 @@ import { useUid } from '../../utils/layer.js';
 
 const STRINGS = {
   title: 'Search',
+  selectAll: 'Select all',
+  allSelected: 'Every {noun} is selected',
   placeholder: 'Search…',
   result: 'result',
   results: 'results',
@@ -76,7 +81,7 @@ const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(
 const label = (f, v) => { const o = (f.options || []).find((x) => x.value === v); return o ? o.label : String(v); };
 
 export function SearchWorkspace({ title, query = '', onQueryChange, placeholder, filters = [], onFilterChange, onClearAll,
-  count = 0, noun, plural, sort, view, onSave, headStart, headEnd, bulk, locale, strings, className, children }) {
+  count = 0, noun, plural, sort, view, onSave, headStart, headEnd, selection, bulk, locale, strings, className, children }) {
   const t = Object.assign({}, STRINGS, strings);
   const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
   const id = useUid('plx-search-ws');
@@ -89,6 +94,13 @@ export function SearchWorkspace({ title, query = '', onQueryChange, placeholder,
   });
   const nouns = count === 1 ? (noun || t.result) : (plural || (noun ? noun + 's' : t.results));
   const counted = count.toLocaleString(loc) + ' ' + nouns;
+  const legacyState = bulk && !React.isValidElement(bulk) && !Array.isArray(bulk) && typeof bulk === 'object' && 'count' in bulk ? bulk : null;
+  const selected = selection || legacyState;
+  const selectAll = selected && selected.onSelectAll ? { id: 'select-all', label: t.selectAll, icon: 'checklist',
+    disabled: selected.total !== undefined && selected.count >= selected.total,
+    why: fill(t.allSelected, { noun: selected.noun || noun || t.result }), onSelect: selected.onSelectAll } : null;
+  const selectedBar = selected ? { ...selected, actions: (selected.actions || []).concat(selectAll ? [selectAll] : []) } : null;
+  const layouts = view ? view.options || [{ value: 'grid', label: t.grid }, { value: 'table', label: t.table }] : [];
   return (
     <section aria-labelledby={id + '-title'} className={cx('plx-search-ws', className)}>
       <div className="plx-search-ws__head">
@@ -111,17 +123,16 @@ export function SearchWorkspace({ title, query = '', onQueryChange, placeholder,
           {onClearAll ? <Button size="xs" variant="ghost" onClick={onClearAll}>{t.clearAll}</Button> : null}
         </div>
       ) : null}
-      <div className="plx-search-ws__bar">
-        <span className="plx-search-ws__results">{counted}</span>
-        <span className="plx-search-ws__spacer" />
-        {view ? <SegmentedControl label={t.view} value={view.value} onChange={view.onChange} options={view.options || [{ value: 'grid', label: t.grid }, { value: 'table', label: t.table }]} /> : null}
-        {sort ? (
-          <Menu label={t.sort} placement="bottom-end" trigger={<Button size="sm" icon="sort" caret aria-label={fill(t.sortValue, { value: sort.value })}>{fill(t.sortValue, { value: sort.value })}</Button>}>
+      <CommandBar className="plx-search-ws__bar" label={title || t.title} sticky={false} count={counted} actions={selectAll ? [selectAll] : []} selection={selectedBar}
+        view={<>
+          {view ? <Menu label={t.view} placement="bottom-end" trigger={<CommandBarButton icon="view-table" label={t.view} caret />}>
+            {layouts.map((o) => <MenuItem key={o.value} checked={view.value === o.value} onSelect={() => view.onChange(o.value)}>{o.label}</MenuItem>)}
+          </Menu> : null}
+          {sort ? <Menu label={t.sort} placement="bottom-end" trigger={<CommandBarButton icon="sort" aria-label={fill(t.sortValue, { value: sort.value })} label={fill(t.sortValue, { value: sort.value })} caret />}>
             {sort.options.map((o) => <MenuItem key={o} checked={sort.value === o} onSelect={() => sort.onChange(o)}>{o}</MenuItem>)}
-          </Menu>
-        ) : null}
-      </div>
-      {bulk}
+          </Menu> : null}
+        </>} />
+      {!selected && !legacyState ? bulk : null}
       <div className="plx-search-ws__body">
         {count ? children : <EmptyState size="inline">{query ? fill(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, { query }) : t.noMatchFilters}</EmptyState>}
       </div>

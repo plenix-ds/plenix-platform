@@ -12,7 +12,7 @@
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
 import React from 'react';
-import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
+import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -188,11 +188,8 @@ export function HomePage() {
         { id: 'thumb', label: 'Regenerate thumbnail', icon: 'image-b-2', single: true, onSelect: () => bulk('Regenerate thumbnail') },
   ];
   const assetSel = { count: selAssets.length, noun: 'asset', label: 'Asset actions', actions: assetActions, onClear: () => setSelAssets([]) };
-  // the Search workspace keeps its own selection bar (its toolbar is not the command bar)
-  const assetBulk = (
-    <BulkActions count={selAssets.length} total={D.ASSETS.length} noun="asset" onSelectAll={() => setSelAssets(D.ASSETS.map((a) => a.id))} onClear={() => setSelAssets([])}
-      label="Asset actions" actions={assetActions} />
-  );
+  // Advanced Search shares the same commands and selection count in its results CommandBar.
+  const searchSelection = { ...assetSel, total: D.ASSETS.length, onSelectAll: () => setSelAssets(D.ASSETS.map((a) => a.id)) };
 
   const found = findAssets(find);
   // Save search: keeps the query and filters under a name in the left navigation's Saved Searches
@@ -338,7 +335,7 @@ export function HomePage() {
               sort={{ value: find.sort, options: ['Relevance', 'Newest', 'Oldest', 'Name A–Z', 'Name Z–A', 'Size'], onChange: (o) => commitFind({ ...find, sort: o }) }}
               view={{ value: mode, onChange: setMode }}
               onSave={saveSearch}
-              bulk={assetBulk}>
+              selection={searchSelection}>
               {content}
             </SearchWorkspace>
           ) : <>

@@ -2,6 +2,8 @@
    Summary: What is selected, and what can be done with it. BulkActions is a selection bar for a page WITHOUT a command
      bar (owner, 2026-10-15: under a command bar, its selection swaps the bar instead: CommandBar selection={{ count,
      actions, onClear }}). SelectionSummary is its count with Select all and Clear, for a place that has no bar.
+   Deprecated: BulkActions stays exported for one release. Use CommandBar's selection state instead.
+     SelectionSummary remains available for a selection count outside a bar.
    Usage:
      <BulkActions count={sel.length} total={rows.length} noun="asset" onSelectAll={() => …} onClear={() => setSel([])}
        actions={[{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: () => … },
