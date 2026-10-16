@@ -1,28 +1,32 @@
 /* Plenix · bookmarks (bookmarks/bookmarks.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: collection chips, the bookmarks as Cards in a ContentGrid, the open one in a SidePanel. The open bookmark is a
    screen (#/bookmark/<id>, a history entry: Back closes it; Platforms Standard 4.3). */
-import { EntityHeader, Button, Card, Chip, ContentGrid, Icon, Inline, Link, PageContent, SidePanel, Stack, Tag, TagList, Text } from 'plenix-platform';
+import { CommandBar, CommandBarButton, Menu, MenuItem, MenuRadioGroup, useCollectionView, EntityHeader, Card, ContentGrid, Link, PageContent, SidePanel, Stack, Tag, TagList, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_BOOKMARKS } from '../suite/shared.jsx';
 const { useState } = React;
 
 /* ─── Bookmarks ─────────────────────────────────────────────────── */
 export function BookmarksScreen({ screen }) {
-  const [col, setCol] = useState('all');
+  const collection = useCollectionView([{ value: 'col', label: 'Collections', kind: 'select' }], { quick: { col: 'list' } });
+  const col = (collection.quick.col || [])[0] || 'all';
+  const setCol = (value) => collection.setQuick('col', value === 'all' ? [] : [value]);
   const sel = screen.parts[0] === 'bookmark' ? +screen.parts[1] : null;
   const setSel = (id) => (id === null ? screen.parent('/') : screen.open(['bookmark', id]));
   const [meta, setMeta] = useState({});
   const cols = ['all', ...new Set(ALL_BOOKMARKS.map((b) => b.col))];
-  const filtered = col === 'all' ? ALL_BOOKMARKS : ALL_BOOKMARKS.filter((b) => b.col === col);
+  const filtered = ALL_BOOKMARKS.filter(collection.test);
   const bookmark = ALL_BOOKMARKS.find((b) => b.id === sel);
   return (
     <div className="plx-page-panes">
       <PageContent className="plx-motion-enter">
         <Stack gap="md">
           <EntityHeader title="Bookmarks" media={{ icon: 'bookmark', hue: 'green' }} facts={[filtered.length + ' bookmarks', col === 'all' ? 'All collections' : col]} actions={[{ icon: 'share', label: 'Share' }]} />
-          {/* the capability's own action stays out of the header (the capability menu is still to be decided) */}
-          <Inline justify="end"><Button variant="primary" icon={<Icon name="plus" />}>Add</Button></Inline>
-          <TagList label="Collections">{cols.map((c) => <Chip key={c} selected={col === c} onClick={() => setCol(c)}>{c === 'all' ? 'All' : c}</Chip>)}</TagList>
+          <CommandBar label="Bookmarks" sticky={false} count={filtered.length + ' bookmarks'}
+            actions={[{ id: 'add', label: 'Add', icon: 'plus', primary: true }]}
+            view={<Menu trigger={<CommandBarButton icon="folder" label="Collections" active={col !== 'all'} caret />}>
+              <MenuRadioGroup label="Collections" value={col} onChange={setCol}>{cols.map((c) => <MenuItem key={c} value={c}>{c === 'all' ? 'All' : c}</MenuItem>)}</MenuRadioGroup>
+            </Menu>} />
           <ContentGrid size="lg" label="Bookmarks">
             {filtered.map((b) => (
               <Card key={b.id} title={b.title} meta={b.url} selected={sel === b.id} onOpen={() => setSel(sel === b.id ? null : b.id)}>

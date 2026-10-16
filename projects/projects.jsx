@@ -5,7 +5,7 @@
    Screens (Platforms Standard 4.3): a project and its capability (#/project/<id>/<capability>, e.g. #/project/3/tasks), a
    history entry each, on the projects page and on the dashboard. The new-project dialog asks before closing with
    unsaved entries (useUnsavedGuard). */
-import { Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SearchField, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataTable, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState } from 'plenix-platform';
+import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataTable, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
@@ -23,10 +23,10 @@ export const ProjStatus = ({ s }) => { const v = STATUS[s] || STATUS.active; ret
 
 /* ── The projects list: the shell's side navigation ── */
 export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
-  const [search, setSearch] = useState('');
-  const [filterCat, setFilterCat] = useState('all');
-  const [sort, setSort] = useState('name');
-  const [showFilters, setShowFilters] = useState(false);
+  const collection = useCollectionView([{ value: 'category', label: 'Filter', kind: 'select', get: (p) => p.tags[0] }], { text: (p) => p.name, quick: { category: 'list' } });
+  const search = collection.search;
+  const filterCat = (collection.quick.category || [])[0] || 'all';
+  const sort = collection.sort.length ? collection.sort[0].field : 'name';
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
   const [newClient, setNewClient] = useState('__none__');
@@ -36,9 +36,7 @@ export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
   const allCats = [...new Set(projects.map((p) => p.tags[0]))];
   const toggleCap = (id) => setNewCaps((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
-  let visible = projects;
-  if (search.trim()) visible = visible.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
-  if (filterCat !== 'all') visible = visible.filter((p) => p.tags[0] === filterCat);
+  let visible = projects.filter(collection.test);
   if (sort === 'name') visible = [...visible].sort((a, b) => a.name.localeCompare(b.name));
   else if (sort === 'status') visible = [...visible].sort((a, b) => a.status.localeCompare(b.status));
   const grouped = filterCat === 'all' && !search.trim();
@@ -51,24 +49,18 @@ export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
     <SideNavPortal><NavPane as="div" label="Projects" title="Projects"
       footer={onSettings ? <Button size="sm" variant="ghost" icon="gear" onClick={onSettings}>Projects settings</Button> : null}
       rail={projects.map((p) => <ToolRail.Item key={p.id} label={p.name} pressed={!!(selected && selected.id === p.id)} icon="briefcase" onClick={() => onSelect(p)} />)}
-      actions={<>
-        <Button size="xs" iconOnly icon="filter" label="Filter & sort" pressed={showFilters} onClick={() => setShowFilters((f) => !f)} />
-        <Button size="xs" iconOnly icon="plus" label="New project" onClick={() => { setNewName(''); setNewClient('__none__'); setNewBilling('Time & materials'); setNewCaps(new Set(window.DEFAULT_CAPS)); setShowNew(true); }} />
-      </>}>
-      <SearchField value={search} onChange={(e) => setSearch(e.target.value)} onClear={() => setSearch('')} placeholder="Search projects..." label="Search projects" />
-      {showFilters ? (
-        <Stack gap="sm">
-          <Field label="Filter" layout="inline" labelWidth="sm">
-            <Select value={filterCat} onChange={(e) => setFilterCat(e.target.value)}>
-              <option value="all">All categories</option>
-              {allCats.map((c) => <option key={c} value={c}>{labels[c] || c}</option>)}
-            </Select>
-          </Field>
-          <Field label="Sort" layout="inline" labelWidth="sm">
-            <Select value={sort} onChange={(e) => setSort(e.target.value)}><option value="name">Name A–Z</option><option value="status">Status</option></Select>
-          </Field>
-        </Stack>
-      ) : null}
+      >
+      <CommandBar label="Projects" narrow sticky={false} count={visible.length + ' projects'}
+        actions={[{ id: 'new', icon: 'plus', label: 'New project', onSelect: () => { setNewName(''); setNewClient('__none__'); setNewBilling('Time & materials'); setNewCaps(new Set(window.DEFAULT_CAPS)); setShowNew(true); } }]}
+        find={<CommandBarSearch {...collection.searchProps} placeholder="Search projects..." label="Search projects" />}
+        view={<>
+          <Menu trigger={<CommandBarButton icon="filter" label="Filter" active={filterCat !== 'all'} caret />}>
+            <MenuRadioGroup label="Filter" value={filterCat} onChange={(value) => collection.setQuick('category', value === 'all' ? [] : [value])}><MenuItem value="all">All categories</MenuItem>{allCats.map((c) => <MenuItem key={c} value={c}>{labels[c] || c}</MenuItem>)}</MenuRadioGroup>
+          </Menu>
+          <Menu trigger={<CommandBarButton icon="sort" label="Sort" caret />}>
+            <MenuRadioGroup label="Sort" value={sort} onChange={(field) => collection.setSort([{ field, dir: 'asc' }])}><MenuItem value="name">Name A–Z</MenuItem><MenuItem value="status">Status</MenuItem></MenuRadioGroup>
+          </Menu>
+        </>} />
       {grouped
         ? <NavList label="Projects" value={selected ? selected.id : undefined} onSelect={pick} groups={Object.entries(groups).map(([tag, projs]) => ({ heading: labels[tag] || tag, items: projs.map(navItem) }))} />
         : visible.length > 0 ? <NavList label="Projects" value={selected ? selected.id : undefined} onSelect={pick} items={visible.map(navItem)} /> : <EmptyState title="No projects match." />}

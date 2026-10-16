@@ -6,7 +6,7 @@
    field width, ColorPicker, RadioTiles, ChoiceList); categories, tags and project types are cards of rows and renamable
    Tags; the documentation pages are cards of Text, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style
    guide points at the design system (../platform/design-system/), the point of truth. */
-import { Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorPicker, ColorSwatch, DATA_COLORS, ContentGrid, Count, EmptyState, Inline, Input, Kbd, leavePage, List, Metric, NavList, NavPane, Notice, PageContent, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme, useUnsavedGuard } from 'plenix-platform';
+import { CommandBar, CommandBarSearch, useCollectionView, Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorPicker, ColorSwatch, DATA_COLORS, ContentGrid, Count, EmptyState, Inline, Input, Kbd, leavePage, List, Metric, NavList, NavPane, Notice, PageContent, ProgressBar, PropertyList, RadioTiles, RecordPage, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme, useUnsavedGuard } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
@@ -516,7 +516,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
     {id:12,name:"supplier"},{id:13,name:"VIP"},{id:14,name:"strategy"},{id:15,name:"Q2"},
     {id:16,name:"inspiration"},{id:17,name:"typography"},{id:18,name:"branding"},
   ]);
-  const [tagSearch,setTagSearch]=useState("");
+  const tagView=useCollectionView([{value:"name",label:"Name",kind:"text"}],{text:t=>t.name});
   const [tagAdding,setTagAdding]=useState(false);
   const [tagEditVal,setTagEditVal]=useState("");
   const tagName=v=>v.trim().toLowerCase().replace(/\s+/g,"-");
@@ -533,7 +533,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
  /* ── Project Types state ── */
   const defaultTypes=(window.PROJ_TYPES||[]).flatMap((g,gi)=>g.types.map((t,ti)=>({id:gi*100+ti+1,name:t,group:g.group})));
   const [projTypes,setProjTypes]=useState(defaultTypes);
-  const [ptSearch,setPtSearch]=useState("");
+  const ptView=useCollectionView([{value:"name",label:"Name",kind:"text"}],{text:t=>t.name});
   const [ptAdding,setPtAdding]=useState(false);
   const [ptEditVal,setPtEditVal]=useState("");
   const addPT=()=>{
@@ -566,7 +566,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
  // the accent colors to choose from: data handed to ColorSwatch (prefs.accent keeps the chosen value)
   const accent=DATA_COLORS.indexOf(prefs.accent)>=0?prefs.accent:DATA_COLORS[0];
 
-  const visibleTags=tags.filter(t=>!tagSearch||t.name.includes(tagSearch.toLowerCase()));
+  const visibleTags=tags.filter(tagView.test);
 
   const panels={
     categories:(
@@ -598,11 +598,11 @@ export function Settings({prefs,setPrefs,screen,onBack}){
     ),
     tags:(
       <Screen id="tags" title="Tags" desc="Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere."
-        actions={<Button variant="primary" icon="plus" onClick={()=>{setTagAdding(true);setTagEditVal("");}}>New tag</Button>}>
+        >
         <Section title="All tags" description={visibleTags.length+" of "+tags.length+" tags"}>
-          <Row label="Search tags" htmlFor="settings-tag-search">
-            <SearchField id="settings-tag-search" value={tagSearch} onChange={e=>setTagSearch(e.target.value)} onClear={()=>setTagSearch("")} placeholder="Search tags..." label="Search tags"/>
-          </Row>
+          <CommandBar label="Tags" sticky={false} count={visibleTags.length+" tags"}
+            actions={[{id:"new",label:"New tag",icon:"plus",primary:true,onSelect:()=>{setTagAdding(true);setTagEditVal("");}}]}
+            find={<CommandBarSearch id="settings-tag-search" {...tagView.searchProps} placeholder="Search tags..." label="Search tags"/>}/>
           {tagAdding&&<AddRow id="settings-new-tag" label="New tag name" value={tagEditVal} onChange={e=>setTagEditVal(e.target.value.toLowerCase().replace(/\s+/g,"-"))} placeholder="tag-name" onAdd={addTag} onCancel={cancelTag}/>}
           {visibleTags.length>0?(
             <TagList label="Tags">
@@ -619,15 +619,15 @@ export function Settings({prefs,setPrefs,screen,onBack}){
     ),
     projtypes:(
       <Screen id="projtypes" title="Project types" desc="Define the types of projects in your workspace. Applied when creating a project."
-        actions={<Button variant="primary" icon="plus" onClick={()=>{setPtAdding(true);setPtEditVal("");}}>New type</Button>}>
+        >
         <Section title="Find a project type" description={projTypes.length+" project types defined"}>
-          <Row label="Search project types" htmlFor="settings-type-search">
-            <SearchField id="settings-type-search" value={ptSearch} onChange={e=>setPtSearch(e.target.value)} onClear={()=>setPtSearch("")} placeholder="Search project types..." label="Search project types"/>
-          </Row>
+          <CommandBar label="Project types" sticky={false} count={ptView.count(projTypes)+" project types"}
+            actions={[{id:"new",label:"New type",icon:"plus",primary:true,onSelect:()=>{setPtAdding(true);setPtEditVal("");}}]}
+            find={<CommandBarSearch id="settings-type-search" {...ptView.searchProps} placeholder="Search project types..." label="Search project types"/>}/>
           {ptAdding&&<AddRow id="settings-new-type" label="New project type name" value={ptEditVal} onChange={e=>setPtEditVal(e.target.value)} placeholder="e.g. Product Launch" onAdd={addPT} onCancel={cancelPT}/>}
         </Section>
         {(()=>{
-          const filtered=projTypes.filter(t=>!ptSearch||t.name.toLowerCase().includes(ptSearch.toLowerCase()));
+          const filtered=projTypes.filter(ptView.test);
           const groups={};filtered.forEach(t=>{if(!groups[t.group])groups[t.group]=[];groups[t.group].push(t);});
           if(filtered.length===0)return <Section title="No results" stateKey="none"><EmptyState title="No project types match."/></Section>;
           // one collapsible card per group of types
