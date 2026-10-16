@@ -2,3 +2,6 @@
 .plx-media-player{row-gap:var(--plx-comp-media-player-gap);}
 .plx-media-player__media{inline-size:100%;max-inline-size:100%;}
 .plx-media-player__transcript{padding-inline-start:var(--plx-comp-media-player-gap);list-style:none;}
+
+/* Separate audio needs an accessible volume control even when the video has no sound track. */
+.plx-media-player__volume{inline-size:var(--plx-ref-size-160px);max-inline-size:100%;}
