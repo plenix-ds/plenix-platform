@@ -1,3 +1,4 @@
-## Batch 397 (2026-10-16): the pill on the middle line
-- Cause: resizable.css gives .plx-resizable__edge::after an inset (its hover line); the study's pill (position relative)
-  took it as an offset. Fixed with inset:auto. Measured: line at 7.5 to 8.5px, pill 4 to 12px in the 16px gap. Released as {V}.
+## Batch 398, released (2026-10-16): SplitView; the size menu removed
+- Correction: the two "Batch 398" entries above (marked 0.41.0 and 0.42.0) were release attempts that failed before any
+  commit (Windows locked platform/dist/platform.js while the preview server had it open); their version bumps were
+  undone. This is the one release of that batch. Released as {V}.

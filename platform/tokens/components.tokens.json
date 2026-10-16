@@ -7783,16 +7783,6 @@
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color"
     },
-    "panel-splitter-menu-inset": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension",
-      "$description": "The splitter's width menu button (a way to resize without dragging, WCAG 2.5.7): its distance from the area's edge, inside the area."
-    },
-    "panel-splitter-menu-z-index": {
-      "$value": "{plx-sys.layer-raised}",
-      "$type": "number",
-      "$description": "The splitter's width menu button: above the area's content, like the splitter."
-    },
     "page-content-padding-block": {
       "$value": "{plx-sys.space-layout-sm}",
       "$type": "dimension"

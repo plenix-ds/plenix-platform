@@ -332,4 +332,5 @@ export { SuggestedEdit } from './components/SuggestedEdit/SuggestedEdit.jsx';
 export { RefineMenu } from './components/RefineMenu/RefineMenu.jsx';
 export { browserSupport } from './utils/browserSupport.js';
 export { LocaleProvider, useLocale, createTranslator } from './providers/LocaleProvider.jsx';
+export { SplitView, ReadingPane } from './patterns/SplitView/SplitView.jsx';
 /* END library parts */

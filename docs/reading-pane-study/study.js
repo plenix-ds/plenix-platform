@@ -1,36 +1,33 @@
 /* compiled from study.jsx; do not edit */
 (function () {
-/* Reading pane study (docs/reading-pane-study/study.jsx): an Outlook-style layout drawn live with Platform components
-   (owner, 2026-10-16: "header row · nav pane | table | contents of the selected item"). The page kind is master-detail
-   (platform/standards/layout.json), with a table instead of a list. Switches: where the reading pane goes (right, bottom,
-   off: Outlook's Reading pane setting) and how rows read (one line, or two lines as Outlook does in a narrow list).
-   A study, not a Platform part. Compiled to study.js with tools/agent/build-study.js. */
+/* Reading pane demo (docs/reading-pane-study/study.jsx): the Outlook-style layout on the Platform's SplitView (owner,
+   2026-10-16): header row · navigation pane | table | the selected item. Two pages, no switches: index.html side by
+   side, stacked.html stacked. Compiled to study.js with tools/agent/build-study.js. */
 const {
   AppShell,
   AppHeader,
   NavPane,
   NavList,
-  PageContent,
   StatusBar,
   SessionProvider,
   DataTable,
   CommandBar,
-  SegmentedControl,
   Toolbar,
   Button,
   Text,
   Stack,
   Inline,
-  EntityHeader,
   EmptyState,
   Badge,
   Persona,
-  Resizable,
-  Divider
+  Divider,
+  SplitView,
+  ReadingPane
 } = Plenix;
 const {
   useState
 } = React;
+const STACKED = /stacked\.html$/.test(location.pathname);
 const FOLDERS = [{
   id: 'inbox',
   label: 'Inbox',
@@ -58,10 +55,9 @@ const ITEMS = SUBJECTS.map((s, i) => ({
   subject: s,
   preview: 'Thanks for the update. I looked through the files and added a few notes for the next round.',
   received: '2026-10-' + String(16 - i).padStart(2, '0'),
-  unread: i < 3,
   flagged: i === 1
 }));
-const COLS_ONE = [{
+const COLUMNS = [{
   title: 'From',
   field: 'from',
   kind: 'name'
@@ -73,100 +69,9 @@ const COLS_ONE = [{
   field: 'received',
   kind: 'data'
 }];
-// two lines (Outlook's narrow list): the sender and date, then the subject; one column of rich cells
-const COLS_TWO = [{
-  title: 'Message',
-  field: 'subject',
-  kind: 'name',
-  render: r => /*#__PURE__*/React.createElement(Stack, {
-    gap: "2xs"
-  }, /*#__PURE__*/React.createElement(Inline, {
-    gap: "xs",
-    justify: "between"
-  }, /*#__PURE__*/React.createElement(Text, {
-    variant: r.unread ? 'label' : 'body'
-  }, r.from), /*#__PURE__*/React.createElement(Text, {
-    variant: "data"
-  }, r.received)), /*#__PURE__*/React.createElement(Text, {
-    tone: "muted"
-  }, r.subject))
-}];
-function Reading({
-  item,
-  count,
-  onBack
-}) {
-  if (count > 1) return /*#__PURE__*/React.createElement("div", {
-    className: "study-reading"
-  }, /*#__PURE__*/React.createElement(EmptyState, {
-    icon: "checklist",
-    title: count + ' items selected',
-    description: "Choose what to do with them in the command bar, or select one item to read it."
-  }));
-  if (!item) return /*#__PURE__*/React.createElement("div", {
-    className: "study-reading"
-  }, /*#__PURE__*/React.createElement(EmptyState, {
-    icon: "mail",
-    title: "Select an item to read",
-    description: "Nothing is selected."
-  }));
-  return /*#__PURE__*/React.createElement("article", {
-    className: "study-reading",
-    "aria-label": item.subject
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "study-reading__actions"
-  }, onBack ? /*#__PURE__*/React.createElement(Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "arrow-left",
-    onClick: onBack
-  }, "Back to Inbox") : null, /*#__PURE__*/React.createElement(Toolbar, {
-    label: "Message actions"
-  }, /*#__PURE__*/React.createElement(Button, {
-    size: "sm",
-    icon: "reply"
-  }, "Reply"), /*#__PURE__*/React.createElement(Button, {
-    size: "sm",
-    icon: "forward"
-  }, "Forward"), /*#__PURE__*/React.createElement(Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "archive"
-  }, "Archive"), /*#__PURE__*/React.createElement(Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "trash"
-  }, "Delete"))), /*#__PURE__*/React.createElement("div", {
-    className: "study-reading__body"
-  }, /*#__PURE__*/React.createElement(Stack, {
-    gap: "md"
-  }, /*#__PURE__*/React.createElement(Text, {
-    as: "h2",
-    variant: "title"
-  }, item.subject), /*#__PURE__*/React.createElement(Inline, {
-    gap: "sm",
-    align: "center"
-  }, /*#__PURE__*/React.createElement(Persona, {
-    name: item.from,
-    size: "sm"
-  }), /*#__PURE__*/React.createElement(Text, {
-    variant: "data"
-  }, item.received), item.flagged ? /*#__PURE__*/React.createElement(Badge, {
-    tone: "waiting",
-    icon: "flag"
-  }, "Flagged") : null), /*#__PURE__*/React.createElement(Divider, null), /*#__PURE__*/React.createElement(Text, {
-    as: "p"
-  }, item.preview), /*#__PURE__*/React.createElement(Text, {
-    as: "p"
-  }, "The second round is in the shared folder. The kitchen views changed the most; the hallway is the same as before."))));
-}
-function Mail({
-  pane,
-  rows
-}) {
+function Mail() {
   const [sel, setSel] = useState([1]);
   const [open, setOpen] = useState(1);
-  const [reading, setReading] = useState(false); // the reading pane "off": an item opened full width
   const item = ITEMS.find(x => x.id === open) || null;
   const count = sel.length;
   const bar = /*#__PURE__*/React.createElement(CommandBar, {
@@ -201,70 +106,89 @@ function Mail({
       onClear: () => setSel(open ? [open] : [])
     } : undefined
   });
-  const pick = id => {
-    setOpen(id);
-    setSel([id]);
-    if (pane === 'off') setReading(true);
-  };
-  // the grid fills its pane and scrolls inside it (mode "fill"), so the table and the reading pane are the same height
   const table = /*#__PURE__*/React.createElement(DataTable, {
     label: "Inbox",
     data: ITEMS,
-    columns: rows === 'two' ? COLS_TWO : COLS_ONE,
-    rowHeight: rows === 'two' ? 'medium' : 'short',
+    columns: COLUMNS,
     mode: "fill",
     selectable: true,
     selected: sel,
+    narrow: "table",
+    viewMenu: false,
     onSelectionChange: k => {
       setSel(k);
       if (k.length === 1) setOpen(k[0]);
     },
     on: {
-      rowClick: (e, row) => pick(row.getData().id)
-    },
-    narrow: "table",
-    viewMenu: false
+      rowClick: (e, row) => {
+        const id = row.getData().id;
+        setOpen(id);
+        setSel([id]);
+      }
+    }
   });
-  if (pane === 'off') return /*#__PURE__*/React.createElement("div", {
-    className: "study-mail"
-  }, reading && item ? null : bar, /*#__PURE__*/React.createElement("div", {
-    className: "study-panes study-panes--off"
-  }, reading && item ? /*#__PURE__*/React.createElement(Reading, {
-    item: item,
-    count: 1,
-    onBack: () => setReading(false)
-  }) : /*#__PURE__*/React.createElement("div", {
-    className: "study-list"
-  }, table)));
+  const reading = /*#__PURE__*/React.createElement(ReadingPane, {
+    label: count > 1 ? count + ' items selected' : item ? item.subject : 'Nothing selected',
+    actions: count === 1 && item ? /*#__PURE__*/React.createElement(Toolbar, {
+      label: "Message actions"
+    }, /*#__PURE__*/React.createElement(Button, {
+      size: "sm",
+      icon: "reply"
+    }, "Reply"), /*#__PURE__*/React.createElement(Button, {
+      size: "sm",
+      icon: "forward"
+    }, "Forward"), /*#__PURE__*/React.createElement(Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "archive"
+    }, "Archive"), /*#__PURE__*/React.createElement(Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "trash"
+    }, "Delete")) : null,
+    empty: /*#__PURE__*/React.createElement(EmptyState, {
+      icon: count > 1 ? 'checklist' : 'mail',
+      title: count > 1 ? count + ' items selected' : 'Select an item to read',
+      description: count > 1 ? 'Choose what to do with them in the command bar.' : 'Nothing is selected.'
+    })
+  }, count === 1 && item ? /*#__PURE__*/React.createElement(Stack, {
+    gap: "md"
+  }, /*#__PURE__*/React.createElement(Text, {
+    as: "h2",
+    variant: "title"
+  }, item.subject), /*#__PURE__*/React.createElement(Inline, {
+    gap: "sm",
+    align: "center"
+  }, /*#__PURE__*/React.createElement(Persona, {
+    name: item.from,
+    size: "sm"
+  }), /*#__PURE__*/React.createElement(Text, {
+    variant: "data"
+  }, item.received), item.flagged ? /*#__PURE__*/React.createElement(Badge, {
+    tone: "waiting",
+    icon: "flag"
+  }, "Flagged") : null), /*#__PURE__*/React.createElement(Divider, null), /*#__PURE__*/React.createElement(Text, {
+    as: "p"
+  }, item.preview), /*#__PURE__*/React.createElement(Text, {
+    as: "p"
+  }, "The second round is in the shared folder. The kitchen views changed the most; the hallway is the same as before.")) : null);
   return /*#__PURE__*/React.createElement("div", {
-    className: "study-mail"
-  }, bar, /*#__PURE__*/React.createElement("div", {
-    className: 'study-panes study-panes--' + pane
-  }, /*#__PURE__*/React.createElement(Resizable, {
-    label: "Message list",
-    axis: pane === 'bottom' ? 'vertical' : 'horizontal',
-    defaultWidth: pane === 'right' ? 560 : undefined,
-    defaultHeight: pane === 'bottom' ? 320 : undefined,
-    steps: pane === 'bottom' ? [200, 320, 400, 500] : [360, 400, 500, 560, 600, 720],
-    minWidth: 360,
-    maxWidth: 720,
-    minHeight: 200,
-    maxHeight: 500,
-    className: "study-list"
-  }, table), /*#__PURE__*/React.createElement(Reading, {
-    item: item,
-    count: count
-  })));
+    className: "study-page"
+  }, bar, /*#__PURE__*/React.createElement(SplitView, {
+    label: "Inbox",
+    firstLabel: "Message list",
+    orientation: STACKED ? 'stacked' : 'side-by-side',
+    first: table,
+    second: reading
+  }));
 }
 function App() {
   const [folder, setFolder] = useState('inbox');
-  const [pane, setPane] = useState('right');
-  const [rows, setRows] = useState('one');
   return /*#__PURE__*/React.createElement(AppShell, {
     page: "master-detail",
     header: /*#__PURE__*/React.createElement(AppHeader, {
       tone: "accent",
-      appName: "Reading pane study",
+      appName: STACKED ? 'Split view · stacked' : 'Split view · side by side',
       brandHref: "#"
     }),
     sideNav: /*#__PURE__*/React.createElement(NavPane, {
@@ -277,46 +201,10 @@ function App() {
       items: FOLDERS
     })),
     footer: /*#__PURE__*/React.createElement(StatusBar, {
-      start: /*#__PURE__*/React.createElement("span", null, ITEMS.length, " items \xB7 3 unread"),
-      end: /*#__PURE__*/React.createElement("span", null, "Reading pane: ", pane)
+      start: /*#__PURE__*/React.createElement("span", null, ITEMS.length, " items"),
+      end: /*#__PURE__*/React.createElement("span", null, STACKED ? 'Stacked' : 'Side by side')
     })
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "study-page"
-  }, /*#__PURE__*/React.createElement(Inline, {
-    gap: "lg",
-    wrap: true,
-    align: "center",
-    className: "study-switches"
-  }, /*#__PURE__*/React.createElement(SegmentedControl, {
-    label: "Reading pane",
-    value: pane,
-    onChange: setPane,
-    options: [{
-      value: 'right',
-      label: 'Right'
-    }, {
-      value: 'bottom',
-      label: 'Bottom'
-    }, {
-      value: 'off',
-      label: 'Off'
-    }]
-  }), /*#__PURE__*/React.createElement(SegmentedControl, {
-    label: "Rows",
-    value: rows,
-    onChange: setRows,
-    options: [{
-      value: 'one',
-      label: 'One line'
-    }, {
-      value: 'two',
-      label: 'Two lines'
-    }]
-  })), /*#__PURE__*/React.createElement(Mail, {
-    key: pane + rows,
-    pane: pane,
-    rows: rows
-  })));
+  }, /*#__PURE__*/React.createElement(Mail, null));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(SessionProvider, null, /*#__PURE__*/React.createElement(App, null)));
 })();

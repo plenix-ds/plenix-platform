@@ -1,20 +1,70 @@
 {
   "$description": "Resizable (platform/components/Resizable), library wave 10, lane A: its component tokens. The edges follow the shell's pane splitter (a wide hit area, a line in the focus ring's color on hover and focus); the size is a size token set per step from data-plx-width and data-plx-height.",
   "plx-comp": {
-    "resizable-width": { "$value": "{plx-ref.size-320px}", "$type": "dimension", "$description": "Resizable: its width; each size step (data-plx-width) sets it to that size token." },
-    "resizable-height": { "$value": "{plx-ref.size-200px}", "$type": "dimension", "$description": "Resizable: its height; each size step (data-plx-height) sets it to that size token." },
-    "resizable-min-width": { "$value": "{plx-ref.size-120px}", "$type": "dimension", "$description": "Resizable: the narrowest it goes unless the page sets minWidth." },
-    "resizable-max-width": { "$value": "{plx-ref.size-560px}", "$type": "dimension", "$description": "Resizable: the widest it goes unless the page sets maxWidth." },
-    "resizable-min-height": { "$value": "{plx-ref.size-80px}", "$type": "dimension", "$description": "Resizable: the shortest it goes unless the page sets minHeight." },
-    "resizable-max-height": { "$value": "{plx-ref.size-400px}", "$type": "dimension", "$description": "Resizable: the tallest it goes unless the page sets maxHeight." },
-    "resizable-edge-size": { "$value": "{plx-comp.panel-splitter-width}", "$type": "dimension", "$description": "Resizable edge: the hit area across the edge (the pane splitter's), half inside the box and half outside." },
-    "resizable-edge-line-width": { "$value": "{plx-comp.panel-splitter-after-width}", "$type": "dimension", "$description": "Resizable edge: the line shown on hover and focus (the pane splitter's)." },
-    "resizable-edge-line-inset": { "$value": "{plx-comp.panel-splitter-after-inset-inline-start}", "$type": "dimension", "$description": "Resizable edge: the line's place in the middle of the hit area." },
-    "resizable-edge-hover-line-color": { "$value": "{plx-comp.panel-splitter-hover-after-background}", "$type": "color", "$description": "Resizable edge hovered or focused: the line in the focus ring's color (its focus indicator)." },
-    "resizable-edge-duration": { "$value": "{plx-comp.panel-splitter-after-duration}", "$type": "duration", "$description": "Resizable edge: how fast the line and the size menu appear." },
-    "resizable-edge-z-index": { "$value": "{plx-comp.panel-splitter-z-index}", "$type": "number", "$description": "Resizable edge: above the box's content." },
-    "resizable-corner-size": { "$value": "{plx-ref.size-16px}", "$type": "dimension", "$description": "Resizable (both): the corner the pointer drags in both directions." },
-    "resizable-menu-inset": { "$value": "{plx-comp.panel-splitter-menu-inset}", "$type": "dimension", "$description": "Resizable: the size menu's distance from the box's top and end edges." },
-    "resizable-menu-z-index": { "$value": "{plx-comp.panel-splitter-menu-z-index}", "$type": "number", "$description": "Resizable: the size menu above the box's content." }
+    "resizable-width": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "Resizable: its width; each size step (data-plx-width) sets it to that size token."
+    },
+    "resizable-height": {
+      "$value": "{plx-ref.size-200px}",
+      "$type": "dimension",
+      "$description": "Resizable: its height; each size step (data-plx-height) sets it to that size token."
+    },
+    "resizable-min-width": {
+      "$value": "{plx-ref.size-120px}",
+      "$type": "dimension",
+      "$description": "Resizable: the narrowest it goes unless the page sets minWidth."
+    },
+    "resizable-max-width": {
+      "$value": "{plx-ref.size-560px}",
+      "$type": "dimension",
+      "$description": "Resizable: the widest it goes unless the page sets maxWidth."
+    },
+    "resizable-min-height": {
+      "$value": "{plx-ref.size-80px}",
+      "$type": "dimension",
+      "$description": "Resizable: the shortest it goes unless the page sets minHeight."
+    },
+    "resizable-max-height": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "Resizable: the tallest it goes unless the page sets maxHeight."
+    },
+    "resizable-edge-size": {
+      "$value": "{plx-comp.panel-splitter-width}",
+      "$type": "dimension",
+      "$description": "Resizable edge: the hit area across the edge (the pane splitter's), half inside the box and half outside."
+    },
+    "resizable-edge-line-width": {
+      "$value": "{plx-comp.panel-splitter-after-width}",
+      "$type": "dimension",
+      "$description": "Resizable edge: the line shown on hover and focus (the pane splitter's)."
+    },
+    "resizable-edge-line-inset": {
+      "$value": "{plx-comp.panel-splitter-after-inset-inline-start}",
+      "$type": "dimension",
+      "$description": "Resizable edge: the line's place in the middle of the hit area."
+    },
+    "resizable-edge-hover-line-color": {
+      "$value": "{plx-comp.panel-splitter-hover-after-background}",
+      "$type": "color",
+      "$description": "Resizable edge hovered or focused: the line in the focus ring's color (its focus indicator)."
+    },
+    "resizable-edge-duration": {
+      "$value": "{plx-comp.panel-splitter-after-duration}",
+      "$type": "duration",
+      "$description": "Resizable edge: how fast the line and the size menu appear."
+    },
+    "resizable-edge-z-index": {
+      "$value": "{plx-comp.panel-splitter-z-index}",
+      "$type": "number",
+      "$description": "Resizable edge: above the box's content."
+    },
+    "resizable-corner-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "Resizable (both): the corner the pointer drags in both directions."
+    }
   }
 }

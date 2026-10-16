@@ -21,9 +21,6 @@
 .plx-resizable__corner{block-size:var(--plx-comp-resizable-corner-size);cursor:nwse-resize;inline-size:var(--plx-comp-resizable-corner-size);inset-block-end:calc(var(--plx-comp-resizable-corner-size) / -2);inset-inline-end:calc(var(--plx-comp-resizable-corner-size) / -2);position:absolute;touch-action:none;z-index:var(--plx-comp-resizable-edge-z-index);}
 .plx-resizable__corner:dir(rtl){cursor:nesw-resize;}
 /* the menu of sizes (WCAG 2.5.7): in the end corner, shown while the box is hovered or has focus inside, always with touch */
-.plx-resizable__menu.plx-menu-anchor{inset-block-start:var(--plx-comp-resizable-menu-inset);inset-inline-end:var(--plx-comp-resizable-menu-inset);position:absolute;transition-duration:var(--plx-comp-resizable-edge-duration);transition-property:visibility;visibility:hidden;z-index:var(--plx-comp-resizable-menu-z-index);}
-.plx-resizable:hover>.plx-resizable__menu,.plx-resizable:focus-within>.plx-resizable__menu,.plx-resizable.is-hover>.plx-resizable__menu,
-:root[data-plx-interaction="touch"] .plx-resizable__menu,:root[data-plx-interaction="mobile"] .plx-resizable__menu{visibility:visible;}
 /* while an edge is dragged the whole page shows its pointer (the shell's splitter sets is-resizing-columns the same way) */
 :root.is-resizing-rows body{cursor:row-resize;}
 :root.is-resizing-both body{cursor:nwse-resize;}

@@ -1,0 +1,47 @@
+/* Plenix · SplitView, ReadingPane (platform/patterns/SplitView): two panels sharing their room, side by side or stacked,
+   both filling it, with a divider between (owner, 2026-10-16). Every value is a --plx-comp-split-view-* or
+   --plx-comp-reading-pane-* token. */
+
+/* the split view fills its room; the panels share it, each scrolling on its own */
+.plx-split-view{container-type:inline-size;display:flex;flex:1 1 0%;flex-direction:column;min-block-size:0;min-inline-size:0;}
+.plx-split-view__panels{display:flex;flex:1 1 0%;gap:var(--plx-comp-split-view-gap);min-block-size:0;min-inline-size:0;}
+.plx-split-view--side-by-side .plx-split-view__panels{flex-direction:row;}
+.plx-split-view--stacked .plx-split-view__panels{flex-direction:column;}
+.plx-split-view__first{display:flex;flex-direction:column;flex-shrink:0;min-block-size:0;min-inline-size:0;}
+.plx-split-view__first>.plx-resizable__content{display:flex;flex-direction:column;}
+.plx-split-view__first>.plx-resizable__content>*{flex:1 1 0%;min-block-size:0;}
+.plx-split-view--side-by-side .plx-split-view__first{block-size:100%;}
+.plx-split-view--stacked .plx-split-view__first{inline-size:100%;}
+.plx-split-view__second{display:flex;flex:1 1 0%;flex-direction:column;min-block-size:0;min-inline-size:var(--plx-comp-split-view-second-min-width);}
+.plx-split-view--stacked .plx-split-view__second{min-inline-size:0;}
+.plx-split-view__second>*{flex:1 1 0%;min-block-size:0;}
+
+/* the divider: the whole gap is the first panel's resize edge; a thin line down its middle and a pill centered on it */
+.plx-split-view .plx-split-view__first>.plx-resizable__edge{align-items:center;display:flex;justify-content:center;}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge--inline{cursor:col-resize;inline-size:var(--plx-comp-split-view-gap);inset-block-end:0;inset-block-start:0;inset-inline-end:calc(-1 * var(--plx-comp-split-view-gap));}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge--block{block-size:var(--plx-comp-split-view-gap);cursor:row-resize;inset-block-end:calc(-1 * var(--plx-comp-split-view-gap));inset-inline-end:0;inset-inline-start:0;}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge::before{background-color:var(--plx-comp-split-view-line-color);content:"";position:absolute;}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge--inline::before{block-size:100%;inline-size:var(--plx-comp-split-view-line-width);}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge--block::before{block-size:var(--plx-comp-split-view-line-width);inline-size:100%;}
+/* (Resizable's own ::after is its hover line, offset into the edge: the pill takes none of its offsets) */
+.plx-split-view .plx-split-view__first>.plx-resizable__edge::after{background-color:var(--plx-comp-split-view-handle-color);border-radius:var(--plx-comp-split-view-handle-radius);content:"";inset:auto;position:relative;}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge--inline::after{block-size:var(--plx-comp-split-view-handle-length);inline-size:var(--plx-comp-split-view-handle-thickness);}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge--block::after{block-size:var(--plx-comp-split-view-handle-thickness);inline-size:var(--plx-comp-split-view-handle-length);}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge:hover::after,.plx-split-view .plx-split-view__first>.plx-resizable__edge.is-hover::after{background-color:var(--plx-comp-split-view-handle-hover-color);}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible::before,.plx-split-view .plx-split-view__first>.plx-resizable__edge:active::before,
+.plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible::after,.plx-split-view .plx-split-view__first>.plx-resizable__edge:active::after{background-color:var(--plx-comp-split-view-active-color);}
+.plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible{outline-style:none;}
+
+/* no room side by side: the panels stack */
+@container (width < 900px){
+  .plx-split-view--side-by-side .plx-split-view__panels{flex-direction:column;}
+  .plx-split-view--side-by-side .plx-split-view__first{block-size:auto;inline-size:100%;}
+  .plx-split-view--side-by-side .plx-split-view__second{min-inline-size:0;}
+}
+
+/* the reading pane: the data table's frame, an actions row with a thin inset line under it, the item scrolling below */
+.plx-reading-pane{background-color:var(--plx-comp-reading-pane-background);border-color:var(--plx-comp-reading-pane-border-color);border-radius:var(--plx-comp-reading-pane-radius);border-style:solid;border-width:var(--plx-comp-reading-pane-border-width);box-sizing:border-box;display:flex;flex-direction:column;min-block-size:0;min-inline-size:0;overflow-x:hidden;overflow-y:auto;}
+.plx-reading-pane__actions{align-items:center;display:flex;flex-shrink:0;gap:var(--plx-comp-reading-pane-actions-gap);padding-block:var(--plx-comp-reading-pane-actions-padding-block);padding-inline:var(--plx-comp-reading-pane-actions-padding-inline);position:relative;}
+.plx-reading-pane__actions::after{background-color:var(--plx-comp-reading-pane-rule-color);block-size:var(--plx-comp-reading-pane-border-width);content:"";inset-block-end:0;inset-inline-end:var(--plx-comp-reading-pane-rule-inset);inset-inline-start:var(--plx-comp-reading-pane-rule-inset);position:absolute;}
+.plx-reading-pane__body{display:flex;flex:1 1 auto;flex-direction:column;padding:var(--plx-comp-reading-pane-body-padding);}
+.plx-reading-pane__body>.plx-empty-state{margin:auto;}

@@ -1,6 +1,6 @@
 /* Plenix · Resizable, PanelSplitter
    Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
-     Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both, and a menu of sizes
+     Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
      a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is a size
      token: a drag snaps to the nearest, the arrow keys step through them, and a list of steps narrows them further.
@@ -11,18 +11,17 @@
      <Resizable label="Panel" axis="horizontal" steps={[240, 320, 400, 560]} defaultWidth={320}>…</Resizable>   // snapped to steps
      <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
    Props:
-     label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") and the menu's (required)
+     label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") (required)
      axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
        "both" (both edges, and a corner the pointer drags in both directions)
      width, height: the size in pixels, each a size token (--plx-ref-size-*), when the page keeps it; onResize({ width,
        height }) runs with each new size
-     defaultWidth, defaultHeight: the starting size when the box keeps it itself; Reset size in the menu goes back to it
+     defaultWidth, defaultHeight: the starting size when the box keeps it itself
      minWidth, maxWidth, minHeight, maxHeight: the limits in pixels (defaults: the tokens --plx-comp-resizable-min-width,
        -max-width, -min-height and -max-height: 120 to 560 wide, 80 to 400 high)
      steps: the only sizes allowed, smallest first (each a size token): an array for the resized axis, or { width: [],
        height: [] }; without it every size token within the limits
-     strings: the words it shows, for other languages: { width: "{label} width", height: "{label} height", options:
-       "{label} size options", narrower: "Narrower", wider: "Wider", shorter: "Shorter", taller: "Taller", reset:
+     strings: the words it says, for other languages: { width: "{label} width", height: "{label} height" }
        "Reset size" }
      className: more classes on the box; children: its content
      PanelSplitter.label, value, min, max() (a function: the widest it can be now), onChange(width), onCollapse(),
@@ -32,10 +31,8 @@
      Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
        end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
        to the limits.
-     Without dragging (WCAG 2.5.7): a small menu button inside the box's end corner (shown while the box is hovered or has
-       focus inside, always with a touch interaction) offers Narrower, Wider, Shorter, Taller and Reset size.
-     PanelSplitter: drag, or the arrow keys, Home and End; double-click or Enter collapses the area when it can collapse;
-       its width menu offers Narrower, Wider, Reset width and Collapse.
+     No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
+     PanelSplitter: drag, or the arrow keys, Home and End; double-click or Enter collapses the area when it can collapse.
    Notes:
      The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token (never a style
        attribute). The content fits itself: it wraps, or scrolls in a region of its own.
@@ -45,18 +42,12 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
 import { snapSize, stepSize } from '../../utils/sizeSteps.js';
-import { Menu, MenuItem } from '../Menu/Menu.jsx';
-import { Button } from '../Button/Button.jsx';
 
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
    collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
    "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
-   are mirrored (arrowStep gives the step in reading order).
-   Without dragging (WCAG 2.5.7): a small menu button on the edge (shown while the edge is hovered or focused, always with
-   a touch or mobile interaction) offers Narrower and Wider (one size token), Reset width (with defaultValue, the area's
-   default width) and Collapse (with onCollapse). */
-const SPLITTER = { options: '{label} options', narrower: 'Narrower', wider: 'Wider', reset: 'Reset width', collapse: 'Collapse' };
-export function PanelSplitter({ label, value, min, max, onChange, onCollapse, defaultValue, edge = 'end' }) {
+   are mirrored (arrowStep gives the step in reading order). No size menu (owner, 2026-10-16). */
+export function PanelSplitter({ label, value, min, max, onChange, onCollapse, edge = 'end' }) {
   const dir = edge === 'end' ? 1 : -1;
   // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
   const clamp = (w) => snapSize(w, min, max());
@@ -75,27 +66,16 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, de
     else if (e.key === 'End') { e.preventDefault(); onChange(clamp(max())); }
     else if (e.key === 'Enter' && onCollapse) { e.preventDefault(); onCollapse(); }
   };
-  const top = clamp(max()), now = clamp(value);
+  const top = clamp(max());
   return (
-    <>
       <div role="separator" aria-orientation="vertical" aria-label={label} aria-valuenow={value} aria-valuemin={min} aria-valuemax={top} tabIndex={0}
         className={cx('plx-panel-splitter', 'plx-panel-splitter--' + edge)} onPointerDown={onPointerDown} onKeyDown={onKeyDown}
-        data-plx-target-equivalent="the width menu beside it (WCAG 2.5.8 Equivalent)"
         onDoubleClick={onCollapse || undefined} />
-      <Menu label={label} placement={edge === 'end' ? 'bottom-end' : 'bottom-start'} className={cx('plx-panel-splitter__menu', 'plx-panel-splitter__menu--' + edge)}
-        trigger={<Button size="xs" iconOnly icon="more" label={SPLITTER.options.replace('{label}', label || '')} />}>
-        <MenuItem disabled={now <= clamp(min)} onSelect={() => onChange(stepSize(value, -1, min, max()))}>{SPLITTER.narrower}</MenuItem>
-        <MenuItem disabled={now >= top} onSelect={() => onChange(stepSize(value, 1, min, max()))}>{SPLITTER.wider}</MenuItem>
-        {defaultValue != null ? <MenuItem icon="refresh" disabled={now === clamp(defaultValue)} onSelect={() => onChange(clamp(defaultValue))}>{SPLITTER.reset}</MenuItem> : null}
-        {onCollapse ? <MenuItem icon={edge === 'end' ? 'panel-left-close' : 'panel-right-close'} onSelect={onCollapse}>{SPLITTER.collapse}</MenuItem> : null}
-      </Menu>
-    </>
   );
 }
 
 /* ── Resizable: a box with its own resize edges ── */
-const STRINGS = { width: '{label} width', height: '{label} height', options: '{label} size options', narrower: 'Narrower', wider: 'Wider',
-  shorter: 'Shorter', taller: 'Taller', reset: 'Reset size' };
+const STRINGS = { width: '{label} width', height: '{label} height' };
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = (name) => (typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0);
@@ -151,13 +131,11 @@ export function Resizable({ label, axis = 'horizontal', width, height, onResize,
     e.preventDefault();
     set(Object.assign({}, latest.current, { [which]: next }));
   };
-  const reset = { width: defaultWidth != null ? W.snap(defaultWidth) : null, height: defaultHeight != null ? H.snap(defaultHeight) : null };
-  const canReset = (doW && reset.width != null && reset.width !== size.width) || (doH && reset.height != null && reset.height !== size.height);
   const edge = (which) => {
     const S = which === 'width' ? W : H;
     return (
       <div role="separator" tabIndex={0} aria-orientation={which === 'width' ? 'vertical' : 'horizontal'} aria-label={fill(t[which], { label })}
-        aria-valuenow={size[which]} aria-valuemin={S.lo} aria-valuemax={S.hi} data-plx-target-equivalent="the size menu in the box (WCAG 2.5.8 Equivalent)"
+        aria-valuenow={size[which]} aria-valuemin={S.lo} aria-valuemax={S.hi}
         className={cx('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block'))}
         onPointerDown={which === 'width' ? drag(1, 0) : drag(0, 1)} onKeyDown={keys(which)} />
     );
@@ -169,14 +147,6 @@ export function Resizable({ label, axis = 'horizontal', width, height, onResize,
       {doW ? edge('width') : null}
       {doH ? edge('height') : null}
       {doW && doH ? <div className="plx-resizable__corner" aria-hidden="true" onPointerDown={drag(1, 1)} /> : null}
-      <Menu label={fill(t.options, { label })} placement="bottom-end" className="plx-resizable__menu"
-        trigger={<Button size="xs" iconOnly icon="more" label={fill(t.options, { label })} />}>
-        {doW ? <MenuItem disabled={size.width <= W.lo} onSelect={() => set(Object.assign({}, latest.current, { width: W.step(size.width, -1) }))}>{t.narrower}</MenuItem> : null}
-        {doW ? <MenuItem disabled={size.width >= W.hi} onSelect={() => set(Object.assign({}, latest.current, { width: W.step(size.width, 1) }))}>{t.wider}</MenuItem> : null}
-        {doH ? <MenuItem disabled={size.height <= H.lo} onSelect={() => set(Object.assign({}, latest.current, { height: H.step(size.height, -1) }))}>{t.shorter}</MenuItem> : null}
-        {doH ? <MenuItem disabled={size.height >= H.hi} onSelect={() => set(Object.assign({}, latest.current, { height: H.step(size.height, 1) }))}>{t.taller}</MenuItem> : null}
-        {reset.width != null || reset.height != null ? <MenuItem icon="refresh" disabled={!canReset} onSelect={() => set({ width: reset.width != null ? reset.width : size.width, height: reset.height != null ? reset.height : size.height })}>{t.reset}</MenuItem> : null}
-      </Menu>
     </div>
   );
 }

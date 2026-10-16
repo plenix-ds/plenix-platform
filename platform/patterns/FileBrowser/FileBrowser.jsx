@@ -54,7 +54,7 @@
        outline; the keyboard picks a focused file up with Space and moves between folders with the arrow keys. Each move
        is announced. Files dragged in from the computer show the drop overlay over the content.
      The tree pane is a Resizable: its edge drags in size-token steps, the arrow keys step it, and its menu offers
-       Narrower, Wider and Reset size; the tree itself is one Tab stop with the arrow keys (Tree).
+     ; the tree itself is one Tab stop with the arrow keys (Tree).
    Notes:
      The browser never changes the items by itself: every change goes to the page through its handlers, which keep items.
      A picker that only chooses a file is the File picker, not this. Assets with rights and renditions show as asset
