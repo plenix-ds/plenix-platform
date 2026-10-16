@@ -1,10 +1,10 @@
 # Plenix pills and color values
 
-The owner’s revised 70-color palette has 12 families; see [Palette](palette.md) for every canonical color, transparent token and deprecated alias. This implements the chart for review; category collisions below still need the owner.
+The owner’s revised 70-color palette has 12 families; see [Palette](palette.md) for every canonical color, transparent token and deprecated alias. The owner approved the remaining category mappings and retired Brown in favor of Orange.
 
 ## Pill rule
 
-Use the existing soft fill, soft border and on-soft text roles; radius 4px. Statuses use semantic roles. Categories retain their 20 names even when their colors coincide. Components read system roles, never hex values. Orange means action required; Yellow means waiting; Brown has no status meaning.
+Use the existing soft fill, soft border and on-soft text roles; radius 4px. Statuses use semantic roles. There are 19 active categories. Brown is a deprecated alias of Orange for one release; existing Brown data uses Orange. Components read system roles, never hex values. Orange means action required; Yellow means waiting; Brown reference shades remain available; Brown is no longer a category.
 
 ## Semantic pills
 
@@ -33,7 +33,6 @@ Use the existing soft fill, soft border and on-soft text roles; radius 4px. Stat
 | pink | `{plx-ref.color-pink-300}` `#f3b7cd` | `{plx-ref.color-pink-100}` `#ffeef4` | `{plx-ref.color-pink-700}` `#6c3b4f` | `{plx-ref.color-pink-700}` `#6c3b4f` | 7.91 |
 | teal | `{plx-ref.color-teal-500}` `#469990` | `{plx-ref.color-teal-100}` `#dafcf7` | `{plx-ref.color-teal-300}` `#8adcd2` | `{plx-ref.color-teal-700}` `#065a53` | 7.42 |
 | lavender | `{plx-ref.color-purple-300}` `#d7aefb` | `{plx-ref.color-purple-100}` `#f6f0fe` | `{plx-ref.color-purple-500}` `#911eb4` | `{plx-ref.color-purple-700}` `#6a2e7f` | 8.14 |
-| brown | `{plx-ref.color-orange-500}` `#d96800` | `{plx-ref.color-orange-100}` `#fff0e3` | `{plx-ref.color-orange-300}` `#f2ad70` | `{plx-ref.color-brown-700}` `#7a3400` | 8.12 |
 | beige | `{plx-ref.color-yellow-100}` `#fff8df` | `{plx-ref.color-yellow-100}` `#fff8df` | `{plx-ref.color-orange-200}` `#f8d0ad` | `{plx-ref.color-brown-600}` `#765600` | 6.37 |
 | maroon | `{plx-ref.color-red-800}` `#990000` | `{plx-ref.color-red-100}` `#fde7e7` | `{plx-ref.color-red-200}` `#f8aca2` | `{plx-ref.color-red-800}` `#990000` | 7.54 |
 | mint | `{plx-ref.color-green-100}` `#dff6dd` | `{plx-ref.color-green-100}` `#dff6dd` | `{plx-ref.color-green-200}` `#9bd39b` | `{plx-ref.color-green-700}` `#1b5e0c` | 6.92 |
@@ -58,7 +57,6 @@ Use the existing soft fill, soft border and on-soft text roles; radius 4px. Stat
 | pink | `{plx-ref.color-pink-300}` `#f3b7cd` | `{plx-ref.color-pink-100}` `#ffeef4` | `{plx-ref.color-pink-700}` `#6c3b4f` | `{plx-ref.color-pink-700}` `#6c3b4f` | 7.91 |
 | teal | `{plx-ref.color-teal-500}` `#469990` | `{plx-ref.color-teal-100}` `#dafcf7` | `{plx-ref.color-teal-300}` `#8adcd2` | `{plx-ref.color-teal-700}` `#065a53` | 7.42 |
 | lavender | `{plx-ref.color-purple-300}` `#d7aefb` | `{plx-ref.color-purple-100}` `#f6f0fe` | `{plx-ref.color-purple-500}` `#911eb4` | `{plx-ref.color-purple-700}` `#6a2e7f` | 8.14 |
-| brown | `{plx-ref.color-orange-500}` `#d96800` | `{plx-ref.color-orange-100}` `#fff0e3` | `{plx-ref.color-orange-300}` `#f2ad70` | `{plx-ref.color-brown-700}` `#7a3400` | 8.12 |
 | beige | `{plx-ref.color-yellow-100}` `#fff8df` | `{plx-ref.color-yellow-100}` `#fff8df` | `{plx-ref.color-orange-200}` `#f8d0ad` | `{plx-ref.color-brown-600}` `#765600` | 6.37 |
 | maroon | `{plx-ref.color-red-800}` `#990000` | `{plx-ref.color-red-100}` `#fde7e7` | `{plx-ref.color-red-200}` `#f8aca2` | `{plx-ref.color-red-800}` `#990000` | 7.54 |
 | mint | `{plx-ref.color-green-100}` `#dff6dd` | `{plx-ref.color-green-100}` `#dff6dd` | `{plx-ref.color-green-200}` `#9bd39b` | `{plx-ref.color-green-700}` `#1b5e0c` | 6.92 |
@@ -67,49 +65,47 @@ Use the existing soft fill, soft border and on-soft text roles; radius 4px. Stat
 | navy | `{plx-ref.color-blue-950}` `#000075` | `{plx-ref.color-blue-100}` `#ebf0f7` | `{plx-ref.color-blue-300}` `#a2c0e3` | `{plx-ref.color-blue-700}` `#005a9e` | 6.20 |
 | grey | `{plx-ref.color-gray-400}` `#a3a6ad` | `{plx-ref.color-gray-100}` `#f3f3f3` | `{plx-ref.color-gray-300}` `#d0d0d0` | `{plx-ref.color-gray-700}` `#56585e` | 6.41 |
 
-## Owner review
+## Owner decisions
 
-Brown and Orange now share their base, soft and border; Lime and Yellow share their base. Blue’s base becomes the primary brand blue; Cyan, Pink and Lavender borders use the next darker same-family shade, distinct from their bases. Olive’s base becomes Green 500, and Beige’s border becomes Orange 200. No alternate mapping has been invented.
+Brown is retired: its system roles alias Orange for one release and it is omitted from the category pickers. Lime and Yellow share their base, as approved. Blue’s base becomes the primary brand blue; Cyan, Pink and Lavender borders use the next darker same-family shade, distinct from their bases. Olive’s base becomes Green 500, and Beige’s border becomes Orange 200. No alternate mapping has been invented.
 
 | Mode | Channel | Categories | Final color |
 |---|---|---|---|
 | light | base | yellow, lime | #ffe119 |
-| light | base | orange, brown | #d96800 |
 | light | -soft | red, maroon | #fde7e7 |
 | light | -soft | green, lime, mint | #dff6dd |
 | light | -soft | yellow, beige, olive | #fff8df |
 | light | -soft | blue, navy | #ebf0f7 |
-| light | -soft | orange, brown, apricot | #fff0e3 |
+| light | -soft | orange, apricot | #fff0e3 |
 | light | -soft | purple, lavender | #f6f0fe |
 | light | -soft-border | red, maroon | #f8aca2 |
 | light | -soft-border | green, lime, mint | #9bd39b |
 | light | -soft-border | blue, navy | #a2c0e3 |
-| light | -soft-border | orange, brown, apricot | #f2ad70 |
+| light | -soft-border | orange, apricot | #f2ad70 |
 | light | -soft-border | beige, olive | #f8d0ad |
 | light | -on-soft | red, maroon | #990000 |
 | light | -on-soft | green, lime, mint | #1b5e0c |
 | light | -on-soft | yellow, beige, olive | #765600 |
 | light | -on-soft | blue, navy | #005a9e |
-| light | -on-soft | orange, brown, apricot | #7a3400 |
+| light | -on-soft | orange, apricot | #7a3400 |
 | light | -on-soft | purple, lavender | #6a2e7f |
 | dark | base | yellow, lime | #ffe119 |
-| dark | base | orange, brown | #d96800 |
 | dark | -soft | red, maroon | #fde7e7 |
 | dark | -soft | green, lime, mint | #dff6dd |
 | dark | -soft | yellow, beige, olive | #fff8df |
 | dark | -soft | blue, navy | #ebf0f7 |
-| dark | -soft | orange, brown, apricot | #fff0e3 |
+| dark | -soft | orange, apricot | #fff0e3 |
 | dark | -soft | purple, lavender | #f6f0fe |
 | dark | -soft-border | red, maroon | #f8aca2 |
 | dark | -soft-border | green, lime, mint | #9bd39b |
 | dark | -soft-border | blue, navy | #a2c0e3 |
-| dark | -soft-border | orange, brown, apricot | #f2ad70 |
+| dark | -soft-border | orange, apricot | #f2ad70 |
 | dark | -soft-border | beige, olive | #f8d0ad |
 | dark | -on-soft | red, maroon | #990000 |
 | dark | -on-soft | green, lime, mint | #1b5e0c |
 | dark | -on-soft | yellow, beige, olive | #765600 |
 | dark | -on-soft | blue, navy | #005a9e |
-| dark | -on-soft | orange, brown, apricot | #7a3400 |
+| dark | -on-soft | orange, apricot | #7a3400 |
 | dark | -on-soft | purple, lavender | #6a2e7f |
 
 ## Category border rule

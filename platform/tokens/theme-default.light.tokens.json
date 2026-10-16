@@ -731,9 +731,9 @@
       }
     },
     "status-away": {
-      "$value": "{plx-ref.color-yellow-500}",
+      "$value": "{plx-ref.color-brown-600}",
       "$type": "color",
-      "$description": "Away: revised yellow-500; 2.32:1 on white, below the required 3:1 non-text contrast. Owner semantic-role review required.",
+      "$description": "Away: owner-approved brown-600; retains the 3:1 minimum on light surfaces (2026-10-16).",
       "$extensions": {
         "plenix": {
           "group": "status",
@@ -2858,7 +2858,7 @@
       }
     },
     "category-brown": {
-      "$value": "{plx-ref.color-orange-500}",
+      "$value": "{plx-sys.category-orange}",
       "$type": "color",
       "$description": "A category color (batch 290): brown. The same in every theme, so a category is always recognized. [data-plx-category=\"brown\"] applies it.",
       "$extensions": {
@@ -2866,10 +2866,11 @@
           "group": "dataviz",
           "purpose": "A category color, brown: the same in every theme, so a category is always recognized."
         }
-      }
+      },
+      "$deprecated": "Use --plx-sys-category-orange; Brown is retired in favor of Orange (kept for one release)."
     },
     "category-brown-on": {
-      "$value": "{plx-ref.color-white}",
+      "$value": "{plx-sys.category-orange-on}",
       "$type": "color",
       "$description": "Text on the brown category color (white: the stronger contrast).",
       "$extensions": {
@@ -2877,10 +2878,11 @@
           "group": "dataviz",
           "purpose": "Text on the brown category color."
         }
-      }
+      },
+      "$deprecated": "Use --plx-sys-category-orange-on; Brown is retired in favor of Orange (kept for one release)."
     },
     "category-brown-soft": {
-      "$value": "{plx-ref.color-orange-100}",
+      "$value": "{plx-sys.category-orange-soft}",
       "$type": "color",
       "$description": "The brown category pill background: brown-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2888,10 +2890,11 @@
           "group": "dataviz",
           "purpose": "A category pill, brown: its soft background."
         }
-      }
+      },
+      "$deprecated": "Use --plx-sys-category-orange-soft; Brown is retired in favor of Orange (kept for one release)."
     },
     "category-brown-soft-border": {
-      "$value": "{plx-ref.color-orange-300}",
+      "$value": "{plx-sys.category-orange-soft-border}",
       "$type": "color",
       "$description": "The brown category pill border, 1px: brown-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2899,10 +2902,11 @@
           "group": "dataviz",
           "purpose": "A category pill, brown: its 1px border."
         }
-      }
+      },
+      "$deprecated": "Use --plx-sys-category-orange-soft-border; Brown is retired in favor of Orange (kept for one release)."
     },
     "category-brown-on-soft": {
-      "$value": "{plx-ref.color-brown-700}",
+      "$value": "{plx-sys.category-orange-on-soft}",
       "$type": "color",
       "$description": "The brown category pill text, AA on its background: brown-800 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2910,7 +2914,8 @@
           "group": "dataviz",
           "purpose": "A category pill, brown: its text."
         }
-      }
+      },
+      "$deprecated": "Use --plx-sys-category-orange-on-soft; Brown is retired in favor of Orange (kept for one release)."
     },
     "category-beige": {
       "$value": "{plx-ref.color-yellow-100}",

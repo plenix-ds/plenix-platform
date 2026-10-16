@@ -50,6 +50,7 @@ import { useOverflow, splitAt } from '../../utils/overflow.js';
 const nameOf = (h) => h.charAt(0).toUpperCase() + h.slice(1);
 
 export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, showLabel = false, onClick, className, ...rest }) {
+  if (category === 'brown') category = 'orange';
   devWarn('ColorSwatch', { tone, size }, { tone: ['accent','surface','frost'], size: ['sm','md'] });
   if (showLabel && label) {
     // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
@@ -66,9 +67,10 @@ export function ColorSwatch({ color, category, tone, size = 'md', shape = 'squar
 // the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
 export function ColorPicker({ value, onChange, label = 'Color', size = 'md', palette = 'data', colors, invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
   devWarn('ColorPicker', { size }, { size: ['sm','md'] });
-  const all = palette === 'category' ? CATEGORY_COLORS : DATA_COLORS;
-  const list = Array.isArray(colors) ? colors.filter((h) => all.indexOf(h) >= 0) : all;
   const cat = palette === 'category';
+  if (cat && value === 'brown') value = 'orange';
+  const all = cat ? CATEGORY_COLORS : DATA_COLORS;
+  const list = Array.isArray(colors) ? [...new Set(colors.map((h) => cat && h === 'brown' ? 'orange' : h))].filter((h) => all.indexOf(h) >= 0) : all;
   const ref = React.useRef(null);
   const fit = useOverflow(ref, list.length, palette + size + list.join());
   const hidden = list.slice(fit);

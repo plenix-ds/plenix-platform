@@ -27,6 +27,9 @@ for(const mode of ['light','dark']){
  const graph=Object.assign({},...files.map(f=>flatten(json(f))));check('all '+mode+'references present and acyclic',()=>validateGraph(graph));
  for(const name of Object.keys(R).filter(n=>n.startsWith('color-')))check(mode+' '+name+' resolves',()=>assert.match(resolve(graph,'plx-ref.'+name),/^#[0-9a-f]{6,8}$/i));
  const S=json('platform/tokens/theme-default.'+mode+'.tokens.json')['plx-sys'];
+ check(mode+'19 active categories',()=>assert.equal(Object.keys(S).filter(k=>/^category-[a-z]+$/.test(k)&&!S[k].$deprecated).length,19));
+ for(const suffix of ['','-soft','-soft-border','-on-soft','-on'])check(mode+'Brown compatibility '+suffix,()=>{const key='category-brown'+suffix;assert.equal(S[key].$value,'{plx-sys.category-orange'+suffix+'}');assert.ok(S[key].$deprecated);assert.equal(resolve(graph,'plx-sys.'+key),resolve(graph,'plx-sys.category-orange'+suffix));});
+ if(mode==='light')check('accessible owner-approved away role',()=>{assert.equal(S['status-away'].$value,'{plx-ref.color-brown-600}');});
  const palette=Object.entries(R).filter(([k,v])=>k.startsWith('color-')&&!v.$deprecated&&/^#[0-9a-f]{6}$/i.test(v.$value));
  const contrastSource=read('platform/utils/contrast.js').replace(/^export (const|function) /gm,'$1 '),context={};require('vm').createContext(context);require('vm').runInContext(contrastSource+'\nthis.ratio=contrastRatio;',context);
  for(const key of Object.keys(S).filter(k=>/^category-[a-z]+$/.test(k)))check(mode+'category border and text '+key,()=>{
@@ -39,7 +42,7 @@ for(const mode of ['light','dark']){
  const applied=categoryBorders({'plx-ref':R},fixture);check(mode+'generic next-darker policy',()=>{assert.equal(applied.length,3);for(const c of applied){const base=resolve(graph,'plx-sys.category-'+c.category),baseName=palette.find(([,v])=>v.$value===base)[0],borderName=c.after.replace(/^\{plx-ref\.color-/, '').replace(/\}$/, '');assert.equal(borderName.split('-')[0],baseName.slice(6).split('-')[0]);assert.ok(lightness(c.hex)<lightness(base));}});
  check(mode+'border policy idempotent',()=>assert.deepEqual(categoryBorders({'plx-ref':R},fixture),[]));
 
- for(const [name,destination]of [['category-brown','orange-500'],['category-brown-on-soft','brown-700'],['category-yellow-on-soft','brown-600'],['category-lime','yellow-150'],['category-blue','blue-400']])check(mode+'role '+name,()=>assert.equal(S[name].$value,'{plx-ref.color-'+destination+'}'));
+ for(const [name,destination]of [['category-yellow-on-soft','brown-600'],['category-lime','yellow-150'],['category-blue','blue-400']])check(mode+'role '+name,()=>assert.equal(S[name].$value,'{plx-ref.color-'+destination+'}'));
 }
 check('reject missing ref',()=>assert.throws(()=>validateGraph({'plx-ref.a':{$value:'{plx-ref.absent}'}}),/Missing/));
 check('reject cycle',()=>assert.throws(()=>validateGraph({'plx-ref.a':{$value:'{plx-ref.b}'},'plx-ref.b':{$value:'{plx-ref.a}'}}),/Circular/));

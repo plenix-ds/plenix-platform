@@ -121,7 +121,7 @@ function migrate(options={}) {
     const copy=JSON.parse(JSON.stringify(doc));
     function walk(o){for(const [k,v]of Object.entries(o))if(k==='$value')o[k]=JSON.parse(replace(JSON.stringify(v)));else if(v&&typeof v==='object')walk(v);}
     walk(copy);
-    if(file==='platform/tokens/theme-default.light.tokens.json')copy['plx-sys']['status-away'].$description='Away: revised yellow-500; 2.32:1 on white, below the required 3:1 non-text contrast. Owner semantic-role review required.';
+    if(file==='platform/tokens/theme-default.light.tokens.json'){ copy['plx-sys']['status-away'].$value='{plx-ref.color-brown-600}'; copy['plx-sys']['status-away'].$description='Away: owner-approved brown-600; retains the 3:1 minimum on light surfaces (2026-10-16).'; }
     afterDocs.set(file,copy);
     if(format(doc)!==format(copy)){changes.set(file,format(copy));report.push('Token consumers: '+file);}
   }
@@ -133,6 +133,10 @@ function migrate(options={}) {
   const borderChanges=[];
   for(const mode of ['light','dark']){
     const file='platform/tokens/theme-default.'+mode+'.tokens.json', theme=afterDocs.get(file);
+    for(const key of Object.keys(theme['plx-sys']).filter(k=>/^category-brown(?:-|$)/.test(k))){
+      const target=key.replace('category-brown','category-orange');
+      theme['plx-sys'][key]={...theme['plx-sys'][key],$value:'{plx-sys.'+target+'}',$deprecated:'Use --plx-sys-'+target+'; Brown is retired in favor of Orange (kept for one release).'};
+    }
     for(const change of categoryBorders(finalRef,theme))borderChanges.push({mode,...change});
     if(format(beforeDocs.get(file))!==format(theme))changes.set(file,format(theme));
   }
@@ -157,7 +161,7 @@ function migrate(options={}) {
     }));
     report.push('| --plx-sys-'+role+' | '+values[0].join(' → ')+' | '+values[1].join(' → ')+' | '+(pairs.join('<br>')||'No registered pair')+' |');
   }
-  const categoryKeys=roles.filter(r=>/^category-[a-z]+$/.test(r)), collisions=[];
+  const categoryKeys=roles.filter(r=>/^category-[a-z]+$/.test(r)&&!afterDocs.get('platform/tokens/theme-default.light.tokens.json')['plx-sys'][r].$deprecated), collisions=[];
   report.push('\n## Category collisions','| Mode | Channel | Categories | Final color |','|---|---|---|---|');
   for(const mode of themes)for(const suffix of ['','-soft','-soft-border','-on-soft']){
     const groups=new Map();for(const key of categoryKeys){const hex=resolve(modeGraphs[mode][1],'plx-sys.'+key+suffix);if(!groups.has(hex))groups.set(hex,[]);groups.get(hex).push(key.slice(9));}
@@ -170,11 +174,11 @@ function migrate(options={}) {
   palette+='## Transparent\n\n| Token | Value |\n|---|---|\n'+Object.entries(out).filter(([k,v])=>k.startsWith('color-')&&!v.$deprecated&&!/^#[0-9a-f]{6}$/i.test(v.$value)).map(([k,v])=>'| `--plx-ref-'+k+'` | `'+v.$value+'` |').join('\n')+'\n\n## Deprecated aliases\n\n| Alias | Destination |\n|---|---|\n'+Object.entries(out).filter(([,v])=>v.$deprecated).map(([k,v])=>'| `--plx-ref-'+k+'` | `'+v.$value+'` |').join('\n')+'\n';
   changes.set('docs/palette.md',palette);
   const roleCell=(mode,key)=>{const t=afterDocs.get('platform/tokens/theme-default.'+mode+'.tokens.json')['plx-sys'][key];return '`'+t.$value+'` `'+resolve(modeGraphs[mode][1],'plx-sys.'+key)+'`';};
-  let pills='# Plenix pills and color values\n\nThe owner’s revised 70-color palette has 12 families; see [Palette](palette.md) for every canonical color, transparent token and deprecated alias. This implements the chart for review; category collisions below still need the owner.\n\n## Pill rule\n\nUse the existing soft fill, soft border and on-soft text roles; radius 4px. Statuses use semantic roles. Categories retain their 20 names even when their colors coincide. Components read system roles, never hex values. Orange means action required; Yellow means waiting; Brown has no status meaning.\n\n## Semantic pills\n\n| Variant | Light fill | Light border | Light text | Contrast |\n|---|---|---|---|---|\n';
+  let pills='# Plenix pills and color values\n\nThe owner’s revised 70-color palette has 12 families; see [Palette](palette.md) for every canonical color, transparent token and deprecated alias. The owner approved the remaining category mappings and retired Brown in favor of Orange.\n\n## Pill rule\n\nUse the existing soft fill, soft border and on-soft text roles; radius 4px. Statuses use semantic roles. There are 19 active categories. Brown is a deprecated alias of Orange for one release; existing Brown data uses Orange. Components read system roles, never hex values. Orange means action required; Yellow means waiting; Brown reference shades remain available; Brown is no longer a category.\n\n## Semantic pills\n\n| Variant | Light fill | Light border | Light text | Contrast |\n|---|---|---|---|---|\n';
   const semantic=[['Neutral','neutral'],['Success','success'],['Active','active'],['Waiting','waiting'],['Action required','action-required'],['Negative','negative']];
   for(const [label,key]of semantic){const g=modeGraphs.light[1], prefix='status-pill-'+key;pills+='| '+label+' | '+roleCell('light',prefix+'-background')+' | '+roleCell('light',prefix+'-border')+' | '+roleCell('light',prefix+'-text')+' | '+contrastRatio(resolve(g,'plx-sys.'+prefix+'-text'),resolve(g,'plx-sys.'+prefix+'-background')).toFixed(2)+' |\n';}
   for(const mode of themes){pills+='\n## Categories — '+mode+'\n\n| Category | Base | Soft | Border | Text | Text contrast |\n|---|---|---|---|---|---|\n';for(const key of categoryKeys){const g=modeGraphs[mode][1];pills+='| '+key.slice(9)+' | '+['','-soft','-soft-border','-on-soft'].map(s=>roleCell(mode,key+s)).join(' | ')+' | '+contrastRatio(resolve(g,'plx-sys.'+key+'-on-soft'),resolve(g,'plx-sys.'+key+'-soft')).toFixed(2)+' |\n';}}
-  pills+='\n## Owner review\n\nBrown and Orange now share their base, soft and border; Lime and Yellow share their base. Blue’s base becomes the primary brand blue; Cyan, Pink and Lavender borders use the next darker same-family shade, distinct from their bases. Olive’s base becomes Green 500, and Beige’s border becomes Orange 200. No alternate mapping has been invented.\n\n| Mode | Channel | Categories | Final color |\n|---|---|---|---|\n'+collisions.map(r=>'| '+r.join(' | ')+' |').join('\n')+'\n';
+  pills+='\n## Owner decisions\n\nBrown is retired: its system roles alias Orange for one release and it is omitted from the category pickers. Lime and Yellow share their base, as approved. Blue’s base becomes the primary brand blue; Cyan, Pink and Lavender borders use the next darker same-family shade, distinct from their bases. Olive’s base becomes Green 500, and Beige’s border becomes Orange 200. No alternate mapping has been invented.\n\n| Mode | Channel | Categories | Final color |\n|---|---|---|---|\n'+collisions.map(r=>'| '+r.join(' | ')+' |').join('\n')+'\n';
   pills+='\n## Category border rule\n\nA category border never equals its base. When their resolved colors coincide after migration, use the next darker canonical shade in the same family. Keep on-soft text contrast at least 4.5:1.\n\n| Mode | Category | Border before → after | Final color |\n|---|---|---|---|\n'+borderChanges.map(c=>'| '+[c.mode,c.category,c.before+' → '+c.after,c.hex].join(' | ')+' |').join('\n')+'\n';
   changes.set('docs/pills-and-colors.md',pills);
   console.log('PALETTE_70:83 rows,70 canonical,'+Object.values(out).filter(v=>v.$deprecated).length+' aliases; no new hex; all families darker by number; both theme graphs valid.');
