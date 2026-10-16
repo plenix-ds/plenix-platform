@@ -1,0 +1,299 @@
+{
+  "android-content|Text roles": {
+    "summary": "W15B localized writing, sentence case, consistent terminology and specific action labels.",
+    "variants": [
+      {
+        "name": "W15B: Style and grammar",
+        "web": "foundations|Style and grammar",
+        "compose": "Read complete sentences from stringResource rather than concatenating UI words.",
+        "views": "Load complete sentences with getString and resource placeholders.",
+        "use": "Store complete sentences in localized resources; use American English source copy and preserve placeholders."
+      },
+      {
+        "name": "W15B: Capitalization",
+        "web": "foundations|Capitalization",
+        "compose": "Use sentence-case string resources without uppercase transformations.",
+        "views": "Disable legacy all-caps transformation where needed and preserve proper names.",
+        "use": "Use sentence case in resource values; preserve proper product names and acronyms."
+      },
+      {
+        "name": "W15B: Inclusive language",
+        "web": "foundations|Inclusive language",
+        "compose": "Use reviewed string resources and test TalkBack pronunciation in the selected locale.",
+        "views": "Use reviewed localized resources rather than assumptions about identity, age or ability.",
+        "use": "Describe the actual situation without stereotypes or assumptions; use specific role and capability terms."
+      },
+      {
+        "name": "W15B: Terminology",
+        "web": "foundations|Terminology",
+        "compose": "Share string resources across screens for the same concept.",
+        "views": "Reuse R.string keys instead of introducing different labels for the same action.",
+        "use": "Use the reviewed glossary consistently for the same concept across screens and resource keys."
+      },
+      {
+        "name": "W15B: Action labels",
+        "web": "foundations|Action labels",
+        "compose": "Use a localized Text label inside Button; retain Material semantics.",
+        "views": "Use a localized button text naming the result; avoid conflicting contentDescription.",
+        "use": "Name the action and result with a verb such as Save changes; visible and accessible labels agree."
+      }
+    ],
+    "anatomy": [
+      "Localized resource keys and translator comments",
+      "Reviewed terms and sentence-case values",
+      "Visible and accessible labels with matching meaning"
+    ],
+    "attributes": [
+      {
+        "attribute": "Localized copy",
+        "value": "W15B localized writing, sentence case, consistent terminology and specific action labels.",
+        "compose": "Read complete sentences from stringResource rather than concatenating UI words. Use sentence-case string resources without uppercase transformations. Use reviewed string resources and test TalkBack pronunciation in the selected locale. Share string resources across screens for the same concept. Use a localized Text label inside Button; retain Material semantics.",
+        "views": "Load complete sentences with getString and resource placeholders. Disable legacy all-caps transformation where needed and preserve proper names. Use reviewed localized resources rather than assumptions about identity, age or ability. Reuse R.string keys instead of introducing different labels for the same action. Use a localized button text naming the result; avoid conflicting contentDescription."
+      }
+    ],
+    "states": [
+      {
+        "name": "Localized",
+        "description": "Review full translated labels, pronunciation and large text without changing meaning."
+      },
+      {
+        "name": "Assistive technology",
+        "description": "Verify meaningful labels and remove decorative stops."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Button(onClick = save) { Text(stringResource(R.string.save_changes)) }",
+        "Text(stringResource(R.string.choose_team_member))",
+        "// Resource values: Save changes; Choose a team member. Preserve proper names."
+      ],
+      "views": [
+        "saveButton.setText(R.string.save_changes)",
+        "saveButton.isAllCaps = false",
+        "memberLabel.setText(R.string.choose_team_member)"
+      ]
+    }
+  },
+  "android-content|Images": {
+    "summary": "W15B meaningful image alternatives and decorative-image exclusion from accessibility.",
+    "variants": [
+      {
+        "name": "W15B: Text alternatives",
+        "web": "foundations|Text alternatives",
+        "compose": "Use Image contentDescription for meaning and null for decorative images.",
+        "views": "Set meaningful ImageView contentDescription; mark decorative images importantForAccessibility=no.",
+        "use": "Describe the meaning of an informative image; decorative images have no separate accessibility stop."
+      }
+    ],
+    "anatomy": [
+      "Informative image and meaningful alternative",
+      "Decorative image excluded from accessibility"
+    ],
+    "attributes": [
+      {
+        "attribute": "Image meaning",
+        "value": "W15B meaningful image alternatives and decorative-image exclusion from accessibility.",
+        "compose": "Use Image contentDescription for meaning and null for decorative images.",
+        "views": "Set meaningful ImageView contentDescription; mark decorative images importantForAccessibility=no."
+      }
+    ],
+    "states": [
+      {
+        "name": "Localized",
+        "description": "Review full translated labels, pronunciation and large text without changing meaning."
+      },
+      {
+        "name": "Assistive technology",
+        "description": "Verify meaningful labels and remove decorative stops."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Image(painter = painterResource(R.drawable.profile_photo), contentDescription = stringResource(R.string.profile_photo))",
+        "Image(painter = painterResource(R.drawable.decoration), contentDescription = null)"
+      ],
+      "views": [
+        "informativeImage.contentDescription = getString(R.string.profile_photo)",
+        "decorativeImage.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO"
+      ]
+    }
+  },
+  "android-actions|Button": {
+    "summary": "W15B page actions use native buttons and safe-area-aware layout without obscuring focused content.",
+    "variants": [
+      {
+        "name": "W15B: Page actions bar",
+        "web": "page-structures|Page actions bar",
+        "compose": "Use Scaffold bottomBar for persistent page actions and respect contentPadding and IME insets.",
+        "views": "Use a bottom actions container with WindowInsets and scroll padding so focused fields remain visible.",
+        "use": "Keep save and cancel reachable without covering fields, keyboard focus or system safe areas."
+      }
+    ],
+    "anatomy": [
+      "Localized cancel and primary actions",
+      "Safe-area-aware action container",
+      "Scrollable content clear of actions and keyboard"
+    ],
+    "attributes": [
+      {
+        "attribute": "Reachable page actions",
+        "value": "W15B page actions use native buttons and safe-area-aware layout without obscuring focused content.",
+        "compose": "Use Scaffold bottomBar for persistent page actions and respect contentPadding and IME insets.",
+        "views": "Use a bottom actions container with WindowInsets and scroll padding so focused fields remain visible."
+      }
+    ],
+    "states": [
+      {
+        "name": "Default",
+        "description": "Actions remain reachable and follow native keyboard order."
+      },
+      {
+        "name": "Keyboard and narrow window",
+        "description": "Insets and scroll content keep focused fields visible; labels remain readable."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Scaffold(bottomBar = {",
+        "    Row { Button(onClick = cancel) { Text(stringResource(R.string.cancel)) }; Button(onClick = save) { Text(stringResource(R.string.save_changes)) } }",
+        "}) { contentPadding -> PageContent(Modifier.padding(contentPadding)) }",
+        "// Apply the appropriate Material window and IME insets for the screen."
+      ],
+      "views": [
+        "saveButton.setText(R.string.save_changes)",
+        "cancelButton.setText(R.string.cancel)",
+        "// Apply WindowInsets to the actions container and keep scroll content clear of actions and the IME."
+      ]
+    }
+  },
+  "android-implementation|How to build": {
+    "summary": "W15B native implementation and web-package boundaries; browser adapters and web linters remain web tooling.",
+    "variants": [
+      {
+        "name": "W15B: Platforms standard",
+        "web": "implementation|Platforms standard",
+        "compose": "Use generated tokens with Material layout, navigation and semantics.",
+        "views": "Use generated resources with Android layouts, navigation and accessibility semantics.",
+        "use": "Use the existing platform standard and generated tokens; retain native layout, navigation and input behavior."
+      },
+      {
+        "name": "W15B: Mobile web",
+        "web": "implementation|Mobile web",
+        "compose": "For hosted web content, test responsive behavior in WebView; native screens use Material window insets.",
+        "views": "Test WebView viewport and touch behavior separately from native view layouts.",
+        "use": "This is browser implementation guidance, not a native adapter; validate narrow layouts and touch input in the actual browser."
+      },
+      {
+        "name": "W15B: Desktop",
+        "web": "implementation|Desktop",
+        "compose": "Support keyboard traversal and adaptive window sizing without copying fixed desktop dimensions.",
+        "views": "Test hardware keyboard traversal, focus restoration and resizable Android windows.",
+        "use": "Keep desktop keyboard operation, focus restoration and resizable layouts distinct from narrow-screen behavior."
+      },
+      {
+        "name": "W15B: Native implementation",
+        "web": "implementation|Native implementation",
+        "compose": "Consume generated Kotlin tokens with Compose and Material controls.",
+        "views": "Consume generated Android resources with native views and platform accessibility APIs.",
+        "use": "Generate tokens through the existing build; use platform controls and additive native guidance instead of browser wrappers."
+      },
+      {
+        "name": "W15B: Browser support policy",
+        "web": "implementation|Browser support policy",
+        "compose": "Evaluate capability checks inside WebView and test the supported engine versions.",
+        "views": "Do not infer WebView capability from Android API level; test hosted web content.",
+        "use": "Browser queries and capability fallbacks apply to web builds only; browser engines inside native hosts need separate testing."
+      },
+      {
+        "name": "W15B: Vue",
+        "web": "implementation|Vue",
+        "compose": "Use Compose for native screens; Vue runs only as web content in a WebView.",
+        "views": "Use Android views for native screens; the Vue adapter is a browser integration.",
+        "use": "The Vue package mounts the React web runtime; it does not create native controls or replace native token builds."
+      },
+      {
+        "name": "W15B: Lint tooling",
+        "web": "implementation|Lint tooling",
+        "compose": "Run Kotlin and Android checks for Compose; web lint does not inspect Kotlin semantics.",
+        "views": "Run Android lint, resource checks and accessibility review separately from web CSS and JavaScript lint.",
+        "use": "ESLint and Stylelint check web JavaScript and CSS; native compiler and accessibility checks remain separate."
+      }
+    ],
+    "anatomy": [
+      "Generated native tokens",
+      "Native framework controls and build checks",
+      "Separate browser runtime and package boundary"
+    ],
+    "attributes": [
+      {
+        "attribute": "Runtime boundary",
+        "value": "W15B native implementation and web-package boundaries; browser adapters and web linters remain web tooling.",
+        "compose": "Use generated tokens with Material layout, navigation and semantics. For hosted web content, test responsive behavior in WebView; native screens use Material window insets. Support keyboard traversal and adaptive window sizing without copying fixed desktop dimensions. Consume generated Kotlin tokens with Compose and Material controls. Evaluate capability checks inside WebView and test the supported engine versions. Use Compose for native screens; Vue runs only as web content in a WebView. Run Kotlin and Android checks for Compose; web lint does not inspect Kotlin semantics.",
+        "views": "Use generated resources with Android layouts, navigation and accessibility semantics. Test WebView viewport and touch behavior separately from native view layouts. Test hardware keyboard traversal, focus restoration and resizable Android windows. Consume generated Android resources with native views and platform accessibility APIs. Do not infer WebView capability from Android API level; test hosted web content. Use Android views for native screens; the Vue adapter is a browser integration. Run Android lint, resource checks and accessibility review separately from web CSS and JavaScript lint."
+      }
+    ],
+    "states": [
+      {
+        "name": "Build and review",
+        "description": "Compile native targets and run native checks; test browser packages separately in their actual runtime."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Compile the generated Kotlin token source with native Compose and Material screens.",
+        "// Vue and browser capability fallbacks run only inside separately tested web content."
+      ],
+      "views": [
+        "// Compile native views and generated token resources in the Android target.",
+        "// Run Android lint and accessibility review; web lint does not validate native views."
+      ]
+    }
+  },
+  "android-interaction|Conformance": {
+    "summary": "W15B native accessibility testing covers assistive technology, focus, scaled text and changed states.",
+    "variants": [
+      {
+        "name": "W15B: Accessibility testing",
+        "web": "interaction|Accessibility testing",
+        "compose": "Use Compose semantics tests and TalkBack; test font scaling, traversal, errors and modal focus return.",
+        "views": "Use Accessibility Scanner and TalkBack; test labels, focus order, large text and error announcements.",
+        "use": "Combine automated checks with native assistive-technology, keyboard, large-text and error-state review."
+      }
+    ],
+    "anatomy": [
+      "Accessible name and role",
+      "Traversal and focus restoration",
+      "Large text, errors and reduced-motion states"
+    ],
+    "attributes": [
+      {
+        "attribute": "Native review",
+        "value": "W15B native accessibility testing covers assistive technology, focus, scaled text and changed states.",
+        "compose": "Use Compose semantics tests and TalkBack; test font scaling, traversal, errors and modal focus return.",
+        "views": "Use Accessibility Scanner and TalkBack; test labels, focus order, large text and error announcements."
+      }
+    ],
+    "states": [
+      {
+        "name": "Default and expanded",
+        "description": "Inspect actual accessible labels, roles, traversal and selected states."
+      },
+      {
+        "name": "Error and modal",
+        "description": "Check error announcements and focus return with the native screen reader."
+      }
+    ],
+    "code": {
+      "compose": [
+        "composeTestRule.onNodeWithText(\"Save changes\").assertHasClickAction()",
+        "// Also test TalkBack, font scaling, error announcements and modal focus return."
+      ],
+      "views": [
+        "saveButton.setText(R.string.save_changes)",
+        "statusView.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE",
+        "statusView.setText(R.string.changes_saved)",
+        "// Verify TalkBack traversal and focus return with actual error and modal states."
+      ]
+    }
+  }
+}

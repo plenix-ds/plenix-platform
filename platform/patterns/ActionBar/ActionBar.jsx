@@ -7,6 +7,7 @@
      </ActionBar>
    Props:
      label: names the group of buttons for screen readers; default "Actions"
+     sticky: true (default) keeps page actions at the scroll bottom; false keeps an embedded bar in normal flow
      className: more classes on the bar
      children: the buttons, in reading order, the primary action last (it sits at the right edge); a destructive action
        first, away from the primary
@@ -22,6 +23,6 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
-export function ActionBar({ label = 'Actions', className, children }) {
-  return <div role="group" aria-label={label} className={cx('plx-action-bar', className)}>{children}</div>;
+export function ActionBar({ label = 'Actions', sticky = true, className, children }) {
+  return <div role="group" aria-label={label} className={cx('plx-action-bar', !sticky && 'plx-action-bar--static', className)}>{children}</div>;
 }

@@ -1,0 +1,53 @@
+{
+  "$description": "Proposed support policy over existing feature checks and fallbacks. Owner reviews release support targets.",
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Edge versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 iOS versions",
+    "not dead"
+  ],
+  "features": [
+    {
+      "id": "modules",
+      "test": "\"noModule\" in HTMLScriptElement.prototype",
+      "fallback": "Use the packaged CommonJS build in a compatible application build tool."
+    },
+    {
+      "id": "grid",
+      "test": "CSS.supports(\"display\", \"grid\")",
+      "fallback": "Present a linear list using the same semantic reading order."
+    },
+    {
+      "id": "dialog",
+      "test": "HTMLDialogElement.prototype.showModal",
+      "fallback": "Platform overlay components retain their existing focus and modal behavior."
+    },
+    {
+      "id": "popover",
+      "test": "HTMLElement.prototype.showPopover",
+      "fallback": "Existing positioned overlay fallback; keep dismiss and focus-return behavior."
+    },
+    {
+      "id": "anchor",
+      "test": "CSS.supports(\"anchor-name\", \"--plx-anchor\")",
+      "fallback": "Existing useFloating measurement fallback."
+    },
+    {
+      "id": "container",
+      "test": "CSS.supports(\"container-type\", \"inline-size\")",
+      "fallback": "Existing responsive media/layout modes."
+    },
+    {
+      "id": "intl",
+      "test": "Intl.NumberFormat and Intl.DateTimeFormat",
+      "fallback": "The application must provide an Intl polyfill before mounting."
+    }
+  ],
+  "testing": [
+    "Run the repository changed-page, keyboard and accessibility suites in Chrome.",
+    "Validate Safari, Firefox and Edge manually before declaring a release supported.",
+    "A supported query does not claim these browsers have all been tested."
+  ]
+}

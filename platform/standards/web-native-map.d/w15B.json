@@ -1,0 +1,125 @@
+{
+  "$description": "W15B existing native counterparts; web build packages have native implementation guidance, not native adapters.",
+  "map": {
+    "foundations|Style and grammar": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "foundations|Capitalization": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "foundations|Inclusive language": {
+      "ios": [
+        "ios-foundations|Inclusion"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "foundations|Terminology": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "foundations|Action labels": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "foundations|Text alternatives": {
+      "ios": [
+        "ios-foundations|Writing"
+      ],
+      "android": [
+        "android-content|Images"
+      ]
+    },
+    "page-structures|Page actions bar": {
+      "ios": [
+        "ios-actions|Buttons"
+      ],
+      "android": [
+        "android-actions|Button"
+      ]
+    },
+    "implementation|Platforms standard": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|How to build"
+      ]
+    },
+    "implementation|Mobile web": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|How to build"
+      ]
+    },
+    "implementation|Desktop": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|How to build"
+      ]
+    },
+    "implementation|Native implementation": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|How to build"
+      ]
+    },
+    "interaction|Accessibility testing": {
+      "ios": [
+        "ios-interaction|Accessibility"
+      ],
+      "android": [
+        "android-interaction|Conformance"
+      ]
+    },
+    "implementation|Browser support policy": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|How to build"
+      ]
+    },
+    "implementation|Vue": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|How to build"
+      ]
+    },
+    "implementation|Lint tooling": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|How to build"
+      ]
+    }
+  }
+}
