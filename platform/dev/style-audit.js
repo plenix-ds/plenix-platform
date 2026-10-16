@@ -15,7 +15,7 @@
      5. off the grid: an inline length that is neither a Platform token reference (var) nor a whole number of grid steps (the base
         spacing token, --plx-ref-space-4px; utils/grid.js): "has to conform to fit into the grid system!!! important"
         (owner, 2026-10-13). A length in another unit than px (rem, em, vw…) is reported too; a percentage is a
-        proportion, not a length, and 0 is on every grid. Border widths and separator thickness may equal the thin-border token (owner, 2026-10-16). Border widths and separator thickness may equal the thin-border token (owner, 2026-10-16). Border widths and separator thickness may equal the thin-border token (owner, 2026-10-16). Border widths and separator thickness may equal the thin-border token (owner, 2026-10-16).
+        proportion, not a length, and 0 is on every grid. Border widths and separator thickness may equal the thin-border token (owner, 2026-10-16).
    Inline styles written by JavaScript are otherwise allowed (owner, 2026-10-13): "sometimes we have situations in which
    JavaScript is needed to make adjustments on the spot. And these adjustments make inline styles. However these
    adjustments are based on tokens and defined styles to make inline adjustments for that moment." Whether a written value

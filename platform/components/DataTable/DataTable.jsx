@@ -986,6 +986,8 @@ export function TableEngine(props) {
         // pages, a wrapping column, group rows and a Narrow list draw them all
         renderVertical: virtual ? 'virtual' : 'basic',
         rowHeight: !isStatic && !listNow ? tablePx('--plx-comp-data-table-record-height',host) : undefined,
+        // A bounded token buffer avoids rendering a whole extra viewport above and below auto-fit tables.
+        renderVerticalBuffer: tablePx(AHEAD,host),
         editTriggerEvent: 'dblclick',
         rowContextMenu,
         // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
