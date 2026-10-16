@@ -1483,6 +1483,8 @@
   --plx-comp-nav-list-heading-letter-spacing: var(--plx-sys-letter-spacing-widest);
   --plx-comp-nav-list-heading-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-nav-list-heading-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-nav-list-heading-min-height: var(--plx-sys-control-height-prominent);
+  --plx-comp-nav-list-heading-margin-block-end: var(--plx-sys-space-inset-sm);
   --plx-comp-nav-list-items-row-gap: var(--plx-ref-space-4px);
   --plx-comp-nav-list-item-radius: var(--plx-sys-radius-control);
   --plx-comp-nav-list-item-text: var(--plx-sys-content-default);

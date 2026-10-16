@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.45.1] - 2026-10-16
+
+### Fixed
+- NavList: a static group heading (`collapsible: false`) has the collapsible heading's geometry: 32px tall (the
+  prominent control height), its text centered, 8px under it (#49; it was 25px with nothing under it). Tokens
+  `--plx-comp-nav-list-heading-min-height`, `--plx-comp-nav-list-heading-margin-block-end`.
+
 ## [0.45.0] - 2026-10-16
 
 ### Changed

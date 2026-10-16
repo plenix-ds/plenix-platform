@@ -6072,6 +6072,16 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
+    "nav-list-heading-min-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension",
+      "$description": "A static group heading's height: the collapsible group heading's (one geometry for both, #49)."
+    },
+    "nav-list-heading-margin-block-end": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "Room under a static group heading: the collapsible group's room above its rows (#49)."
+    },
     "nav-list-items-row-gap": {
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"
