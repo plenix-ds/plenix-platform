@@ -1,0 +1,12 @@
+/* Plenix · AssignControl (platform/patterns/AssignControl). One row: who (the people picker while nobody is assigned or
+   while reassigning; else the assignee's Persona, or the delegate with the dates in the data font) and the actions at the
+   end as small ghost buttons. The delegate dialog's fields stack. Anatomy and API: AssignControl.jsx. */
+.plx-assign-control{align-items:center;column-gap:var(--plx-comp-assign-control-gap);display:flex;flex-wrap:wrap;min-block-size:var(--plx-comp-assign-control-min-height);min-inline-size:0;row-gap:var(--plx-comp-assign-control-row-gap);}
+.plx-assign-control__who{flex-basis:0%;flex-grow:1;min-inline-size:0;}
+.plx-assign-control__picker{flex-basis:0%;flex-grow:1;min-inline-size:var(--plx-comp-assign-control-picker-min-width);}
+.plx-assign-control__empty{color:var(--plx-comp-assign-control-empty-text);font-size:var(--plx-comp-assign-control-empty-font-size);}
+.plx-assign-control__dates{color:var(--plx-comp-assign-control-dates-text);}
+.plx-assign-control__actions{column-gap:var(--plx-comp-assign-control-actions-gap);display:flex;flex-shrink:0;}
+.plx-assign-control__form{display:flex;flex-direction:column;row-gap:var(--plx-comp-assign-control-form-gap);}
+.plx-assign-control--assigned{min-block-size:var(--plx-comp-assign-control-assigned-min-height);}
+.plx-assign-control--delegate{align-items:flex-start;}

@@ -1,0 +1,110 @@
+{
+  "$description": "Drag and drop (library plan wave 10, foundation dnd): the distances and rates of the drag-and-drop engine (platform/utils/dnd.js) and the treatments system/dnd.css draws while something is dragged: the lifted item (the Dragged treatment's roles), the insertion line of a sortable list and the state of a drop target. Every color is an existing role.",
+  "plx-sys": {
+    "dnd-autoscroll-edge": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "How close to the edge of a scrolling region (or the window) the pointer comes before the region scrolls by itself while something is dragged."
+    },
+    "dnd-autoscroll-speed": {
+      "$value": "1",
+      "$type": "number",
+      "$description": "The auto-scroll speed at the very edge, in CSS pixels per millisecond; it slows in proportion as the pointer moves back from the edge, and stops outside dnd-autoscroll-edge."
+    },
+    "dnd-keyboard-step": {
+      "$value": "{plx-ref.size-8px}",
+      "$type": "dimension",
+      "$description": "Reposition (free move): how far one arrow key moves a picked-up item (two grid steps)."
+    },
+    "dnd-keyboard-step-large": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension",
+      "$description": "Reposition (free move): how far Shift + an arrow key moves a picked-up item."
+    },
+    "dnd-dragging-background": {
+      "$value": "{plx-sys.surface-raised}",
+      "$type": "color",
+      "$description": "The lifted item (the Dragged treatment): the raised surface.",
+      "$extensions": {
+        "plenix": {
+          "group": "surface"
+        }
+      }
+    },
+    "dnd-dragging-shadow": {
+      "$value": "{plx-sys.elevation-overlay-shadow}",
+      "$type": "shadow",
+      "$description": "The lifted item (the Dragged treatment): the overlay shadow, while it follows the pointer or is picked up with the keyboard."
+    },
+    "dnd-dragging-opacity": {
+      "$value": "{plx-sys.state-dragged-opacity}",
+      "$type": "number",
+      "$description": "The item while it follows the pointer: slightly transparent, so the place it will land shows through it."
+    },
+    "dnd-dragging-z-index": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "The lifted item stays above its neighbors while it moves."
+    },
+    "dnd-indicator-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "The insertion line of a sortable list (where the item will land): the focus ring's color, as the drop target outline.",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive"
+        }
+      }
+    },
+    "dnd-indicator-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "The insertion line's thickness."
+    },
+    "dnd-indicator-offset": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "How far the insertion line sits outside the item it is drawn on: in the gap between two items."
+    },
+    "dnd-target-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "A drop target with an item over it that it takes: a dashed outline in the focus ring's color (the dashboard grid's drop ring).",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive"
+        }
+      }
+    },
+    "dnd-target-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "The drop target outline's width."
+    },
+    "dnd-target-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "The drop target outline's distance from the target."
+    },
+    "dnd-target-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "A drop target with an item over it that it takes: the hover fill.",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive"
+        }
+      }
+    },
+    "dnd-target-reject-outline-color": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "A drop target with an item over it that it does not take: the outline in the danger color an invalid field's border uses (with the not-allowed pointer and an announcement, never color alone).",
+      "$extensions": {
+        "plenix": {
+          "group": "status"
+        }
+      }
+    }
+  }
+}

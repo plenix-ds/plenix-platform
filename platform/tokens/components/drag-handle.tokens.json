@@ -1,0 +1,19 @@
+{
+  "$description": "DragHandle (platform/components/DragHandle), library wave 10, lane A: its component tokens. The dashboard grid's handle look (the inline control size, the muted icon, the hover fill and the focus ring); picked up with the keyboard it takes the selected fill, as every pressed toggle.",
+  "plx-comp": {
+    "drag-handle-size": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "DragHandle: its width and height (the inline control size, 24px; larger with touch)." },
+    "drag-handle-icon-size": { "$value": "{plx-sys.control-icon-inline}", "$type": "dimension", "$description": "DragHandle: the drag icon in it (the inline control's icon)." },
+    "drag-handle-radius": { "$value": "{plx-sys.radius-compact-4px}", "$type": "dimension", "$description": "DragHandle: its corners (the compact radius of small controls)." },
+    "drag-handle-background": { "$value": "transparent", "$type": "color", "$description": "DragHandle at rest: no fill; the icon alone shows it." },
+    "drag-handle-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "DragHandle at rest: the icon in the muted content color." },
+    "drag-handle-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "DragHandle hovered: the hover fill." },
+    "drag-handle-hover-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "DragHandle hovered: the icon at full strength." },
+    "drag-handle-pressed-background": { "$value": "{plx-sys.state-pressed}", "$type": "color", "$description": "DragHandle while the pointer holds it: the pressed fill." },
+    "drag-handle-picked-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "DragHandle while its item is picked up with the keyboard (aria-pressed): the selected fill." },
+    "drag-handle-picked-text": { "$value": "{plx-sys.selected-content}", "$type": "color", "$description": "DragHandle while its item is picked up: the selected content color." },
+    "drag-handle-disabled-text": { "$value": "{plx-sys.content-disabled}", "$type": "color", "$description": "DragHandle disabled: the disabled content color." },
+    "drag-handle-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "DragHandle focused with the keyboard: the focus ring's color." },
+    "drag-handle-focus-outline-offset": { "$value": "{plx-sys.focus-ring-offset}", "$type": "dimension", "$description": "DragHandle focused: the focus ring's offset." },
+    "drag-handle-focus-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "DragHandle focused: the focus ring's width." }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "$description": "Library part w10A (wave 10, lane A): the iOS and Android counterparts of drag and drop (the engine, its patterns and its accessibility: the HIG Drag and drop page and VoiceOver on iOS, Gestures and TalkBack on Android), the drag handle, the sortable list (Lists and tables, List), the drop target, resize (split views: Sidebars on iOS, the list-detail scaffold on Android) and rename (Text fields and Alerts, OutlinedTextField and AlertDialog). Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "actions|Rename": { "ios": ["ios-forms|Text fields", "ios-overlays|Alerts"], "android": ["android-forms|OutlinedTextField", "android-overlays|AlertDialog"] },
+    "patterns|Drag and drop": { "ios": ["ios-patterns|Drag and drop"], "android": ["android-interaction|Gestures"] },
+    "patterns|Sortable list": { "ios": ["ios-data-display|Lists and tables", "ios-patterns|Drag and drop"], "android": ["android-data-display|List", "android-interaction|Gestures"] },
+    "patterns|Drop target": { "ios": ["ios-patterns|Drag and drop"], "android": ["android-interaction|Gestures"] },
+    "patterns|Resize": { "ios": ["ios-navigation|Sidebars"], "android": ["android-screen-structures|List-detail scaffold"] },
+    "patterns|Reposition": { "ios": ["ios-patterns|Drag and drop"], "android": ["android-interaction|Gestures"] },
+    "interaction|Drag handle": { "ios": ["ios-patterns|Drag and drop", "ios-interaction|Gestures"], "android": ["android-interaction|Gestures"] },
+    "interaction|Accessible drag and drop": { "ios": ["ios-interaction|VoiceOver", "ios-patterns|Drag and drop"], "android": ["android-interaction|TalkBack", "android-interaction|Gestures"] },
+    "interaction|Drag-and-drop engine": { "ios": ["ios-patterns|Drag and drop"], "android": ["android-interaction|Gestures"] }
+  }
+}

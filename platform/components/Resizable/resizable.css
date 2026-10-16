@@ -1,0 +1,120 @@
+/* Plenix · Resizable (platform/components/Resizable): a box whose end edge, bottom edge or both change its size; the
+   edges are wide hit areas that show a line on hover and focus (as the shell's pane splitter); the menu of sizes sits in
+   the box's end corner. The size reaches the stylesheet as data-plx-width and data-plx-height: one rule per size token
+   (at the end of this file) sets the box's own custom property. */
+.plx-resizable{box-sizing:border-box;max-inline-size:100%;min-block-size:0;min-inline-size:0;position:relative;}
+.plx-resizable[data-plx-width]{inline-size:var(--plx-comp-resizable-width);}
+.plx-resizable[data-plx-height]{block-size:var(--plx-comp-resizable-height);}
+.plx-resizable__content{block-size:100%;box-sizing:border-box;inline-size:100%;overflow-x:hidden;overflow-y:hidden;}
+/* the edges: a wide hit area across the edge, its line in the middle */
+.plx-resizable__edge{position:absolute;touch-action:none;z-index:var(--plx-comp-resizable-edge-z-index);}
+.plx-resizable__edge--inline{cursor:col-resize;inline-size:var(--plx-comp-resizable-edge-size);inset-block-end:0;inset-block-start:0;inset-inline-end:calc(var(--plx-comp-resizable-edge-size) / -2);}
+.plx-resizable__edge--block{block-size:var(--plx-comp-resizable-edge-size);cursor:row-resize;inset-block-end:calc(var(--plx-comp-resizable-edge-size) / -2);inset-inline-end:0;inset-inline-start:0;}
+.plx-resizable__edge::after{background-color:transparent;content:"";position:absolute;transition-duration:var(--plx-comp-resizable-edge-duration);transition-property:background-color;}
+.plx-resizable__edge--inline::after{inline-size:var(--plx-comp-resizable-edge-line-width);inset-block-end:0;inset-block-start:0;inset-inline-start:var(--plx-comp-resizable-edge-line-inset);}
+.plx-resizable__edge--block::after{block-size:var(--plx-comp-resizable-edge-line-width);inset-block-start:var(--plx-comp-resizable-edge-line-inset);inset-inline-end:0;inset-inline-start:0;}
+.plx-resizable__edge:hover::after,.plx-resizable__edge:focus-visible::after,
+.plx-resizable__edge.is-hover::after,.plx-resizable__edge.is-focus-visible::after{background-color:var(--plx-comp-resizable-edge-hover-line-color);}
+.plx-resizable__edge:focus-visible,
+.plx-resizable__edge.is-focus-visible{outline-style:none;}
+/* both: the corner the pointer drags in both directions (the edges carry the keyboard) */
+.plx-resizable__corner{block-size:var(--plx-comp-resizable-corner-size);cursor:nwse-resize;inline-size:var(--plx-comp-resizable-corner-size);inset-block-end:calc(var(--plx-comp-resizable-corner-size) / -2);inset-inline-end:calc(var(--plx-comp-resizable-corner-size) / -2);position:absolute;touch-action:none;z-index:var(--plx-comp-resizable-edge-z-index);}
+.plx-resizable__corner:dir(rtl){cursor:nesw-resize;}
+/* the menu of sizes (WCAG 2.5.7): in the end corner, shown while the box is hovered or has focus inside, always with touch */
+.plx-resizable__menu.plx-menu-anchor{inset-block-start:var(--plx-comp-resizable-menu-inset);inset-inline-end:var(--plx-comp-resizable-menu-inset);position:absolute;transition-duration:var(--plx-comp-resizable-edge-duration);transition-property:visibility;visibility:hidden;z-index:var(--plx-comp-resizable-menu-z-index);}
+.plx-resizable:hover>.plx-resizable__menu,.plx-resizable:focus-within>.plx-resizable__menu,.plx-resizable.is-hover>.plx-resizable__menu,
+:root[data-plx-interaction="touch"] .plx-resizable__menu,:root[data-plx-interaction="mobile"] .plx-resizable__menu{visibility:visible;}
+/* while an edge is dragged the whole page shows its pointer (the shell's splitter sets is-resizing-columns the same way) */
+:root.is-resizing-rows body{cursor:row-resize;}
+:root.is-resizing-both body{cursor:nwse-resize;}
+/* the size steps: every size token, for each axis */
+.plx-resizable[data-plx-width="4px"]{--plx-comp-resizable-width:var(--plx-ref-size-4px);}
+.plx-resizable[data-plx-height="4px"]{--plx-comp-resizable-height:var(--plx-ref-size-4px);}
+.plx-resizable[data-plx-width="8px"]{--plx-comp-resizable-width:var(--plx-ref-size-8px);}
+.plx-resizable[data-plx-height="8px"]{--plx-comp-resizable-height:var(--plx-ref-size-8px);}
+.plx-resizable[data-plx-width="12px"]{--plx-comp-resizable-width:var(--plx-ref-size-12px);}
+.plx-resizable[data-plx-height="12px"]{--plx-comp-resizable-height:var(--plx-ref-size-12px);}
+.plx-resizable[data-plx-width="16px"]{--plx-comp-resizable-width:var(--plx-ref-size-16px);}
+.plx-resizable[data-plx-height="16px"]{--plx-comp-resizable-height:var(--plx-ref-size-16px);}
+.plx-resizable[data-plx-width="18px"]{--plx-comp-resizable-width:var(--plx-ref-size-18px);}
+.plx-resizable[data-plx-height="18px"]{--plx-comp-resizable-height:var(--plx-ref-size-18px);}
+.plx-resizable[data-plx-width="20px"]{--plx-comp-resizable-width:var(--plx-ref-size-20px);}
+.plx-resizable[data-plx-height="20px"]{--plx-comp-resizable-height:var(--plx-ref-size-20px);}
+.plx-resizable[data-plx-width="24px"]{--plx-comp-resizable-width:var(--plx-ref-size-24px);}
+.plx-resizable[data-plx-height="24px"]{--plx-comp-resizable-height:var(--plx-ref-size-24px);}
+.plx-resizable[data-plx-width="28px"]{--plx-comp-resizable-width:var(--plx-ref-size-28px);}
+.plx-resizable[data-plx-height="28px"]{--plx-comp-resizable-height:var(--plx-ref-size-28px);}
+.plx-resizable[data-plx-width="32px"]{--plx-comp-resizable-width:var(--plx-ref-size-32px);}
+.plx-resizable[data-plx-height="32px"]{--plx-comp-resizable-height:var(--plx-ref-size-32px);}
+.plx-resizable[data-plx-width="36px"]{--plx-comp-resizable-width:var(--plx-ref-size-36px);}
+.plx-resizable[data-plx-height="36px"]{--plx-comp-resizable-height:var(--plx-ref-size-36px);}
+.plx-resizable[data-plx-width="40px"]{--plx-comp-resizable-width:var(--plx-ref-size-40px);}
+.plx-resizable[data-plx-height="40px"]{--plx-comp-resizable-height:var(--plx-ref-size-40px);}
+.plx-resizable[data-plx-width="44px"]{--plx-comp-resizable-width:var(--plx-ref-size-44px);}
+.plx-resizable[data-plx-height="44px"]{--plx-comp-resizable-height:var(--plx-ref-size-44px);}
+.plx-resizable[data-plx-width="48px"]{--plx-comp-resizable-width:var(--plx-ref-size-48px);}
+.plx-resizable[data-plx-height="48px"]{--plx-comp-resizable-height:var(--plx-ref-size-48px);}
+.plx-resizable[data-plx-width="52px"]{--plx-comp-resizable-width:var(--plx-ref-size-52px);}
+.plx-resizable[data-plx-height="52px"]{--plx-comp-resizable-height:var(--plx-ref-size-52px);}
+.plx-resizable[data-plx-width="56px"]{--plx-comp-resizable-width:var(--plx-ref-size-56px);}
+.plx-resizable[data-plx-height="56px"]{--plx-comp-resizable-height:var(--plx-ref-size-56px);}
+.plx-resizable[data-plx-width="60px"]{--plx-comp-resizable-width:var(--plx-ref-size-60px);}
+.plx-resizable[data-plx-height="60px"]{--plx-comp-resizable-height:var(--plx-ref-size-60px);}
+.plx-resizable[data-plx-width="64px"]{--plx-comp-resizable-width:var(--plx-ref-size-64px);}
+.plx-resizable[data-plx-height="64px"]{--plx-comp-resizable-height:var(--plx-ref-size-64px);}
+.plx-resizable[data-plx-width="68px"]{--plx-comp-resizable-width:var(--plx-ref-size-68px);}
+.plx-resizable[data-plx-height="68px"]{--plx-comp-resizable-height:var(--plx-ref-size-68px);}
+.plx-resizable[data-plx-width="72px"]{--plx-comp-resizable-width:var(--plx-ref-size-72px);}
+.plx-resizable[data-plx-height="72px"]{--plx-comp-resizable-height:var(--plx-ref-size-72px);}
+.plx-resizable[data-plx-width="80px"]{--plx-comp-resizable-width:var(--plx-ref-size-80px);}
+.plx-resizable[data-plx-height="80px"]{--plx-comp-resizable-height:var(--plx-ref-size-80px);}
+.plx-resizable[data-plx-width="88px"]{--plx-comp-resizable-width:var(--plx-ref-size-88px);}
+.plx-resizable[data-plx-height="88px"]{--plx-comp-resizable-height:var(--plx-ref-size-88px);}
+.plx-resizable[data-plx-width="92px"]{--plx-comp-resizable-width:var(--plx-ref-size-92px);}
+.plx-resizable[data-plx-height="92px"]{--plx-comp-resizable-height:var(--plx-ref-size-92px);}
+.plx-resizable[data-plx-width="96px"]{--plx-comp-resizable-width:var(--plx-ref-size-96px);}
+.plx-resizable[data-plx-height="96px"]{--plx-comp-resizable-height:var(--plx-ref-size-96px);}
+.plx-resizable[data-plx-width="100px"]{--plx-comp-resizable-width:var(--plx-ref-size-100px);}
+.plx-resizable[data-plx-height="100px"]{--plx-comp-resizable-height:var(--plx-ref-size-100px);}
+.plx-resizable[data-plx-width="112px"]{--plx-comp-resizable-width:var(--plx-ref-size-112px);}
+.plx-resizable[data-plx-height="112px"]{--plx-comp-resizable-height:var(--plx-ref-size-112px);}
+.plx-resizable[data-plx-width="120px"]{--plx-comp-resizable-width:var(--plx-ref-size-120px);}
+.plx-resizable[data-plx-height="120px"]{--plx-comp-resizable-height:var(--plx-ref-size-120px);}
+.plx-resizable[data-plx-width="128px"]{--plx-comp-resizable-width:var(--plx-ref-size-128px);}
+.plx-resizable[data-plx-height="128px"]{--plx-comp-resizable-height:var(--plx-ref-size-128px);}
+.plx-resizable[data-plx-width="132px"]{--plx-comp-resizable-width:var(--plx-ref-size-132px);}
+.plx-resizable[data-plx-height="132px"]{--plx-comp-resizable-height:var(--plx-ref-size-132px);}
+.plx-resizable[data-plx-width="140px"]{--plx-comp-resizable-width:var(--plx-ref-size-140px);}
+.plx-resizable[data-plx-height="140px"]{--plx-comp-resizable-height:var(--plx-ref-size-140px);}
+.plx-resizable[data-plx-width="152px"]{--plx-comp-resizable-width:var(--plx-ref-size-152px);}
+.plx-resizable[data-plx-height="152px"]{--plx-comp-resizable-height:var(--plx-ref-size-152px);}
+.plx-resizable[data-plx-width="160px"]{--plx-comp-resizable-width:var(--plx-ref-size-160px);}
+.plx-resizable[data-plx-height="160px"]{--plx-comp-resizable-height:var(--plx-ref-size-160px);}
+.plx-resizable[data-plx-width="180px"]{--plx-comp-resizable-width:var(--plx-ref-size-180px);}
+.plx-resizable[data-plx-height="180px"]{--plx-comp-resizable-height:var(--plx-ref-size-180px);}
+.plx-resizable[data-plx-width="200px"]{--plx-comp-resizable-width:var(--plx-ref-size-200px);}
+.plx-resizable[data-plx-height="200px"]{--plx-comp-resizable-height:var(--plx-ref-size-200px);}
+.plx-resizable[data-plx-width="220px"]{--plx-comp-resizable-width:var(--plx-ref-size-220px);}
+.plx-resizable[data-plx-height="220px"]{--plx-comp-resizable-height:var(--plx-ref-size-220px);}
+.plx-resizable[data-plx-width="240px"]{--plx-comp-resizable-width:var(--plx-ref-size-240px);}
+.plx-resizable[data-plx-height="240px"]{--plx-comp-resizable-height:var(--plx-ref-size-240px);}
+.plx-resizable[data-plx-width="280px"]{--plx-comp-resizable-width:var(--plx-ref-size-280px);}
+.plx-resizable[data-plx-height="280px"]{--plx-comp-resizable-height:var(--plx-ref-size-280px);}
+.plx-resizable[data-plx-width="300px"]{--plx-comp-resizable-width:var(--plx-ref-size-300px);}
+.plx-resizable[data-plx-height="300px"]{--plx-comp-resizable-height:var(--plx-ref-size-300px);}
+.plx-resizable[data-plx-width="320px"]{--plx-comp-resizable-width:var(--plx-ref-size-320px);}
+.plx-resizable[data-plx-height="320px"]{--plx-comp-resizable-height:var(--plx-ref-size-320px);}
+.plx-resizable[data-plx-width="360px"]{--plx-comp-resizable-width:var(--plx-ref-size-360px);}
+.plx-resizable[data-plx-height="360px"]{--plx-comp-resizable-height:var(--plx-ref-size-360px);}
+.plx-resizable[data-plx-width="400px"]{--plx-comp-resizable-width:var(--plx-ref-size-400px);}
+.plx-resizable[data-plx-height="400px"]{--plx-comp-resizable-height:var(--plx-ref-size-400px);}
+.plx-resizable[data-plx-width="500px"]{--plx-comp-resizable-width:var(--plx-ref-size-500px);}
+.plx-resizable[data-plx-height="500px"]{--plx-comp-resizable-height:var(--plx-ref-size-500px);}
+.plx-resizable[data-plx-width="560px"]{--plx-comp-resizable-width:var(--plx-ref-size-560px);}
+.plx-resizable[data-plx-height="560px"]{--plx-comp-resizable-height:var(--plx-ref-size-560px);}
+.plx-resizable[data-plx-width="600px"]{--plx-comp-resizable-width:var(--plx-ref-size-600px);}
+.plx-resizable[data-plx-height="600px"]{--plx-comp-resizable-height:var(--plx-ref-size-600px);}
+.plx-resizable[data-plx-width="720px"]{--plx-comp-resizable-width:var(--plx-ref-size-720px);}
+.plx-resizable[data-plx-height="720px"]{--plx-comp-resizable-height:var(--plx-ref-size-720px);}
+.plx-resizable[data-plx-width="900px"]{--plx-comp-resizable-width:var(--plx-ref-size-900px);}
+.plx-resizable[data-plx-height="900px"]{--plx-comp-resizable-height:var(--plx-ref-size-900px);}

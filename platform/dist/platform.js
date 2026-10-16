@@ -3827,7 +3827,1385 @@ function ColorPicker({
   }, rest), (0, _overflow.splitAt)(items, fit, more));
 }
   } },
-  "platform/components/DropZone/DropZone.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokenMs = tokenMs;
+// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
+// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
+// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
+function tokenMs(name, fallback = 0, el) {
+  if (typeof document === 'undefined') return fallback;
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
+  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
+  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
+}
+  } },
+  "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LiveRegion = LiveRegion;
+exports.announce = announce;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("./cx.js");
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LiveRegion, announce (platform/utils/announce.jsx)
+   Summary: Tells screen-reader users about a change they cannot see happen (a save, a count of results, an upload that
+     finished, an error) without moving their focus. announce(text) speaks through one pair of page-wide regions;
+     LiveRegion is a region of a component's own, for messages that also stay on screen (a status line, a log).
+   Usage:
+     announce('12 results');                               // polite: waits until the reader is idle
+     announce('Couldn’t save. Check your connection.', { politeness: 'assertive' });   // interrupts: urgent errors only
+     <LiveRegion kind="status">{saved ? 'Saved' : ''}</LiveRegion>
+     <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
+   Props:
+     announce(text, { politeness }): politeness "polite" (default) or "assertive"; the same text twice is spoken twice
+     LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
+       (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
+     LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
+     LiveRegion.atomic: read the whole region on every change, not only what changed (default: true for status, else false)
+     LiveRegion.children: the message (render the region empty first, then put the text in it)
+     LiveRegion.className: more classes on the region
+   Behavior:
+     The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
+     Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
+     A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
+   Notes:
+     Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
+     Never put a control inside a live region. Messages are plain text: no markup, icons or emoji names.
+     Meets WCAG 2.2 SC 4.1.3 Status Messages.
+*/
+const regions = {};
+const pending = {};
+
+// the page-wide region for one politeness (made once, visually hidden)
+function region(politeness) {
+  if (regions[politeness] && regions[politeness].isConnected) return regions[politeness];
+  const el = document.createElement('div');
+  el.className = 'plx-visually-hidden';
+  el.setAttribute('aria-live', politeness);
+  el.setAttribute('aria-atomic', 'true');
+  el.setAttribute('data-plx-announcer', politeness);
+  if (politeness === 'assertive') el.setAttribute('role', 'alert');
+  document.body.appendChild(el);
+  regions[politeness] = el;
+  return el;
+}
+function announce(text, {
+  politeness = 'polite'
+} = {}) {
+  if (typeof document === 'undefined' || !document.body) return;
+  const p = politeness === 'assertive' ? 'assertive' : 'polite';
+  const el = region(p);
+  // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
+  el.textContent = '';
+  if (pending[p]) clearTimeout(pending[p]);
+  pending[p] = setTimeout(() => {
+    pending[p] = null;
+    el.textContent = String(text || '');
+  }, (0, _tokenTime.tokenMs)('--plx-sys-live-region-delay'));
+}
+const KINDS = {
+  polite: {
+    'aria-live': 'polite'
+  },
+  assertive: {
+    'aria-live': 'assertive'
+  },
+  status: {
+    role: 'status',
+    'aria-live': 'polite'
+  },
+  log: {
+    role: 'log',
+    'aria-live': 'polite'
+  }
+};
+function LiveRegion({
+  kind = 'polite',
+  visible = false,
+  atomic,
+  className,
+  children,
+  ...rest
+}) {
+  const a = KINDS[kind] || KINDS.polite;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({}, a, {
+    "aria-atomic": atomic !== undefined ? atomic : kind === 'status',
+    "data-plx-live": kind,
+    className: (0, _cx.cx)(!visible && 'plx-visually-hidden', className)
+  }, rest), children);
+}
+  } },
+  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.gridPx = exports.GRID_TOKEN = void 0;
+exports.gridStep = gridStep;
+exports.onGrid = onGrid;
+exports.snapToGrid = snapToGrid;
+/* Plenix · grid (platform/utils/grid.js)
+   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
+     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
+     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
+     instead: snapSize and stepSize in utils/sizeSteps.js.
+   Usage:
+     import { snapToGrid, gridPx } from '../../utils/grid.js';
+     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
+     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
+   Props:
+     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
+     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
+     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
+     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
+   Behavior:
+     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
+     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
+   Notes:
+     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
+     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
+     length is neither a token nor passed through this helper (or the size steps).
+*/
+
+const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
+
+// the base spacing token in pixels where el is (a rem token follows the root font size)
+function gridStep(el) {
+  if (typeof document === 'undefined') return 4;
+  const at = el || document.documentElement,
+    win = at.ownerDocument.defaultView;
+  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
+  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
+  return px > 0 ? px : 4;
+}
+function snapToGrid(px, opts) {
+  const o = opts || {},
+    step = gridStep(o.el),
+    n = Number(px) || 0;
+  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
+  const q = n / step;
+  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
+}
+const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
+exports.gridPx = gridPx;
+function onGrid(px, el) {
+  const step = gridStep(el),
+    q = Math.abs(Number(px) || 0) / step;
+  return Math.abs(q - Math.round(q)) * step <= 0.5;
+}
+  } },
+  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DND_STRINGS = void 0;
+exports.clearDragOffset = clearDragOffset;
+exports.mergeDndProps = mergeDndProps;
+exports.moveItem = moveItem;
+exports.setDragOffset = setDragOffset;
+exports.transferItem = transferItem;
+exports.useDndSession = useDndSession;
+exports.useDraggable = useDraggable;
+exports.useDropTarget = useDropTarget;
+exports.useReposition = useReposition;
+exports.useSortable = useSortable;
+var _react = _interopRequireDefault(require("react"));
+var _announce = require("./announce.jsx");
+var _grid = require("./grid.js");
+var _direction = require("./direction.js");
+var _tokenTime = require("./tokenTime.js");
+var _useGesture = require("../hooks/useGesture.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · dnd (platform/utils/dnd.js)
+   Summary: The drag-and-drop engine (13 Interaction › Behavioral utilities › Drag-and-drop engine): pointer, pen and touch
+     dragging with a keyboard equivalent for every drag (WCAG 2.2, 2.1.1 and 2.5.7), announcements through the live
+     region, auto-scroll near the edges and drop targets with a visible state. Four kinds of drag share it: a sortable
+     list (reorder, and move between lists of one group), a data item dropped on a target (a file on a folder), a free
+     move (reposition on a canvas) and the drop target itself.
+   Usage:
+     const s = useSortable({ items, onReorder: setItems, getName: (x) => x.name, label: 'Steps' });
+     <ul {...s.listProps}>{items.map((x, i) => (
+       <li key={x.id} {...s.itemProps(i)} className={cx('my-row', s.itemProps(i).className)}>
+         <DragHandle dnd={s.handleProps(i)} />{x.name}</li>))}</ul>
+     const d = useDraggable({ data: asset, type: 'asset', name: asset.name });          // a data item
+     <div {...d.props}><DragHandle dnd={d.handleProps} />{asset.name}</div>
+     const t = useDropTarget({ name: 'Archive', accepts: (data, type) => type === 'asset', onDrop: (data) => archive(data) });
+     <div {...t.props}>Archive</div>
+     const r = useReposition({ position, onMove: setPosition, bounds: canvasRef, name: 'Sticky note' });
+     <div {...r.props}>…</div>
+   Props:
+     useSortable(options) → { listProps, itemProps(i), handleProps(i), moveTo(i, to), canMove(i, step), state }
+       options.items: the list, in order (required); options.getId(item) (default item.id); options.getName(item): the name
+         spoken in the announcements (default item.name, item.label, else the id)
+       options.onReorder(next, { item, from, to }): runs with the new order after a drop or a key move
+       options.id: the list's id among the lists of a group; options.group: lists that share a group take each other's
+         items; options.onMove({ item, from: { list, index }, to: { list, index } }): runs once when an item moves to
+         another list of the group (give every list of the group the same handler)
+       options.label: the list's name, spoken when an item moves to it
+       options.orientation: "vertical" (default) | "horizontal" | "grid": the arrow keys and the drop position follow it
+       options.handle: true (default) the drag starts on the handle (handleProps); false the whole item drags (itemProps
+         then carries the handlers, the tab stop and the name)
+       options.disabled: no drag (default false); options.strings: the words it announces (DND_STRINGS)
+     useDraggable(options) → { props, handleProps, targets(), state }
+       options.data, options.type: what is dragged and its kind, handed to the targets; options.name: its spoken name
+       options.handle: as useSortable; options.disabled; options.strings
+       targets(): the registered drop targets that take it, in page order ([{ id, name, drop() }]): a "Move to" menu
+     useDropTarget(options) → { ref, props, state }
+       options.name: the target's spoken name; options.accepts(data, type): true when it takes the item (default: all)
+       options.onDrop(data, type): runs when an item is dropped on it
+       options.native: { accepts(dataTransfer), onDrop(dataTransfer) }: also take the browser's own drags (files, text
+         from other windows); accepts sees only the types while dragging (dataTransfer.types)
+       options.disabled; state: null | "ready" (a drag it takes is under way) | "over" | "reject" (over, not taken)
+     useReposition(options) → { props, position, picked, moveBy(dx, dy) }
+       options.position: { x, y } in pixels from the element's place in the layout (on the grid); options.onMove(next)
+       options.bounds: a ref to the element it stays inside (default its offset parent); options.name; options.disabled
+     DND_STRINGS: the default words; moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
+       helpers; setDragOffset(el, dx, dy) and clearDragOffset(el, { settle }): move an element by a transform through
+       the Web Animations API (never a style attribute), snapped to the grid; mergeDndProps(a, b): one element's props
+       from the engine's and a component's (each event runs the engine's handler first; a handled event stops there)
+   Behavior:
+     Pointer: a press moves the item once it has traveled past --plx-sys-gesture-slop (on touch, a press held for the
+       long-press delay on an item without a handle, so the page still scrolls); the item follows the pointer, raised
+       (the Dragged treatment), and the place it will land shows: an insertion line in a list, the outline on a target.
+       Release drops it; Escape, or a pointer the system cancels, puts it back.
+     Keyboard (every drag): Space or Enter on the handle picks the item up; the arrow keys move it (in a list one place;
+       between lists of a group Arrow Left / Right in a vertical list; to the next target for a data item; one step,
+       Shift a large step, for a free move); Space or Enter drops it; Escape puts it back where it was; Tab drops it.
+       The arrow keys follow the writing direction. Focus stays on the item's handle as it moves.
+     Without dragging (WCAG 2.5.7): the patterns offer a menu of moves (Move up, Move down, Move to the start and end,
+       Move to a target) or move buttons; canMove, moveTo and targets() give them their state.
+     Every pick-up, move, drop and cancel is announced (announce()); the handle carries the instructions
+       (aria-describedby) and aria-pressed while the item is picked up.
+     Near the top or bottom (start or end) of the scrolling region, or the window, the region scrolls by itself while
+       something is dragged (--plx-sys-dnd-autoscroll-edge, -speed); a key move scrolls the item into view.
+   Notes:
+     The engine never changes a list itself: onReorder and onMove hand the new order to the page, which keeps it.
+     Positions are never written in a style attribute: the dragged item and a repositioned one move by a transform set
+       through the Web Animations API, snapped to the grid (utils/grid.js); reduced motion skips the settle.
+     system/dnd.css draws the states from the attributes the hooks set (data-plx-dnd-state, data-plx-drop,
+       data-plx-drop-state); a component may draw its own from the same attributes.
+*/
+
+const DND_STRINGS = exports.DND_STRINGS = {
+  handle: 'Move {name}',
+  instructions: 'Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
+  pickedUp: '{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
+  moved: '{name}, position {position} of {total}',
+  movedTo: '{name} moved to {list}, position {position} of {total}',
+  dropped: '{name} dropped at position {position} of {total}',
+  droppedIn: '{name} dropped in {list}, position {position} of {total}',
+  canceled: 'Move canceled. {name} is back at position {position} of {total}',
+  itemPickedUp: '{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.',
+  over: 'Over {target}',
+  overReject: '{target} does not take {name}',
+  droppedOn: '{name} dropped on {target}',
+  noTargets: 'No place takes {name}',
+  itemCanceled: 'Move canceled. {name} was not moved',
+  repositionPicked: '{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.',
+  repositioned: '{name} moved',
+  repositionDropped: '{name} dropped',
+  repositionCanceled: 'Move canceled. {name} is back where it was',
+  movable: 'movable',
+  list: 'the list'
+};
+const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── list helpers ── */
+function moveItem(list, from, to) {
+  const next = list.slice();
+  if (from < 0 || from >= next.length) return next;
+  const [x] = next.splice(from, 1);
+  next.splice(Math.max(0, Math.min(next.length, to)), 0, x);
+  return next;
+}
+function transferItem(fromList, fromIndex, toList, toIndex) {
+  const a = fromList.slice(),
+    b = toList.slice();
+  const [x] = a.splice(fromIndex, 1);
+  b.splice(Math.max(0, Math.min(b.length, toIndex)), 0, x);
+  return [a, b];
+}
+
+/* ── one element's props from two sets: an event runs the engine's handler first, the other unless it was handled ── */
+function mergeDndProps(a, b) {
+  const out = Object.assign({}, b, a);
+  Object.keys(a || {}).forEach(k => {
+    if (/^on[A-Z]/.test(k) && b && typeof b[k] === 'function' && typeof a[k] === 'function') {
+      out[k] = e => {
+        a[k](e);
+        if (!e.defaultPrevented) b[k](e);
+      };
+    }
+  });
+  if (a && b && a.className && b.className) out.className = b.className + ' ' + a.className;
+  return out;
+}
+
+/* ── the session: one drag at a time, shared by every list, item and target on the page ── */
+let session = null;
+const subscribers = new Set();
+const subscribe = f => {
+  subscribers.add(f);
+  return () => subscribers.delete(f);
+};
+function setSession(next) {
+  session = next;
+  if (typeof document !== 'undefined') {
+    if (next) document.documentElement.setAttribute('data-plx-dnd-active', next.mode);else document.documentElement.removeAttribute('data-plx-dnd-active');
+  }
+  subscribers.forEach(f => f());
+}
+function patchSession(part) {
+  if (session) setSession(Object.assign({}, session, part));
+}
+function useDndSession() {
+  return _react.default.useSyncExternalStore(subscribe, () => session, () => null);
+}
+
+// the drop targets and the sortable lists on the page
+const targets = new Map();
+const lists = new Map();
+let uid = 0;
+const nextId = p => p + '-' + ++uid;
+const inPageOrder = els => els.sort((a, b) => a.el && b.el && a.el.compareDocumentPosition(b.el) & 4 ? -1 : 1);
+
+// the instructions every handle points to (aria-describedby): one hidden element per page and wording
+const described = {};
+function instructionsId(text) {
+  if (typeof document === 'undefined') return undefined;
+  if (described[text] && described[text].isConnected) return described[text].id;
+  const el = document.createElement('div');
+  el.id = nextId('plx-dnd-instructions');
+  el.className = 'plx-visually-hidden';
+  el.textContent = text;
+  document.body.appendChild(el);
+  described[text] = el;
+  return el.id;
+}
+
+/* ── moving an element without a style attribute: a transform through the Web Animations API, on the grid ── */
+const offsets = new WeakMap();
+function setDragOffset(el, dx, dy) {
+  if (!el || !el.animate) return;
+  const frame = [{
+    transform: 'translate(' + (0, _grid.gridPx)(dx, {
+      el
+    }) + ', ' + (0, _grid.gridPx)(dy, {
+      el
+    }) + ')'
+  }];
+  const a = offsets.get(el);
+  if (a && a.effect && a.effect.setKeyframes) {
+    a.effect.setKeyframes(frame);
+    return;
+  }
+  offsets.set(el, el.animate(frame, {
+    duration: 0,
+    fill: 'forwards'
+  }));
+}
+function clearDragOffset(el, opts) {
+  const a = el && offsets.get(el);
+  if (!a) return;
+  offsets.delete(el);
+  if (opts && opts.settle && !reduced() && el.animate) {
+    const ms = (0, _tokenTime.tokenMs)('--plx-sys-gesture-settle-duration', 0, el);
+    const easing = getComputedStyle(el).getPropertyValue('--plx-sys-gesture-settle-easing').trim() || 'ease';
+    const from = a.effect && a.effect.getKeyframes ? a.effect.getKeyframes()[0] : null;
+    a.cancel();
+    if (ms > 0 && from && from.transform) el.animate([{
+      transform: from.transform
+    }, {
+      transform: 'none'
+    }], {
+      duration: ms,
+      easing
+    });
+    return;
+  }
+  a.cancel();
+}
+
+/* ── auto-scroll: the region that scrolls, and the speed near its edges ── */
+function scrollParent(el) {
+  for (let p = el && el.parentElement; p; p = p.parentElement) {
+    const cs = getComputedStyle(p);
+    if (/(auto|scroll)/.test(cs.overflowY + cs.overflowX) && (p.scrollHeight > p.clientHeight || p.scrollWidth > p.clientWidth)) return p;
+  }
+  return document.scrollingElement || document.documentElement;
+}
+function lengthToken(name, el) {
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim(),
+    n = parseFloat(v);
+  if (isNaN(n)) return NaN;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(document.documentElement).fontSize) : n;
+}
+function edgeSpeed(p, lo, hi, edge, speed) {
+  if (p < lo + edge) return -speed * Math.min(1, (lo + edge - p) / edge);
+  if (p > hi - edge) return speed * Math.min(1, (p - (hi - edge)) / edge);
+  return 0;
+}
+
+/* ── one pointer drag: slop (or the touch hold), the moves with scroll compensation and auto-scroll, the end ── */
+function trackPointer(e, o) {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const at = e.currentTarget,
+    tk = (0, _useGesture.gestureTokens)(at);
+  const slop = tk.slop > 0 ? tk.slop : (0, _grid.snapToGrid)(8),
+    holdMs = o.hold && e.pointerType === 'touch' ? tk.longPressDelay > 0 ? tk.longPressDelay : 0 : 0;
+  const edge = lengthToken('--plx-sys-dnd-autoscroll-edge', at),
+    speed = lengthToken('--plx-sys-dnd-autoscroll-speed', at);
+  const x0 = e.clientX,
+    y0 = e.clientY,
+    id = e.pointerId;
+  const scroller = scrollParent(o.el());
+  const s0 = {
+    left: scroller.scrollLeft,
+    top: scroller.scrollTop
+  };
+  let started = false,
+    held = !holdMs,
+    timer = null,
+    raf = null,
+    last = {
+      x: x0,
+      y: y0
+    },
+    t0 = 0,
+    done = false;
+  const point = () => ({
+    x: last.x,
+    y: last.y,
+    dx: last.x - x0 + scroller.scrollLeft - s0.left,
+    dy: last.y - y0 + scroller.scrollTop - s0.top
+  });
+  const tick = t => {
+    if (done) return;
+    const dt = t0 ? Math.min(t - t0, 50) : 16;
+    t0 = t;
+    const root = scroller === document.scrollingElement || scroller === document.documentElement;
+    const r = root ? {
+      top: 0,
+      left: 0,
+      bottom: window.innerHeight,
+      right: window.innerWidth
+    } : scroller.getBoundingClientRect();
+    const vy = edge > 0 && speed > 0 ? edgeSpeed(last.y, r.top, r.bottom, edge, speed) : 0;
+    const vx = edge > 0 && speed > 0 && o.axis !== 'y' ? edgeSpeed(last.x, r.left, r.right, edge, speed) : 0;
+    if (vx || vy) {
+      const before = scroller.scrollTop + scroller.scrollLeft;
+      scroller.scrollTop += vy * dt;
+      scroller.scrollLeft += vx * dt;
+      if (scroller.scrollTop + scroller.scrollLeft !== before) o.onMove(point());
+    }
+    raf = requestAnimationFrame(tick);
+  };
+  const begin = () => {
+    started = true;
+    o.onStart(point());
+    o.onMove(point());
+    raf = requestAnimationFrame(tick);
+  };
+  const move = ev => {
+    if (ev.pointerId !== id) return;
+    last = {
+      x: ev.clientX,
+      y: ev.clientY
+    };
+    if (!started) {
+      const far = Math.hypot(last.x - x0, last.y - y0) > slop;
+      if (!held) {
+        if (far) finish(true);
+        return;
+      } // a touch that moves before the hold: the page scrolls
+      if (!far && !holdMs) return;
+      begin();
+    }
+    ev.preventDefault();
+    o.onMove(point());
+  };
+  const block = ev => {
+    if (started) ev.preventDefault();
+  }; // no page scroll while a touch drag is under way
+  const key = ev => {
+    if (ev.key === 'Escape' && started) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      finish(true);
+    }
+  };
+  const up = ev => {
+    if (ev.pointerId === id) finish(ev.type === 'pointercancel');
+  };
+  function finish(canceled) {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    if (raf) cancelAnimationFrame(raf);
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    document.removeEventListener('pointercancel', up);
+    document.removeEventListener('touchmove', block);
+    document.removeEventListener('keydown', key, true);
+    if (started) o.onEnd(Object.assign(point(), {
+      canceled
+    }));
+  }
+  if (holdMs) timer = setTimeout(() => {
+    held = true;
+    begin();
+  }, holdMs);
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
+  document.addEventListener('pointercancel', up);
+  document.addEventListener('touchmove', block, {
+    passive: false
+  });
+  document.addEventListener('keydown', key, true);
+}
+
+// a press that ended a drag is not also a click (the handle's menu does not open after a drag)
+function useClickGuard() {
+  const dragged = _react.default.useRef(false);
+  return {
+    set: () => {
+      dragged.current = true;
+      setTimeout(() => {
+        dragged.current = false;
+      }, 0);
+    },
+    onClick: e => {
+      if (dragged.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        dragged.current = false;
+      }
+    }
+  };
+}
+const isKey = (e, ...keys) => keys.indexOf(e.key) >= 0;
+const pickKey = e => e.key === ' ' || e.key === 'Enter';
+
+/* ── where an item lands: how many items (the dragged one left out) come before the pointer ── */
+function landing(els, skip, x, y, orientation, rtl) {
+  let before = 0;
+  const kept = [];
+  els.forEach((el, i) => {
+    if (i === skip) return;
+    kept.push(i);
+    const r = el.getBoundingClientRect(),
+      mx = r.left + r.width / 2,
+      my = r.top + r.height / 2;
+    const ahead = rtl ? x < mx : x > mx;
+    if (orientation === 'horizontal' ? ahead : orientation === 'grid' ? y > r.bottom || y >= r.top && ahead : y > my) before++;
+  });
+  return {
+    to: before,
+    kept
+  };
+}
+// the insertion line for a landing place: before the item that will follow it, or after the last one
+function markOf(kept, to) {
+  if (!kept.length) return null;
+  return to < kept.length ? {
+    index: kept[to],
+    side: 'before'
+  } : {
+    index: kept[kept.length - 1],
+    side: 'after'
+  };
+}
+
+/* ── useSortable: reorder a list, and move items between the lists of a group ── */
+function useSortable(options) {
+  const o = options || {};
+  const items = o.items || [];
+  const getId = o.getId || (x => x.id);
+  const getName = o.getName || (x => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
+  const orientation = o.orientation || 'vertical',
+    useHandle = o.handle !== false;
+  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const [listId] = _react.default.useState(() => o.id || nextId('plx-dnd-list'));
+  const listRef = _react.default.useRef(null);
+  const latest = _react.default.useRef(o);
+  latest.current = Object.assign({}, o, {
+    items,
+    getId,
+    getName,
+    label: o.label || t.list,
+    orientation
+  });
+  const now = useDndSession();
+  const guard = useClickGuard();
+  const describe = instructionsId(t.instructions);
+  _react.default.useEffect(() => {
+    const entry = {
+      id: listId,
+      group: o.group,
+      get el() {
+        return listRef.current;
+      },
+      get o() {
+        return latest.current;
+      }
+    };
+    lists.set(listId, entry);
+    return () => {
+      lists.delete(listId);
+    };
+  }, [listId, o.group]);
+  const ids = items.map(getId);
+  const els = () => listRef.current ? Array.from(listRef.current.querySelectorAll('[data-plx-dnd-owner="' + listId + '"]')) : [];
+  const handleOf = id => {
+    const root = listRef.current;
+    return root ? Array.from(root.querySelectorAll('[data-plx-dnd-key]')).find(el => el.getAttribute('data-plx-dnd-key') === String(id)) : null;
+  };
+  const columns = () => {
+    const e = els();
+    if (!e.length) return 1;
+    const top = e[0].offsetTop;
+    const n = e.filter(x => x.offsetTop === top).length;
+    return n || 1;
+  };
+  const group = () => Array.from(lists.values()).filter(l => l.el && (l.id === listId || o.group && l.group === o.group));
+
+  // a key move or a drop keeps focus on the moved item's handle (it may now be in another list)
+  _react.default.useLayoutEffect(() => {
+    if (!now || now.kind !== 'sortable' || now.mode !== 'keyboard' || now.list !== listId || ids.indexOf(now.id) < 0) return;
+    const el = handleOf(now.id);
+    if (el && document.activeElement !== el) el.focus({
+      preventScroll: true
+    });
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: reduced() ? 'auto' : 'smooth'
+    });
+  }, [now, ids.join('\n')]);
+  const say = (s, vars) => (0, _announce.announce)(fill(s, vars));
+  const reorder = (from, to) => {
+    const L = latest.current;
+    if (to === from || to < 0 || to >= L.items.length || !L.onReorder) return false;
+    const item = L.items[from];
+    L.onReorder(moveItem(L.items, from, to), {
+      item,
+      from,
+      to
+    });
+    return true;
+  };
+  // programmatic moves (a menu of moves, move buttons): announced, focus kept on the moved item's handle
+  // opts.focus(itemEl): the element to focus in the moved item afterwards (default its handle)
+  const moveTo = (i, to, opts) => {
+    const L = latest.current;
+    to = Math.max(0, Math.min(L.items.length - 1, to));
+    const item = L.items[i];
+    if (!reorder(i, to)) return;
+    say(t.moved, {
+      name: L.getName(item),
+      position: to + 1,
+      total: L.items.length
+    });
+    const id = L.getId(item);
+    setTimeout(() => {
+      const h = handleOf(id),
+        itemEl = h && h.closest('[data-plx-dnd-owner]');
+      const el = opts && opts.focus && itemEl ? opts.focus(itemEl) : h;
+      if (el) el.focus();
+    }, 0);
+  };
+  const canMove = (i, step) => i + step >= 0 && i + step < items.length;
+  const startKeyboard = i => {
+    const item = items[i];
+    setSession({
+      kind: 'sortable',
+      mode: 'keyboard',
+      group: o.group,
+      id: getId(item),
+      name: getName(item),
+      list: listId,
+      origin: {
+        list: listId,
+        index: i,
+        items: items.slice()
+      }
+    });
+    say(t.pickedUp, {
+      name: getName(item),
+      position: i + 1,
+      total: items.length
+    });
+  };
+  const keyDown = i => e => {
+    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
+    const item = items[i],
+      id = getId(item),
+      mine = now && now.kind === 'sortable' && now.mode === 'keyboard' && now.id === id && now.list === listId;
+    if (!mine) {
+      if (pickKey(e) && e.target === e.currentTarget) {
+        e.preventDefault();
+        startKeyboard(i);
+      }
+      return;
+    }
+    const L = latest.current,
+      name = L.getName(item);
+    if (pickKey(e)) {
+      e.preventDefault();
+      setSession(null);
+      say(now.origin.list === listId ? t.dropped : t.droppedIn, {
+        name,
+        list: L.label,
+        position: i + 1,
+        total: L.items.length
+      });
+      return;
+    }
+    if (e.key === 'Tab') {
+      setSession(null);
+      say(t.dropped, {
+        name,
+        position: i + 1,
+        total: L.items.length
+      });
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      const back = now.origin;
+      if (back.list === listId) {
+        if (L.onReorder) L.onReorder(back.items, {
+          item,
+          from: i,
+          to: back.index
+        });
+      } else if (L.onMove) L.onMove({
+        item,
+        from: {
+          list: listId,
+          index: i
+        },
+        to: {
+          list: back.list,
+          index: back.index
+        }
+      });
+      setSession(Object.assign({}, now, {
+        list: back.list
+      }));
+      setTimeout(() => {
+        setSession(null);
+      }, 0);
+      say(t.canceled, {
+        name,
+        position: back.index + 1,
+        total: back.items.length
+      });
+      return;
+    }
+    let step = 0,
+      across = 0;
+    if (orientation === 'vertical') {
+      if (isKey(e, 'ArrowUp')) step = -1;else if (isKey(e, 'ArrowDown')) step = 1;else if (isKey(e, 'ArrowLeft', 'ArrowRight')) across = (0, _direction.arrowStep)(e, e.currentTarget, {
+        vertical: false
+      });
+    } else if (orientation === 'horizontal') {
+      step = (0, _direction.arrowStep)(e, e.currentTarget, {
+        vertical: false
+      });
+      if (!step && isKey(e, 'ArrowUp', 'ArrowDown')) across = e.key === 'ArrowDown' ? 1 : -1;
+    } else {
+      step = isKey(e, 'ArrowUp') ? -columns() : isKey(e, 'ArrowDown') ? columns() : (0, _direction.arrowStep)(e, e.currentTarget, {
+        vertical: false
+      });
+    }
+    if (isKey(e, 'Home')) step = -i;else if (isKey(e, 'End')) step = L.items.length - 1 - i;
+    if (!step && !across) return;
+    e.preventDefault();
+    if (step) {
+      const to = Math.max(0, Math.min(L.items.length - 1, i + step));
+      if (to !== i && reorder(i, to)) say(t.moved, {
+        name,
+        position: to + 1,
+        total: L.items.length
+      });
+      return;
+    }
+    // to the neighboring list of the group, in page order (the writing direction decides Left and Right)
+    if (!o.group || !L.onMove) return;
+    const g = inPageOrder(group());
+    const at = g.findIndex(l => l.id === listId),
+      nb = g[at + across];
+    if (!nb) return;
+    const index = Math.min(i, nb.o.items.length);
+    L.onMove({
+      item,
+      from: {
+        list: listId,
+        index: i
+      },
+      to: {
+        list: nb.id,
+        index
+      }
+    });
+    patchSession({
+      list: nb.id
+    });
+    say(t.movedTo, {
+      name,
+      list: nb.o.label,
+      position: index + 1,
+      total: nb.o.items.length + 1
+    });
+  };
+  const pointerDown = i => e => {
+    if (o.disabled || now && now.mode === 'keyboard') return;
+    const item = items[i],
+      id = getId(item);
+    const itemEl = () => els()[i];
+    trackPointer(e, {
+      el: itemEl,
+      hold: !useHandle,
+      onStart: () => setSession({
+        kind: 'sortable',
+        mode: 'pointer',
+        group: o.group,
+        id,
+        name: getName(item),
+        list: listId,
+        from: i,
+        over: {
+          list: listId,
+          to: i,
+          mark: null
+        }
+      }),
+      onMove: p => {
+        const el = itemEl();
+        if (el) setDragOffset(el, p.dx, p.dy);
+        // the list under the pointer: this one, or another of the group
+        const under = document.elementsFromPoint(p.x, p.y);
+        const g = group();
+        const hit = g.find(l => l.el && under.some(u => l.el.contains(u))) || (session && session.over ? g.find(l => l.id === session.over.list) : null) || lists.get(listId);
+        if (!hit || !hit.el) return;
+        const hitEls = Array.from(hit.el.querySelectorAll('[data-plx-dnd-owner="' + hit.id + '"]'));
+        const land = landing(hitEls, hit.id === listId ? i : -1, p.x, p.y, hit.o.orientation, (0, _direction.isRtl)(hit.el));
+        const mark = hit.id === listId && land.to === i ? null : markOf(land.kept, land.to);
+        const prev = session && session.over;
+        if (!prev || prev.list !== hit.id || prev.to !== land.to) patchSession({
+          over: {
+            list: hit.id,
+            to: land.to,
+            mark
+          }
+        });
+      },
+      onEnd: p => {
+        const el = itemEl(),
+          over = session && session.over,
+          L = latest.current;
+        guard.set();
+        const still = !over || p.canceled || over.list === listId && over.to === i;
+        if (el) clearDragOffset(el, {
+          settle: still
+        });
+        setSession(null);
+        if (p.canceled) {
+          say(t.canceled, {
+            name: L.getName(item),
+            position: i + 1,
+            total: L.items.length
+          });
+          return;
+        }
+        if (still) return;
+        if (over.list === listId) {
+          if (reorder(i, over.to)) say(t.dropped, {
+            name: L.getName(item),
+            position: over.to + 1,
+            total: L.items.length
+          });
+        } else if (L.onMove) {
+          const dest = lists.get(over.list);
+          L.onMove({
+            item,
+            from: {
+              list: listId,
+              index: i
+            },
+            to: {
+              list: over.list,
+              index: over.to
+            }
+          });
+          say(t.droppedIn, {
+            name: L.getName(item),
+            list: dest ? dest.o.label : t.list,
+            position: over.to + 1,
+            total: dest ? dest.o.items.length + 1 : over.to + 1
+          });
+        }
+      }
+    });
+  };
+  const stateOf = id => now && now.kind === 'sortable' && now.id === id && now.list === listId ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
+  const markFor = i => now && now.over && now.over.list === listId && now.over.mark && now.over.mark.index === i ? now.over.mark.side : undefined;
+  const handlers = i => ({
+    onPointerDown: pointerDown(i),
+    onKeyDown: keyDown(i),
+    onClick: guard.onClick,
+    'aria-describedby': describe,
+    'aria-pressed': stateOf(getId(items[i])) === 'picked' ? true : undefined,
+    'data-plx-dnd-key': String(getId(items[i])),
+    'data-plx-dnd-handle': ''
+  });
+  return {
+    listProps: {
+      ref: listRef,
+      'data-plx-dnd-list': listId,
+      'data-plx-dnd-orientation': orientation
+    },
+    itemProps: i => Object.assign({
+      className: 'plx-dnd-item',
+      'data-plx-dnd-owner': listId,
+      'data-plx-dnd-state': stateOf(getId(items[i])),
+      'data-plx-drop': markFor(i)
+    }, useHandle ? null : Object.assign(handlers(i), {
+      tabIndex: o.disabled ? undefined : 0,
+      'aria-label': fill(t.handle, {
+        name: getName(items[i])
+      })
+    })),
+    handleProps: i => useHandle ? Object.assign(handlers(i), {
+      'aria-label': fill(t.handle, {
+        name: getName(items[i])
+      }),
+      disabled: o.disabled || undefined
+    }) : {},
+    moveTo,
+    canMove,
+    state: {
+      active: now && now.kind === 'sortable' && now.list === listId && ids.indexOf(now.id) >= 0 ? now : null,
+      over: now && now.over && now.over.list === listId ? now.over : null
+    }
+  };
+}
+
+/* ── useDropTarget: a place that takes dragged items (and, with native, the browser's own drags) ── */
+function useDropTarget(options) {
+  const o = options || {};
+  const [id] = _react.default.useState(() => nextId('plx-dnd-target'));
+  const ref = _react.default.useRef(null);
+  const latest = _react.default.useRef(o);
+  latest.current = o;
+  const now = useDndSession();
+  const [nativeState, setNative] = _react.default.useState(null);
+  const depth = _react.default.useRef(0);
+  _react.default.useEffect(() => {
+    if (o.disabled) return undefined;
+    targets.set(id, {
+      id,
+      get el() {
+        return ref.current;
+      },
+      get o() {
+        return latest.current;
+      }
+    });
+    return () => {
+      targets.delete(id);
+    };
+  }, [id, o.disabled]);
+  const takes = s => !o.accepts || !!o.accepts(s.data, s.type);
+  let state = null;
+  if (now && now.kind === 'item' && !o.disabled) state = now.over === id ? takes(now) ? 'over' : 'reject' : takes(now) ? 'ready' : null;
+  if (nativeState) state = nativeState;
+  const nat = o.native;
+  const nativeProps = nat && !o.disabled ? {
+    onDragEnter: e => {
+      depth.current++;
+      setNative(!nat.accepts || nat.accepts(e.dataTransfer) ? 'over' : 'reject');
+    },
+    onDragOver: e => {
+      if (!nat.accepts || nat.accepts(e.dataTransfer)) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      } else e.dataTransfer.dropEffect = 'none';
+    },
+    onDragLeave: () => {
+      depth.current = Math.max(0, depth.current - 1);
+      if (!depth.current) setNative(null);
+    },
+    onDrop: e => {
+      e.preventDefault();
+      depth.current = 0;
+      setNative(null);
+      if ((!nat.accepts || nat.accepts(e.dataTransfer)) && nat.onDrop) nat.onDrop(e.dataTransfer);
+    }
+  } : {};
+  return {
+    ref,
+    state,
+    props: Object.assign({
+      ref,
+      className: 'plx-dnd-target',
+      'data-plx-drop-state': state || undefined,
+      'data-plx-dnd-target': id
+    }, nativeProps)
+  };
+}
+
+/* ── useDraggable: a data item people drop on a target (a file on a folder, a card on a column) ── */
+function useDraggable(options) {
+  const o = options || {};
+  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const [id] = _react.default.useState(() => nextId('plx-dnd-item'));
+  const ref = _react.default.useRef(null);
+  const now = useDndSession();
+  const guard = useClickGuard();
+  const describe = instructionsId(t.instructions);
+  const mine = now && now.kind === 'item' && now.id === id;
+  const takers = () => inPageOrder(Array.from(targets.values()).filter(x => x.el && (!x.o.accepts || x.o.accepts(o.data, o.type))));
+  const drop = target => {
+    if (target.o.onDrop) target.o.onDrop(o.data, o.type);
+    (0, _announce.announce)(fill(t.droppedOn, {
+      name: o.name,
+      target: target.o.name
+    }));
+  };
+  const keyDown = e => {
+    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!mine) {
+      if (!pickKey(e) || e.target !== e.currentTarget) return;
+      e.preventDefault();
+      const list = takers();
+      if (!list.length) {
+        (0, _announce.announce)(fill(t.noTargets, {
+          name: o.name
+        }));
+        return;
+      }
+      setSession({
+        kind: 'item',
+        mode: 'keyboard',
+        id,
+        data: o.data,
+        type: o.type,
+        name: o.name,
+        over: list[0].id
+      });
+      (0, _announce.announce)(fill(t.itemPickedUp, {
+        name: o.name,
+        count: list.length
+      }) + ' ' + fill(t.over, {
+        target: list[0].o.name
+      }));
+      return;
+    }
+    if (pickKey(e) || e.key === 'Tab') {
+      if (pickKey(e)) e.preventDefault();
+      const target = targets.get(now.over);
+      setSession(null);
+      if (target) drop(target);
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      setSession(null);
+      (0, _announce.announce)(fill(t.itemCanceled, {
+        name: o.name
+      }));
+      return;
+    }
+    const step = (0, _direction.arrowStep)(e, e.currentTarget);
+    if (!step) return;
+    e.preventDefault();
+    const list = takers();
+    const at = list.findIndex(x => x.id === now.over);
+    const next = list[(at + step + list.length) % list.length];
+    if (!next) return;
+    patchSession({
+      over: next.id
+    });
+    if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: reduced() ? 'auto' : 'smooth'
+    });
+    (0, _announce.announce)(fill(t.over, {
+      target: next.o.name
+    }));
+  };
+  const pointerDown = e => {
+    if (o.disabled || now && now.mode === 'keyboard') return;
+    trackPointer(e, {
+      el: () => ref.current,
+      hold: o.handle === false,
+      onStart: () => setSession({
+        kind: 'item',
+        mode: 'pointer',
+        id,
+        data: o.data,
+        type: o.type,
+        name: o.name,
+        over: null
+      }),
+      onMove: p => {
+        if (ref.current) setDragOffset(ref.current, p.dx, p.dy);
+        const under = document.elementsFromPoint(p.x, p.y);
+        let hit = null;
+        targets.forEach(x => {
+          if (!hit && x.el && under.some(u => x.el.contains(u))) hit = x;
+        });
+        const over = hit ? hit.id : null;
+        if (session && session.over !== over) {
+          patchSession({
+            over
+          });
+          if (hit) (0, _announce.announce)(fill(hit.o.accepts && !hit.o.accepts(o.data, o.type) ? t.overReject : t.over, {
+            target: hit.o.name,
+            name: o.name
+          }));
+        }
+      },
+      onEnd: p => {
+        const target = session && session.over ? targets.get(session.over) : null;
+        const ok = !p.canceled && target && (!target.o.accepts || target.o.accepts(o.data, o.type));
+        guard.set();
+        if (ref.current) clearDragOffset(ref.current, {
+          settle: !ok
+        });
+        setSession(null);
+        if (ok) drop(target);else (0, _announce.announce)(fill(t.itemCanceled, {
+          name: o.name
+        }));
+      }
+    });
+  };
+  const handlers = {
+    onPointerDown: pointerDown,
+    onKeyDown: keyDown,
+    onClick: guard.onClick,
+    'aria-describedby': describe,
+    'aria-pressed': mine && now.mode === 'keyboard' ? true : undefined,
+    'data-plx-dnd-handle': ''
+  };
+  const st = mine ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
+  return {
+    props: Object.assign({
+      ref,
+      className: 'plx-dnd-item',
+      'data-plx-dnd-state': st
+    }, o.handle === false ? Object.assign({}, handlers, {
+      tabIndex: 0,
+      'aria-label': fill(t.handle, {
+        name: o.name
+      })
+    }) : null),
+    handleProps: o.handle === false ? {} : Object.assign({}, handlers, {
+      'aria-label': fill(t.handle, {
+        name: o.name
+      }),
+      disabled: o.disabled || undefined
+    }),
+    targets: () => takers().map(x => ({
+      id: x.id,
+      name: x.o.name,
+      drop: () => drop(x)
+    })),
+    state: st || null
+  };
+}
+
+/* ── useReposition: a free move (a note on a board, a layer on a canvas), on the grid ── */
+function useReposition(options) {
+  const o = options || {};
+  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const pos = o.position || {
+    x: 0,
+    y: 0
+  };
+  const ref = _react.default.useRef(null);
+  const [id] = _react.default.useState(() => nextId('plx-dnd-move'));
+  const [preview, setPreview] = _react.default.useState(null);
+  const origin = _react.default.useRef(null);
+  const now = useDndSession();
+  const describe = instructionsId(t.instructions);
+  const picked = !!(now && now.kind === 'move' && now.id === id && now.mode === 'keyboard');
+  const shown = preview || pos;
+  const current = _react.default.useRef(shown);
+  current.current = shown; // the offset drawn now (the pointer handlers outlive a render)
+  // the resting place (and the preview while it moves): a transform through the Web Animations API
+  _react.default.useLayoutEffect(() => {
+    if (ref.current) setDragOffset(ref.current, shown.x, shown.y);
+  }, [shown.x, shown.y]);
+  _react.default.useEffect(() => () => {
+    if (ref.current) clearDragOffset(ref.current);
+  }, []);
+  // inside the bounds: the element's place in the layout (without its offset) and the frame it may move in
+  const clamp = (x, y) => {
+    const el = ref.current,
+      frame = o.bounds && o.bounds.current || el && el.offsetParent;
+    x = (0, _grid.snapToGrid)(x, {
+      el
+    });
+    y = (0, _grid.snapToGrid)(y, {
+      el
+    });
+    if (!el || !frame) return {
+      x,
+      y
+    };
+    const r = el.getBoundingClientRect(),
+      f = frame.getBoundingClientRect();
+    const left = r.left - current.current.x,
+      top = r.top - current.current.y;
+    const minX = (0, _grid.snapToGrid)(f.left - left, {
+        round: 'up',
+        el
+      }),
+      maxX = (0, _grid.snapToGrid)(f.right - left - r.width, {
+        round: 'down',
+        el
+      });
+    const minY = (0, _grid.snapToGrid)(f.top - top, {
+        round: 'up',
+        el
+      }),
+      maxY = (0, _grid.snapToGrid)(f.bottom - top - r.height, {
+        round: 'down',
+        el
+      });
+    return {
+      x: Math.max(minX, Math.min(maxX, x)),
+      y: Math.max(minY, Math.min(maxY, y))
+    };
+  };
+  const commit = next => {
+    if (o.onMove && (next.x !== pos.x || next.y !== pos.y)) o.onMove(next);
+  };
+  const moveBy = (dx, dy) => {
+    const next = clamp(pos.x + dx, pos.y + dy);
+    commit(next);
+    (0, _announce.announce)(fill(t.repositioned, {
+      name: o.name
+    }));
+  };
+  const keyDown = e => {
+    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!picked) {
+      if (pickKey(e) && e.target === e.currentTarget) {
+        e.preventDefault();
+        origin.current = pos;
+        setPreview(pos);
+        setSession({
+          kind: 'move',
+          mode: 'keyboard',
+          id,
+          name: o.name
+        });
+        (0, _announce.announce)(fill(t.repositionPicked, {
+          name: o.name
+        }));
+      }
+      return;
+    }
+    if (pickKey(e) || e.key === 'Tab') {
+      if (pickKey(e)) e.preventDefault();
+      commit(preview || pos);
+      setPreview(null);
+      setSession(null);
+      (0, _announce.announce)(fill(t.repositionDropped, {
+        name: o.name
+      }));
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      setPreview(null);
+      setSession(null);
+      (0, _announce.announce)(fill(t.repositionCanceled, {
+        name: o.name
+      }));
+      return;
+    }
+    // a free move goes the way the arrow points, in either writing direction
+    const sx = isKey(e, 'ArrowRight') ? 1 : isKey(e, 'ArrowLeft') ? -1 : 0,
+      sy = isKey(e, 'ArrowDown') ? 1 : isKey(e, 'ArrowUp') ? -1 : 0;
+    if (!sx && !sy) return;
+    e.preventDefault();
+    const step = lengthToken(e.shiftKey ? '--plx-sys-dnd-keyboard-step-large' : '--plx-sys-dnd-keyboard-step', e.currentTarget) || (0, _grid.snapToGrid)(8);
+    const base = preview || pos;
+    const next = clamp(base.x + sx * step, base.y + sy * step);
+    setPreview(next);
+    (0, _announce.announce)(fill(t.repositioned, {
+      name: o.name
+    }));
+  };
+  const pointerDown = e => {
+    if (o.disabled || picked) return;
+    const start = pos;
+    trackPointer(e, {
+      el: () => ref.current,
+      hold: false,
+      onStart: () => setSession({
+        kind: 'move',
+        mode: 'pointer',
+        id,
+        name: o.name
+      }),
+      onMove: p => setPreview(clamp(start.x + p.dx, start.y + p.dy)),
+      onEnd: p => {
+        const next = p.canceled ? null : clamp(start.x + p.dx, start.y + p.dy);
+        setPreview(null);
+        setSession(null);
+        if (next) {
+          commit(next);
+          (0, _announce.announce)(fill(t.repositionDropped, {
+            name: o.name
+          }));
+        }
+      }
+    });
+  };
+  const st = now && now.kind === 'move' && now.id === id ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
+  return {
+    props: {
+      ref,
+      tabIndex: o.disabled ? undefined : 0,
+      className: 'plx-dnd-item plx-dnd-move',
+      'data-plx-dnd-state': st,
+      'aria-label': o.name,
+      'aria-roledescription': t.movable || undefined,
+      'aria-describedby': describe,
+      'aria-pressed': picked ? true : undefined,
+      onPointerDown: pointerDown,
+      onKeyDown: keyDown
+    },
+    position: shown,
+    picked,
+    moveBy
+  };
+}
+  } },
+  "platform/components/DropZone/DropZone.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3836,35 +5214,71 @@ Object.defineProperty(exports, "__esModule", {
 exports.DropZone = DropZone;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _dnd = require("../../utils/dnd.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DropZone
-   Summary: Where files are dropped (an upload area): a dashed region on the sunken surface.
+   Summary: Where files are dropped (an upload area): a dashed region on the sunken surface. It is also a drop target for
+     items dragged in the page (a data drop target: an asset dropped on a folder, a card on a column; 10 Patterns ›
+     Drop target), through the drag-and-drop engine, and shows whether it takes what is over it.
    Usage:
      <DropZone as="button" active={dragging} onClick={openPicker} onDragOver={…} onDrop={…}>Drop files or click to choose</DropZone>
+     <DropZone name="Archive" accepts={(data, type) => type === 'asset'} onDropItem={(asset) => archive(asset)}>Archive</DropZone>
+     <DropZone reject={wrongType} rejectContent="Only images can go here" …>Drop images here</DropZone>
    Props:
      as: "div" (default) | "button" (opens the file picker on click)
      active: shows the highlight while files are dragged over it (default false)
+     reject: shows that what is dragged over it is not taken (default false): the border in the danger color and the
+       not-allowed pointer; the page sets it while it handles the browser's drag events itself
+     rejectContent: what the zone says while it does not take what is over it ("Only images can go here"), so the state
+       is never told by color alone (default: its children)
      overlay: covers its positioned parent while files are dragged over a page (the asset browser), and lets the drop
        reach the page (default false)
+     onDropItem(data, type): makes the zone a drop target for items dragged in the page with the drag-and-drop engine
+       (utils/dnd.js: useDraggable, a sortable list's items do not drop here); it runs when one is dropped on it
+     accepts(data, type): with onDropItem, true when the zone takes the item (default: every item)
+     name: with onDropItem, the zone's name in the announcements ("Over Archive", "Archive does not take Cross 014")
      children: the zone's content
      className: more classes on the zone
    Behavior:
-     The zone is highlighted while active.
+     The zone is highlighted while active, or while an item it takes is over it; it shows the reject state while
+       reject is set, or while an item it does not take is over it.
+     With onDropItem the keyboard reaches it too: a picked-up item (Space or Enter on its handle) moves from target to
+       target with the arrow keys and drops with Space or Enter; each target is announced.
    Notes:
-     The page handles the drag and drop events; other props (onDragOver, onDrop, onClick, …) pass through to the element.
+     The page handles the browser's drag and drop events (files); other props (onDragOver, onDrop, onClick, …) pass
+       through to the element.
 */
 function DropZone({
   as: As = 'div',
   active = false,
+  reject = false,
+  rejectContent,
   overlay = false,
+  onDropItem,
+  accepts,
+  name,
   className,
   children,
   ...rest
 }) {
+  const target = (0, _dnd.useDropTarget)({
+    name,
+    accepts,
+    onDrop: onDropItem,
+    disabled: !onDropItem
+  });
+  const st = onDropItem ? target.state : null;
+  const refused = reject || st === 'reject';
+  const extra = onDropItem ? {
+    ref: target.ref,
+    'data-plx-dnd-target': target.props['data-plx-dnd-target'],
+    'data-plx-drop-state': target.props['data-plx-drop-state']
+  } : null;
   return /*#__PURE__*/_react.default.createElement(As, _extends({
-    type: As === 'button' ? 'button' : undefined,
-    className: (0, _cx.cx)('plx-drop-zone', active && 'is-active', overlay && 'plx-drop-zone--overlay', className)
-  }, rest), children);
+    type: As === 'button' ? 'button' : undefined
+  }, extra, {
+    className: (0, _cx.cx)('plx-drop-zone', (active || st === 'over') && 'is-active', refused && 'is-reject', overlay && 'plx-drop-zone--overlay', className)
+  }, rest), refused && rejectContent != null ? rejectContent : children);
 }
   } },
   "platform/components/Preview/Preview.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -4520,66 +5934,6 @@ function ShowMore({
       if (onToggle) onToggle(!expanded);
     }
   }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
-}
-  } },
-  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.gridPx = exports.GRID_TOKEN = void 0;
-exports.gridStep = gridStep;
-exports.onGrid = onGrid;
-exports.snapToGrid = snapToGrid;
-/* Plenix · grid (platform/utils/grid.js)
-   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
-     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
-     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
-     instead: snapSize and stepSize in utils/sizeSteps.js.
-   Usage:
-     import { snapToGrid, gridPx } from '../../utils/grid.js';
-     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
-     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
-   Props:
-     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
-     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
-     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
-     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
-   Behavior:
-     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
-     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
-   Notes:
-     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
-     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
-     length is neither a token nor passed through this helper (or the size steps).
-*/
-
-const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
-
-// the base spacing token in pixels where el is (a rem token follows the root font size)
-function gridStep(el) {
-  if (typeof document === 'undefined') return 4;
-  const at = el || document.documentElement,
-    win = at.ownerDocument.defaultView;
-  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
-  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
-  return px > 0 ? px : 4;
-}
-function snapToGrid(px, opts) {
-  const o = opts || {},
-    step = gridStep(o.el),
-    n = Number(px) || 0;
-  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
-  const q = n / step;
-  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
-}
-const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
-exports.gridPx = gridPx;
-function onGrid(px, el) {
-  const step = gridStep(el),
-    q = Math.abs(Number(px) || 0) / step;
-  return Math.abs(q - Math.round(q)) * step <= 0.5;
 }
   } },
   "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -5425,123 +6779,6 @@ function SegmentedControl({
   }, o.icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: o.icon
   }) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
-}
-  } },
-  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.tokenMs = tokenMs;
-// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
-// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
-// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
-function tokenMs(name, fallback = 0, el) {
-  if (typeof document === 'undefined') return fallback;
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
-  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
-  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
-}
-  } },
-  "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LiveRegion = LiveRegion;
-exports.announce = announce;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("./cx.js");
-var _tokenTime = require("./tokenTime.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LiveRegion, announce (platform/utils/announce.jsx)
-   Summary: Tells screen-reader users about a change they cannot see happen (a save, a count of results, an upload that
-     finished, an error) without moving their focus. announce(text) speaks through one pair of page-wide regions;
-     LiveRegion is a region of a component's own, for messages that also stay on screen (a status line, a log).
-   Usage:
-     announce('12 results');                               // polite: waits until the reader is idle
-     announce('Couldn’t save. Check your connection.', { politeness: 'assertive' });   // interrupts: urgent errors only
-     <LiveRegion kind="status">{saved ? 'Saved' : ''}</LiveRegion>
-     <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
-   Props:
-     announce(text, { politeness }): politeness "polite" (default) or "assertive"; the same text twice is spoken twice
-     LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
-       (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
-     LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
-     LiveRegion.atomic: read the whole region on every change, not only what changed (default: true for status, else false)
-     LiveRegion.children: the message (render the region empty first, then put the text in it)
-     LiveRegion.className: more classes on the region
-   Behavior:
-     The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
-     Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
-     A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
-   Notes:
-     Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
-     Never put a control inside a live region. Messages are plain text: no markup, icons or emoji names.
-     Meets WCAG 2.2 SC 4.1.3 Status Messages.
-*/
-const regions = {};
-const pending = {};
-
-// the page-wide region for one politeness (made once, visually hidden)
-function region(politeness) {
-  if (regions[politeness] && regions[politeness].isConnected) return regions[politeness];
-  const el = document.createElement('div');
-  el.className = 'plx-visually-hidden';
-  el.setAttribute('aria-live', politeness);
-  el.setAttribute('aria-atomic', 'true');
-  el.setAttribute('data-plx-announcer', politeness);
-  if (politeness === 'assertive') el.setAttribute('role', 'alert');
-  document.body.appendChild(el);
-  regions[politeness] = el;
-  return el;
-}
-function announce(text, {
-  politeness = 'polite'
-} = {}) {
-  if (typeof document === 'undefined' || !document.body) return;
-  const p = politeness === 'assertive' ? 'assertive' : 'polite';
-  const el = region(p);
-  // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
-  el.textContent = '';
-  if (pending[p]) clearTimeout(pending[p]);
-  pending[p] = setTimeout(() => {
-    pending[p] = null;
-    el.textContent = String(text || '');
-  }, (0, _tokenTime.tokenMs)('--plx-sys-live-region-delay'));
-}
-const KINDS = {
-  polite: {
-    'aria-live': 'polite'
-  },
-  assertive: {
-    'aria-live': 'assertive'
-  },
-  status: {
-    role: 'status',
-    'aria-live': 'polite'
-  },
-  log: {
-    role: 'log',
-    'aria-live': 'polite'
-  }
-};
-function LiveRegion({
-  kind = 'polite',
-  visible = false,
-  atomic,
-  className,
-  children,
-  ...rest
-}) {
-  const a = KINDS[kind] || KINDS.polite;
-  return /*#__PURE__*/_react.default.createElement("div", _extends({}, a, {
-    "aria-atomic": atomic !== undefined ? atomic : kind === 'status',
-    "data-plx-live": kind,
-    className: (0, _cx.cx)(!visible && 'plx-visually-hidden', className)
-  }, rest), children);
 }
   } },
   "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -7799,40 +9036,6 @@ function PromptDialog({
   }, inputProps)))));
 }
   } },
-  "platform/utils/sizeSteps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SIZE_STEPS = void 0;
-exports.snapSize = snapSize;
-exports.stepSize = stepSize;
-/* Plenix · SIZE_STEPS
-   Summary: The size tokens in pixels, GENERATED by build-steps.js from the --plx-ref-size-* tokens (do not edit): the widths a pane snaps to.
-   Usage:
-     import { SIZE_STEPS, snapSize } from '../../utils/sizeSteps.js';
-     snapSize(250, 140, 320)   // 240: the nearest size token within the limits
-   Props:
-     none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
-*/
-const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 280, 300, 320, 360, 400, 500, 560, 600, 720, 900];
-const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
-// the size token nearest to px within [min, max] (the limit itself when no token lies between them)
-function snapSize(px, min, max) {
-  const c = within(min, max);
-  if (!c.length) return Math.max(min, Math.min(max, px));
-  return c.reduce((a, b) => Math.abs(b - px) < Math.abs(a - px) ? b : a);
-}
-// the next size token from px in a direction (+1 wider, -1 narrower), within [min, max]
-function stepSize(px, dir, min, max) {
-  const c = within(min, max);
-  if (!c.length) return px;
-  const cur = snapSize(px, min, max);
-  const i = c.indexOf(cur) + (dir > 0 ? 1 : -1);
-  return c[Math.max(0, Math.min(c.length - 1, i))];
-}
-  } },
   "platform/providers/pageLayouts.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -7888,7 +9091,396 @@ function pageLayout(kind) {
   return (PAGE_LAYOUTS[kind] || PAGE_LAYOUTS[DEFAULT_PAGE]).layout;
 }
   } },
-  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/utils/sizeSteps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SIZE_STEPS = void 0;
+exports.snapSize = snapSize;
+exports.stepSize = stepSize;
+/* Plenix · SIZE_STEPS
+   Summary: The size tokens in pixels, GENERATED by build-steps.js from the --plx-ref-size-* tokens (do not edit): the widths a pane snaps to.
+   Usage:
+     import { SIZE_STEPS, snapSize } from '../../utils/sizeSteps.js';
+     snapSize(250, 140, 320)   // 240: the nearest size token within the limits
+   Props:
+     none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
+*/
+const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 280, 300, 320, 360, 400, 500, 560, 600, 720, 900];
+const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
+// the size token nearest to px within [min, max] (the limit itself when no token lies between them)
+function snapSize(px, min, max) {
+  const c = within(min, max);
+  if (!c.length) return Math.max(min, Math.min(max, px));
+  return c.reduce((a, b) => Math.abs(b - px) < Math.abs(a - px) ? b : a);
+}
+// the next size token from px in a direction (+1 wider, -1 narrower), within [min, max]
+function stepSize(px, dir, min, max) {
+  const c = within(min, max);
+  if (!c.length) return px;
+  const cur = snapSize(px, min, max);
+  const i = c.indexOf(cur) + (dir > 0 ? 1 : -1);
+  return c[Math.max(0, Math.min(c.length - 1, i))];
+}
+  } },
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PanelSplitter = PanelSplitter;
+exports.Resizable = Resizable;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _direction = require("../../utils/direction.js");
+var _sizeSteps = require("../../utils/sizeSteps.js");
+var _Menu = require("../Menu/Menu.jsx");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Resizable, PanelSplitter
+   Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
+     Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both, and a menu of sizes
+     for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
+     a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is a size
+     token: a drag snaps to the nearest, the arrow keys step through them, and a list of steps narrows them further.
+   Usage:
+     <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
+     <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
+     <Resizable label="Image" axis="both" defaultWidth={240} defaultHeight={160} …>…</Resizable>
+     <Resizable label="Panel" axis="horizontal" steps={[240, 320, 400, 560]} defaultWidth={320}>…</Resizable>   // snapped to steps
+     <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
+   Props:
+     label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") and the menu's (required)
+     axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
+       "both" (both edges, and a corner the pointer drags in both directions)
+     width, height: the size in pixels, each a size token (--plx-ref-size-*), when the page keeps it; onResize({ width,
+       height }) runs with each new size
+     defaultWidth, defaultHeight: the starting size when the box keeps it itself; Reset size in the menu goes back to it
+     minWidth, maxWidth, minHeight, maxHeight: the limits in pixels (defaults: the tokens --plx-comp-resizable-min-width,
+       -max-width, -min-height and -max-height: 120 to 560 wide, 80 to 400 high)
+     steps: the only sizes allowed, smallest first (each a size token): an array for the resized axis, or { width: [],
+       height: [] }; without it every size token within the limits
+     strings: the words it shows, for other languages: { width: "{label} width", height: "{label} height", options:
+       "{label} size options", narrower: "Narrower", wider: "Wider", shorter: "Shorter", taller: "Taller", reset:
+       "Reset size" }
+     className: more classes on the box; children: its content
+     PanelSplitter.label, value, min, max() (a function: the widest it can be now), onChange(width), onCollapse(),
+       defaultValue, edge: "end" (an area at the start) | "start" (an area at the end)
+   Behavior:
+     Pointer: drag an edge (or the corner); the size follows in size-token steps; the page shows the resize pointer.
+     Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
+       end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
+       to the limits.
+     Without dragging (WCAG 2.5.7): a small menu button inside the box's end corner (shown while the box is hovered or has
+       focus inside, always with a touch interaction) offers Narrower, Wider, Shorter, Taller and Reset size.
+     PanelSplitter: drag, or the arrow keys, Home and End; double-click or Enter collapses the area when it can collapse;
+       its width menu offers Narrower, Wider, Reset width and Collapse.
+   Notes:
+     The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token (never a style
+       attribute). The content fits itself: it wraps, or scrolls in a region of its own.
+     A table's column widths are the DataTable's own; a pane of the shell uses PanelSplitter through its pattern.
+*/
+/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
+   collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
+   "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
+   are mirrored (arrowStep gives the step in reading order).
+   Without dragging (WCAG 2.5.7): a small menu button on the edge (shown while the edge is hovered or focused, always with
+   a touch or mobile interaction) offers Narrower and Wider (one size token), Reset width (with defaultValue, the area's
+   default width) and Collapse (with onCollapse). */
+const SPLITTER = {
+  options: '{label} options',
+  narrower: 'Narrower',
+  wider: 'Wider',
+  reset: 'Reset width',
+  collapse: 'Collapse'
+};
+function PanelSplitter({
+  label,
+  value,
+  min,
+  max,
+  onChange,
+  onCollapse,
+  defaultValue,
+  edge = 'end'
+}) {
+  const dir = edge === 'end' ? 1 : -1;
+  // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
+  const clamp = w => (0, _sizeSteps.snapSize)(w, min, max());
+  const onPointerDown = e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const x0 = e.clientX,
+      w0 = value,
+      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
+    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      document.documentElement.classList.remove('is-resizing-columns');
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+    document.documentElement.classList.add('is-resizing-columns');
+  };
+  const onKeyDown = e => {
+    const step = (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    }) * dir;
+    if (step) {
+      e.preventDefault();
+      onChange((0, _sizeSteps.stepSize)(value, step, min, max()));
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      onChange(clamp(min));
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      onChange(clamp(max()));
+    } else if (e.key === 'Enter' && onCollapse) {
+      e.preventDefault();
+      onCollapse();
+    }
+  };
+  const top = clamp(max()),
+    now = clamp(value);
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+    role: "separator",
+    "aria-orientation": "vertical",
+    "aria-label": label,
+    "aria-valuenow": value,
+    "aria-valuemin": min,
+    "aria-valuemax": top,
+    tabIndex: 0,
+    className: (0, _cx.cx)('plx-panel-splitter', 'plx-panel-splitter--' + edge),
+    onPointerDown: onPointerDown,
+    onKeyDown: onKeyDown,
+    "data-plx-target-equivalent": "the width menu beside it (WCAG 2.5.8 Equivalent)",
+    onDoubleClick: onCollapse || undefined
+  }), /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    placement: edge === 'end' ? 'bottom-end' : 'bottom-start',
+    className: (0, _cx.cx)('plx-panel-splitter__menu', 'plx-panel-splitter__menu--' + edge),
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      iconOnly: true,
+      icon: "more",
+      label: SPLITTER.options.replace('{label}', label || '')
+    })
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: now <= clamp(min),
+    onSelect: () => onChange((0, _sizeSteps.stepSize)(value, -1, min, max()))
+  }, SPLITTER.narrower), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: now >= top,
+    onSelect: () => onChange((0, _sizeSteps.stepSize)(value, 1, min, max()))
+  }, SPLITTER.wider), defaultValue != null ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "refresh",
+    disabled: now === clamp(defaultValue),
+    onSelect: () => onChange(clamp(defaultValue))
+  }, SPLITTER.reset) : null, onCollapse ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: edge === 'end' ? 'panel-left-close' : 'panel-right-close',
+    onSelect: onCollapse
+  }, SPLITTER.collapse) : null));
+}
+
+/* ── Resizable: a box with its own resize edges ── */
+const STRINGS = {
+  width: '{label} width',
+  height: '{label} height',
+  options: '{label} size options',
+  narrower: 'Narrower',
+  wider: 'Wider',
+  shorter: 'Shorter',
+  taller: 'Taller',
+  reset: 'Reset size'
+};
+const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+// the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
+const tokenPx = name => typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
+const limit = (v, name) => v != null ? v : tokenPx('--plx-comp-resizable-' + name);
+// one axis's sizes: the steps given (within the limits), or every size token within them
+function scaleOf(steps, min, max) {
+  const list = Array.isArray(steps) ? steps.filter(s => s >= min && s <= max) : null;
+  const snap = px => list && list.length ? list.reduce((a, b) => Math.abs(b - px) < Math.abs(a - px) ? b : a) : (0, _sizeSteps.snapSize)(px, min, max);
+  const step = (px, dir) => {
+    if (!list || !list.length) return (0, _sizeSteps.stepSize)(px, dir, min, max);
+    const i = list.indexOf(snap(px)) + (dir > 0 ? 1 : -1);
+    return list[Math.max(0, Math.min(list.length - 1, i))];
+  };
+  return {
+    snap,
+    step,
+    lo: list && list.length ? list[0] : snap(min),
+    hi: list && list.length ? list[list.length - 1] : snap(max)
+  };
+}
+function Resizable({
+  label,
+  axis = 'horizontal',
+  width,
+  height,
+  onResize,
+  defaultWidth,
+  defaultHeight,
+  minWidth: minW,
+  maxWidth: maxW,
+  minHeight: minH,
+  maxHeight: maxH,
+  steps,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const minWidth = limit(minW, 'min-width'),
+    maxWidth = limit(maxW, 'max-width'),
+    minHeight = limit(minH, 'min-height'),
+    maxHeight = limit(maxH, 'max-height');
+  const doW = axis !== 'vertical',
+    doH = axis !== 'horizontal';
+  const wSteps = Array.isArray(steps) ? doW ? steps : null : steps && steps.width;
+  const hSteps = Array.isArray(steps) ? doW ? null : steps : steps && steps.height;
+  const W = scaleOf(wSteps, minWidth, maxWidth),
+    H = scaleOf(hSteps, minHeight, maxHeight);
+  const [own, setOwn] = _react.default.useState(() => ({
+    width: defaultWidth != null ? W.snap(defaultWidth) : W.snap((minWidth + maxWidth) / 2),
+    height: defaultHeight != null ? H.snap(defaultHeight) : H.snap((minHeight + maxHeight) / 2)
+  }));
+  const size = {
+    width: width != null ? W.snap(width) : own.width,
+    height: height != null ? H.snap(height) : own.height
+  };
+  const latest = _react.default.useRef(size);
+  latest.current = size;
+  const set = next => {
+    const s = {
+      width: doW ? W.snap(next.width) : latest.current.width,
+      height: doH ? H.snap(next.height) : latest.current.height
+    };
+    if (s.width === latest.current.width && s.height === latest.current.height) return;
+    latest.current = s;
+    if (width == null || height == null) setOwn(s);
+    if (onResize) onResize(s);
+  };
+  const drag = (dx, dy) => e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    e.preventDefault();
+    const x0 = e.clientX,
+      y0 = e.clientY,
+      w0 = latest.current.width,
+      h0 = latest.current.height,
+      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
+    const cls = dx && dy ? 'is-resizing-both' : dy ? 'is-resizing-rows' : 'is-resizing-columns';
+    const move = ev => set({
+      width: w0 + (ev.clientX - x0) * flip * dx,
+      height: h0 + (ev.clientY - y0) * dy
+    });
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      document.removeEventListener('pointercancel', up);
+      document.documentElement.classList.remove(cls);
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+    document.addEventListener('pointercancel', up);
+    document.documentElement.classList.add(cls);
+  };
+  const keys = which => e => {
+    const S = which === 'width' ? W : H;
+    const step = which === 'width' ? (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    }) : e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+    const cur = latest.current[which];
+    let next = null;
+    if (step) next = S.step(cur, step);else if (e.key === 'Home') next = S.lo;else if (e.key === 'End') next = S.hi;
+    if (next == null) return;
+    e.preventDefault();
+    set(Object.assign({}, latest.current, {
+      [which]: next
+    }));
+  };
+  const reset = {
+    width: defaultWidth != null ? W.snap(defaultWidth) : null,
+    height: defaultHeight != null ? H.snap(defaultHeight) : null
+  };
+  const canReset = doW && reset.width != null && reset.width !== size.width || doH && reset.height != null && reset.height !== size.height;
+  const edge = which => {
+    const S = which === 'width' ? W : H;
+    return /*#__PURE__*/_react.default.createElement("div", {
+      role: "separator",
+      tabIndex: 0,
+      "aria-orientation": which === 'width' ? 'vertical' : 'horizontal',
+      "aria-label": fill(t[which], {
+        label
+      }),
+      "aria-valuenow": size[which],
+      "aria-valuemin": S.lo,
+      "aria-valuemax": S.hi,
+      "data-plx-target-equivalent": "the size menu in the box (WCAG 2.5.8 Equivalent)",
+      className: (0, _cx.cx)('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block')),
+      onPointerDown: which === 'width' ? drag(1, 0) : drag(0, 1),
+      onKeyDown: keys(which)
+    });
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({}, rest, {
+    className: (0, _cx.cx)('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', className),
+    "data-plx-width": doW ? size.width + 'px' : undefined,
+    "data-plx-height": doH ? size.height + 'px' : undefined
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-resizable__content"
+  }, children), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-resizable__corner",
+    "aria-hidden": "true",
+    onPointerDown: drag(1, 1)
+  }) : null, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: fill(t.options, {
+      label
+    }),
+    placement: "bottom-end",
+    className: "plx-resizable__menu",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      iconOnly: true,
+      icon: "more",
+      label: fill(t.options, {
+        label
+      })
+    })
+  }, doW ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: size.width <= W.lo,
+    onSelect: () => set(Object.assign({}, latest.current, {
+      width: W.step(size.width, -1)
+    }))
+  }, t.narrower) : null, doW ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: size.width >= W.hi,
+    onSelect: () => set(Object.assign({}, latest.current, {
+      width: W.step(size.width, 1)
+    }))
+  }, t.wider) : null, doH ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: size.height <= H.lo,
+    onSelect: () => set(Object.assign({}, latest.current, {
+      height: H.step(size.height, -1)
+    }))
+  }, t.shorter) : null, doH ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: size.height >= H.hi,
+    onSelect: () => set(Object.assign({}, latest.current, {
+      height: H.step(size.height, 1)
+    }))
+  }, t.taller) : null, reset.width != null || reset.height != null ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "refresh",
+    disabled: !canReset,
+    onSelect: () => set({
+      width: reset.width != null ? reset.width : size.width,
+      height: reset.height != null ? reset.height : size.height
+    })
+  }, t.reset) : null));
+}
+  } },
+  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7898,7 +9490,12 @@ exports.AppShell = AppShell;
 exports.Hide = Hide;
 exports.LayoutContext = void 0;
 exports.PageContent = PageContent;
-exports.PanelSplitter = PanelSplitter;
+Object.defineProperty(exports, "PanelSplitter", {
+  enumerable: true,
+  get: function () {
+    return _Resizable.PanelSplitter;
+  }
+});
 exports.Show = Show;
 exports.SideNavPortal = SideNavPortal;
 exports.useAppLayout = exports.tokenValue = exports.tokenPx = exports.readPref = exports.below = void 0;
@@ -7907,11 +9504,8 @@ exports.writePref = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
-var _direction = require("../../utils/direction.js");
-var _sizeSteps = require("../../utils/sizeSteps.js");
 var _pageLayouts = require("../../providers/pageLayouts.js");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Button = require("../../components/Button/Button.jsx");
+var _Resizable = require("../../components/Resizable/Resizable.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppShell, PageContent, SideNavPortal, Show, Hide
    Summary: The root of an application page, after the Layout grid's shell: the header across the top, a body row with the
@@ -7987,6 +9581,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      SideNavPortal is for a screen that owns its navigation's state (a settings screen, a project list): it hands the
        navigation to the shell's navigation area from inside the main content, where it then behaves as above.
      Outside an AppShell, SideNavPortal renders its children in place.
+     PanelSplitter, the resize edge of the panes, is the Resizable component's (components/Resizable); AppShell imports
+       and re-exports it, so the panes import it from here as before.
      Show and Hide work anywhere (inside an AppShell or not). Off screen means not rendered at all: what is hidden by width
        leaves the page, the Tab order and the accessibility tree; on paper they toggle display (the content stays in the
        page for screen readers). Every hidden action needs a place where it still is (fallback, a menu, the detail view).
@@ -8159,107 +9755,9 @@ function AppShell({
   }) : null));
 }
 
-/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
-   collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
-   "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
-   are mirrored (arrowStep gives the step in reading order).
-   Without dragging (WCAG 2.5.7): a small menu button on the edge (shown while the edge is hovered or focused, always with
-   a touch or mobile interaction) offers Narrower and Wider (one size token), Reset width (with defaultValue, the area's
-   default width) and Collapse (with onCollapse). */
-const SPLITTER = {
-  options: '{label} options',
-  narrower: 'Narrower',
-  wider: 'Wider',
-  reset: 'Reset width',
-  collapse: 'Collapse'
-};
-function PanelSplitter({
-  label,
-  value,
-  min,
-  max,
-  onChange,
-  onCollapse,
-  defaultValue,
-  edge = 'end'
-}) {
-  const dir = edge === 'end' ? 1 : -1;
-  // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
-  const clamp = w => (0, _sizeSteps.snapSize)(w, min, max());
-  const onPointerDown = e => {
-    if (e.button !== 0) return;
-    e.preventDefault();
-    const x0 = e.clientX,
-      w0 = value,
-      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
-    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
-    const up = () => {
-      document.removeEventListener('pointermove', move);
-      document.removeEventListener('pointerup', up);
-      document.documentElement.classList.remove('is-resizing-columns');
-    };
-    document.addEventListener('pointermove', move);
-    document.addEventListener('pointerup', up);
-    document.documentElement.classList.add('is-resizing-columns');
-  };
-  const onKeyDown = e => {
-    const step = (0, _direction.arrowStep)(e, e.currentTarget, {
-      vertical: false
-    }) * dir;
-    if (step) {
-      e.preventDefault();
-      onChange((0, _sizeSteps.stepSize)(value, step, min, max()));
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      onChange(clamp(min));
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      onChange(clamp(max()));
-    } else if (e.key === 'Enter' && onCollapse) {
-      e.preventDefault();
-      onCollapse();
-    }
-  };
-  const top = clamp(max()),
-    now = clamp(value);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
-    role: "separator",
-    "aria-orientation": "vertical",
-    "aria-label": label,
-    "aria-valuenow": value,
-    "aria-valuemin": min,
-    "aria-valuemax": top,
-    tabIndex: 0,
-    className: (0, _cx.cx)('plx-panel-splitter', 'plx-panel-splitter--' + edge),
-    onPointerDown: onPointerDown,
-    onKeyDown: onKeyDown,
-    "data-plx-target-equivalent": "the width menu beside it (WCAG 2.5.8 Equivalent)",
-    onDoubleClick: onCollapse || undefined
-  }), /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: label,
-    placement: edge === 'end' ? 'bottom-end' : 'bottom-start',
-    className: (0, _cx.cx)('plx-panel-splitter__menu', 'plx-panel-splitter__menu--' + edge),
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      iconOnly: true,
-      icon: "more",
-      label: SPLITTER.options.replace('{label}', label || '')
-    })
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    disabled: now <= clamp(min),
-    onSelect: () => onChange((0, _sizeSteps.stepSize)(value, -1, min, max()))
-  }, SPLITTER.narrower), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    disabled: now >= top,
-    onSelect: () => onChange((0, _sizeSteps.stepSize)(value, 1, min, max()))
-  }, SPLITTER.wider), defaultValue != null ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "refresh",
-    disabled: now === clamp(defaultValue),
-    onSelect: () => onChange(clamp(defaultValue))
-  }, SPLITTER.reset) : null, onCollapse ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: edge === 'end' ? 'panel-left-close' : 'panel-right-close',
-    onSelect: onCollapse
-  }, SPLITTER.collapse) : null));
-}
+/* the drag handle on a resizable area's inner edge (PanelSplitter) lives with the Resizable component since library wave
+   10; the panes (NavPane, SecondaryPane, SidePanel) still import it from here */
+
 function SideNavPortal({
   children
 }) {
@@ -44189,7 +45687,2039 @@ function ComparisonView({
   }, bar, body);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/DragHandle/DragHandle.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DragHandle = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _dnd = require("../../utils/dnd.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DragHandle
+   Summary: The grip an item is moved by (13 Interaction › Interaction foundations › Drag handle): a small button with the
+     drag icon (six dots) that the drag-and-drop engine (utils/dnd.js) turns into a drag for the pointer and a pick-up
+     for the keyboard. Vertical (the dots stand) for rows that move up and down; horizontal (the dots lie) for columns,
+     tabs and cards that move sideways.
+   Usage:
+     const s = useSortable({ items, onReorder: setItems });
+     <DragHandle dnd={s.handleProps(i)} />                                    // the engine names it ("Move Hero banner")
+     <DragHandle label="Move column Status" orientation="horizontal" dnd={…} />
+     <Menu label="Move Hero banner" trigger={<DragHandle dnd={s.handleProps(i)} />}>…Move up, Move down…</Menu>
+   Props:
+     label: the accessible name, a verb and the item ("Move Hero banner"); default the engine's (dnd["aria-label"])
+     orientation: "vertical" (default) | "horizontal"
+     dnd: the engine's handle props (useSortable().handleProps(i), useDraggable().handleProps): the pointer, the keys, the
+       instructions (aria-describedby) and aria-pressed while the item is picked up
+     disabled: the item cannot move now (default false)
+     className: more classes on the handle
+     ref: the button (forwarded), so the handle can be a Menu's trigger
+   Behavior:
+     Pointer: press and move past the slop to drag the item; the handle shows the grab pointer, grabbing while it drags.
+       A click without moving does what the handle's other props say (a Menu's trigger opens its menu of moves).
+     Keyboard: Space or Enter picks the item up (aria-pressed true, the selected fill); the arrow keys move it; Space or
+       Enter drops it; Escape puts it back. The engine's handlers run first, so while the item is picked up the arrow
+       keys move it rather than open a menu.
+     Touch: the handle takes the finger itself (touch-action none), so the page still scrolls everywhere else.
+   Notes:
+     Every drag has a way without dragging (WCAG 2.5.7): a menu of moves on the handle (SortableList), move buttons, or
+       the keyboard. The handle is at least the inline control size (24px; larger with touch), WCAG 2.5.8.
+     Other props pass through to the <button>.
+*/
+const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(function DragHandle({
+  label,
+  orientation = 'vertical',
+  dnd,
+  disabled = false,
+  className,
+  ...rest
+}, ref) {
+  const props = (0, _dnd.mergeDndProps)(dnd || {}, rest);
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: "button"
+  }, props, {
+    "aria-label": label || props['aria-label'],
+    disabled: disabled || props.disabled || undefined,
+    className: (0, _cx.cx)('plx-drag-handle', 'plx-drag-handle--' + (orientation === 'horizontal' ? 'horizontal' : 'vertical'), className)
+  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "drag",
+    className: "plx-drag-handle__icon"
+  }));
+});
+  } },
+  "platform/patterns/SortableList/SortableList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../../components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SortableList = SortableList;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _dnd = require("../../utils/dnd.js");
+var _DragHandle = require("../../components/DragHandle/DragHandle.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SortableList
+   Summary: A list people put in their own order (10 Patterns › Selection and organization › Sortable list; also
+     Reordering): each item drags by its handle, moves with the keyboard (pick up, arrows, drop) and has a way without
+     dragging, its handle's menu of moves or move buttons. A column of rows (vertical) or tiles in a grid; lists of one
+     group take each other's items. Built on the drag-and-drop engine (utils/dnd.js) with DragHandle, Menu and Button.
+   Usage:
+     <SortableList label="Steps" items={steps} onReorder={setSteps} renderItem={(s) => s.title} />
+     <SortableList label="Pinned views" layout="grid" items={views} onReorder={setViews} renderItem={(v) => <Persona … />} />
+     <SortableList label="Columns" items={cols} onReorder={setCols} moveButtons renderItem={(c) => c.label} />
+     <SortableList id="todo" group="board" label="To do" items={todo} onMove={move} onReorder={setTodo} renderItem={…} />
+   Props:
+     items: the list, in order: [{ id, name, … }] (required)
+     renderItem(item, index): draws an item's content (default its name)
+     onReorder(next, { item, from, to }): runs with the new order after a drop, a key move, a menu move or a move button;
+       without it the list cannot be reordered
+     label: the list's accessible name ("Steps"), spoken when an item moves to it from another list (required)
+     getId(item) (default item.id); getName(item): the item's name in the handle's label and the announcements (default
+       item.name, item.label, else the id)
+     layout: "vertical" (default; one row per item) | "grid" (tiles in rows that wrap; the arrow keys move a tile across
+       and up and down a row)
+     handles: true (default) each item has a DragHandle whose click opens its menu of moves (Move up, Move down, Move to
+       the start, Move to the end); false the whole item drags (on touch after a long press) and is one tab stop
+     moveButtons: Move up and Move down buttons at the end of each item, always visible (default false)
+     id, group, onMove({ item, from: { list, index }, to: { list, index } }): lists of one group take each other's items;
+       give each its id and the same onMove, which moves the item between the page's lists
+     disabled: the order cannot change now (default false)
+     strings: the words it shows and announces, for other languages: { moveMenu: "Move {name}", moveUp: "Move up",
+       moveDown: "Move down", moveEarlier: "Move earlier", moveLater: "Move later", moveFirst: "Move to the start",
+       moveLast: "Move to the end", moveUpNamed: "Move {name} up", moveDownNamed: "Move {name} down" } and the engine's
+       announcements (DND_STRINGS)
+     className: more classes on the list
+   Behavior:
+     Pointer: drag an item by its handle (or anywhere on it with handles={false}); the item follows the pointer, raised,
+       and the insertion line shows where it lands; release drops it; Escape puts it back. Near the edges of a scrolling
+       region the region scrolls.
+     Keyboard: Space or Enter on the handle picks the item up; Arrow Up / Down (in a grid also Left / Right, in reading
+       order) move it, Home and End to the start and the end; Space or Enter drops it, Escape puts it back where it was.
+       In a group, Arrow Left / Right move it to the neighboring list.
+     Without dragging (WCAG 2.5.7): a click on the handle opens the menu of moves; move buttons move one place.
+     Every move is announced ("Hero banner, position 2 of 5"); focus stays on the moved item's handle.
+   Notes:
+     The list never changes the order by itself: onReorder (and onMove) hand the new order to the page, which keeps it.
+     A list of fields in a find panel reorders with the panels' own rows (Reordering, the columns list); a dashboard's
+       widgets with WidgetGrid. Other props pass through to the <ul>.
+*/
+const STRINGS = {
+  moveMenu: 'Move {name}',
+  moveUp: 'Move up',
+  moveDown: 'Move down',
+  moveEarlier: 'Move earlier',
+  moveLater: 'Move later',
+  moveFirst: 'Move to the start',
+  moveLast: 'Move to the end',
+  moveUpNamed: 'Move {name} up',
+  moveDownNamed: 'Move {name} down'
+};
+const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+// after a move button moves its item, focus stays on that button in the moved item (the other one at the list's end)
+const keep = dir => itemEl => {
+  const own = itemEl.querySelector('[data-plx-move="' + dir + '"]'),
+    other = itemEl.querySelector('[data-plx-move="' + (dir === 'up' ? 'down' : 'up') + '"]');
+  return own && !own.disabled ? own : other;
+};
+function SortableList({
+  items = [],
+  renderItem,
+  onReorder,
+  label,
+  getId = x => x.id,
+  getName,
+  layout = 'vertical',
+  handles = true,
+  moveButtons = false,
+  id,
+  group,
+  onMove,
+  disabled = false,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const nameOf = getName || (x => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
+  const grid = layout === 'grid';
+  const off = disabled || !onReorder;
+  const s = (0, _dnd.useSortable)({
+    items,
+    onReorder,
+    getId,
+    getName: nameOf,
+    label,
+    orientation: grid ? 'grid' : 'vertical',
+    handle: handles,
+    id,
+    group,
+    onMove,
+    disabled: off,
+    strings
+  });
+  const last = items.length - 1;
+  return /*#__PURE__*/_react.default.createElement("ul", _extends({}, rest, s.listProps, {
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-sortable-list', 'plx-sortable-list--' + (grid ? 'grid' : 'vertical'), handles && 'plx-sortable-list--handles', moveButtons && 'plx-sortable-list--buttons', className)
+  }), items.map((item, i) => {
+    const name = nameOf(item),
+      ip = s.itemProps(i);
+    const handle = handles ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: fill(t.moveMenu, {
+        name
+      }),
+      placement: "bottom-start",
+      className: "plx-sortable-list__menu",
+      trigger: /*#__PURE__*/_react.default.createElement(_DragHandle.DragHandle, {
+        dnd: s.handleProps(i),
+        disabled: off,
+        className: "plx-sortable-list__handle"
+      })
+    }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-up",
+      disabled: !s.canMove(i, -1),
+      onSelect: () => s.moveTo(i, i - 1)
+    }, grid ? t.moveEarlier : t.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-down",
+      disabled: !s.canMove(i, 1),
+      onSelect: () => s.moveTo(i, i + 1)
+    }, grid ? t.moveLater : t.moveDown), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: i === 0,
+      onSelect: () => s.moveTo(i, 0)
+    }, t.moveFirst), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: i === last,
+      onSelect: () => s.moveTo(i, last)
+    }, t.moveLast)) : null;
+    return /*#__PURE__*/_react.default.createElement("li", _extends({
+      key: getId(item)
+    }, ip, {
+      className: (0, _cx.cx)('plx-sortable-list__item', ip.className)
+    }), handle, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-sortable-list__content"
+    }, renderItem ? renderItem(item, i) : name), moveButtons ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-sortable-list__buttons"
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      variant: "ghost",
+      iconOnly: true,
+      icon: "chevron-up",
+      label: fill(t.moveUpNamed, {
+        name
+      }),
+      disabled: off || !s.canMove(i, -1),
+      "data-plx-move": "up",
+      onClick: () => s.moveTo(i, i - 1, {
+        focus: keep('up')
+      })
+    }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      variant: "ghost",
+      iconOnly: true,
+      icon: "chevron-down",
+      label: fill(t.moveDownNamed, {
+        name
+      }),
+      disabled: off || !s.canMove(i, 1),
+      "data-plx-move": "down",
+      onClick: () => s.moveTo(i, i + 1, {
+        focus: keep('down')
+      })
+    })) : null);
+  }));
+}
+  } },
+  "platform/patterns/RenameAction/RenameAction.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RenameAction = RenameAction;
+exports.baseNameEnd = baseNameEnd;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _layer = require("../../utils/layer.js");
+var _InlineEdit = require("../../components/InlineEdit/InlineEdit.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RenameAction
+   Summary: Giving something a new name (04 Actions › Common actions › Rename): in place, where the name is shown
+     (inline: the name turns into a field, InlineEdit), or in a small dialog opened from a button or a menu item
+     (dialog). Both check the new name the same way: not empty, no slash, not the name of another item in the same place;
+     a file keeps its extension (only the name before it is selected). Built from InlineEdit, Dialog, Field, Input and
+     Button.
+   Usage:
+     <RenameAction label="Name" value={asset.name} names={siblings} extension onRename={(next) => save(next)} />
+     <RenameAction variant="dialog" value={folder.name} names={siblings} onRename={(next) => save(next)} />
+     <RenameAction variant="dialog" open={renaming} onClose={() => setRenaming(false)} value={asset.name} onRename={…} />
+                                                                     // opened from a menu item ("Rename…")
+   Props:
+     value: the current name (required)
+     onRename(next): runs with the new name; return a Promise to keep the field busy until it settles (a rejected Promise
+       keeps it open with the error's message)
+     variant: "inline" (default) | "dialog"
+     label: what the name is ("Name", "File name"): the field's label (default strings.label)
+     names: the names of the other items in the same place; a new name may not be one of them (compared without regard
+       to case)
+     extension: the name is a file name: the part after the last dot stays as it is and only the name before it is
+       selected when the field opens (default false)
+     validate(next): more rules: returns an error message, or nothing when the name may be saved
+     maxLength: the longest name (default 255)
+     data: the name in the data font, for technical names such as codes (default false; file names people choose are
+       UI text)
+     open, onClose(): the dialog opened from elsewhere (a menu item, a shortcut); without open the dialog variant draws
+       its own button ("Rename…")
+     triggerProps: more props for that button (size, variant, iconOnly)
+     disabled: the name cannot change now (default false)
+     strings: the words it shows and announces, for other languages: { label: "Name", rename: "Rename", open: "Rename…",
+       title: "Rename {name}", cancel: "Cancel", empty: "Enter a name", slash: "A name can’t contain / or \\",
+       taken: "There’s already an item named {name} here", tooLong: "Use {max} characters or fewer",
+       renamed: "Renamed to {name}", failed: "The name could not be changed" }
+     className: more classes on the rename action
+   Behavior:
+     Inline: click, Enter, Space or F2 on the name opens the field; Enter saves, Escape puts the name back, leaving the field
+       saves (InlineEdit). Dialog: the button opens the dialog with the name selected; Rename (or Enter) saves, Cancel,
+       Escape or the close button put it back; focus returns to the button.
+     An unchanged name closes without saving. A name that breaks a rule keeps the field open with its message under it
+       (aria-invalid, aria-describedby), and focus stays in the field.
+     "Renamed to …" is announced when the new name is saved.
+   Notes:
+     The dialog's button reads "Rename…" (an ellipsis: it asks for more before acting); as an item in an actions menu use
+       the menu item with open and onClose. Leading and trailing spaces are taken off before the rules run.
+*/
+const STRINGS = {
+  label: 'Name',
+  rename: 'Rename',
+  open: 'Rename…',
+  title: 'Rename {name}',
+  cancel: 'Cancel',
+  empty: 'Enter a name',
+  slash: 'A name can’t contain / or \\',
+  taken: 'There’s already an item named {name} here',
+  tooLong: 'Use {max} characters or fewer',
+  renamed: 'Renamed to {name}',
+  failed: 'The name could not be changed'
+};
+const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+
+// the name before a file's extension (the whole name when it has none, or starts with its only dot)
+function baseNameEnd(name) {
+  const i = String(name).lastIndexOf('.');
+  return i > 0 ? i : String(name).length;
+}
+function RenameAction({
+  value = '',
+  onRename,
+  variant = 'inline',
+  label,
+  names = [],
+  extension = false,
+  validate,
+  maxLength = 255,
+  data = false,
+  open: openProp,
+  onClose,
+  triggerProps,
+  disabled = false,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const name = label || t.label;
+  const formId = (0, _layer.useUid)('plx-rename');
+  const controlled = openProp !== undefined;
+  const [ownOpen, setOwnOpen] = _react.default.useState(false);
+  const open = controlled ? openProp : ownOpen;
+  const [draft, setDraft] = _react.default.useState(value);
+  const [error, setError] = _react.default.useState('');
+  const [busy, setBusy] = _react.default.useState(false);
+  const input = _react.default.useRef(null);
+
+  // the rules every new name passes (the page's own validate last)
+  const check = raw => {
+    const next = String(raw).trim();
+    if (!next) return t.empty;
+    if (/[\/\\]/.test(next)) return t.slash;
+    if (next.length > maxLength) return fill(t.tooLong, {
+      max: maxLength
+    });
+    const lower = next.toLowerCase();
+    if (next !== value && names.some(n => n !== value && String(n).toLowerCase() === lower)) return fill(t.taken, {
+      name: next
+    });
+    return validate ? validate(next) || '' : '';
+  };
+  // a file name opens with only the name before its extension selected
+  const selectBase = el => {
+    if (el && el.setSelectionRange) el.setSelectionRange(0, extension ? baseNameEnd(el.value) : el.value.length);
+  };
+  _react.default.useEffect(() => {
+    if (open) {
+      setDraft(value);
+      setError('');
+      setBusy(false);
+    }
+  }, [open]);
+  _react.default.useEffect(() => {
+    if (open && input.current) setTimeout(() => selectBase(input.current), 0);
+  }, [open]);
+  const close = () => {
+    if (controlled) {
+      if (onClose) onClose();
+    } else setOwnOpen(false);
+  };
+  const done = next => {
+    close();
+    (0, _announce.announce)(fill(t.renamed, {
+      name: next
+    }));
+  };
+  const submit = e => {
+    e.preventDefault();
+    if (busy) return;
+    const next = String(draft).trim();
+    if (next === value) {
+      close();
+      return;
+    }
+    const problem = check(next);
+    setError(problem);
+    if (problem) {
+      if (input.current) input.current.focus();
+      return;
+    }
+    const r = onRename ? onRename(next) : null;
+    if (r && typeof r.then === 'function') {
+      setBusy(true);
+      r.then(() => done(next), err => {
+        setBusy(false);
+        setError(err && err.message || t.failed);
+        if (input.current) input.current.focus();
+      });
+    } else done(next);
+  };
+  if (variant !== 'dialog') {
+    // InlineEdit selects the whole name when it opens; a file name then narrows the selection to the name before the dot.
+    // The announcement waits a turn, so it comes after InlineEdit's own (left empty here)
+    return /*#__PURE__*/_react.default.createElement("span", _extends({}, rest, {
+      className: (0, _cx.cx)('plx-rename-action', 'plx-rename-action--inline', className),
+      onFocus: e => {
+        if (extension && e.target.tagName === 'INPUT') {
+          const el = e.target;
+          setTimeout(() => selectBase(el), 0);
+        }
+      },
+      onKeyDown: e => {
+        if (e.key === 'F2' && e.target.classList && e.target.classList.contains('plx-inline-edit__read')) {
+          e.preventDefault();
+          e.target.click();
+        }
+      }
+    }), /*#__PURE__*/_react.default.createElement(_InlineEdit.InlineEdit, {
+      label: name,
+      value: value,
+      data: data,
+      disabled: disabled,
+      validate: v => check(v) || null,
+      onConfirm: next => {
+        const v = String(next).trim();
+        const r = onRename ? onRename(v) : null;
+        const say = () => setTimeout(() => (0, _announce.announce)(fill(t.renamed, {
+          name: v
+        })), 0);
+        if (r && typeof r.then === 'function') return r.then(say);
+        say();
+        return r;
+      },
+      strings: {
+        saved: ''
+      }
+    }));
+  }
+  return /*#__PURE__*/_react.default.createElement("span", _extends({}, rest, {
+    className: (0, _cx.cx)('plx-rename-action', 'plx-rename-action--dialog', className)
+  }), controlled ? null : /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    icon: "rename",
+    disabled: disabled
+  }, triggerProps, {
+    onClick: () => setOwnOpen(true)
+  }), t.open), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    onClose: close,
+    title: fill(t.title, {
+      name: value
+    }),
+    size: "sm",
+    initialFocus: input,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: close
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      type: "submit",
+      form: formId,
+      loading: busy
+    }, t.rename))
+  }, /*#__PURE__*/_react.default.createElement("form", {
+    id: formId,
+    noValidate: true,
+    onSubmit: submit,
+    className: "plx-rename-action__form"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: name,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: input,
+    value: draft,
+    data: data,
+    maxLength: maxLength,
+    autoComplete: "off",
+    spellCheck: false,
+    onChange: e => {
+      setDraft(e.target.value);
+      if (error) setError('');
+    }
+  })))));
+}
+  } },
+  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReviewFlow = ReviewFlow;
+exports.ReviewQueue = ReviewQueue;
+exports.WORKFLOW_STATUSES = void 0;
+exports.WorkflowStatus = WorkflowStatus;
+exports.localDay = void 0;
+exports.useOptionalToast = useOptionalToast;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Persona = require("../../components/Persona/Persona.jsx");
+var _Avatar = require("../../components/Avatar/Avatar.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _Toast = require("../../components/Toast/Toast.jsx");
+var _ActivityList = require("../ActivityList/ActivityList.jsx");
+var _CommandBar = require("../CommandBar/CommandBar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReviewFlow, ReviewQueue, WorkflowStatus
+   Summary: The review of one item and the queue of many. ReviewFlow is a review panel: the item's status as a badge with
+     its icon, the reviewers and their decisions, a comment, and the decisions in order (Reject, Request changes, Approve
+     last); Reject and Request changes need a reason, said under the comment field. Its history lists every decision.
+     kind="human" is the human review of generated content: a notice says a person must check it first. ReviewQueue is
+     the data review workflow: a DataTable of items waiting for review under a CommandBar whose selection holds Approve,
+     Request changes and Reject; the bulk decisions that need a reason ask for it with the count ("Reject 2 items?").
+     WorkflowStatus is the status badge they share (10 Patterns › Review and approval).
+   Usage:
+     <ReviewFlow title="Easter banner" status="in-review" reviewers={reviewers} history={history}
+       onDecision={(decision, comment) => save(decision, comment)} />
+     <ReviewFlow kind="human" title="Summary of the vestry minutes" status="in-review" onDecision={decide} />
+     <ReviewQueue label="Waiting for review" items={items} noun="item" onDecision={(ids, decision, reason) => …} />
+     <WorkflowStatus status="changes-requested" />
+   Props:
+     WorkflowStatus.status: "draft" (neutral, pencil) | "in-review" (active, doc-search) | "approved" (success, circle-check)
+       | "changes-requested" (action-required, alert) | "rejected" (negative, close) | "published" (success, visibility)
+       | "scheduled" (waiting, schedule): a Badge of its meaning with its icon
+     WorkflowStatus.label: other words for the status (default strings[status])
+     WorkflowStatus.size: Badge's size: "md" (default) | "sm"
+     ReviewFlow.status: the item's status (WorkflowStatus.status)
+     ReviewFlow.title: what is reviewed (the item's name), a heading
+     ReviewFlow.headingLevel: the title's level (default 3)
+     ReviewFlow.detail: one line under the title ("Submitted by Maya Chen")
+     ReviewFlow.kind: "review" (default) | "human" (the human review of generated content: the notice first)
+     ReviewFlow.reviewers: [{ id, name, src, color, decision }]: each reviewer with their decision ("approved",
+       "changes-requested", "rejected"; none yet: waiting)
+     ReviewFlow.history: [{ id, name, src, color, decision, comment, time, dateTime }]: the decisions so far, newest first
+     ReviewFlow.onDecision(decision, comment): runs with "approved", "changes-requested" or "rejected" and the comment;
+       without it the panel is read only (no comment, no decisions)
+     ReviewFlow.decisions: the decisions offered, in order (default ["rejected", "changes-requested", "approved"])
+     ReviewFlow.reasonFor: the decisions that need a comment (default ["rejected", "changes-requested"])
+     ReviewQueue.items: [{ id, name, type, submittedBy, submitted, status }] (submitted "YYYY-MM-DD")
+     ReviewQueue.label: names the bar and the table ("Waiting for review")
+     ReviewQueue.noun, plural: the item in words ("item", "items")
+     ReviewQueue.onDecision(ids, decision, reason): runs for the selected rows
+     ReviewQueue.selected, onSelectionChange(ids): the selection, when the page keeps it (default: kept inside)
+     strings: the words, for other languages (ReviewFlow: { reviewers, history, comment, commentHint, reason, approved,
+       "changes-requested", rejected, approve, changes, reject, waiting, human, needReason }; ReviewQueue: { name, type,
+       submittedBy, submitted, status, approve, changes, reject, rejectTitle, changesTitle, reason, changesLabel,
+       needReason, done })
+     className: more classes
+   Behavior:
+     ReviewFlow: Approve runs at once with the comment if there is one. Reject and Request changes run only with a
+       comment: without one, the field shows the error and takes focus (nothing is disabled). The decision is announced.
+     The status is always a Badge with its icon (never a dot): the word says the state, the color and icon repeat it.
+     ReviewQueue: the command bar swaps to the selection's commands while rows are selected; Approve runs at once,
+       Reject and Request changes open a PromptDialog named with the count that asks for the reason, then run; the
+       selection clears after a decision and a toast says what happened.
+   Notes:
+     The review panel goes in a side panel, a card or a page section; it draws no frame of its own.
+     Decisions are final for the reviewer; to change one, decide again (the history keeps both).
+*/
+// the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
+const WORKFLOW_STATUSES = exports.WORKFLOW_STATUSES = {
+  draft: {
+    tone: 'neutral',
+    icon: 'pencil',
+    label: 'Draft'
+  },
+  'in-review': {
+    tone: 'active',
+    icon: 'doc-search',
+    label: 'In review'
+  },
+  approved: {
+    tone: 'success',
+    icon: 'circle-check',
+    label: 'Approved'
+  },
+  'changes-requested': {
+    tone: 'action-required',
+    icon: 'alert',
+    label: 'Changes requested'
+  },
+  rejected: {
+    tone: 'negative',
+    icon: 'close',
+    label: 'Rejected'
+  },
+  published: {
+    tone: 'success',
+    icon: 'visibility',
+    label: 'Published'
+  },
+  scheduled: {
+    tone: 'waiting',
+    icon: 'schedule',
+    label: 'Scheduled'
+  }
+};
+function WorkflowStatus({
+  status = 'draft',
+  label,
+  size,
+  strings,
+  className,
+  ...rest
+}) {
+  const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
+  const words = label || strings && strings[status] || s.label;
+  return /*#__PURE__*/_react.default.createElement(_Badge.Badge, _extends({
+    tone: s.tone,
+    icon: s.icon,
+    size: size,
+    className: (0, _cx.cx)('plx-workflow-status', className)
+  }, rest), words);
+}
+
+// a toast when the page has a ToastProvider; nothing otherwise (the decision is still announced)
+function useOptionalToast() {
+  try {
+    return (0, _Toast.useToast)();
+  } catch (e) {
+    return null;
+  }
+}
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+// a day ("YYYY-MM-DD") read as local midnight: Date reads a bare day as UTC, which is a day early west of Greenwich
+const localDay = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d + 'T00:00' : d;
+exports.localDay = localDay;
+const FLOW_STRINGS = {
+  reviewers: 'Reviewers',
+  history: 'History',
+  comment: 'Comment',
+  commentHint: 'Needed to reject or request changes.',
+  approve: 'Approve',
+  changes: 'Request changes',
+  reject: 'Reject',
+  waiting: 'Waiting',
+  human: 'Generated content. A person checks it before it is used.',
+  needReason: 'Say why, so the author knows what to change.',
+  done: '{decision}: {title}',
+  decisions: 'Review decisions'
+};
+const VERB = {
+  approved: 'approve',
+  'changes-requested': 'changes',
+  rejected: 'reject'
+};
+const LOOK = {
+  approved: 'primary',
+  'changes-requested': 'secondary',
+  rejected: 'danger-secondary'
+};
+function ReviewFlow({
+  status = 'in-review',
+  title,
+  headingLevel = 3,
+  detail,
+  kind = 'review',
+  reviewers = [],
+  history = [],
+  onDecision,
+  decisions = ['rejected', 'changes-requested', 'approved'],
+  reasonFor = ['rejected', 'changes-requested'],
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, FLOW_STRINGS, strings);
+  const toast = useOptionalToast();
+  const [comment, setComment] = _react.default.useState('');
+  const [error, setError] = _react.default.useState('');
+  const field = _react.default.useRef(null);
+  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
+  const word = d => t[d] || WORKFLOW_STATUSES[d].label;
+  const decide = d => {
+    if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
+      setError(t.needReason);
+      if (field.current) field.current.focus();
+      return;
+    }
+    setError('');
+    onDecision(d, comment.trim());
+    setComment('');
+    const said = fill(t.done, {
+      decision: word(d),
+      title: title || ''
+    });
+    if (toast) toast.show(said, {
+      tone: d === 'approved' ? 'success' : 'info'
+    });else (0, _announce.announce)(said);
+  };
+  return /*#__PURE__*/_react.default.createElement("section", _extends({
+    className: (0, _cx.cx)('plx-review-flow', kind === 'human' && 'plx-review-flow--human', className),
+    "aria-label": title
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__head"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__heading"
+  }, title ? /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-review-flow__title"
+  }, title) : null, detail ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-review-flow__detail"
+  }, detail) : null), /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
+    status: status,
+    strings: strings
+  })), kind === 'human' ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "info",
+    icon: "sparkle"
+  }, t.human) : null, reviewers.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__section"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-review-flow__label"
+  }, t.reviewers), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-review-flow__reviewers"
+  }, reviewers.map(r => /*#__PURE__*/_react.default.createElement("li", {
+    key: r.id || r.name,
+    className: "plx-review-flow__reviewer"
+  }, /*#__PURE__*/_react.default.createElement(_Persona.Persona, {
+    name: r.name,
+    src: r.src,
+    color: r.color,
+    size: "xs"
+  }), r.decision ? /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
+    status: r.decision,
+    strings: strings
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-review-flow__waiting"
+  }, t.waiting))))) : null, onDecision ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__decide"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.comment,
+    description: t.commentHint,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    ref: field,
+    rows: 3,
+    value: comment,
+    onChange: e => {
+      setComment(e.target.value);
+      if (error) setError('');
+    }
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__actions",
+    role: "group",
+    "aria-label": t.decisions
+  }, decisions.map(d => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: d,
+    variant: LOOK[d],
+    onClick: () => decide(d)
+  }, t[VERB[d]])))) : null, history.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__section"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-review-flow__label"
+  }, t.history), /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList, {
+    label: t.history,
+    stacked: true
+  }, history.map(x => /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList.Item, {
+    key: x.id || x.name + x.time,
+    leading: /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+      name: x.name,
+      src: x.src,
+      color: x.color,
+      size: "xs"
+    }),
+    title: x.name,
+    meta: word(x.decision) + (x.comment ? ': ' + x.comment : ''),
+    time: x.time,
+    dateTime: x.dateTime
+  })))) : null);
+}
+const QUEUE_STRINGS = {
+  name: 'Name',
+  type: 'Type',
+  submittedBy: 'Submitted by',
+  submitted: 'Submitted',
+  status: 'Status',
+  approve: 'Approve',
+  changes: 'Request changes',
+  reject: 'Reject',
+  rejectTitle: 'Reject {what}?',
+  changesTitle: 'Request changes on {what}?',
+  reason: 'Reason',
+  changesLabel: 'What to change',
+  reasonHint: 'The authors see it with the decision.',
+  needReason: 'Say why, so the authors know what to change.',
+  done: '{what} {decision}',
+  count: '{n} {plural}'
+};
+function ReviewQueue({
+  items = [],
+  label = 'Waiting for review',
+  noun = 'item',
+  plural,
+  onDecision,
+  selected,
+  onSelectionChange,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, QUEUE_STRINGS, strings);
+  const many = plural || noun + 's';
+  const toast = useOptionalToast();
+  const [own, setOwn] = _react.default.useState([]);
+  const sel = selected !== undefined ? selected : own;
+  const setSel = ids => {
+    if (selected === undefined) setOwn(ids);
+    if (onSelectionChange) onSelectionChange(ids);
+  };
+  const [ask, setAsk] = _react.default.useState(null); // "rejected" | "changes-requested" while its dialog is open
+  const what = n => n === 1 ? '1 ' + noun : (0, _format.formatNumber)(n) + ' ' + many;
+  const run = (decision, reason) => {
+    const ids = sel.slice();
+    if (onDecision) onDecision(ids, decision, reason || '');
+    setSel([]);
+    setAsk(null);
+    const said = fill(t.done, {
+      what: what(ids.length),
+      decision: WORKFLOW_STATUSES[decision].label.toLowerCase()
+    });
+    if (toast) toast.show(said, {
+      tone: decision === 'approved' ? 'success' : 'info'
+    });else (0, _announce.announce)(said);
+  };
+  const columns = [{
+    title: t.name,
+    field: 'name',
+    kind: 'name'
+  }, {
+    title: t.type,
+    field: 'type'
+  }, {
+    title: t.submittedBy,
+    field: 'submittedBy',
+    type: 'person'
+  }, {
+    title: t.submitted,
+    field: 'submitted',
+    kind: 'data',
+    type: 'date',
+    render: r => /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _format.formatDate)(localDay(r.submitted)))
+  }, {
+    title: t.status,
+    field: 'status',
+    kind: 'center',
+    render: r => /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
+      status: r.status,
+      strings: strings
+    })
+  }];
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-review-queue', className)
+  }, rest), /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
+    label: label,
+    count: fill(t.count, {
+      n: (0, _format.formatNumber)(items.length),
+      plural: items.length === 1 ? noun : many
+    }),
+    selection: {
+      count: sel.length,
+      noun,
+      plural: many,
+      onClear: () => setSel([]),
+      actions: [{
+        id: 'approve',
+        label: t.approve,
+        icon: 'circle-check',
+        onSelect: () => run('approved')
+      }, {
+        id: 'changes',
+        label: t.changes,
+        icon: 'alert',
+        onSelect: () => setAsk('changes-requested')
+      }, {
+        id: 'reject',
+        label: t.reject,
+        icon: 'close',
+        danger: true,
+        onSelect: () => setAsk('rejected')
+      }]
+    }
+  }), /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: label,
+    data: items,
+    index: "id",
+    selectable: true,
+    selected: sel,
+    onSelectionChange: setSel,
+    columns: columns
+  }), /*#__PURE__*/_react.default.createElement(_Dialog.PromptDialog, {
+    open: !!ask,
+    title: fill(ask === 'rejected' ? t.rejectTitle : t.changesTitle, {
+      what: what(sel.length)
+    }),
+    label: ask === 'rejected' ? t.reason : t.changesLabel,
+    description: t.reasonHint,
+    confirmLabel: ask === 'rejected' ? t.reject : t.changes,
+    validate: v => v.trim() ? '' : t.needReason,
+    onSubmit: v => run(ask, v.trim()),
+    onCancel: () => setAsk(null)
+  }));
+}
+  } },
+  "platform/patterns/DeleteFlow/DeleteFlow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DeleteFlow = DeleteFlow;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DeleteFlow
+   Summary: Deleting one or several items the Plenix way, in one of four forms. Confirm asks first, with the count in the
+     question ("Delete 2 categories?"), names what is lost, and runs on a danger button with focus on Cancel. Type to
+     confirm asks for the item's name before an action with a wide reach. Undo deletes at once and offers Undo in a toast
+     for as long as it shows; the deletion is final when the toast leaves. Move to trash moves the items to the trash at
+     once, with Undo in the toast (10 Patterns › Creation and editing › Delete flow; 04 Actions › Delete).
+   Usage:
+     <DeleteFlow items={[{ id: 'c1', label: 'Easter' }, { id: 'c2', label: 'Advent' }]} noun="category" plural="categories"
+       consequence="Their 14 assets stay, without a category." onDelete={(items) => remove(items)}
+       trigger={<Button variant="danger-secondary" icon="trash">Delete</Button>} />
+     <DeleteFlow variant="undo" items={[asset]} noun="asset" onDelete={hide} onRestore={show} onCommit={purge}
+       trigger={<Button icon="trash">Delete</Button>} />
+     <DeleteFlow variant="type" items={[project]} noun="project" consequence="Its 230 assets and 12 boards are deleted too."
+       open={asking} onClose={() => setAsking(false)} onDelete={removeProject} />
+   Props:
+     items: what is deleted: [{ id, label }] (label: the name people know it by)
+     noun, plural: the kind in words ("category", "categories"; plural defaults to noun + "s")
+     variant: "confirm" (default: a destructive confirmation dialog) | "type" (type to confirm: the name, or the words in
+       confirmPhrase, typed before Delete runs) | "undo" (deletes at once; Undo in the toast) | "trash" (moves to the trash
+       at once; Undo in the toast)
+     consequence: one sentence on what else is lost or kept ("Their 14 assets stay, without a category.")
+     confirmPhrase: what to type in the type form (default: the item's name; several items: strings.phraseMany)
+     retention: the trash's days, said in the trash toast ("Restore it from the trash within 30 days.")
+     onDelete(items): deletes them (confirm, type), hides them (undo) or moves them to the trash (trash)
+     onRestore(items): puts them back (Undo in the toast); without it the toast has no Undo
+     onCommit(items): the undo form's final delete, when the toast leaves without Undo
+     trigger: the button that starts the flow (one element; its onClick is taken)
+     open: starts the flow from elsewhere (a command bar's Delete): the dialog shows; with undo or trash the deletion runs
+       at once and onClose follows
+     onClose(): runs when the flow ends (deleted, canceled or done)
+     strings: the words, for other languages: { title: "Delete {name}?", titleMany: "Delete {count} {plural}?", delete:
+       "Delete", cancel: "Cancel", permanent: "This cannot be undone.", more: "and {count} more", typeLabel: "Type {phrase}
+       to confirm", typeError: "Type {phrase} exactly as shown.", phraseMany: "delete {count} {plural}", deleted:
+       "{what} deleted", trashed: "{what} moved to the trash", undo: "Undo", retention: "Restore {them} from the trash
+       within {days} days." }
+     className: more classes on the dialog's content
+   Behavior:
+     Confirm and type: an alert dialog with the destructive look; focus starts on Cancel (confirm) or the field (type);
+       Escape, Cancel and the veil close it without deleting. Up to five names are listed, then "and N more".
+     Type: the typed words are checked when Delete is pressed; a mismatch keeps the dialog open with the error under the
+       field and focus in it (nothing is disabled).
+     Undo and trash: no question; the toast says what happened and holds Undo while the pointer or focus is on it.
+     After a confirmed delete a toast says what was deleted (with a ToastProvider; otherwise it is announced).
+   Notes:
+     Ask first only for what cannot be undone. When the items can come back, prefer undo or trash: a question slows every
+       delete down, Undo only the rare mistake.
+     The count is the number of items, in the question and in the button's toast, never "these items".
+*/
+
+const STRINGS = {
+  title: 'Delete {name}?',
+  titleMany: 'Delete {count} {plural}?',
+  delete: 'Delete',
+  cancel: 'Cancel',
+  permanent: 'This cannot be undone.',
+  more: 'and {count} more',
+  typeLabel: 'Type {phrase} to confirm',
+  typeError: 'Type {phrase} exactly as shown.',
+  phraseMany: 'delete {count} {plural}',
+  deleted: '{what} deleted',
+  trashed: '{what} moved to the trash',
+  undo: 'Undo',
+  retention: 'Restore {them} from the trash within {days} days.',
+  it: 'it',
+  them: 'them',
+  names: 'Deleted'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const SHOWN = 5;
+function DeleteFlow({
+  items = [],
+  noun = 'item',
+  plural,
+  variant = 'confirm',
+  consequence,
+  confirmPhrase,
+  retention,
+  onDelete,
+  onRestore,
+  onCommit,
+  trigger,
+  open,
+  onClose,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const toast = (0, _ReviewFlow.useOptionalToast)();
+  const many = plural || noun + 's';
+  const n = items.length;
+  const name = n === 1 ? '“' + items[0].label + '”' : '';
+  const what = n === 1 ? name : (0, _format.formatNumber)(n) + ' ' + many;
+  const [shown, setShown] = _react.default.useState(false);
+  const [typed, setTyped] = _react.default.useState('');
+  const [error, setError] = _react.default.useState('');
+  const field = _react.default.useRef(null);
+  const phrase = confirmPhrase || (n === 1 ? items[0].label : fill(t.phraseMany, {
+    count: (0, _format.formatNumber)(n),
+    plural: many
+  }));
+  const dialog = variant === 'confirm' || variant === 'type';
+  const say = (text, options) => {
+    if (toast) toast.show(text, options);else (0, _announce.announce)(text);
+  };
+  const close = () => {
+    setShown(false);
+    setTyped('');
+    setError('');
+    if (onClose) onClose();
+  };
+
+  // undo and trash: no question; the toast offers Undo
+  const runNow = () => {
+    const list = items.slice();
+    if (onDelete) onDelete(list);
+    let text = fill(variant === 'trash' ? t.trashed : t.deleted, {
+      what: n === 1 ? name : what
+    });
+    if (variant === 'trash' && retention) text += ' ' + fill(t.retention, {
+      them: n === 1 ? t.it : t.them,
+      days: (0, _format.formatNumber)(retention)
+    });
+    if (toast) {
+      toast.show(text, {
+        action: onRestore ? {
+          label: t.undo,
+          onAction: () => onRestore(list)
+        } : undefined,
+        onClose: reason => {
+          if (reason !== 'action' && variant === 'undo' && onCommit) onCommit(list);
+        }
+      });
+    } else {
+      (0, _announce.announce)(text);
+      if (variant === 'undo' && onCommit) onCommit(list);
+    }
+    if (onClose) onClose();
+  };
+  const start = () => {
+    if (dialog) setShown(true);else runNow();
+  };
+
+  // open from elsewhere: the dialog shows, or the immediate forms run once
+  const was = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (open && !was.current) {
+      if (dialog) setShown(true);else runNow();
+    }
+    if (!open && was.current && dialog) {
+      setShown(false);
+      setTyped('');
+      setError('');
+    }
+    was.current = !!open;
+  }, [open]);
+  const confirm = e => {
+    if (e) e.preventDefault();
+    if (variant === 'type' && typed.trim() !== phrase) {
+      setError(fill(t.typeError, {
+        phrase
+      }));
+      if (field.current) field.current.focus();
+      return;
+    }
+    const list = items.slice();
+    if (onDelete) onDelete(list);
+    say(fill(t.deleted, {
+      what: n === 1 ? name : what
+    }), {
+      tone: 'success'
+    });
+    close();
+  };
+  const cancelRef = _react.default.useRef(null);
+  const formId = (0, _layer.useUid)('plx-delete-flow');
+  const label = String(t.typeLabel).split('{phrase}');
+  const title = n === 1 ? fill(t.title, {
+    name
+  }) : fill(t.titleMany, {
+    count: (0, _format.formatNumber)(n),
+    plural: many
+  });
+  const message = (consequence ? consequence + ' ' : '') + t.permanent;
+  const rest = n - SHOWN;
+  const names = n > 1 ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-delete-flow__names",
+    "aria-label": t.names
+  }, items.slice(0, SHOWN).map(x => /*#__PURE__*/_react.default.createElement("li", {
+    key: x.id || x.label,
+    className: "plx-delete-flow__name"
+  }, x.label)), rest > 0 ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-delete-flow__more"
+  }, fill(t.more, {
+    count: (0, _format.formatNumber)(rest)
+  })) : null) : null;
+  const startTrigger = trigger ? /*#__PURE__*/_react.default.cloneElement(trigger, {
+    onClick: e => {
+      if (trigger.props.onClick) trigger.props.onClick(e);
+      if (!e.defaultPrevented) start();
+    }
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, startTrigger, dialog ? /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: shown,
+    onClose: close,
+    title: title,
+    description: message,
+    size: "sm",
+    role: "alertdialog",
+    className: "plx-dialog--destructive",
+    initialFocus: variant === 'type' ? field : cancelRef,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      ref: cancelRef,
+      onClick: close
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "danger",
+      type: "submit",
+      form: formId
+    }, t.delete))
+  }, /*#__PURE__*/_react.default.createElement("form", {
+    id: formId,
+    noValidate: true,
+    onSubmit: confirm,
+    className: (0, _cx.cx)('plx-delete-flow', variant === 'type' && 'plx-delete-flow--type', className)
+  }, names, variant === 'type' ? /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, label[0], /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, phrase), label.slice(1).join('')),
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: field,
+    value: typed,
+    autoComplete: "off",
+    spellCheck: false,
+    onChange: e => {
+      setTyped(e.target.value);
+      if (error) setError('');
+    }
+  })) : null)) : null);
+}
+  } },
+  "platform/patterns/DuplicateAction/DuplicateAction.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DuplicateAction = DuplicateAction;
+exports.copyName = copyName;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Fieldset = require("../../components/Fieldset/Fieldset.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DuplicateAction, copyName
+   Summary: Make a copy of one item. Copy of the name duplicates at once: the copy is named "Copy of Easter banner" (then
+     "Copy of Easter banner (2)" when that name is taken) and a toast says so, with Undo when the page can take the copy
+     back. Then rename opens a small dialog first: the name field holds the copy's name, selected so typing replaces it,
+     a line says what is copied, and optional checkboxes choose what else comes along (tags, comments, members)
+     (04 Actions › Duplicate; 10 Patterns › Duplicate).
+   Usage:
+     <DuplicateAction name="Easter banner" noun="asset" taken={names} onDuplicate={(name) => copy(name)}
+       onUndo={(name) => removeCopy(name)} />
+     <DuplicateAction variant="rename" name="Advent" noun="board" taken={boards}
+       source="12 assets · 3 members" options={[{ id: 'members', label: 'Members' }, { id: 'comments', label: 'Comments' }]}
+       onDuplicate={(name, chosen) => copyBoard(name, chosen)} />
+     copyName('Easter banner', ['Copy of Easter banner'])   // "Copy of Easter banner (2)"
+   Props:
+     name: the item's name
+     noun: the kind in words ("asset"), for the dialog's title and its errors
+     variant: "copy" (default: at once, named copyName(name)) | "rename" (the dialog first)
+     taken: the names already used where the copy goes; the copy's name avoids them, and rename refuses them
+     onDuplicate(newName, chosen): makes the copy; chosen is the ids of the checked options (rename)
+     onUndo(newName): takes the copy back; it adds Undo to the toast (copy)
+     source: one line about what is copied ("12 assets · 3 members"), under the field (rename)
+     options: [{ id, label, defaultChecked }]: what else to copy, as checkboxes (rename); none checked by default
+     trigger: the control that starts it (one element; its onClick is taken); default a Button with the copy icon; false
+       for none (a menu item starts it through open)
+     open, onClose(): starts the rename dialog from elsewhere (a menu's Duplicate) and hears it close
+     size: the default trigger's size (Button's sizes)
+     strings: the words, for other languages: { duplicate: "Duplicate", copyOf: "Copy of {name}", numbered: "{name}
+       ({n})", title: "Duplicate {noun}", name: "Name", from: "From {name}", also: "Also copy", empty: "Enter a name.",
+       taken: "A {noun} named {name} already exists.", done: "Duplicated as {name}", undo: "Undo", cancel: "Cancel" }
+     className: more classes on the dialog's content
+   Behavior:
+     Copy: one press, no question; the new name is announced in the toast (with a ToastProvider) or to screen readers.
+     Rename: the field takes focus with its text selected; the name is checked when Duplicate is pressed: empty or taken
+       keeps the dialog open with the error under the field (nothing is disabled). Escape and Cancel close it.
+     The copy is placed by the page, next to the original, and selected, so people see where it went.
+   Notes:
+     copyName(name, taken, strings) is the naming rule, also for pages that duplicate on their own (a menu item).
+     Duplicate never copies people's comments or members unless they choose it: those belong to the original's history.
+*/
+
+const STRINGS = {
+  duplicate: 'Duplicate',
+  copyOf: 'Copy of {name}',
+  numbered: '{name} ({n})',
+  title: 'Duplicate {noun}',
+  name: 'Name',
+  from: 'From {name}',
+  also: 'Also copy',
+  empty: 'Enter a name.',
+  taken: 'A {noun} named {name} already exists.',
+  done: 'Duplicated as {name}',
+  undo: 'Undo',
+  cancel: 'Cancel'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const q = x => '“' + x + '”';
+function copyName(name, taken = [], strings) {
+  const t = Object.assign({}, STRINGS, strings);
+  const used = new Set((taken || []).map(x => String(x).trim().toLowerCase()));
+  const base = fill(t.copyOf, {
+    name
+  });
+  if (!used.has(base.toLowerCase())) return base;
+  for (let n = 2;; n++) {
+    const next = fill(t.numbered, {
+      name: base,
+      n
+    });
+    if (!used.has(next.toLowerCase())) return next;
+  }
+}
+function DuplicateAction({
+  name = '',
+  noun = 'item',
+  variant = 'copy',
+  taken = [],
+  onDuplicate,
+  onUndo,
+  source,
+  options = [],
+  trigger,
+  open,
+  onClose,
+  size,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const toast = (0, _ReviewFlow.useOptionalToast)();
+  const [shown, setShown] = _react.default.useState(false);
+  const [value, setValue] = _react.default.useState('');
+  const [error, setError] = _react.default.useState('');
+  const [chosen, setChosen] = _react.default.useState([]);
+  const input = _react.default.useRef(null);
+  const formId = (0, _layer.useUid)('plx-duplicate');
+  const fresh = () => copyName(name, taken, strings);
+  const said = newName => fill(t.done, {
+    name: q(newName)
+  });
+  const begin = () => {
+    if (variant === 'rename') {
+      setValue(fresh());
+      setError('');
+      setChosen(options.filter(o => o.defaultChecked).map(o => o.id));
+      setShown(true);
+      return;
+    }
+    const newName = fresh();
+    if (onDuplicate) onDuplicate(newName, []);
+    if (toast) toast.show(said(newName), onUndo ? {
+      action: {
+        label: t.undo,
+        onAction: () => onUndo(newName)
+      }
+    } : {
+      tone: 'success'
+    });else (0, _announce.announce)(said(newName));
+    if (onClose) onClose();
+  };
+  const close = () => {
+    setShown(false);
+    if (onClose) onClose();
+  };
+  const was = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (open && !was.current) begin();
+    if (!open && was.current) setShown(false);
+    was.current = !!open;
+  }, [open]);
+  _react.default.useEffect(() => {
+    if (shown && input.current && input.current.select) input.current.select();
+  }, [shown]);
+  const submit = e => {
+    e.preventDefault();
+    const v = value.trim();
+    const used = new Set((taken || []).map(x => String(x).trim().toLowerCase()));
+    const problem = !v ? t.empty : used.has(v.toLowerCase()) ? fill(t.taken, {
+      noun,
+      name: q(v)
+    }) : '';
+    setError(problem);
+    if (problem) {
+      if (input.current) input.current.focus();
+      return;
+    }
+    if (onDuplicate) onDuplicate(v, chosen);
+    if (toast) toast.show(said(v), {
+      tone: 'success'
+    });else (0, _announce.announce)(said(v));
+    close();
+  };
+  const own = trigger === false ? null : trigger || /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    icon: "ed-copy",
+    size: size
+  }, t.duplicate);
+  const start = own ? /*#__PURE__*/_react.default.cloneElement(own, {
+    onClick: e => {
+      if (own.props.onClick) own.props.onClick(e);
+      if (!e.defaultPrevented) begin();
+    }
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, start, variant === 'rename' ? /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: shown,
+    onClose: close,
+    title: fill(t.title, {
+      noun
+    }),
+    size: "sm",
+    initialFocus: input,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: close
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      type: "submit",
+      form: formId
+    }, t.duplicate))
+  }, /*#__PURE__*/_react.default.createElement("form", {
+    id: formId,
+    noValidate: true,
+    onSubmit: submit,
+    className: (0, _cx.cx)('plx-duplicate-action', options.length && 'plx-duplicate-action--options', className)
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.name,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: input,
+    value: value,
+    onChange: e => {
+      setValue(e.target.value);
+      if (error) setError('');
+    }
+  })), /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-duplicate-action__source"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-duplicate-action__icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "ed-copy"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-duplicate-action__from"
+  }, fill(t.from, {
+    name: q(name)
+  }) + (source ? ' · ' + source : ''))), options.length ? /*#__PURE__*/_react.default.createElement(_Fieldset.Fieldset, {
+    legend: t.also
+  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    key: o.id,
+    label: o.label,
+    checked: chosen.indexOf(o.id) >= 0,
+    onChange: e => setChosen(c => e.target.checked ? c.concat(o.id) : c.filter(x => x !== o.id))
+  }))) : null)) : null);
+}
+  } },
+  "platform/patterns/Publish/Publish.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Publish = Publish;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _DatePicker = require("../../components/DatePicker/DatePicker.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Publish
+   Summary: An item's publishing state and the actions that change it, in one row: the status badge with its icon (Draft,
+     Scheduled, Published) and a line saying when and by whom, then the actions that fit the state. A draft offers
+     Schedule and Publish; Publish asks first, naming who will see it; Schedule asks for a date and time. A scheduled item
+     offers Cancel schedule and Publish now. A published item offers Unpublish, which asks first and says who loses
+     access (10 Patterns › Review and approval › Publish, Unpublish).
+   Usage:
+     <Publish name="Easter banner" status="draft" audience="everyone in the library"
+       onPublish={publish} onSchedule={(at) => schedule(at)} />
+     <Publish name="Easter banner" status="scheduled" scheduledFor="2026-10-20T09:00" onPublish={publish} onCancelSchedule={unschedule} />
+     <Publish name="Easter banner" status="published" publishedAt="2026-10-15T10:24" by="Maya Chen" onUnpublish={unpublish} />
+     <Publish name="Easter banner" status="published" publishedAt="2026-10-15T10:24" readOnly />
+   Props:
+     name: the item's name, used in the questions
+     status: "draft" (default) | "scheduled" | "published": the badge (WorkflowStatus) and the actions
+     audience: who sees it once published ("everyone in the library"), said in the questions
+     publishedAt, scheduledFor: "YYYY-MM-DDTHH:MM": shown in the status line in the data font
+     by: who published or scheduled it
+     onPublish(): publishes now (after the question, unless confirm is false)
+     onSchedule(at): schedules it ("YYYY-MM-DDTHH:MM"); without it there is no Schedule
+     onCancelSchedule(): back to a draft (a scheduled item)
+     onUnpublish(): takes it down (after the question); without it a published item has no action
+     confirm: false publishes and unpublishes without asking (default true: both ask first)
+     readOnly: the status only, no actions (people who cannot publish)
+     strings: the words, for other languages: { publish, publishNow, schedule, cancelSchedule, unpublish, cancel,
+       publishTitle: "Publish {name}?", publishMessage: "It becomes visible to {audience}.", unpublishTitle: "Unpublish
+       {name}?", unpublishMessage: "It is hidden from {audience}. You can publish it again.", scheduleTitle: "Schedule
+       {name}", when: "Publish on", whenHint: "Date and time, in your time zone.", past: "Choose a time in the future.",
+       empty: "Choose a date and time.", publishedLine: "Published {at}", publishedBy: "Published {at} by {by}",
+       scheduledLine: "Publishes {at}", draftLine: "Not published", published: "Published", scheduled: "Scheduled for
+       {at}", unpublished: "Unpublished", everyone: "everyone with access" }
+     className: more classes on the row
+   Behavior:
+     The questions are confirmation dialogs (Publish and Unpublish in the primary style: both can be reversed).
+     Schedule is a dialog with a date-and-time picker; the time is checked when Schedule is pressed: empty or in the past
+       keeps the dialog open with the error under the field (nothing is disabled).
+     After each action a toast says what happened (with a ToastProvider; otherwise it is announced); Unpublish's toast has
+       Undo, which publishes it again.
+     The row wraps: the actions move under the status when it is narrow.
+   Notes:
+     The status is the item's own; whether it may be published (an approval) is ReviewFlow's.
+*/
+const STRINGS = {
+  publish: 'Publish',
+  publishNow: 'Publish now',
+  schedule: 'Schedule',
+  cancelSchedule: 'Cancel schedule',
+  unpublish: 'Unpublish',
+  cancel: 'Cancel',
+  publishTitle: 'Publish {name}?',
+  publishMessage: 'It becomes visible to {audience}.',
+  unpublishTitle: 'Unpublish {name}?',
+  unpublishMessage: 'It is hidden from {audience}. You can publish it again.',
+  scheduleTitle: 'Schedule {name}',
+  when: 'Publish on',
+  whenHint: 'Date and time, in your time zone.',
+  past: 'Choose a time in the future.',
+  empty: 'Choose a date and time.',
+  publishedLine: 'Published {at}',
+  publishedBy: 'Published {at} by {by}',
+  scheduledLine: 'Publishes {at}',
+  scheduledBy: 'Publishes {at}, scheduled by {by}',
+  draftLine: 'Not published',
+  published: '{name} published',
+  scheduled: '{name} scheduled for {at}',
+  unpublished: '{name} unpublished',
+  undo: 'Undo',
+  everyone: 'everyone with access',
+  actions: 'Publishing'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const q = x => '“' + x + '”';
+
+// a status line with its date in the data font: the words around {at} stay in the UI font
+function Line({
+  text,
+  at
+}) {
+  const parts = String(text).split('{at}');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-publish__detail"
+  }, parts[0], parts.length > 1 ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, at) : null, parts.slice(1).join(''));
+}
+function Publish({
+  name = '',
+  status = 'draft',
+  audience,
+  publishedAt,
+  scheduledFor,
+  by,
+  onPublish,
+  onSchedule,
+  onCancelSchedule,
+  onUnpublish,
+  confirm = true,
+  readOnly = false,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const toast = (0, _ReviewFlow.useOptionalToast)();
+  const who = audience || t.everyone;
+  const [ask, setAsk] = _react.default.useState(null); // "publish" | "unpublish" | "schedule"
+  const [when, setWhen] = _react.default.useState(null);
+  const [error, setError] = _react.default.useState('');
+  const formId = (0, _layer.useUid)('plx-publish');
+  const say = (text, options) => {
+    if (toast) toast.show(text, options);else (0, _announce.announce)(text);
+  };
+  const nameQ = q(name);
+  const doPublish = () => {
+    setAsk(null);
+    if (onPublish) onPublish();
+    say(fill(t.published, {
+      name: nameQ
+    }), {
+      tone: 'success'
+    });
+  };
+  const doUnpublish = () => {
+    setAsk(null);
+    if (onUnpublish) onUnpublish();
+    say(fill(t.unpublished, {
+      name: nameQ
+    }), onPublish ? {
+      action: {
+        label: t.undo,
+        onAction: onPublish
+      }
+    } : undefined);
+  };
+  const doSchedule = e => {
+    e.preventDefault();
+    const problem = !when ? t.empty : new Date(when).getTime() <= Date.now() ? t.past : '';
+    setError(problem);
+    if (problem) return;
+    setAsk(null);
+    onSchedule(when);
+    say(fill(t.scheduled, {
+      name: nameQ,
+      at: (0, _format.formatDateTime)(when)
+    }), {
+      tone: 'success'
+    });
+  };
+  const publishPress = () => confirm ? setAsk('publish') : doPublish();
+  const unpublishPress = () => confirm ? setAsk('unpublish') : doUnpublish();
+  const openSchedule = () => {
+    setWhen(scheduledFor || null);
+    setError('');
+    setAsk('schedule');
+  };
+  const line = status === 'published' ? /*#__PURE__*/_react.default.createElement(Line, {
+    text: by ? fill(t.publishedBy, {
+      by
+    }) : t.publishedLine,
+    at: publishedAt ? (0, _format.formatDateTime)(publishedAt) : ''
+  }) : status === 'scheduled' ? /*#__PURE__*/_react.default.createElement(Line, {
+    text: by ? fill(t.scheduledBy, {
+      by
+    }) : t.scheduledLine,
+    at: scheduledFor ? (0, _format.formatDateTime)(scheduledFor) : ''
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-publish__detail"
+  }, t.draftLine);
+  let actions = null;
+  if (!readOnly) {
+    if (status === 'published') actions = onUnpublish ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: unpublishPress
+    }, t.unpublish) : null;else if (status === 'scheduled') actions = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, onCancelSchedule ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: onCancelSchedule
+    }, t.cancelSchedule) : null, onPublish ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      onClick: publishPress
+    }, t.publishNow) : null);else actions = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, onSchedule ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: "schedule",
+      onClick: openSchedule
+    }, t.schedule) : null, onPublish ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      onClick: publishPress
+    }, t.publish) : null);
+  }
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-publish', readOnly && 'plx-publish--read-only', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-publish__status"
+  }, /*#__PURE__*/_react.default.createElement(_ReviewFlow.WorkflowStatus, {
+    status: status === 'scheduled' || status === 'published' ? status : 'draft',
+    strings: strings
+  }), line), actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-publish__actions",
+    role: "group",
+    "aria-label": t.actions
+  }, actions) : null, /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+    open: ask === 'publish',
+    title: fill(t.publishTitle, {
+      name: nameQ
+    }),
+    message: fill(t.publishMessage, {
+      audience: who
+    }),
+    confirmLabel: status === 'scheduled' ? t.publishNow : t.publish,
+    cancelLabel: t.cancel,
+    onConfirm: doPublish,
+    onCancel: () => setAsk(null)
+  }), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+    open: ask === 'unpublish',
+    title: fill(t.unpublishTitle, {
+      name: nameQ
+    }),
+    message: fill(t.unpublishMessage, {
+      audience: who
+    }),
+    confirmLabel: t.unpublish,
+    cancelLabel: t.cancel,
+    onConfirm: doUnpublish,
+    onCancel: () => setAsk(null)
+  }), onSchedule ? /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: ask === 'schedule',
+    onClose: () => setAsk(null),
+    title: fill(t.scheduleTitle, {
+      name: nameQ
+    }),
+    size: "sm",
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: () => setAsk(null)
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      type: "submit",
+      form: formId
+    }, t.schedule))
+  }, /*#__PURE__*/_react.default.createElement("form", {
+    id: formId,
+    noValidate: true,
+    onSubmit: doSchedule
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.when,
+    description: t.whenHint,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_DatePicker.DatePicker, {
+    mode: "date-time",
+    value: when,
+    onChange: v => {
+      setWhen(v);
+      if (error) setError('');
+    }
+  })))) : null);
+}
+  } },
+  "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AssignControl = AssignControl;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _DatePicker = require("../../components/DatePicker/DatePicker.jsx");
+var _EntityPicker = require("../../components/EntityPicker/EntityPicker.jsx");
+var _Persona = require("../../components/Persona/Persona.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AssignControl
+   Summary: Who is responsible for an item, and how to change it, in one row. Assign: nobody yet, so the people picker
+     shows with Assign to me beside it. Reassign: the assignee (avatar, name, detail) with Reassign, which swaps the row to
+     the people picker until a person is chosen or Escape puts the row back; Unassign empties it. Delegate with dates:
+     someone acts for a person for a while; the row says to whom and from when to when, and Delegate opens a dialog
+     with the person, the dates and a note (10 Patterns › Review and approval › Assign, Delegate).
+   Usage:
+     <AssignControl label="Assignee" people={people} value={assignee} onChange={setAssignee} me="mc" />
+     <AssignControl variant="delegate" label="Approvals" people={people} delegation={away}
+       onDelegate={(d) => setAway(d)} onEndDelegation={() => setAway(null)} />
+   Props:
+     label: what the role is ("Assignee", "Reviewer", "Approvals"); names the picker and the row
+     people: the people who can be chosen: EntityPicker's options for kind "people" ([{ value, label, description, src,
+       color, presence }])
+     value: the assignee's value, or null (assign and reassign)
+     onChange(value, person): runs with the chosen person's value, or null for Unassign
+     me: the value of the person using the page: Assign to me while nobody is assigned
+     clearable: offers Unassign (default true)
+     variant: "assign" (default; assign and reassign) | "delegate"
+     delegation: { to, start, end, note } (start and end "YYYY-MM-DD"): the current delegation, or null
+     onDelegate({ to, start, end, note }): saves the delegation from the dialog
+     onEndDelegation(): ends it now
+     strings: the words, for other languages: { assign: "Assign", assignToMe: "Assign to me", reassign: "Reassign",
+       unassign: "Unassign", unassigned: "Unassigned", cancel: "Cancel", assigned: "Assigned to {name}", cleared:
+       "{label} removed", delegate: "Delegate", change: "Change", end: "End delegation", delegateTitle: "Delegate {label}",
+       to: "Delegate to", dates: "Dates", note: "Note", noteHint: "Shown to the person you delegate to.", needPerson:
+       "Choose a person.", needDates: "Choose the first and last day.", delegatedTo: "Delegated to {name}", notDelegated:
+       "Not delegated", ended: "Delegation ended" }
+     className: more classes on the row
+   Behavior:
+     Reassign swaps the row to the picker and puts focus in it; choosing a person puts the row back with the new name and
+       announces it; Escape, or Cancel, puts it back unchanged with focus on Reassign.
+     The delegate dialog checks the person and both dates when Delegate is pressed: a missing one keeps the dialog open
+       with its error under the field (nothing is disabled). The dates are shown in the data font.
+     Each change is announced, or toasted with a ToastProvider.
+   Notes:
+     One assignee per item; several people sharing a task are reviewers or members, not assignees.
+     A delegation ends by itself after its last day; End delegation ends it sooner.
+*/
+const STRINGS = {
+  assign: 'Assign',
+  assignToMe: 'Assign to me',
+  reassign: 'Reassign',
+  unassign: 'Unassign',
+  unassigned: 'Unassigned',
+  cancel: 'Cancel',
+  assigned: 'Assigned to {name}',
+  cleared: '{label} removed',
+  delegate: 'Delegate',
+  change: 'Change',
+  end: 'End delegation',
+  delegateTitle: 'Delegate {label}',
+  to: 'Delegate to',
+  dates: 'Dates',
+  note: 'Note',
+  noteHint: 'Shown to the person you delegate to.',
+  needPerson: 'Choose a person.',
+  needDates: 'Choose the first and last day.',
+  delegatedTo: 'Delegated to {name}',
+  notDelegated: 'Not delegated',
+  ended: 'Delegation ended'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+function AssignControl({
+  label = 'Assignee',
+  people = [],
+  value = null,
+  onChange,
+  me,
+  clearable = true,
+  variant = 'assign',
+  delegation,
+  onDelegate,
+  onEndDelegation,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const toast = (0, _ReviewFlow.useOptionalToast)();
+  const say = text => {
+    if (toast) toast.show(text, {
+      tone: 'success'
+    });else (0, _announce.announce)(text);
+  };
+  const find = v => people.find(p => p.value === v) || null;
+  const [editing, setEditing] = _react.default.useState(false);
+  const picker = _react.default.useRef(null);
+  const again = _react.default.useRef(null);
+  const back = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (editing && picker.current) picker.current.focus();
+    if (!editing && back.current && again.current) {
+      again.current.focus();
+      back.current = false;
+    }
+  }, [editing]);
+
+  // delegate dialog
+  const [open, setOpen] = _react.default.useState(false);
+  const [draft, setDraft] = _react.default.useState({
+    to: null,
+    range: null,
+    note: ''
+  });
+  const [errors, setErrors] = _react.default.useState({});
+  const formId = (0, _layer.useUid)('plx-assign');
+  if (variant === 'delegate') {
+    const d = delegation && delegation.to ? delegation : null;
+    const person = d ? find(d.to) : null;
+    const begin = () => {
+      setDraft({
+        to: d ? d.to : null,
+        range: d ? {
+          start: d.start,
+          end: d.end
+        } : null,
+        note: d ? d.note || '' : ''
+      });
+      setErrors({});
+      setOpen(true);
+    };
+    const save = e => {
+      e.preventDefault();
+      const next = {
+        to: draft.to ? '' : t.needPerson,
+        range: draft.range && draft.range.start && draft.range.end ? '' : t.needDates
+      };
+      setErrors(next);
+      if (next.to || next.range) return;
+      setOpen(false);
+      if (onDelegate) onDelegate({
+        to: draft.to,
+        start: draft.range.start,
+        end: draft.range.end,
+        note: draft.note.trim()
+      });
+      say(fill(t.delegatedTo, {
+        name: (find(draft.to) || {}).label || ''
+      }));
+    };
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      className: (0, _cx.cx)('plx-assign-control', 'plx-assign-control--delegate', className),
+      role: "group",
+      "aria-label": label
+    }, rest), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-assign-control__who"
+    }, person ? /*#__PURE__*/_react.default.createElement(_Persona.Persona, {
+      name: person.label,
+      src: person.src,
+      color: person.color,
+      size: "sm",
+      secondary: /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-assign-control__dates"
+      }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+        variant: "data"
+      }, (0, _format.formatRange)((0, _ReviewFlow.localDay)(d.start), (0, _ReviewFlow.localDay)(d.end))))
+    }) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-assign-control__empty"
+    }, t.notDelegated)), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-assign-control__actions"
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: person ? 'pencil' : 'forward',
+      onClick: begin
+    }, person ? t.change : t.delegate), person && onEndDelegation ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      onClick: () => {
+        onEndDelegation();
+        say(t.ended);
+      }
+    }, t.end) : null), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+      open: open,
+      onClose: () => setOpen(false),
+      title: fill(t.delegateTitle, {
+        label: label.toLowerCase()
+      }),
+      size: "sm",
+      footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        onClick: () => setOpen(false)
+      }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        variant: "primary",
+        type: "submit",
+        form: formId
+      }, t.delegate))
+    }, /*#__PURE__*/_react.default.createElement("form", {
+      id: formId,
+      noValidate: true,
+      onSubmit: save,
+      className: "plx-assign-control__form"
+    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.to,
+      error: errors.to || undefined
+    }, /*#__PURE__*/_react.default.createElement(_EntityPicker.EntityPicker, {
+      kind: "people",
+      options: people,
+      value: draft.to,
+      onChange: v => {
+        setDraft(x => Object.assign({}, x, {
+          to: v
+        }));
+        setErrors(x => Object.assign({}, x, {
+          to: ''
+        }));
+      }
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.dates,
+      error: errors.range || undefined
+    }, /*#__PURE__*/_react.default.createElement(_DatePicker.DatePicker, {
+      mode: "range",
+      value: draft.range,
+      onChange: v => {
+        setDraft(x => Object.assign({}, x, {
+          range: v
+        }));
+        setErrors(x => Object.assign({}, x, {
+          range: ''
+        }));
+      }
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.note,
+      description: t.noteHint
+    }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+      rows: 2,
+      value: draft.note,
+      onChange: e => {
+        const v = e.target.value;
+        setDraft(x => Object.assign({}, x, {
+          note: v
+        }));
+      }
+    })))));
+  }
+  const person = find(value);
+  const choose = v => {
+    setEditing(false);
+    back.current = true;
+    if (v === value) return;
+    if (onChange) onChange(v, find(v));
+    const p = find(v);
+    say(p ? fill(t.assigned, {
+      name: p.label
+    }) : fill(t.cleared, {
+      label
+    }));
+  };
+  const cancel = () => {
+    back.current = true;
+    setEditing(false);
+  };
+  if (!person || editing) {
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      className: (0, _cx.cx)('plx-assign-control', className),
+      role: "group",
+      "aria-label": label
+    }, rest, {
+      onKeyDown: editing ? e => {
+        if (e.key === 'Escape' && !e.defaultPrevented) cancel();
+      } : undefined
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-assign-control__picker"
+    }, /*#__PURE__*/_react.default.createElement(_EntityPicker.EntityPicker, {
+      ref: picker,
+      kind: "people",
+      options: people,
+      value: null,
+      label: label,
+      onChange: v => {
+        if (v !== null && v !== undefined) choose(v);
+      }
+    })), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-assign-control__actions"
+    }, editing ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      onClick: cancel
+    }, t.cancel) : me && find(me) ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "person",
+      onClick: () => choose(me)
+    }, t.assignToMe) : null));
+  }
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-assign-control', 'plx-assign-control--assigned', className),
+    role: "group",
+    "aria-label": label
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-assign-control__who"
+  }, /*#__PURE__*/_react.default.createElement(_Persona.Persona, {
+    name: person.label,
+    src: person.src,
+    color: person.color,
+    presence: person.presence,
+    secondary: person.description,
+    size: "sm"
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-assign-control__actions"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: again,
+    size: "sm",
+    variant: "ghost",
+    icon: "person",
+    onClick: () => setEditing(true)
+  }, t.reassign), clearable ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    onClick: () => choose(null)
+  }, t.unassign) : null));
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44223,6 +47753,12 @@ Object.defineProperty(exports, "AreaChart", {
   enumerable: true,
   get: function () {
     return _AreaChart.AreaChart;
+  }
+});
+Object.defineProperty(exports, "AssignControl", {
+  enumerable: true,
+  get: function () {
+    return _AssignControl.AssignControl;
   }
 });
 Object.defineProperty(exports, "Avatar", {
@@ -44633,6 +48169,12 @@ Object.defineProperty(exports, "DEMO_SESSION", {
     return _SessionProvider.DEMO_SESSION;
   }
 });
+Object.defineProperty(exports, "DND_STRINGS", {
+  enumerable: true,
+  get: function () {
+    return _dnd.DND_STRINGS;
+  }
+});
 Object.defineProperty(exports, "DataLabel", {
   enumerable: true,
   get: function () {
@@ -44661,6 +48203,12 @@ Object.defineProperty(exports, "DatePicker", {
   enumerable: true,
   get: function () {
     return _DatePicker.DatePicker;
+  }
+});
+Object.defineProperty(exports, "DeleteFlow", {
+  enumerable: true,
+  get: function () {
+    return _DeleteFlow.DeleteFlow;
   }
 });
 Object.defineProperty(exports, "Details", {
@@ -44705,6 +48253,12 @@ Object.defineProperty(exports, "DownloadButton", {
     return _DownloadButton.DownloadButton;
   }
 });
+Object.defineProperty(exports, "DragHandle", {
+  enumerable: true,
+  get: function () {
+    return _DragHandle.DragHandle;
+  }
+});
 Object.defineProperty(exports, "Drawer", {
   enumerable: true,
   get: function () {
@@ -44715,6 +48269,12 @@ Object.defineProperty(exports, "DropZone", {
   enumerable: true,
   get: function () {
     return _DropZone.DropZone;
+  }
+});
+Object.defineProperty(exports, "DuplicateAction", {
+  enumerable: true,
+  get: function () {
+    return _DuplicateAction.DuplicateAction;
   }
 });
 Object.defineProperty(exports, "EmptyState", {
@@ -45125,6 +48685,12 @@ Object.defineProperty(exports, "Panel", {
     return _Card.Panel;
   }
 });
+Object.defineProperty(exports, "PanelSplitter", {
+  enumerable: true,
+  get: function () {
+    return _Resizable.PanelSplitter;
+  }
+});
 Object.defineProperty(exports, "PeopleGroup", {
   enumerable: true,
   get: function () {
@@ -45207,6 +48773,12 @@ Object.defineProperty(exports, "PropertyList", {
   enumerable: true,
   get: function () {
     return _PropertyList.PropertyList;
+  }
+});
+Object.defineProperty(exports, "Publish", {
+  enumerable: true,
+  get: function () {
+    return _Publish.Publish;
   }
 });
 Object.defineProperty(exports, "QRCode", {
@@ -45305,6 +48877,18 @@ Object.defineProperty(exports, "RelativeDateInput", {
     return _RelativeDateInput.RelativeDateInput;
   }
 });
+Object.defineProperty(exports, "RenameAction", {
+  enumerable: true,
+  get: function () {
+    return _RenameAction.RenameAction;
+  }
+});
+Object.defineProperty(exports, "Resizable", {
+  enumerable: true,
+  get: function () {
+    return _Resizable.Resizable;
+  }
+});
 Object.defineProperty(exports, "ResourceList", {
   enumerable: true,
   get: function () {
@@ -45315,6 +48899,18 @@ Object.defineProperty(exports, "RetryNotice", {
   enumerable: true,
   get: function () {
     return _Retry.RetryNotice;
+  }
+});
+Object.defineProperty(exports, "ReviewFlow", {
+  enumerable: true,
+  get: function () {
+    return _ReviewFlow.ReviewFlow;
+  }
+});
+Object.defineProperty(exports, "ReviewQueue", {
+  enumerable: true,
+  get: function () {
+    return _ReviewFlow.ReviewQueue;
   }
 });
 Object.defineProperty(exports, "RichText", {
@@ -45477,6 +49073,12 @@ Object.defineProperty(exports, "SortPanel", {
   enumerable: true,
   get: function () {
     return _SortPanel.SortPanel;
+  }
+});
+Object.defineProperty(exports, "SortableList", {
+  enumerable: true,
+  get: function () {
+    return _SortableList.SortableList;
   }
 });
 Object.defineProperty(exports, "Spinner", {
@@ -45731,6 +49333,12 @@ Object.defineProperty(exports, "VisuallyHidden", {
     return _VisuallyHidden.VisuallyHidden;
   }
 });
+Object.defineProperty(exports, "WORKFLOW_STATUSES", {
+  enumerable: true,
+  get: function () {
+    return _ReviewFlow.WORKFLOW_STATUSES;
+  }
+});
 Object.defineProperty(exports, "WaterfallChart", {
   enumerable: true,
   get: function () {
@@ -45747,6 +49355,12 @@ Object.defineProperty(exports, "WordCloud", {
   enumerable: true,
   get: function () {
     return _WordCloud.WordCloud;
+  }
+});
+Object.defineProperty(exports, "WorkflowStatus", {
+  enumerable: true,
+  get: function () {
+    return _ReviewFlow.WorkflowStatus;
   }
 });
 Object.defineProperty(exports, "announce", {
@@ -45777,6 +49391,12 @@ Object.defineProperty(exports, "barcodeCheckDigit", {
   enumerable: true,
   get: function () {
     return _barcode.barcodeCheckDigit;
+  }
+});
+Object.defineProperty(exports, "baseNameEnd", {
+  enumerable: true,
+  get: function () {
+    return _RenameAction.baseNameEnd;
   }
 });
 Object.defineProperty(exports, "below", {
@@ -45821,6 +49441,12 @@ Object.defineProperty(exports, "cleanRichText", {
     return _RichTextEditor.cleanRichText;
   }
 });
+Object.defineProperty(exports, "clearDragOffset", {
+  enumerable: true,
+  get: function () {
+    return _dnd.clearDragOffset;
+  }
+});
 Object.defineProperty(exports, "compareLevels", {
   enumerable: true,
   get: function () {
@@ -45849,6 +49475,12 @@ Object.defineProperty(exports, "copyImage", {
   enumerable: true,
   get: function () {
     return _clipboard.copyImage;
+  }
+});
+Object.defineProperty(exports, "copyName", {
+  enumerable: true,
+  get: function () {
+    return _DuplicateAction.copyName;
   }
 });
 Object.defineProperty(exports, "copyRich", {
@@ -46169,6 +49801,18 @@ Object.defineProperty(exports, "meetsContrast", {
     return _contrast.meetsContrast;
   }
 });
+Object.defineProperty(exports, "mergeDndProps", {
+  enumerable: true,
+  get: function () {
+    return _dnd.mergeDndProps;
+  }
+});
+Object.defineProperty(exports, "moveItem", {
+  enumerable: true,
+  get: function () {
+    return _dnd.moveItem;
+  }
+});
 Object.defineProperty(exports, "navigate", {
   enumerable: true,
   get: function () {
@@ -46325,6 +49969,12 @@ Object.defineProperty(exports, "seriesColor", {
     return _scales.seriesColor;
   }
 });
+Object.defineProperty(exports, "setDragOffset", {
+  enumerable: true,
+  get: function () {
+    return _dnd.setDragOffset;
+  }
+});
 Object.defineProperty(exports, "setSingleKeyHotkeys", {
   enumerable: true,
   get: function () {
@@ -46371,6 +50021,12 @@ Object.defineProperty(exports, "tokenValue", {
   enumerable: true,
   get: function () {
     return _AppShell.tokenValue;
+  }
+});
+Object.defineProperty(exports, "transferItem", {
+  enumerable: true,
+  get: function () {
+    return _dnd.transferItem;
   }
 });
 Object.defineProperty(exports, "useAppLayout", {
@@ -46425,6 +50081,24 @@ Object.defineProperty(exports, "useDirection", {
   enumerable: true,
   get: function () {
     return _DirectionProvider.useDirection;
+  }
+});
+Object.defineProperty(exports, "useDndSession", {
+  enumerable: true,
+  get: function () {
+    return _dnd.useDndSession;
+  }
+});
+Object.defineProperty(exports, "useDraggable", {
+  enumerable: true,
+  get: function () {
+    return _dnd.useDraggable;
+  }
+});
+Object.defineProperty(exports, "useDropTarget", {
+  enumerable: true,
+  get: function () {
+    return _dnd.useDropTarget;
   }
 });
 Object.defineProperty(exports, "useFloating", {
@@ -46499,6 +50173,12 @@ Object.defineProperty(exports, "useReadOnly", {
     return _ReadOnly.useReadOnly;
   }
 });
+Object.defineProperty(exports, "useReposition", {
+  enumerable: true,
+  get: function () {
+    return _dnd.useReposition;
+  }
+});
 Object.defineProperty(exports, "useRetry", {
   enumerable: true,
   get: function () {
@@ -46533,6 +50213,12 @@ Object.defineProperty(exports, "useSession", {
   enumerable: true,
   get: function () {
     return _SessionProvider.useSession;
+  }
+});
+Object.defineProperty(exports, "useSortable", {
+  enumerable: true,
+  get: function () {
+    return _dnd.useSortable;
   }
 });
 Object.defineProperty(exports, "useTheme", {
@@ -46806,6 +50492,16 @@ var _RadarChart = require("./charts/RadarChart.jsx");
 var _SankeyDiagram = require("./charts/SankeyDiagram.jsx");
 var _TimelineChart = require("./charts/TimelineChart.jsx");
 var _ComparisonView = require("./patterns/ComparisonView/ComparisonView.jsx");
+var _dnd = require("./utils/dnd.js");
+var _DragHandle = require("./components/DragHandle/DragHandle.jsx");
+var _SortableList = require("./patterns/SortableList/SortableList.jsx");
+var _Resizable = require("./components/Resizable/Resizable.jsx");
+var _RenameAction = require("./patterns/RenameAction/RenameAction.jsx");
+var _ReviewFlow = require("./patterns/ReviewFlow/ReviewFlow.jsx");
+var _DeleteFlow = require("./patterns/DeleteFlow/DeleteFlow.jsx");
+var _DuplicateAction = require("./patterns/DuplicateAction/DuplicateAction.jsx");
+var _Publish = require("./patterns/Publish/Publish.jsx");
+var _AssignControl = require("./patterns/AssignControl/AssignControl.jsx");
   } }
   };
   var cache = {};

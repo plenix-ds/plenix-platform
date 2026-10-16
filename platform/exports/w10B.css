@@ -1,0 +1,6 @@
+/* Library part w10B (wave 10, lane B): ReviewFlow, DeleteFlow, DuplicateAction, Publish and AssignControl. */
+@import url("../patterns/ReviewFlow/review-flow.css");
+@import url("../patterns/DeleteFlow/delete-flow.css");
+@import url("../patterns/DuplicateAction/duplicate-action.css");
+@import url("../patterns/Publish/publish.css");
+@import url("../patterns/AssignControl/assign-control.css");

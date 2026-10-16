@@ -298,6 +298,24 @@
   --plx-sys-dataviz-label: var(--plx-sys-content-muted);
 }
 :root {
+  --plx-sys-dnd-autoscroll-edge: var(--plx-ref-size-48px);
+  --plx-sys-dnd-autoscroll-speed: 1;
+  --plx-sys-dnd-keyboard-step: var(--plx-ref-size-8px);
+  --plx-sys-dnd-keyboard-step-large: var(--plx-ref-size-32px);
+  --plx-sys-dnd-dragging-background: var(--plx-sys-surface-raised);
+  --plx-sys-dnd-dragging-shadow: var(--plx-sys-elevation-overlay-shadow);
+  --plx-sys-dnd-dragging-opacity: var(--plx-sys-state-dragged-opacity);
+  --plx-sys-dnd-dragging-z-index: var(--plx-sys-layer-raised);
+  --plx-sys-dnd-indicator-color: var(--plx-sys-focus-ring-color);
+  --plx-sys-dnd-indicator-width: var(--plx-sys-border-width-medium);
+  --plx-sys-dnd-indicator-offset: var(--plx-sys-space-stack-xs);
+  --plx-sys-dnd-target-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-sys-dnd-target-outline-width: var(--plx-sys-border-width-medium);
+  --plx-sys-dnd-target-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-sys-dnd-target-background: var(--plx-sys-state-hover);
+  --plx-sys-dnd-target-reject-outline-color: var(--plx-sys-feedback-danger-solid);
+}
+:root {
   --plx-sys-floating-offset-xs: var(--plx-ref-space-4px);
   --plx-sys-floating-offset-sm: var(--plx-ref-space-8px);
   --plx-sys-floating-offset-md: var(--plx-ref-space-12px);

@@ -1,0 +1,40 @@
+{
+  "$description": "DuplicateAction (platform/patterns/DuplicateAction), library wave 10, lane B: its pattern tokens. The rename dialog’s content: the gaps between the name field, the source line and the options, and the source line’s icon and text; the trigger, the dialog and the toast keep their own tokens.",
+  "plx-comp": {
+    "duplicate-action-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "DuplicateAction: gap between the name field and the source line (space-stack-sm)."
+    },
+    "duplicate-action-options-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "DuplicateAction: gap between the field, the source line and the options (with options) (space-stack-md)."
+    },
+    "duplicate-action-source-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "DuplicateAction: gap between the source icon and its words (space-inline-xs)."
+    },
+    "duplicate-action-source-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "DuplicateAction: source line color (content-muted)."
+    },
+    "duplicate-action-source-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "DuplicateAction: source line size (font-size-12)."
+    },
+    "duplicate-action-source-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "DuplicateAction: source line height (and its icon box) (size-20px)."
+    },
+    "duplicate-action-icon-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "DuplicateAction: source icon color (content-muted)."
+    }
+  }
+}

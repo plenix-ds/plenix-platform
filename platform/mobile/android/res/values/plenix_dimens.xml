@@ -156,6 +156,7 @@
     <dimen name="plx_component_count_pill_radius">4dp</dimen>
     <dimen name="plx_component_dialog_action_gap">8dp</dimen>
     <dimen name="plx_component_dialog_action_height">36dp</dimen>
+    <dimen name="plx_component_dialog_destructive_action_height">36dp</dimen>
     <dimen name="plx_component_dialog_footer_border_top_width">1dp</dimen>
     <dimen name="plx_component_dialog_footer_padding_block">12dp</dimen>
     <dimen name="plx_component_dialog_footer_padding_inline">16dp</dimen>
@@ -168,6 +169,7 @@
     <dimen name="plx_component_dialog_radius">8dp</dimen>
     <dimen name="plx_component_dialog_sm_max_width">400dp</dimen>
     <dimen name="plx_component_dialog_title_font_size">15dp</dimen>
+    <dimen name="plx_component_drag_handle_size">28dp</dimen>
     <dimen name="plx_component_drawer_padding">16dp</dimen>
     <dimen name="plx_component_image_upload_preview_radius">4dp</dimen>
     <dimen name="plx_component_input_border_width">1dp</dimen>

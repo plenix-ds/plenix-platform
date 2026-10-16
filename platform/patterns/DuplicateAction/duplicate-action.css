@@ -1,0 +1,8 @@
+/* Plenix · DuplicateAction (platform/patterns/DuplicateAction). The content of its rename dialog: the name field, the
+   line that says what is copied (the copy icon and "From …", muted), and the checkboxes of what else to copy. The trigger,
+   the dialog and the toast are Button's, Dialog's and Toast's. Anatomy and API: DuplicateAction.jsx. */
+.plx-duplicate-action{display:flex;flex-direction:column;row-gap:var(--plx-comp-duplicate-action-gap);}
+.plx-duplicate-action__source{align-items:flex-start;color:var(--plx-comp-duplicate-action-source-text);column-gap:var(--plx-comp-duplicate-action-source-gap);display:flex;font-size:var(--plx-comp-duplicate-action-source-font-size);line-height:var(--plx-comp-duplicate-action-source-line-height);margin-block-end:0;margin-block-start:0;min-inline-size:0;}
+.plx-duplicate-action__icon{align-items:center;block-size:var(--plx-comp-duplicate-action-source-line-height);color:var(--plx-comp-duplicate-action-icon-text);display:inline-flex;flex-shrink:0;}
+.plx-duplicate-action__from{min-inline-size:0;overflow-wrap:anywhere;}
+.plx-duplicate-action--options{row-gap:var(--plx-comp-duplicate-action-options-gap);}

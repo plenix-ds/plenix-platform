@@ -1,0 +1,71 @@
+{
+  "android-patterns|Confirmation": {
+    "summary": "A Plenix confirmation on Android asks before an action that others will see or that cannot come back, and offers Undo instead for what can. The question is the Plenix alert dialog (Material 3’s dialog with the Plenix look): the title names the action and the count (“Delete 2 categories?”), the body says the consequence and lists what goes, and the confirm button says the verb, in the danger colors when it destroys. Focus starts on Cancel. Type to confirm adds a text field for the item’s name. Reversible actions skip the question and show a Snackbar with Undo.",
+    "variants": [
+      { "name": "Confirm (default)", "material": "AlertDialog with a destructive confirm", "web": "patterns|Delete flow", "background": "plx-comp-dialog-background", "content": "plx-comp-delete-flow-name-text", "border": null, "compose": "PlenixConfirm(title = \"Delete 2 categories?\", message = consequence, names = names, confirmLabel = \"Delete\", destructive = true)", "views": "MaterialAlertDialogBuilder with setItems for the names and a danger positive button", "use": "Deletes that cannot come back." },
+      { "name": "Type to confirm", "material": "AlertDialog with an OutlinedTextField", "web": "patterns|Delete flow", "background": "plx-comp-dialog-background", "content": "plx-comp-dialog-text", "border": null, "compose": "PlenixConfirm(…, typeToConfirm = project.name)", "views": "setView with a TextInputLayout; the positive button checks the text", "use": "A delete with a wide reach: a project, a library, an account." },
+      { "name": "Publish and unpublish", "material": "AlertDialog with confirm and dismiss buttons", "web": "patterns|Publish", "background": "plx-comp-dialog-background", "content": "plx-comp-publish-detail-text", "border": null, "compose": "PlenixConfirm(title = \"Publish “Easter banner”?\", message = \"It becomes visible to everyone in the library.\", confirmLabel = \"Publish\")", "views": "setPositiveButton(\"Publish\") in the primary colors", "use": "Actions that change what others see; both directions ask." },
+      { "name": "Undo instead", "material": "Snackbar with an action", "web": "actions|Delete", "background": "plx-comp-toast-background", "content": "plx-comp-toast-text", "border": null, "compose": "snackbarHostState.showSnackbar(\"2 categories deleted\", actionLabel = \"Undo\")", "views": "Snackbar.make(view, message, LENGTH_LONG).setAction(\"Undo\") { restore() }", "use": "Reversible deletes and moves: no question, Undo while it shows." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Question", "about": "The title names the verb and the count, or the item by its name." },
+      { "part": "B", "name": "Consequence", "about": "One sentence on what else is lost or kept, then “This cannot be undone.”" },
+      { "part": "C", "name": "Names", "about": "Up to five of the items, then “and N more”, in the body." },
+      { "part": "D", "name": "Buttons", "about": "Cancel first, then the verb; the verb in the danger colors when it destroys." },
+      { "part": "E", "name": "Snackbar", "about": "The result with Undo, for actions that can be reversed." }
+    ],
+    "attributes": [
+      { "part": "C", "attribute": "Names", "token": "plx-comp-delete-flow-name-text", "value": "The default content color, DM Sans medium at the Body role, 4 dp apart", "material": "None (a list in the body)", "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) { names.take(5).forEach { Text(it, color = PlenixColors.contentDefault.current(), fontSize = PlenixPlatform.textBodySize) } }", "views": "a LinearLayout of TextViews with PlenixColors.contentDefault", "follows": "Material 3: Dialogs", "followsUrl": "https://m3.material.io/components/dialogs/guidelines" },
+      { "part": "C", "attribute": "And N more", "token": "plx-comp-delete-flow-more-text", "value": "The muted content color at the Secondary role", "material": "None", "compose": "Text(\"and $rest more\", color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize)", "views": "moreView.setTextColor(PlenixColors.contentMuted.light.toArgb())", "follows": "Material 3: Dialogs", "followsUrl": "https://m3.material.io/components/dialogs/guidelines" },
+      { "part": "D", "attribute": "Destructive confirm", "token": "plx-comp-dialog-destructive-action-height", "value": "The danger fill and its content color, at least the 48 dp target", "material": "A text button in the error color", "compose": "Button(onClick = confirm, colors = ButtonDefaults.buttonColors(PlenixColors.actionDangerBackground.current(), PlenixColors.actionDangerContent.current()), modifier = Modifier.heightIn(min = PlenixPlatform.controlTargetMin))", "views": "positive button backgroundTintList from PlenixColors.actionDangerBackground", "follows": "Material 3: Dialogs", "followsUrl": "https://m3.material.io/components/dialogs/guidelines" },
+      { "part": "D", "attribute": "Button gap", "token": "plx-comp-dialog-action-gap", "value": "8 dp between Cancel and the verb", "material": "8 dp", "compose": "Row(horizontalArrangement = Arrangement.spacedBy(PlenixPlatform.dialogActionGap, Alignment.End))", "views": "the button bar’s spacing from PlenixPlatform.dialogActionGap", "follows": "Material 3: Dialogs", "followsUrl": "https://m3.material.io/components/dialogs/specs" },
+      { "part": "E", "attribute": "Snackbar", "token": "plx-comp-toast-background", "value": "The toast’s inverse fill and text, 4 dp corners", "material": "inverseSurface", "compose": "Snackbar(snackbarData, containerColor = PlenixColors.toastBackground.current(), contentColor = PlenixColors.toastContent.current(), shape = RoundedCornerShape(PlenixComponent.toastRadius))", "views": "snackbar.setBackgroundTint(PlenixColors.toastBackground.light.toArgb())", "follows": "Material 3: Snackbar", "followsUrl": "https://m3.material.io/components/snackbar/guidelines" }
+    ],
+    "states": [
+      { "state": "Asking", "token": "plx-comp-dialog-background", "compose": "the dialog open; focus requested on Cancel", "views": "the dialog shown; the negative button focused" },
+      { "state": "Name does not match (type to confirm)", "token": "plx-comp-dialog-text", "compose": "isError = true and supportingText on the field; the dialog stays", "views": "TextInputLayout.error set; the dialog is not dismissed" },
+      { "state": "Done, with Undo", "token": "plx-comp-toast-background", "compose": "showSnackbar returns ActionPerformed: restore", "views": "the Snackbar action restores" },
+      { "state": "Dark", "token": "plx-comp-dialog-background", "compose": "PlenixColors pairs follow isSystemInDarkTheme()", "views": "the night resources" }
+    ],
+    "code": {
+      "compose": [
+        "import androidx.compose.foundation.layout.*",
+        "import androidx.compose.material3.*",
+        "import androidx.compose.runtime.*",
+        "import androidx.compose.ui.Modifier",
+        "import androidx.compose.ui.focus.FocusRequester",
+        "import androidx.compose.ui.focus.focusRequester",
+        "import plenix.tokens.*",
+        "",
+        "// the Plenix confirmation: the question with the count, the consequence, the names, Cancel first, the verb last",
+        "@Composable",
+        "fun PlenixConfirm(title: String, message: String, names: List<String>, confirmLabel: String, destructive: Boolean,",
+        "    onConfirm: () -> Unit, onCancel: () -> Unit) {",
+        "    val cancel = remember { FocusRequester() }",
+        "    PlenixAlertDialog(title = title, onDismiss = onCancel, footer = {",
+        "        OutlinedButton(onClick = onCancel, modifier = Modifier.focusRequester(cancel).heightIn(min = PlenixPlatform.controlTargetMin)) { Text(\"Cancel\") }",
+        "        Button(onClick = onConfirm, modifier = Modifier.heightIn(min = PlenixPlatform.controlTargetMin),",
+        "            colors = if (destructive) ButtonDefaults.buttonColors(PlenixColors.actionDangerBackground.current(), PlenixColors.actionDangerContent.current())",
+        "                else ButtonDefaults.buttonColors()) { Text(confirmLabel) }",
+        "    }) {",
+        "        Text(message, color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize)",
+        "        Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+        "            names.take(5).forEach { Text(it, color = PlenixColors.contentDefault.current(), fontSize = PlenixPlatform.textBodySize) }",
+        "            if (names.size > 5) Text(\"and ${names.size - 5} more\", color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize)",
+        "        }",
+        "    }",
+        "    LaunchedEffect(Unit) { if (destructive) cancel.requestFocus() }",
+        "}"
+      ],
+      "views": [
+        "MaterialAlertDialogBuilder(context)",
+        "    .setTitle(\"Delete 2 categories?\")",
+        "    .setMessage(\"Their assets stay, without these categories. This cannot be undone.\")",
+        "    .setNegativeButton(\"Cancel\", null)",
+        "    .setPositiveButton(\"Delete\") { _, _ -> delete(items) }",
+        "    .show()",
+        "    .getButton(DialogInterface.BUTTON_NEGATIVE).requestFocus()"
+      ]
+    }
+  }
+}

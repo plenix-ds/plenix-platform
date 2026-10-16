@@ -1,0 +1,75 @@
+{
+  "ios-patterns|Drag and drop": {
+    "summary": "Drag and drop on iOS keeps the system’s own drag: a long press lifts the item with the system preview, items move within and between lists and apps, and VoiceOver offers the same moves as custom actions. Plenix styles what the app draws around it: the lifted row on the raised surface with the overlay shadow, the insertion line and the drop target’s dashed outline in the focus ring’s color, a refusing target in the danger color with words, and a Move menu (and Move up, Move down in an edited list) so every drag has a way without dragging. Apple’s default is the system preview over the app’s own unstyled targets; Plenix keeps the system gesture and preview and replaces the app’s look.",
+    "variants": [
+      { "name": "Sortable list", "apple": "List with .onMove, or UICollectionView drag and drop reordering", "web": "patterns|Sortable list", "background": "plx-comp-sortable-list-item-background", "content": "plx-comp-sortable-list-item-text", "border": "plx-comp-sortable-list-item-border-color", "swiftui": "ForEach(items) { … }.onMove(perform: move) in a List with an EditButton; draggable rows use .draggable and .dropDestination", "uikit": "UICollectionView with dragDelegate and dropDelegate, reorderingCadence .immediate", "appkit": "NSTableView with registerForDraggedTypes and the pasteboard writer per row (a macOS build of the tokens is needed)", "use": "Steps, priorities, pinned views: orders people set by hand." },
+      { "name": "Item onto a target", "apple": "draggable(_:) and dropDestination(for:action:isTargeted:)", "web": "patterns|Drag and drop", "background": "plx-sys-dnd-target-background", "content": null, "border": "plx-sys-dnd-target-outline-color", "swiftui": ".draggable(asset) on the item, .dropDestination(for: Asset.self) { … } isTargeted: { over = $0 } on the folder", "uikit": "UIDragInteraction on the item, UIDropInteraction on the target", "appkit": "NSDraggingSource and NSDraggingDestination (a macOS build of the tokens is needed)", "use": "Filing an asset into a folder, a card into a column." },
+      { "name": "Drop target", "apple": "A view with dropDestination", "web": "patterns|Drop target", "background": "plx-sys-dnd-target-background", "content": null, "border": "plx-sys-dnd-target-reject-outline-color", "swiftui": "isTargeted shows the outline; a type the target does not take shows the refusal and its words", "uikit": "dropInteraction(_:sessionDidUpdate:) returns .move, .copy or .forbidden", "appkit": "draggingEntered returns the operation or [] (a macOS build of the tokens is needed)", "use": "Folders, columns and collections that take some kinds of item." },
+      { "name": "Reposition", "apple": "DragGesture on a positioned view", "web": "patterns|Reposition", "background": "plx-sys-dnd-dragging-background", "content": null, "border": null, "swiftui": ".offset from a DragGesture, snapped to the 4-point grid on .onEnded, with accessibilityAdjustableAction for the keyboard and VoiceOver", "uikit": "UIPanGestureRecognizer moving the view’s center, snapped on .ended", "appkit": "mouseDragged moving the frame origin (a macOS build of the tokens is needed)", "use": "Notes on a board, layers on a canvas." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Drag handle", "about": "The grip at the row’s start in an edited list (the system reorder control), or the whole item lifted by a long press." },
+      { "part": "B", "name": "Lifted item", "about": "The item under the finger on the raised surface with the overlay shadow; the system preview when it leaves the app." },
+      { "part": "C", "name": "Insertion line", "about": "A line in the focus ring’s color where the item lands in a list." },
+      { "part": "D", "name": "Drop target", "about": "A dashed outline in the focus ring’s color and the hover fill while an item it takes is over it; the danger color and words when it refuses." },
+      { "part": "E", "name": "Move menu", "about": "Move up, Move down, Move to … in the item’s context menu and as VoiceOver custom actions: the way without dragging." }
+    ],
+    "attributes": [
+      { "part": "B", "attribute": "Lifted background", "token": "plx-sys-dnd-dragging-background", "value": "The raised surface (Plenix.Colors.surfaceRaised)", "apple": "The system lift preview", "swiftui": ".background(Plenix.Colors.surfaceRaised) in the item’s .contentShape(.dragPreview, …) preview", "uikit": "UIDragPreviewParameters with backgroundColor = Plenix.Colors.surfaceRaised", "appkit": "the dragging image drawn on the raised surface (a macOS build of the tokens is needed)", "follows": "Providing feedback" },
+      { "part": "B", "attribute": "Lifted shadow", "token": "plx-sys-dnd-dragging-shadow", "value": "The overlay shadow while the item is held", "apple": "The system lift shadow", "swiftui": "the system lift shadow is kept; inside the app the row takes .shadow(color: Plenix.Colors.contentDefault.opacity(Plenix.Opacity.opacityLow), radius: Plenix.Space.spaceStackSm)", "uikit": "the system lift shadow is kept (UIDragPreview)", "appkit": "NSDraggingItem image with a shadow (a macOS build of the tokens is needed)", "follows": "Providing feedback" },
+      { "part": "B", "attribute": "Lifted opacity", "token": "plx-sys-dnd-dragging-opacity", "value": "The dragged opacity while it follows the finger (Plenix.Opacity.opacityHigh)", "apple": "Opaque", "swiftui": ".opacity(isDragging ? Plenix.Opacity.opacityHigh : 1)", "uikit": "view.alpha = Plenix.Opacity.opacityHigh while the session runs", "appkit": "alphaValue = Plenix.Opacity.opacityHigh (a macOS build of the tokens is needed)", "follows": "Providing feedback" },
+      { "part": "C", "attribute": "Insertion line", "token": "plx-sys-dnd-indicator-color, plx-sys-dnd-indicator-width", "value": "The focus ring’s color, the medium border width (Plenix.Colors.focusRingColor, Plenix.Border.borderWidthMedium)", "apple": "The system gap that opens in the list", "swiftui": "the gap List opens on .onMove is kept; a custom list draws Rectangle().fill(Plenix.Colors.focusRingColor).frame(height: Plenix.Border.borderWidthMedium)", "uikit": "UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)", "appkit": "setDropRow(_:dropOperation: .above) draws the system line (a macOS build of the tokens is needed)", "follows": "Accepting drops" },
+      { "part": "D", "attribute": "Target outline", "token": "plx-sys-dnd-target-outline-color, plx-sys-dnd-target-outline-width", "value": "A dashed outline in the focus ring’s color, the medium border width", "apple": "None: the app draws its target", "swiftui": ".overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px).strokeBorder(Plenix.Colors.focusRingColor, style: StrokeStyle(lineWidth: Plenix.Border.borderWidthMedium, dash: [Plenix.Space.spaceInlineXs])))", "uikit": "a CAShapeLayer with strokeColor = Plenix.Colors.focusRingColor.cgColor, lineWidth = Plenix.Border.borderWidthMedium, lineDashPattern", "appkit": "an NSBezierPath with setLineDash (a macOS build of the tokens is needed)", "follows": "Accepting drops" },
+      { "part": "D", "attribute": "Target fill", "token": "plx-sys-dnd-target-background", "value": "The hover fill while an item it takes is over it (Plenix.Colors.stateHover)", "apple": "None", "swiftui": ".background(over ? Plenix.Colors.stateHover : .clear)", "uikit": "backgroundColor = Plenix.Colors.stateHover while targeted", "appkit": "layer?.backgroundColor from the hover fill (a macOS build of the tokens is needed)", "follows": "Accepting drops" },
+      { "part": "D", "attribute": "Refusing target", "token": "plx-sys-dnd-target-reject-outline-color", "value": "The outline in the danger color (Plenix.Colors.feedbackDangerSolid) and words that say why", "apple": "The forbidden badge on the preview", "swiftui": "the outline in Plenix.Colors.feedbackDangerSolid and Text(\"Pictures takes images only\") while the dragged type is not taken", "uikit": "UIDropProposal(operation: .forbidden) and the danger outline", "appkit": "draggingEntered returns [] (a macOS build of the tokens is needed)", "follows": "Accepting drops" },
+      { "part": "A", "attribute": "Handle size", "token": "plx-comp-drag-handle-size", "value": "At least the touch target (Plenix.Platform.controlTargetMin)", "apple": "The system reorder control", "swiftui": "Image(systemName: \"line.3.horizontal\").frame(minWidth: Plenix.Platform.controlTargetMin, minHeight: Plenix.Platform.controlTargetMin)", "uikit": "UITableViewCell.showsReorderControl in editing mode", "appkit": "the row itself is the handle (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "E", "attribute": "Move actions", "token": null, "value": "Move up, Move down and Move to … as menu items and VoiceOver custom actions", "apple": "accessibilityDragSourceDescriptors", "swiftui": ".contextMenu { Button(\"Move up\") { … } } and .accessibilityAction(named: \"Move up\") { … }", "uikit": "UIContextMenuInteraction and accessibilityCustomActions", "appkit": "an NSMenu on the row (a macOS build of the tokens is needed)", "follows": "Best practices" }
+    ],
+    "states": [
+      { "state": "Rest", "token": "plx-comp-sortable-list-item-background", "swiftui": "the row in its place", "uikit": "no session", "appkit": "no session" },
+      { "state": "Lifted", "token": "plx-sys-dnd-dragging-background", "swiftui": "the drag preview while the finger holds it", "uikit": "dragInteraction(_:willAnimateLiftWith:session:)", "appkit": "draggingSession(_:willBeginAt:)" },
+      { "state": "Over a target", "token": "plx-sys-dnd-target-outline-color", "swiftui": "isTargeted true", "uikit": "sessionDidUpdate returns .move or .copy", "appkit": "draggingEntered returns an operation" },
+      { "state": "Refused", "token": "plx-sys-dnd-target-reject-outline-color", "swiftui": "isTargeted with a type it does not take", "uikit": "sessionDidUpdate returns .forbidden", "appkit": "draggingEntered returns []" },
+      { "state": "Dropped", "token": null, "swiftui": "the action of dropDestination runs; announce the result", "uikit": "performDrop", "appkit": "performDragOperation" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// A Plenix drop target on iOS: the system drag, the Plenix outline and fill while an item it takes is over it.",
+        "struct PlenixFolderTarget: View {",
+        "    let name: String",
+        "    let onDrop: ([Asset]) -> Void",
+        "    @State private var over = false",
+        "",
+        "    var body: some View {",
+        "        VStack(spacing: Plenix.Space.spaceStackSm) {",
+        "            Image(systemName: \"folder\").accessibilityHidden(true)",
+        "            Text(name).font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline))",
+        "        }",
+        "        .frame(maxWidth: .infinity, minHeight: Plenix.Platform.controlTargetMin)",
+        "        .background(over ? Plenix.Colors.stateHover : Plenix.Colors.surfaceSunken)",
+        "        .overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px)",
+        "            .strokeBorder(over ? Plenix.Colors.focusRingColor : Plenix.Colors.borderDefault, style: StrokeStyle(lineWidth: Plenix.Border.borderWidthMedium, dash: [Plenix.Space.spaceInlineXs])))",
+        "        .dropDestination(for: Asset.self) { items, _ in onDrop(items); return true } isTargeted: { over = $0 }",
+        "        .accessibilityElement(children: .combine)",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "let drop = UIDropInteraction(delegate: self)",
+        "folderView.addInteraction(drop)",
+        "folderView.layer.cornerRadius = Plenix.Radius.radiusControl4px",
+        "// while targeted: the Plenix outline and fill",
+        "folderView.backgroundColor = Plenix.Colors.stateHover",
+        "outline.strokeColor = Plenix.Colors.focusRingColor.cgColor",
+        "outline.lineWidth = Plenix.Border.borderWidthMedium"
+      ],
+      "appkit": [
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "folderView.registerForDraggedTypes([.fileURL])",
+        "// draggingEntered(_:) returns .move for a taken type and [] for a refused one"
+      ]
+    }
+  }
+}

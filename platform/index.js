@@ -246,4 +246,14 @@ export { RadarChart } from './charts/RadarChart.jsx';
 export { SankeyDiagram, sankeyLayout } from './charts/SankeyDiagram.jsx';
 export { TimelineChart } from './charts/TimelineChart.jsx';
 export { ComparisonView } from './patterns/ComparisonView/ComparisonView.jsx';
+export { useSortable, useDraggable, useDropTarget, useReposition, useDndSession, moveItem, transferItem, setDragOffset, clearDragOffset, mergeDndProps, DND_STRINGS } from './utils/dnd.js';
+export { DragHandle } from './components/DragHandle/DragHandle.jsx';
+export { SortableList } from './patterns/SortableList/SortableList.jsx';
+export { Resizable, PanelSplitter } from './components/Resizable/Resizable.jsx';
+export { RenameAction, baseNameEnd } from './patterns/RenameAction/RenameAction.jsx';
+export { WorkflowStatus, WORKFLOW_STATUSES, ReviewFlow, ReviewQueue } from './patterns/ReviewFlow/ReviewFlow.jsx';
+export { DeleteFlow } from './patterns/DeleteFlow/DeleteFlow.jsx';
+export { DuplicateAction, copyName } from './patterns/DuplicateAction/DuplicateAction.jsx';
+export { Publish } from './patterns/Publish/Publish.jsx';
+export { AssignControl } from './patterns/AssignControl/AssignControl.jsx';
 /* END library parts */

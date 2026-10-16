@@ -1,0 +1,55 @@
+{
+  "$description": "AssignControl (platform/patterns/AssignControl), library wave 10, lane B: its pattern tokens. The row’s gaps and least heights, the picker’s least width, the Unassigned and Not delegated words, the delegation dates and the delegate dialog’s field gap; the picker, the Persona and the buttons keep their own tokens.",
+  "plx-comp": {
+    "assign-control-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "AssignControl: gap between who and the actions (space-inline-md)."
+    },
+    "assign-control-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "AssignControl: gap between lines when the row wraps (space-stack-xs)."
+    },
+    "assign-control-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "AssignControl: the row’s least height (a field’s height) (control-height-standard)."
+    },
+    "assign-control-assigned-min-height": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension",
+      "$description": "AssignControl: the row’s least height with an assignee (the Persona’s) (size-32px)."
+    },
+    "assign-control-picker-min-width": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "AssignControl: the people picker’s least width (size-240px)."
+    },
+    "assign-control-empty-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "AssignControl: Not delegated color (content-muted)."
+    },
+    "assign-control-empty-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "AssignControl: Not delegated size (font-size-13)."
+    },
+    "assign-control-dates-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "AssignControl: the delegation dates’ color (content-muted)."
+    },
+    "assign-control-actions-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "AssignControl: gap between the actions (space-inline-xs)."
+    },
+    "assign-control-form-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "AssignControl: gap between the delegate dialog’s fields (space-stack-md)."
+    }
+  }
+}

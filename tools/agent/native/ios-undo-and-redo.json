@@ -1,0 +1,75 @@
+{
+  "ios-actions|Undo and redo": {
+    "summary": "Plenix undo on iOS keeps the system’s undo (UndoManager, shake to undo, the three-finger gestures and Command-Z on a keyboard) and adds the Plenix undo toast for actions that remove or change many things at once: a delete, a move to the trash, an unpublish. The toast says what happened in DM Sans on the inverse surface, holds Undo while it shows, and leaves after the toast duration; the action is final only then. Every action that registers an undo names it, so the system’s Undo menu says Undo Delete.",
+    "variants": [
+      { "name": "Undo in the toast (default)", "apple": "None (a Plenix toast with an Undo button, beside UndoManager)", "web": "patterns|Delete flow", "background": "plx-comp-toast-background", "content": "plx-comp-toast-text", "border": null, "swiftui": "PlenixUndoToast(message: \"2 categories deleted\", onUndo: restore)", "uikit": "A Plenix toast view with an Undo UIButton, over the safe area", "appkit": "An NSPanel toast with an Undo button (a macOS build of the tokens is needed)", "use": "Deletes and moves people make often and may regret: notes, tags, categories." },
+      { "name": "Move to trash", "apple": "None (the same toast)", "web": "actions|Delete", "background": "plx-comp-toast-background", "content": "plx-comp-toast-text", "border": null, "swiftui": "PlenixUndoToast(message: \"Moved to the trash\", onUndo: restore)", "uikit": "The same toast, its message naming the trash", "appkit": "The same panel (a macOS build of the tokens is needed)", "use": "Files and assets with a trash to restore from." },
+      { "name": "System undo", "apple": "UndoManager with shake to undo and the Edit menu", "web": "patterns|Unpublish", "background": null, "content": null, "border": null, "swiftui": "@Environment(\\.undoManager) and registerUndo(withTarget:handler:) with setActionName", "uikit": "undoManager?.registerUndo(withTarget:handler:) and setActionName", "appkit": "NSUndoManager, Edit › Undo (a macOS build of the tokens is needed)", "use": "Every change the person can reverse, including the ones the toast already offers." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Toast", "about": "The inverse surface with 4 pt corners, above the bottom safe area, at most one at a time." },
+      { "part": "B", "name": "Message", "about": "What happened, with the count or the name: “2 categories deleted”." },
+      { "part": "C", "name": "Undo", "about": "A small Plenix button at the end; using it puts everything back and closes the toast." },
+      { "part": "D", "name": "Dismiss", "about": "The close button; dismissing makes the action final at once." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Surface", "token": "plx-comp-toast-background", "value": "The toast’s inverse fill and its 4 pt corners", "apple": "None (Apple has no toast)", "swiftui": "RoundedRectangle(cornerRadius: Plenix.Component.toastRadius).fill(Plenix.Colors.toastBackground)", "uikit": "view.backgroundColor = Plenix.Colors.toastBackground; view.layer.cornerRadius = Plenix.Component.toastRadius", "appkit": "layer.backgroundColor with Plenix.Colors.toastBackground (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Message", "token": "plx-comp-toast-text", "value": "The toast’s text color, DM Sans at the Body role", "apple": "None", "swiftui": "Text(message).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.toastContent)", "uikit": "label.textColor = Plenix.Colors.toastContent", "appkit": "textField.textColor = Plenix.Colors.toastContent (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "C", "attribute": "Undo target", "token": "plx-comp-toast-close-height", "value": "At least the 44 pt touch target, whatever the button draws", "apple": "44 by 44 pt", "swiftui": "Button(\"Undo\", action: undo).frame(minHeight: Plenix.Platform.controlTargetMin)", "uikit": "button.heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin)", "appkit": "Not applicable (pointer)", "follows": "iOS, iPadOS" },
+      { "part": "A", "attribute": "Time shown", "token": "plx-comp-toast-duration", "value": "The toast duration; it waits while VoiceOver focus is on it", "apple": "None", "swiftui": "try await Task.sleep(for: .seconds(Plenix.Component.toastDuration))", "uikit": "DispatchQueue.main.asyncAfter(deadline: .now() + Plenix.Component.toastDuration)", "appkit": "Timer with Plenix.Component.toastDuration (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Action name", "token": "plx-comp-toast-text", "value": "The undo is registered with its action’s name, so the Edit menu and shake to undo say Undo Delete", "apple": "setActionName", "swiftui": "undoManager?.setActionName(\"Delete\")", "uikit": "undoManager?.setActionName(\"Delete\")", "appkit": "undoManager?.setActionName(\"Delete\") (a macOS build of the tokens is needed)", "follows": "Best practices" }
+    ],
+    "states": [
+      { "state": "Shown", "token": "plx-comp-toast-background", "swiftui": "the toast inserted with a move transition from the bottom", "uikit": "the view animated in above the safe area", "appkit": "the panel ordered front" },
+      { "state": "Held (VoiceOver focus or a touch on it)", "token": "plx-comp-toast-duration", "swiftui": "the timer paused while accessibilityFocused is true", "uikit": "the timer invalidated while the view is focused", "appkit": "the timer paused while the pointer is over it" },
+      { "state": "Undone", "token": "plx-comp-toast-text", "swiftui": "onUndo runs, the toast leaves, UIAccessibility posts the result", "uikit": "the handler runs and the view is removed", "appkit": "the handler runs and the panel closes" },
+      { "state": "Reduced motion", "token": "plx-comp-toast-animation-duration", "swiftui": "an opacity transition when accessibilityReduceMotion is on", "uikit": "UIAccessibility.isReduceMotionEnabled: a fade", "appkit": "no animation" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// The Plenix undo toast: what happened, and Undo while it shows. The action is final when it leaves.",
+        "struct PlenixUndoToast: View {",
+        "    let message: String",
+        "    let onUndo: () -> Void",
+        "    let onDismiss: () -> Void",
+        "",
+        "    var body: some View {",
+        "        HStack(spacing: Plenix.Space.spaceInlineSm) {",
+        "            Text(message)",
+        "                .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "                .foregroundStyle(Plenix.Colors.toastContent)",
+        "            Spacer(minLength: Plenix.Space.spaceInlineSm)",
+        "            Button(\"Undo\", action: onUndo)",
+        "                .frame(minHeight: Plenix.Platform.controlTargetMin)",
+        "            Button(action: onDismiss) { Image(systemName: \"xmark\") }",
+        "                .accessibilityLabel(\"Dismiss\")",
+        "                .frame(minWidth: Plenix.Platform.controlTargetMin, minHeight: Plenix.Platform.controlTargetMin)",
+        "        }",
+        "        .padding(.horizontal, Plenix.Space.spaceInsetMd)",
+        "        .background(RoundedRectangle(cornerRadius: Plenix.Component.toastRadius).fill(Plenix.Colors.toastBackground))",
+        "        .accessibilityElement(children: .contain)",
+        "    }",
+        "}",
+        "",
+        "// register the system undo as well, with the action’s name",
+        "// undoManager?.registerUndo(withTarget: store) { $0.restore(items) }",
+        "// undoManager?.setActionName(\"Delete\")"
+      ],
+      "uikit": [
+        "undoManager?.registerUndo(withTarget: store) { $0.restore(items) }",
+        "undoManager?.setActionName(\"Delete\")",
+        "let toast = PlenixToastView(message: \"2 categories deleted\", action: \"Undo\") { store.restore(items) }",
+        "toast.backgroundColor = Plenix.Colors.toastBackground",
+        "toast.layer.cornerRadius = Plenix.Component.toastRadius",
+        "UIAccessibility.post(notification: .announcement, argument: \"2 categories deleted\")"
+      ],
+      "appkit": [
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "undoManager?.registerUndo(withTarget: store) { $0.restore(items) }",
+        "undoManager?.setActionName(\"Delete\")"
+      ]
+    }
+  }
+}

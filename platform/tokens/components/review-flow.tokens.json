@@ -1,0 +1,90 @@
+{
+  "$description": "ReviewFlow (platform/patterns/ReviewFlow), library wave 10, lane B: its pattern tokens. The review panel’s head (title, detail and status), its sections and their labels, the reviewers, the comment and the decisions, and the review queue’s gap; the statuses are Badge’s variants, the history is ActivityList.",
+  "plx-comp": {
+    "review-flow-gap": {
+      "$value": "{plx-sys.space-stack-lg}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: gap between the panel’s parts (space-stack-lg)."
+    },
+    "review-flow-head-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: gap between the title and the status badge, and a reviewer and their decision (space-inline-md)."
+    },
+    "review-flow-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "ReviewFlow: title color (content-default)."
+    },
+    "review-flow-title-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: title size (font-size-13)."
+    },
+    "review-flow-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "ReviewFlow: title weight (font-weight-semibold)."
+    },
+    "review-flow-title-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: title line height (size-20px)."
+    },
+    "review-flow-detail-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ReviewFlow: detail color (content-muted)."
+    },
+    "review-flow-detail-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: detail and Waiting size (font-size-12)."
+    },
+    "review-flow-section-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: gap between a section’s label and its content, and the comment and the decisions (space-stack-sm)."
+    },
+    "review-flow-label-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ReviewFlow: section label color (Reviewers, History) (content-muted)."
+    },
+    "review-flow-label-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: section label size (font-size-12)."
+    },
+    "review-flow-label-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "ReviewFlow: section label weight (font-weight-semibold)."
+    },
+    "review-flow-reviewers-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: gap between reviewers (space-stack-xs)."
+    },
+    "review-flow-reviewer-min-height": {
+      "$value": "{plx-ref.size-28px}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: a reviewer row’s least height (size-28px)."
+    },
+    "review-flow-waiting-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ReviewFlow: Waiting color (a reviewer with no decision yet) (content-muted)."
+    },
+    "review-flow-actions-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: gap between the decision buttons (space-inline-sm)."
+    },
+    "review-flow-queue-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ReviewFlow: ReviewQueue: gap between the command bar and the table (space-stack-sm)."
+    }
+  }
+}

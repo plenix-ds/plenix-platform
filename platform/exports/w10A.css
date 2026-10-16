@@ -1,0 +1,6 @@
+/* Library part w10A (wave 10, lane A): the drag-and-drop states, DragHandle, SortableList, Resizable and RenameAction. */
+@import url("../system/dnd.css");
+@import url("../components/DragHandle/drag-handle.css");
+@import url("../patterns/SortableList/sortable-list.css");
+@import url("../components/Resizable/resizable.css");
+@import url("../patterns/RenameAction/rename-action.css");

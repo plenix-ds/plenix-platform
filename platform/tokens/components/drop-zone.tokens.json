@@ -1,0 +1,6 @@
+{
+  "$description": "DropZone (platform/components/DropZone): the tokens of its library wave 10 extension (lane A, Drop target). The zone's other tokens are in the shared components set.",
+  "plx-comp": {
+    "drop-zone-reject-border-color": { "$value": "{plx-sys.feedback-danger-solid}", "$type": "color", "$description": "DropZone refusing what is over it: the dashed border in the danger color an invalid field's border uses (with the not-allowed pointer and words, never color alone)." }
+  }
+}

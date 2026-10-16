@@ -40,6 +40,11 @@ object PlenixColors {
     val datavizAlertCritical = Pair(Color(0xFFB70000), Color(0xFFF8ACA2))
     val datavizGridLine = Pair(Color(0xFFE8E9EC), Color(0xFF56585E))
     val datavizLabel = Pair(Color(0xFF56585E), Color(0xFFD0D0D0))
+    val dndDraggingBackground = Pair(Color(0xFFFFFFFF), Color(0xFF444444))
+    val dndIndicatorColor = Pair(Color(0xFF2A6FDB), Color(0xFFA2C0E3))
+    val dndTargetOutlineColor = Pair(Color(0xFF2A6FDB), Color(0xFFA2C0E3))
+    val dndTargetBackground = Pair(Color(0xFFF3F3F3), Color(0xFF56585E))
+    val dndTargetRejectOutlineColor = Pair(Color(0xFFB70000), Color(0xFFF8ACA2))
     val focusOrderColor = Pair(Color(0xFF2A6FDB), Color(0xFFA2C0E3))
     val focusOrderOnColor = Pair(Color(0xFFFFFFFF), Color(0xFF1E1F22))
     val focusOrderWarningColor = Pair(Color(0xFFB70000), Color(0xFFF8ACA2))
@@ -549,6 +554,7 @@ object PlenixComponent {
     val dialogActionGap = 8.dp
     val dialogActionHeight = 36.dp
     const val dialogDescriptionLineHeight = 1.5f
+    val dialogDestructiveActionHeight = 36.dp
     val dialogFooterBorderTopWidth = 1.dp
     val dialogFooterPaddingBlock = 12.dp
     val dialogFooterPaddingInline = 16.dp
@@ -561,6 +567,7 @@ object PlenixComponent {
     val dialogRadius = 8.dp
     val dialogSmMaxWidth = 400.dp
     val dialogTitleFontSize = 15.dp
+    val dragHandleSize = 28.dp
     const val drawerAnimationDuration = 200
     val drawerPadding = 16.dp
     val imageUploadPreviewRadius = 4.dp

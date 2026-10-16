@@ -44,6 +44,11 @@ public enum Plenix {
         public static let datavizAlertCritical = Plenix.color(light: 0xFFB70000, dark: 0xFFF8ACA2)
         public static let datavizGridLine = Plenix.color(light: 0xFFE8E9EC, dark: 0xFF56585E)
         public static let datavizLabel = Plenix.color(light: 0xFF56585E, dark: 0xFFD0D0D0)
+        public static let dndDraggingBackground = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF444444)
+        public static let dndIndicatorColor = Plenix.color(light: 0xFF2A6FDB, dark: 0xFFA2C0E3)
+        public static let dndTargetOutlineColor = Plenix.color(light: 0xFF2A6FDB, dark: 0xFFA2C0E3)
+        public static let dndTargetBackground = Plenix.color(light: 0xFFF3F3F3, dark: 0xFF56585E)
+        public static let dndTargetRejectOutlineColor = Plenix.color(light: 0xFFB70000, dark: 0xFFF8ACA2)
         public static let focusOrderColor = Plenix.color(light: 0xFF2A6FDB, dark: 0xFFA2C0E3)
         public static let focusOrderOnColor = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF1E1F22)
         public static let focusOrderWarningColor = Plenix.color(light: 0xFFB70000, dark: 0xFFF8ACA2)
@@ -542,6 +547,7 @@ public enum Plenix {
         public static let dialogActionGap: CGFloat = 8
         public static let dialogActionHeight: CGFloat = 36
         public static let dialogDescriptionLineHeight: Double = 1.5
+        public static let dialogDestructiveActionHeight: CGFloat = 36
         public static let dialogFooterBorderTopWidth: CGFloat = 1
         public static let dialogFooterPaddingBlock: CGFloat = 12
         public static let dialogFooterPaddingInline: CGFloat = 16
@@ -554,6 +560,7 @@ public enum Plenix {
         public static let dialogRadius: CGFloat = 8
         public static let dialogSmMaxWidth: CGFloat = 400
         public static let dialogTitleFontSize: CGFloat = 15
+        public static let dragHandleSize: CGFloat = 28
         public static let drawerAnimationDuration: Double = 0.2
         public static let drawerPadding: CGFloat = 16
         public static let imageUploadPreviewRadius: CGFloat = 4

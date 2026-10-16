@@ -1,0 +1,40 @@
+{
+  "$description": "Publish (platform/patterns/Publish), library wave 10, lane B: its pattern tokens. The row’s gaps (status to actions, badge to line, between the actions, between wrapped lines) and the status line’s text; the badge is Badge’s, the questions and the schedule are Dialog’s and DatePicker’s.",
+  "plx-comp": {
+    "publish-gap": {
+      "$value": "{plx-sys.space-inline-lg}",
+      "$type": "dimension",
+      "$description": "Publish: gap between the status and the actions (space-inline-lg)."
+    },
+    "publish-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Publish: gap between lines when the row wraps (space-stack-sm)."
+    },
+    "publish-status-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Publish: gap between the badge and the status line (space-inline-sm)."
+    },
+    "publish-detail-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Publish: status line color (content-muted)."
+    },
+    "publish-detail-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Publish: status line size (font-size-12)."
+    },
+    "publish-detail-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "Publish: status line height (size-20px)."
+    },
+    "publish-actions-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Publish: gap between the actions (space-inline-sm)."
+    }
+  }
+}

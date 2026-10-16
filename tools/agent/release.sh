@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # release.sh "<subject>" <changelog-entry.md> <log-entry.md> <main-repo paths...>
-# Next patch version from CHANGELOG.md; changelog + work log entries; usage; commits the design system submodule (all of
+# RELEASE_LEVEL=minor for new or rewritten components (a library wave, a rewrite), patch (the default) for fixes only
+# (semver from 0.32.0 on, owner 2026-10-15, RedSave #27: a rewrite is listed under "Changed" with what an app must check).
+# Next version from CHANGELOG.md (patch, or minor with RELEASE_LEVEL=minor); changelog + work log entries; usage; commits the design system submodule (all of
 # it) and the given main-repo paths; pushes; deploys from the clean worktree (retries); tags. CI is not waited on.
 set -euo pipefail
 # Paths: the repo is two folders up from this script; the work log is ../Plenix - DAM/audit; the clean deploy copy is
@@ -11,7 +13,7 @@ SUBJ="$1"; CL="$2"; LOG="$3"; shift 3
 cd "$REPO"
 git fetch -q
 V=$(node -e "
-const fs=require('fs');let s=fs.readFileSync('CHANGELOG.md','utf8');const top=/## \[(\d+)\.(\d+)\.(\d+)\]/.exec(s);const V=top[1]+'.'+top[2]+'.'+(+top[3]+1);
+const fs=require('fs');let s=fs.readFileSync('CHANGELOG.md','utf8');const top=/## \[(\d+)\.(\d+)\.(\d+)\]/.exec(s);const V=process.env.RELEASE_LEVEL==='minor'?top[1]+'.'+(+top[2]+1)+'.0':top[1]+'.'+top[2]+'.'+(+top[3]+1);
 const e=fs.readFileSync(process.argv[1],'utf8').trim();
 s=s.replace(top[0],'## ['+V+'] - '+new Date().toISOString().slice(0,10)+'\n\n'+e+'\n\n'+top[0]);fs.writeFileSync('CHANGELOG.md',s);
 const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.version=V;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');

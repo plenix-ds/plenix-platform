@@ -1,0 +1,8 @@
+/* Plenix · Publish (platform/patterns/Publish). One row that wraps: the status (the badge with its icon, then the line
+   saying when and by whom, muted, its date in the data font) and the actions at the end. The questions and the schedule
+   are dialogs (Dialog, ConfirmDialog, DatePicker). Anatomy and API: Publish.jsx. */
+.plx-publish{align-items:center;column-gap:var(--plx-comp-publish-gap);display:flex;flex-wrap:wrap;justify-content:space-between;min-inline-size:0;row-gap:var(--plx-comp-publish-row-gap);}
+.plx-publish__status{align-items:center;column-gap:var(--plx-comp-publish-status-gap);display:flex;flex-wrap:wrap;min-inline-size:0;row-gap:var(--plx-comp-publish-row-gap);}
+.plx-publish__detail{color:var(--plx-comp-publish-detail-text);font-size:var(--plx-comp-publish-detail-font-size);line-height:var(--plx-comp-publish-detail-line-height);}
+.plx-publish__actions{column-gap:var(--plx-comp-publish-actions-gap);display:flex;flex-wrap:wrap;margin-inline-start:auto;row-gap:var(--plx-comp-publish-row-gap);}
+.plx-publish--read-only{justify-content:flex-start;}

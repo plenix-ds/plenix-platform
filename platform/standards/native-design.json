@@ -7210,6 +7210,233 @@
     ]
    }
   },
+  "android-interaction|Gestures": {
+   "summary": "The drag gestures of a Plenix app on Android: a long press (or a press on a drag handle) lifts an item, which follows the finger and lands in a list, on a target or anywhere on a board, with Material’s motion and haptics kept and the Plenix look around them: the lifted row on the raised surface, the insertion line and the target’s dashed outline in the focus ring’s color, a refusing target in the danger color with words. Every drag has a way without dragging (a Move menu, Move up and Move down, TalkBack custom actions). The other gestures (swipe, fling, pinch, pull to refresh) are the gesture foundation’s, on the same tokens. Material’s default is a list with no reorder affordance and Compose’s plain drag modifiers; Plenix adds the handle, the states and the alternatives.",
+   "variants": [
+    {
+     "name": "Sortable list",
+     "material": "LazyColumn with a drag handle (Modifier.draggable on the handle) and animateItem",
+     "web": "patterns|Sortable list",
+     "background": "plx-comp-sortable-list-item-background",
+     "content": "plx-comp-sortable-list-item-text",
+     "border": "plx-comp-sortable-list-item-border-color",
+     "compose": "PlenixSortableList(items, onMove) with a PlenixDragHandle per row and animateItem() on each row",
+     "views": "ItemTouchHelper with a SimpleCallback for up and down moves, started from the handle",
+     "use": "Steps, priorities, pinned views."
+    },
+    {
+     "name": "Item onto a target",
+     "material": "Modifier.dragAndDropSource and Modifier.dragAndDropTarget",
+     "web": "patterns|Drag and drop",
+     "background": "plx-sys-dnd-target-background",
+     "content": null,
+     "border": "plx-sys-dnd-target-outline-color",
+     "compose": "Modifier.dragAndDropSource { … } on the item, Modifier.dragAndDropTarget(shouldStartDragAndDrop, target) on the folder",
+     "views": "View.startDragAndDrop and an OnDragListener on the target",
+     "use": "Filing an asset into a folder, a card into a column."
+    },
+    {
+     "name": "Drop target",
+     "material": "A target with DragAndDropTarget.onEntered and onExited",
+     "web": "patterns|Drop target",
+     "background": "plx-sys-dnd-target-background",
+     "content": null,
+     "border": "plx-sys-dnd-target-reject-outline-color",
+     "compose": "onEntered shows the outline; a mime type it does not take shows the refusal and its words",
+     "views": "ACTION_DRAG_ENTERED and ACTION_DRAG_EXITED switch the target’s background",
+     "use": "Folders, columns and collections that take some kinds of item."
+    },
+    {
+     "name": "Reposition",
+     "material": "Modifier.pointerInput with detectDragGestures",
+     "web": "patterns|Reposition",
+     "background": "plx-sys-dnd-dragging-background",
+     "content": null,
+     "border": null,
+     "compose": "Modifier.offset { offset } from detectDragGestures, snapped to the grid on onDragEnd, with semantics customActions for TalkBack",
+     "views": "an OnTouchListener moving translationX and translationY, snapped on ACTION_UP",
+     "use": "Notes on a board, layers on a canvas."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Drag handle",
+     "about": "The grip at the row’s start, at least the touch target; a long press on the row also lifts it."
+    },
+    {
+     "part": "B",
+     "name": "Lifted item",
+     "about": "The item under the finger on the raised surface, slightly transparent, above its neighbors."
+    },
+    {
+     "part": "C",
+     "name": "Insertion line",
+     "about": "A line in the focus ring’s color where the item lands in a list."
+    },
+    {
+     "part": "D",
+     "name": "Drop target",
+     "about": "A dashed outline in the focus ring’s color and the hover fill while an item it takes is over it; the danger color and words when it refuses."
+    },
+    {
+     "part": "E",
+     "name": "Move menu",
+     "about": "Move up, Move down, Move to … in the row’s menu and as TalkBack custom actions."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Handle size",
+     "token": "plx-comp-drag-handle-size",
+     "value": "At least the touch target (PlenixPlatform.controlTargetMin, 48 dp)",
+     "material": "48 dp touch target",
+     "compose": "Modifier.sizeIn(minWidth = PlenixPlatform.controlTargetMin, minHeight = PlenixPlatform.controlTargetMin)",
+     "views": "handle.minimumWidth = px(PlenixPlatform.controlTargetMin); handle.minimumHeight = px(PlenixPlatform.controlTargetMin)",
+     "follows": "Material 3: Accessibility (touch targets)",
+     "followsUrl": "https://m3.material.io/foundations/designing/structure"
+    },
+    {
+     "part": "B",
+     "attribute": "Lifted background",
+     "token": "plx-sys-dnd-dragging-background",
+     "value": "The raised surface (PlenixColors.surfaceRaised)",
+     "material": "surfaceContainerHigh",
+     "compose": "Modifier.background(PlenixColors.surfaceRaised.current())",
+     "views": "row.setBackgroundColor(argb(PlenixColors.surfaceRaised))",
+     "follows": "Material 3: Drag and drop",
+     "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop"
+    },
+    {
+     "part": "B",
+     "attribute": "Lifted opacity",
+     "token": "plx-sys-dnd-dragging-opacity",
+     "value": "The dragged opacity while it follows the finger (PlenixOpacity.opacityHigh)",
+     "material": "Opaque",
+     "compose": "Modifier.graphicsLayer { alpha = if (dragging) PlenixOpacity.opacityHigh else 1f }",
+     "views": "row.alpha = PlenixOpacity.opacityHigh while dragging",
+     "follows": "Material 3: Drag and drop",
+     "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop"
+    },
+    {
+     "part": "C",
+     "attribute": "Insertion line",
+     "token": "plx-sys-dnd-indicator-color, plx-sys-dnd-indicator-width",
+     "value": "The focus ring’s color, the medium border width",
+     "material": "None: the list moves its rows",
+     "compose": "HorizontalDivider(thickness = PlenixBorder.borderWidthMedium, color = PlenixColors.focusRingColor.current())",
+     "views": "an ItemDecoration drawing a line of PlenixBorder.borderWidthMedium in PlenixColors.focusRingColor",
+     "follows": "Material 3: Drag and drop",
+     "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop"
+    },
+    {
+     "part": "D",
+     "attribute": "Target outline",
+     "token": "plx-sys-dnd-target-outline-color, plx-sys-dnd-target-outline-width",
+     "value": "A dashed outline in the focus ring’s color",
+     "material": "None: the app draws its target",
+     "compose": "Modifier.drawBehind { drawRoundRect(PlenixColors.focusRingColor.current(), style = Stroke(PlenixBorder.borderWidthMedium.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(PlenixSpace.spaceInlineXs.toPx(), PlenixSpace.spaceInlineXs.toPx())))) }",
+     "views": "a GradientDrawable with setStroke(px(PlenixBorder.borderWidthMedium), argb(PlenixColors.focusRingColor), px(PlenixSpace.spaceInlineXs), px(PlenixSpace.spaceInlineXs))",
+     "follows": "Material 3: Drag and drop",
+     "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop"
+    },
+    {
+     "part": "D",
+     "attribute": "Target fill",
+     "token": "plx-sys-dnd-target-background",
+     "value": "The hover fill while an item it takes is over it (PlenixColors.stateHover)",
+     "material": "None",
+     "compose": "Modifier.background(if (over) PlenixColors.stateHover.current() else PlenixColors.surfaceSunken.current())",
+     "views": "target.setBackgroundColor(argb(PlenixColors.stateHover)) on ACTION_DRAG_ENTERED",
+     "follows": "Material 3: Drag and drop",
+     "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop"
+    },
+    {
+     "part": "D",
+     "attribute": "Refusing target",
+     "token": "plx-sys-dnd-target-reject-outline-color",
+     "value": "The outline in the danger color (PlenixColors.feedbackDangerSolid) and words that say why",
+     "material": "None",
+     "compose": "the outline in PlenixColors.feedbackDangerSolid.current() and a Text that says what it takes",
+     "views": "the stroke in argb(PlenixColors.feedbackDangerSolid) and a TextView",
+     "follows": "Material 3: Drag and drop",
+     "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop"
+    },
+    {
+     "part": "E",
+     "attribute": "Move actions",
+     "token": null,
+     "value": "Move up, Move down, Move to … as menu items and TalkBack custom actions",
+     "material": "None",
+     "compose": "Modifier.semantics { customActions = listOf(CustomAccessibilityAction(\"Move up\") { moveUp(); true }) }",
+     "views": "ViewCompat.addAccessibilityAction(row, \"Move up\") { _, _ -> moveUp(); true }",
+     "follows": "Android accessibility: custom actions",
+     "followsUrl": "https://developer.android.com/guide/topics/ui/accessibility/principles#accessibility-actions"
+    }
+   ],
+   "states": [
+    {
+     "state": "Rest",
+     "token": "plx-comp-sortable-list-item-background",
+     "compose": "the row in its place",
+     "views": "no drag"
+    },
+    {
+     "state": "Lifted",
+     "token": "plx-sys-dnd-dragging-background",
+     "compose": "dragging = true from the handle’s drag start",
+     "views": "ItemTouchHelper ACTION_STATE_DRAG"
+    },
+    {
+     "state": "Over a target",
+     "token": "plx-sys-dnd-target-outline-color",
+     "compose": "DragAndDropTarget.onEntered",
+     "views": "ACTION_DRAG_ENTERED"
+    },
+    {
+     "state": "Refused",
+     "token": "plx-sys-dnd-target-reject-outline-color",
+     "compose": "shouldStartDragAndDrop false for the type, the refusal shown",
+     "views": "ACTION_DRAG_STARTED returns false"
+    },
+    {
+     "state": "Dropped",
+     "token": null,
+     "compose": "DragAndDropTarget.onDrop; announce the result",
+     "views": "ACTION_DROP"
+    }
+   ],
+   "code": {
+    "compose": [
+     "@Composable",
+     "fun PlenixFolderTarget(name: String, onDrop: (ClipData) -> Unit) {",
+     "    var over by remember { mutableStateOf(false) }",
+     "    val target = remember { object : DragAndDropTarget {",
+     "        override fun onEntered(event: DragAndDropEvent) { over = true }",
+     "        override fun onExited(event: DragAndDropEvent) { over = false }",
+     "        override fun onDrop(event: DragAndDropEvent): Boolean { over = false; onDrop(event.toAndroidDragEvent().clipData); return true }",
+     "    } }",
+     "    Column(",
+     "        Modifier.fillMaxWidth().heightIn(min = PlenixPlatform.controlTargetMin)",
+     "            .background(if (over) PlenixColors.stateHover.current() else PlenixColors.surfaceSunken.current(), RoundedCornerShape(PlenixRadius.radiusControl4px))",
+     "            .dragAndDropTarget(shouldStartDragAndDrop = { true }, target = target),",
+     "        horizontalAlignment = Alignment.CenterHorizontally",
+     "    ) {",
+     "        Text(name, fontFamily = FontFamily(Font(R.font.dm_sans)), fontSize = PlenixPlatform.textLabelSize)",
+     "    }",
+     "}"
+    ],
+    "views": [
+     "target.setOnDragListener { v, e -> when (e.action) {",
+     "    DragEvent.ACTION_DRAG_ENTERED -> { v.setBackgroundColor(argb(PlenixColors.stateHover)); true }",
+     "    DragEvent.ACTION_DRAG_EXITED -> { v.setBackgroundColor(argb(PlenixColors.surfaceSunken)); true }",
+     "    DragEvent.ACTION_DROP -> { onDrop(e.clipData); true }",
+     "    else -> true",
+     "} }"
+    ]
+   }
+  },
   "android-navigation|NavigationBar": {
    "summary": "A Plenix navigation bar on Android is Material 3’s navigation bar, used for the top-level destinations of a multi-area app at Narrow (under 600 dp), kept native in behavior (one destination always selected, ripple, TalkBack tab semantics, font scaling, the gesture bar inset) and styled with the Plenix tokens: the default surface with a divider line along its top, 80 dp tall, 24 dp icons, DM Sans labels always shown, and the current destination in the Plenix selected colors. Material’s default is a tinted surface container with a secondary-container indicator; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
@@ -9821,6 +10048,205 @@
     ]
    }
   },
+  "android-patterns|Confirmation": {
+   "summary": "A Plenix confirmation on Android asks before an action that others will see or that cannot come back, and offers Undo instead for what can. The question is the Plenix alert dialog (Material 3’s dialog with the Plenix look): the title names the action and the count (“Delete 2 categories?”), the body says the consequence and lists what goes, and the confirm button says the verb, in the danger colors when it destroys. Focus starts on Cancel. Type to confirm adds a text field for the item’s name. Reversible actions skip the question and show a Snackbar with Undo.",
+   "variants": [
+    {
+     "name": "Confirm (default)",
+     "material": "AlertDialog with a destructive confirm",
+     "web": "patterns|Delete flow",
+     "background": "plx-comp-dialog-background",
+     "content": "plx-comp-delete-flow-name-text",
+     "border": null,
+     "compose": "PlenixConfirm(title = \"Delete 2 categories?\", message = consequence, names = names, confirmLabel = \"Delete\", destructive = true)",
+     "views": "MaterialAlertDialogBuilder with setItems for the names and a danger positive button",
+     "use": "Deletes that cannot come back."
+    },
+    {
+     "name": "Type to confirm",
+     "material": "AlertDialog with an OutlinedTextField",
+     "web": "patterns|Delete flow",
+     "background": "plx-comp-dialog-background",
+     "content": "plx-comp-dialog-text",
+     "border": null,
+     "compose": "PlenixConfirm(…, typeToConfirm = project.name)",
+     "views": "setView with a TextInputLayout; the positive button checks the text",
+     "use": "A delete with a wide reach: a project, a library, an account."
+    },
+    {
+     "name": "Publish and unpublish",
+     "material": "AlertDialog with confirm and dismiss buttons",
+     "web": "patterns|Publish",
+     "background": "plx-comp-dialog-background",
+     "content": "plx-comp-publish-detail-text",
+     "border": null,
+     "compose": "PlenixConfirm(title = \"Publish “Easter banner”?\", message = \"It becomes visible to everyone in the library.\", confirmLabel = \"Publish\")",
+     "views": "setPositiveButton(\"Publish\") in the primary colors",
+     "use": "Actions that change what others see; both directions ask."
+    },
+    {
+     "name": "Undo instead",
+     "material": "Snackbar with an action",
+     "web": "actions|Delete",
+     "background": "plx-comp-toast-background",
+     "content": "plx-comp-toast-text",
+     "border": null,
+     "compose": "snackbarHostState.showSnackbar(\"2 categories deleted\", actionLabel = \"Undo\")",
+     "views": "Snackbar.make(view, message, LENGTH_LONG).setAction(\"Undo\") { restore() }",
+     "use": "Reversible deletes and moves: no question, Undo while it shows."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Question",
+     "about": "The title names the verb and the count, or the item by its name."
+    },
+    {
+     "part": "B",
+     "name": "Consequence",
+     "about": "One sentence on what else is lost or kept, then “This cannot be undone.”"
+    },
+    {
+     "part": "C",
+     "name": "Names",
+     "about": "Up to five of the items, then “and N more”, in the body."
+    },
+    {
+     "part": "D",
+     "name": "Buttons",
+     "about": "Cancel first, then the verb; the verb in the danger colors when it destroys."
+    },
+    {
+     "part": "E",
+     "name": "Snackbar",
+     "about": "The result with Undo, for actions that can be reversed."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "C",
+     "attribute": "Names",
+     "token": "plx-comp-delete-flow-name-text",
+     "value": "The default content color, DM Sans medium at the Body role, 4 dp apart",
+     "material": "None (a list in the body)",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) { names.take(5).forEach { Text(it, color = PlenixColors.contentDefault.current(), fontSize = PlenixPlatform.textBodySize) } }",
+     "views": "a LinearLayout of TextViews with PlenixColors.contentDefault",
+     "follows": "Material 3: Dialogs",
+     "followsUrl": "https://m3.material.io/components/dialogs/guidelines"
+    },
+    {
+     "part": "C",
+     "attribute": "And N more",
+     "token": "plx-comp-delete-flow-more-text",
+     "value": "The muted content color at the Secondary role",
+     "material": "None",
+     "compose": "Text(\"and $rest more\", color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize)",
+     "views": "moreView.setTextColor(PlenixColors.contentMuted.light.toArgb())",
+     "follows": "Material 3: Dialogs",
+     "followsUrl": "https://m3.material.io/components/dialogs/guidelines"
+    },
+    {
+     "part": "D",
+     "attribute": "Destructive confirm",
+     "token": "plx-comp-dialog-destructive-action-height",
+     "value": "The danger fill and its content color, at least the 48 dp target",
+     "material": "A text button in the error color",
+     "compose": "Button(onClick = confirm, colors = ButtonDefaults.buttonColors(PlenixColors.actionDangerBackground.current(), PlenixColors.actionDangerContent.current()), modifier = Modifier.heightIn(min = PlenixPlatform.controlTargetMin))",
+     "views": "positive button backgroundTintList from PlenixColors.actionDangerBackground",
+     "follows": "Material 3: Dialogs",
+     "followsUrl": "https://m3.material.io/components/dialogs/guidelines"
+    },
+    {
+     "part": "D",
+     "attribute": "Button gap",
+     "token": "plx-comp-dialog-action-gap",
+     "value": "8 dp between Cancel and the verb",
+     "material": "8 dp",
+     "compose": "Row(horizontalArrangement = Arrangement.spacedBy(PlenixPlatform.dialogActionGap, Alignment.End))",
+     "views": "the button bar’s spacing from PlenixPlatform.dialogActionGap",
+     "follows": "Material 3: Dialogs",
+     "followsUrl": "https://m3.material.io/components/dialogs/specs"
+    },
+    {
+     "part": "E",
+     "attribute": "Snackbar",
+     "token": "plx-comp-toast-background",
+     "value": "The toast’s inverse fill and text, 4 dp corners",
+     "material": "inverseSurface",
+     "compose": "Snackbar(snackbarData, containerColor = PlenixColors.toastBackground.current(), contentColor = PlenixColors.toastContent.current(), shape = RoundedCornerShape(PlenixComponent.toastRadius))",
+     "views": "snackbar.setBackgroundTint(PlenixColors.toastBackground.light.toArgb())",
+     "follows": "Material 3: Snackbar",
+     "followsUrl": "https://m3.material.io/components/snackbar/guidelines"
+    }
+   ],
+   "states": [
+    {
+     "state": "Asking",
+     "token": "plx-comp-dialog-background",
+     "compose": "the dialog open; focus requested on Cancel",
+     "views": "the dialog shown; the negative button focused"
+    },
+    {
+     "state": "Name does not match (type to confirm)",
+     "token": "plx-comp-dialog-text",
+     "compose": "isError = true and supportingText on the field; the dialog stays",
+     "views": "TextInputLayout.error set; the dialog is not dismissed"
+    },
+    {
+     "state": "Done, with Undo",
+     "token": "plx-comp-toast-background",
+     "compose": "showSnackbar returns ActionPerformed: restore",
+     "views": "the Snackbar action restores"
+    },
+    {
+     "state": "Dark",
+     "token": "plx-comp-dialog-background",
+     "compose": "PlenixColors pairs follow isSystemInDarkTheme()",
+     "views": "the night resources"
+    }
+   ],
+   "code": {
+    "compose": [
+     "import androidx.compose.foundation.layout.*",
+     "import androidx.compose.material3.*",
+     "import androidx.compose.runtime.*",
+     "import androidx.compose.ui.Modifier",
+     "import androidx.compose.ui.focus.FocusRequester",
+     "import androidx.compose.ui.focus.focusRequester",
+     "import plenix.tokens.*",
+     "",
+     "// the Plenix confirmation: the question with the count, the consequence, the names, Cancel first, the verb last",
+     "@Composable",
+     "fun PlenixConfirm(title: String, message: String, names: List<String>, confirmLabel: String, destructive: Boolean,",
+     "    onConfirm: () -> Unit, onCancel: () -> Unit) {",
+     "    val cancel = remember { FocusRequester() }",
+     "    PlenixAlertDialog(title = title, onDismiss = onCancel, footer = {",
+     "        OutlinedButton(onClick = onCancel, modifier = Modifier.focusRequester(cancel).heightIn(min = PlenixPlatform.controlTargetMin)) { Text(\"Cancel\") }",
+     "        Button(onClick = onConfirm, modifier = Modifier.heightIn(min = PlenixPlatform.controlTargetMin),",
+     "            colors = if (destructive) ButtonDefaults.buttonColors(PlenixColors.actionDangerBackground.current(), PlenixColors.actionDangerContent.current())",
+     "                else ButtonDefaults.buttonColors()) { Text(confirmLabel) }",
+     "    }) {",
+     "        Text(message, color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize)",
+     "        Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+     "            names.take(5).forEach { Text(it, color = PlenixColors.contentDefault.current(), fontSize = PlenixPlatform.textBodySize) }",
+     "            if (names.size > 5) Text(\"and ${names.size - 5} more\", color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize)",
+     "        }",
+     "    }",
+     "    LaunchedEffect(Unit) { if (destructive) cancel.requestFocus() }",
+     "}"
+    ],
+    "views": [
+     "MaterialAlertDialogBuilder(context)",
+     "    .setTitle(\"Delete 2 categories?\")",
+     "    .setMessage(\"Their assets stay, without these categories. This cannot be undone.\")",
+     "    .setNegativeButton(\"Cancel\", null)",
+     "    .setPositiveButton(\"Delete\") { _, _ -> delete(items) }",
+     "    .show()",
+     "    .getButton(DialogInterface.BUTTON_NEGATIVE).requestFocus()"
+    ]
+   }
+  },
   "android-specialized|File and photo pickers": {
    "summary": "A Plenix image upload on Android opens the system photo picker (PickVisualMedia) or the document picker (OpenDocument) from a Plenix outlined button and shows the chosen picture in a frame of a fixed ratio with the media radius and the thin default border, its name in DM Mono, and Replace and Remove beside it; a profile picture is the Plenix avatar (a rounded square, never a circle) with Change photo and Remove photo. The system picker stays as Android draws it; Plenix styles the control that opens it and what shows after.",
    "variants": [
@@ -11999,6 +12425,202 @@
      "toolbar.allowsUserCustomization = true",
      "window.toolbar = toolbar",
      "window.toolbarStyle = .unified"
+    ]
+   }
+  },
+  "ios-actions|Undo and redo": {
+   "summary": "Plenix undo on iOS keeps the system’s undo (UndoManager, shake to undo, the three-finger gestures and Command-Z on a keyboard) and adds the Plenix undo toast for actions that remove or change many things at once: a delete, a move to the trash, an unpublish. The toast says what happened in DM Sans on the inverse surface, holds Undo while it shows, and leaves after the toast duration; the action is final only then. Every action that registers an undo names it, so the system’s Undo menu says Undo Delete.",
+   "variants": [
+    {
+     "name": "Undo in the toast (default)",
+     "apple": "None (a Plenix toast with an Undo button, beside UndoManager)",
+     "web": "patterns|Delete flow",
+     "background": "plx-comp-toast-background",
+     "content": "plx-comp-toast-text",
+     "border": null,
+     "swiftui": "PlenixUndoToast(message: \"2 categories deleted\", onUndo: restore)",
+     "uikit": "A Plenix toast view with an Undo UIButton, over the safe area",
+     "appkit": "An NSPanel toast with an Undo button (a macOS build of the tokens is needed)",
+     "use": "Deletes and moves people make often and may regret: notes, tags, categories."
+    },
+    {
+     "name": "Move to trash",
+     "apple": "None (the same toast)",
+     "web": "actions|Delete",
+     "background": "plx-comp-toast-background",
+     "content": "plx-comp-toast-text",
+     "border": null,
+     "swiftui": "PlenixUndoToast(message: \"Moved to the trash\", onUndo: restore)",
+     "uikit": "The same toast, its message naming the trash",
+     "appkit": "The same panel (a macOS build of the tokens is needed)",
+     "use": "Files and assets with a trash to restore from."
+    },
+    {
+     "name": "System undo",
+     "apple": "UndoManager with shake to undo and the Edit menu",
+     "web": "patterns|Unpublish",
+     "background": null,
+     "content": null,
+     "border": null,
+     "swiftui": "@Environment(\\.undoManager) and registerUndo(withTarget:handler:) with setActionName",
+     "uikit": "undoManager?.registerUndo(withTarget:handler:) and setActionName",
+     "appkit": "NSUndoManager, Edit › Undo (a macOS build of the tokens is needed)",
+     "use": "Every change the person can reverse, including the ones the toast already offers."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Toast",
+     "about": "The inverse surface with 4 pt corners, above the bottom safe area, at most one at a time."
+    },
+    {
+     "part": "B",
+     "name": "Message",
+     "about": "What happened, with the count or the name: “2 categories deleted”."
+    },
+    {
+     "part": "C",
+     "name": "Undo",
+     "about": "A small Plenix button at the end; using it puts everything back and closes the toast."
+    },
+    {
+     "part": "D",
+     "name": "Dismiss",
+     "about": "The close button; dismissing makes the action final at once."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Surface",
+     "token": "plx-comp-toast-background",
+     "value": "The toast’s inverse fill and its 4 pt corners",
+     "apple": "None (Apple has no toast)",
+     "swiftui": "RoundedRectangle(cornerRadius: Plenix.Component.toastRadius).fill(Plenix.Colors.toastBackground)",
+     "uikit": "view.backgroundColor = Plenix.Colors.toastBackground; view.layer.cornerRadius = Plenix.Component.toastRadius",
+     "appkit": "layer.backgroundColor with Plenix.Colors.toastBackground (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Message",
+     "token": "plx-comp-toast-text",
+     "value": "The toast’s text color, DM Sans at the Body role",
+     "apple": "None",
+     "swiftui": "Text(message).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.toastContent)",
+     "uikit": "label.textColor = Plenix.Colors.toastContent",
+     "appkit": "textField.textColor = Plenix.Colors.toastContent (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "C",
+     "attribute": "Undo target",
+     "token": "plx-comp-toast-close-height",
+     "value": "At least the 44 pt touch target, whatever the button draws",
+     "apple": "44 by 44 pt",
+     "swiftui": "Button(\"Undo\", action: undo).frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "uikit": "button.heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin)",
+     "appkit": "Not applicable (pointer)",
+     "follows": "iOS, iPadOS"
+    },
+    {
+     "part": "A",
+     "attribute": "Time shown",
+     "token": "plx-comp-toast-duration",
+     "value": "The toast duration; it waits while VoiceOver focus is on it",
+     "apple": "None",
+     "swiftui": "try await Task.sleep(for: .seconds(Plenix.Component.toastDuration))",
+     "uikit": "DispatchQueue.main.asyncAfter(deadline: .now() + Plenix.Component.toastDuration)",
+     "appkit": "Timer with Plenix.Component.toastDuration (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Action name",
+     "token": "plx-comp-toast-text",
+     "value": "The undo is registered with its action’s name, so the Edit menu and shake to undo say Undo Delete",
+     "apple": "setActionName",
+     "swiftui": "undoManager?.setActionName(\"Delete\")",
+     "uikit": "undoManager?.setActionName(\"Delete\")",
+     "appkit": "undoManager?.setActionName(\"Delete\") (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    }
+   ],
+   "states": [
+    {
+     "state": "Shown",
+     "token": "plx-comp-toast-background",
+     "swiftui": "the toast inserted with a move transition from the bottom",
+     "uikit": "the view animated in above the safe area",
+     "appkit": "the panel ordered front"
+    },
+    {
+     "state": "Held (VoiceOver focus or a touch on it)",
+     "token": "plx-comp-toast-duration",
+     "swiftui": "the timer paused while accessibilityFocused is true",
+     "uikit": "the timer invalidated while the view is focused",
+     "appkit": "the timer paused while the pointer is over it"
+    },
+    {
+     "state": "Undone",
+     "token": "plx-comp-toast-text",
+     "swiftui": "onUndo runs, the toast leaves, UIAccessibility posts the result",
+     "uikit": "the handler runs and the view is removed",
+     "appkit": "the handler runs and the panel closes"
+    },
+    {
+     "state": "Reduced motion",
+     "token": "plx-comp-toast-animation-duration",
+     "swiftui": "an opacity transition when accessibilityReduceMotion is on",
+     "uikit": "UIAccessibility.isReduceMotionEnabled: a fade",
+     "appkit": "no animation"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// The Plenix undo toast: what happened, and Undo while it shows. The action is final when it leaves.",
+     "struct PlenixUndoToast: View {",
+     "    let message: String",
+     "    let onUndo: () -> Void",
+     "    let onDismiss: () -> Void",
+     "",
+     "    var body: some View {",
+     "        HStack(spacing: Plenix.Space.spaceInlineSm) {",
+     "            Text(message)",
+     "                .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+     "                .foregroundStyle(Plenix.Colors.toastContent)",
+     "            Spacer(minLength: Plenix.Space.spaceInlineSm)",
+     "            Button(\"Undo\", action: onUndo)",
+     "                .frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "            Button(action: onDismiss) { Image(systemName: \"xmark\") }",
+     "                .accessibilityLabel(\"Dismiss\")",
+     "                .frame(minWidth: Plenix.Platform.controlTargetMin, minHeight: Plenix.Platform.controlTargetMin)",
+     "        }",
+     "        .padding(.horizontal, Plenix.Space.spaceInsetMd)",
+     "        .background(RoundedRectangle(cornerRadius: Plenix.Component.toastRadius).fill(Plenix.Colors.toastBackground))",
+     "        .accessibilityElement(children: .contain)",
+     "    }",
+     "}",
+     "",
+     "// register the system undo as well, with the action’s name",
+     "// undoManager?.registerUndo(withTarget: store) { $0.restore(items) }",
+     "// undoManager?.setActionName(\"Delete\")"
+    ],
+    "uikit": [
+     "undoManager?.registerUndo(withTarget: store) { $0.restore(items) }",
+     "undoManager?.setActionName(\"Delete\")",
+     "let toast = PlenixToastView(message: \"2 categories deleted\", action: \"Undo\") { store.restore(items) }",
+     "toast.backgroundColor = Plenix.Colors.toastBackground",
+     "toast.layer.cornerRadius = Plenix.Component.toastRadius",
+     "UIAccessibility.post(notification: .announcement, argument: \"2 categories deleted\")"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "undoManager?.registerUndo(withTarget: store) { $0.restore(items) }",
+     "undoManager?.setActionName(\"Delete\")"
     ]
    }
   },
@@ -19291,6 +19913,263 @@
      "split.addSplitViewItem(NSSplitViewItem(viewController: content))",
      "window.contentViewController = split",
      "window.toolbar = NSToolbar(identifier: \"main\")   // a bottom bar only for a little window status"
+    ]
+   }
+  },
+  "ios-patterns|Drag and drop": {
+   "summary": "Drag and drop on iOS keeps the system’s own drag: a long press lifts the item with the system preview, items move within and between lists and apps, and VoiceOver offers the same moves as custom actions. Plenix styles what the app draws around it: the lifted row on the raised surface with the overlay shadow, the insertion line and the drop target’s dashed outline in the focus ring’s color, a refusing target in the danger color with words, and a Move menu (and Move up, Move down in an edited list) so every drag has a way without dragging. Apple’s default is the system preview over the app’s own unstyled targets; Plenix keeps the system gesture and preview and replaces the app’s look.",
+   "variants": [
+    {
+     "name": "Sortable list",
+     "apple": "List with .onMove, or UICollectionView drag and drop reordering",
+     "web": "patterns|Sortable list",
+     "background": "plx-comp-sortable-list-item-background",
+     "content": "plx-comp-sortable-list-item-text",
+     "border": "plx-comp-sortable-list-item-border-color",
+     "swiftui": "ForEach(items) { … }.onMove(perform: move) in a List with an EditButton; draggable rows use .draggable and .dropDestination",
+     "uikit": "UICollectionView with dragDelegate and dropDelegate, reorderingCadence .immediate",
+     "appkit": "NSTableView with registerForDraggedTypes and the pasteboard writer per row (a macOS build of the tokens is needed)",
+     "use": "Steps, priorities, pinned views: orders people set by hand."
+    },
+    {
+     "name": "Item onto a target",
+     "apple": "draggable(_:) and dropDestination(for:action:isTargeted:)",
+     "web": "patterns|Drag and drop",
+     "background": "plx-sys-dnd-target-background",
+     "content": null,
+     "border": "plx-sys-dnd-target-outline-color",
+     "swiftui": ".draggable(asset) on the item, .dropDestination(for: Asset.self) { … } isTargeted: { over = $0 } on the folder",
+     "uikit": "UIDragInteraction on the item, UIDropInteraction on the target",
+     "appkit": "NSDraggingSource and NSDraggingDestination (a macOS build of the tokens is needed)",
+     "use": "Filing an asset into a folder, a card into a column."
+    },
+    {
+     "name": "Drop target",
+     "apple": "A view with dropDestination",
+     "web": "patterns|Drop target",
+     "background": "plx-sys-dnd-target-background",
+     "content": null,
+     "border": "plx-sys-dnd-target-reject-outline-color",
+     "swiftui": "isTargeted shows the outline; a type the target does not take shows the refusal and its words",
+     "uikit": "dropInteraction(_:sessionDidUpdate:) returns .move, .copy or .forbidden",
+     "appkit": "draggingEntered returns the operation or [] (a macOS build of the tokens is needed)",
+     "use": "Folders, columns and collections that take some kinds of item."
+    },
+    {
+     "name": "Reposition",
+     "apple": "DragGesture on a positioned view",
+     "web": "patterns|Reposition",
+     "background": "plx-sys-dnd-dragging-background",
+     "content": null,
+     "border": null,
+     "swiftui": ".offset from a DragGesture, snapped to the 4-point grid on .onEnded, with accessibilityAdjustableAction for the keyboard and VoiceOver",
+     "uikit": "UIPanGestureRecognizer moving the view’s center, snapped on .ended",
+     "appkit": "mouseDragged moving the frame origin (a macOS build of the tokens is needed)",
+     "use": "Notes on a board, layers on a canvas."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Drag handle",
+     "about": "The grip at the row’s start in an edited list (the system reorder control), or the whole item lifted by a long press."
+    },
+    {
+     "part": "B",
+     "name": "Lifted item",
+     "about": "The item under the finger on the raised surface with the overlay shadow; the system preview when it leaves the app."
+    },
+    {
+     "part": "C",
+     "name": "Insertion line",
+     "about": "A line in the focus ring’s color where the item lands in a list."
+    },
+    {
+     "part": "D",
+     "name": "Drop target",
+     "about": "A dashed outline in the focus ring’s color and the hover fill while an item it takes is over it; the danger color and words when it refuses."
+    },
+    {
+     "part": "E",
+     "name": "Move menu",
+     "about": "Move up, Move down, Move to … in the item’s context menu and as VoiceOver custom actions: the way without dragging."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "Lifted background",
+     "token": "plx-sys-dnd-dragging-background",
+     "value": "The raised surface (Plenix.Colors.surfaceRaised)",
+     "apple": "The system lift preview",
+     "swiftui": ".background(Plenix.Colors.surfaceRaised) in the item’s .contentShape(.dragPreview, …) preview",
+     "uikit": "UIDragPreviewParameters with backgroundColor = Plenix.Colors.surfaceRaised",
+     "appkit": "the dragging image drawn on the raised surface (a macOS build of the tokens is needed)",
+     "follows": "Providing feedback"
+    },
+    {
+     "part": "B",
+     "attribute": "Lifted shadow",
+     "token": "plx-sys-dnd-dragging-shadow",
+     "value": "The overlay shadow while the item is held",
+     "apple": "The system lift shadow",
+     "swiftui": "the system lift shadow is kept; inside the app the row takes .shadow(color: Plenix.Colors.contentDefault.opacity(Plenix.Opacity.opacityLow), radius: Plenix.Space.spaceStackSm)",
+     "uikit": "the system lift shadow is kept (UIDragPreview)",
+     "appkit": "NSDraggingItem image with a shadow (a macOS build of the tokens is needed)",
+     "follows": "Providing feedback"
+    },
+    {
+     "part": "B",
+     "attribute": "Lifted opacity",
+     "token": "plx-sys-dnd-dragging-opacity",
+     "value": "The dragged opacity while it follows the finger (Plenix.Opacity.opacityHigh)",
+     "apple": "Opaque",
+     "swiftui": ".opacity(isDragging ? Plenix.Opacity.opacityHigh : 1)",
+     "uikit": "view.alpha = Plenix.Opacity.opacityHigh while the session runs",
+     "appkit": "alphaValue = Plenix.Opacity.opacityHigh (a macOS build of the tokens is needed)",
+     "follows": "Providing feedback"
+    },
+    {
+     "part": "C",
+     "attribute": "Insertion line",
+     "token": "plx-sys-dnd-indicator-color, plx-sys-dnd-indicator-width",
+     "value": "The focus ring’s color, the medium border width (Plenix.Colors.focusRingColor, Plenix.Border.borderWidthMedium)",
+     "apple": "The system gap that opens in the list",
+     "swiftui": "the gap List opens on .onMove is kept; a custom list draws Rectangle().fill(Plenix.Colors.focusRingColor).frame(height: Plenix.Border.borderWidthMedium)",
+     "uikit": "UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)",
+     "appkit": "setDropRow(_:dropOperation: .above) draws the system line (a macOS build of the tokens is needed)",
+     "follows": "Accepting drops"
+    },
+    {
+     "part": "D",
+     "attribute": "Target outline",
+     "token": "plx-sys-dnd-target-outline-color, plx-sys-dnd-target-outline-width",
+     "value": "A dashed outline in the focus ring’s color, the medium border width",
+     "apple": "None: the app draws its target",
+     "swiftui": ".overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px).strokeBorder(Plenix.Colors.focusRingColor, style: StrokeStyle(lineWidth: Plenix.Border.borderWidthMedium, dash: [Plenix.Space.spaceInlineXs])))",
+     "uikit": "a CAShapeLayer with strokeColor = Plenix.Colors.focusRingColor.cgColor, lineWidth = Plenix.Border.borderWidthMedium, lineDashPattern",
+     "appkit": "an NSBezierPath with setLineDash (a macOS build of the tokens is needed)",
+     "follows": "Accepting drops"
+    },
+    {
+     "part": "D",
+     "attribute": "Target fill",
+     "token": "plx-sys-dnd-target-background",
+     "value": "The hover fill while an item it takes is over it (Plenix.Colors.stateHover)",
+     "apple": "None",
+     "swiftui": ".background(over ? Plenix.Colors.stateHover : .clear)",
+     "uikit": "backgroundColor = Plenix.Colors.stateHover while targeted",
+     "appkit": "layer?.backgroundColor from the hover fill (a macOS build of the tokens is needed)",
+     "follows": "Accepting drops"
+    },
+    {
+     "part": "D",
+     "attribute": "Refusing target",
+     "token": "plx-sys-dnd-target-reject-outline-color",
+     "value": "The outline in the danger color (Plenix.Colors.feedbackDangerSolid) and words that say why",
+     "apple": "The forbidden badge on the preview",
+     "swiftui": "the outline in Plenix.Colors.feedbackDangerSolid and Text(\"Pictures takes images only\") while the dragged type is not taken",
+     "uikit": "UIDropProposal(operation: .forbidden) and the danger outline",
+     "appkit": "draggingEntered returns [] (a macOS build of the tokens is needed)",
+     "follows": "Accepting drops"
+    },
+    {
+     "part": "A",
+     "attribute": "Handle size",
+     "token": "plx-comp-drag-handle-size",
+     "value": "At least the touch target (Plenix.Platform.controlTargetMin)",
+     "apple": "The system reorder control",
+     "swiftui": "Image(systemName: \"line.3.horizontal\").frame(minWidth: Plenix.Platform.controlTargetMin, minHeight: Plenix.Platform.controlTargetMin)",
+     "uikit": "UITableViewCell.showsReorderControl in editing mode",
+     "appkit": "the row itself is the handle (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "E",
+     "attribute": "Move actions",
+     "token": null,
+     "value": "Move up, Move down and Move to … as menu items and VoiceOver custom actions",
+     "apple": "accessibilityDragSourceDescriptors",
+     "swiftui": ".contextMenu { Button(\"Move up\") { … } } and .accessibilityAction(named: \"Move up\") { … }",
+     "uikit": "UIContextMenuInteraction and accessibilityCustomActions",
+     "appkit": "an NSMenu on the row (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    }
+   ],
+   "states": [
+    {
+     "state": "Rest",
+     "token": "plx-comp-sortable-list-item-background",
+     "swiftui": "the row in its place",
+     "uikit": "no session",
+     "appkit": "no session"
+    },
+    {
+     "state": "Lifted",
+     "token": "plx-sys-dnd-dragging-background",
+     "swiftui": "the drag preview while the finger holds it",
+     "uikit": "dragInteraction(_:willAnimateLiftWith:session:)",
+     "appkit": "draggingSession(_:willBeginAt:)"
+    },
+    {
+     "state": "Over a target",
+     "token": "plx-sys-dnd-target-outline-color",
+     "swiftui": "isTargeted true",
+     "uikit": "sessionDidUpdate returns .move or .copy",
+     "appkit": "draggingEntered returns an operation"
+    },
+    {
+     "state": "Refused",
+     "token": "plx-sys-dnd-target-reject-outline-color",
+     "swiftui": "isTargeted with a type it does not take",
+     "uikit": "sessionDidUpdate returns .forbidden",
+     "appkit": "draggingEntered returns []"
+    },
+    {
+     "state": "Dropped",
+     "token": null,
+     "swiftui": "the action of dropDestination runs; announce the result",
+     "uikit": "performDrop",
+     "appkit": "performDragOperation"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// A Plenix drop target on iOS: the system drag, the Plenix outline and fill while an item it takes is over it.",
+     "struct PlenixFolderTarget: View {",
+     "    let name: String",
+     "    let onDrop: ([Asset]) -> Void",
+     "    @State private var over = false",
+     "",
+     "    var body: some View {",
+     "        VStack(spacing: Plenix.Space.spaceStackSm) {",
+     "            Image(systemName: \"folder\").accessibilityHidden(true)",
+     "            Text(name).font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline))",
+     "        }",
+     "        .frame(maxWidth: .infinity, minHeight: Plenix.Platform.controlTargetMin)",
+     "        .background(over ? Plenix.Colors.stateHover : Plenix.Colors.surfaceSunken)",
+     "        .overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px)",
+     "            .strokeBorder(over ? Plenix.Colors.focusRingColor : Plenix.Colors.borderDefault, style: StrokeStyle(lineWidth: Plenix.Border.borderWidthMedium, dash: [Plenix.Space.spaceInlineXs])))",
+     "        .dropDestination(for: Asset.self) { items, _ in onDrop(items); return true } isTargeted: { over = $0 }",
+     "        .accessibilityElement(children: .combine)",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "let drop = UIDropInteraction(delegate: self)",
+     "folderView.addInteraction(drop)",
+     "folderView.layer.cornerRadius = Plenix.Radius.radiusControl4px",
+     "// while targeted: the Plenix outline and fill",
+     "folderView.backgroundColor = Plenix.Colors.stateHover",
+     "outline.strokeColor = Plenix.Colors.focusRingColor.cgColor",
+     "outline.lineWidth = Plenix.Border.borderWidthMedium"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "folderView.registerForDraggedTypes([.fileURL])",
+     "// draggingEntered(_:) returns .move for a taken type and [] for a refused one"
     ]
    }
   }

@@ -1,0 +1,18 @@
+{
+  "$description": "Library part w10B (wave 10, lane B): the iOS and Android counterparts of Delete, Delete flow, Duplicate (both leaves), Publish, Unpublish, Review flow, Approve, Reject, Data review workflow, Human review, Assign and Delegate. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "actions|Delete": { "ios": ["ios-overlays|Alerts", "ios-actions|Undo and redo"], "android": ["android-overlays|AlertDialog", "android-feedback|Snackbar"] },
+    "actions|Duplicate": { "ios": ["ios-actions|Context menus"], "android": ["android-actions|Menu"] },
+    "patterns|Duplicate": { "ios": ["ios-actions|Context menus", "ios-overlays|Alerts"], "android": ["android-actions|Menu", "android-overlays|AlertDialog"] },
+    "patterns|Delete flow": { "ios": ["ios-overlays|Alerts", "ios-overlays|Action sheets", "ios-actions|Undo and redo"], "android": ["android-patterns|Confirmation", "android-feedback|Snackbar"] },
+    "patterns|Publish": { "ios": ["ios-overlays|Alerts", "ios-forms|Pickers"], "android": ["android-patterns|Confirmation", "android-forms|DatePicker and TimePicker"] },
+    "patterns|Unpublish": { "ios": ["ios-overlays|Alerts"], "android": ["android-patterns|Confirmation"] },
+    "patterns|Review flow": { "ios": ["ios-overlays|Sheets", "ios-forms|Text fields"], "android": ["android-overlays|ModalBottomSheet", "android-forms|Multi-line text field"] },
+    "patterns|Approve": { "ios": ["ios-actions|Buttons"], "android": ["android-actions|Button"] },
+    "patterns|Reject": { "ios": ["ios-overlays|Alerts", "ios-forms|Text fields"], "android": ["android-overlays|AlertDialog", "android-forms|Multi-line text field"] },
+    "patterns|Data review workflow": { "ios": ["ios-data-display|Lists and tables", "ios-actions|Toolbars"], "android": ["android-actions|Multiple selection", "android-data-display|List"] },
+    "specialized|Human review": { "ios": ["ios-specialized|Generative AI"], "android": ["android-patterns|Confirmation", "android-feedback|Inline message"] },
+    "patterns|Assign": { "ios": ["ios-forms|Token fields", "ios-specialized|Collaboration and sharing"], "android": ["android-forms|Exposed dropdown menu", "android-content|Avatar"] },
+    "patterns|Delegate": { "ios": ["ios-specialized|Collaboration and sharing", "ios-forms|Pickers"], "android": ["android-forms|DatePicker and TimePicker", "android-overlays|Full-screen dialog"] }
+  }
+}

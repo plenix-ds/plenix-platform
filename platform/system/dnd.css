@@ -1,0 +1,27 @@
+/* Plenix · Drag and drop (platform/system/dnd.css; library plan wave 10, foundation dnd): the states the drag-and-drop
+   engine (utils/dnd.js) sets as attributes, drawn on the drag-and-drop tokens (tokens/semantic/dnd.tokens.json):
+     data-plx-dnd-state="dragging"   the item follows the pointer: the Dragged treatment (raised, the overlay shadow, a
+                                     little transparent) and it lets the pointer through to the place under it
+     data-plx-dnd-state="picked"     the item is picked up with the keyboard: raised the same way, fully opaque
+     data-plx-drop="before|after"    the insertion line of a sortable list: where the item lands
+     data-plx-drop-state="over"      a drop target with an item over it that it takes: the dashed outline and the hover fill
+     data-plx-drop-state="reject"    over it, not taken: the outline in the danger color and the not-allowed pointer
+   The position of a moving item is a transform the engine sets through the Web Animations API, never a style attribute. */
+.plx-dnd-item{position:relative;}
+.plx-dnd-item[data-plx-dnd-state="dragging"]{background-color:var(--plx-sys-dnd-dragging-background);box-shadow:var(--plx-sys-dnd-dragging-shadow);cursor:grabbing;opacity:var(--plx-sys-dnd-dragging-opacity);pointer-events:none;z-index:var(--plx-sys-dnd-dragging-z-index);}
+.plx-dnd-item[data-plx-dnd-state="picked"]{background-color:var(--plx-sys-dnd-dragging-background);box-shadow:var(--plx-sys-dnd-dragging-shadow);z-index:var(--plx-sys-dnd-dragging-z-index);}
+/* the handle (or an item that drags as a whole) takes the press itself: no text selection, no browser pan on the handle */
+[data-plx-dnd-handle]{cursor:grab;user-select:none;-webkit-user-select:none;}
+button[data-plx-dnd-handle],.plx-dnd-move{touch-action:none;}
+[data-plx-dnd-handle]:disabled{cursor:not-allowed;}
+:root[data-plx-dnd-active="pointer"] body{cursor:grabbing;user-select:none;-webkit-user-select:none;}
+/* the insertion line: across the gap before or after the item (a vertical list), beside it (a row or a grid) */
+.plx-dnd-item[data-plx-drop]::before{background-color:var(--plx-sys-dnd-indicator-color);block-size:var(--plx-sys-dnd-indicator-width);content:"";inset-inline-end:0;inset-inline-start:0;pointer-events:none;position:absolute;}
+.plx-dnd-item[data-plx-drop="before"]::before{inset-block-start:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+.plx-dnd-item[data-plx-drop="after"]::before{inset-block-end:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+[data-plx-dnd-orientation="horizontal"]>.plx-dnd-item[data-plx-drop]::before,[data-plx-dnd-orientation="grid"]>.plx-dnd-item[data-plx-drop]::before{block-size:auto;inline-size:var(--plx-sys-dnd-indicator-width);inset-block-end:0;inset-block-start:0;inset-inline-end:auto;inset-inline-start:auto;}
+[data-plx-dnd-orientation="horizontal"]>.plx-dnd-item[data-plx-drop="before"]::before,[data-plx-dnd-orientation="grid"]>.plx-dnd-item[data-plx-drop="before"]::before{inset-inline-start:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+[data-plx-dnd-orientation="horizontal"]>.plx-dnd-item[data-plx-drop="after"]::before,[data-plx-dnd-orientation="grid"]>.plx-dnd-item[data-plx-drop="after"]::before{inset-inline-end:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+/* a drop target */
+.plx-dnd-target[data-plx-drop-state="over"]{background-color:var(--plx-sys-dnd-target-background);outline-color:var(--plx-sys-dnd-target-outline-color);outline-offset:var(--plx-sys-dnd-target-outline-offset);outline-style:dashed;outline-width:var(--plx-sys-dnd-target-outline-width);}
+.plx-dnd-target[data-plx-drop-state="reject"]{cursor:not-allowed;outline-color:var(--plx-sys-dnd-target-reject-outline-color);outline-offset:var(--plx-sys-dnd-target-outline-offset);outline-style:dashed;outline-width:var(--plx-sys-dnd-target-outline-width);}

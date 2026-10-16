@@ -1,0 +1,64 @@
+{
+  "android-interaction|Gestures": {
+    "summary": "The drag gestures of a Plenix app on Android: a long press (or a press on a drag handle) lifts an item, which follows the finger and lands in a list, on a target or anywhere on a board, with Material’s motion and haptics kept and the Plenix look around them: the lifted row on the raised surface, the insertion line and the target’s dashed outline in the focus ring’s color, a refusing target in the danger color with words. Every drag has a way without dragging (a Move menu, Move up and Move down, TalkBack custom actions). The other gestures (swipe, fling, pinch, pull to refresh) are the gesture foundation’s, on the same tokens. Material’s default is a list with no reorder affordance and Compose’s plain drag modifiers; Plenix adds the handle, the states and the alternatives.",
+    "variants": [
+      { "name": "Sortable list", "material": "LazyColumn with a drag handle (Modifier.draggable on the handle) and animateItem", "web": "patterns|Sortable list", "background": "plx-comp-sortable-list-item-background", "content": "plx-comp-sortable-list-item-text", "border": "plx-comp-sortable-list-item-border-color", "compose": "PlenixSortableList(items, onMove) with a PlenixDragHandle per row and animateItem() on each row", "views": "ItemTouchHelper with a SimpleCallback for up and down moves, started from the handle", "use": "Steps, priorities, pinned views." },
+      { "name": "Item onto a target", "material": "Modifier.dragAndDropSource and Modifier.dragAndDropTarget", "web": "patterns|Drag and drop", "background": "plx-sys-dnd-target-background", "content": null, "border": "plx-sys-dnd-target-outline-color", "compose": "Modifier.dragAndDropSource { … } on the item, Modifier.dragAndDropTarget(shouldStartDragAndDrop, target) on the folder", "views": "View.startDragAndDrop and an OnDragListener on the target", "use": "Filing an asset into a folder, a card into a column." },
+      { "name": "Drop target", "material": "A target with DragAndDropTarget.onEntered and onExited", "web": "patterns|Drop target", "background": "plx-sys-dnd-target-background", "content": null, "border": "plx-sys-dnd-target-reject-outline-color", "compose": "onEntered shows the outline; a mime type it does not take shows the refusal and its words", "views": "ACTION_DRAG_ENTERED and ACTION_DRAG_EXITED switch the target’s background", "use": "Folders, columns and collections that take some kinds of item." },
+      { "name": "Reposition", "material": "Modifier.pointerInput with detectDragGestures", "web": "patterns|Reposition", "background": "plx-sys-dnd-dragging-background", "content": null, "border": null, "compose": "Modifier.offset { offset } from detectDragGestures, snapped to the grid on onDragEnd, with semantics customActions for TalkBack", "views": "an OnTouchListener moving translationX and translationY, snapped on ACTION_UP", "use": "Notes on a board, layers on a canvas." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Drag handle", "about": "The grip at the row’s start, at least the touch target; a long press on the row also lifts it." },
+      { "part": "B", "name": "Lifted item", "about": "The item under the finger on the raised surface, slightly transparent, above its neighbors." },
+      { "part": "C", "name": "Insertion line", "about": "A line in the focus ring’s color where the item lands in a list." },
+      { "part": "D", "name": "Drop target", "about": "A dashed outline in the focus ring’s color and the hover fill while an item it takes is over it; the danger color and words when it refuses." },
+      { "part": "E", "name": "Move menu", "about": "Move up, Move down, Move to … in the row’s menu and as TalkBack custom actions." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Handle size", "token": "plx-comp-drag-handle-size", "value": "At least the touch target (PlenixPlatform.controlTargetMin, 48 dp)", "material": "48 dp touch target", "compose": "Modifier.sizeIn(minWidth = PlenixPlatform.controlTargetMin, minHeight = PlenixPlatform.controlTargetMin)", "views": "handle.minimumWidth = px(PlenixPlatform.controlTargetMin); handle.minimumHeight = px(PlenixPlatform.controlTargetMin)", "follows": "Material 3: Accessibility (touch targets)", "followsUrl": "https://m3.material.io/foundations/designing/structure" },
+      { "part": "B", "attribute": "Lifted background", "token": "plx-sys-dnd-dragging-background", "value": "The raised surface (PlenixColors.surfaceRaised)", "material": "surfaceContainerHigh", "compose": "Modifier.background(PlenixColors.surfaceRaised.current())", "views": "row.setBackgroundColor(argb(PlenixColors.surfaceRaised))", "follows": "Material 3: Drag and drop", "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop" },
+      { "part": "B", "attribute": "Lifted opacity", "token": "plx-sys-dnd-dragging-opacity", "value": "The dragged opacity while it follows the finger (PlenixOpacity.opacityHigh)", "material": "Opaque", "compose": "Modifier.graphicsLayer { alpha = if (dragging) PlenixOpacity.opacityHigh else 1f }", "views": "row.alpha = PlenixOpacity.opacityHigh while dragging", "follows": "Material 3: Drag and drop", "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop" },
+      { "part": "C", "attribute": "Insertion line", "token": "plx-sys-dnd-indicator-color, plx-sys-dnd-indicator-width", "value": "The focus ring’s color, the medium border width", "material": "None: the list moves its rows", "compose": "HorizontalDivider(thickness = PlenixBorder.borderWidthMedium, color = PlenixColors.focusRingColor.current())", "views": "an ItemDecoration drawing a line of PlenixBorder.borderWidthMedium in PlenixColors.focusRingColor", "follows": "Material 3: Drag and drop", "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop" },
+      { "part": "D", "attribute": "Target outline", "token": "plx-sys-dnd-target-outline-color, plx-sys-dnd-target-outline-width", "value": "A dashed outline in the focus ring’s color", "material": "None: the app draws its target", "compose": "Modifier.drawBehind { drawRoundRect(PlenixColors.focusRingColor.current(), style = Stroke(PlenixBorder.borderWidthMedium.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(PlenixSpace.spaceInlineXs.toPx(), PlenixSpace.spaceInlineXs.toPx())))) }", "views": "a GradientDrawable with setStroke(px(PlenixBorder.borderWidthMedium), argb(PlenixColors.focusRingColor), px(PlenixSpace.spaceInlineXs), px(PlenixSpace.spaceInlineXs))", "follows": "Material 3: Drag and drop", "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop" },
+      { "part": "D", "attribute": "Target fill", "token": "plx-sys-dnd-target-background", "value": "The hover fill while an item it takes is over it (PlenixColors.stateHover)", "material": "None", "compose": "Modifier.background(if (over) PlenixColors.stateHover.current() else PlenixColors.surfaceSunken.current())", "views": "target.setBackgroundColor(argb(PlenixColors.stateHover)) on ACTION_DRAG_ENTERED", "follows": "Material 3: Drag and drop", "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop" },
+      { "part": "D", "attribute": "Refusing target", "token": "plx-sys-dnd-target-reject-outline-color", "value": "The outline in the danger color (PlenixColors.feedbackDangerSolid) and words that say why", "material": "None", "compose": "the outline in PlenixColors.feedbackDangerSolid.current() and a Text that says what it takes", "views": "the stroke in argb(PlenixColors.feedbackDangerSolid) and a TextView", "follows": "Material 3: Drag and drop", "followsUrl": "https://developer.android.com/develop/ui/compose/touch-input/user-interactions/drag-and-drop" },
+      { "part": "E", "attribute": "Move actions", "token": null, "value": "Move up, Move down, Move to … as menu items and TalkBack custom actions", "material": "None", "compose": "Modifier.semantics { customActions = listOf(CustomAccessibilityAction(\"Move up\") { moveUp(); true }) }", "views": "ViewCompat.addAccessibilityAction(row, \"Move up\") { _, _ -> moveUp(); true }", "follows": "Android accessibility: custom actions", "followsUrl": "https://developer.android.com/guide/topics/ui/accessibility/principles#accessibility-actions" }
+    ],
+    "states": [
+      { "state": "Rest", "token": "plx-comp-sortable-list-item-background", "compose": "the row in its place", "views": "no drag" },
+      { "state": "Lifted", "token": "plx-sys-dnd-dragging-background", "compose": "dragging = true from the handle’s drag start", "views": "ItemTouchHelper ACTION_STATE_DRAG" },
+      { "state": "Over a target", "token": "plx-sys-dnd-target-outline-color", "compose": "DragAndDropTarget.onEntered", "views": "ACTION_DRAG_ENTERED" },
+      { "state": "Refused", "token": "plx-sys-dnd-target-reject-outline-color", "compose": "shouldStartDragAndDrop false for the type, the refusal shown", "views": "ACTION_DRAG_STARTED returns false" },
+      { "state": "Dropped", "token": null, "compose": "DragAndDropTarget.onDrop; announce the result", "views": "ACTION_DROP" }
+    ],
+    "code": {
+      "compose": [
+        "@Composable",
+        "fun PlenixFolderTarget(name: String, onDrop: (ClipData) -> Unit) {",
+        "    var over by remember { mutableStateOf(false) }",
+        "    val target = remember { object : DragAndDropTarget {",
+        "        override fun onEntered(event: DragAndDropEvent) { over = true }",
+        "        override fun onExited(event: DragAndDropEvent) { over = false }",
+        "        override fun onDrop(event: DragAndDropEvent): Boolean { over = false; onDrop(event.toAndroidDragEvent().clipData); return true }",
+        "    } }",
+        "    Column(",
+        "        Modifier.fillMaxWidth().heightIn(min = PlenixPlatform.controlTargetMin)",
+        "            .background(if (over) PlenixColors.stateHover.current() else PlenixColors.surfaceSunken.current(), RoundedCornerShape(PlenixRadius.radiusControl4px))",
+        "            .dragAndDropTarget(shouldStartDragAndDrop = { true }, target = target),",
+        "        horizontalAlignment = Alignment.CenterHorizontally",
+        "    ) {",
+        "        Text(name, fontFamily = FontFamily(Font(R.font.dm_sans)), fontSize = PlenixPlatform.textLabelSize)",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "target.setOnDragListener { v, e -> when (e.action) {",
+        "    DragEvent.ACTION_DRAG_ENTERED -> { v.setBackgroundColor(argb(PlenixColors.stateHover)); true }",
+        "    DragEvent.ACTION_DRAG_EXITED -> { v.setBackgroundColor(argb(PlenixColors.surfaceSunken)); true }",
+        "    DragEvent.ACTION_DROP -> { onDrop(e.clipData); true }",
+        "    else -> true",
+        "} }"
+      ]
+    }
+  }
+}

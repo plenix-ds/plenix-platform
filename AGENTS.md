@@ -5,6 +5,15 @@ built on it. Several agents work on it at the same time, each owning one task. G
 issue = one branch = one pull request. The owner decides every look and standard; the integrator (a Claude session)
 merges, builds, releases and deploys.
 
+## Finding your work
+
+- **Who does what:** the pinned issue "Plan of record" (https://github.com/plenix-ds/plenix-platform/issues/3) lists
+  every task with its owner and status.
+- **Your task's brief is in the repository:** `tools/agent/tasks/<issue number>-<slug>.md` (the same text as the issue).
+  Read it there: you may have no access to GitHub issues from your environment.
+- Your tasks are the briefs whose title names you (`(Codex)` or `(Claude)`) and the issues labeled `agent:codex` or
+  `agent:claude`. Take one task at a time; never start a task the plan of record gives to another agent.
+
 ## Your task
 
 - Take only an issue labeled for you (`agent:codex` or `agent:claude`). Its body names the task, the files you own and

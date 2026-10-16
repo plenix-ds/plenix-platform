@@ -36,6 +36,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color datavizAlertCritical;
   final Color datavizGridLine;
   final Color datavizLabel;
+  final Color dndDraggingBackground;
+  final Color dndIndicatorColor;
+  final Color dndTargetOutlineColor;
+  final Color dndTargetBackground;
+  final Color dndTargetRejectOutlineColor;
   final Color focusOrderColor;
   final Color focusOrderOnColor;
   final Color focusOrderWarningColor;
@@ -374,6 +379,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.datavizAlertCritical,
     required this.datavizGridLine,
     required this.datavizLabel,
+    required this.dndDraggingBackground,
+    required this.dndIndicatorColor,
+    required this.dndTargetOutlineColor,
+    required this.dndTargetBackground,
+    required this.dndTargetRejectOutlineColor,
     required this.focusOrderColor,
     required this.focusOrderOnColor,
     required this.focusOrderWarningColor,
@@ -713,6 +723,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     datavizAlertCritical: Color(0xFFB70000),
     datavizGridLine: Color(0xFFE8E9EC),
     datavizLabel: Color(0xFF56585E),
+    dndDraggingBackground: Color(0xFFFFFFFF),
+    dndIndicatorColor: Color(0xFF2A6FDB),
+    dndTargetOutlineColor: Color(0xFF2A6FDB),
+    dndTargetBackground: Color(0xFFF3F3F3),
+    dndTargetRejectOutlineColor: Color(0xFFB70000),
     focusOrderColor: Color(0xFF2A6FDB),
     focusOrderOnColor: Color(0xFFFFFFFF),
     focusOrderWarningColor: Color(0xFFB70000),
@@ -1052,6 +1067,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     datavizAlertCritical: Color(0xFFF8ACA2),
     datavizGridLine: Color(0xFF56585E),
     datavizLabel: Color(0xFFD0D0D0),
+    dndDraggingBackground: Color(0xFF444444),
+    dndIndicatorColor: Color(0xFFA2C0E3),
+    dndTargetOutlineColor: Color(0xFFA2C0E3),
+    dndTargetBackground: Color(0xFF56585E),
+    dndTargetRejectOutlineColor: Color(0xFFF8ACA2),
     focusOrderColor: Color(0xFFA2C0E3),
     focusOrderOnColor: Color(0xFF1E1F22),
     focusOrderWarningColor: Color(0xFFF8ACA2),

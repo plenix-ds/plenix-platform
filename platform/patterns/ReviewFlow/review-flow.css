@@ -1,0 +1,18 @@
+/* Plenix · ReviewFlow (platform/patterns/ReviewFlow). The review panel: the title over a muted detail with the status badge
+   at the end, the human-review notice, the reviewers (a Persona and their decision badge, or Waiting), the comment field
+   and the decisions (Reject, Request changes, Approve last), then the history (an ActivityList). No frame of its own: it
+   sits in a side panel, a card or a page section. ReviewQueue: the command bar over the DataTable. Anatomy and API:
+   ReviewFlow.jsx. */
+.plx-review-flow{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-review-flow-gap);}
+.plx-review-flow__head{align-items:flex-start;column-gap:var(--plx-comp-review-flow-head-gap);display:flex;justify-content:space-between;}
+.plx-review-flow__heading{display:flex;flex-direction:column;min-inline-size:0;}
+.plx-review-flow__title{color:var(--plx-comp-review-flow-title-text);font-size:var(--plx-comp-review-flow-title-font-size);font-weight:var(--plx-comp-review-flow-title-font-weight);line-height:var(--plx-comp-review-flow-title-line-height);margin-block-end:0;margin-block-start:0;}
+.plx-review-flow__detail{color:var(--plx-comp-review-flow-detail-text);font-size:var(--plx-comp-review-flow-detail-font-size);}
+.plx-review-flow__section{display:flex;flex-direction:column;row-gap:var(--plx-comp-review-flow-section-gap);}
+.plx-review-flow__label{color:var(--plx-comp-review-flow-label-text);font-size:var(--plx-comp-review-flow-label-font-size);font-weight:var(--plx-comp-review-flow-label-font-weight);margin-block-end:0;margin-block-start:0;}
+.plx-review-flow__reviewers{display:flex;flex-direction:column;list-style:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-review-flow-reviewers-gap);}
+.plx-review-flow__reviewer{align-items:center;column-gap:var(--plx-comp-review-flow-head-gap);display:flex;justify-content:space-between;min-block-size:var(--plx-comp-review-flow-reviewer-min-height);}
+.plx-review-flow__waiting{color:var(--plx-comp-review-flow-waiting-text);font-size:var(--plx-comp-review-flow-detail-font-size);}
+.plx-review-flow__decide{display:flex;flex-direction:column;row-gap:var(--plx-comp-review-flow-section-gap);}
+.plx-review-flow__actions{column-gap:var(--plx-comp-review-flow-actions-gap);display:flex;flex-wrap:wrap;justify-content:flex-end;row-gap:var(--plx-comp-review-flow-actions-gap);}
+.plx-review-queue{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-review-flow-queue-gap);}

@@ -1,0 +1,50 @@
+{
+  "$description": "DeleteFlow (platform/patterns/DeleteFlow), library wave 10, lane B: its pattern tokens. The names listed in its confirmation dialog, the “and N more” line and the gap before the type-to-confirm field; the dialog, its destructive look, the buttons and the Undo toast keep their own tokens.",
+  "plx-comp": {
+    "delete-flow-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "DeleteFlow: gap between the names and the field (space-stack-sm)."
+    },
+    "delete-flow-type-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "DeleteFlow: gap between the names and the type-to-confirm field (type) (space-stack-md)."
+    },
+    "delete-flow-names-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "DeleteFlow: gap between the names (space-stack-xs)."
+    },
+    "delete-flow-name-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "DeleteFlow: a name’s color (content-default)."
+    },
+    "delete-flow-name-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "DeleteFlow: a name’s size (font-size-13)."
+    },
+    "delete-flow-name-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "DeleteFlow: a name’s weight (font-weight-medium)."
+    },
+    "delete-flow-name-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "DeleteFlow: a name’s line height (size-20px)."
+    },
+    "delete-flow-more-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "DeleteFlow: “and N more” color (content-muted)."
+    },
+    "delete-flow-more-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "DeleteFlow: “and N more” size (font-size-12)."
+    }
+  }
+}

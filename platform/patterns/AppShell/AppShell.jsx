@@ -72,6 +72,8 @@
      SideNavPortal is for a screen that owns its navigation's state (a settings screen, a project list): it hands the
        navigation to the shell's navigation area from inside the main content, where it then behaves as above.
      Outside an AppShell, SideNavPortal renders its children in place.
+     PanelSplitter, the resize edge of the panes, is the Resizable component's (components/Resizable); AppShell imports
+       and re-exports it, so the panes import it from here as before.
      Show and Hide work anywhere (inside an AppShell or not). Off screen means not rendered at all: what is hidden by width
        leaves the page, the Tab order and the accessibility tree; on paper they toggle display (the content stays in the
        page for screen readers). Every hidden action needs a place where it still is (fallback, a menu, the detail view).
@@ -79,11 +81,8 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
-import { arrowStep, isRtl } from '../../utils/direction.js';
-import { snapSize, stepSize } from '../../utils/sizeSteps.js';
 import { pageLayout } from '../../providers/pageLayouts.js';
-import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { PanelSplitter } from '../../components/Resizable/Resizable.jsx';
 
 const STRINGS = { skip: 'Skip to main content' };
 // the five layout modes (the Layout foundation; app-shell.css draws them)
@@ -173,50 +172,9 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   );
 }
 
-/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
-   collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
-   "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
-   are mirrored (arrowStep gives the step in reading order).
-   Without dragging (WCAG 2.5.7): a small menu button on the edge (shown while the edge is hovered or focused, always with
-   a touch or mobile interaction) offers Narrower and Wider (one size token), Reset width (with defaultValue, the area's
-   default width) and Collapse (with onCollapse). */
-const SPLITTER = { options: '{label} options', narrower: 'Narrower', wider: 'Wider', reset: 'Reset width', collapse: 'Collapse' };
-export function PanelSplitter({ label, value, min, max, onChange, onCollapse, defaultValue, edge = 'end' }) {
-  const dir = edge === 'end' ? 1 : -1;
-  // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
-  const clamp = (w) => snapSize(w, min, max());
-  const onPointerDown = (e) => {
-    if (e.button !== 0) return;
-    e.preventDefault();
-    const x0 = e.clientX, w0 = value, flip = isRtl(e.currentTarget) ? -1 : 1;
-    const move = (ev) => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
-    const up = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.documentElement.classList.remove('is-resizing-columns'); };
-    document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.documentElement.classList.add('is-resizing-columns');
-  };
-  const onKeyDown = (e) => {
-    const step = arrowStep(e, e.currentTarget, { vertical: false }) * dir;
-    if (step) { e.preventDefault(); onChange(stepSize(value, step, min, max())); }
-    else if (e.key === 'Home') { e.preventDefault(); onChange(clamp(min)); }
-    else if (e.key === 'End') { e.preventDefault(); onChange(clamp(max())); }
-    else if (e.key === 'Enter' && onCollapse) { e.preventDefault(); onCollapse(); }
-  };
-  const top = clamp(max()), now = clamp(value);
-  return (
-    <>
-      <div role="separator" aria-orientation="vertical" aria-label={label} aria-valuenow={value} aria-valuemin={min} aria-valuemax={top} tabIndex={0}
-        className={cx('plx-panel-splitter', 'plx-panel-splitter--' + edge)} onPointerDown={onPointerDown} onKeyDown={onKeyDown}
-        data-plx-target-equivalent="the width menu beside it (WCAG 2.5.8 Equivalent)"
-        onDoubleClick={onCollapse || undefined} />
-      <Menu label={label} placement={edge === 'end' ? 'bottom-end' : 'bottom-start'} className={cx('plx-panel-splitter__menu', 'plx-panel-splitter__menu--' + edge)}
-        trigger={<Button size="xs" iconOnly icon="more" label={SPLITTER.options.replace('{label}', label || '')} />}>
-        <MenuItem disabled={now <= clamp(min)} onSelect={() => onChange(stepSize(value, -1, min, max()))}>{SPLITTER.narrower}</MenuItem>
-        <MenuItem disabled={now >= top} onSelect={() => onChange(stepSize(value, 1, min, max()))}>{SPLITTER.wider}</MenuItem>
-        {defaultValue != null ? <MenuItem icon="refresh" disabled={now === clamp(defaultValue)} onSelect={() => onChange(clamp(defaultValue))}>{SPLITTER.reset}</MenuItem> : null}
-        {onCollapse ? <MenuItem icon={edge === 'end' ? 'panel-left-close' : 'panel-right-close'} onSelect={onCollapse}>{SPLITTER.collapse}</MenuItem> : null}
-      </Menu>
-    </>
-  );
-}
+/* the drag handle on a resizable area's inner edge (PanelSplitter) lives with the Resizable component since library wave
+   10; the panes (NavPane, SecondaryPane, SidePanel) still import it from here */
+export { PanelSplitter };
 
 export function SideNavPortal({ children }) {
   const layout = useAppLayout();

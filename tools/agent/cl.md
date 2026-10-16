@@ -1,13 +1,17 @@
 ### Added
-- The Claude + Codex pilot (owner, 2026-10-15): several coding agents each own one task, coordinated through GitHub
-  (one issue, one branch, one pull request). AGENTS.md holds the rules every agent reads; the issue form "Agent task"
-  and the labels agent:codex, agent:claude, agent-task and needs-owner assign the work.
-- tools/agent/generated.js: the one list of generated files. CI fails a pull request that commits one (they are rebuilt
-  at merge, so parallel pull requests never conflict on them).
-- tools/agent/lane-overlay.js: a branch keeps its design-system files under lanes/<task>/design-system/; the overlay
-  copies them into the design system for the build, the checks and CI.
-- tools/agent/take-pr.js: the integrator's merge of a pull request (source files only, design-system files into the
-  design system's repository, files changed in main reported).
+- Library wave 10, lane A (drag and drop): the dnd engine (`useSortable`, `useDraggable`, `useDropTarget`,
+  `useReposition`; pointer, pen, touch and keyboard: Space/Enter picks up, arrows move, Space/Enter drops, Escape
+  cancels; every move announced; auto-scroll near edges), DragHandle, SortableList (vertical, grid, handles, move
+  buttons, between lists), DropZone data drops (`onDropItem`, `accepts`, a refusing state), Resizable (with a size menu
+  for resizing without dragging; PanelSplitter moved here, still exported from AppShell), RenameAction (inline and
+  dialog; F2; selects the name before the extension).
+- Library wave 10, lane B (record flows): DeleteFlow (confirm, type to confirm, undo, move to trash), DuplicateAction
+  (copy at once with Undo, then rename), Publish (draft, scheduled, published; schedule; unpublish with Undo),
+  ReviewFlow and ReviewQueue (approve, request changes, reject with a reason; human review), AssignControl (assign,
+  reassign, delegate with dates), WorkflowStatus.
+- Native designs: iOS Drag and drop, iOS Undo and redo, Android Gestures (drag), Android Confirmation.
 ### Changed
-- The pull request template asks for the files, the checks, what was left undone and what needs the owner.
-- The test runner's changed mode counts a lane's design-system files where the overlay copies them.
+- Versions follow semver from this release on (owner, 2026-10-15, RedSave #27): new or rewritten components raise the
+  minor version, fixes the patch version; a rewrite is listed here under "Changed" with what an application must check.
+- Agents find their task briefs in tools/agent/tasks/ (AGENTS.md › Finding your work); the plan of record is pinned
+  issue #3 on GitHub, one issue per task.
