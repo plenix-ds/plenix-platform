@@ -1,0 +1,10 @@
+{
+  "$description": "Tour: component spacing roles.",
+  "plx-comp": {
+    "tour-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Tour: space between composed regions."
+    }
+  }
+}

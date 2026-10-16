@@ -1,0 +1,10 @@
+{
+  "$description": "ShareDialog: component spacing roles.",
+  "plx-comp": {
+    "share-dialog-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "ShareDialog: space between composed regions."
+    }
+  }
+}

@@ -1,0 +1,381 @@
+{
+  "ios-specialized|Collaboration and sharing": {
+    "summary": "Lane B additions: Manage explicit record access for people and existing share links.",
+    "variants": [
+      {
+        "name": "ShareDialog: People",
+        "web": "specialized|Sharing",
+        "swiftui": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "uikit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "appkit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "use": "Manage explicit record access for people and existing share links."
+      },
+      {
+        "name": "ShareDialog: Link",
+        "web": "specialized|Sharing",
+        "swiftui": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "uikit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "appkit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "use": "Manage explicit record access for people and existing share links."
+      },
+      {
+        "name": "ShareDialog: Roles",
+        "web": "specialized|Sharing",
+        "swiftui": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "uikit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "appkit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "use": "Manage explicit record access for people and existing share links."
+      },
+      {
+        "name": "ShareDialog: Web Share",
+        "web": "specialized|Sharing",
+        "swiftui": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "uikit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "appkit": "Add unique people, edit their roles, await persistence, and keep the access draft on failure. Copy and Web Share never change permissions.",
+        "use": "Manage explicit record access for people and existing share links."
+      }
+    ],
+    "anatomy": [
+      "People picker and role selector",
+      "Current grants with role controls",
+      "Restricted link and copy action",
+      "Save and Cancel actions"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane B region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "ShareDialog pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "ShareDialog failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Use native forms, sheets and accessibility with application-owned state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind a UIStackView of native named controls to the screen model.",
+        "statusLabel.text = model.statusTitle",
+        "// Preserve values after persistence errors; restore focus after modal tasks."
+      ],
+      "appkit": [
+        "// Use a macOS token adapter for DM Sans, spacing and semantic colors.",
+        "statusLabel.stringValue = model.statusTitle"
+      ]
+    }
+  },
+  "ios-patterns|Privacy": {
+    "summary": "Lane B additions: Inspect and edit a capabilities matrix for roles or individual people.",
+    "variants": [
+      {
+        "name": "PermissionsEditor: Roles and capabilities",
+        "web": "patterns|Permissions",
+        "swiftui": "Controlled immutable updates leave locked subjects unchanged. Explicit Save awaits persistence and preserves the current draft on failure.",
+        "uikit": "Controlled immutable updates leave locked subjects unchanged. Explicit Save awaits persistence and preserves the current draft on failure.",
+        "appkit": "Controlled immutable updates leave locked subjects unchanged. Explicit Save awaits persistence and preserves the current draft on failure.",
+        "use": "Inspect and edit a capabilities matrix for roles or individual people."
+      },
+      {
+        "name": "PermissionsEditor: Per person",
+        "web": "patterns|Permissions",
+        "swiftui": "Controlled immutable updates leave locked subjects unchanged. Explicit Save awaits persistence and preserves the current draft on failure.",
+        "uikit": "Controlled immutable updates leave locked subjects unchanged. Explicit Save awaits persistence and preserves the current draft on failure.",
+        "appkit": "Controlled immutable updates leave locked subjects unchanged. Explicit Save awaits persistence and preserves the current draft on failure.",
+        "use": "Inspect and edit a capabilities matrix for roles or individual people."
+      }
+    ],
+    "anatomy": [
+      "Capability rows and subject columns",
+      "Named permission checkboxes",
+      "Subject selector",
+      "PermissionSummary and optional save action"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane B region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "PermissionsEditor pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "PermissionsEditor failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Use native forms, sheets and accessibility with application-owned state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind a UIStackView of native named controls to the screen model.",
+        "statusLabel.text = model.statusTitle",
+        "// Preserve values after persistence errors; restore focus after modal tasks."
+      ],
+      "appkit": [
+        "// Use a macOS token adapter for DM Sans, spacing and semantic colors.",
+        "statusLabel.stringValue = model.statusTitle"
+      ]
+    }
+  },
+  "ios-patterns|Onboarding": {
+    "summary": "Lane B additions: Explain a few controls with a voluntary sequence of contextual steps.",
+    "variants": [
+      {
+        "name": "Tour: Steps",
+        "web": "patterns|Product tour",
+        "swiftui": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "uikit": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "appkit": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "use": "Explain a few controls with a voluntary sequence of contextual steps."
+      },
+      {
+        "name": "Tour: Skip",
+        "web": "patterns|Product tour",
+        "swiftui": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "uikit": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "appkit": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "use": "Explain a few controls with a voluntary sequence of contextual steps."
+      },
+      {
+        "name": "Tour: Resume",
+        "web": "patterns|Product tour",
+        "swiftui": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "uikit": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "appkit": "Only the current bubble opens. Skip and Escape close it without clearing the remembered step. Resume uses the persisted index; Finish reports completion.",
+        "use": "Explain a few controls with a voluntary sequence of contextual steps."
+      },
+      {
+        "name": "Checklist: With progress",
+        "web": "patterns|Checklist",
+        "swiftui": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "uikit": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "appkit": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "use": "Show a short set of setup tasks and the progress already made."
+      },
+      {
+        "name": "Checklist: Collapsible",
+        "web": "patterns|Checklist",
+        "swiftui": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "uikit": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "appkit": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "use": "Show a short set of setup tasks and the progress already made."
+      },
+      {
+        "name": "Checklist: Dismissible",
+        "web": "patterns|Checklist",
+        "swiftui": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "uikit": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "appkit": "Count only known completed tasks. Disabled tasks remain unchanged. Collapsing preserves completion, and dismissal belongs to the caller.",
+        "use": "Show a short set of setup tasks and the progress already made."
+      },
+      {
+        "name": "Onboarding: Welcome dialog",
+        "web": "patterns|Onboarding",
+        "swiftui": "Skipping welcome keeps the setup checklist available. The tour starts only after an explicit action. Callbacks let the application retain seen and completion state.",
+        "uikit": "Skipping welcome keeps the setup checklist available. The tour starts only after an explicit action. Callbacks let the application retain seen and completion state.",
+        "appkit": "Skipping welcome keeps the setup checklist available. The tour starts only after an explicit action. Callbacks let the application retain seen and completion state.",
+        "use": "Offer an optional welcome and reusable setup tasks without blocking product access."
+      },
+      {
+        "name": "Onboarding: Setup checklist",
+        "web": "patterns|Onboarding",
+        "swiftui": "Skipping welcome keeps the setup checklist available. The tour starts only after an explicit action. Callbacks let the application retain seen and completion state.",
+        "uikit": "Skipping welcome keeps the setup checklist available. The tour starts only after an explicit action. Callbacks let the application retain seen and completion state.",
+        "appkit": "Skipping welcome keeps the setup checklist available. The tour starts only after an explicit action. Callbacks let the application retain seen and completion state.",
+        "use": "Offer an optional welcome and reusable setup tasks without blocking product access."
+      },
+      {
+        "name": "FeatureIntro: New badge",
+        "web": "patterns|Feature introduction",
+        "swiftui": "Show an informational New badge, open details on request, and report dismissal without disabling the feature.",
+        "uikit": "Show an informational New badge, open details on request, and report dismissal without disabling the feature.",
+        "appkit": "Show an informational New badge, open details on request, and report dismissal without disabling the feature.",
+        "use": "Introduce one new feature without turning education into an interruption."
+      },
+      {
+        "name": "FeatureIntro: What is new dialog",
+        "web": "patterns|Feature introduction",
+        "swiftui": "Show an informational New badge, open details on request, and report dismissal without disabling the feature.",
+        "uikit": "Show an informational New badge, open details on request, and report dismissal without disabling the feature.",
+        "appkit": "Show an informational New badge, open details on request, and report dismissal without disabling the feature.",
+        "use": "Introduce one new feature without turning education into an interruption."
+      }
+    ],
+    "anatomy": [
+      "Persistent target controls",
+      "One active TeachingBubble",
+      "Step count",
+      "Next, Back, Skip and Resume actions",
+      "Task group title",
+      "Progress bar and technical count",
+      "Labeled native checkboxes",
+      "Optional collapse and dismiss actions",
+      "Dismissible welcome Dialog",
+      "Setup Checklist",
+      "User-started Tour",
+      "Feature control or label",
+      "New icon Badge",
+      "Optional TeachingBubble",
+      "Requested what-is-new Dialog"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane B region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "Tour pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "Tour failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "Checklist pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "Checklist failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "Onboarding pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "Onboarding failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "FeatureIntro pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "FeatureIntro failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Use native forms, sheets and accessibility with application-owned state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind a UIStackView of native named controls to the screen model.",
+        "statusLabel.text = model.statusTitle",
+        "// Preserve values after persistence errors; restore focus after modal tasks."
+      ],
+      "appkit": [
+        "// Use a macOS token adapter for DM Sans, spacing and semantic colors.",
+        "statusLabel.stringValue = model.statusTitle"
+      ]
+    }
+  },
+  "ios-patterns|Offering help": {
+    "summary": "Lane B additions: Keep searchable help and article details beside the current task.",
+    "variants": [
+      {
+        "name": "HelpPanel: In the inspector",
+        "web": "overlays|Help panel",
+        "swiftui": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "uikit": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "appkit": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "use": "Keep searchable help and article details beside the current task."
+      },
+      {
+        "name": "HelpPanel: Search",
+        "web": "overlays|Help panel",
+        "swiftui": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "uikit": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "appkit": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "use": "Keep searchable help and article details beside the current task."
+      },
+      {
+        "name": "HelpPanel: Articles",
+        "web": "overlays|Help panel",
+        "swiftui": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "uikit": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "appkit": "Search titles and summaries without changing context. Select an article to read it, return to results with Back, and retain query state across panel visibility.",
+        "use": "Keep searchable help and article details beside the current task."
+      }
+    ],
+    "anatomy": [
+      "Inspector heading",
+      "Labeled search field",
+      "Article results",
+      "Detail content with Back and an optional Link"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane B region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "HelpPanel pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "HelpPanel failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Use native forms, sheets and accessibility with application-owned state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind a UIStackView of native named controls to the screen model.",
+        "statusLabel.text = model.statusTitle",
+        "// Preserve values after persistence errors; restore focus after modal tasks."
+      ],
+      "appkit": [
+        "// Use a macOS token adapter for DM Sans, spacing and semantic colors.",
+        "statusLabel.stringValue = model.statusTitle"
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$description": "Checklist: component spacing roles.",
+  "plx-comp": {
+    "checklist-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Checklist: space between composed regions."
+    },
+    "checklist-items-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Checklist: space between tasks."
+    }
+  }
+}

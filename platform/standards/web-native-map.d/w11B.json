@@ -1,0 +1,77 @@
+{
+  "$description": "Sharing, permissions, onboarding and help counterparts.",
+  "map": {
+    "specialized|Sharing": {
+      "ios": [
+        "ios-specialized|Collaboration and sharing"
+      ],
+      "android": [
+        "android-specialized|Share"
+      ]
+    },
+    "patterns|Permissions": {
+      "ios": [
+        "ios-patterns|Privacy"
+      ],
+      "android": [
+        "android-patterns|Permissions"
+      ]
+    },
+    "patterns|Product tour": {
+      "ios": [
+        "ios-patterns|Onboarding"
+      ],
+      "android": [
+        "android-patterns|Onboarding"
+      ]
+    },
+    "patterns|Checklist": {
+      "ios": [
+        "ios-patterns|Onboarding"
+      ],
+      "android": [
+        "android-patterns|Onboarding"
+      ]
+    },
+    "patterns|Onboarding": {
+      "ios": [
+        "ios-patterns|Onboarding"
+      ],
+      "android": [
+        "android-patterns|Onboarding"
+      ]
+    },
+    "patterns|Feature introduction": {
+      "ios": [
+        "ios-patterns|Onboarding"
+      ],
+      "android": [
+        "android-patterns|Onboarding"
+      ]
+    },
+    "overlays|Help panel": {
+      "ios": [
+        "ios-patterns|Offering help"
+      ],
+      "android": [
+        "android-overlays|Consistent help"
+      ]
+    },
+    "actions|Share": {
+      "ios": [
+        "ios-specialized|Collaboration and sharing"
+      ],
+      "android": [
+        "android-specialized|Share"
+      ]
+    },
+    "patterns|Walkthrough": {
+      "ios": [
+        "ios-patterns|Onboarding"
+      ],
+      "android": [
+        "android-patterns|Onboarding"
+      ]
+    }
+  }
+}

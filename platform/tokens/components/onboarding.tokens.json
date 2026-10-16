@@ -1,0 +1,10 @@
+{
+  "$description": "Onboarding: component spacing roles.",
+  "plx-comp": {
+    "onboarding-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Onboarding: space between composed regions."
+    }
+  }
+}

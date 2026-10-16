@@ -1,0 +1,10 @@
+{
+  "$description": "PermissionsEditor: component spacing roles.",
+  "plx-comp": {
+    "permissions-editor-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "PermissionsEditor: space between composed regions."
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$description": "FeatureIntro: component spacing roles.",
+  "plx-comp": {
+    "feature-intro-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "FeatureIntro: space between composed regions."
+    }
+  }
+}
