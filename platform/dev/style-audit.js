@@ -67,6 +67,9 @@
   }
   // the first length in a value that is not on the grid (var(…) references are tokens; a percentage is a proportion)
   function offGrid(value, el, property) {
+    // Native vertical extents include token-sized rows and thin separators. Only widths must land on the grid
+    // (owner, 2026-10-16); source checks still forbid arbitrary literal inline styles.
+    if (/^(?:height|min-height|max-height|padding-top|padding-bottom)$/.test(property) && el.matches && el.matches('.tabulator, .tabulator-tableholder, .tabulator-table') && el.closest('.plx-data-table') && /^(?:0|\d+(?:\.\d+)?px|calc\((?:100% - )?\d+(?:\.\d+)?px\))$/.test(String(value).trim())) return null;
     var v = String(value).replace(/var\([^()]*(\([^()]*\)[^()]*)*\)/g, ' '), step = gridStep(el), m, re = /(-?\d*\.?\d+)(px|rem|em|pt|pc|vh|vw|vmin|vmax|ch|ex|cm|mm|in)(?![\w-])/gi;
     while ((m = re.exec(v))) {
       var n = parseFloat(m[1]);

@@ -931,7 +931,7 @@ export function TableEngine(props) {
   const shape = JSON.stringify(columns.map((c) => Object.keys(c).sort().map((k) => (typeof c[k] === 'function' ? k + '()' : k + '=' + JSON.stringify(c[k])))));
 
   React.useEffect(() => {
-    let alive = true, table = null, unfloat = null, drawFrame = 0;
+    let alive = true, table = null, unfloat = null, unfocus = null, drawFrame = 0;
     builtRef.current = false; measured.current = false;
     // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
     // (a frame that loaded again meanwhile) gets no grid
@@ -1062,7 +1062,7 @@ export function TableEngine(props) {
       const initialView = isStatic ? null : openingView(p, opts, host);
       if (virtual && p.height && p.height !== '100%') {
         const px=tablePx(p.height,host), header=tablePx('--plx-comp-data-table-height',host), line=tablePx('--plx-comp-data-table-line-width',host);
-        if (px) opts.height='calc('+px+'px + '+header+'px + '+line+'px)';
+        if (px) opts.maxHeight='calc('+px+'px + '+header+'px + '+line+'px)';
       } else if (virtual) opts.maxHeight='100%';
       Tabulator.extendModule('filter','filters',{plxBytes:(query,value)=>byteMatches(query,value)});
       table = new Tabulator(host, opts);
@@ -1129,10 +1129,16 @@ export function TableEngine(props) {
         aria(); builtRef.current = true; narrowRef.current?.(); fitRoom(); syncFoot(table); watchEnd(table);
         // the body's scrollbars float over the rows and take no room (owner, 2026-10-15)
         if (!unfloat) unfloat = floatingScroll(host, host.querySelector('.tabulator-tableholder'));
-        host.querySelector('.tabulator-tableholder')?.addEventListener('scroll',()=>{
+        const holder=host.querySelector('.tabulator-tableholder');
+        // Remember focus before native visibility/scroll redraws can detach its row.
+        const rememberFocus=event=>{
           const focused=host.ownerDocument.activeElement;
-          if (focused && focused.closest('.tabulator-row') && host.contains(focused)) table.rowManager.renderer.plxFocus=focused;
-        },{capture:true,passive:true});
+          if(focused && focused.closest('.tabulator-row') && host.contains(focused)) table.rowManager.renderer.plxFocus=focused;
+          else if(event.type==='focusin') table.rowManager.renderer.plxFocus=null;
+        };
+        holder?.addEventListener('scroll',rememberFocus,{capture:true,passive:true});
+        host.addEventListener('focusin',rememberFocus);
+        unfocus=()=>{holder?.removeEventListener('scroll',rememberFocus,true);host.removeEventListener('focusin',rememberFocus);};
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h && !(ev === 'rowClick' && a[0].target.closest(INTERACTIVE))) h(...a); }));
         const selectionChanged = (activeRows = rowsOf(table, 'active')) => {
@@ -1231,7 +1237,7 @@ export function TableEngine(props) {
     win.addEventListener('beforeprint', beforePrint); win.addEventListener('afterprint', afterPrint);
 
     return () => {
-      alive = false; if (drawFrame) win.cancelAnimationFrame(drawFrame); mo.disconnect(); if (unfloat) unfloat(); if (ro) ro.disconnect(); if (frame) cancelAnimationFrame(frame); builtRef.current = false;
+      alive = false; if (drawFrame) win.cancelAnimationFrame(drawFrame); mo.disconnect(); if (unfloat) unfloat(); if (unfocus) unfocus(); if (ro) ro.disconnect(); if (frame) cancelAnimationFrame(frame); builtRef.current = false;
       win.removeEventListener('beforeprint', beforePrint); win.removeEventListener('afterprint', afterPrint); win.removeEventListener('resize', onWindow);
       if (ioRef.current) { ioRef.current.disconnect(); ioRef.current = null; }
       if (table) { try { table.destroy(); } catch (e) { /* already gone */ } }

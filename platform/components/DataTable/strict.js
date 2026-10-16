@@ -145,8 +145,12 @@ export function virtualPrint(table, on) {
     table.options.renderVertical='basic';table.options.maxHeight=false;table.setHeight(false);
   } else if(table.plxPrint){
     const saved=table.plxPrint;
-    table.options.renderVertical=saved.renderer;table.options.maxHeight=saved.max;table.setHeight(saved.height);
-    rm.fixedHeight=saved.fixed;rm.element.scrollTop=saved.top;delete table.plxPrint;
+    table.options.renderVertical=saved.renderer;table.options.maxHeight=saved.max;table.options.height=saved.height;
+    if(!saved.height)table.element.style.removeProperty('height');
+    // Restore max-height mode before the first native draw, rather than drawing once with print's full height.
+    ['height','min-height','max-height'].forEach(p=>rm.element.style.removeProperty(p));
+    rm.initializeRenderer();rm.fixedHeight=saved.fixed;table.redraw();
+    rm.element.scrollTop=saved.top;delete table.plxPrint;
   }
 }
 

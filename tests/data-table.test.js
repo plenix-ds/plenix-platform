@@ -103,6 +103,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       try {
         render({});await wait();
         check(JSON.stringify(order())===JSON.stringify(initial),'saved order includes hidden columns on first draw');
+        check(host.querySelector('.tabulator-tableholder').clientHeight<400,'few records preserve maximum-height sizing without an empty viewport');
         check(!table.getColumn('a').isVisible()&&!table.getColumn('b').isVisible(),'saved visibility on first draw');
         check(table.getColumn('a').getWidth()===160&&table.getColumn('b').getWidth()===240,'saved widths on first draw');
         check(table.getSorters()[0]?.field==='a'&&table.getSorters()[0]?.dir==='asc','saved initial sort');
@@ -127,8 +128,10 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         check(drawn()===600,'native print includes every loaded record');
         window.dispatchEvent(new Event('afterprint'));await wait();
         check(drawn()>0&&drawn()<600,'native renderer restores its virtual window after print');
-        const holder=host.querySelector('.tabulator-tableholder');holder.focus();holder.scrollTop=10000;await wait();await wait();
-        check(document.activeElement===holder&&+host.querySelector('.tabulator-row').getAttribute('aria-rowindex')>2,'native scrolling retains focus and logical row positions');
+        // Reveal the fixture before measuring a scroll: native Tabulator redraws once on first visibility.
+        host.scrollIntoView({block:'start'});await wait();await wait();
+        const holder=host.querySelector('.tabulator-tableholder');holder.focus({preventScroll:true});holder.scrollTop=10000;await wait();await wait();
+        check(document.activeElement===holder&&+host.querySelector('.tabulator-row').getAttribute('aria-rowindex')>2,'native scrolling retains focus and logical row positions '+JSON.stringify({active:document.activeElement?.className,scroll:holder.scrollTop,index:host.querySelector('.tabulator-row')?.getAttribute('aria-rowindex'),renderer:table.options.renderVertical}));
         host.style.inlineSize='320px';render({columns:[{field:'a',title:'First',width:240,frozen:true},{field:'b',title:'Second',width:240,frozen:true},{field:'c',title:'Third',width:240}],hiddenColumns:[],columnOrder:['a','b','c']});await wait();await wait();
         const scroller=host.querySelector('.tabulator-tableholder'),cell=()=>host.querySelector('.tabulator-row [tabulator-field="a"]'),left=cell().getBoundingClientRect().left;
         scroller.scrollLeft=200;await wait();check(Math.abs(cell().getBoundingClientRect().left-left)<1,'virtual rows clip content without trapping frozen columns');host.style.removeProperty('inline-size');
@@ -378,7 +381,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     const state = () => page.evaluate(() => { const a = document.activeElement; return { role: a && a.getAttribute('role'), label: a && (a.getAttribute('aria-label') || a.textContent.trim().slice(0, 30)), expanded: a && a.getAttribute('aria-expanded'), live: Array.from(document.querySelectorAll('[aria-live]')).map((x) => x.textContent).join(' ') }; });
     const wait = () => new Promise((r) => setTimeout(r, 300));
     if (!bad.length) {
-      await page.evaluate(() => document.querySelector('main .plx-data-table .tabulator-group').focus());
+      await page.evaluate(() => document.querySelector('main .plx-data-table .tabulator-group').focus()); await wait();
       const s0 = await state();
       if (s0.role !== 'row' || s0.expanded !== 'true') bad.push('a group row is a focusable row with aria-expanded="true" (' + JSON.stringify(s0) + ')');
       await page.keyboard.press('Enter'); await wait();
