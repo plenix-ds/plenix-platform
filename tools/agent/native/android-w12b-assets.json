@@ -1,0 +1,280 @@
+{
+  "android-data-display|Collection": {
+    "summary": "Browse images in responsive columns or justified rows, with optional full-screen preview.",
+    "variants": [
+      {
+        "name": "AssetGallery: Masonry",
+        "web": "specialized|Asset gallery",
+        "compose": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "views": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+      },
+      {
+        "name": "AssetGallery: Justified",
+        "web": "specialized|Asset gallery",
+        "compose": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "views": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+      },
+      {
+        "name": "AssetGallery: With lightbox",
+        "web": "specialized|Asset gallery",
+        "compose": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "views": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+      },
+      {
+        "name": "RelatedAssets: Strip",
+        "web": "specialized|Related assets",
+        "compose": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "views": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "use": "Offer related assets in a manual carousel or a responsive card grid."
+      },
+      {
+        "name": "RelatedAssets: Grid",
+        "web": "specialized|Related assets",
+        "compose": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "views": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "use": "Offer related assets in a manual carousel or a responsive card grid."
+      }
+    ],
+    "anatomy": [
+      "ContentGrid layout",
+      "Named MediaCards",
+      "Optional MediaViewer",
+      "Named collection",
+      "MediaCards with real links or callbacks",
+      "Manual carousel controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension."
+      }
+    ],
+    "states": [
+      {
+        "name": "AssetGallery recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      },
+      {
+        "name": "RelatedAssets recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Bind Material controls to the retained screen model.",
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.title)",
+        "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "// Retain editable values in the ViewModel.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "android-feedback|Progress indicators": {
+    "summary": "Review download jobs and explicitly retry, cancel or open their results.",
+    "variants": [
+      {
+        "name": "DownloadManager: Panel",
+        "web": "specialized|Download manager",
+        "compose": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "views": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "use": "Review download jobs and explicitly retry, cancel or open their results."
+      },
+      {
+        "name": "DownloadManager: Progress",
+        "web": "specialized|Download manager",
+        "compose": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "views": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "use": "Review download jobs and explicitly retry, cancel or open their results."
+      },
+      {
+        "name": "DownloadManager: Ready",
+        "web": "specialized|Download manager",
+        "compose": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "views": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "use": "Review download jobs and explicitly retry, cancel or open their results."
+      }
+    ],
+    "anatomy": [
+      "Named panel or list",
+      "FileRow per job",
+      "Progress and status",
+      "Retry, Cancel and ready file link"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension."
+      }
+    ],
+    "states": [
+      {
+        "name": "DownloadManager recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Bind Material controls to the retained screen model.",
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.title)",
+        "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "// Retain editable values in the ViewModel.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "android-specialized|Media player": {
+    "summary": "Play authorized audio and video with native controls, captions and a seekable transcript.",
+    "variants": [
+      {
+        "name": "MediaPlayer: Video",
+        "web": "specialized|Video player",
+        "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Audio",
+        "web": "specialized|Video player",
+        "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Captions",
+        "web": "specialized|Video player",
+        "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Transcript",
+        "web": "specialized|Video player",
+        "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Playback rate",
+        "web": "specialized|Video player",
+        "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Picture in picture",
+        "web": "specialized|Video player",
+        "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      }
+    ],
+    "anatomy": [
+      "Native video or audio control",
+      "WebVTT caption tracks",
+      "Playback speed",
+      "Transcript toggle and timed segments",
+      "Optional picture in picture"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension."
+      }
+    ],
+    "states": [
+      {
+        "name": "MediaPlayer recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Bind Material controls to the retained screen model.",
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.title)",
+        "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "// Retain editable values in the ViewModel.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "android-patterns|Form": {
+    "summary": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection.",
+    "variants": [
+      {
+        "name": "MetadataEditor: Inline",
+        "web": "specialized|Metadata editor",
+        "compose": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "views": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+      },
+      {
+        "name": "MetadataEditor: Form",
+        "web": "specialized|Metadata editor",
+        "compose": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "views": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+      },
+      {
+        "name": "MetadataEditor: Bulk",
+        "web": "specialized|Metadata editor",
+        "compose": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "views": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+      }
+    ],
+    "anatomy": [
+      "Schema-defined fields",
+      "InlineEdit or form controls",
+      "Bulk apply checkboxes",
+      "Save, Reset and feedback"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension."
+      }
+    ],
+    "states": [
+      {
+        "name": "MetadataEditor recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Bind Material controls to the retained screen model.",
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.title)",
+        "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+        "}"
+      ],
+      "views": [
+        "// Retain editable values in the ViewModel.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  }
+}

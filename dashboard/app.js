@@ -2637,14 +2637,13 @@ exports.ProjectsSidebar = ProjectsSidebar;
 exports.projectScreen = void 0;
 var _plenixPlatform = require("plenix-platform");
 var _shared = require("../suite/shared.jsx");
-/* Plenix · projects (projects/projects.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · projects (projects/projects.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: the projects in the shell's NavPane, a project's capabilities in a SecondaryPane, its home as a record page
    header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a DataTable, the
    capabilities to come as EmptyStates, and the new-project dialog from Fields, Fieldsets and Checkboxes.
    Screens (Platforms Standard 4.3): a project and its capability (#/project/<id>/<capability>, e.g. #/project/3/tasks), a
    history entry each, on the projects page and on the dashboard. The new-project dialog asks before closing with
    unsaved entries (useUnsavedGuard). */
-
 const {
   useState
 } = React;
@@ -2701,10 +2700,20 @@ function ProjectsSidebar({
   onSelect,
   onSettings
 }) {
-  const [search, setSearch] = useState('');
-  const [filterCat, setFilterCat] = useState('all');
-  const [sort, setSort] = useState('name');
-  const [showFilters, setShowFilters] = useState(false);
+  const collection = (0, _plenixPlatform.useCollectionView)([{
+    value: 'category',
+    label: 'Filter',
+    kind: 'select',
+    get: p => p.tags[0]
+  }], {
+    text: p => p.name,
+    quick: {
+      category: 'list'
+    }
+  });
+  const search = collection.search;
+  const filterCat = (collection.quick.category || [])[0] || 'all';
+  const sort = collection.sort.length ? collection.sort[0].field : 'name';
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
   const [newClient, setNewClient] = useState('__none__');
@@ -2724,9 +2733,7 @@ function ProjectsSidebar({
     if (n.has(id)) n.delete(id);else n.add(id);
     return n;
   });
-  let visible = projects;
-  if (search.trim()) visible = visible.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
-  if (filterCat !== 'all') visible = visible.filter(p => p.tags[0] === filterCat);
+  let visible = projects.filter(collection.test);
   if (sort === 'name') visible = [...visible].sort((a, b) => a.name.localeCompare(b.name));else if (sort === 'status') visible = [...visible].sort((a, b) => a.status.localeCompare(b.status));
   const grouped = filterCat === 'all' && !search.trim();
   const groups = {};
@@ -2760,59 +2767,63 @@ function ProjectsSidebar({
       pressed: !!(selected && selected.id === p.id),
       icon: "briefcase",
       onClick: () => onSelect(p)
-    })),
-    actions: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-      size: "xs",
-      iconOnly: true,
-      icon: "filter",
-      label: "Filter & sort",
-      pressed: showFilters,
-      onClick: () => setShowFilters(f => !f)
-    }), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-      size: "xs",
-      iconOnly: true,
-      icon: "plus",
-      label: "New project",
-      onClick: () => {
+    }))
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
+    label: "Projects",
+    narrow: true,
+    sticky: false,
+    count: visible.length + ' projects',
+    actions: [{
+      id: 'new',
+      icon: 'plus',
+      label: 'New project',
+      onSelect: () => {
         setNewName('');
         setNewClient('__none__');
         setNewBilling('Time & materials');
         setNewCaps(new Set(window.DEFAULT_CAPS));
         setShowNew(true);
       }
-    }))
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
-    value: search,
-    onChange: e => setSearch(e.target.value),
-    onClear: () => setSearch(''),
-    placeholder: "Search projects...",
-    label: "Search projects"
-  }), showFilters ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "sm"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
-    label: "Filter",
-    layout: "inline",
-    labelWidth: "sm"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
-    value: filterCat,
-    onChange: e => setFilterCat(e.target.value)
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "all"
-  }, "All categories"), allCats.map(c => /*#__PURE__*/React.createElement("option", {
-    key: c,
-    value: c
-  }, labels[c] || c)))), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
-    label: "Sort",
-    layout: "inline",
-    labelWidth: "sm"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
-    value: sort,
-    onChange: e => setSort(e.target.value)
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "name"
-  }, "Name A\u2013Z"), /*#__PURE__*/React.createElement("option", {
-    value: "status"
-  }, "Status")))) : null, grouped ? /*#__PURE__*/React.createElement(_plenixPlatform.NavList, {
+    }],
+    find: /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarSearch, _extends({}, collection.searchProps, {
+      placeholder: "Search projects...",
+      label: "Search projects"
+    })),
+    view: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Menu, {
+      trigger: /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarButton, {
+        icon: "filter",
+        label: "Filter",
+        active: filterCat !== 'all',
+        caret: true
+      })
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.MenuRadioGroup, {
+      label: "Filter",
+      value: filterCat,
+      onChange: value => collection.setQuick('category', value === 'all' ? [] : [value])
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.MenuItem, {
+      value: "all"
+    }, "All categories"), allCats.map(c => /*#__PURE__*/React.createElement(_plenixPlatform.MenuItem, {
+      key: c,
+      value: c
+    }, labels[c] || c)))), /*#__PURE__*/React.createElement(_plenixPlatform.Menu, {
+      trigger: /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarButton, {
+        icon: "sort",
+        label: "Sort",
+        caret: true
+      })
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.MenuRadioGroup, {
+      label: "Sort",
+      value: sort,
+      onChange: field => collection.setSort([{
+        field,
+        dir: 'asc'
+      }])
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.MenuItem, {
+      value: "name"
+    }, "Name A\u2013Z"), /*#__PURE__*/React.createElement(_plenixPlatform.MenuItem, {
+      value: "status"
+    }, "Status"))))
+  }), grouped ? /*#__PURE__*/React.createElement(_plenixPlatform.NavList, {
     label: "Projects",
     value: selected ? selected.id : undefined,
     onSelect: pick,

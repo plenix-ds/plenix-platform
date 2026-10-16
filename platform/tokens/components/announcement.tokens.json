@@ -1,0 +1,10 @@
+{
+  "$description": "Announcement: spacing between regions.",
+  "plx-comp": {
+    "announcement-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Announcement: region spacing."
+    }
+  }
+}

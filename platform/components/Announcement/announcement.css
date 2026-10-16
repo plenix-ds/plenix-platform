@@ -1,0 +1,2 @@
+/* Plenix · Announcement: composed regions use existing spacing roles. */
+.plx-announcement{row-gap:var(--plx-comp-announcement-gap);}

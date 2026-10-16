@@ -605,6 +605,7 @@ object PlenixComponent {
     val navListItemPaddingInline = 8.dp
     val navListItemRadius = 6.dp
     val navPaneWidth = 240.dp
+    val productCardRadius = 12.dp
     const val progressBarFillDuration = 200
     val progressBarFillRadius = 9999.dp
     const val progressBarIndeterminateFillAnimationDuration = 1400

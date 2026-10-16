@@ -62,7 +62,7 @@ export function Text({ as: As = 'span', variant = 'body', truncate = false, line
   if (expandable && clamp) {
     return <ExpandableText As={As} variant={variant} clamp={clamp} defaultExpanded={defaultExpanded} tabular={tabular} strings={strings} className={className} rest={rest}>{children}</ExpandableText>;
   }
-  return <As className={textClass(variant, truncate, clamp, false, tabular, className)} {...rest}>{children}</As>;
+  return <As dir="auto" className={textClass(variant, truncate, clamp, false, tabular, className)} {...rest}>{children}</As>;
 }
 
 // a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
@@ -85,7 +85,7 @@ function ExpandableText({ As, variant, clamp, defaultExpanded, tabular, strings,
   const words = Object.assign({}, STRINGS, strings);
   return (
     <div className="plx-text-expand">
-      <As {...rest} ref={ref} id={id} className={textClass(variant, false, clamp, open, tabular, className)}>{children}</As>
+      <As dir="auto" {...rest} ref={ref} id={id} className={textClass(variant, false, clamp, open, tabular, className)}>{children}</As>
       {open || cut ? (
         <Button size="2xs" iconEnd={open ? 'chevron-up' : 'chevron-down'} aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
           {open ? words.less : words.more}

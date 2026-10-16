@@ -1,0 +1,108 @@
+{
+  "android-data-display|Card": {
+    "summary": "A Plenix product card on Android is the Material 3 OutlinedCard of the Plenix card, holding one product: its picture at 1:1, the name as the card’s one TalkBack stop, the price in DM Mono with the old price struck through on sale, the rating, and Add to cart as its own button. Sale and Out of stock are Plenix badges with their icon. Material’s default card has no price role; Plenix keeps the card’s ripple and semantics and sets prices in the data font.",
+    "variants": [
+      { "name": "Product card", "material": "Outlined card with media and an action", "web": "data-display|Product card", "background": "plx-comp-product-card-background", "content": "plx-comp-product-card-title-text", "border": "plx-comp-product-card-border-color", "compose": "PlenixProductCard(product, onClick = open, onAddToCart = add): an OutlinedCard with an AsyncImage, the name, the price row and a Button", "views": "MaterialCardView with a ShapeableImageView, two TextViews and a MaterialButton", "use": "One product in a catalog grid (LazyVerticalGrid) or a list." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Picture", "about": "The product at 1:1, ContentScale.Crop, with the sunken fill while it loads." },
+      { "part": "B", "name": "Badges", "about": "Sale and Out of stock, each a Plenix badge with its icon and its word." },
+      { "part": "C", "name": "Price", "about": "The price in DM Mono; on sale the old price after it, struck through and muted." },
+      { "part": "D", "name": "Action", "about": "Add to cart, its own button; disabled with its reason when out of stock." }
+    ],
+    "attributes": [
+      { "part": "C", "attribute": "Price in the data font", "token": "plx-comp-product-card-price-font-family", "value": "A price is a technical value: DM Mono (the data role)", "material": "Body large", "compose": "Text(price, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)", "views": "priceView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)" },
+      { "part": "C", "attribute": "Old price on sale", "token": "plx-comp-product-card-compare-text", "value": "The muted content color, struck through, read as “was” by TalkBack", "material": "None", "compose": "Text(old, color = PlenixColors.contentMuted.current(), textDecoration = TextDecoration.LineThrough, modifier = Modifier.semantics { contentDescription = \"was $old\" })", "views": "oldView.paintFlags = oldView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG" },
+      { "part": "A", "attribute": "Card surface and corners", "token": "plx-comp-product-card-radius", "value": "The raised surface, the default border and the card corners (PlenixRadius.radiusCard12px)", "material": "Medium shape", "compose": "OutlinedCard(shape = RoundedCornerShape(PlenixRadius.radiusCard12px), colors = CardDefaults.outlinedCardColors(containerColor = PlenixColors.surfaceRaised.current()))", "views": "card.radius = PlenixRadius.radiusCard12px; card.setCardBackgroundColor(PlenixColors.surfaceRaised.current())" }
+    ],
+    "states": [
+      { "state": "Out of stock", "token": "plx-comp-product-card-background", "compose": "the action Button enabled = false with contentDescription naming why; the card still opens", "views": "button.isEnabled = false; button.contentDescription set to the reason" },
+      { "state": "Pressed", "token": "plx-comp-product-card-hover-shadow", "compose": "the card’s ripple", "views": "the card’s ripple foreground" }
+    ],
+    "code": {
+      "compose": [
+        "@Composable",
+        "fun PlenixProductCard(p: Product, onClick: () -> Unit, onAddToCart: () -> Unit) {",
+        "    OutlinedCard(onClick = onClick, shape = RoundedCornerShape(PlenixRadius.radiusCard12px)) {",
+        "        AsyncImage(model = p.image, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.aspectRatio(1f))",
+        "        Column(Modifier.padding(PlenixSpace.spaceInlineSm), verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+        "            Text(p.title, maxLines = 2)",
+        "            Text(p.price, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
+        "            OutlinedButton(onClick = onAddToCart, enabled = !p.outOfStock) { Text(\"Add to cart\") }",
+        "        }",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "card.radius = PlenixRadius.radiusCard12px",
+        "priceView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+        "addButton.isEnabled = !product.outOfStock"
+      ]
+    }
+  },
+  "android-forms|Radio group": {
+    "summary": "Plenix on Android chooses a product’s size the way the web’s size buttons do: a row of selectable chips that act as one radio group, the chosen size named beside the option (“Size: M”), and a size out of stock kept in view, disabled, with its note. Material’s default for one choice from a few is a radio group or filter chips; Plenix uses chips with selectableGroup semantics so TalkBack reads them as radio buttons.",
+    "variants": [
+      { "name": "Product size", "material": "Filter chips as a radio group", "web": "specialized|Product options", "background": "plx-comp-radio-tile-background", "content": "plx-comp-radio-tile-label-text", "border": "plx-comp-radio-tile-border-color", "compose": "Row(Modifier.selectableGroup()) { sizes.forEach { FilterChip(selected, onClick, enabled = it.available, modifier = Modifier.semantics { role = Role.RadioButton }) } }", "views": "ChipGroup with isSingleSelection and isSelectionRequired; a Chip per size, isEnabled for its stock", "use": "A product’s sizes, one chosen." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Option name", "about": "Size and the chosen value." },
+      { "part": "B", "name": "Size chips", "about": "One per size, one chosen; a size out of stock is disabled." },
+      { "part": "C", "name": "Note", "about": "Why a size is missing, under the chips." }
+    ],
+    "attributes": [
+      { "part": "B", "attribute": "Chosen size", "token": "plx-comp-radio-tile-selected-border-color", "value": "The action color marks the chosen chip (PlenixColors.actionPrimaryBackground)", "material": "Selected container", "compose": "FilterChipDefaults.filterChipBorder(selectedBorderColor = PlenixColors.actionPrimaryBackground.current(), enabled = true, selected = true)", "views": "chip.chipStrokeColor = a ColorStateList with PlenixColors.actionPrimaryBackground for the checked state" },
+      { "part": "A", "attribute": "Chosen value beside the name", "token": "plx-comp-product-options-chosen-text", "value": "The muted content color after “Size:”", "material": "None", "compose": "Text(buildAnnotatedString { append(\"Size: \"); withStyle(SpanStyle(color = PlenixColors.contentMuted.current())) { append(size) } })", "views": "a SpannableString with a ForegroundColorSpan of PlenixColors.contentMuted" }
+    ],
+    "states": [
+      { "state": "Out of stock", "token": "plx-comp-radio-tile-disabled-opacity", "compose": "enabled = false and the note as the chip’s stateDescription", "views": "chip.isEnabled = false" },
+      { "state": "Nothing chosen", "token": "plx-comp-product-options-error-text", "compose": "an error Text under the chips in PlenixColors.feedbackDangerSolid, announced as a live region", "views": "an error TextView with accessibilityLiveRegion polite" }
+    ],
+    "code": {
+      "compose": [
+        "Row(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineSm)) {",
+        "    sizes.forEach { s ->",
+        "        FilterChip(selected = size == s.value, onClick = { size = s.value }, enabled = s.available, label = { Text(s.label) },",
+        "            modifier = Modifier.semantics { role = Role.RadioButton })",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "chipGroup.isSingleSelection = true",
+        "chipGroup.isSelectionRequired = true"
+      ]
+    }
+  },
+  "android-patterns|Step flow": {
+    "summary": "Plenix on Android runs checkout as a step flow, as the web’s Checkout does with the Wizard: contact, delivery, payment and review, one screen each with the step count in the top app bar, Back keeping every answer, and Place order on the review. The order summary is a bottom sheet the total opens. Payment fields use the autofill hints for cards and the number keyboard; the template collects them and hands them to the payment provider, never keeping them.",
+    "variants": [
+      { "name": "Checkout", "material": "A multi-step flow with a top app bar and a bottom action", "web": "specialized|Checkout", "background": "plx-sys-surface-default", "content": "plx-sys-content-default", "border": null, "compose": "NavHost of four step screens, each a Scaffold with the step in the TopAppBar and Next or Place order in the bottom bar", "views": "A ViewPager2 of step fragments with a MaterialToolbar and a bottom MaterialButton", "use": "Turning a cart into an order in a few steps." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Step count", "about": "“Step 2 of 4, Delivery” in the top app bar." },
+      { "part": "B", "name": "Fields", "about": "Grouped, each with its autofill hint and keyboard type." },
+      { "part": "C", "name": "Total", "about": "In DM Mono in the bottom bar; it opens the order summary sheet." },
+      { "part": "D", "name": "Action", "about": "Next, then Place order on the review." }
+    ],
+    "attributes": [
+      { "part": "C", "attribute": "Total in the data font", "token": "plx-comp-commerce-summary-value-font-family", "value": "Amounts are technical values: DM Mono (the data role)", "material": "Title medium", "compose": "Text(total, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)", "views": "totalView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)" },
+      { "part": "B", "attribute": "Card number field", "token": "plx-comp-input-border-color", "value": "The outlined field with the card autofill hint and the number keyboard; the border alone changes on focus or error", "material": "OutlinedTextField", "compose": "OutlinedTextField(number, onNumber, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.semantics { contentType = ContentType.CreditCardNumber })", "views": "editText.setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER); editText.inputType = InputType.TYPE_CLASS_NUMBER" }
+    ],
+    "states": [
+      { "state": "Placing the order", "token": "plx-sys-content-default", "compose": "the Place order button shows a progress indicator and is disabled until the page answers", "views": "button.isEnabled = false with a CircularProgressIndicator" },
+      { "state": "Declined", "token": "plx-sys-feedback-danger-solid", "compose": "an error message above the payment fields, every field kept, announced", "views": "an error TextView with accessibilityLiveRegion assertive" }
+    ],
+    "code": {
+      "compose": [
+        "Scaffold(",
+        "    topBar = { TopAppBar(title = { Text(\"Step ${step + 1} of 4, ${steps[step]}\") }) },",
+        "    bottomBar = { BottomAppBar { Text(total, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize); Spacer(Modifier.weight(1f)); Button(onClick = next) { Text(if (last) \"Place order\" else \"Next\") } } }",
+        ") { padding -> StepContent(step, Modifier.padding(padding)) }"
+      ],
+      "views": [
+        "toolbar.title = \"Step \" + (step + 1) + \" of 4, \" + steps[step]",
+        "totalView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,2 @@
+/* Plenix · DownloadManager: composed regions use existing spacing roles. */
+.plx-download-manager{row-gap:var(--plx-comp-download-manager-gap);}

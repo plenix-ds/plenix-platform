@@ -1,0 +1,20 @@
+{
+  "$description": "ImageAnnotation spacing roles.",
+  "plx-comp": {
+    "image-annotation-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Space between ImageAnnotation regions."
+    },
+    "image-annotation-region-width": {
+      "$value": "{plx-sys.field-width-xs}",
+      "$type": "dimension",
+      "$description": "Region marker uses the existing narrow field width."
+    },
+    "image-annotation-region-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension",
+      "$description": "Region marker minimum height from the existing large control role."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$description": "Library part w13A (wave 13, lane A): the iOS and Android counterparts of commerce. The product card is a card in a collection (Collections and Lockups on iOS; Card and Collection on Android); product options are segmented choices, color choices and a stepper (Segmented controls, Color wells and Steppers on iOS; Radio group and Tabs and segmented buttons on Android); discovery and listing are search and a collection (Searching and Collections on iOS; Search screen and Search and filters on Android); product detail and the order confirmation are detail screens; the cart and order management are lists and tables; checkout, payment and returns are step flows and forms with Apple Pay and Wallet on iOS; subscription management is In-App Purchase on iOS and a settings screen on Android. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "data-display|Product card": { "ios": ["ios-data-display|Collections", "ios-data-display|Lockups"], "android": ["android-data-display|Card", "android-data-display|Collection"] },
+    "specialized|Product options": { "ios": ["ios-forms|Segmented controls", "ios-forms|Color wells", "ios-forms|Steppers"], "android": ["android-forms|Radio group", "android-navigation|Tabs and segmented buttons"] },
+    "specialized|Product discovery": { "ios": ["ios-navigation|Searching", "ios-data-display|Collections"], "android": ["android-navigation|Search screen", "android-navigation|Search and filters"] },
+    "specialized|Product listing": { "ios": ["ios-data-display|Collections", "ios-data-display|Lists and tables"], "android": ["android-data-display|Collection", "android-navigation|Search and filters"] },
+    "specialized|Product detail": { "ios": ["ios-layout|Scroll views", "ios-navigation|Page controls"], "android": ["android-screen-structures|Detail", "android-data-display|Carousel"] },
+    "specialized|Cart": { "ios": ["ios-data-display|Lists and tables", "ios-forms|Steppers"], "android": ["android-data-display|List", "android-actions|Swipe to dismiss"] },
+    "specialized|Checkout": { "ios": ["ios-specialized|Apple Pay", "ios-forms|Entering data"], "android": ["android-patterns|Step flow", "android-forms|Form screen"] },
+    "specialized|Payment": { "ios": ["ios-specialized|Apple Pay", "ios-specialized|Wallet"], "android": ["android-forms|Form screen", "android-forms|Keyboard types"] },
+    "specialized|Order confirmation": { "ios": ["ios-feedback|Feedback"], "android": ["android-feedback|Error state", "android-screen-structures|Detail"] },
+    "specialized|Order management": { "ios": ["ios-data-display|Lists and tables", "ios-data-display|Outline views"], "android": ["android-data-display|Data table", "android-actions|Multiple selection"] },
+    "specialized|Subscription management": { "ios": ["ios-specialized|Apple In-App Purchase", "ios-patterns|Managing accounts"], "android": ["android-screen-structures|Settings"] },
+    "specialized|Returns": { "ios": ["ios-forms|Entering data", "ios-patterns|Managing accounts"], "android": ["android-patterns|Step flow", "android-patterns|Form"] }
+  }
+}

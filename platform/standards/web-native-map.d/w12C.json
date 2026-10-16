@@ -1,0 +1,61 @@
+{
+  "$description": "File selection, document and version counterparts.",
+  "map": {
+    "forms|Attachment picker": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "specialized|File picker": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "specialized|Renditions and derivatives": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "specialized|Document viewer": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "specialized|Version history": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "specialized|Asset picker": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "forms|Media picker": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    }
+  }
+}

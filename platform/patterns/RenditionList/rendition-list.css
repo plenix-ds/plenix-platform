@@ -1,0 +1,4 @@
+/* Plenix · RenditionList: existing Platform roles, no new surfaces. */
+.plx-rendition-list{row-gap:var(--plx-comp-rendition-list-gap);}
+
+.plx-rendition-list__item{font-family:var(--plx-comp-rendition-list-data-font);}

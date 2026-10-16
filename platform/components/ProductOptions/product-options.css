@@ -1,0 +1,24 @@
+/* Plenix · ProductOptions (platform/components/ProductOptions): the options of one product, stacked. Each option's name
+   and its chosen value ("Size: M"); size buttons (RadioTiles at the product's tile width), color swatches (ColorSwatch
+   buttons in a row; an out of stock one dimmed), the size guide link, an option's error line, and the quantity stepper
+   (NumberInput in a Field). Anatomy and API: ProductOptions.jsx. */
+.plx-product-options{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-product-options-gap);}
+.plx-product-options__option{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-product-options-option-gap);}
+/* the option's name and its chosen value */
+.plx-product-options__legend{color:var(--plx-comp-product-options-legend-text);font-family:var(--plx-comp-product-options-legend-font-family);font-size:var(--plx-comp-product-options-legend-font-size);line-height:var(--plx-comp-product-options-legend-line-height);}
+.plx-product-options__legend-text{column-gap:var(--plx-comp-product-options-legend-gap);display:inline-flex;flex-wrap:wrap;}
+.plx-product-options__label{font-weight:var(--plx-comp-product-options-label-font-weight);}
+.plx-product-options__chosen{color:var(--plx-comp-product-options-chosen-text);font-weight:var(--plx-comp-product-options-chosen-font-weight);}
+/* size buttons: RadioTiles with tiles as narrow as a size (its own tile width, set here for the product's sizes) */
+.plx-product-options .plx-product-options__sizes{--plx-comp-radio-tiles-min:var(--plx-comp-product-options-size-min);}
+.plx-product-options__sizes .plx-radio-tiles__legend{line-height:var(--plx-comp-product-options-legend-line-height);}
+/* color swatches */
+.plx-product-options__swatches{align-items:center;column-gap:var(--plx-comp-product-options-swatch-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-product-options-swatch-gap);}
+.plx-product-options__swatch{display:inline-flex;}
+.plx-product-options__swatch.is-unavailable{opacity:var(--plx-comp-product-options-unavailable-opacity);}
+.plx-product-options__swatch.is-unavailable .plx-color-swatch,.plx-product-options__swatch.is-unavailable .plx-color-swatch-label{cursor:not-allowed;}
+/* the size guide link, after the sizes */
+.plx-product-options__guide{display:flex;}
+/* an option's error: the danger text with its icon, under the option */
+.plx-product-options__error{align-items:center;color:var(--plx-comp-product-options-error-text);column-gap:var(--plx-comp-product-options-error-gap);display:flex;font-size:var(--plx-comp-product-options-error-font-size);}
+.plx-product-options.is-disabled .plx-product-options__swatches{opacity:var(--plx-comp-product-options-unavailable-opacity);}

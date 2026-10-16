@@ -2460,12 +2460,22 @@ const {
 function BookmarksScreen({
   screen
 }) {
-  const [col, setCol] = useState('all');
+  const collection = (0, _plenixPlatform.useCollectionView)([{
+    value: 'col',
+    label: 'Collections',
+    kind: 'select'
+  }], {
+    quick: {
+      col: 'list'
+    }
+  });
+  const col = (collection.quick.col || [])[0] || 'all';
+  const setCol = value => collection.setQuick('col', value === 'all' ? [] : [value]);
   const sel = screen.parts[0] === 'bookmark' ? +screen.parts[1] : null;
   const setSel = id => id === null ? screen.parent('/') : screen.open(['bookmark', id]);
   const [meta, setMeta] = useState({});
   const cols = ['all', ...new Set(_shared.ALL_BOOKMARKS.map(b => b.col))];
-  const filtered = col === 'all' ? _shared.ALL_BOOKMARKS : _shared.ALL_BOOKMARKS.filter(b => b.col === col);
+  const filtered = _shared.ALL_BOOKMARKS.filter(collection.test);
   const bookmark = _shared.ALL_BOOKMARKS.find(b => b.id === sel);
   return /*#__PURE__*/React.createElement("div", {
     className: "plx-page-panes"
@@ -2484,20 +2494,32 @@ function BookmarksScreen({
       icon: 'share',
       label: 'Share'
     }]
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    justify: "end"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    variant: "primary",
-    icon: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
-      name: "plus"
-    })
-  }, "Add")), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
-    label: "Collections"
-  }, cols.map(c => /*#__PURE__*/React.createElement(_plenixPlatform.Chip, {
-    key: c,
-    selected: col === c,
-    onClick: () => setCol(c)
-  }, c === 'all' ? 'All' : c))), /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
+    label: "Bookmarks",
+    sticky: false,
+    count: filtered.length + ' bookmarks',
+    actions: [{
+      id: 'add',
+      label: 'Add',
+      icon: 'plus',
+      primary: true
+    }],
+    view: /*#__PURE__*/React.createElement(_plenixPlatform.Menu, {
+      trigger: /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarButton, {
+        icon: "folder",
+        label: "Collections",
+        active: col !== 'all',
+        caret: true
+      })
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.MenuRadioGroup, {
+      label: "Collections",
+      value: col,
+      onChange: setCol
+    }, cols.map(c => /*#__PURE__*/React.createElement(_plenixPlatform.MenuItem, {
+      key: c,
+      value: c
+    }, c === 'all' ? 'All' : c))))
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "lg",
     label: "Bookmarks"
   }, filtered.map(b => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {

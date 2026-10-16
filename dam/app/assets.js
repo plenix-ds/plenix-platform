@@ -6491,16 +6491,12 @@ function HomePage() {
     actions: assetActions,
     onClear: () => setSelAssets([])
   };
-  // the Search workspace keeps its own selection bar (its toolbar is not the command bar)
-  const assetBulk = /*#__PURE__*/_react.default.createElement(_plenixPlatform.BulkActions, {
-    count: selAssets.length,
+  // Advanced Search shares the same commands and selection count in its results CommandBar.
+  const searchSelection = {
+    ...assetSel,
     total: D.ASSETS.length,
-    noun: "asset",
-    onSelectAll: () => setSelAssets(D.ASSETS.map(a => a.id)),
-    onClear: () => setSelAssets([]),
-    label: "Asset actions",
-    actions: assetActions
-  });
+    onSelectAll: () => setSelAssets(D.ASSETS.map(a => a.id))
+  };
   const found = (0, _findAssets.findAssets)(find);
   // Save search: keeps the query and filters under a name in the left navigation's Saved Searches
   const saveSearch = () => openDialog('saveSearchModal', {
@@ -6958,7 +6954,7 @@ function HomePage() {
       onChange: setMode
     },
     onSave: saveSearch,
-    bulk: assetBulk
+    selection: searchSelection
   }, content) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     as: "h2",
     id: "home-title",

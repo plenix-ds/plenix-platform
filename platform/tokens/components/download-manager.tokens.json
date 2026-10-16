@@ -1,0 +1,10 @@
+{
+  "$description": "DownloadManager: spacing between regions.",
+  "plx-comp": {
+    "download-manager-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "DownloadManager: region spacing."
+    }
+  }
+}

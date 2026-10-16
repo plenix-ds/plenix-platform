@@ -264,6 +264,9 @@
   --plx-sys-control-target-min: var(--plx-ref-control-size-24px);
 }
 :root {
+  --plx-sys-ai-gap: var(--plx-sys-space-inline-xs);
+}
+:root {
   --plx-sys-clipboard-feedback-duration: 2s;
 }
 :root {

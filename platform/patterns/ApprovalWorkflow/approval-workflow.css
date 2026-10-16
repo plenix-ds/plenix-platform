@@ -1,0 +1,2 @@
+/* Plenix · ApprovalWorkflow: composed regions use existing spacing roles. */
+.plx-approval-workflow{row-gap:var(--plx-comp-approval-workflow-gap);}

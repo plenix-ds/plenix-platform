@@ -1,0 +1,10 @@
+{
+  "$description": "Citation: component spacing roles.",
+  "plx-comp": {
+    "citation-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Citation: space between composed regions."
+    }
+  }
+}

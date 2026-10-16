@@ -1,0 +1,230 @@
+{
+  "ios-specialized|Generative AI": {
+    "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+    "variants": [
+      {
+        "name": "AIButton: Trigger",
+        "web": "specialized|AI trigger",
+        "use": "Request a clearly named AI action, never automatic generation.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "AIButton: With menu of AI actions",
+        "web": "specialized|AI trigger",
+        "use": "Request a clearly named AI action, never automatic generation.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "AIButton: Icon only",
+        "web": "specialized|AI trigger",
+        "use": "Request a clearly named AI action, never automatic generation.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "AIDisclaimer: Footer",
+        "web": "specialized|AI disclaimer",
+        "use": "Remind people to check AI content and provide an optional policy link.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "AIDisclaimer: Inline",
+        "web": "specialized|AI disclaimer",
+        "use": "Remind people to check AI content and provide an optional policy link.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "ConfidenceIndicator: High",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "ConfidenceIndicator: Medium",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "ConfidenceIndicator: Low",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "ConfidenceIndicator: Numeric",
+        "web": "specialized|Confidence / uncertainty",
+        "use": "Present supplied confidence without manufacturing a certainty score.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "AIExplanation: Why this",
+        "web": "specialized|AI explainability",
+        "use": "Explain a recommendation with caller supplied reasons on request.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "AIExplanation: Factors",
+        "web": "specialized|AI explainability",
+        "use": "Explain a recommendation with caller supplied reasons on request.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "PromptSuggestions: Chips",
+        "web": "specialized|Prompt suggestions",
+        "use": "Offer optional prompt choices with explicit selection.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "PromptSuggestions: Cards",
+        "web": "specialized|Prompt suggestions",
+        "use": "Offer optional prompt choices with explicit selection.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "Chat.Typing: Thinking",
+        "web": "specialized|Thinking / processing state",
+        "use": "Communicate active work and caller supplied progress steps without invented completion.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "Chat.Typing: With steps",
+        "web": "specialized|Thinking / processing state",
+        "use": "Communicate active work and caller supplied progress steps without invented completion.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "SuggestedEdit: Inline diff",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "SuggestedEdit: Accept",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "SuggestedEdit: Reject",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "SuggestedEdit: Accept all",
+        "web": "specialized|Suggested edit",
+        "use": "Inspect a proposed text change and explicitly accept or reject it.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "RefineMenu: Shorter",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "RefineMenu: Longer",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "RefineMenu: Tone",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      },
+      {
+        "name": "RefineMenu: Custom prompt",
+        "web": "specialized|Refine",
+        "use": "Request a length, tone or custom revision without silently changing the text.",
+        "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+        "uikit": "Use accessible native actions and caller owned output.",
+        "appkit": "Use the same explicit review behavior with native controls."
+      }
+    ],
+    "anatomy": [
+      "Named requested action",
+      "Supplied explanation or proposed content",
+      "Explicit review and recovery controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI interaction spacing",
+        "value": "plx-sys-space-stack-sm",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackSm)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackSm",
+        "appkit": "Read the same spacing role from the macOS adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "VStack(spacing: Plenix.Space.spaceStackSm) {",
+        "    Text(model.reviewNotice)",
+        "    Button(model.actionLabel) { model.requestAction() }",
+        "}"
+      ],
+      "uikit": [
+        "noticeLabel.text = model.reviewNotice",
+        "actionButton.addTarget(model, action: #selector(model.requestAction), for: .touchUpInside)"
+      ],
+      "appkit": [
+        "noticeLabel.stringValue = model.reviewNotice"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$description": "Collaboration counterparts; Notification center already has its existing record and mapping.",
+  "map": {
+    "specialized|Comment": {
+      "ios": [
+        "ios-specialized|Collaboration and sharing"
+      ],
+      "android": [
+        "android-specialized|Share"
+      ]
+    },
+    "specialized|Comment thread": {
+      "ios": [
+        "ios-specialized|Collaboration and sharing"
+      ],
+      "android": [
+        "android-specialized|Share"
+      ]
+    },
+    "specialized|Reply": {
+      "ios": [
+        "ios-specialized|Collaboration and sharing"
+      ],
+      "android": [
+        "android-specialized|Share"
+      ]
+    },
+    "specialized|Annotation": {
+      "ios": [
+        "ios-specialized|Collaboration and sharing"
+      ],
+      "android": [
+        "android-specialized|Share"
+      ]
+    },
+    "specialized|Presence": {
+      "ios": [
+        "ios-specialized|Collaboration and sharing"
+      ],
+      "android": [
+        "android-specialized|Share"
+      ]
+    }
+  }
+}

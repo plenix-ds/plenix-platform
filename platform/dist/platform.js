@@ -4158,6 +4158,7 @@ function Text({
     }, children);
   }
   return /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto",
     className: textClass(variant, truncate, clamp, false, tabular, className)
   }, rest), children);
 }
@@ -4192,7 +4193,9 @@ function ExpandableText({
   const words = Object.assign({}, STRINGS, strings);
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-text-expand"
-  }, /*#__PURE__*/_react.default.createElement(As, _extends({}, rest, {
+  }, /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto"
+  }, rest, {
     ref: ref,
     id: id,
     className: textClass(variant, false, clamp, open, tabular, className)
@@ -7884,6 +7887,141 @@ function ShowMore({
   }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
 }
   } },
+  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProgressSteps = ProgressSteps;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressSteps
+   Summary: The steps of a task done in order (setup, an import, a checkout) and where the person is: each step's marker,
+     name and optional line, joined by connectors, with the done, current, upcoming and failed steps each told by an icon
+     or number and in words. Horizontal or vertical; clickable to go back to a step; or compact ("Step 2 of 5" over a
+     bar of segments) where names add nothing. The navigation Stepper, the Progress tracker and Step progress.
+   Usage:
+     <ProgressSteps label="Import" current={1} steps={[{ label: 'Upload' }, { label: 'Map columns' }, { label: 'Review' }]} />
+     <ProgressSteps orientation="vertical" current={2} steps={[{ label: 'Details', description: 'Name and owner' }, …]} />
+     <ProgressSteps current={2} onStepClick={setStep} steps={steps} />                                  // clickable
+     <ProgressSteps current={1} steps={[{ label: 'Upload' }, { label: 'Map columns', status: 'error' }, …]} />
+     <ProgressSteps variant="compact" current={1} steps={steps} />                                      // Step 2 of 5
+   Props:
+     steps: the steps, in order: [{ label, description, status, disabled }]
+     steps[].label: the step's short name (a noun: Details, Review)
+     steps[].description: a second line under the name (optional; not in the compact form)
+     steps[].status: "complete" | "current" | "upcoming" | "error" (needs attention); default from current: the steps
+       before it are complete, it is current, the steps after it upcoming
+     steps[].disabled: the step cannot be chosen even when it is complete (clickable steps)
+     current: the index of the current step (0-based)
+     orientation: "horizontal" (default; one row, the connectors between) | "vertical" (one step under another, the
+       connector down the marker column, room for descriptions)
+     variant: "default" | "compact" ("Step 2 of 5: Review" over a bar of one segment per step)
+     onStepClick(index): makes the done and current steps buttons that go to that step (clickable); upcoming steps stay
+       text (people cannot skip ahead)
+     label: the accessible name of the list ("Import steps")
+     strings: the words it shows and announces, for other languages: { step: "Step {n} of {total}", complete:
+       "Complete", current: "Current step", upcoming: "Not started", error: "Needs attention" }
+     className: more classes on the steps
+   Behavior:
+     The steps are an ordered list; the current step is aria-current="step". Every step's state is said in words after its
+       name (visually hidden: "Complete", "Needs attention"), never by color alone: a complete step shows a check, a
+       failed one an alert, the others their number.
+     Clickable: the done and current steps are buttons in the Tab order (Enter or Space goes to the step); upcoming and
+       disabled steps are not focusable.
+     Horizontal steps that do not fit their row wrap onto more lines; a vertical list is the choice on a narrow window.
+     Compact: the text says the step and its name; the bar's segments are decoration (hidden from screen readers).
+   Notes:
+     Steps that can be done in any order are tabs or sections, not steps. Three to seven steps; two need no stepper.
+     Statuses of records are a Badge; these markers belong to the steps only.
+     Other props pass through to the outer element.
+*/
+const STRINGS = {
+  step: 'Step {n} of {total}',
+  complete: 'Complete',
+  current: 'Current step',
+  upcoming: 'Not started',
+  error: 'Needs attention'
+};
+const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
+function ProgressSteps({
+  steps = [],
+  current = 0,
+  orientation = 'horizontal',
+  variant = 'default',
+  onStepClick,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
+  if (variant === 'compact') {
+    const at = Math.max(0, Math.min(current, steps.length - 1));
+    const step = steps[at] || {};
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      role: "group",
+      "aria-label": label,
+      className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--compact', className)
+    }, rest), /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-progress-steps__count"
+    }, fill(t.step, at + 1, steps.length), step.label ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__count-label"
+    }, ': ' + step.label) : null), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-progress-steps__segments",
+      "aria-hidden": "true"
+    }, steps.map((s, i) => /*#__PURE__*/_react.default.createElement("span", {
+      key: i,
+      className: (0, _cx.cx)('plx-progress-steps__segment', 'is-' + statusOf(s, i))
+    }))));
+  }
+  return /*#__PURE__*/_react.default.createElement("ol", _extends({
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--' + (orientation === 'vertical' ? 'vertical' : 'horizontal'), onStepClick && 'plx-progress-steps--clickable', className)
+  }, rest), steps.map((s, i) => {
+    const status = statusOf(s, i);
+    const canGo = onStepClick && !s.disabled && (status === 'complete' || status === 'current' || status === 'error');
+    const marker = /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__marker",
+      "aria-hidden": "true"
+    }, status === 'complete' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "check"
+    }) : status === 'error' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "alert"
+    }) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__number"
+    }, i + 1));
+    const words = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__label"
+    }, s.label), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t[status]));
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: i,
+      className: (0, _cx.cx)('plx-progress-steps__step', 'is-' + status),
+      "aria-current": status === 'current' ? 'step' : undefined
+    }, canGo ? /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-progress-steps__head plx-progress-steps__button",
+      onClick: () => onStepClick(i)
+    }, marker, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__text"
+    }, words)) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__head"
+    }, marker, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__text"
+    }, words)), s.description ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__description"
+    }, s.description) : null, i < steps.length - 1 ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__connector",
+      "aria-hidden": "true"
+    }) : null);
+  }));
+}
+  } },
   "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -8042,7 +8180,7 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   }, o.label)) : children));
 });
   } },
-  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8053,6 +8191,10 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _ProgressSteps = require("../ProgressSteps/ProgressSteps.jsx");
+var _Text = require("../Text/Text.jsx");
 var _Input = require("../Input/Input.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Chat
@@ -8085,7 +8227,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
      Chat.Composer.sendLabel: default "Send"; disabled: the composer is inert
      Chat.Typing.label: the text announced to assistive technology (default "Typing")
-     Chat.Typing.className: more classes on the dots
+     Chat.Typing.variant: typing (default) | thinking | steps; steps: [{label,status}], current: active step index
+     Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
      className on every part: more classes
    Behavior:
      The thread is a log (role="log", aria-live="polite"): new messages are announced.
@@ -8097,10 +8240,36 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      It was TypingIndicator in the loading family (batch 168); the owner placed it under Chat.
 */
 function Typing({
-  label = 'Typing',
+  label,
+  variant = 'typing',
+  steps = [],
+  current = 0,
+  strings,
   className,
   ...rest
 }) {
+  const t = Object.assign({
+    thinking: 'Thinking'
+  }, strings);
+  if (variant === 'thinking' || variant === 'steps') return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-chat__thinking', className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__thinking-label"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    "aria-hidden": "true",
+    role: "presentation",
+    label: ""
+  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "sparkle"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, null, label || t.thinking)), variant === 'steps' && steps.length ? /*#__PURE__*/_react.default.createElement(_ProgressSteps.ProgressSteps, {
+    label: label || t.thinking,
+    steps: steps,
+    current: current,
+    strings: strings
+  }) : null);
+  if (label === undefined) label = 'Typing';
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-chat__typing', className),
     role: "status"
@@ -13675,7 +13844,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (4) Narrower, Wider, Fit to content, Move left, Move right, (5) Hide field, Show all fields
      columnMenu: the application's field actions, first in the column menu: [{ label, icon, onSelect(column, col), danger,
        disabled, separator }] (Edit field, Duplicate, Insert left, Insert right, Delete…), or (column) => that list
-     rowMenu: right-click on a row: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
+     rowMenuButton: with rowMenu, a sticky last-column ghost button (default true); false keeps right-click only
+     keepHiddenSelection: true (default) keeps selected rows hidden by filters; false deselects them
+     onSelectionChange(keys, selection): selection is { count, hidden }, for CommandBar selection.hidden
+     rowMenu: the button or right-click opens items: label, icon, danger, disabled, separator,
+       onSelect(data, row); action(data, row) is an alias. Development warns once for items with neither handler.
+       Item list: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
        (data) => that list
      rowHeight: the record rows' height step (owner, 2026-10-14): "short" (default: the density's row height, 28 / 32 /
        40) | "medium" (56px) | "tall" (88px) | "extra-tall" (128px), the same at every density; the person changes it in the
@@ -13814,9 +13988,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Every DataTable handles many rows by its mode (owner, 2026-10-14): "fill" by default, "pages" or "load-more" where the
      application needs them; no DataTable draws all of a long list at once.
 */
+const INTERACTIVE = 'button, a, input, select, textarea, [role="button"], [data-plx-no-row-click]';
+const warnedItems = new Set();
 const SEP = '\u0000';
 const MIN = '--plx-ref-size-80px'; // the narrowest a resized column gets
 const STRINGS = {
+  rowActions: 'Row actions',
   empty: 'Nothing to show',
   clearSort: 'Clear sort',
   clearFilter: 'Clear filter',
@@ -14044,6 +14221,7 @@ const plenixEditor = type => (cell, onRendered, success, cancel) => {
 function valueFormatter(cell) {
   const v = cell.getValue(),
     s = document.createElement('span');
+  cell.getElement().setAttribute('dir', 'auto');
   s.className = 'plx-data-table__value';
   s.textContent = v == null ? '' : String(v);
   return s;
@@ -14402,8 +14580,14 @@ function TableEngine(props) {
         column: x.field,
         dir: x.dir
       })).reverse();
-      if (JSON.stringify(want) !== JSON.stringify(now)) {
-        if (want.length) t.setSort(want.slice().reverse());else t.clearSort();
+      if (want.length) {
+        if (JSON.stringify(want) !== JSON.stringify(now)) {
+          t.setSort(want.map(x => Object.assign({}, x)).reverse());
+          t.plxViewSort = want;
+        }
+      } else if (t.plxViewSort) {
+        if (JSON.stringify(t.plxViewSort) === JSON.stringify(now)) t.clearSort();
+        t.plxViewSort = null;
       }
     }
     if (p.groupBy !== undefined) {
@@ -14933,6 +15117,7 @@ function TableEngine(props) {
         resizable: false
       });
       if (render) d.formatter = cell => {
+        cell.getElement().setAttribute('dir', 'auto');
         const id = String(cell.getRow().getIndex()) + SEP + c.field;
         owners.current.set(id, cell);
         return container(id);
@@ -14994,17 +15179,27 @@ function TableEngine(props) {
       const p = latest.current;
       const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || S.empty);
       // the row menu: the page's items, then (movable rows) the moves
+      let optsRowMenu;
       const movable = !isStatic && !!(p.options || {}).movableRows;
       const rowContextMenu = p.rowMenu || movable ? (e, row) => {
         const cur = latest.current.rowMenu,
           d = row.getData();
         const list = typeof cur === 'function' ? cur(d) : cur;
-        const items = (list || []).map(it => it.separator ? {
-          separator: true
-        } : {
-          label: menuLabel(it.label, it.icon, it.danger),
-          disabled: typeof it.disabled === 'function' ? it.disabled(d) : !!it.disabled,
-          action: () => it.onSelect && it.onSelect(d, row)
+        const items = (list || []).map(it => {
+          if (!it.separator && typeof it.onSelect !== 'function' && typeof it.action !== 'function' && !warnedItems.has(it.label) && !! /*#__PURE__*/_react.default.createElement('span')._store) {
+            warnedItems.add(it.label);
+            console.warn('Plenix DataTable: rowMenu item "' + it.label + '" needs onSelect or action.');
+          }
+          return it.separator ? {
+            separator: true
+          } : {
+            label: menuLabel(it.label, it.icon, it.danger),
+            disabled: typeof it.disabled === 'function' ? it.disabled(d) : !!it.disabled,
+            action: () => {
+              const fn = typeof it.onSelect === 'function' ? it.onSelect : it.action;
+              if (typeof fn === 'function') fn(d, row);
+            }
+          };
         });
         if (movable) {
           if (items.length) items.push({
@@ -15014,6 +15209,40 @@ function TableEngine(props) {
         }
         return items;
       } : undefined;
+      if (!isStatic && p.rowMenu && p.rowMenuButton !== false) {
+        const width = (0, _tabulator.tablePx)('--plx-comp-data-table-row-menu-width', host);
+        optsRowMenu = {
+          title: S.rowActions,
+          field: '_plxRowMenu',
+          headerSort: false,
+          resizable: false,
+          frozen: true,
+          width,
+          minWidth: width,
+          maxWidth: width,
+          cssClass: B + '__cell--row-menu ' + B + '__cell--actions',
+          formatter: cell => {
+            const button = el('button', 'plx-button plx-button--ghost plx-button--icon-only plx-button--size-sm ' + B + '__row-menu');
+            button.type = 'button';
+            button.setAttribute('aria-label', S.rowActions);
+            button.setAttribute('aria-haspopup', 'menu');
+            const icon = el('span', 'plx-button__icon');
+            icon.appendChild(iconEl('more'));
+            button.appendChild(icon);
+            button.addEventListener('click', ev => {
+              ev.stopPropagation();
+              const r = button.getBoundingClientRect();
+              cell.getRow().getElement().dispatchEvent(new MouseEvent('contextmenu', {
+                bubbles: true,
+                cancelable: true,
+                clientX: r.left,
+                clientY: r.bottom
+              }));
+            });
+            return button;
+          }
+        };
+      }
       const labelled = p.columns.some(c => c.rowLabel);
       const leadPx = (0, _tabulator.tablePx)('--plx-comp-data-table-lead-column-width', host);
       const opts = {
@@ -15050,6 +15279,12 @@ function TableEngine(props) {
           const own = latest.current.options && latest.current.options.rowFormatter;
           if (own) own(row);
           const e = row.getElement();
+          e.querySelectorAll('.tabulator-cell:not([data-plx-interactive])').forEach(cell => {
+            cell.setAttribute('data-plx-interactive', '');
+            cell.addEventListener('click', ev => {
+              if (ev.target.closest(INTERACTIVE)) ev.stopPropagation();
+            });
+          });
           if (!isStatic && latest.current.on && latest.current.on.rowClick && !e.hasAttribute('data-plx-open')) {
             e.setAttribute('data-plx-open', '');
             e.tabIndex = 0;
@@ -15162,7 +15397,7 @@ function TableEngine(props) {
         });
         delete opts.data;
       }
-      opts.columns = defsOf(p.columns, host);
+      opts.columns = defsOf(p.columns, host).concat(optsRowMenu ? [optsRowMenu] : []);
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
       tableRef.current = table;
@@ -15237,11 +15472,27 @@ function TableEngine(props) {
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach(ev => table.on(ev, (...a) => {
           const h = (latest.current.on || {})[ev];
-          if (h) h(...a);
+          if (h && !(ev === 'rowClick' && a[0].target.closest(INTERACTIVE))) h(...a);
         }));
-        table.on('rowSelectionChanged', () => {
+        const selectionChanged = (activeRows = table.getRows('active')) => {
           const q = latest.current;
-          if (!syncing.current && q.onSelectionChange) q.onSelectionChange(table.getSelectedData().map(x => x[q.index || 'id']));
+          if (syncing.current || !q.onSelectionChange) return;
+          const rows = table.getSelectedRows(),
+            visible = new Set(activeRows);
+          q.onSelectionChange(rows.map(r => r.getData()[q.index || 'id']), {
+            count: rows.length,
+            hidden: rows.filter(r => !visible.has(r)).length
+          });
+        };
+        table.on('rowSelectionChanged', () => selectionChanged());
+        table.on('dataFiltered', (filters, activeRows) => {
+          if (latest.current.keepHiddenSelection === false) {
+            const active = new Set(activeRows);
+            syncing.current = true;
+            table.getSelectedRows().filter(r => !active.has(r)).forEach(r => r.deselect());
+            syncing.current = false;
+          }
+          selectionChanged(activeRows);
         });
         syncSelection(table);
         if (!isStatic) {
@@ -15391,7 +15642,7 @@ function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
+  }, [shape, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
 
   // the footer's numbers, after each render of the rows: the page, its range and the total ("pages"), or the rows shown
   // and the total ("load-more"); a page's rows carry their place in the whole set
@@ -17908,275 +18159,6 @@ function FilterBar({
   }, actions) : null);
 }
   } },
-  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SearchWorkspace = SearchWorkspace;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _SegmentedControl = require("../../components/SegmentedControl/SegmentedControl.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Tag = require("../../components/Tag/Tag.jsx");
-var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
-var _FilterBar = require("../FilterBar/FilterBar.jsx");
-var _layer = require("../../utils/layer.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · SearchWorkspace
-   Summary: The Advanced Search workspace (level 3 of Plenix search), a view of the main work area like Categories or Files.
-     It is normal browsing with more powerful filtering, never a form of field / operator / value rows.
-   Usage:
-     <SearchWorkspace title="Search results" query={query} onQueryChange={setQuery} placeholder="Search…"
-       filters={[…]} onFilterChange={(id, value) => …} onClearAll={() => …} count={128} noun="asset"
-       sort={{ value, options, onChange }} view={{ value, options, onChange }} onSave={() => …}
-       headStart={<…/>} headEnd={<…/>} bulk={<BulkActions…/>}>{results}</SearchWorkspace>
-   Props:
-     title: strings.title ("Search", the default) before a query, "Search results" after one, or a saved search's name (the capability decides)
-     query: the search field's text (default "")
-     onQueryChange(next): runs when the search field changes; Enter or typing updates the results (the capability filters)
-     placeholder: the search field's placeholder (default strings.placeholder: "Search…")
-     filters: FilterBar filters: [{ id, label, options, value, multiple }]
-     onFilterChange(id, value): runs when a filter changes or its chip is removed
-     onClearAll(): runs from Clear all, beside the chips of the set filters
-     count: the number of results, for the result count line (default 0)
-     noun: the word for one result in both count lines, as in "128 assets" (default strings.result: "result")
-     plural: the word for several (default: noun + "s", or strings.results: "results" without a noun)
-     sort: { value, options, onChange }; a Sort menu (optional)
-     view: { value, options, onChange }; a Grid / Table switch (optional)
-     onSave(): shows Save search (only capabilities that keep saved searches)
-     headStart: extra controls at the start of the title row (a menu button, a details toggle)
-     headEnd: extra controls at the end of the title row
-     bulk: a BulkActions bar shown above the results
-     className: more classes
-     children: the results
-     locale: the language the count is formatted in (default: the page's language, document.documentElement.lang)
-     strings: the words it shows and announces, for other languages: { title: "Search", placeholder: "Search…", result:
-       "result", results: "results", searchField: "Search {nouns}", save: "Save search", filters: "Filters", activeFilters:
-       "Active filters", chip: "{label}: {value}", remove: "Remove {text}", clearAll: "Clear all", view: "View", grid: "Grid",
-       table: "Table", sort: "Sort", sortValue: "Sort: {value}", noMatchQuery: "Nothing matches “{query}”.",
-       noMatchQueryFilters: "Nothing matches “{query}” with these filters.", noMatchFilters: "Nothing matches these filters." }
-   Behavior:
-     Set filters are repeated as removable chips under the toolbar ("Type: PNG ×") with Clear all.
-     The count line is announced politely.
-     When count is 0 the results area says there is nothing to show for the query.
-   Notes:
-     The application shell (header, left navigation, a details panel where the capability has one) stays, and only the center changes.
-     Pressing Enter in the header search opens it with the query kept.
-*/
-
-const STRINGS = {
-  title: 'Search',
-  placeholder: 'Search…',
-  result: 'result',
-  results: 'results',
-  searchField: 'Search {nouns}',
-  save: 'Save search',
-  filters: 'Filters',
-  activeFilters: 'Active filters',
-  chip: '{label}: {value}',
-  remove: 'Remove {text}',
-  clearAll: 'Clear all',
-  view: 'View',
-  grid: 'Grid',
-  table: 'Table',
-  sort: 'Sort',
-  sortValue: 'Sort: {value}',
-  noMatchQuery: 'Nothing matches “{query}”.',
-  noMatchQueryFilters: 'Nothing matches “{query}” with these filters.',
-  noMatchFilters: 'Nothing matches these filters.'
-};
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
-const label = (f, v) => {
-  const o = (f.options || []).find(x => x.value === v);
-  return o ? o.label : String(v);
-};
-function SearchWorkspace({
-  title,
-  query = '',
-  onQueryChange,
-  placeholder,
-  filters = [],
-  onFilterChange,
-  onClearAll,
-  count = 0,
-  noun,
-  plural,
-  sort,
-  view,
-  onSave,
-  headStart,
-  headEnd,
-  bulk,
-  locale,
-  strings,
-  className,
-  children
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
-  const id = (0, _layer.useUid)('plx-search-ws');
-  const field = _react.default.useRef(null);
-  // the query typed here is applied as the person types; Enter keeps focus in the field
-  const chips = [];
-  filters.forEach(f => {
-    if (f.multiple) (f.value || []).forEach(v => chips.push({
-      f,
-      v,
-      text: fill(t.chip, {
-        label: f.label,
-        value: label(f, v)
-      }),
-      remove: () => onFilterChange(f.id, (f.value || []).filter(x => x !== v))
-    }));else if (f.value !== null && f.value !== undefined && f.value !== '') chips.push({
-      f,
-      v: f.value,
-      text: fill(t.chip, {
-        label: f.label,
-        value: label(f, f.value)
-      }),
-      remove: () => onFilterChange(f.id, null)
-    });
-  });
-  const nouns = count === 1 ? noun || t.result : plural || (noun ? noun + 's' : t.results);
-  const counted = count.toLocaleString(loc) + ' ' + nouns;
-  return /*#__PURE__*/_react.default.createElement("section", {
-    "aria-labelledby": id + '-title',
-    className: (0, _cx.cx)('plx-search-ws', className)
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search-ws__head"
-  }, headStart, /*#__PURE__*/_react.default.createElement("h2", {
-    id: id + '-title',
-    className: "plx-search-ws__title"
-  }, title === undefined ? t.title : title), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search-ws__count",
-    "aria-live": "polite"
-  }, counted), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search-ws__spacer"
-  }), onSave ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    icon: "save",
-    onClick: onSave
-  }, t.save) : null, headEnd), /*#__PURE__*/_react.default.createElement("div", {
-    role: "search",
-    className: "plx-search-ws__query"
-  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
-    ref: field,
-    label: fill(t.searchField, {
-      nouns
-    }),
-    placeholder: placeholder === undefined ? t.placeholder : placeholder,
-    value: query,
-    onChange: e => onQueryChange && onQueryChange(e.target.value),
-    onClear: () => onQueryChange && onQueryChange('')
-  })), filters.length ? /*#__PURE__*/_react.default.createElement(_FilterBar.FilterBar, {
-    label: t.filters,
-    filters: filters,
-    onChange: onFilterChange
-  }) : null, chips.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search-ws__active",
-    role: "group",
-    "aria-label": t.activeFilters
-  }, chips.map(c => /*#__PURE__*/_react.default.createElement(_Tag.Chip, {
-    key: c.f.id + ':' + c.v,
-    selected: true,
-    onRemove: c.remove,
-    removeLabel: fill(t.remove, {
-      text: c.text
-    })
-  }, c.text)), onClearAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "xs",
-    variant: "ghost",
-    onClick: onClearAll
-  }, t.clearAll) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search-ws__bar"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search-ws__results"
-  }, counted), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search-ws__spacer"
-  }), view ? /*#__PURE__*/_react.default.createElement(_SegmentedControl.SegmentedControl, {
-    label: t.view,
-    value: view.value,
-    onChange: view.onChange,
-    options: view.options || [{
-      value: 'grid',
-      label: t.grid
-    }, {
-      value: 'table',
-      label: t.table
-    }]
-  }) : null, sort ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: t.sort,
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      icon: "sort",
-      caret: true,
-      "aria-label": fill(t.sortValue, {
-        value: sort.value
-      })
-    }, fill(t.sortValue, {
-      value: sort.value
-    }))
-  }, sort.options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: o,
-    checked: sort.value === o,
-    onSelect: () => sort.onChange(o)
-  }, o))) : null), bulk, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search-ws__body"
-  }, count ? children : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
-    size: "inline"
-  }, query ? fill(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, {
-    query
-  }) : t.noMatchFilters)));
-}
-  } },
-  "platform/patterns/DataToolbar/DataToolbar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DataToolbar = DataToolbar;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DataToolbar
-   Summary: The toolbar row above a list or grid (view switch, sort, size, export).
-   Usage:
-     <DataToolbar label="View options" start={<>…</>} end={<>…</>} />
-   Props:
-     label: the toolbar's accessible name
-     start: a group of controls at the start of the row
-     end: a group of controls at the end of the row
-     children: controls after the start group
-     className: more classes
-   Behavior:
-     It is a Toolbar: arrow keys move between the controls (one Tab stop sequence).
-     Controls take the toolbar role height.
-*/
-
-function DataToolbar({
-  label,
-  start,
-  end,
-  className,
-  children
-}) {
-  return /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
-    label: label,
-    className: (0, _cx.cx)('plx-data-toolbar', className)
-  }, start ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-data-toolbar__group"
-  }, start) : null, children, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), end ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-data-toolbar__group"
-  }, end) : null);
-}
-  } },
   "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -18408,6 +18390,1634 @@ function BarActions({
   }) : null, danger.map(one));
 }
   } },
+  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Popover = Popover;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _floating = require("../../utils/floating.js");
+var _Button = require("../Button/Button.jsx");
+var _Sheet = require("../Sheet/Sheet.jsx");
+var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
+   Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
+     a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
+     dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
+     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
+   Usage:
+     <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
+     <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
+     <Popover trigger={<Link href="/people/maya">Maya Chen</Link>} triggerOn="hover" label="Maya Chen" size="sm">…</Popover>
+     <Popover trigger={target} triggerOn="manual" open={open} onOpenChange={setOpen} arrow placement="bottom">…</Popover>
+   Props:
+     trigger: the element that opens it (one element; it gets the ref, and for a click popover aria-haspopup="dialog",
+       aria-expanded and aria-controls)
+     triggerOn: "click" (default: click, Enter or Space on the trigger) | "hover" (a hover card: opens after
+       --plx-comp-popover-hover-open-delay on pointer hover and on keyboard focus, and stays open while the pointer is in
+       it) | "manual" (only the open prop opens it: a teaching bubble pointing at its target)
+     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
+     onOpenChange(open): runs when it opens or closes
+     title: the title in its header; it names the popover
+     label: the accessible name when there is no title
+     footer: a row of actions at the bottom, at the end edge
+     closeButton: a Close button at the end of the header (default false; Escape and a click outside always close it)
+     placement: where it sits against the trigger: "bottom-start" (default) | "bottom" | "bottom-end" | "top" | "top-start"
+       | "top-end" | "start" | "start-top" | "start-bottom" | "end" | "end-top" | "end-bottom" (start and end follow the
+       writing direction)
+     size: "md" (default; 320px wide) | "sm" (240px) | "lg" (400px) | "auto" (as wide as its content); never wider than
+       the window less its margins
+     arrow: a caret on the edge that faces the trigger, pointing at it (default false)
+     role: "dialog" (default) | "alertdialog" (a question that needs an answer: Popconfirm) | null (a disclosure panel of
+       links, MegaMenu: no popup role, and the trigger is a plain disclosure button with aria-expanded)
+     initialFocus: a ref to the element that takes focus when it opens (default: the first control in its body, else its
+       first control (Close, a footer action), else the popover)
+     focusOnOpen: focus moves into it when it opens (default true for a click popover, false for hover and manual)
+     sheetOnNarrow: at the Narrow window class a click popover opens as a bottom Sheet instead (default true; a hover
+       card never does)
+     strings: the words it shows and announces, for other languages: { close: "Close" }
+     className: more classes on the popover
+     children: the content
+     Other props pass through to the popover's <div> (aria-describedby).
+   Behavior:
+     Click: the trigger opens and closes it; focus moves into it (initialFocus, else the first control in its body, else
+       its first control, else the popover) and returns to the trigger when Escape closes it, or when it closes while
+       focus is inside it (Close, an action). Escape, a click outside, and Tab out of it close it. It is not modal: the
+       page stays usable and focus is not trapped.
+     Hover: opens after the open delay on pointer hover, and at once on keyboard focus of the trigger; closes
+       --plx-comp-popover-hover-close-delay after the pointer leaves both, on blur, and with Escape. Touch has no hover:
+       a tap follows the trigger (a link), so a hover card holds nothing that is only there.
+     Manual: opens and closes only by the open prop (a click outside does not close it); Escape asks to close it
+       (onOpenChange(false)) and returns focus to the trigger.
+     Placement: by CSS anchor positioning it flips to the other side and shifts its alignment to stay in the window, and
+       follows the trigger on scroll and resize; without it, it is drawn inside the trigger's wrapper on its side. With an
+       arrow it keeps its side and alignment, so the arrow always points at the trigger.
+     At the Narrow window class (under --plx-sys-shell-phone-below) a click popover is a bottom Sheet: the same title,
+       content and footer, modal, with the sheet's own close.
+   Notes:
+     One popover at a time; never a popover inside a popover. A hint of a few words is a Tooltip; a decision that blocks
+       the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
+     ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
+*/
+const STRINGS = {
+  close: 'Close'
+};
+const SIZES = ['sm', 'md', 'lg', 'auto'];
+
+// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+function Popover({
+  trigger,
+  triggerOn = 'click',
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  title,
+  label,
+  footer,
+  closeButton = false,
+  placement = 'bottom-start',
+  size = 'md',
+  arrow = false,
+  role = 'dialog',
+  initialFocus,
+  focusOnOpen,
+  sheetOnNarrow = true,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-popover');
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(!!defaultOpen);
+  const open = controlled ? !!openProp : own;
+  const setOpen = _react.default.useCallback(v => {
+    if (!controlled) setOwn(v);
+    if (onOpenChange) onOpenChange(v);
+  }, [controlled, onOpenChange]);
+  const wrap = _react.default.useRef(null),
+    panel = _react.default.useRef(null),
+    anchor = _react.default.useRef(null),
+    timer = _react.default.useRef(null);
+  const hover = triggerOn === 'hover',
+    click = triggerOn === 'click';
+  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
+  const asSheet = click && sheetOnNarrow && narrow;
+  const floating = open && !asSheet;
+  const where = _floating.PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const {
+    placement: used
+  } = (0, _floating.useFloating)(anchor, panel, {
+    open: floating,
+    placement: where,
+    offset: arrow ? 'md' : 'xs',
+    flip: !arrow,
+    shift: !arrow
+  });
+  const [side, align] = used.split('-');
+  const close = _react.default.useCallback(refocus => {
+    setOpen(false);
+    if (refocus && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [setOpen]);
+  (0, _layer.useLayer)(panel, floating, {
+    onEscape: () => close(!hover)
+  });
+
+  // into the top layer as soon as it is in the page, before focus moves in
+  _react.default.useLayoutEffect(() => {
+    const el = panel.current;
+    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [floating]);
+  // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
+  const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
+  _react.default.useEffect(() => {
+    if (!floating) return undefined;
+    if (takeFocus) {
+      const root = panel.current;
+      const wanted = initialFocus && initialFocus.current;
+      const first = wanted || (0, _layer.focusables)(root.querySelector('.plx-popover__body'))[0] || (0, _layer.focusables)(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    if (!click) return undefined;
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', outside);
+    return () => document.removeEventListener('mousedown', outside);
+  }, [floating]);
+  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
+  // closed while focus was inside it (Close, an action, the open prop): focus goes back to the trigger, not the page
+  const inside = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (floating || !inside.current) return;
+    inside.current = false;
+    const a = document.activeElement;
+    if ((!a || a === document.body) && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [floating]);
+
+  // the hover card's timers: open after the open delay, close after the close delay (cancelled by coming back)
+  const later = v => {
+    clearTimeout(timer.current);
+    const el = wrap.current;
+    timer.current = setTimeout(() => setOpen(v), ms(el, v ? '--plx-comp-popover-hover-open-delay' : '--plx-comp-popover-hover-close-delay'));
+  };
+  const hoverProps = hover ? {
+    onPointerEnter: e => {
+      if (e.pointerType !== 'touch') later(true);
+    },
+    onPointerLeave: e => {
+      if (e.pointerType !== 'touch') later(false);
+    },
+    onFocus: e => {
+      if (e.target === anchor.current && e.target.matches(':focus-visible')) {
+        clearTimeout(timer.current);
+        setOpen(true);
+      }
+    },
+    onBlur: e => {
+      if (!wrap.current.contains(e.relatedTarget)) {
+        clearTimeout(timer.current);
+        setOpen(false);
+      }
+    }
+  } : click ? {
+    // Tab out of the popover (or the trigger) to somewhere else closes it; a click on its text does not (no related target)
+    onBlur: e => {
+      if (floating && e.relatedTarget && !wrap.current.contains(e.relatedTarget)) setOpen(false);
+    } // the sheet is a portal: not while it shows
+  } : {};
+  const child = _react.default.Children.only(trigger);
+  const triggerEl = /*#__PURE__*/_react.default.cloneElement(child, click ? {
+    ref: anchor,
+    'aria-haspopup': role ? 'dialog' : undefined,
+    'aria-expanded': open,
+    'aria-controls': open ? id : undefined,
+    expanded: undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  } : {
+    ref: anchor
+  });
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const titleId = id + 't';
+  const header = title || closeButton ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__header"
+  }, title ? /*#__PURE__*/_react.default.createElement("h2", {
+    id: titleId,
+    className: "plx-popover__title"
+  }, title) : null, closeButton ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.close,
+    className: "plx-popover__close",
+    onClick: () => close(true)
+  }) : null) : null;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    ref: wrap,
+    className: "plx-popover-anchor"
+  }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: panel,
+    id: id,
+    role: role || undefined,
+    "aria-labelledby": role && title ? titleId : undefined,
+    "aria-label": role && !title ? label : undefined,
+    tabIndex: -1,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    "data-plx-popover-side": side,
+    "data-plx-popover-align": align || 'center',
+    className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
+    onFocus: () => {
+      inside.current = true;
+    },
+    onBlur: e => {
+      inside.current = !!(panel.current && panel.current.contains(e.relatedTarget));
+    }
+  }, rest), arrow ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-popover__arrow",
+    "aria-hidden": "true"
+  }) : null, header, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__body"
+  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__footer"
+  }, footer) : null) : null, asSheet ? /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
+    open: open,
+    onClose: () => setOpen(false),
+    title: title || label,
+    footer: footer,
+    form: "bottom",
+    initialFocus: initialFocus,
+    closeLabel: t.close
+  }, children) : null);
+}
+  } },
+  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MultiPick = MultiPick;
+exports.PanelHead = PanelHead;
+exports.PanelTrigger = PanelTrigger;
+exports.Pick = Pick;
+exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
+exports.useReorder = useReorder;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _CommandBar = require("./CommandBar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
+   (platform/patterns/CommandBar; internal, not part of the public API)
+   Summary: The find-and-view panels' shared parts. FilterPanel, SortPanel, GroupPanel, ColumnsMenu and QuickFilter are built
+     from these, so the panels share one row (owner, 2026-10-14: "Group, Sort and Filter panels share row geometry"): the
+     same control height, the same spacing.
+   Usage:
+     <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
+     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
+   Props:
+     PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
+     PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
+     Pick: a select drawn as a menu button (the field with its type icon, the direction, the operator)
+     MultiPick: a multi-select whose chosen values show as pills in their colors
+     Pill: a value in its category color
+     useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
+       row; each move is announced (WCAG 2.5.7: a way without dragging) */
+
+const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
+exports.toggle = toggle;
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+
+// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
+exports.fill = fill;
+function PanelTrigger({
+  icon,
+  label,
+  count = 0,
+  active,
+  caret = false,
+  size = 'auto',
+  title,
+  footer,
+  inline = false,
+  placement,
+  className,
+  children
+}) {
+  const ctx = (0, _CommandBar.useCommandBar)();
+  const box = _react.default.useRef(null);
+  // the focus goes to the panel's first row control, else its Add button: not the info button of its head
+  const first = {
+    get current() {
+      const el = box.current;
+      return el ? el.querySelector('[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input') : null;
+    }
+  };
+  const body = /*#__PURE__*/_react.default.createElement("div", {
+    ref: box,
+    className: (0, _cx.cx)('plx-find-panel-body', className)
+  }, children);
+  if (inline) return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel-frame"
+  }, children);
+  const trigger = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
+    icon: icon,
+    label: label,
+    count: count,
+    active: active,
+    caret: caret
+  });
+  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    label: title ? undefined : label,
+    title: title,
+    size: size,
+    trigger: trigger,
+    footer: footer,
+    placement: placement,
+    initialFocus: first
+  }, body);
+  return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label
+  }, pop) : pop;
+}
+function PanelHead({
+  title,
+  info,
+  infoLabel,
+  sub,
+  actions
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__head"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__title-row"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-find-panel__title"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "heading",
+    as: "span"
+  }, title), info ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: info
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    icon: "circle-info",
+    iconOnly: true,
+    label: infoLabel || title
+  })) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-find-panel__actions"
+  }, actions) : null), sub ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, sub) : null);
+}
+
+// a select as a menu button: the current option's icon and words
+function Pick({
+  label,
+  value,
+  options,
+  onChange,
+  size = 'field',
+  disabled
+}) {
+  const cur = options.find(o => o.value === value) || options[0] || {
+    label: ''
+  };
+  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: cur.icon,
+      caret: true,
+      disabled: disabled,
+      className: (0, _cx.cx)('plx-find-pick', 'plx-find-pick--' + size),
+      title: cur.label,
+      "aria-label": label + ': ' + cur.label
+    }, cur.label)
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: label,
+    value: value,
+    onChange: onChange
+  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: o.value,
+    value: o.value,
+    icon: o.icon
+  }, o.label))));
+}
+const Pill = ({
+  color,
+  children
+}) => /*#__PURE__*/_react.default.createElement("span", {
+  className: "plx-find-pill",
+  "data-plx-category": color || 'grey'
+}, children);
+
+// a multi-select: the chosen values as pills, or the placeholder
+exports.Pill = Pill;
+function MultiPick({
+  label,
+  options,
+  value,
+  onChange,
+  placeholder
+}) {
+  const chosen = value.map(v => options.find(o => o.value === v) || {
+    value: v,
+    label: v
+  });
+  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      caret: true,
+      className: "plx-find-pick plx-find-pick--value",
+      "aria-label": label + ': ' + (chosen.length ? chosen.map(o => o.label).join(', ') : placeholder)
+    }, chosen.length ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-find-pick__pills"
+    }, chosen.map(o => /*#__PURE__*/_react.default.createElement(Pill, {
+      key: o.value,
+      color: o.color
+    }, o.label))) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-find-pick__placeholder"
+    }, placeholder))
+  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: o.value,
+    checked: value.indexOf(o.value) >= 0,
+    keepOpen: true,
+    onSelect: () => onChange(toggle(value, o.value))
+  }, /*#__PURE__*/_react.default.createElement(Pill, {
+    color: o.color
+  }, o.label))));
+}
+
+// rows that reorder: drag, the handle's menu, Alt + Arrow Up / Down on a focused row; announced
+function useReorder(items, setItems, nameOf, t) {
+  const [msg, setMsg] = _react.default.useState('');
+  const drag = _react.default.useRef(null);
+  const box = _react.default.useRef(null);
+  const [dragging, setDragging] = _react.default.useState(-1);
+  const move = (i, to, focus) => {
+    if (to < 0 || to >= items.length || to === i) return;
+    const next = items.slice();
+    const [x] = next.splice(i, 1);
+    next.splice(to, 0, x);
+    setItems(next);
+    setMsg(fill(t.moved, {
+      name: nameOf(x),
+      position: to + 1,
+      total: items.length
+    }));
+    if (focus) setTimeout(() => {
+      const el = box.current && box.current.querySelectorAll(':scope > [data-plx-row]')[to];
+      if (el) el.focus();
+    }, 0);
+  };
+  const rowProps = (i, name) => ({
+    'data-plx-row': '',
+    tabIndex: 0,
+    draggable: true,
+    'aria-label': fill(t.row, {
+      name,
+      position: i + 1,
+      total: items.length
+    }),
+    'aria-keyshortcuts': 'Alt+ArrowUp Alt+ArrowDown',
+    className: (0, _cx.cx)('plx-find-panel__row', dragging === i && 'is-dragging'),
+    onKeyDown: e => {
+      if (e.target !== e.currentTarget || !e.altKey) return;
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        move(i, i - 1, true);
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        move(i, i + 1, true);
+      }
+    },
+    onDragStart: e => {
+      e.stopPropagation();
+      drag.current = i;
+      setDragging(i);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(i));
+    },
+    onDragEnd: () => {
+      drag.current = null;
+      setDragging(-1);
+    },
+    onDragOver: e => e.preventDefault(),
+    onDrop: e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const from = drag.current;
+      drag.current = null;
+      setDragging(-1);
+      if (from !== null && from !== i) move(from, i);
+    }
+  });
+  const handle = (i, name) => /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: fill(t.reorder, {
+      name
+    }),
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      icon: "drag",
+      iconOnly: true,
+      label: fill(t.reorder, {
+        name
+      }),
+      className: "plx-find-panel__handle"
+    })
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "chevron-up",
+    disabled: i === 0,
+    onSelect: () => move(i, i - 1, true)
+  }, t.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "chevron-down",
+    disabled: i === items.length - 1,
+    onSelect: () => move(i, i + 1, true)
+  }, t.moveDown));
+  const status = /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status",
+    "aria-live": "polite"
+  }, msg);
+  return {
+    box,
+    rowProps,
+    handle,
+    status
+  };
+}
+// the words of a row that reorders
+const REORDER_STRINGS = exports.REORDER_STRINGS = {
+  moved: '{name} moved to position {position} of {total}',
+  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
+  reorder: 'Reorder {name}',
+  moveUp: 'Move up',
+  moveDown: 'Move down'
+};
+  } },
+  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
+exports.compareLevels = compareLevels;
+exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
+exports.matchesCondition = matchesCondition;
+exports.matchesDate = matchesDate;
+exports.matchesFilter = matchesFilter;
+exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
+/* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
+   style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
+   reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
+   server that filters the same way).
+   A field: { value (its key), label, kind: "text" | "select" | "multi" | "number" | "date", options: [{ value, label,
+   color }] (select and multi: color is a category color name; without one they take the category colors in order),
+   get(row) (the row's value; default row[value]) }.
+   A filter: { join: "and" | "or", items: [condition | { group: true, id, join, items: [condition…] }] }; a condition:
+   { id, field, op, value }. A condition left unfinished (no value) does not filter.
+   Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
+
+// the type icon of each kind (the field pickers and the column headers' type icons)
+const KIND_ICONS = exports.KIND_ICONS = {
+  text: 'ed-text',
+  select: 'field-select',
+  multi: 'tags',
+  number: 'field-number',
+  date: 'calendar'
+};
+// the directions in each kind's words (Airtable's)
+const DIRECTIONS = exports.DIRECTIONS = {
+  text: ['A → Z', 'Z → A'],
+  select: ['First → Last', 'Last → First'],
+  multi: ['First → Last', 'Last → First'],
+  number: ['1 → 9', '9 → 1'],
+  date: ['Oldest → newest', 'Newest → oldest']
+};
+// the operators by kind: [op, words]
+const OPERATORS = exports.OPERATORS = {
+  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
+};
+// "is within": the past week, month or year
+const WITHIN = exports.WITHIN = [{
+  value: 'week',
+  label: 'the past week',
+  days: 7
+}, {
+  value: 'month',
+  label: 'the past month',
+  days: 30
+}, {
+  value: 'year',
+  label: 'the past year',
+  days: 365
+}];
+// the category colors (Trubetskoy's 20), in the order options take them
+const CATEGORY_ORDER = exports.CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'magenta', 'yellow', 'navy', 'red', 'cyan', 'lavender', 'brown', 'olive', 'pink', 'apricot', 'mint', 'maroon', 'lime', 'beige', 'grey'];
+const fieldOf = (fields, key) => fields.find(f => f.value === key) || fields[0];
+exports.fieldOf = fieldOf;
+const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
+exports.valueOf = valueOf;
+const kindOf = f => OPERATORS[f && f.kind] ? f.kind : 'text';
+// a field's options, each with its color (given, or the next category color)
+exports.kindOf = kindOf;
+const optionsOf = f => (f && f.options || []).map((o, i) => typeof o === 'string' ? {
+  value: o
+} : o).map((o, i) => Object.assign({
+  label: o.value,
+  color: CATEGORY_ORDER[i % CATEGORY_ORDER.length]
+}, o));
+exports.optionsOf = optionsOf;
+const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
+const iso = d => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
+const daysBefore = (n, today) => {
+  const d = new Date((today || iso(new Date())) + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() - n);
+  return iso(d);
+};
+
+// one condition against one row (today: an ISO date, for "is within"; default the current date)
+function matchesCondition(c, row, fields, today) {
+  const f = fieldOf(fields, c.field),
+    v = valueOf(f, row),
+    val = c.value,
+    k = kindOf(f);
+  if (c.op === 'empty') return blank(v);
+  if (c.op === 'nempty') return !blank(v);
+  if (blank(val)) return true;
+  if (k === 'text') {
+    const s = String(v == null ? '' : v).toLowerCase(),
+      q = String(val).toLowerCase();
+    return c.op === 'contains' ? s.includes(q) : c.op === 'ncontains' ? !s.includes(q) : c.op === 'is' ? s === q : s !== q;
+  }
+  if (k === 'select') {
+    const list = [].concat(val);
+    return c.op === 'any' ? list.indexOf(v) >= 0 : list.indexOf(v) < 0;
+  }
+  if (k === 'multi') {
+    const list = [].concat(val),
+      hit = [].concat(v || []).some(x => list.indexOf(x) >= 0);
+    return c.op === 'any' ? hit : !hit;
+  }
+  if (k === 'number') {
+    const n = Number(v),
+      q = parseFloat(val);
+    if (isNaN(q)) return true;
+    return c.op === 'eq' ? n === q : c.op === 'ne' ? n !== q : c.op === 'lt' ? n < q : n > q;
+  }
+  const d = blank(v) ? '' : String(v).slice(0, 10);
+  if (c.op === 'within') {
+    const w = WITHIN.find(x => x.value === val) || WITHIN[0];
+    return d >= daysBefore(w.days, today);
+  }
+  return c.op === 'is' ? d === val : c.op === 'before' ? d < val : d > val;
+}
+// a filter (or a condition group) against one row
+function matchesFilter(node, row, fields, today) {
+  if (!node || !node.items || !node.items.length) return true;
+  const t = x => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
+  return node.join === 'or' ? node.items.some(t) : node.items.every(t);
+}
+// every condition of a filter, its groups' included (the count on the Filter button)
+const conditionsOf = node => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
+exports.conditionsOf = conditionsOf;
+let uid = 0;
+const nextId = () => 'c' + ++uid;
+// a new condition on a field: its kind's first operator, no value yet
+exports.nextId = nextId;
+const newCondition = f => ({
+  id: nextId(),
+  field: f.value,
+  op: OPERATORS[kindOf(f)][0][0],
+  value: kindOf(f) === 'select' || kindOf(f) === 'multi' ? [] : ''
+});
+
+// rows in the order of sort levels: a comparator
+exports.newCondition = newCondition;
+function compareLevels(fields, levels) {
+  return (a, b) => {
+    for (const l of levels || []) {
+      const f = fields.find(x => x.value === l.field);
+      if (!f) continue;
+      let x = valueOf(f, a),
+        y = valueOf(f, b);
+      if (kindOf(f) === 'select' && f.options) {
+        const o = optionsOf(f).map(p => p.value);
+        x = o.indexOf(x);
+        y = o.indexOf(y);
+      }
+      if (Array.isArray(x)) x = x.join(', ');
+      if (Array.isArray(y)) y = y.join(', ');
+      const c = x < y ? -1 : x > y ? 1 : 0;
+      if (c) return l.dir === 'desc' ? -c : c;
+    }
+    return 0;
+  };
+}
+
+// the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
+const DATE_PRESETS = exports.DATE_PRESETS = [{
+  value: 'any',
+  label: 'Any time'
+}, {
+  value: '7',
+  label: 'Last 7 days'
+}, {
+  value: '30',
+  label: 'Last 30 days'
+}, {
+  value: 'year',
+  label: 'This year'
+}];
+function matchesDate(range, value, today) {
+  if (!range || range.preset === 'any' || !range.preset) return true;
+  const d = blank(value) ? '' : String(value).slice(0, 10);
+  if (!d) return false;
+  const now = today || iso(new Date());
+  if (range.preset === '7' || range.preset === '30') return d >= daysBefore(Number(range.preset), now) && d <= now;
+  if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
+  return (!range.from || d >= range.from) && (!range.to || d <= range.to);
+}
+  } },
+  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QuickFilter = QuickFilter;
+var _react = _interopRequireDefault(require("react"));
+var _Button = require("../../components/Button/Button.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · QuickFilter
+   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
+     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
+     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
+     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
+     This year) and a custom range (the Google Analytics style).
+   Usage:
+     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
+     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
+   Props:
+     kind: "list" (default) | "date"
+     label: the button's words ("Category", "Type", "Tags", "Date")
+     icon: its icon
+     noun: (list) the word for one value, for the find field ("Find a tag")
+     options: (list) the values: [{ value, label, color }] or strings; colors default to the category colors in order
+     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
+     onChange(value): runs on every change
+     inline: draws the panel alone (open, in a frame); default false
+     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
+       custom: "Custom range", from: "From", to: "To" }
+   Behavior:
+     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
+     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
+     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
+     chosen.
+   Notes:
+     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
+
+const STRINGS = {
+  find: 'Find a {noun}',
+  none: 'No {noun} matches',
+  clear: 'Clear',
+  presets: _fields.DATE_PRESETS,
+  custom: 'Custom range',
+  from: 'From',
+  to: 'To'
+};
+const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
+  value: o
+} : o).map((o, i) => Object.assign({
+  label: o.value,
+  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
+}, o));
+function QuickFilter({
+  kind = 'list',
+  label,
+  icon,
+  noun = 'value',
+  options,
+  value,
+  onChange,
+  inline = false,
+  strings
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [q, setQ] = _react.default.useState('');
+  if (kind === 'date') {
+    const d = Object.assign({
+      preset: 'any',
+      from: '',
+      to: ''
+    }, value);
+    const range = (k, v) => onChange(Object.assign({}, d, {
+      preset: 'custom',
+      [k]: v
+    }));
+    const on = d.preset && d.preset !== 'any';
+    const body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel plx-find-panel--date"
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: label,
+      value: d.preset,
+      onChange: v => onChange(Object.assign({}, d, {
+        preset: v
+      })),
+      options: t.presets.map(x => ({
+        value: x.value,
+        label: x.label
+      })).concat({
+        value: 'custom',
+        label: t.custom
+      })
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel__range"
+    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.from
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.from,
+      onChange: e => range('from', e.target.value)
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.to
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.to,
+      onChange: e => range('to', e.target.value)
+    }))));
+    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "filter-off",
+      disabled: !on,
+      onClick: () => onChange({
+        preset: 'any',
+        from: '',
+        to: ''
+      })
+    }, t.clear);
+    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+      icon: icon || 'calendar',
+      label: label,
+      title: label,
+      count: on ? 1 : 0,
+      caret: true,
+      size: "sm",
+      footer: footer,
+      inline: inline
+    }, body);
+  }
+  const list = asOptions(options),
+    chosen = value || [];
+  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
+  const body = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel plx-find-panel--checklist"
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    width: "fill",
+    value: q,
+    onChange: e => setQ(e.target.value),
+    onClear: () => setQ(''),
+    placeholder: (0, _panelParts.fill)(t.find, {
+      noun
+    }),
+    label: (0, _panelParts.fill)(t.find, {
+      noun
+    })
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__checklist"
+  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    key: o.value,
+    label: /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
+      color: o.color
+    }, o.label),
+    checked: chosen.indexOf(o.value) >= 0,
+    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
+  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, (0, _panelParts.fill)(t.none, {
+    noun
+  }))));
+  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "filter-off",
+    disabled: !chosen.length,
+    onClick: () => onChange([])
+  }, t.clear);
+  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+    icon: icon,
+    label: label,
+    title: label,
+    count: chosen.length,
+    caret: true,
+    size: "sm",
+    footer: footer,
+    inline: inline
+  }, body);
+}
+  } },
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CommandBar = CommandBar;
+exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _barFit = require("../../utils/barFit.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
+var _Divider = require("../../components/Divider/Divider.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _BarActions = require("./BarActions.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
+   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
+     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
+     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
+     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
+     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
+     selected", which clears the selection. A page with no actions has a view bar (1F).
+   Usage:
+     <CommandBar label="Assets" count="24 assets"
+       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
+                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
+       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
+         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
+       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
+       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
+         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
+   Props:
+     label: the bar's accessible name (the collection: "Assets")
+     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
+       pressed, choices, value, onChange }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
+       setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
+       (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
+       submenu of radio items. No other controls go in the bar.
+     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
+     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
+     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
+     actions[].why: the tooltip of a disabled command, saying why
+     actions[].primary: the page's one primary command (filled; it keeps its label); default none
+     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
+     quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
+       options, value, onChange, kind }]; when the bar is short of room they fold into More after the commands, each a
+       submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
+     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
+     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
+       rows are selected ("× N selected" takes its place)
+     status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
+       is short of room, and while rows are selected
+     end: more controls at the very end (Export); hidden while rows are selected
+     selection.hidden: how many selected records are hidden by filters (DataTable onSelectionChange supplies it)
+     selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
+       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
+       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
+       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
+       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
+     sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
+     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
+       decides)
+     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
+       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
+       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
+       to {action}" }
+     className: more classes
+     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
+       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
+       count in a badge; other props reach the Button (ref too)
+     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
+     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
+   Behavior:
+     The button rule, measured (owner, 2026-10-14 and 2026-10-15): every control shows its icon and label while the bar
+       fits on one line; first, every labeled control becomes its icon only, each with its tooltip (the actions, Filter,
+       the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
+       bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
+       the danger commands last. More shows only
+       when something does not fit. A change of width, labels or counts starts again from icons and labels.
+     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
+     Commands are never hidden by state: they are disabled, with a tooltip saying why.
+     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
+     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
+       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
+       stay mounted through the swap, so an open panel keeps its state.
+     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
+   Notes:
+     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
+     bar: the plain table. */
+const STRINGS = {
+  more: 'More actions',
+  actions: '{label} actions',
+  find: 'Find and view',
+  selected: '{n} selected',
+  hidden: ' ({n} hidden by filters)',
+  clear: 'Clear the selection',
+  clearName: '{n} selected, clear the selection',
+  swapped: '{n} selected. Selection actions available.',
+  cleared: 'Selection cleared.',
+  why: 'Select {plural} to {action}',
+  single: 'Select one {noun} to {action}'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
+// into More
+const ICONS = 1,
+  SEARCH = 2;
+const BarContext = /*#__PURE__*/_react.default.createContext({
+  iconOnly: false,
+  collapsed: false,
+  step: 0,
+  searchOpen: false,
+  setSearchOpen: () => {}
+});
+const useCommandBar = () => _react.default.useContext(BarContext);
+exports.useCommandBar = useCommandBar;
+const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
+  icon,
+  label,
+  count = 0,
+  active = false,
+  caret = false,
+  iconOnly,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const ctx = useCommandBar();
+  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
+  const n = Number(count) || 0;
+  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    size: "sm",
+    tone: "active"
+  }, n) : null;
+  const name = n ? label + ', ' + n : label;
+  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    ref: ref,
+    size: "sm",
+    variant: "ghost",
+    icon: icon,
+    caret: caret && !only,
+    selected: active || n > 0,
+    iconOnly: only && !n,
+    label: only ? name : undefined,
+    className: (0, _cx.cx)('plx-command-bar__button', className)
+  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
+});
+const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
+  const {
+    collapsed,
+    searchOpen,
+    setSearchOpen
+  } = useCommandBar();
+  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
+    ref: ref,
+    width: "bar",
+    collapsed: collapsed,
+    open: collapsed ? searchOpen : undefined,
+    onOpenChange: collapsed ? setSearchOpen : undefined
+  }, props));
+});
+function CommandBar({
+  label,
+  actions = [],
+  find,
+  quickFilters = [],
+  view,
+  count,
+  status,
+  end,
+  selection,
+  layout = 'auto',
+  sticky = true,
+  narrow = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const root = _react.default.useRef(null);
+  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
+  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
+  const selCount = sel ? Number(sel.count) || 0 : 0;
+  const selecting = selCount > 0;
+  const selActs = selecting ? sel.actions || [] : [];
+  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
+  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
+  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
+  const quick = selecting ? [] : quickFilters;
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length;
+  // the bar's search, opened across the bar: the bar holds its step while it is open
+  const [searchOpen, setSearchOpen] = _react.default.useState(false);
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
+  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
+  const ctx = _react.default.useMemo(() => ({
+    iconOnly: step >= ICONS,
+    collapsed: step >= SEARCH,
+    step,
+    searchOpen: searchOpen && step >= SEARCH,
+    setSearchOpen
+  }), [step, searchOpen]);
+  // the commands fold first (from the end, Delete last); then the quick filters, from the end
+  const foldAll = Math.max(0, step - SEARCH);
+  const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
+  const quickAway = Math.min(quick.length, foldAll - fold);
+  const quickKept = quick.slice(0, quick.length - quickAway),
+    quickFolded = quick.slice(quick.length - quickAway);
+  const quickMenu = quickFolded.map(q => {
+    const id = q.id || q.label;
+    if (q.kind === 'date') {
+      const d = Object.assign({
+        preset: 'any',
+        from: '',
+        to: ''
+      }, q.value);
+      return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+        key: id,
+        label: q.label,
+        icon: q.icon
+      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+        label: q.label,
+        value: d.preset,
+        onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
+          preset: v
+        }))
+      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        key: p.value,
+        value: p.value
+      }, p.label))));
+    }
+    const chosen = q.value || [];
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: id,
+      label: chosen.length ? q.label + ' (' + chosen.length + ')' : q.label,
+      icon: q.icon
+    }, (q.options || []).map(o => typeof o === 'string' ? {
+      value: o,
+      label: o
+    } : o).map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: o.value,
+      checked: chosen.indexOf(o.value) >= 0,
+      keepOpen: true,
+      onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
+    }, o.label || o.value)));
+  });
+  // the swap is announced (the focus stays where it is, on the table)
+  const was = _react.default.useRef(selecting);
+  _react.default.useEffect(() => {
+    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
+      n: (0, _format.formatNumber)(selCount)
+    }) : t.cleared);
+    was.current = selecting;
+  }, [selecting]);
+  const words = {
+    noun: sel && sel.noun || 'item',
+    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
+  };
+  const off = a => !!a.disabled || !!(a.single && selCount > 1);
+  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
+    action: String(a.label).toLowerCase()
+  }, words));
+  const acts = shown.length || quickMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__actions"
+  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
+    actions: shown,
+    iconOnly: ctx.iconOnly,
+    fold: fold,
+    moreLabel: t.more,
+    dangerClass: "plx-command-bar__danger",
+    off: selecting ? off : undefined,
+    why: selecting ? why : undefined,
+    extra: quickMenu
+  })) : null;
+  const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
+    key: q.id || q.label
+  }, q)));
+  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__find"
+  }, find, quickEls) : null;
+  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__view"
+  }, view) : null;
+  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__count"
+  }, count) : count;
+  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
+  const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, {
+    n: (0, _format.formatNumber)(sel.hidden)
+  }) : '';
+  const [hiddenBefore, hiddenAfter] = String(t.hidden).split('{n}');
+  const [before, after] = String(t.selected).split('{n}');
+  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: t.clear
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "close",
+    className: "plx-command-bar__clear",
+    "aria-label": fill(t.clearName, {
+      n: (0, _format.formatNumber)(selCount)
+    }) + hiddenText,
+    onClick: () => sel.onClear && sel.onClear()
+  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__number"
+  }, (0, _format.formatNumber)(selCount)), after, hiddenText ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, hiddenBefore, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, (0, _format.formatNumber)(sel.hidden)), hiddenAfter) : null)) : null;
+  const statusEl = selecting || !status || ctx.collapsed ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-command-bar__status"
+  }, status);
+  const tail = countEl || statusEl || end || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__end"
+  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, countEl, statusEl, selecting ? null : end, clearEl) : null;
+  // Escape in the bar clears the selection (as "× N selected" does)
+  const onKeyDown = selecting && sel.onClear ? e => {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+      e.preventDefault();
+      sel.onClear();
+    }
+  } : undefined;
+  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
+  const name = selecting ? sel.label || fill(t.actions, {
+    label: label || ''
+  }).trim() : label;
+  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
+    value: ctx
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
+    "data-plx-layout": shape,
+    "data-plx-position": sticky ? undefined : 'static',
+    onKeyDown: onKeyDown
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-command-bar__bar"
+  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
+    label: name,
+    className: "plx-command-bar__row",
+    "data-plx-bar-row": ""
+  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
+}
+  } },
+  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SearchWorkspace = SearchWorkspace;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _CommandBar = require("../CommandBar/CommandBar.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Tag = require("../../components/Tag/Tag.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _FilterBar = require("../FilterBar/FilterBar.jsx");
+var _layer = require("../../utils/layer.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SearchWorkspace
+   Summary: The Advanced Search workspace (level 3 of Plenix search), a view of the main work area like Categories or Files.
+     It is normal browsing with more powerful filtering, never a form of field / operator / value rows.
+   Usage:
+     <SearchWorkspace title="Search results" query={query} onQueryChange={setQuery} placeholder="Search…"
+       filters={[…]} onFilterChange={(id, value) => …} onClearAll={() => …} count={128} noun="asset"
+       sort={{ value, options, onChange }} view={{ value, options, onChange }} onSave={() => …}
+       headStart={<…/>} headEnd={<…/>} selection={{ count: selected.length, actions, onClear: clear }}>{results}</SearchWorkspace>
+   Props:
+     title: strings.title ("Search", the default) before a query, "Search results" after one, or a saved search's name (the capability decides)
+     query: the search field's text (default "")
+     onQueryChange(next): runs when the search field changes; Enter or typing updates the results (the capability filters)
+     placeholder: the search field's placeholder (default strings.placeholder: "Search…")
+     filters: FilterBar filters: [{ id, label, options, value, multiple }]
+     onFilterChange(id, value): runs when a filter changes or its chip is removed
+     onClearAll(): runs from Clear all, beside the chips of the set filters
+     count: the number of results, for the result count line (default 0)
+     noun: the word for one result in both count lines, as in "128 assets" (default strings.result: "result")
+     plural: the word for several (default: noun + "s", or strings.results: "results" without a noun)
+     sort: { value, options, onChange }; a Sort menu (optional)
+     view: { value, options, onChange }; a Grid / Table switch (optional)
+     onSave(): shows Save search (only capabilities that keep saved searches)
+     headStart: extra controls at the start of the title row (a menu button, a details toggle)
+     headEnd: extra controls at the end of the title row
+     selection: CommandBar selection state ({ count, actions, onClear, noun, label }); preferred.
+       onSelectAll and total: optional legacy Select all command, retained in the normal and selected bar.
+     bulk: deprecated for one release; accepts selection state as above or a legacy React bar node.
+       selection takes precedence; legacy nodes remain above results until callers migrate.
+     className: more classes
+     children: the results
+     locale: the language the count is formatted in (default: the page's language, document.documentElement.lang)
+     strings: the words it shows and announces, for other languages: { title: "Search", placeholder: "Search…", result:
+       "result", results: "results", searchField: "Search {nouns}", save: "Save search", filters: "Filters", activeFilters:
+       "Active filters", chip: "{label}: {value}", remove: "Remove {text}", clearAll: "Clear all", view: "View", grid: "Grid",
+       table: "Table", sort: "Sort", sortValue: "Sort: {value}", noMatchQuery: "Nothing matches “{query}”.",
+       noMatchQueryFilters: "Nothing matches “{query}” with these filters.", noMatchFilters: "Nothing matches these filters." }
+   Behavior:
+     Set filters are repeated as removable chips under the toolbar ("Type: PNG ×") with Clear all.
+     The count line is announced politely. The results CommandBar swaps to selection commands while count is above zero.
+     When count is 0 the results area says there is nothing to show for the query.
+   Notes:
+     The application shell (header, left navigation, a details panel where the capability has one) stays, and only the center changes.
+     Pressing Enter in the header search opens it with the query kept.
+*/
+
+const STRINGS = {
+  title: 'Search',
+  selectAll: 'Select all',
+  allSelected: 'Every {noun} is selected',
+  placeholder: 'Search…',
+  result: 'result',
+  results: 'results',
+  searchField: 'Search {nouns}',
+  save: 'Save search',
+  filters: 'Filters',
+  activeFilters: 'Active filters',
+  chip: '{label}: {value}',
+  remove: 'Remove {text}',
+  clearAll: 'Clear all',
+  view: 'View',
+  grid: 'Grid',
+  table: 'Table',
+  sort: 'Sort',
+  sortValue: 'Sort: {value}',
+  noMatchQuery: 'Nothing matches “{query}”.',
+  noMatchQueryFilters: 'Nothing matches “{query}” with these filters.',
+  noMatchFilters: 'Nothing matches these filters.'
+};
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+const label = (f, v) => {
+  const o = (f.options || []).find(x => x.value === v);
+  return o ? o.label : String(v);
+};
+function SearchWorkspace({
+  title,
+  query = '',
+  onQueryChange,
+  placeholder,
+  filters = [],
+  onFilterChange,
+  onClearAll,
+  count = 0,
+  noun,
+  plural,
+  sort,
+  view,
+  onSave,
+  headStart,
+  headEnd,
+  selection,
+  bulk,
+  locale,
+  strings,
+  className,
+  children
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const id = (0, _layer.useUid)('plx-search-ws');
+  const field = _react.default.useRef(null);
+  // the query typed here is applied as the person types; Enter keeps focus in the field
+  const chips = [];
+  filters.forEach(f => {
+    if (f.multiple) (f.value || []).forEach(v => chips.push({
+      f,
+      v,
+      text: fill(t.chip, {
+        label: f.label,
+        value: label(f, v)
+      }),
+      remove: () => onFilterChange(f.id, (f.value || []).filter(x => x !== v))
+    }));else if (f.value !== null && f.value !== undefined && f.value !== '') chips.push({
+      f,
+      v: f.value,
+      text: fill(t.chip, {
+        label: f.label,
+        value: label(f, f.value)
+      }),
+      remove: () => onFilterChange(f.id, null)
+    });
+  });
+  const nouns = count === 1 ? noun || t.result : plural || (noun ? noun + 's' : t.results);
+  const counted = count.toLocaleString(loc) + ' ' + nouns;
+  const legacyState = bulk && ! /*#__PURE__*/_react.default.isValidElement(bulk) && !Array.isArray(bulk) && typeof bulk === 'object' && 'count' in bulk ? bulk : null;
+  const selected = selection || legacyState;
+  const selectAll = selected && selected.onSelectAll ? {
+    id: 'select-all',
+    label: t.selectAll,
+    icon: 'checklist',
+    disabled: selected.total !== undefined && selected.count >= selected.total,
+    why: fill(t.allSelected, {
+      noun: selected.noun || noun || t.result
+    }),
+    onSelect: selected.onSelectAll
+  } : null;
+  const selectedBar = selected ? {
+    ...selected,
+    actions: (selected.actions || []).concat(selectAll ? [selectAll] : [])
+  } : null;
+  const layouts = view ? view.options || [{
+    value: 'grid',
+    label: t.grid
+  }, {
+    value: 'table',
+    label: t.table
+  }] : [];
+  return /*#__PURE__*/_react.default.createElement("section", {
+    "aria-labelledby": id + '-title',
+    className: (0, _cx.cx)('plx-search-ws', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search-ws__head"
+  }, headStart, /*#__PURE__*/_react.default.createElement("h2", {
+    id: id + '-title',
+    className: "plx-search-ws__title"
+  }, title === undefined ? t.title : title), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-ws__count",
+    "aria-live": "polite"
+  }, counted), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-ws__spacer"
+  }), onSave ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    icon: "save",
+    onClick: onSave
+  }, t.save) : null, headEnd), /*#__PURE__*/_react.default.createElement("div", {
+    role: "search",
+    className: "plx-search-ws__query"
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    ref: field,
+    label: fill(t.searchField, {
+      nouns
+    }),
+    placeholder: placeholder === undefined ? t.placeholder : placeholder,
+    value: query,
+    onChange: e => onQueryChange && onQueryChange(e.target.value),
+    onClear: () => onQueryChange && onQueryChange('')
+  })), filters.length ? /*#__PURE__*/_react.default.createElement(_FilterBar.FilterBar, {
+    label: t.filters,
+    filters: filters,
+    onChange: onFilterChange
+  }) : null, chips.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search-ws__active",
+    role: "group",
+    "aria-label": t.activeFilters
+  }, chips.map(c => /*#__PURE__*/_react.default.createElement(_Tag.Chip, {
+    key: c.f.id + ':' + c.v,
+    selected: true,
+    onRemove: c.remove,
+    removeLabel: fill(t.remove, {
+      text: c.text
+    })
+  }, c.text)), onClearAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    onClick: onClearAll
+  }, t.clearAll) : null) : null, /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
+    className: "plx-search-ws__bar",
+    label: title || t.title,
+    sticky: false,
+    count: counted,
+    actions: selectAll ? [selectAll] : [],
+    selection: selectedBar,
+    view: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, view ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: t.view,
+      placement: "bottom-end",
+      trigger: /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
+        icon: "view-table",
+        label: t.view,
+        caret: true
+      })
+    }, layouts.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: o.value,
+      checked: view.value === o.value,
+      onSelect: () => view.onChange(o.value)
+    }, o.label))) : null, sort ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: t.sort,
+      placement: "bottom-end",
+      trigger: /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
+        icon: "sort",
+        "aria-label": fill(t.sortValue, {
+          value: sort.value
+        }),
+        label: fill(t.sortValue, {
+          value: sort.value
+        }),
+        caret: true
+      })
+    }, sort.options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: o,
+      checked: sort.value === o,
+      onSelect: () => sort.onChange(o)
+    }, o))) : null)
+  }), !selected && !legacyState ? bulk : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search-ws__body"
+  }, count ? children : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    size: "inline"
+  }, query ? fill(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, {
+    query
+  }) : t.noMatchFilters)));
+}
+  } },
+  "platform/patterns/DataToolbar/DataToolbar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataToolbar = DataToolbar;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DataToolbar
+   Summary: The toolbar row above a list or grid (view switch, sort, size, export).
+   Usage:
+     <DataToolbar label="View options" start={<>…</>} end={<>…</>} />
+   Props:
+     label: the toolbar's accessible name
+     start: a group of controls at the start of the row
+     end: a group of controls at the end of the row
+     children: controls after the start group
+     className: more classes
+   Behavior:
+     It is a Toolbar: arrow keys move between the controls (one Tab stop sequence).
+     Controls take the toolbar role height.
+*/
+
+function DataToolbar({
+  label,
+  start,
+  end,
+  className,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
+    label: label,
+    className: (0, _cx.cx)('plx-data-toolbar', className)
+  }, start ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-data-toolbar__group"
+  }, start) : null, children, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), end ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-data-toolbar__group"
+  }, end) : null);
+}
+  } },
   "platform/patterns/BulkActions/BulkActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -18430,6 +20040,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Summary: What is selected, and what can be done with it. BulkActions is a selection bar for a page WITHOUT a command
      bar (owner, 2026-10-15: under a command bar, its selection swaps the bar instead: CommandBar selection={{ count,
      actions, onClear }}). SelectionSummary is its count with Select all and Clear, for a place that has no bar.
+   Deprecated: BulkActions stays exported for one release. Use CommandBar's selection state instead.
+     SelectionSummary remains available for a selection count outside a bar.
    Usage:
      <BulkActions count={sel.length} total={rows.length} noun="asset" onSelectAll={() => …} onClear={() => setSel([])}
        actions={[{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: () => … },
@@ -25554,286 +27166,6 @@ function Time({
   }, el) : el;
 }
   } },
-  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Popover = Popover;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _floating = require("../../utils/floating.js");
-var _Button = require("../Button/Button.jsx");
-var _Sheet = require("../Sheet/Sheet.jsx");
-var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
-   Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
-     a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
-     dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
-     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
-   Usage:
-     <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
-     <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
-     <Popover trigger={<Link href="/people/maya">Maya Chen</Link>} triggerOn="hover" label="Maya Chen" size="sm">…</Popover>
-     <Popover trigger={target} triggerOn="manual" open={open} onOpenChange={setOpen} arrow placement="bottom">…</Popover>
-   Props:
-     trigger: the element that opens it (one element; it gets the ref, and for a click popover aria-haspopup="dialog",
-       aria-expanded and aria-controls)
-     triggerOn: "click" (default: click, Enter or Space on the trigger) | "hover" (a hover card: opens after
-       --plx-comp-popover-hover-open-delay on pointer hover and on keyboard focus, and stays open while the pointer is in
-       it) | "manual" (only the open prop opens it: a teaching bubble pointing at its target)
-     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
-     onOpenChange(open): runs when it opens or closes
-     title: the title in its header; it names the popover
-     label: the accessible name when there is no title
-     footer: a row of actions at the bottom, at the end edge
-     closeButton: a Close button at the end of the header (default false; Escape and a click outside always close it)
-     placement: where it sits against the trigger: "bottom-start" (default) | "bottom" | "bottom-end" | "top" | "top-start"
-       | "top-end" | "start" | "start-top" | "start-bottom" | "end" | "end-top" | "end-bottom" (start and end follow the
-       writing direction)
-     size: "md" (default; 320px wide) | "sm" (240px) | "lg" (400px) | "auto" (as wide as its content); never wider than
-       the window less its margins
-     arrow: a caret on the edge that faces the trigger, pointing at it (default false)
-     role: "dialog" (default) | "alertdialog" (a question that needs an answer: Popconfirm) | null (a disclosure panel of
-       links, MegaMenu: no popup role, and the trigger is a plain disclosure button with aria-expanded)
-     initialFocus: a ref to the element that takes focus when it opens (default: the first control in its body, else its
-       first control (Close, a footer action), else the popover)
-     focusOnOpen: focus moves into it when it opens (default true for a click popover, false for hover and manual)
-     sheetOnNarrow: at the Narrow window class a click popover opens as a bottom Sheet instead (default true; a hover
-       card never does)
-     strings: the words it shows and announces, for other languages: { close: "Close" }
-     className: more classes on the popover
-     children: the content
-     Other props pass through to the popover's <div> (aria-describedby).
-   Behavior:
-     Click: the trigger opens and closes it; focus moves into it (initialFocus, else the first control in its body, else
-       its first control, else the popover) and returns to the trigger when Escape closes it, or when it closes while
-       focus is inside it (Close, an action). Escape, a click outside, and Tab out of it close it. It is not modal: the
-       page stays usable and focus is not trapped.
-     Hover: opens after the open delay on pointer hover, and at once on keyboard focus of the trigger; closes
-       --plx-comp-popover-hover-close-delay after the pointer leaves both, on blur, and with Escape. Touch has no hover:
-       a tap follows the trigger (a link), so a hover card holds nothing that is only there.
-     Manual: opens and closes only by the open prop (a click outside does not close it); Escape asks to close it
-       (onOpenChange(false)) and returns focus to the trigger.
-     Placement: by CSS anchor positioning it flips to the other side and shifts its alignment to stay in the window, and
-       follows the trigger on scroll and resize; without it, it is drawn inside the trigger's wrapper on its side. With an
-       arrow it keeps its side and alignment, so the arrow always points at the trigger.
-     At the Narrow window class (under --plx-sys-shell-phone-below) a click popover is a bottom Sheet: the same title,
-       content and footer, modal, with the sheet's own close.
-   Notes:
-     One popover at a time; never a popover inside a popover. A hint of a few words is a Tooltip; a decision that blocks
-       the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
-     ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
-*/
-const STRINGS = {
-  close: 'Close'
-};
-const SIZES = ['sm', 'md', 'lg', 'auto'];
-
-// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
-// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-function Popover({
-  trigger,
-  triggerOn = 'click',
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  title,
-  label,
-  footer,
-  closeButton = false,
-  placement = 'bottom-start',
-  size = 'md',
-  arrow = false,
-  role = 'dialog',
-  initialFocus,
-  focusOnOpen,
-  sheetOnNarrow = true,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const id = (0, _layer.useUid)('plx-popover');
-  const controlled = openProp !== undefined;
-  const [own, setOwn] = _react.default.useState(!!defaultOpen);
-  const open = controlled ? !!openProp : own;
-  const setOpen = _react.default.useCallback(v => {
-    if (!controlled) setOwn(v);
-    if (onOpenChange) onOpenChange(v);
-  }, [controlled, onOpenChange]);
-  const wrap = _react.default.useRef(null),
-    panel = _react.default.useRef(null),
-    anchor = _react.default.useRef(null),
-    timer = _react.default.useRef(null);
-  const hover = triggerOn === 'hover',
-    click = triggerOn === 'click';
-  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
-  const asSheet = click && sheetOnNarrow && narrow;
-  const floating = open && !asSheet;
-  const where = _floating.PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const {
-    placement: used
-  } = (0, _floating.useFloating)(anchor, panel, {
-    open: floating,
-    placement: where,
-    offset: arrow ? 'md' : 'xs',
-    flip: !arrow,
-    shift: !arrow
-  });
-  const [side, align] = used.split('-');
-  const close = _react.default.useCallback(refocus => {
-    setOpen(false);
-    if (refocus && anchor.current && anchor.current.focus) anchor.current.focus();
-  }, [setOpen]);
-  (0, _layer.useLayer)(panel, floating, {
-    onEscape: () => close(!hover)
-  });
-
-  // into the top layer as soon as it is in the page, before focus moves in
-  _react.default.useLayoutEffect(() => {
-    const el = panel.current;
-    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
-  }, [floating]);
-  // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
-  const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
-  _react.default.useEffect(() => {
-    if (!floating) return undefined;
-    if (takeFocus) {
-      const root = panel.current;
-      const wanted = initialFocus && initialFocus.current;
-      const first = wanted || (0, _layer.focusables)(root.querySelector('.plx-popover__body'))[0] || (0, _layer.focusables)(root)[0] || root;
-      if (first) first.focus({
-        preventScroll: true
-      });
-    }
-    if (!click) return undefined;
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', outside);
-    return () => document.removeEventListener('mousedown', outside);
-  }, [floating]);
-  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
-  // closed while focus was inside it (Close, an action, the open prop): focus goes back to the trigger, not the page
-  const inside = _react.default.useRef(false);
-  _react.default.useEffect(() => {
-    if (floating || !inside.current) return;
-    inside.current = false;
-    const a = document.activeElement;
-    if ((!a || a === document.body) && anchor.current && anchor.current.focus) anchor.current.focus();
-  }, [floating]);
-
-  // the hover card's timers: open after the open delay, close after the close delay (cancelled by coming back)
-  const later = v => {
-    clearTimeout(timer.current);
-    const el = wrap.current;
-    timer.current = setTimeout(() => setOpen(v), ms(el, v ? '--plx-comp-popover-hover-open-delay' : '--plx-comp-popover-hover-close-delay'));
-  };
-  const hoverProps = hover ? {
-    onPointerEnter: e => {
-      if (e.pointerType !== 'touch') later(true);
-    },
-    onPointerLeave: e => {
-      if (e.pointerType !== 'touch') later(false);
-    },
-    onFocus: e => {
-      if (e.target === anchor.current && e.target.matches(':focus-visible')) {
-        clearTimeout(timer.current);
-        setOpen(true);
-      }
-    },
-    onBlur: e => {
-      if (!wrap.current.contains(e.relatedTarget)) {
-        clearTimeout(timer.current);
-        setOpen(false);
-      }
-    }
-  } : click ? {
-    // Tab out of the popover (or the trigger) to somewhere else closes it; a click on its text does not (no related target)
-    onBlur: e => {
-      if (floating && e.relatedTarget && !wrap.current.contains(e.relatedTarget)) setOpen(false);
-    } // the sheet is a portal: not while it shows
-  } : {};
-  const child = _react.default.Children.only(trigger);
-  const triggerEl = /*#__PURE__*/_react.default.cloneElement(child, click ? {
-    ref: anchor,
-    'aria-haspopup': role ? 'dialog' : undefined,
-    'aria-expanded': open,
-    'aria-controls': open ? id : undefined,
-    expanded: undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  } : {
-    ref: anchor
-  });
-  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const titleId = id + 't';
-  const header = title || closeButton ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__header"
-  }, title ? /*#__PURE__*/_react.default.createElement("h2", {
-    id: titleId,
-    className: "plx-popover__title"
-  }, title) : null, closeButton ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    size: "xs",
-    iconOnly: true,
-    icon: "close",
-    label: t.close,
-    className: "plx-popover__close",
-    onClick: () => close(true)
-  }) : null) : null;
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    ref: wrap,
-    className: "plx-popover-anchor"
-  }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: panel,
-    id: id,
-    role: role || undefined,
-    "aria-labelledby": role && title ? titleId : undefined,
-    "aria-label": role && !title ? label : undefined,
-    tabIndex: -1,
-    popover: TOP_LAYER ? 'manual' : undefined,
-    "data-plx-popover-side": side,
-    "data-plx-popover-align": align || 'center',
-    className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
-    onFocus: () => {
-      inside.current = true;
-    },
-    onBlur: e => {
-      inside.current = !!(panel.current && panel.current.contains(e.relatedTarget));
-    }
-  }, rest), arrow ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-popover__arrow",
-    "aria-hidden": "true"
-  }) : null, header, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__body"
-  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__footer"
-  }, footer) : null) : null, asSheet ? /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
-    open: open,
-    onClose: () => setOpen(false),
-    title: title || label,
-    footer: footer,
-    form: "bottom",
-    initialFocus: initialFocus,
-    closeLabel: t.close
-  }, children) : null);
-}
-  } },
   "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -31564,141 +32896,6 @@ const CountrySelect = exports.CountrySelect = /*#__PURE__*/_react.default.forwar
   }, rest));
 });
   } },
-  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ProgressSteps = ProgressSteps;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressSteps
-   Summary: The steps of a task done in order (setup, an import, a checkout) and where the person is: each step's marker,
-     name and optional line, joined by connectors, with the done, current, upcoming and failed steps each told by an icon
-     or number and in words. Horizontal or vertical; clickable to go back to a step; or compact ("Step 2 of 5" over a
-     bar of segments) where names add nothing. The navigation Stepper, the Progress tracker and Step progress.
-   Usage:
-     <ProgressSteps label="Import" current={1} steps={[{ label: 'Upload' }, { label: 'Map columns' }, { label: 'Review' }]} />
-     <ProgressSteps orientation="vertical" current={2} steps={[{ label: 'Details', description: 'Name and owner' }, …]} />
-     <ProgressSteps current={2} onStepClick={setStep} steps={steps} />                                  // clickable
-     <ProgressSteps current={1} steps={[{ label: 'Upload' }, { label: 'Map columns', status: 'error' }, …]} />
-     <ProgressSteps variant="compact" current={1} steps={steps} />                                      // Step 2 of 5
-   Props:
-     steps: the steps, in order: [{ label, description, status, disabled }]
-     steps[].label: the step's short name (a noun: Details, Review)
-     steps[].description: a second line under the name (optional; not in the compact form)
-     steps[].status: "complete" | "current" | "upcoming" | "error" (needs attention); default from current: the steps
-       before it are complete, it is current, the steps after it upcoming
-     steps[].disabled: the step cannot be chosen even when it is complete (clickable steps)
-     current: the index of the current step (0-based)
-     orientation: "horizontal" (default; one row, the connectors between) | "vertical" (one step under another, the
-       connector down the marker column, room for descriptions)
-     variant: "default" | "compact" ("Step 2 of 5: Review" over a bar of one segment per step)
-     onStepClick(index): makes the done and current steps buttons that go to that step (clickable); upcoming steps stay
-       text (people cannot skip ahead)
-     label: the accessible name of the list ("Import steps")
-     strings: the words it shows and announces, for other languages: { step: "Step {n} of {total}", complete:
-       "Complete", current: "Current step", upcoming: "Not started", error: "Needs attention" }
-     className: more classes on the steps
-   Behavior:
-     The steps are an ordered list; the current step is aria-current="step". Every step's state is said in words after its
-       name (visually hidden: "Complete", "Needs attention"), never by color alone: a complete step shows a check, a
-       failed one an alert, the others their number.
-     Clickable: the done and current steps are buttons in the Tab order (Enter or Space goes to the step); upcoming and
-       disabled steps are not focusable.
-     Horizontal steps that do not fit their row wrap onto more lines; a vertical list is the choice on a narrow window.
-     Compact: the text says the step and its name; the bar's segments are decoration (hidden from screen readers).
-   Notes:
-     Steps that can be done in any order are tabs or sections, not steps. Three to seven steps; two need no stepper.
-     Statuses of records are a Badge; these markers belong to the steps only.
-     Other props pass through to the outer element.
-*/
-const STRINGS = {
-  step: 'Step {n} of {total}',
-  complete: 'Complete',
-  current: 'Current step',
-  upcoming: 'Not started',
-  error: 'Needs attention'
-};
-const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
-function ProgressSteps({
-  steps = [],
-  current = 0,
-  orientation = 'horizontal',
-  variant = 'default',
-  onStepClick,
-  label,
-  strings,
-  className,
-  ...rest
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
-  if (variant === 'compact') {
-    const at = Math.max(0, Math.min(current, steps.length - 1));
-    const step = steps[at] || {};
-    return /*#__PURE__*/_react.default.createElement("div", _extends({
-      role: "group",
-      "aria-label": label,
-      className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--compact', className)
-    }, rest), /*#__PURE__*/_react.default.createElement("p", {
-      className: "plx-progress-steps__count"
-    }, fill(t.step, at + 1, steps.length), step.label ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__count-label"
-    }, ': ' + step.label) : null), /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-progress-steps__segments",
-      "aria-hidden": "true"
-    }, steps.map((s, i) => /*#__PURE__*/_react.default.createElement("span", {
-      key: i,
-      className: (0, _cx.cx)('plx-progress-steps__segment', 'is-' + statusOf(s, i))
-    }))));
-  }
-  return /*#__PURE__*/_react.default.createElement("ol", _extends({
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--' + (orientation === 'vertical' ? 'vertical' : 'horizontal'), onStepClick && 'plx-progress-steps--clickable', className)
-  }, rest), steps.map((s, i) => {
-    const status = statusOf(s, i);
-    const canGo = onStepClick && !s.disabled && (status === 'complete' || status === 'current' || status === 'error');
-    const marker = /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__marker",
-      "aria-hidden": "true"
-    }, status === 'complete' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "check"
-    }) : status === 'error' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "alert"
-    }) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__number"
-    }, i + 1));
-    const words = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__label"
-    }, s.label), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t[status]));
-    return /*#__PURE__*/_react.default.createElement("li", {
-      key: i,
-      className: (0, _cx.cx)('plx-progress-steps__step', 'is-' + status),
-      "aria-current": status === 'current' ? 'step' : undefined
-    }, canGo ? /*#__PURE__*/_react.default.createElement("button", {
-      type: "button",
-      className: "plx-progress-steps__head plx-progress-steps__button",
-      onClick: () => onStepClick(i)
-    }, marker, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__text"
-    }, words)) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__head"
-    }, marker, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__text"
-    }, words)), s.description ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__description"
-    }, s.description) : null, i < steps.length - 1 ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__connector",
-      "aria-hidden": "true"
-    }) : null);
-  }));
-}
-  } },
   "platform/components/MillerColumns/MillerColumns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -35578,1045 +36775,6 @@ function BottomSheetNav({
   }, body);
 }
   } },
-  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MultiPick = MultiPick;
-exports.PanelHead = PanelHead;
-exports.PanelTrigger = PanelTrigger;
-exports.Pick = Pick;
-exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
-exports.useReorder = useReorder;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Popover = require("../../components/Popover/Popover.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
-var _CommandBar = require("./CommandBar.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
-   (platform/patterns/CommandBar; internal, not part of the public API)
-   Summary: The find-and-view panels' shared parts. FilterPanel, SortPanel, GroupPanel, ColumnsMenu and QuickFilter are built
-     from these, so the panels share one row (owner, 2026-10-14: "Group, Sort and Filter panels share row geometry"): the
-     same control height, the same spacing.
-   Usage:
-     <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
-     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
-   Props:
-     PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
-     PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
-     Pick: a select drawn as a menu button (the field with its type icon, the direction, the operator)
-     MultiPick: a multi-select whose chosen values show as pills in their colors
-     Pill: a value in its category color
-     useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
-       row; each move is announced (WCAG 2.5.7: a way without dragging) */
-
-const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
-exports.toggle = toggle;
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-
-// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
-exports.fill = fill;
-function PanelTrigger({
-  icon,
-  label,
-  count = 0,
-  active,
-  caret = false,
-  size = 'auto',
-  title,
-  footer,
-  inline = false,
-  placement,
-  className,
-  children
-}) {
-  const ctx = (0, _CommandBar.useCommandBar)();
-  const box = _react.default.useRef(null);
-  // the focus goes to the panel's first row control, else its Add button: not the info button of its head
-  const first = {
-    get current() {
-      const el = box.current;
-      return el ? el.querySelector('[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input') : null;
-    }
-  };
-  const body = /*#__PURE__*/_react.default.createElement("div", {
-    ref: box,
-    className: (0, _cx.cx)('plx-find-panel-body', className)
-  }, children);
-  if (inline) return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel-frame"
-  }, children);
-  const trigger = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
-    icon: icon,
-    label: label,
-    count: count,
-    active: active,
-    caret: caret
-  });
-  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
-    label: title ? undefined : label,
-    title: title,
-    size: size,
-    trigger: trigger,
-    footer: footer,
-    placement: placement,
-    initialFocus: first
-  }, body);
-  return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: label
-  }, pop) : pop;
-}
-function PanelHead({
-  title,
-  info,
-  infoLabel,
-  sub,
-  actions
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__head"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__title-row"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-find-panel__title"
-  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "heading",
-    as: "span"
-  }, title), info ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: info
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "xs",
-    variant: "ghost",
-    icon: "circle-info",
-    iconOnly: true,
-    label: infoLabel || title
-  })) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-find-panel__actions"
-  }, actions) : null), sub ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, sub) : null);
-}
-
-// a select as a menu button: the current option's icon and words
-function Pick({
-  label,
-  value,
-  options,
-  onChange,
-  size = 'field',
-  disabled
-}) {
-  const cur = options.find(o => o.value === value) || options[0] || {
-    label: ''
-  };
-  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: label,
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      icon: cur.icon,
-      caret: true,
-      disabled: disabled,
-      className: (0, _cx.cx)('plx-find-pick', 'plx-find-pick--' + size),
-      title: cur.label,
-      "aria-label": label + ': ' + cur.label
-    }, cur.label)
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: label,
-    value: value,
-    onChange: onChange
-  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: o.value,
-    value: o.value,
-    icon: o.icon
-  }, o.label))));
-}
-const Pill = ({
-  color,
-  children
-}) => /*#__PURE__*/_react.default.createElement("span", {
-  className: "plx-find-pill",
-  "data-plx-category": color || 'grey'
-}, children);
-
-// a multi-select: the chosen values as pills, or the placeholder
-exports.Pill = Pill;
-function MultiPick({
-  label,
-  options,
-  value,
-  onChange,
-  placeholder
-}) {
-  const chosen = value.map(v => options.find(o => o.value === v) || {
-    value: v,
-    label: v
-  });
-  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: label,
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      caret: true,
-      className: "plx-find-pick plx-find-pick--value",
-      "aria-label": label + ': ' + (chosen.length ? chosen.map(o => o.label).join(', ') : placeholder)
-    }, chosen.length ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-find-pick__pills"
-    }, chosen.map(o => /*#__PURE__*/_react.default.createElement(Pill, {
-      key: o.value,
-      color: o.color
-    }, o.label))) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-find-pick__placeholder"
-    }, placeholder))
-  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: o.value,
-    checked: value.indexOf(o.value) >= 0,
-    keepOpen: true,
-    onSelect: () => onChange(toggle(value, o.value))
-  }, /*#__PURE__*/_react.default.createElement(Pill, {
-    color: o.color
-  }, o.label))));
-}
-
-// rows that reorder: drag, the handle's menu, Alt + Arrow Up / Down on a focused row; announced
-function useReorder(items, setItems, nameOf, t) {
-  const [msg, setMsg] = _react.default.useState('');
-  const drag = _react.default.useRef(null);
-  const box = _react.default.useRef(null);
-  const [dragging, setDragging] = _react.default.useState(-1);
-  const move = (i, to, focus) => {
-    if (to < 0 || to >= items.length || to === i) return;
-    const next = items.slice();
-    const [x] = next.splice(i, 1);
-    next.splice(to, 0, x);
-    setItems(next);
-    setMsg(fill(t.moved, {
-      name: nameOf(x),
-      position: to + 1,
-      total: items.length
-    }));
-    if (focus) setTimeout(() => {
-      const el = box.current && box.current.querySelectorAll(':scope > [data-plx-row]')[to];
-      if (el) el.focus();
-    }, 0);
-  };
-  const rowProps = (i, name) => ({
-    'data-plx-row': '',
-    tabIndex: 0,
-    draggable: true,
-    'aria-label': fill(t.row, {
-      name,
-      position: i + 1,
-      total: items.length
-    }),
-    'aria-keyshortcuts': 'Alt+ArrowUp Alt+ArrowDown',
-    className: (0, _cx.cx)('plx-find-panel__row', dragging === i && 'is-dragging'),
-    onKeyDown: e => {
-      if (e.target !== e.currentTarget || !e.altKey) return;
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        move(i, i - 1, true);
-      }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        move(i, i + 1, true);
-      }
-    },
-    onDragStart: e => {
-      e.stopPropagation();
-      drag.current = i;
-      setDragging(i);
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', String(i));
-    },
-    onDragEnd: () => {
-      drag.current = null;
-      setDragging(-1);
-    },
-    onDragOver: e => e.preventDefault(),
-    onDrop: e => {
-      e.preventDefault();
-      e.stopPropagation();
-      const from = drag.current;
-      drag.current = null;
-      setDragging(-1);
-      if (from !== null && from !== i) move(from, i);
-    }
-  });
-  const handle = (i, name) => /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: fill(t.reorder, {
-      name
-    }),
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "ghost",
-      icon: "drag",
-      iconOnly: true,
-      label: fill(t.reorder, {
-        name
-      }),
-      className: "plx-find-panel__handle"
-    })
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "chevron-up",
-    disabled: i === 0,
-    onSelect: () => move(i, i - 1, true)
-  }, t.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "chevron-down",
-    disabled: i === items.length - 1,
-    onSelect: () => move(i, i + 1, true)
-  }, t.moveDown));
-  const status = /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite"
-  }, msg);
-  return {
-    box,
-    rowProps,
-    handle,
-    status
-  };
-}
-// the words of a row that reorders
-const REORDER_STRINGS = exports.REORDER_STRINGS = {
-  moved: '{name} moved to position {position} of {total}',
-  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
-  reorder: 'Reorder {name}',
-  moveUp: 'Move up',
-  moveDown: 'Move down'
-};
-  } },
-  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
-exports.compareLevels = compareLevels;
-exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
-exports.matchesCondition = matchesCondition;
-exports.matchesDate = matchesDate;
-exports.matchesFilter = matchesFilter;
-exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
-/* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
-   style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
-   reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
-   server that filters the same way).
-   A field: { value (its key), label, kind: "text" | "select" | "multi" | "number" | "date", options: [{ value, label,
-   color }] (select and multi: color is a category color name; without one they take the category colors in order),
-   get(row) (the row's value; default row[value]) }.
-   A filter: { join: "and" | "or", items: [condition | { group: true, id, join, items: [condition…] }] }; a condition:
-   { id, field, op, value }. A condition left unfinished (no value) does not filter.
-   Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
-
-// the type icon of each kind (the field pickers and the column headers' type icons)
-const KIND_ICONS = exports.KIND_ICONS = {
-  text: 'ed-text',
-  select: 'field-select',
-  multi: 'tags',
-  number: 'field-number',
-  date: 'calendar'
-};
-// the directions in each kind's words (Airtable's)
-const DIRECTIONS = exports.DIRECTIONS = {
-  text: ['A → Z', 'Z → A'],
-  select: ['First → Last', 'Last → First'],
-  multi: ['First → Last', 'Last → First'],
-  number: ['1 → 9', '9 → 1'],
-  date: ['Oldest → newest', 'Newest → oldest']
-};
-// the operators by kind: [op, words]
-const OPERATORS = exports.OPERATORS = {
-  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
-};
-// "is within": the past week, month or year
-const WITHIN = exports.WITHIN = [{
-  value: 'week',
-  label: 'the past week',
-  days: 7
-}, {
-  value: 'month',
-  label: 'the past month',
-  days: 30
-}, {
-  value: 'year',
-  label: 'the past year',
-  days: 365
-}];
-// the category colors (Trubetskoy's 20), in the order options take them
-const CATEGORY_ORDER = exports.CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'magenta', 'yellow', 'navy', 'red', 'cyan', 'lavender', 'brown', 'olive', 'pink', 'apricot', 'mint', 'maroon', 'lime', 'beige', 'grey'];
-const fieldOf = (fields, key) => fields.find(f => f.value === key) || fields[0];
-exports.fieldOf = fieldOf;
-const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
-exports.valueOf = valueOf;
-const kindOf = f => OPERATORS[f && f.kind] ? f.kind : 'text';
-// a field's options, each with its color (given, or the next category color)
-exports.kindOf = kindOf;
-const optionsOf = f => (f && f.options || []).map((o, i) => typeof o === 'string' ? {
-  value: o
-} : o).map((o, i) => Object.assign({
-  label: o.value,
-  color: CATEGORY_ORDER[i % CATEGORY_ORDER.length]
-}, o));
-exports.optionsOf = optionsOf;
-const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
-const iso = d => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
-const daysBefore = (n, today) => {
-  const d = new Date((today || iso(new Date())) + 'T00:00:00Z');
-  d.setUTCDate(d.getUTCDate() - n);
-  return iso(d);
-};
-
-// one condition against one row (today: an ISO date, for "is within"; default the current date)
-function matchesCondition(c, row, fields, today) {
-  const f = fieldOf(fields, c.field),
-    v = valueOf(f, row),
-    val = c.value,
-    k = kindOf(f);
-  if (c.op === 'empty') return blank(v);
-  if (c.op === 'nempty') return !blank(v);
-  if (blank(val)) return true;
-  if (k === 'text') {
-    const s = String(v == null ? '' : v).toLowerCase(),
-      q = String(val).toLowerCase();
-    return c.op === 'contains' ? s.includes(q) : c.op === 'ncontains' ? !s.includes(q) : c.op === 'is' ? s === q : s !== q;
-  }
-  if (k === 'select') {
-    const list = [].concat(val);
-    return c.op === 'any' ? list.indexOf(v) >= 0 : list.indexOf(v) < 0;
-  }
-  if (k === 'multi') {
-    const list = [].concat(val),
-      hit = [].concat(v || []).some(x => list.indexOf(x) >= 0);
-    return c.op === 'any' ? hit : !hit;
-  }
-  if (k === 'number') {
-    const n = Number(v),
-      q = parseFloat(val);
-    if (isNaN(q)) return true;
-    return c.op === 'eq' ? n === q : c.op === 'ne' ? n !== q : c.op === 'lt' ? n < q : n > q;
-  }
-  const d = blank(v) ? '' : String(v).slice(0, 10);
-  if (c.op === 'within') {
-    const w = WITHIN.find(x => x.value === val) || WITHIN[0];
-    return d >= daysBefore(w.days, today);
-  }
-  return c.op === 'is' ? d === val : c.op === 'before' ? d < val : d > val;
-}
-// a filter (or a condition group) against one row
-function matchesFilter(node, row, fields, today) {
-  if (!node || !node.items || !node.items.length) return true;
-  const t = x => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
-  return node.join === 'or' ? node.items.some(t) : node.items.every(t);
-}
-// every condition of a filter, its groups' included (the count on the Filter button)
-const conditionsOf = node => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
-exports.conditionsOf = conditionsOf;
-let uid = 0;
-const nextId = () => 'c' + ++uid;
-// a new condition on a field: its kind's first operator, no value yet
-exports.nextId = nextId;
-const newCondition = f => ({
-  id: nextId(),
-  field: f.value,
-  op: OPERATORS[kindOf(f)][0][0],
-  value: kindOf(f) === 'select' || kindOf(f) === 'multi' ? [] : ''
-});
-
-// rows in the order of sort levels: a comparator
-exports.newCondition = newCondition;
-function compareLevels(fields, levels) {
-  return (a, b) => {
-    for (const l of levels || []) {
-      const f = fields.find(x => x.value === l.field);
-      if (!f) continue;
-      let x = valueOf(f, a),
-        y = valueOf(f, b);
-      if (kindOf(f) === 'select' && f.options) {
-        const o = optionsOf(f).map(p => p.value);
-        x = o.indexOf(x);
-        y = o.indexOf(y);
-      }
-      if (Array.isArray(x)) x = x.join(', ');
-      if (Array.isArray(y)) y = y.join(', ');
-      const c = x < y ? -1 : x > y ? 1 : 0;
-      if (c) return l.dir === 'desc' ? -c : c;
-    }
-    return 0;
-  };
-}
-
-// the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-const DATE_PRESETS = exports.DATE_PRESETS = [{
-  value: 'any',
-  label: 'Any time'
-}, {
-  value: '7',
-  label: 'Last 7 days'
-}, {
-  value: '30',
-  label: 'Last 30 days'
-}, {
-  value: 'year',
-  label: 'This year'
-}];
-function matchesDate(range, value, today) {
-  if (!range || range.preset === 'any' || !range.preset) return true;
-  const d = blank(value) ? '' : String(value).slice(0, 10);
-  if (!d) return false;
-  const now = today || iso(new Date());
-  if (range.preset === '7' || range.preset === '30') return d >= daysBefore(Number(range.preset), now) && d <= now;
-  if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
-  return (!range.from || d >= range.from) && (!range.to || d <= range.to);
-}
-  } },
-  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.QuickFilter = QuickFilter;
-var _react = _interopRequireDefault(require("react"));
-var _Button = require("../../components/Button/Button.jsx");
-var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
-var _Field = require("../../components/Field/Field.jsx");
-var _Input = require("../../components/Input/Input.jsx");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _panelParts = require("../CommandBar/panel-parts.jsx");
-var _fields = require("../../utils/fields.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · QuickFilter
-   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
-     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
-     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
-     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
-     This year) and a custom range (the Google Analytics style).
-   Usage:
-     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
-     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
-   Props:
-     kind: "list" (default) | "date"
-     label: the button's words ("Category", "Type", "Tags", "Date")
-     icon: its icon
-     noun: (list) the word for one value, for the find field ("Find a tag")
-     options: (list) the values: [{ value, label, color }] or strings; colors default to the category colors in order
-     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-     onChange(value): runs on every change
-     inline: draws the panel alone (open, in a frame); default false
-     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
-       custom: "Custom range", from: "From", to: "To" }
-   Behavior:
-     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
-     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
-     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
-     chosen.
-   Notes:
-     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
-
-const STRINGS = {
-  find: 'Find a {noun}',
-  none: 'No {noun} matches',
-  clear: 'Clear',
-  presets: _fields.DATE_PRESETS,
-  custom: 'Custom range',
-  from: 'From',
-  to: 'To'
-};
-const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
-  value: o
-} : o).map((o, i) => Object.assign({
-  label: o.value,
-  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
-}, o));
-function QuickFilter({
-  kind = 'list',
-  label,
-  icon,
-  noun = 'value',
-  options,
-  value,
-  onChange,
-  inline = false,
-  strings
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const [q, setQ] = _react.default.useState('');
-  if (kind === 'date') {
-    const d = Object.assign({
-      preset: 'any',
-      from: '',
-      to: ''
-    }, value);
-    const range = (k, v) => onChange(Object.assign({}, d, {
-      preset: 'custom',
-      [k]: v
-    }));
-    const on = d.preset && d.preset !== 'any';
-    const body = /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel plx-find-panel--date"
-    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
-      label: label,
-      value: d.preset,
-      onChange: v => onChange(Object.assign({}, d, {
-        preset: v
-      })),
-      options: t.presets.map(x => ({
-        value: x.value,
-        label: x.label
-      })).concat({
-        value: 'custom',
-        label: t.custom
-      })
-    }), /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel__range"
-    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.from
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.from,
-      onChange: e => range('from', e.target.value)
-    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.to
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.to,
-      onChange: e => range('to', e.target.value)
-    }))));
-    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      variant: "ghost",
-      icon: "filter-off",
-      disabled: !on,
-      onClick: () => onChange({
-        preset: 'any',
-        from: '',
-        to: ''
-      })
-    }, t.clear);
-    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-      icon: icon || 'calendar',
-      label: label,
-      title: label,
-      count: on ? 1 : 0,
-      caret: true,
-      size: "sm",
-      footer: footer,
-      inline: inline
-    }, body);
-  }
-  const list = asOptions(options),
-    chosen = value || [];
-  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
-  const body = /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel plx-find-panel--checklist"
-  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
-    width: "fill",
-    value: q,
-    onChange: e => setQ(e.target.value),
-    onClear: () => setQ(''),
-    placeholder: (0, _panelParts.fill)(t.find, {
-      noun
-    }),
-    label: (0, _panelParts.fill)(t.find, {
-      noun
-    })
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__checklist"
-  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
-    key: o.value,
-    label: /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
-      color: o.color
-    }, o.label),
-    checked: chosen.indexOf(o.value) >= 0,
-    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
-  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, (0, _panelParts.fill)(t.none, {
-    noun
-  }))));
-  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "filter-off",
-    disabled: !chosen.length,
-    onClick: () => onChange([])
-  }, t.clear);
-  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-    icon: icon,
-    label: label,
-    title: label,
-    count: chosen.length,
-    caret: true,
-    size: "sm",
-    footer: footer,
-    inline: inline
-  }, body);
-}
-  } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CommandBar = CommandBar;
-exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _barFit = require("../../utils/barFit.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Badge = require("../../components/Badge/Badge.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
-var _Divider = require("../../components/Divider/Divider.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _BarActions = require("./BarActions.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
-var _fields = require("../../utils/fields.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
-   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
-     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
-     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
-   Usage:
-     <CommandBar label="Assets" count="24 assets"
-       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
-                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
-       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
-         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
-       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
-       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
-         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
-   Props:
-     label: the bar's accessible name (the collection: "Assets")
-     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
-       pressed, choices, value, onChange }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
-       setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
-       (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
-       submenu of radio items. No other controls go in the bar.
-     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
-     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
-     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
-     actions[].why: the tooltip of a disabled command, saying why
-     actions[].primary: the page's one primary command (filled; it keeps its label); default none
-     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
-     quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
-       options, value, onChange, kind }]; when the bar is short of room they fold into More after the commands, each a
-       submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
-     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
-     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
-       rows are selected ("× N selected" takes its place)
-     status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
-       is short of room, and while rows are selected
-     end: more controls at the very end (Export); hidden while rows are selected
-     selection: the selection (the swap): { count, actions, onClear, noun, plural, label }; while count is above 0 the bar
-       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
-     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
-       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
-     sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
-     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
-       decides)
-     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
-       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
-       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
-       to {action}" }
-     className: more classes
-     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
-       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
-       count in a badge; other props reach the Button (ref too)
-     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
-     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
-   Behavior:
-     The button rule, measured (owner, 2026-10-14 and 2026-10-15): every control shows its icon and label while the bar
-       fits on one line; first, every labeled control becomes its icon only, each with its tooltip (the actions, Filter,
-       the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
-       bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
-       the danger commands last. More shows only
-       when something does not fit. A change of width, labels or counts starts again from icons and labels.
-     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
-     Commands are never hidden by state: they are disabled, with a tooltip saying why.
-     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
-     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
-       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
-       stay mounted through the swap, so an open panel keeps its state.
-     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
-   Notes:
-     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
-     bar: the plain table. */
-const STRINGS = {
-  more: 'More actions',
-  actions: '{label} actions',
-  find: 'Find and view',
-  selected: '{n} selected',
-  clear: 'Clear the selection',
-  clearName: '{n} selected, clear the selection',
-  swapped: '{n} selected. Selection actions available.',
-  cleared: 'Selection cleared.',
-  why: 'Select {plural} to {action}',
-  single: 'Select one {noun} to {action}'
-};
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
-// into More
-const ICONS = 1,
-  SEARCH = 2;
-const BarContext = /*#__PURE__*/_react.default.createContext({
-  iconOnly: false,
-  collapsed: false,
-  step: 0,
-  searchOpen: false,
-  setSearchOpen: () => {}
-});
-const useCommandBar = () => _react.default.useContext(BarContext);
-exports.useCommandBar = useCommandBar;
-const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
-  icon,
-  label,
-  count = 0,
-  active = false,
-  caret = false,
-  iconOnly,
-  className,
-  children,
-  ...rest
-}, ref) {
-  const ctx = useCommandBar();
-  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
-  const n = Number(count) || 0;
-  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    size: "sm",
-    tone: "active"
-  }, n) : null;
-  const name = n ? label + ', ' + n : label;
-  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
-  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
-    ref: ref,
-    size: "sm",
-    variant: "ghost",
-    icon: icon,
-    caret: caret && !only,
-    selected: active || n > 0,
-    iconOnly: only && !n,
-    label: only ? name : undefined,
-    className: (0, _cx.cx)('plx-command-bar__button', className)
-  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
-});
-const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
-  const {
-    collapsed,
-    searchOpen,
-    setSearchOpen
-  } = useCommandBar();
-  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
-    ref: ref,
-    width: "bar",
-    collapsed: collapsed,
-    open: collapsed ? searchOpen : undefined,
-    onOpenChange: collapsed ? setSearchOpen : undefined
-  }, props));
-});
-function CommandBar({
-  label,
-  actions = [],
-  find,
-  quickFilters = [],
-  view,
-  count,
-  status,
-  end,
-  selection,
-  layout = 'auto',
-  sticky = true,
-  narrow = false,
-  strings,
-  className
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
-  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
-  const selCount = sel ? Number(sel.count) || 0 : 0;
-  const selecting = selCount > 0;
-  const selActs = selecting ? sel.actions || [] : [];
-  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
-  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
-  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length;
-  // the bar's search, opened across the bar: the bar holds its step while it is open
-  const [searchOpen, setSearchOpen] = _react.default.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
-  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
-  const ctx = _react.default.useMemo(() => ({
-    iconOnly: step >= ICONS,
-    collapsed: step >= SEARCH,
-    step,
-    searchOpen: searchOpen && step >= SEARCH,
-    setSearchOpen
-  }), [step, searchOpen]);
-  // the commands fold first (from the end, Delete last); then the quick filters, from the end
-  const foldAll = Math.max(0, step - SEARCH);
-  const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
-  const quickAway = Math.min(quick.length, foldAll - fold);
-  const quickKept = quick.slice(0, quick.length - quickAway),
-    quickFolded = quick.slice(quick.length - quickAway);
-  const quickMenu = quickFolded.map(q => {
-    const id = q.id || q.label;
-    if (q.kind === 'date') {
-      const d = Object.assign({
-        preset: 'any',
-        from: '',
-        to: ''
-      }, q.value);
-      return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-        key: id,
-        label: q.label,
-        icon: q.icon
-      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-        label: q.label,
-        value: d.preset,
-        onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
-          preset: v
-        }))
-      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-        key: p.value,
-        value: p.value
-      }, p.label))));
-    }
-    const chosen = q.value || [];
-    return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: id,
-      label: chosen.length ? q.label + ' (' + chosen.length + ')' : q.label,
-      icon: q.icon
-    }, (q.options || []).map(o => typeof o === 'string' ? {
-      value: o,
-      label: o
-    } : o).map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: o.value,
-      checked: chosen.indexOf(o.value) >= 0,
-      keepOpen: true,
-      onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
-    }, o.label || o.value)));
-  });
-  // the swap is announced (the focus stays where it is, on the table)
-  const was = _react.default.useRef(selecting);
-  _react.default.useEffect(() => {
-    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
-      n: (0, _format.formatNumber)(selCount)
-    }) : t.cleared);
-    was.current = selecting;
-  }, [selecting]);
-  const words = {
-    noun: sel && sel.noun || 'item',
-    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
-  };
-  const off = a => !!a.disabled || !!(a.single && selCount > 1);
-  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
-    action: String(a.label).toLowerCase()
-  }, words));
-  const acts = shown.length || quickMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__actions"
-  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
-    actions: shown,
-    iconOnly: ctx.iconOnly,
-    fold: fold,
-    moreLabel: t.more,
-    dangerClass: "plx-command-bar__danger",
-    off: selecting ? off : undefined,
-    why: selecting ? why : undefined,
-    extra: quickMenu
-  })) : null;
-  const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
-    key: q.id || q.label
-  }, q)));
-  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__find"
-  }, find, quickEls) : null;
-  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__view"
-  }, view) : null;
-  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__count"
-  }, count) : count;
-  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
-  const [before, after] = String(t.selected).split('{n}');
-  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: t.clear
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "close",
-    className: "plx-command-bar__clear",
-    "aria-label": fill(t.clearName, {
-      n: (0, _format.formatNumber)(selCount)
-    }),
-    onClick: () => sel.onClear && sel.onClear()
-  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__number"
-  }, (0, _format.formatNumber)(selCount)), after)) : null;
-  const statusEl = selecting || !status || ctx.collapsed ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary",
-    className: "plx-command-bar__status"
-  }, status);
-  const tail = countEl || statusEl || end || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__end"
-  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, countEl, statusEl, selecting ? null : end, clearEl) : null;
-  // Escape in the bar clears the selection (as "× N selected" does)
-  const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
-      e.preventDefault();
-      sel.onClear();
-    }
-  } : undefined;
-  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
-  const name = selecting ? sel.label || fill(t.actions, {
-    label: label || ''
-  }).trim() : label;
-  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
-    value: ctx
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    ref: root,
-    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
-    "data-plx-layout": shape,
-    "data-plx-position": sticky ? undefined : 'static',
-    onKeyDown: onKeyDown
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-command-bar__bar"
-  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
-    label: name,
-    className: "plx-command-bar__row",
-    "data-plx-bar-row": ""
-  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
-}
-  } },
   "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -37586,6 +37744,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      {view.layout === 'list' ? <DataTable … rowHeight={view.height} /> : <ContentGrid size={…}>…</ContentGrid>}
    Props:
      value: { layout: "list" | "gallery", size: "s" | "m" | "l", height: "short" | "medium" | "tall" | "extra-tall" }
+     onReset(): optional Reset view action (useCollectionView supplies it)
      onChange(value): runs on every change
      gallery: the collection has a gallery layout; without it Gallery and the card sizes are disabled; default true
      strings: { label: "View", layout: "Layout", list: "List", gallery: "Gallery", size: "Card size (gallery)",
@@ -37597,6 +37756,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The button reads "View" with the thin chevron; icons only, its icon and tooltip. */
 
 const STRINGS = {
+  reset: 'Reset view',
   label: 'View',
   layout: 'Layout',
   list: 'List',
@@ -37617,7 +37777,8 @@ function ViewMenu({
   value,
   onChange,
   gallery = true,
-  strings
+  strings,
+  onReset
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const ctx = (0, _CommandBar.useCommandBar)();
@@ -37668,7 +37829,10 @@ function ViewMenu({
     disabled: v.layout !== 'list',
     keepOpen: true,
     onSelect: () => set('height')(k)
-  }, t[k]))));
+  }, t[k]))), onReset ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "refresh",
+    onSelect: onReset
+  }, t.reset)) : null);
   return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
     content: t.label
   }, menu) : menu;
@@ -37702,9 +37866,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      options.quick: the quick filters, by field: "list" (the row's value is one of the chosen) | "date" (a date range)
      options.columns: the starting columns { order, hidden } (default every field, in order)
      options.view: the starting view { layout, size, height } (default list, medium cards, Short rows)
+     options.sort: starting [{ field, dir }] sort; Reset view returns to it
+     options.storageKey: collection state in localStorage, under storageKey + ".collection"
      options.today: the ISO date "today" is, for the date presets (default the current date)
    Returns:
-     { search, filter, quick, sort, group, columns, view, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
+     { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataTable's
        Tabulator instance), searchProps, filterProps, quickProps(key), sortProps, groupProps, columnsProps, viewProps,
        tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, onReady } }
@@ -37714,24 +37880,95 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
 function useCollectionView(fields, options = {}) {
-  const [search, setSearch] = _react.default.useState('');
-  const [filter, setFilter] = _react.default.useState({
-    join: 'and',
-    items: []
-  });
-  const [quick, setQuickAll] = _react.default.useState({});
-  const [sort, setSort] = _react.default.useState([]);
-  const [group, setGroup] = _react.default.useState([]);
-  const [columns, setColumns] = _react.default.useState(() => options.columns || {
-    order: fields.map(f => f.value),
-    hidden: []
-  });
-  const [view, setView] = _react.default.useState(() => Object.assign({
-    layout: 'list',
-    size: 'm',
-    height: 'short'
-  }, options.view));
+  const defaults = _react.default.useRef(null);
+  if (!defaults.current) defaults.current = {
+    search: '',
+    filter: {
+      join: 'and',
+      items: []
+    },
+    quick: {},
+    sort: options.sort || [],
+    group: [],
+    columns: options.columns || {
+      order: fields.map(f => f.value),
+      hidden: []
+    },
+    view: Object.assign({
+      layout: 'list',
+      size: 'm',
+      height: 'short'
+    }, options.view)
+  };
+  const initial = _react.default.useRef(null);
+  if (!initial.current) {
+    let saved = null;
+    try {
+      saved = options.storageKey && JSON.parse(localStorage.getItem(options.storageKey + '.collection'));
+    } catch (e) {/* unavailable or broken storage */}
+    const object = x => x && typeof x === 'object' && !Array.isArray(x);
+    const level = x => object(x) && typeof x.field === 'string' && (x.dir === undefined || x.dir === 'asc' || x.dir === 'desc');
+    const filterNode = x => object(x) && Array.isArray(x.items) && x.items.every(it => object(it) && (it.group ? filterNode(it) : typeof it.field === 'string'));
+    const valid = object(saved) && filterNode(saved.filter) && object(saved.quick) && object(saved.columns) && object(saved.view) && ['list', 'gallery'].includes(saved.view.layout) && ['s', 'm', 'l'].includes(saved.view.size) && ['short', 'medium', 'tall', 'extra-tall'].includes(saved.view.height) && Array.isArray(saved.sort) && saved.sort.every(level) && Array.isArray(saved.group) && saved.group.every(level) && Object.values(saved.quick).every(q => Array.isArray(q) || object(q)) && typeof saved.search === 'string' && Array.isArray(saved.columns.order) && saved.columns.order.every(x => typeof x === 'string') && Array.isArray(saved.columns.hidden) && saved.columns.hidden.every(x => typeof x === 'string');
+    if (valid) {
+      const known = new Set(fields.map(f => f.value));
+      const prune = node => Object.assign({}, node, {
+        items: node.items.filter(it => it.group || known.has(it.field)).map(it => it.group ? prune(it) : it)
+      });
+      const order = saved.columns.order.filter(f => known.has(f));
+      saved.filter = prune(saved.filter);
+      saved.sort = saved.sort.filter(it => known.has(it.field));
+      saved.group = saved.group.filter(it => known.has(it.field));
+      saved.quick = Object.fromEntries(Object.entries(saved.quick).filter(([key]) => known.has(key)));
+      saved.columns = {
+        order: order.concat(fields.map(f => f.value).filter(f => !order.includes(f))),
+        hidden: saved.columns.hidden.filter(f => known.has(f))
+      };
+    }
+    initial.current = valid ? saved : defaults.current;
+  }
+  const [search, setSearch] = _react.default.useState(initial.current.search);
+  const [filter, setFilter] = _react.default.useState(initial.current.filter);
+  const [quick, setQuickAll] = _react.default.useState(initial.current.quick);
+  const [sort, setSort] = _react.default.useState(initial.current.sort);
+  const [group, setGroup] = _react.default.useState(initial.current.group);
+  const [columns, setColumns] = _react.default.useState(initial.current.columns);
+  const [view, setView] = _react.default.useState(initial.current.view);
   const table = _react.default.useRef(null);
+  const skipSave = _react.default.useRef(false);
+  const [resetVersion, setResetVersion] = _react.default.useState(0);
+  const reset = () => {
+    const d = defaults.current;
+    setSearch(d.search);
+    setFilter(d.filter);
+    setQuickAll(d.quick);
+    setSort(d.sort);
+    setGroup(d.group);
+    setColumns(d.columns);
+    setView(d.view);
+    skipSave.current = true;
+    setResetVersion(n => n + 1);
+    try {
+      if (options.storageKey) localStorage.removeItem(options.storageKey + '.collection');
+    } catch (e) {/* unavailable storage */}
+  };
+  _react.default.useEffect(() => {
+    if (skipSave.current) {
+      skipSave.current = false;
+      return;
+    }
+    try {
+      if (options.storageKey) localStorage.setItem(options.storageKey + '.collection', JSON.stringify({
+        search,
+        filter,
+        quick,
+        sort,
+        group,
+        columns,
+        view
+      }));
+    } catch (e) {/* unavailable storage */}
+  }, [search, filter, quick, sort, group, columns, view, options.storageKey, resetVersion]);
   const setQuick = (k, v) => setQuickAll(o => Object.assign({}, o, {
     [k]: v
   }));
@@ -37774,6 +38011,7 @@ function useCollectionView(fields, options = {}) {
     group,
     columns,
     view,
+    reset,
     setSearch,
     setFilter,
     setQuick,
@@ -37821,7 +38059,8 @@ function useCollectionView(fields, options = {}) {
     },
     viewProps: {
       value: view,
-      onChange: setView
+      onChange: setView,
+      onReset: reset
     },
     tableProps: {
       filter: test,
@@ -57518,11 +57757,7135 @@ function VersionCompare({
   }) : null), body);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/patterns/AssetGallery/AssetGallery.jsx": { deps: {"react":null,"../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
+});
+exports.AssetGallery = AssetGallery;
+var _react = _interopRequireDefault(require("react"));
+var _ContentGrid = require("../ContentGrid/ContentGrid.jsx");
+var _Card = require("../../components/Card/Card.jsx");
+var _MediaViewer = require("../../components/MediaViewer/MediaViewer.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AssetGallery
+   Summary: Browse image assets in masonry or justified rows and optionally open the existing lightbox.
+   Usage: <AssetGallery items={assets} layout="masonry" lightbox label="Project images" />
+   Props:
+     items: [{ id, src, alt, title, meta, ratio }]; layout: grid | masonry | justified; size: ContentGrid size.
+     lightbox: open images with MediaViewer; onOpen(item, index): optional application action when lightbox is off.
+     label: gallery name; empty: empty text; strings: empty, preview; className.
+   Behavior: Card titles open the selected image; the viewer supports keyboard navigation and restores focus.
+   Notes: Preserve source order when it matters. Asset grid already belongs to the DAM template record.
+*/
+
+function AssetGallery({
+  items = [],
+  layout = 'masonry',
+  size = 'md',
+  lightbox = false,
+  onOpen,
+  label,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    empty: 'No images',
+    preview: 'Image preview'
+  }, strings);
+  const [active, setActive] = _react.default.useState(null);
+  const index = items.findIndex(a => a.id === active);
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-asset-gallery', className)
+  }, items.length ? /*#__PURE__*/_react.default.createElement(_ContentGrid.ContentGrid, {
+    layout: layout,
+    size: size,
+    label: label
+  }, items.map((a, i) => /*#__PURE__*/_react.default.createElement(_Card.MediaCard, {
+    key: a.id,
+    ratio: a.ratio,
+    aspect: (a.ratio || '4-3').replace('-', '/'),
+    src: a.src,
+    alt: a.alt,
+    title: a.title,
+    meta: a.meta,
+    onOpen: lightbox ? () => setActive(a.id) : onOpen ? () => onOpen(a, i) : undefined
+  }))) : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    title: t.empty
+  }), /*#__PURE__*/_react.default.createElement(_MediaViewer.MediaViewer, {
+    open: lightbox && index >= 0,
+    onClose: () => setActive(null),
+    items: items.map(a => ({
+      ...a,
+      meta: Array.isArray(a.meta) ? a.meta : a.meta ? [a.meta] : []
+    })),
+    index: Math.max(0, index),
+    onIndexChange: i => setActive(items[i].id),
+    label: t.preview,
+    strings: strings
+  }));
+}
+  } },
+  "platform/patterns/DownloadManager/DownloadManager.jsx": { deps: {"react":null,"../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DownloadManager = DownloadManager;
+var _react = _interopRequireDefault(require("react"));
+var _Card = require("../../components/Card/Card.jsx");
+var _FileRow = require("../../components/FileRow/FileRow.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DownloadManager
+   Summary: A named panel of queued, progressing, ready or failed downloads built from FileRow.
+   Usage: <DownloadManager items={jobs} onCancel={cancelJob} onRetry={retryJob} onDownload={downloadFile} />
+   Props:
+     items: [{ id, file, status: queued | progress | ready | failed, progress, error, href }].
+     onCancel(item), onRetry(item), onDownload(item): asynchronous application actions; variant: panel | progress | ready.
+     title: list name; strings: title, empty, queued, progress, ready, failed, actionFailed; className.
+   Behavior: Progress and errors remain caller-owned. Actions lock per item until settled; failures stay visible for retry.
+   Notes: A supplied ready URL is a real Link; onDownload initiates an explicit application download. No transfers start on render.
+*/
+
+function DownloadManager({
+  items = [],
+  onCancel,
+  onRetry,
+  onDownload,
+  title,
+  variant = 'panel',
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Downloads',
+    empty: 'No downloads',
+    queued: 'Queued',
+    progress: 'Downloading',
+    ready: 'Ready',
+    failed: 'Download failed',
+    actionFailed: 'Could not complete the download action. Try again.'
+  }, strings);
+  const [pending, setPending] = _react.default.useState({}),
+    [errors, setErrors] = _react.default.useState({});
+  const locks = _react.default.useRef(new Set());
+  const run = async (item, action) => {
+    if (locks.current.has(item.id)) return;
+    locks.current.add(item.id);
+    setPending(p => ({
+      ...p,
+      [item.id]: true
+    }));
+    setErrors(p => ({
+      ...p,
+      [item.id]: ''
+    }));
+    try {
+      await action(item);
+    } catch (e) {
+      setErrors(p => ({
+        ...p,
+        [item.id]: t.actionFailed
+      }));
+    } finally {
+      locks.current.delete(item.id);
+      setPending(p => ({
+        ...p,
+        [item.id]: false
+      }));
+    }
+  };
+  const content = /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-download-manager', className)
+  }, items.length ? /*#__PURE__*/_react.default.createElement(_FileRow.FileRowList, {
+    label: title || t.title
+  }, items.map(a => /*#__PURE__*/_react.default.createElement(_FileRow.FileRow, {
+    key: a.id,
+    as: "li",
+    file: a.file,
+    "aria-busy": !!pending[a.id],
+    progress: a.status === 'progress' ? a.progress : undefined,
+    progressLabel: t.progress,
+    error: a.status === 'failed' ? a.error || t.failed : undefined,
+    status: /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+      tone: a.status === 'ready' ? 'success' : a.status === 'failed' ? 'negative' : 'active',
+      icon: a.status === 'ready' ? 'check' : a.status === 'failed' ? 'alert' : 'refresh'
+    }, t[a.status] || t.queued),
+    onCancel: onCancel && !pending[a.id] ? () => run(a, onCancel) : undefined,
+    onRetry: onRetry && !pending[a.id] ? () => run(a, onRetry) : undefined,
+    onDownload: a.status === 'ready' && onDownload && !pending[a.id] ? () => run(a, onDownload) : undefined,
+    strings: strings,
+    href: a.status === 'ready' ? a.href : undefined
+  }))) : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    title: t.empty
+  }), Object.entries(errors).filter(([, error]) => error).map(([id, error]) => /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    key: id,
+    tone: "danger"
+  }, error)));
+  return variant === 'panel' ? /*#__PURE__*/_react.default.createElement(_Card.Panel, {
+    title: title || t.title
+  }, content) : content;
+}
+  } },
+  "platform/components/MediaPlayer/MediaPlayer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MediaPlayer = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../Stack/Stack.jsx");
+var _Field = require("../Field/Field.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Link = require("../Link/Link.jsx");
+var _layer = require("../../utils/layer.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · MediaPlayer
+   Summary: Native audio/video playback with captions, a seekable transcript, playback rate and optional picture in picture.
+   Usage: <MediaPlayer src={url} label="Project walkthrough" tracks={captions} transcript={segments} />
+   Props:
+     src: media URL; kind: video (default) | audio; label: accessible media name; poster; crossOrigin.
+     tracks: [{ src, label, language, kind: captions | subtitles, default }], WebVTT sources.
+     transcript: [{ start: seconds, text }]; showTranscript: initial transcript visibility (default false).
+     rates: positive playback speeds (default [0.5, 1, 1.5, 2]); pictureInPicture: offer the browser feature (default true).
+     onTimeChange(seconds), onError(event): media events; strings: rate, transcript, hideTranscript, pip, exitPip,
+       unsupported, failed, pipFailed, seek, fallback; className; ref: the HTMLMediaElement.
+   Behavior:
+     Browser controls provide play, pause, seek, volume and caption selection. Nothing autoplays.
+     Transcript buttons seek only after media metadata is available. Failed PiP requests stay recoverable.
+   Notes:
+     Applications supply authorized sources, captions and transcripts. Browser controls follow the user's OS.
+*/
+
+const clock = seconds => {
+  const n = Math.max(0, Math.floor(Number(seconds) || 0));
+  return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
+};
+const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef(function MediaPlayer({
+  src,
+  kind = 'video',
+  label,
+  poster,
+  crossOrigin,
+  tracks = [],
+  transcript = [],
+  showTranscript = false,
+  rates = [0.5, 1, 1.5, 2],
+  pictureInPicture = true,
+  onTimeChange,
+  onError,
+  strings,
+  className
+}, ref) {
+  const t = Object.assign({
+    rate: 'Playback speed',
+    transcript: 'Show transcript',
+    hideTranscript: 'Hide transcript',
+    pip: 'Picture in picture',
+    exitPip: 'Exit picture in picture',
+    unsupported: 'Picture in picture is unavailable.',
+    failed: 'This media could not be played.',
+    pipFailed: 'Could not change picture in picture. Try again.',
+    seek: 'Seek to {time}',
+    fallback: 'Open media file'
+  }, strings);
+  const media = _react.default.useRef(null),
+    id = (0, _layer.useUid)('plx-media-player'),
+    epoch = _react.default.useRef(0),
+    lock = _react.default.useRef(false);
+  _react.default.useImperativeHandle(ref, () => media.current, [kind, src]);
+  const [rate, setRate] = _react.default.useState(1),
+    [visible, setVisible] = _react.default.useState(showTranscript),
+    [ready, setReady] = _react.default.useState(false),
+    [pip, setPip] = _react.default.useState(false),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  _react.default.useEffect(() => {
+    epoch.current++;
+    lock.current = false;
+    setReady(false);
+    setRate(1);
+    setError('');
+    setPip(false);
+    setBusy(false);
+    return () => {
+      epoch.current++;
+    };
+  }, [src, kind]);
+  const speeds = Array.from(new Set([1].concat(rates.filter(n => Number.isFinite(n) && n > 0)))).sort((a, b) => a - b);
+  const capable = kind !== 'audio' && typeof document !== 'undefined' && !!document.pictureInPictureEnabled;
+  const togglePip = async () => {
+    if (lock.current || !media.current) return;
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      if (document.pictureInPictureElement === media.current) await document.exitPictureInPicture();else await media.current.requestPictureInPicture();
+    } catch (e) {
+      if (at === epoch.current) setError(t.pipFailed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  const Tag = kind === 'audio' ? 'audio' : 'video';
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-media-player', className)
+  }, /*#__PURE__*/_react.default.createElement(Tag, {
+    key: kind + ':' + src,
+    ref: media,
+    className: "plx-media-player__media",
+    src: src,
+    poster: kind === 'audio' ? undefined : poster,
+    controls: true,
+    playsInline: true,
+    preload: "metadata",
+    crossOrigin: crossOrigin,
+    "aria-label": label,
+    onLoadedMetadata: () => {
+      setReady(true);
+      setError('');
+    },
+    onTimeUpdate: e => {
+      if (onTimeChange) onTimeChange(e.currentTarget.currentTime);
+    },
+    onEnterPictureInPicture: () => setPip(true),
+    onLeavePictureInPicture: () => setPip(false),
+    onError: e => {
+      setReady(false);
+      setError(t.failed);
+      if (onError) onError(e);
+    }
+  }, tracks.map((a, i) => /*#__PURE__*/_react.default.createElement("track", {
+    key: a.src + i,
+    src: a.src,
+    kind: a.kind || 'captions',
+    srcLang: a.language,
+    label: a.label,
+    default: !!a.default
+  })), src ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: src
+  }, t.fallback) : null), /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.rate
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: String(rate),
+    options: speeds.map(n => ({
+      value: String(n),
+      label: n + '×'
+    })),
+    onChange: e => {
+      const next = Number(e.target.value);
+      if (media.current) {
+        media.current.playbackRate = next;
+        setRate(next);
+      }
+    }
+  })), transcript.length ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    "aria-expanded": visible,
+    "aria-controls": id,
+    onClick: () => setVisible(!visible)
+  }, visible ? t.hideTranscript : t.transcript) : null, pictureInPicture && capable ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: !ready || busy,
+    onClick: togglePip
+  }, pip ? t.exitPip : t.pip) : null), visible && transcript.length ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    id: id,
+    as: "ol",
+    className: "plx-media-player__transcript"
+  }, transcript.map((segment, i) => /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    as: "li",
+    key: i,
+    align: "start"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: !ready || !Number.isFinite(segment.start) || segment.start < 0,
+    label: t.seek.replace('{time}', clock(segment.start)),
+    onClick: () => {
+      media.current.currentTime = segment.start;
+    }
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, clock(segment.start))), /*#__PURE__*/_react.default.createElement(_Text.Text, null, segment.text)))) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+});
+  } },
+  "platform/patterns/MetadataEditor/MetadataEditor.jsx": { deps: {"react":null,"../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MetadataEditor = MetadataEditor;
+var _react = _interopRequireDefault(require("react"));
+var _InlineEdit = require("../../components/InlineEdit/InlineEdit.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · MetadataEditor
+   Summary: Editable metadata inline or in a validated form; bulk mode applies only explicitly selected fields.
+   Usage: <MetadataEditor fields={fields} values={metadata} variant="form" onSave={saveMetadata} />
+   Props:
+     fields: [{ id, label, type: text | textarea | select, options, required, data, validate(value) }].
+     values: saved field map; onSave(patch): persistence promise; variant: inline | form | bulk; disabled.
+     strings: save, reset, apply, required, failed, saved; className.
+   Behavior: InlineEdit saves one field. Forms preserve drafts on failure; bulk mode never overwrites untouched fields.
+   Notes: The caller owns schema and server validation. Saved prop updates reset a clean draft; dirty edits are retained.
+*/
+
+function MetadataEditor({
+  fields = [],
+  values = {},
+  onSave,
+  variant = 'inline',
+  disabled = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    save: 'Save metadata',
+    reset: 'Reset',
+    apply: 'Apply {field}',
+    required: 'Enter a value.',
+    failed: 'Metadata could not be saved. Your changes are still available.',
+    saved: 'Metadata saved',
+    unsaved: 'Your metadata changes will be lost.'
+  }, strings);
+  const [draft, setDraft] = _react.default.useState(values),
+    [touched, setTouched] = _react.default.useState({}),
+    [error, setError] = _react.default.useState(''),
+    [busy, setBusy] = _react.default.useState(false),
+    [saved, setSaved] = _react.default.useState(false);
+  const lock = _react.default.useRef(false),
+    dirty = Object.values(touched).some(Boolean);
+  _react.default.useEffect(() => {
+    if (!dirty) setDraft(values);
+  }, [values, dirty]);
+  const guard = (0, _UnsavedGuard.useUnsavedGuard)(dirty, t.unsaved);
+  const valid = (f, value) => f.required && !String(value ?? '').trim() ? t.required : f.validate ? f.validate(value) : '';
+  const reset = guard(() => {
+    setDraft(values);
+    setTouched({});
+    setError('');
+    setSaved(false);
+  });
+  const submit = async e => {
+    e.preventDefault();
+    if (lock.current) return;
+    const chosen = variant === 'bulk' ? fields.filter(f => touched[f.id]) : fields;
+    const problem = chosen.map(f => valid(f, draft[f.id])).find(Boolean);
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    if (!chosen.length) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    setSaved(false);
+    try {
+      await onSave(Object.fromEntries(chosen.map(f => [f.id, draft[f.id] ?? ''])));
+      setTouched({});
+      setSaved(true);
+    } catch (e) {
+      setError(t.failed);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    as: variant === 'inline' ? 'div' : 'form',
+    onSubmit: variant === 'inline' ? undefined : submit,
+    className: (0, _cx.cx)('plx-metadata-editor', className),
+    "aria-busy": busy
+  }, fields.map(f => variant === 'inline' ? /*#__PURE__*/_react.default.createElement(_InlineEdit.InlineEdit, {
+    key: f.id,
+    label: f.label,
+    value: values[f.id] ?? '',
+    type: f.type,
+    options: f.options,
+    data: f.data,
+    validate: v => valid(f, v),
+    disabled: disabled || !onSave,
+    onConfirm: v => onSave({
+      [f.id]: v
+    }),
+    strings: strings
+  }) : /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: f.id,
+    gap: "sm"
+  }, variant === 'bulk' ? /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    label: t.apply.replace('{field}', f.label),
+    checked: !!touched[f.id],
+    disabled: busy || disabled,
+    onChange: e => setTouched({
+      ...touched,
+      [f.id]: e.target.checked
+    })
+  }) : null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: f.label,
+    required: f.required && (variant !== 'bulk' || touched[f.id])
+  }, /*#__PURE__*/_react.default.createElement(f.type === 'textarea' ? _Input.Textarea : f.type === 'select' ? _Input.Select : _Input.Input, {
+    value: draft[f.id] ?? '',
+    options: f.options,
+    data: f.data,
+    disabled: busy || disabled || variant === 'bulk' && !touched[f.id],
+    onChange: e => {
+      setDraft({
+        ...draft,
+        [f.id]: e.target.value
+      });
+      setTouched({
+        ...touched,
+        [f.id]: true
+      });
+      setSaved(false);
+    }
+  })))), variant !== 'inline' ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    variant: "primary",
+    disabled: busy || disabled || !onSave || !dirty
+  }, t.save), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: busy || disabled || !dirty,
+    onClick: reset
+  }, t.reset)) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, saved ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check",
+    role: "status"
+  }, t.saved) : null);
+}
+  } },
+  "platform/patterns/RelatedAssets/RelatedAssets.jsx": { deps: {"react":null,"../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RelatedAssets = RelatedAssets;
+var _react = _interopRequireDefault(require("react"));
+var _Carousel = require("../../components/Carousel/Carousel.jsx");
+var _Card = require("../../components/Card/Card.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _ContentGrid = require("../ContentGrid/ContentGrid.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · RelatedAssets
+   Summary: Related images as a responsive grid or a manually navigated carousel.
+   Usage: <RelatedAssets items={assets} variant="strip" label="Related assets" onOpen={openAsset} />
+   Props: items: [{ id, src, alt, title, meta, href }]; variant: strip | grid; label; onOpen(item); strings: empty; className.
+   Behavior: Asset links navigate; callbacks open application views. The carousel never advances automatically.
+   Notes: Reuses MediaCard, Carousel and ContentGrid; recommendations and their order belong to the caller.
+*/
+
+function RelatedAssets({
+  items = [],
+  variant = 'strip',
+  label,
+  onOpen,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    empty: 'No related assets'
+  }, strings);
+  const cards = items.map(a => /*#__PURE__*/_react.default.createElement(_Card.MediaCard, {
+    key: a.id,
+    src: a.src,
+    alt: a.alt,
+    title: a.title,
+    meta: a.meta,
+    href: a.href,
+    onOpen: !a.href && onOpen ? () => onOpen(a) : undefined
+  }));
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-related-assets', className)
+  }, !items.length ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    title: t.empty
+  }) : variant === 'grid' ? /*#__PURE__*/_react.default.createElement(_ContentGrid.ContentGrid, {
+    label: label
+  }, cards) : /*#__PURE__*/_react.default.createElement(_Carousel.Carousel, {
+    label: label,
+    perView: 2,
+    strings: strings
+  }, cards));
+}
+  } },
+  "platform/patterns/AttachmentPicker/AttachmentPicker.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AttachmentPicker = AttachmentPicker;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _cx = require("../../utils/cx.js");
+var _FileInput = require("../../components/FileInput/FileInput.jsx");
+var _FileRow = require("../../components/FileRow/FileRow.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Tag = require("../../components/Tag/Tag.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AttachmentPicker
+   Summary: Attach device files as removable rows or chips without uploading them implicitly.
+   Usage: <AttachmentPicker value={files} onChange={setFiles} accept=".pdf" multiple />
+   Props: value: File[]; onChange(next); variant: inline | chips; accept: extension/MIME list; multiple: true;
+     maxFiles, maxSize: optional count and per-file byte limits; disabled; strings: label, remove, invalid, limit, empty.
+   Behavior: Validate a batch before changing it; preserve attachments on errors; allow same-named distinct files.
+   Notes: The caller owns upload and persistence. Limits apply to device files, not an authorization policy.
+*/
+
+const STRINGS = {
+  label: 'Attachments',
+  remove: 'Remove {name}',
+  invalid: 'Choose a supported file within the size limit.',
+  limit: 'Too many attachments.',
+  empty: 'No attachments.'
+};
+function AttachmentPicker({
+  value = [],
+  onChange,
+  variant = 'inline',
+  accept = '',
+  multiple = true,
+  maxFiles,
+  maxSize,
+  disabled = false,
+  strings,
+  className
+}) {
+  const t = {
+      ...STRINGS,
+      ...strings
+    },
+    [error, setError] = _react.default.useState(''),
+    [inputKey, setInputKey] = _react.default.useState(0);
+  const remove = i => {
+    if (!disabled) {
+      setError('');
+      onChange?.(value.filter((_, n) => n !== i));
+    }
+  };
+  const add = files => {
+    setInputKey(n => n + 1);
+    const rules = accept.toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
+    if (files.some(f => typeof maxSize === 'number' && f.size > maxSize || rules.length && !rules.some(r => r[0] === '.' ? f.name.toLowerCase().endsWith(r) : r.endsWith('/*') ? f.type.toLowerCase().startsWith(r.slice(0, -1)) : f.type.toLowerCase() === r))) {
+      setError(t.invalid);
+      return;
+    }
+    const next = multiple ? value.concat(files.filter(f => !value.some(v => v.name === f.name && v.size === f.size && v.lastModified === f.lastModified))) : files.slice(0, 1);
+    if (typeof maxFiles === 'number' && next.length > maxFiles) {
+      setError(t.limit);
+      return;
+    }
+    setError('');
+    onChange?.(next);
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-attachment-picker', className)
+  }, /*#__PURE__*/_react.default.createElement(_FileInput.FileInput, {
+    strings: strings,
+    key: inputKey,
+    label: t.label,
+    accept: accept,
+    multiple: multiple,
+    disabled: disabled,
+    onChange: add
+  }), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, !value.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : variant === 'chips' ? /*#__PURE__*/_react.default.createElement(_Tag.TagList, {
+    label: t.label
+  }, value.map((f, i) => /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
+    key: i,
+    onRemove: disabled ? undefined : () => remove(i),
+    removeLabel: t.remove.replace('{name}', f.name)
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    kind: "data"
+  }, f.name)))) : /*#__PURE__*/_react.default.createElement(_FileRow.FileRowList, {
+    label: t.label
+  }, value.map((f, i) => /*#__PURE__*/_react.default.createElement(_FileRow.FileRow, {
+    strings: strings,
+    as: "li",
+    key: i,
+    file: {
+      name: f.name,
+      size: f.size,
+      type: f.type
+    },
+    actions: !disabled ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      onSelect: () => remove(i)
+    }, t.remove.replace('{name}', f.name)) : null
+  }))));
+}
+  } },
+  "platform/patterns/FilePicker/FilePicker.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FilePicker = FilePicker;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _cx = require("../../utils/cx.js");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Tree = require("../../components/Tree/Tree.jsx");
+var _FileRow = require("../../components/FileRow/FileRow.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · FilePicker
+   Summary: Pick stored files, assets or media from a folder tree in a dialog.
+   Usage: <FilePicker open items={items} folders={folders} onPick={saveSelection} onClose={close}/>
+   Props: items: [{id,name,kind,type,folderId,size,disabled}]; folders: Tree nodes; mode: files | assets | media;
+     multiple; initialSelected: ids; onPick(items): async; strings: title,folders,search,empty,pick,cancel,failed.
+   Behavior: Folder and query filter visible rows; selection survives filters, but invalid/deleted items never submit.
+     Cancel never commits; pending writes cannot repeat or dismiss. Reopening clears query and stale requests.
+   Notes: Uses Tree and FileRow directly; no dependency on FileBrowser or implicit device access.
+*/
+
+const STRINGS = {
+  title: 'Choose files',
+  all: 'All files',
+  folders: 'Folders',
+  search: 'Search files',
+  empty: 'No matching files.',
+  pick: 'Choose',
+  cancel: 'Cancel',
+  failed: 'Files could not be chosen. Try again.'
+};
+function FilePicker({
+  open = false,
+  onClose,
+  items = [],
+  folders = [],
+  mode = 'files',
+  multiple = false,
+  initialSelected = [],
+  onPick,
+  strings,
+  className
+}) {
+  const t = {
+      ...STRINGS,
+      ...strings
+    },
+    [selected, setSelected] = _react.default.useState(initialSelected),
+    [folder, setFolder] = _react.default.useState(null),
+    [query, setQuery] = _react.default.useState(''),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    epoch = _react.default.useRef(0);
+  _react.default.useEffect(() => {
+    epoch.current++;
+    lock.current = false;
+    setBusy(false);
+    setError('');
+    setQuery('');
+    setFolder(null);
+    setSelected(initialSelected);
+    return () => {
+      epoch.current++;
+    };
+  }, [open]);
+  const eligible = items.filter(f => f.kind !== 'folder' && !f.disabled && (mode !== 'media' || /^(image|video|audio)\//.test(f.type || '')) && (mode !== 'assets' || f.asset === true || f.kind === 'asset'));
+  const chosen = eligible.filter(f => selected.includes(f.id));
+  const visible = eligible.filter(f => (folder === null || f.folderId === folder) && f.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
+  const toggle = (id, on) => setSelected(v => multiple ? on ? [...new Set(v.concat(id))] : v.filter(x => x !== id) : on ? [id] : []);
+  const pick = async () => {
+    if (lock.current || !chosen.length || !onPick) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    const at = epoch.current;
+    try {
+      await onPick(chosen);
+      if (at === epoch.current) onClose?.();
+    } catch (e) {
+      if (at === epoch.current) setError(e?.message || t.failed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    onClose: onClose,
+    dismissible: !busy,
+    title: t.title,
+    size: "lg",
+    footer: /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+      justify: "end"
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: busy,
+      onClick: onClose
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      disabled: busy || !chosen.length || !onPick,
+      onClick: pick
+    }, t.pick))
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-file-picker', className)
+  }, folders.length ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    disabled: busy,
+    "aria-pressed": folder === null,
+    onClick: () => setFolder(null)
+  }, t.all), /*#__PURE__*/_react.default.createElement(_Tree.Tree, {
+    label: t.folders,
+    nodes: folders,
+    selected: folder,
+    onSelect: id => {
+      if (!busy) setFolder(id);
+    }
+  })) : null, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    label: t.search,
+    value: query,
+    disabled: busy,
+    onChange: e => setQuery(e.target.value)
+  }), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, visible.length ? /*#__PURE__*/_react.default.createElement(_FileRow.FileRowList, {
+    label: t.title,
+    inert: busy ? '' : undefined
+  }, visible.map(f => /*#__PURE__*/_react.default.createElement(_FileRow.FileRow, {
+    strings: strings,
+    as: "li",
+    key: f.id,
+    file: f,
+    selectable: true,
+    selected: selected.includes(f.id),
+    onSelectChange: on => {
+      if (!busy) toggle(f.id, on);
+    }
+  }))) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty)));
+}
+  } },
+  "platform/patterns/RenditionList/RenditionList.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RenditionList = RenditionList;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _cx = require("../../utils/cx.js");
+var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DownloadButton = require("../../components/DownloadButton/DownloadButton.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · RenditionList
+   Summary: Stored derivatives with format and byte size, as a DataTable or a menu of downloads.
+   Usage: <RenditionList items={renditions} variant="table"/>
+   Props: items: [{id,name,format,size,href,fileName,onDownload,progress}]; variant: table | menu;
+     strings: label,name,format,size,download,empty; className.
+   Behavior: Each action downloads the specific stored rendition; busy downloads cannot repeat.
+   Notes: Links retain browser download behavior. File preparation belongs to the caller.
+*/
+
+const STRINGS = {
+  label: 'Renditions',
+  name: 'Name',
+  format: 'Format',
+  size: 'Size',
+  download: 'Download',
+  empty: 'No renditions.'
+};
+function RenditionList({
+  items = [],
+  variant = 'table',
+  strings,
+  className
+}) {
+  const t = {
+    ...STRINGS,
+    ...strings
+  };
+  const download = r => /*#__PURE__*/_react.default.createElement(_DownloadButton.DownloadButton, {
+    href: r.href,
+    fileName: r.fileName || r.name,
+    format: r.format,
+    size: r.size,
+    onDownload: r.onDownload,
+    progress: r.progress,
+    strings: {
+      download: t.download
+    },
+    disabled: !r.href && !r.onDownload
+  });
+  if (!items.length) return /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    className: (0, _cx.cx)('plx-rendition-list', className)
+  }, t.empty);
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-rendition-list', className)
+  }, variant === 'menu' ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: t.label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: "download-tray"
+    }, t.label)
+  }, items.map(r => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    className: "plx-rendition-list__item",
+    key: r.id,
+    disabled: r.progress !== undefined || !r.href && !r.onDownload,
+    href: r.href,
+    download: r.fileName || r.name,
+    onSelect: r.onDownload
+  }, [r.name, r.format, typeof r.size === 'number' ? (0, _format.formatBytes)(r.size) : ''].filter(Boolean).join(' · ')))) : /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: t.label,
+    data: items,
+    columns: [{
+      field: 'name',
+      title: t.name,
+      kind: 'data'
+    }, {
+      field: 'format',
+      title: t.format,
+      kind: 'data'
+    }, {
+      field: 'size',
+      title: t.size,
+      kind: 'data',
+      render: r => typeof r.size === 'number' ? (0, _format.formatBytes)(r.size) : ''
+    }, {
+      field: '_download',
+      title: t.download,
+      kind: 'center',
+      render: download
+    }]
+  }));
+}
+  } },
+  "platform/components/DocumentViewer/DocumentViewer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Image/Image.jsx":"platform/components/Image/Image.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DocumentViewer = DocumentViewer;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Field = require("../Field/Field.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Image = require("../Image/Image.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DocumentViewer
+   Summary: Read PDF, image pages or text with page navigation, thumbnails and stepped zoom.
+   Usage: <DocumentViewer kind="pdf" src="/files/report.pdf" label="Report"/>
+   Props: kind: pdf | images | text; src: PDF URL or Uint8Array; pages: [{id,src,alt,thumbnail}]; text;
+     label; thumbnails: true; initialPage: 1; initialZoom: 100 (50,75,100,125,150,200);
+     pdfModuleUrl/pdfWorkerUrl: optional URLs when serving the vendor files separately; strings: previous,next,page,zoom,
+       thumbnails,loading,failed,empty,retry; onPageChange(page); className.
+   Behavior: Navigation clamps to available pages. PDF loading and rendering are cancellable; stale loads cannot replace
+     a newer document. Errors offer Retry. PDF text is exposed alongside the canvas for assistive technology.
+   Notes: PDF.js 4.10.38 (Apache-2.0) is vendored beside this component. URLs must obey the application CSP/CORS policy.
+     PDF canvas dimensions are document geometry, never an inline style. No remote PDF code is downloaded.
+*/
+
+const STRINGS = {
+  document: 'Document',
+  previous: 'Previous page',
+  next: 'Next page',
+  page: 'Page',
+  zoom: 'Zoom',
+  thumbnails: 'Page thumbnails',
+  loading: 'Loading document',
+  failed: 'The document could not be opened.',
+  empty: 'No document.',
+  retry: 'Try again'
+};
+const ZOOMS = [50, 75, 100, 125, 150, 200];
+function vendorUrl(name) {
+  const script = Array.from(document.scripts).find(s => /\/platform\/(?:dist\/)?platform(?:\.min)?\.js(?:[?#]|$)/.test(s.src));
+  return new URL(script ? (script.src.includes('/dist/') ? '../components/' : 'components/') + 'DocumentViewer/vendor/' + name : '../components/DocumentViewer/vendor/' + name, script ? script.src : document.baseURI).href;
+}
+function PdfThumbnail({
+  pdf,
+  number,
+  label
+}) {
+  const ref = _react.default.useRef(null);
+  _react.default.useEffect(() => {
+    let live = true,
+      task;
+    const observer = new IntersectionObserver(async entries => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      observer.disconnect();
+      try {
+        const p = await pdf.getPage(number);
+        if (!live) return;
+        const v = p.getViewport({
+            scale: 1
+          }),
+          view = p.getViewport({
+            scale: 96 / v.width
+          }),
+          c = ref.current;
+        if (!c) return;
+        c.width = Math.ceil(view.width);
+        c.height = Math.ceil(view.height);
+        task = p.render({
+          canvasContext: c.getContext('2d'),
+          viewport: view
+        });
+        await task.promise;
+      } catch (e) {/* Navigation remains available if a preview cannot render. */}
+    });
+    observer.observe(ref.current);
+    return () => {
+      live = false;
+      observer.disconnect();
+      task?.cancel();
+    };
+  }, [pdf, number]);
+  return /*#__PURE__*/_react.default.createElement("canvas", {
+    ref: ref,
+    role: "img",
+    "aria-label": label
+  });
+}
+function DocumentViewer({
+  kind = 'text',
+  src,
+  pages = [],
+  text = '',
+  label,
+  thumbnails = true,
+  initialPage = 1,
+  initialZoom = 100,
+  pdfModuleUrl,
+  pdfWorkerUrl,
+  strings,
+  onPageChange,
+  className
+}) {
+  const t = {
+      ...STRINGS,
+      ...strings
+    },
+    [page, setPage] = _react.default.useState(initialPage),
+    [zoom, setZoom] = _react.default.useState(ZOOMS.includes(initialZoom) ? initialZoom : 100),
+    [pdf, setPdf] = _react.default.useState(null),
+    [loading, setLoading] = _react.default.useState(false),
+    [error, setError] = _react.default.useState(''),
+    [attempt, setAttempt] = _react.default.useState(0),
+    [accessible, setAccessible] = _react.default.useState(''),
+    canvas = _react.default.useRef(null);
+  _react.default.useEffect(() => {
+    let live = true,
+      task,
+      doc;
+    setPdf(null);
+    setPage(initialPage);
+    setAccessible('');
+    setError('');
+    setZoom(ZOOMS.includes(initialZoom) ? initialZoom : 100);
+    if (kind !== 'pdf' || !src) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    (async () => {
+      try {
+        const moduleUrl = pdfModuleUrl || vendorUrl('pdf.js');
+        const engine = await import(moduleUrl);
+        if (!live) return;
+        engine.GlobalWorkerOptions.workerSrc = pdfWorkerUrl || new URL('pdf.worker.js', moduleUrl).href;
+        task = engine.getDocument(typeof src === 'string' ? {
+          url: src
+        } : {
+          data: src.slice()
+        });
+        doc = await task.promise;
+        if (live) {
+          setPdf(doc);
+          setLoading(false);
+        } else doc.destroy();
+      } catch (e) {
+        if (live) {
+          setError(t.failed);
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      live = false;
+      if (task) task.destroy();else if (doc) doc.destroy();
+    };
+  }, [kind, src, attempt, pdfModuleUrl, pdfWorkerUrl]);
+  const count = kind === 'pdf' ? pdf?.numPages || 0 : kind === 'images' ? pages.length : text ? 1 : 0;
+  const current = Math.max(1, Math.min(page, count || 1));
+  _react.default.useEffect(() => {
+    if (kind !== 'pdf' || !pdf) return;
+    let live = true,
+      render;
+    setLoading(true);
+    setError('');
+    setAccessible('');
+    (async () => {
+      try {
+        const p = await pdf.getPage(current);
+        if (!live) return;
+        const viewport = p.getViewport({
+            scale: zoom / 100
+          }),
+          c = canvas.current;
+        if (!c) return;
+        c.width = Math.ceil(viewport.width);
+        c.height = Math.ceil(viewport.height);
+        render = p.render({
+          canvasContext: c.getContext('2d'),
+          viewport
+        });
+        await render.promise;
+        const contents = await p.getTextContent();
+        if (live) {
+          setAccessible(contents.items.map(x => x.str || '').join(' '));
+          setLoading(false);
+        }
+      } catch (e) {
+        if (live && e.name !== 'RenderingCancelledException') {
+          setError(t.failed);
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      live = false;
+      render?.cancel();
+    };
+  }, [kind, pdf, current, zoom]);
+  const move = n => {
+    const next = Math.max(1, Math.min(count, n));
+    setPage(next);
+    onPageChange?.(next);
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-document-viewer', className),
+    "aria-label": label || t.document,
+    role: "region"
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => move(current - 1),
+    disabled: current <= 1 || !count
+  }, t.previous), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    kind: "data",
+    role: "status"
+  }, t.page + ' ' + current + ' / ' + count), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => move(current + 1),
+    disabled: current >= count || !count
+  }, t.next), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.zoom
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    className: "plx-document-viewer__zoom",
+    value: zoom,
+    onChange: e => setZoom(Number(e.target.value)),
+    options: ZOOMS.map(z => ({
+      value: z,
+      label: z + '%'
+    }))
+  }))), loading ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    role: "status"
+  }, t.loading) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger",
+    actions: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: () => setAttempt(v => v + 1)
+    }, t.retry)
+  }, error) : null, thumbnails && count > 1 ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true,
+    role: "group",
+    "aria-label": t.thumbnails
+  }, Array.from({
+    length: count
+  }, (_, i) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: i,
+    "aria-current": current === i + 1 ? 'page' : undefined,
+    onClick: () => move(i + 1)
+  }, kind === 'pdf' && pdf ? /*#__PURE__*/_react.default.createElement(PdfThumbnail, {
+    pdf: pdf,
+    number: i + 1,
+    label: t.page + ' ' + (i + 1)
+  }) : kind === 'images' && pages[i]?.thumbnail ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: pages[i].thumbnail,
+    alt: pages[i].alt || t.page + ' ' + (i + 1)
+  }) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, t.page, " ", /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "span",
+    kind: "data"
+  }, i + 1))))) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-document-viewer__viewport",
+    "data-zoom": zoom,
+    tabIndex: 0,
+    role: "region",
+    "aria-label": label || t.page,
+    "aria-busy": loading || undefined
+  }, kind === 'pdf' && pdf ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("canvas", {
+    ref: canvas,
+    role: "img",
+    "aria-label": (label || t.page) + ' ' + current
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    className: "plx-document-viewer__pdf-text"
+  }, accessible)) : kind === 'images' && pages[current - 1] ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    key: pages[current - 1].src,
+    src: pages[current - 1].src,
+    alt: pages[current - 1].alt || t.page + ' ' + current,
+    fit: "contain"
+  }) : kind === 'text' && text ? /*#__PURE__*/_react.default.createElement("pre", {
+    className: "plx-document-viewer__text"
+  }, text) : !loading && !error ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : null));
+}
+  } },
+  "platform/patterns/VersionHistory/VersionHistory.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VersionHistory = VersionHistory;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _cx = require("../../utils/cx.js");
+var _Timeline = require("../../components/Timeline/Timeline.jsx");
+var _VersionLabel = require("../../components/VersionLabel/VersionLabel.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · VersionHistory
+   Summary: A version timeline with an optional preview and a confirmed restore.
+   Usage: <VersionHistory versions={versions} currentId="v2" onRestore={restore}/>
+   Props: versions: [{id,version,date,dateTime,author,description,preview}]; currentId; onPreview(version);
+     onRestore(version): async; variant: list | restore | preview; strings: label,preview,restore,confirm,cancel,failed,restored,empty.
+   Behavior: Preview never restores. Restore requires confirmation and waits for persistence; errors keep context.
+   Notes: Caller owns version storage, authorization and currentId. No history is rewritten optimistically.
+*/
+
+const STRINGS = {
+  label: 'Version history',
+  preview: 'Preview',
+  restore: 'Restore',
+  confirm: 'Restore this version?',
+  cancel: 'Cancel',
+  failed: 'The version could not be restored. Try again.',
+  restored: 'Version restored',
+  empty: 'No versions.'
+};
+function VersionHistory({
+  versions = [],
+  currentId,
+  onPreview,
+  onRestore,
+  variant = 'list',
+  strings,
+  className
+}) {
+  const t = {
+      ...STRINGS,
+      ...strings
+    },
+    [ask, setAsk] = _react.default.useState(null),
+    [preview, setPreview] = _react.default.useState(null),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState(''),
+    [done, setDone] = _react.default.useState(false),
+    lock = _react.default.useRef(false),
+    alive = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  const restore = async () => {
+    if (lock.current || !ask || !onRestore) return;
+    const v = versions.find(v => v.id === ask.id);
+    if (!v || v.id === currentId) {
+      setAsk(null);
+      return;
+    }
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onRestore(v);
+      if (alive.current) {
+        setAsk(null);
+        setDone(true);
+      }
+    } catch (e) {
+      if (alive.current) setError(e?.message || t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const viewing = preview && versions.find(v => v.id === preview.id);
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-version-history', className)
+  }, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, done ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check"
+  }, t.restored) : null, !versions.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : /*#__PURE__*/_react.default.createElement(_Timeline.Timeline, {
+    label: t.label,
+    items: versions.map(v => ({
+      id: v.id,
+      time: v.date,
+      dateTime: v.dateTime,
+      title: /*#__PURE__*/_react.default.createElement(_VersionLabel.VersionLabel, {
+        version: v.version,
+        status: v.id === currentId ? 'latest' : undefined
+      }),
+      icon: 'clock',
+      description: [v.author, v.description].filter(Boolean).join(' · '),
+      content: /*#__PURE__*/_react.default.createElement(_Stack.Inline, null, variant === 'preview' || onPreview ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        size: "sm",
+        onClick: () => {
+          setPreview(v);
+          onPreview?.(v);
+        }
+      }, t.preview) : null, variant !== 'list' && onRestore && v.id !== currentId ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        size: "sm",
+        disabled: busy,
+        onClick: () => {
+          setError('');
+          setAsk(v);
+        }
+      }, t.restore) : null)
+    }))
+  }), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: !!viewing,
+    title: t.preview,
+    onClose: () => setPreview(null)
+  }, viewing?.preview || viewing?.description), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: !!ask,
+    title: t.confirm,
+    dismissible: !busy,
+    onClose: () => setAsk(null),
+    footer: /*#__PURE__*/_react.default.createElement(_Stack.Inline, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: busy,
+      onClick: () => setAsk(null)
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      disabled: busy,
+      onClick: restore
+    }, t.restore))
+  }, /*#__PURE__*/_react.default.createElement(_VersionLabel.VersionLabel, {
+    version: ask?.version || ''
+  }), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null));
+}
+  } },
+  "platform/patterns/ProductCard/ProductCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProductCard = ProductCard;
+exports.ProductPrice = ProductPrice;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Image = require("../../components/Image/Image.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Rating = require("../../components/Rating/Rating.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProductCard
+   Summary: One product in a catalog (07 Data display › Cards and objects › Product card): its picture at a fixed ratio,
+     its name as the card's one link or button, a line of facts (the brand or the category), its price in the data font
+     (formatCurrency), the rating, and one action (Add to cart). A sale shows the price people pay, the price it was struck
+     through, and a Sale Badge with its icon (sale); a product that cannot be bought shows an Out of stock Badge with its
+     icon and its action turned off, never hidden (out of stock). In a grid of cards (grid, the default) the picture is on
+     top; in a list (list) it sits at the start of a row. Built from Platform components only (Image, Badge, Rating,
+     Button, Text).
+   Usage:
+     <ContentGrid size="md" label="Candles">
+       <ProductCard title="Beeswax taper, 12 in" href="#/p/taper-12" image={{ src: '/taper.jpg', alt: '' }}
+         price={18} currency="USD" meta="Monastery candles" rating={4.5} reviewCount={38} onAddToCart={() => add('taper-12')} />
+     </ContentGrid>
+     <ProductCard layout="list" title="Prayer rope, 100 knots" onOpen={() => open(p)} price={24} compareAtPrice={32} … />
+     <ProductCard title="Icon print, Saint Mark" price={45} outOfStock action={<Button size="xs">Notify me</Button>} … />
+   Props:
+     title: the product's name (required); with href or onOpen it is the card's link or button, which covers the card
+     href: the product's page: the name is a link (Link's look stays the card's: the whole card is the target)
+     onOpen(): the name is a button that runs this instead (a quick view)
+     image: the picture: { src, alt, srcSet, sizes } (Image); alt "" when the name already says what it shows (default "")
+     ratio: the picture's shape on the aspect-ratio scale: "1-1" (default) | "4-3" | "3-4"
+     price: what it costs now, a number (required)
+     currency: the ISO 4217 code of the price (default "USD"); the amount is written by formatCurrency in the reader's locale
+     compareAtPrice: the price it was before a sale; with a higher value than price the card is on sale: the old price is
+       struck through after the price and the Sale Badge shows (sale)
+     sale: forces the Sale Badge on or off (default: compareAtPrice above price)
+     outOfStock: the product cannot be bought now: the Out of stock Badge with its icon, the action off (default false)
+     meta: a short line of facts above the name (the brand, the category); plain text in DM Sans
+     rating: the average rating, 0 to 5: a read-only Rating (whole stars drawn; its name gives the value: "Rating: 4.5 of
+       5"); none by default
+     reviewCount: how many reviews the rating comes from, in the data font after the stars
+     badges: more status Badges after Sale and Out of stock (each a Badge with its icon)
+     onAddToCart(): the card's action: an Add to cart button; turned off while outOfStock
+     action: the card's action as an element, instead of onAddToCart (Notify me, Choose options)
+     layout: "grid" (default: the picture on top, for a ContentGrid) | "list" (the picture at the row's start, the action at
+       its end: a search result or a comparison)
+     headingLevel: the name's heading level (default 3)
+     strings: the words, for other languages: { sale: "Sale", outOfStock: "Out of stock", addToCart: "Add to cart",
+       addToCartFor: "Add {title} to cart", now: "Now", was: "Was", rating: "Rating", reviews: "{n} reviews",
+       review: "1 review", soldOut: "{title} is out of stock" }
+     className: more classes on the card
+     ProductPrice: the price line alone (a cart's or an order's line, the product page): { price, currency, compareAtPrice,
+       size: "md" (default) | "sm" (a line's unit price: the body size, regular weight), strings, className }
+   Behavior:
+     The name's link or button covers the whole card, so the card is one Tab stop and one click target; the action and
+       its own controls sit above it and stay separately reachable (Tab: the name, then the action).
+     The price is written by formatCurrency (FORMATS: the reader's locale and the currency's own decimals) in the data
+       font; on sale it reads "Now $48.00, was $64.00" to assistive technology, the old price struck through after it.
+     Out of stock: the Badge says it in words with its icon, and the action is disabled with its accessible name saying
+       why ("Beeswax taper is out of stock"); the card still opens the product.
+     Hover raises the card (the card's hover shadow); focus on the name draws the ring around the whole card.
+     The name is cut after two lines; the picture keeps its space before it loads (Image's ratio and placeholder).
+   Notes:
+     One primary thing per card: the name opens the product, the action adds it; more actions belong on the product's
+     page. Do not mix product cards with other cards in one grid. Prices, counts and ratings are technical values: DM Mono.
+     Other props go on the <article>.
+*/
+const STRINGS = {
+  sale: 'Sale',
+  outOfStock: 'Out of stock',
+  addToCart: 'Add to cart',
+  addToCartFor: 'Add {title} to cart',
+  now: 'Now',
+  was: 'Was',
+  rating: 'Rating',
+  reviews: '{n} reviews',
+  review: '1 review',
+  soldOut: '{title} is out of stock'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const RATIOS = ['1-1', '4-3', '3-4'];
+
+// the price line: the price now in the data font, and on sale the old price struck through after it ("Now …, was …" to
+// assistive technology); shared with the Commerce templates
+function ProductPrice({
+  price,
+  currency = 'USD',
+  compareAtPrice,
+  size = 'md',
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const onSale = typeof compareAtPrice === 'number' && compareAtPrice > price;
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-product-card__prices', size === 'sm' && 'plx-product-card__prices--sm', className)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-product-card__price"
+  }, onSale ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.now + ' ') : null, (0, _format.formatCurrency)(price, currency)), onSale ? /*#__PURE__*/_react.default.createElement("s", {
+    className: "plx-product-card__compare"
+  }, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.was + ' '), (0, _format.formatCurrency)(compareAtPrice, currency)) : null);
+}
+function ProductCard({
+  title,
+  href,
+  onOpen,
+  image,
+  ratio = '1-1',
+  price,
+  currency = 'USD',
+  compareAtPrice,
+  sale,
+  outOfStock = false,
+  meta,
+  rating,
+  reviewCount,
+  badges,
+  onAddToCart,
+  action,
+  layout = 'grid',
+  headingLevel = 3,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const name = typeof title === 'string' ? title : '';
+  const onSale = sale !== undefined ? !!sale : typeof compareAtPrice === 'number' && compareAtPrice > price;
+  const interactive = !!(href || onOpen);
+  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
+  const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
+    className: "plx-product-card__opener",
+    href: href
+  }, title) : onOpen ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-product-card__opener",
+    onClick: onOpen
+  }, title) : title;
+  const status = [];
+  if (onSale) status.push(/*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    key: "sale",
+    tone: "active",
+    icon: "tags"
+  }, t.sale));
+  if (outOfStock) status.push(/*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    key: "out",
+    tone: "negative",
+    icon: "do-not-disturb"
+  }, t.outOfStock));
+  const stars = typeof rating === 'number' ? Math.max(0, Math.min(5, rating)) : null;
+  const act = action || (onAddToCart ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    icon: "plus",
+    disabled: outOfStock,
+    onClick: onAddToCart,
+    label: outOfStock ? fill(t.soldOut, {
+      title: name
+    }) : name ? fill(t.addToCartFor, {
+      title: name
+    }) : undefined
+  }, t.addToCart) : null);
+  return /*#__PURE__*/_react.default.createElement("article", _extends({
+    className: (0, _cx.cx)('plx-product-card', 'plx-product-card--' + (layout === 'list' ? 'list' : 'grid'), onSale && 'plx-product-card--sale', outOfStock && 'plx-product-card--out-of-stock', interactive && 'plx-product-card--interactive', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-product-card__media"
+  }, image && image.src ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: image.src,
+    srcSet: image.srcSet,
+    sizes: image.sizes,
+    alt: image.alt || '',
+    ratio: RATIOS.indexOf(ratio) >= 0 ? ratio : '1-1'
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-product-card__placeholder', 'plx-ratio-' + (RATIOS.indexOf(ratio) >= 0 ? ratio : '1-1')),
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "image-b",
+    size: "lg"
+  }))), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-product-card__body"
+  }, status.length || badges ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-product-card__badges"
+  }, status, badges) : null, meta ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-product-card__meta"
+  }, meta) : null, /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-product-card__title"
+  }, opener), /*#__PURE__*/_react.default.createElement(ProductPrice, {
+    price: price,
+    currency: currency,
+    compareAtPrice: onSale ? compareAtPrice : undefined,
+    strings: strings
+  }), stars !== null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-product-card__rating"
+  }, /*#__PURE__*/_react.default.createElement(_Rating.Rating, {
+    readOnly: true,
+    value: stars,
+    label: t.rating
+  }), typeof reviewCount === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-product-card__reviews"
+  }, reviewCount === 1 ? t.review : fill(t.reviews, {
+    n: (0, _format.formatNumber)(reviewCount)
+  })) : null) : null, act ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-product-card__actions"
+  }, act) : null));
+}
+  } },
+  "platform/components/ProductOptions/ProductOptions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProductOptions = ProductOptions;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _RadioTiles = require("../RadioTiles/RadioTiles.jsx");
+var _ColorSwatch = require("../ColorSwatch/ColorSwatch.jsx");
+var _NumberInput = require("../NumberInput/NumberInput.jsx");
+var _Field = require("../Field/Field.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProductOptions
+   Summary: The controls that choose one variant of a product (12 Specialized › Commerce › Product options): sizes as a row
+     of small radio tiles (RadioTiles: size buttons), colors as swatch buttons named in words (ColorSwatch: color swatches),
+     and how many to buy (NumberInput's quantity stepper: quantity). Each option says its chosen value beside its name
+     ("Size: M"); a choice that is out of stock stays in view, marked and explained, and cannot be chosen. A product's
+     colors are the product's own data: each swatch shows a category or data color by name, never a new palette color.
+   Usage:
+     const [choice, setChoice] = React.useState({ size: 'M', color: 'navy' });
+     <ProductOptions product="Choir robe" value={choice} onChange={setChoice}
+       options={[
+         { name: 'size', label: 'Size', kind: 'buttons', values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }, { value: 'XL', available: false }] },
+         { name: 'color', label: 'Color', kind: 'swatches', values: [{ value: 'navy', label: 'Navy', category: 'navy' },
+           { value: 'maroon', label: 'Maroon', category: 'maroon', available: false }] }]}
+       quantity={qty} onQuantityChange={setQty} max={10} sizeGuide={<Link href="#/size-guide">Size guide</Link>} />
+   Props:
+     options: the product's options, in order: [{ name, label, kind: "buttons" (default) | "swatches", values, required }]
+     options[].name: the key of the option in value ("size", "color")
+     options[].label: the option's name as people read it ("Size", "Color")
+     options[].values: the choices: [{ value, label (default: the value), available (default true), note, category, color }]
+       available: false keeps the choice in view, marked out of stock (its note, else strings.unavailable), and refuses it
+       note: a short line under a size tile ("Only 2 left", "Ships in 3 weeks")
+       category: a swatch's color by the category palette's name ("navy", "maroon", "olive": CATEGORY_COLORS)
+       color: a swatch's color by the data colors' name ("blue", "green": DATA_COLORS), instead of category
+     options[].required: the option must be chosen before the product goes in the cart (default true): the page shows the
+       error (errors) when it is missing
+     value: the chosen values, by option name: { size: "M", color: "navy" } (required)
+     onChange(next, name): runs with the whole new value and the option that changed
+     quantity: how many to buy; with onQuantityChange the quantity stepper shows (quantity)
+     onQuantityChange(n): runs with the new quantity
+     min: the least quantity (default 1)
+     max: the greatest quantity (the stock or a limit per order; default 99)
+     product: the product's name, for the controls' accessible names ("Quantity, Choir robe")
+     sizeGuide: an element after the first button option: a Link to the size guide (a link goes somewhere)
+     swatchLabels: the swatches show their names as text beside them (default false: the chosen name is beside the
+       option's label, every name is the swatch's accessible name)
+     errors: the error of an option, by name ({ size: "Choose a size." }): it shows under the option and marks it invalid
+     disabled: turns every control off (default false)
+     strings: the words, for other languages: { chosen: "{label}:" (the option's name before its value), unavailable: "Out of stock", quantity: "Quantity", quantityOf: "Quantity,
+       {product}", unavailableName: "{label}, out of stock", none: "None chosen" }
+     className: more classes on the group
+   Behavior:
+     Size buttons are RadioTiles: one radio group, Tab reaches the chosen tile, the arrow keys move and choose; an out of
+       stock size is a disabled radio with its note under it, which the arrow keys skip.
+     Color swatches are ColorSwatch buttons in a group named by the option (aria-pressed on the chosen one); each is named
+       by its color in words ("Navy"); an out of stock color stays focusable, is announced as "Maroon, out of stock" and
+       dimmed (aria-disabled), and a press does nothing.
+     The quantity is NumberInput's quantity stepper (minus, the count in the data font, plus), named with the product;
+       a value past min or max is brought back when the field is left.
+     Every change runs onChange (or onQuantityChange) at once: the page updates the price, the picture and the stock.
+   Notes:
+     Fewer than about six choices: buttons or swatches, never a select. Put the quantity last, beside Add to cart.
+     Other props go on the group.
+*/
+const STRINGS = {
+  chosen: '{label}:',
+  unavailable: 'Out of stock',
+  quantity: 'Quantity',
+  quantityOf: 'Quantity, {product}',
+  unavailableName: '{label}, out of stock',
+  none: 'None chosen'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const labelOf = v => v.label !== undefined ? v.label : String(v.value);
+
+// the option's name and its chosen value ("Size: M")
+function Legend({
+  option,
+  value,
+  t
+}) {
+  const chosen = (option.values || []).find(v => v.value === value);
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-product-options__legend-text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-product-options__label"
+  }, fill(t.chosen, {
+    label: option.label
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-product-options__chosen"
+  }, chosen ? labelOf(chosen) : t.none));
+}
+function ErrorLine({
+  id,
+  children
+}) {
+  return children ? /*#__PURE__*/_react.default.createElement("span", {
+    id: id,
+    className: "plx-product-options__error"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "alert",
+    size: "sm"
+  }), children) : null;
+}
+function ProductOptions({
+  options = [],
+  value = {},
+  onChange,
+  quantity,
+  onQuantityChange,
+  min = 1,
+  max = 99,
+  product,
+  sizeGuide,
+  swatchLabels = false,
+  errors = {},
+  disabled = false,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = (0, _layer.useUid)('plx-product-options');
+  const pick = (name, v) => {
+    if (onChange) onChange(Object.assign({}, value, {
+      [name]: v
+    }), name);
+  };
+  let guided = false;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-product-options', disabled && 'is-disabled', className)
+  }, rest), options.map(o => {
+    const err = errors[o.name],
+      errId = uid + '-' + o.name + '-error';
+    if (o.kind === 'swatches') {
+      const legendId = uid + '-' + o.name + '-legend';
+      return /*#__PURE__*/_react.default.createElement("div", {
+        key: o.name,
+        className: (0, _cx.cx)('plx-product-options__option', 'plx-product-options__option--swatches', err && 'is-invalid')
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        id: legendId,
+        className: "plx-product-options__legend"
+      }, /*#__PURE__*/_react.default.createElement(Legend, {
+        option: o,
+        value: value[o.name],
+        t: t
+      })), /*#__PURE__*/_react.default.createElement("div", {
+        role: "group",
+        "aria-labelledby": legendId,
+        "aria-describedby": err ? errId : undefined,
+        className: "plx-product-options__swatches"
+      }, (o.values || []).map(v => {
+        const off = v.available === false;
+        const name = off ? fill(t.unavailableName, {
+          label: labelOf(v)
+        }) : labelOf(v);
+        return /*#__PURE__*/_react.default.createElement("span", {
+          key: v.value,
+          className: (0, _cx.cx)('plx-product-options__swatch', off && 'is-unavailable')
+        }, /*#__PURE__*/_react.default.createElement(_ColorSwatch.ColorSwatch, _extends({
+          category: v.color ? undefined : v.category,
+          color: v.color,
+          label: swatchLabels ? labelOf(v) : name,
+          showLabel: swatchLabels,
+          pressed: value[o.name] === v.value,
+          onClick: () => {
+            if (!off && !disabled) pick(o.name, v.value);
+          }
+        }, swatchLabels && off ? {
+          'aria-label': name
+        } : {}, off || disabled ? {
+          'aria-disabled': true
+        } : {})));
+      })), /*#__PURE__*/_react.default.createElement(ErrorLine, {
+        id: errId
+      }, err));
+    }
+    const guide = sizeGuide && !guided ? (guided = true, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-product-options__guide"
+    }, sizeGuide)) : null;
+    return /*#__PURE__*/_react.default.createElement("div", {
+      key: o.name,
+      className: (0, _cx.cx)('plx-product-options__option', 'plx-product-options__option--buttons', err && 'is-invalid')
+    }, /*#__PURE__*/_react.default.createElement(_RadioTiles.RadioTiles, {
+      className: "plx-product-options__sizes",
+      size: "sm",
+      legend: /*#__PURE__*/_react.default.createElement(Legend, {
+        option: o,
+        value: value[o.name],
+        t: t
+      }),
+      value: value[o.name],
+      "aria-describedby": err ? errId : undefined,
+      disabled: disabled || undefined,
+      onChange: v => pick(o.name, v),
+      options: (o.values || []).map(v => ({
+        value: v.value,
+        label: labelOf(v),
+        disabled: v.available === false,
+        description: v.available === false ? v.note || t.unavailable : v.note
+      }))
+    }), guide, /*#__PURE__*/_react.default.createElement(ErrorLine, {
+      id: errId
+    }, err));
+  }), onQuantityChange ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-product-options__option plx-product-options__option--quantity"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.quantity
+  }, /*#__PURE__*/_react.default.createElement(_NumberInput.NumberInput, {
+    stepper: "quantity",
+    value: quantity,
+    onChange: n => onQuantityChange(n),
+    min: min,
+    max: max,
+    disabled: disabled,
+    "aria-label": product ? fill(t.quantityOf, {
+      product
+    }) : undefined
+  }))) : null);
+}
+  } },
+  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.COMMERCE_PAGES = void 0;
+exports.CommerceLine = CommerceLine;
+exports.OrderSummary = OrderSummary;
+exports.money = exports.fill = void 0;
+exports.orderTotals = orderTotals;
+exports.useCommercePage = useCommercePage;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+var _Card = require("../../components/Card/Card.jsx");
+var _Image = require("../../components/Image/Image.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _ProductCard = require("../../patterns/ProductCard/ProductCard.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Commerce templates: shared parts
+   Summary: What the Commerce templates share (platform/templates/Commerce): the kind of page each template is
+     (COMMERCE_PAGES, from the layout standard's kinds), the hook a template claims its kind with on an AppShell page
+     (useCommercePage), the order's totals (orderTotals), a line of an order (CommerceLine: its picture, name, options,
+     price, quantity and line total) and the order summary (OrderSummary: the lines in short and the totals in a Panel).
+   Usage:
+     useCommercePage('checkout');                  // the shell lays the page out as a "form" page
+     const totals = orderTotals(items, { shipping: 6, taxRate: 0.0725, discount: 5 });
+     <OrderSummary items={items} currency="USD" totals={totals} estimated>{<Button variant="primary">Check out</Button>}</OrderSummary>
+     <ul className="plx-commerce-lines"><CommerceLine item={item} currency="USD" onQuantityChange={(n) => …} remove={…} /></ul>
+   Props:
+     COMMERCE_PAGES: { <template>: <page kind> } (workspace, detail, form, settings: platform/standards/layout.json)
+     useCommercePage(template): claims the template's page kind on the AppShell around it (nothing outside a shell)
+     orderTotals(items, { shipping, taxRate, tax, discount }): { subtotal, discount, shipping, tax, total, count }
+     CommerceLine.item: { id, title, href, image: { src, alt }, options (a line: "Size M · Navy"), price, compareAtPrice,
+       quantity, max, warning }
+     CommerceLine.currency: the ISO 4217 code (default "USD")
+     CommerceLine.onQuantityChange(n): the quantity is NumberInput's stepper (else the count, in the data font)
+     CommerceLine: the unit price is ProductPrice at its small size; the line total is in the data font at the line's size
+     CommerceLine.remove: the element that removes the line (a DeleteFlow's trigger), at the line's end
+     CommerceLine.strings: { quantity: "Quantity, {title}", qty: "Qty {n}", each: "{price} each" }
+     OrderSummary.items: the lines, drawn in short (title × quantity, the line total) when showItems
+     OrderSummary.totals: orderTotals' result (default: computed from items)
+     OrderSummary.estimated: tax and shipping are not final: their names say Estimated (default false)
+     OrderSummary.showItems: the lines in short above the totals (default false)
+     OrderSummary.title: the Panel's title (default strings.title)
+     OrderSummary.children: the summary's actions, under the totals (Check out, Place order)
+     OrderSummary.strings: { title: "Order summary", subtotal: "Subtotal", discount: "Discount", shipping: "Shipping",
+       shippingEstimated: "Estimated shipping", tax: "Tax", taxEstimated: "Estimated tax", total: "Total", free: "Free",
+       items: "{n} items", item: "1 item", times: "× {n}" }
+   Behavior:
+     Every amount is written by formatCurrency in the data font; the total is the summary's last row, in the strong weight.
+     A line's quantity stepper is named with the product ("Quantity, Beeswax taper") and keeps the line's max.
+   Notes:
+     The templates never charge, store or send anything: every change goes to the page through its handlers.
+*/
+
+const COMMERCE_PAGES = exports.COMMERCE_PAGES = {
+  'product-discovery': 'workspace',
+  'product-listing': 'workspace',
+  'product-detail': 'detail',
+  cart: 'workspace',
+  checkout: 'form',
+  payment: 'form',
+  'order-confirmation': 'detail',
+  'order-management': 'workspace',
+  'order-detail': 'detail',
+  'subscription-management': 'settings',
+  returns: 'form'
+};
+
+// a template claims its kind of page on the AppShell around it (the layout standard lays it out)
+function useCommercePage(template) {
+  const shell = (0, _AppShell.useAppLayout)();
+  const claim = shell && shell.claimPage;
+  const kind = COMMERCE_PAGES[template];
+  _react.default.useEffect(() => claim && kind ? claim(kind) : undefined, [claim, kind]);
+}
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+exports.fill = fill;
+const money = (n, currency) => (0, _format.formatCurrency)(n, currency || 'USD');
+exports.money = money;
+const round = n => Math.round(n * 100) / 100;
+function orderTotals(items = [], o = {}) {
+  const subtotal = round(items.reduce((s, x) => s + (x.price || 0) * (x.quantity || 0), 0));
+  const count = items.reduce((s, x) => s + (x.quantity || 0), 0);
+  const discount = round(Math.min(subtotal, o.discount || 0));
+  const shipping = round(o.shipping || 0);
+  const tax = o.tax !== undefined ? round(o.tax) : round((subtotal - discount) * (o.taxRate || 0));
+  return {
+    subtotal,
+    discount,
+    shipping,
+    tax,
+    total: round(subtotal - discount + shipping + tax),
+    count
+  };
+}
+const LINE_STRINGS = {
+  quantity: 'Quantity, {title}',
+  qty: 'Qty {n}',
+  each: '{price} each'
+};
+function CommerceLine({
+  item,
+  currency = 'USD',
+  onQuantityChange,
+  remove,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, LINE_STRINGS, strings);
+  const name = typeof item.title === 'string' ? item.title : '';
+  return /*#__PURE__*/_react.default.createElement("li", {
+    className: (0, _cx.cx)('plx-commerce-line', className)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__media"
+  }, item.image && item.image.src ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: item.image.src,
+    alt: item.image.alt || '',
+    ratio: "1-1"
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__placeholder plx-ratio-1-1",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "image-b"
+  }))), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__title"
+  }, item.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: item.href,
+    variant: "subtle"
+  }, item.title) : item.title), item.options ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, item.options) : null, /*#__PURE__*/_react.default.createElement(_ProductCard.ProductPrice, {
+    size: "sm",
+    price: item.price,
+    currency: currency,
+    compareAtPrice: item.compareAtPrice,
+    className: "plx-commerce-line__unit"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__quantity"
+  }, onQuantityChange ? /*#__PURE__*/_react.default.createElement(_NumberInput.NumberInput, {
+    stepper: "quantity",
+    value: item.quantity,
+    min: 1,
+    max: item.max || 99,
+    onChange: n => {
+      if (n) onQuantityChange(n);
+    },
+    "aria-label": fill(t.quantity, {
+      title: name
+    })
+  }) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, fill(t.qty, {
+    n: (0, _format.formatNumber)(item.quantity)
+  }))), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__total"
+  }, money(item.price * item.quantity, currency)), remove ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__remove"
+  }, remove) : null, item.warning ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-line__warning"
+  }, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "warning"
+  }, item.warning)) : null);
+}
+const SUMMARY_STRINGS = {
+  title: 'Order summary',
+  subtotal: 'Subtotal',
+  discount: 'Discount',
+  shipping: 'Shipping',
+  shippingEstimated: 'Estimated shipping',
+  tax: 'Tax',
+  taxEstimated: 'Estimated tax',
+  total: 'Total',
+  free: 'Free',
+  items: '{n} items',
+  item: '1 item',
+  times: '× {n}'
+};
+function OrderSummary({
+  items = [],
+  currency = 'USD',
+  totals,
+  estimated = false,
+  showItems = false,
+  title,
+  headingLevel = 2,
+  children,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, SUMMARY_STRINGS, strings);
+  const s = totals || orderTotals(items);
+  const row = (key, label, value, cls) => /*#__PURE__*/_react.default.createElement("div", {
+    key: key,
+    className: (0, _cx.cx)('plx-commerce-summary__row', cls)
+  }, /*#__PURE__*/_react.default.createElement("dt", {
+    className: "plx-commerce-summary__label"
+  }, label), /*#__PURE__*/_react.default.createElement("dd", {
+    className: "plx-commerce-summary__value"
+  }, value));
+  return /*#__PURE__*/_react.default.createElement(_Card.Panel, {
+    title: title || t.title,
+    headingLevel: headingLevel,
+    className: (0, _cx.cx)('plx-commerce-summary', className)
+  }, showItems && items.length ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-commerce-summary__items",
+    "aria-label": s.count === 1 ? t.item : fill(t.items, {
+      n: (0, _format.formatNumber)(s.count)
+    })
+  }, items.map(x => /*#__PURE__*/_react.default.createElement("li", {
+    key: x.id,
+    className: "plx-commerce-summary__item"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-summary__name"
+  }, x.title, " ", /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, fill(t.times, {
+    n: (0, _format.formatNumber)(x.quantity)
+  }))), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce-summary__value"
+  }, money(x.price * x.quantity, currency))))) : null, /*#__PURE__*/_react.default.createElement("dl", {
+    className: "plx-commerce-summary__totals"
+  }, row('subtotal', t.subtotal, money(s.subtotal, currency)), s.discount ? row('discount', t.discount, money(-s.discount, currency)) : null, row('shipping', estimated ? t.shippingEstimated : t.shipping, s.shipping ? money(s.shipping, currency) : t.free), row('tax', estimated ? t.taxEstimated : t.tax, money(s.tax, currency)), row('total', t.total, money(s.total, currency), 'plx-commerce-summary__row--total')), children ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce-summary__actions"
+  }, children) : null);
+}
+  } },
+  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProductDetail = ProductDetail;
+exports.ProductDiscovery = ProductDiscovery;
+exports.ProductListing = ProductListing;
+exports.productFields = productFields;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _fields = require("../../utils/fields.js");
+var _useCollectionView = require("../../hooks/useCollectionView.js");
+var _CommandBar = require("../../patterns/CommandBar/CommandBar.jsx");
+var _FilterPanel = require("../../patterns/FilterPanel/FilterPanel.jsx");
+var _SortPanel = require("../../patterns/SortPanel/SortPanel.jsx");
+var _ViewMenu = require("../../patterns/ViewMenu/ViewMenu.jsx");
+var _QuickFilter = require("../../patterns/QuickFilter/QuickFilter.jsx");
+var _ContentGrid = require("../../patterns/ContentGrid/ContentGrid.jsx");
+var _ProductCard = require("../../patterns/ProductCard/ProductCard.jsx");
+var _ProductOptions = require("../../components/ProductOptions/ProductOptions.jsx");
+var _Pagination = require("../../components/Pagination/Pagination.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Card = require("../../components/Card/Card.jsx");
+var _Carousel = require("../../components/Carousel/Carousel.jsx");
+var _Image = require("../../components/Image/Image.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Rating = require("../../components/Rating/Rating.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Tabs = require("../../components/Tabs/Tabs.jsx");
+var _Table = require("../../components/Table/Table.jsx");
+var _layer = require("../../utils/layer.js");
+var _shared = require("./shared.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: the storefront
+   Summary: The pages people shop on (platform/templates/Commerce): the product listing (ProductListing: a category's or a
+     search's products as ProductCards in a grid or a list, with the command bar's search, filter, category, sort and view,
+     the count, and pages), product discovery (ProductDiscovery: the catalog's entry: a search with suggestions, the
+     categories to browse, recommendations, then the listing) and product detail (ProductDetail: one product's pictures,
+     name, rating, price, stock, ProductOptions, Add to cart, its description, details and delivery, and related
+     products). Commerce.jsx documents every template.
+   Usage:
+     <ProductListing title="Candles" products={products} categories={CATEGORIES} hrefFor={(p) => '#/p/' + p.id} onAddToCart={add} />
+     <ProductDiscovery products={products} categories={CATEGORIES} recommended={picks} hrefFor={…} onAddToCart={add} />
+     <ProductDetail product={robe} cartHref="#/cart" onAddToCart={(p, choice, qty) => add(p, choice, qty)} related={more} />
+   Props:
+     See Commerce.jsx (ProductListing, ProductDiscovery, ProductDetail).
+   Behavior:
+     See Commerce.jsx.
+*/
+const LISTING_STRINGS = {
+  label: 'Products',
+  search: 'Search products',
+  count: '{n} products',
+  one: '1 product',
+  category: 'Category',
+  noun: 'product',
+  name: 'Name',
+  price: 'Price',
+  rating: 'Rating',
+  availability: 'Availability',
+  inStock: 'In stock',
+  outOfStock: 'Out of stock',
+  sale: 'On sale',
+  yes: 'Yes',
+  no: 'No',
+  empty: 'No products match',
+  emptyText: 'Remove a filter or search for something else.',
+  clear: 'Clear filters and search',
+  results: '{n} products shown',
+  resultsOne: '1 product shown',
+  none: 'No products shown'
+};
+
+// the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
+function productFields(categories = [], strings) {
+  const t = Object.assign({}, LISTING_STRINGS, strings);
+  return [{
+    value: 'title',
+    label: t.name,
+    kind: 'text'
+  }, {
+    value: 'category',
+    label: t.category,
+    kind: 'select',
+    options: categories.map(c => ({
+      value: c.value,
+      label: c.label
+    }))
+  }, {
+    value: 'price',
+    label: t.price,
+    kind: 'number'
+  }, {
+    value: 'rating',
+    label: t.rating,
+    kind: 'number'
+  }, {
+    value: 'stock',
+    label: t.availability,
+    kind: 'select',
+    options: [{
+      value: 'in',
+      label: t.inStock
+    }, {
+      value: 'out',
+      label: t.outOfStock
+    }],
+    get: p => p.outOfStock ? 'out' : 'in'
+  }, {
+    value: 'sale',
+    label: t.sale,
+    kind: 'select',
+    options: [{
+      value: 'yes',
+      label: t.yes
+    }, {
+      value: 'no',
+      label: t.no
+    }],
+    get: p => p.compareAtPrice > p.price ? 'yes' : 'no'
+  }];
+}
+const SIZES = {
+  s: 'sm',
+  m: 'md',
+  l: 'lg'
+};
+function ProductListing({
+  products = [],
+  categories = [],
+  title,
+  description,
+  headingLevel = 1,
+  hrefFor,
+  onOpen,
+  onAddToCart,
+  pageSize = 12,
+  query,
+  onQueryChange,
+  defaultView,
+  search = true,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('product-listing');
+  const t = Object.assign({}, LISTING_STRINGS, strings);
+  const fields = _react.default.useMemo(() => productFields(categories, strings), [categories, strings]);
+  const v = (0, _useCollectionView.useCollectionView)(fields, {
+    text: p => [p.title, p.meta, p.category].join(' '),
+    quick: {
+      category: 'list'
+    },
+    view: Object.assign({
+      layout: 'gallery',
+      size: 'm'
+    }, defaultView)
+  });
+  // the search text may come from the page (ProductDiscovery's search)
+  _react.default.useEffect(() => {
+    if (query !== undefined && query !== v.search) v.setSearch(query);
+  }, [query]);
+  const setSearch = s => {
+    v.setSearch(s);
+    if (onQueryChange) onQueryChange(s);
+  };
+  const [page, setPage] = _react.default.useState(1);
+  const shown = _react.default.useMemo(() => {
+    const list = products.filter(v.test);
+    return v.sort.length ? list.slice().sort((0, _fields.compareLevels)(fields, v.sort)) : list;
+  }, [products, v.test, v.sort, fields]);
+  const pages = Math.max(1, Math.ceil(shown.length / pageSize));
+  const at = Math.min(page, pages);
+  const visible = shown.slice((at - 1) * pageSize, at * pageSize);
+  // the count is announced when it changes (Product discovery: announce result changes)
+  const first = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    setPage(1);
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    (0, _announce.announce)(shown.length === 0 ? t.none : shown.length === 1 ? t.resultsOne : (0, _shared.fill)(t.results, {
+      n: (0, _format.formatNumber)(shown.length)
+    }));
+  }, [shown.length]);
+  const clear = () => {
+    setSearch('');
+    v.setFilter({
+      join: 'and',
+      items: []
+    });
+    v.setQuick('category', []);
+  };
+  const card = (p, layout) => /*#__PURE__*/_react.default.createElement(_ProductCard.ProductCard, {
+    key: p.id,
+    layout: layout,
+    title: p.title,
+    href: hrefFor ? hrefFor(p) : undefined,
+    onOpen: !hrefFor && onOpen ? () => onOpen(p) : undefined,
+    image: p.image,
+    price: p.price,
+    currency: p.currency,
+    compareAtPrice: p.compareAtPrice,
+    outOfStock: p.outOfStock,
+    meta: p.meta,
+    rating: p.rating,
+    reviewCount: p.reviewCount,
+    onAddToCart: onAddToCart ? () => onAddToCart(p) : undefined,
+    headingLevel: Math.min(6, headingLevel + 1)
+  });
+  const H = 'h' + Math.min(6, Math.max(1, headingLevel));
+  const list = v.view.layout === 'list';
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--listing', className),
+    "aria-label": title ? undefined : t.label
+  }, title ? /*#__PURE__*/_react.default.createElement("header", {
+    className: "plx-commerce__head"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-commerce__title"
+  }, title), description ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p",
+    variant: "secondary"
+  }, description) : null) : null, /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
+    label: typeof title === 'string' ? title : t.label,
+    count: shown.length === 1 ? t.one : (0, _shared.fill)(t.count, {
+      n: (0, _format.formatNumber)(shown.length)
+    }),
+    find: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, search ? /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarSearch, {
+      value: v.search,
+      onChange: e => setSearch(e.target.value),
+      onClear: () => setSearch(''),
+      placeholder: t.search,
+      label: t.search
+    }) : null, /*#__PURE__*/_react.default.createElement(_FilterPanel.FilterPanel, v.filterProps), categories.length ? /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
+      label: t.category,
+      icon: "settings-categories",
+      noun: t.category.toLowerCase(),
+      options: categories
+    }, v.quickProps('category'))) : null),
+    view: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_SortPanel.SortPanel, v.sortProps), /*#__PURE__*/_react.default.createElement(_ViewMenu.ViewMenu, {
+      value: v.view,
+      onChange: v.setView
+    }))
+  }), visible.length ? list ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-commerce__list",
+    "aria-label": typeof title === 'string' ? title : t.label
+  }, visible.map(p => /*#__PURE__*/_react.default.createElement("li", {
+    key: p.id,
+    className: "plx-commerce__list-item"
+  }, card(p, 'list')))) : /*#__PURE__*/_react.default.createElement(_ContentGrid.ContentGrid, {
+    size: SIZES[v.view.size] || 'md',
+    label: typeof title === 'string' ? title : t.label
+  }, visible.map(p => card(p, 'grid'))) : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    size: "page",
+    icon: "search",
+    title: t.empty,
+    action: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: "filter-off",
+      onClick: clear
+    }, t.clear)
+  }, t.emptyText), pages > 1 ? /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
+    page: at,
+    pageCount: pages,
+    onPageChange: setPage,
+    total: shown.length,
+    perPage: pageSize
+  }) : null);
+}
+const DISCOVERY_STRINGS = {
+  title: 'Shop',
+  search: 'Search the shop',
+  categories: 'Shop by category',
+  recommended: 'Recommended for you',
+  results: 'Products',
+  resultsFor: 'Results for “{q}”',
+  count: '{n} products',
+  one: '1 product',
+  suggestions: 'Try one of these',
+  clear: 'Clear the search'
+};
+function ProductDiscovery({
+  products = [],
+  categories = [],
+  recommended = [],
+  title,
+  headingLevel = 1,
+  hrefFor,
+  onOpen,
+  onAddToCart,
+  suggestions,
+  pageSize = 12,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('product-discovery');
+  const t = Object.assign({}, DISCOVERY_STRINGS, strings);
+  const uid = (0, _layer.useUid)('plx-commerce');
+  const [text, setText] = _react.default.useState('');
+  const [query, setQuery] = _react.default.useState('');
+  const [category, setCategory] = _react.default.useState(null);
+  const lower = text.trim().toLowerCase();
+  const matches = lower ? products.filter(p => p.title.toLowerCase().indexOf(lower) >= 0).slice(0, 6).map(p => ({
+    value: p.title,
+    label: p.title,
+    description: p.meta
+  })) : [];
+  const run = s => {
+    setText(s);
+    setQuery(s);
+  };
+  const inCategory = category ? products.filter(p => p.category === category) : products;
+  const hits = query ? inCategory.filter(p => [p.title, p.meta, p.category].join(' ').toLowerCase().indexOf(query.trim().toLowerCase()) >= 0) : inCategory;
+  // no results: suggest the closest words people can search for instead
+  const ideas = suggestions || categories.map(c => c.label).slice(0, 4);
+  const H = 'h' + Math.min(6, Math.max(1, headingLevel)),
+    H2 = 'h' + Math.min(6, headingLevel + 1);
+  const chosen = categories.find(c => c.value === category);
+  const card = p => /*#__PURE__*/_react.default.createElement(_ProductCard.ProductCard, {
+    key: p.id,
+    title: p.title,
+    href: hrefFor ? hrefFor(p) : undefined,
+    onOpen: !hrefFor && onOpen ? () => onOpen(p) : undefined,
+    image: p.image,
+    price: p.price,
+    currency: p.currency,
+    compareAtPrice: p.compareAtPrice,
+    outOfStock: p.outOfStock,
+    meta: p.meta,
+    rating: p.rating,
+    reviewCount: p.reviewCount,
+    onAddToCart: onAddToCart ? () => onAddToCart(p) : undefined,
+    headingLevel: Math.min(6, headingLevel + 2)
+  });
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--discovery', className)
+  }, /*#__PURE__*/_react.default.createElement("header", {
+    className: "plx-commerce__head"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-commerce__title"
+  }, title || t.title), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__search"
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    value: text,
+    label: t.search,
+    placeholder: t.search,
+    onChange: e => setText(e.target.value),
+    onClear: () => run(''),
+    suggestions: matches,
+    onSelect: item => run(item.value),
+    onSubmitSearch: s => run(s)
+  }))), !query && categories.length ? /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-commerce__section",
+    "aria-labelledby": uid + '-categories'
+  }, /*#__PURE__*/_react.default.createElement(H2, {
+    id: uid + '-categories',
+    className: "plx-commerce__subtitle"
+  }, t.categories), /*#__PURE__*/_react.default.createElement(_ContentGrid.ContentGrid, {
+    size: "md",
+    label: t.categories
+  }, categories.map(c => /*#__PURE__*/_react.default.createElement(_Card.Card, {
+    key: c.value,
+    title: c.label,
+    headingLevel: Math.min(6, headingLevel + 2),
+    selected: category === c.value,
+    onOpen: () => setCategory(category === c.value ? null : c.value),
+    meta: /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _shared.fill)(products.filter(p => p.category === c.value).length === 1 ? t.one : t.count, {
+      n: (0, _format.formatNumber)(products.filter(p => p.category === c.value).length)
+    }))
+  })))) : null, !query && recommended.length ? /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-commerce__section",
+    "aria-labelledby": uid + '-recommended'
+  }, /*#__PURE__*/_react.default.createElement(H2, {
+    id: uid + '-recommended',
+    className: "plx-commerce__subtitle"
+  }, t.recommended), /*#__PURE__*/_react.default.createElement(_Carousel.Carousel, {
+    label: t.recommended,
+    perView: 3
+  }, recommended.map(card))) : null, /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-commerce__section"
+  }, query && !hits.length ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    size: "page",
+    icon: "search",
+    title: (0, _shared.fill)(t.resultsFor, {
+      q: query
+    }),
+    action: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: "close",
+      onClick: () => run('')
+    }, t.clear)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__ideas"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, t.suggestions), ideas.map(s => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: s,
+    size: "xs",
+    onClick: () => run(s)
+  }, s)))) : /*#__PURE__*/_react.default.createElement(ProductListing, {
+    products: hits,
+    categories: categories,
+    title: query ? (0, _shared.fill)(t.resultsFor, {
+      q: query
+    }) : chosen ? chosen.label : t.results,
+    headingLevel: headingLevel + 1,
+    hrefFor: hrefFor,
+    onOpen: onOpen,
+    onAddToCart: onAddToCart,
+    pageSize: pageSize,
+    search: false,
+    strings: strings
+  })));
+}
+const DETAIL_STRINGS = {
+  gallery: 'Pictures of {title}',
+  reviews: '{n} reviews',
+  review: '1 review',
+  inStock: 'In stock',
+  lowStock: 'Only {n} left',
+  outOfStock: 'Out of stock',
+  addToCart: 'Add to cart',
+  added: '{title} added to your cart',
+  viewCart: 'View cart',
+  choose: 'Choose a {option}.',
+  missing: 'Choose your options first.',
+  description: 'Description',
+  details: 'Details',
+  delivery: 'Delivery and returns',
+  detail: 'Detail',
+  value: 'Value',
+  related: 'You may also like',
+  rating: 'Rating'
+};
+function ProductDetail({
+  product,
+  value,
+  defaultValue,
+  onChange,
+  quantity,
+  onQuantityChange,
+  onAddToCart,
+  cartHref,
+  related = [],
+  hrefFor,
+  onOpen,
+  headingLevel = 1,
+  maxQuantity,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('product-detail');
+  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const uid = (0, _layer.useUid)('plx-commerce');
+  const p = product || {};
+  const [own, setOwn] = _react.default.useState(() => defaultValue || {});
+  const choice = value !== undefined ? value : own;
+  const [ownQty, setOwnQty] = _react.default.useState(1);
+  const qty = quantity !== undefined ? quantity : ownQty;
+  const [errors, setErrors] = _react.default.useState({});
+  const [added, setAdded] = _react.default.useState(false);
+  const set = (next, name) => {
+    if (value === undefined) setOwn(next);
+    if (onChange) onChange(next, name);
+    setAdded(false);
+    if (errors[name]) setErrors(Object.assign({}, errors, {
+      [name]: undefined
+    }));
+  };
+  const setQty = n => {
+    if (quantity === undefined) setOwnQty(n || 1);
+    if (onQuantityChange) onQuantityChange(n);
+  };
+  const options = p.options || [];
+  // a chosen value may set its own price, picture or stock (a larger size costs more)
+  const picked = options.map(o => (o.values || []).find(x => x.value === choice[o.name])).filter(Boolean);
+  const price = picked.reduce((s, x) => typeof x.price === 'number' ? x.price : s, p.price);
+  const stock = picked.reduce((s, x) => typeof x.stock === 'number' ? x.stock : s, p.stock);
+  const out = p.outOfStock || stock === 0 || picked.some(x => x.available === false);
+  const images = (picked.find(x => x.images) || {}).images || p.images || (p.image ? [p.image] : []);
+  const H = 'h' + Math.min(6, Math.max(1, headingLevel)),
+    H2 = 'h' + Math.min(6, headingLevel + 1);
+  const add = () => {
+    const missing = {};
+    options.forEach(o => {
+      if (o.required !== false && choice[o.name] === undefined) missing[o.name] = (0, _shared.fill)(t.choose, {
+        option: String(o.label).toLowerCase()
+      });
+    });
+    if (Object.keys(missing).length) {
+      setErrors(missing);
+      (0, _announce.announce)(t.missing, {
+        politeness: 'assertive'
+      });
+      return;
+    }
+    if (onAddToCart) onAddToCart(p, choice, qty);
+    setAdded(true);
+    (0, _announce.announce)((0, _shared.fill)(t.added, {
+      title: p.title
+    }));
+  };
+  const status = out ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "negative",
+    icon: "do-not-disturb"
+  }, t.outOfStock) : typeof stock === 'number' && stock <= 5 ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "waiting",
+    icon: "schedule"
+  }, (0, _shared.fill)(t.lowStock, {
+    n: (0, _format.formatNumber)(stock)
+  })) : /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "circle-check"
+  }, t.inStock);
+  const tabs = [];
+  if (p.description) tabs.push({
+    value: 'description',
+    label: t.description,
+    content: typeof p.description === 'string' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      as: "p"
+    }, p.description) : p.description
+  });
+  if (p.specs && p.specs.length) tabs.push({
+    value: 'details',
+    label: t.details,
+    content: /*#__PURE__*/_react.default.createElement(_Table.Table, {
+      label: t.details,
+      data: p.specs.map((s, i) => ({
+        id: i + 1,
+        name: s[0],
+        value: s[1]
+      })),
+      columns: [{
+        title: t.detail,
+        field: 'name',
+        kind: 'name',
+        rowLabel: true
+      }, {
+        title: t.value,
+        field: 'value',
+        kind: 'wrap',
+        render: r => p.specs[r.id - 1][2] ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+          variant: "data"
+        }, r.value) : r.value
+      }]
+    })
+  });
+  if (p.delivery) tabs.push({
+    value: 'delivery',
+    label: t.delivery,
+    content: typeof p.delivery === 'string' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      as: "p"
+    }, p.delivery) : p.delivery
+  });
+  return /*#__PURE__*/_react.default.createElement("article", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--detail', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__product"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__gallery"
+  }, images.length > 1 ? /*#__PURE__*/_react.default.createElement(_Carousel.Carousel, {
+    label: (0, _shared.fill)(t.gallery, {
+      title: p.title
+    })
+  }, images.map((im, i) => /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    key: i,
+    src: im.src,
+    alt: im.alt || '',
+    ratio: "1-1",
+    rounded: true
+  }))) : images.length ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: images[0].src,
+    alt: images[0].alt || '',
+    ratio: "1-1",
+    rounded: true,
+    priority: true
+  }) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__buy"
+  }, p.meta ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, p.meta) : null, /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-commerce__title"
+  }, p.title), typeof p.rating === 'number' ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__rating"
+  }, /*#__PURE__*/_react.default.createElement(_Rating.Rating, {
+    readOnly: true,
+    value: p.rating,
+    label: t.rating
+  }), typeof p.reviewCount === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, p.reviewCount === 1 ? t.review : (0, _shared.fill)(t.reviews, {
+    n: (0, _format.formatNumber)(p.reviewCount)
+  })) : null) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__price",
+    "aria-live": "polite"
+  }, /*#__PURE__*/_react.default.createElement(_ProductCard.ProductPrice, {
+    price: price,
+    currency: p.currency,
+    compareAtPrice: p.compareAtPrice
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__stock"
+  }, status), options.length || onAddToCart ? /*#__PURE__*/_react.default.createElement(_ProductOptions.ProductOptions, {
+    product: p.title,
+    options: options,
+    value: choice,
+    onChange: set,
+    errors: errors,
+    quantity: qty,
+    onQuantityChange: setQty,
+    max: maxQuantity || (typeof stock === 'number' && stock > 0 ? stock : 99),
+    sizeGuide: p.sizeGuide
+  }) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__add"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    size: "lg",
+    icon: "plus",
+    disabled: out,
+    onClick: add
+  }, t.addToCart)), added ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "success",
+    onDismiss: () => setAdded(false)
+  }, (0, _shared.fill)(t.added, {
+    title: p.title
+  }), cartHref ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: cartHref
+  }, t.viewCart)) : null) : null)), tabs.length ? /*#__PURE__*/_react.default.createElement(_Tabs.Tabs, {
+    label: p.title,
+    items: tabs,
+    className: "plx-commerce__tabs"
+  }) : null, related.length ? /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-commerce__section",
+    "aria-labelledby": uid + '-related'
+  }, /*#__PURE__*/_react.default.createElement(H2, {
+    id: uid + '-related',
+    className: "plx-commerce__subtitle"
+  }, t.related), /*#__PURE__*/_react.default.createElement(_ContentGrid.ContentGrid, {
+    size: "md",
+    label: t.related
+  }, related.map(r => /*#__PURE__*/_react.default.createElement(_ProductCard.ProductCard, {
+    key: r.id,
+    title: r.title,
+    href: hrefFor ? hrefFor(r) : undefined,
+    onOpen: !hrefFor && onOpen ? () => onOpen(r) : undefined,
+    image: r.image,
+    price: r.price,
+    currency: r.currency,
+    compareAtPrice: r.compareAtPrice,
+    outOfStock: r.outOfStock,
+    meta: r.meta,
+    headingLevel: Math.min(6, headingLevel + 2)
+  })))) : null);
+}
+  } },
+  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Cart = Cart;
+exports.Checkout = Checkout;
+exports.OrderConfirmation = OrderConfirmation;
+exports.Payment = Payment;
+exports.PaymentFields = PaymentFields;
+exports.cardBrand = cardBrand;
+exports.formatCardNumber = formatCardNumber;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _ReviewFlow = require("../../patterns/ReviewFlow/ReviewFlow.jsx");
+var _DeleteFlow = require("../../patterns/DeleteFlow/DeleteFlow.jsx");
+var _Wizard = require("../../patterns/Wizard/Wizard.jsx");
+var _Form = require("../../patterns/Form/Form.jsx");
+var _PropertyList = require("../../patterns/PropertyList/PropertyList.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _CountrySelect = require("../../components/CountrySelect/CountrySelect.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _CopyButton = require("../../components/CopyButton/CopyButton.jsx");
+var _Timeline = require("../../components/Timeline/Timeline.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _shared = require("./shared.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Commerce templates: buying
+   Summary: The pages that turn a cart into an order (platform/templates/Commerce): the cart (Cart: the lines with their
+     quantity steppers and Remove with Undo, the promo code, the summary with estimated totals and Check out), checkout
+     (Checkout: the Wizard's steps, contact, delivery, payment and review, beside the order summary, ending in Place
+     order), payment (Payment and PaymentFields: the method and the card fields as form UI only: nothing is charged or
+     kept here) and the order confirmation (OrderConfirmation: the order number to copy, what happens next, the summary).
+     Commerce.jsx documents every template.
+   Usage:
+     <Cart items={cart} currency="USD" onQuantityChange={setQty} onRemove={remove} onRestore={restore} onCheckout={go} continueHref="#/shop" />
+     <Checkout items={cart} deliveryOptions={METHODS} onPlaceOrder={(details) => api.place(details)} />
+     <Payment amount={64.5} currency="USD" onPay={(details) => provider.confirm(details)} onCancel={back} />
+     <OrderConfirmation orderNumber="PX-10428" email="maya@example.com" items={cart} orderHref="#/orders/PX-10428" continueHref="#/shop" />
+   Props:
+     See Commerce.jsx (Cart, Checkout, PaymentFields, Payment, OrderConfirmation).
+   Behavior:
+     See Commerce.jsx.
+*/
+
+/* ── the cart ── */
+const CART_STRINGS = {
+  title: 'Cart',
+  items: '{n} items',
+  item: '1 item',
+  lines: 'Items in your cart',
+  remove: 'Remove {title}',
+  noun: 'item',
+  removed: '{title} removed from your cart.',
+  undo: 'Undo',
+  empty: 'Your cart is empty',
+  emptyText: 'Find something you like and add it here.',
+  continue: 'Continue shopping',
+  checkout: 'Check out',
+  promo: 'Promo code',
+  apply: 'Apply',
+  applied: 'Promo code {code} applied',
+  promoError: 'This code cannot be used.',
+  total: 'Total {total}'
+};
+function Cart({
+  items = [],
+  currency = 'USD',
+  onQuantityChange,
+  onRemove,
+  onRestore,
+  onCheckout,
+  continueHref,
+  shipping,
+  taxRate,
+  discount,
+  onApplyPromo,
+  title,
+  headingLevel = 1,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('cart');
+  const t = Object.assign({}, CART_STRINGS, strings);
+  const toast = (0, _ReviewFlow.useOptionalToast)();
+  const [removed, setRemoved] = _react.default.useState(null);
+  const [code, setCode] = _react.default.useState('');
+  const [promo, setPromo] = _react.default.useState({
+    discount: 0,
+    label: '',
+    error: '',
+    busy: false
+  });
+  const totals = (0, _shared.orderTotals)(items, {
+    shipping,
+    taxRate,
+    discount: (discount || 0) + promo.discount
+  });
+  const H = 'h' + Math.min(6, Math.max(1, headingLevel));
+  // the total is announced when it changes (a quantity, a removal, a promo code)
+  const first = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    (0, _announce.announce)((0, _shared.fill)(t.total, {
+      total: (0, _shared.money)(totals.total, currency)
+    }));
+  }, [totals.total]);
+  const apply = async e => {
+    if (e) e.preventDefault();
+    if (!code.trim() || !onApplyPromo) return;
+    setPromo(p => Object.assign({}, p, {
+      busy: true,
+      error: ''
+    }));
+    try {
+      const r = await onApplyPromo(code.trim());
+      setPromo({
+        discount: r && r.discount || 0,
+        label: r && r.label || code.trim(),
+        error: '',
+        busy: false
+      });
+      (0, _announce.announce)((0, _shared.fill)(t.applied, {
+        code: code.trim()
+      }));
+    } catch (err) {
+      setPromo({
+        discount: 0,
+        label: '',
+        error: err && err.message || t.promoError,
+        busy: false
+      });
+    }
+  };
+  const count = totals.count === 1 ? t.item : (0, _shared.fill)(t.items, {
+    n: (0, _format.formatNumber)(totals.count)
+  });
+  if (!items.length && !removed) {
+    return /*#__PURE__*/_react.default.createElement("section", {
+      className: (0, _cx.cx)('plx-commerce', 'plx-commerce--cart', className),
+      "aria-label": title || t.title
+    }, /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+      size: "page",
+      icon: "briefcase",
+      title: t.empty,
+      action: continueHref ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+        href: continueHref,
+        variant: "standalone"
+      }, t.continue) : undefined
+    }, t.emptyText));
+  }
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--cart', className),
+    "aria-label": title || t.title
+  }, /*#__PURE__*/_react.default.createElement("header", {
+    className: "plx-commerce__head"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-commerce__title"
+  }, title || t.title), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, count)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__columns"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__main"
+  }, removed ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "info",
+    actions: onRestore ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      icon: "ed-undo",
+      onClick: () => {
+        onRestore(removed);
+        setRemoved(null);
+      }
+    }, t.undo) : undefined,
+    onDismiss: () => setRemoved(null)
+  }, (0, _shared.fill)(t.removed, {
+    title: removed.title
+  })) : null, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-commerce-lines",
+    "aria-label": t.lines
+  }, items.map(x => /*#__PURE__*/_react.default.createElement(_shared.CommerceLine, {
+    key: x.id,
+    item: x,
+    currency: currency,
+    onQuantityChange: onQuantityChange ? n => onQuantityChange(x, n) : undefined,
+    remove: onRemove ? /*#__PURE__*/_react.default.createElement(_DeleteFlow.DeleteFlow, {
+      variant: "undo",
+      items: [{
+        id: x.id,
+        label: x.title
+      }],
+      noun: t.noun,
+      onDelete: () => {
+        onRemove(x);
+        if (!toast) setRemoved(x);
+      },
+      onRestore: onRestore ? () => onRestore(x) : undefined,
+      trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        variant: "ghost",
+        size: "xs",
+        iconOnly: true,
+        icon: "trash",
+        label: (0, _shared.fill)(t.remove, {
+          title: x.title
+        })
+      })
+    }) : null
+  })))), /*#__PURE__*/_react.default.createElement("aside", {
+    className: "plx-commerce__aside",
+    "aria-label": t.checkout
+  }, /*#__PURE__*/_react.default.createElement(_shared.OrderSummary, {
+    items: items,
+    currency: currency,
+    totals: totals,
+    estimated: true
+  }, onApplyPromo ? /*#__PURE__*/_react.default.createElement("form", {
+    className: "plx-commerce__promo",
+    onSubmit: apply
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.promo,
+    error: promo.error,
+    description: promo.label ? (0, _shared.fill)(t.applied, {
+      code: promo.label
+    }) : undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    value: code,
+    data: true,
+    autoComplete: "off",
+    onChange: e => setCode(e.target.value)
+  })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    loading: promo.busy
+  }, t.apply)) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    size: "lg",
+    disabled: !items.length,
+    onClick: onCheckout
+  }, t.checkout), continueHref ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: continueHref,
+    variant: "standalone"
+  }, t.continue) : null))));
+}
+
+/* ── payment: the method and the card fields (form UI only) ── */
+const PAY_STRINGS = {
+  method: 'Payment method',
+  newCard: 'A new card',
+  number: 'Card number',
+  accepted: 'Visa, Mastercard, American Express or Discover',
+  expiry: 'Expiry date',
+  expiryHint: 'MM / YY',
+  cvc: 'Security code',
+  cvcHint: 'The last 3 digits on the back, or 4 on the front of American Express',
+  name: 'Name on card',
+  billingSame: 'The billing address is the same as the delivery address',
+  billing: 'Billing address',
+  street: 'Address',
+  city: 'City',
+  postal: 'Postal code',
+  secure: 'Your card details go straight to the payment provider. This page does not keep them.',
+  charge: 'You will be charged',
+  brands: {
+    visa: 'Visa',
+    mastercard: 'Mastercard',
+    amex: 'American Express',
+    discover: 'Discover'
+  }
+};
+// the card's brand from its first digits, and the number in groups as people type it (4 4 4 4, or 4 6 5 for American Express)
+function cardBrand(number) {
+  const d = String(number || '').replace(/\D/g, '');
+  if (/^4/.test(d)) return 'visa';
+  if (/^(5[1-5]|2[2-7])/.test(d)) return 'mastercard';
+  if (/^3[47]/.test(d)) return 'amex';
+  if (/^(6011|65|64[4-9])/.test(d)) return 'discover';
+  return '';
+}
+function formatCardNumber(number) {
+  const d = String(number || '').replace(/\D/g, '').slice(0, 19);
+  const groups = cardBrand(d) === 'amex' ? [4, 6, 5] : [4, 4, 4, 4, 3];
+  const out = [];
+  let i = 0;
+  for (const g of groups) {
+    if (i >= d.length) break;
+    out.push(d.slice(i, i + g));
+    i += g;
+  }
+  return out.join(' ');
+}
+const formatExpiry = v => {
+  const d = String(v || '').replace(/\D/g, '').slice(0, 4);
+  return d.length > 2 ? d.slice(0, 2) + ' / ' + d.slice(2) : d;
+};
+function PaymentFields({
+  value = {},
+  onChange,
+  savedMethods = [],
+  amount,
+  currency = 'USD',
+  billing = true,
+  disabled = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, PAY_STRINGS, strings);
+  const set = (k, v) => {
+    if (onChange) onChange(Object.assign({}, value, {
+      [k]: v
+    }));
+  };
+  const method = value.method || (savedMethods.length ? savedMethods[0].id : 'card');
+  const brand = cardBrand(value.number);
+  const card = method === 'card';
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-commerce__payment', className)
+  }, savedMethods.length ? /*#__PURE__*/_react.default.createElement(_Checkbox.ChoiceList, {
+    legend: t.method,
+    value: method,
+    onChange: m => set('method', m),
+    options: savedMethods.map(m => ({
+      value: m.id,
+      label: m.label,
+      description: m.description
+    })).concat([{
+      value: 'card',
+      label: t.newCard
+    }])
+  }) : null, card ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.number,
+    description: brand ? t.brands[brand] : t.accepted,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    data: true,
+    inputMode: "numeric",
+    autoComplete: "cc-number",
+    value: formatCardNumber(value.number),
+    disabled: disabled,
+    maxLength: 23,
+    pattern: "[0-9 ]{12,23}",
+    onChange: e => set('number', e.target.value.replace(/\D/g, '').slice(0, 19))
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__pair"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.expiry,
+    description: t.expiryHint,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    data: true,
+    inputMode: "numeric",
+    autoComplete: "cc-exp",
+    value: formatExpiry(value.expiry),
+    disabled: disabled,
+    maxLength: 7,
+    pattern: "(0[1-9]|1[0-2]) / [0-9]{2}",
+    onChange: e => set('expiry', e.target.value.replace(/\D/g, '').slice(0, 4))
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.cvc,
+    description: t.cvcHint,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    data: true,
+    inputMode: "numeric",
+    autoComplete: "cc-csc",
+    value: value.cvc || '',
+    disabled: disabled,
+    maxLength: 4,
+    pattern: "[0-9]{3,4}",
+    onChange: e => set('cvc', e.target.value.replace(/\D/g, '').slice(0, 4))
+  }))), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.name,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    autoComplete: "cc-name",
+    value: value.name || '',
+    disabled: disabled,
+    onChange: e => set('name', e.target.value)
+  }))) : null, billing ? /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    label: t.billingSame,
+    checked: value.billingSame !== false,
+    disabled: disabled,
+    onChange: e => set('billingSame', e.target.checked)
+  }) : null, billing && value.billingSame === false ? /*#__PURE__*/_react.default.createElement("fieldset", {
+    className: "plx-commerce__fields"
+  }, /*#__PURE__*/_react.default.createElement("legend", {
+    className: "plx-commerce__legend"
+  }, t.billing), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.street,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    autoComplete: "billing street-address",
+    value: value.billingStreet || '',
+    disabled: disabled,
+    onChange: e => set('billingStreet', e.target.value)
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__pair"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.city,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    autoComplete: "billing address-level2",
+    value: value.billingCity || '',
+    disabled: disabled,
+    onChange: e => set('billingCity', e.target.value)
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.postal,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    data: true,
+    autoComplete: "billing postal-code",
+    value: value.billingPostal || '',
+    disabled: disabled,
+    onChange: e => set('billingPostal', e.target.value)
+  })))) : null, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "info",
+    icon: "lock"
+  }, t.secure), typeof amount === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p"
+  }, t.charge, " ", /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, (0, _shared.money)(amount, currency))) : null);
+}
+const PAYMENT_STRINGS = {
+  title: 'Payment',
+  description: 'Choose how to pay. Nothing is charged until you press Pay.',
+  pay: 'Pay {amount}',
+  cancel: 'Cancel',
+  declined: 'The payment did not go through',
+  declinedText: 'Your card was declined. Check the details or use another card.',
+  paid: 'Payment received'
+};
+function Payment({
+  amount,
+  currency = 'USD',
+  savedMethods,
+  defaultValue,
+  onPay,
+  onCancel,
+  title,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('payment');
+  const t = Object.assign({}, PAYMENT_STRINGS, strings);
+  const [value, setValue] = _react.default.useState(() => Object.assign({
+    billingSame: true
+  }, defaultValue));
+  const [busy, setBusy] = _react.default.useState(false);
+  const [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false);
+  // one submission at a time: Pay turns off and shows its spinner until the page answers; a decline keeps every field
+  const submit = async e => {
+    e.preventDefault();
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      if (onPay) await onPay(value);
+      (0, _announce.announce)(t.paid);
+    } catch (err) {
+      setError(err && err.message || t.declinedText);
+      (0, _announce.announce)(t.declined, {
+        politeness: 'assertive'
+      });
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Form.Form, {
+    label: title || t.title,
+    onSubmit: submit,
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--payment', className)
+  }, /*#__PURE__*/_react.default.createElement(_Form.FormSection, {
+    title: title || t.title,
+    description: t.description
+  }, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger",
+    title: t.declined
+  }, error) : null, /*#__PURE__*/_react.default.createElement(PaymentFields, {
+    value: value,
+    onChange: setValue,
+    savedMethods: savedMethods,
+    amount: amount,
+    currency: currency,
+    disabled: busy,
+    strings: strings
+  })), /*#__PURE__*/_react.default.createElement(_Form.FormActions, {
+    sticky: false
+  }, onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: onCancel,
+    disabled: busy
+  }, t.cancel) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    variant: "primary",
+    loading: busy,
+    disabled: busy
+  }, (0, _shared.fill)(t.pay, {
+    amount: (0, _shared.money)(amount, currency)
+  }))));
+}
+
+/* ── checkout: contact, delivery, payment, review ── */
+const CHECKOUT_STRINGS = {
+  label: 'Checkout',
+  contact: 'Contact',
+  delivery: 'Delivery',
+  payment: 'Payment',
+  review: 'Review',
+  placeOrder: 'Place order',
+  cancel: 'Back to cart',
+  email: 'Email',
+  emailHint: 'For the order confirmation and delivery updates.',
+  account: 'Have an account?',
+  signIn: 'Sign in',
+  name: 'Full name',
+  street: 'Address',
+  street2: 'Apartment, suite or unit (optional)',
+  city: 'City',
+  region: 'State or region',
+  postal: 'Postal code',
+  country: 'Country',
+  phone: 'Phone (optional)',
+  phoneHint: 'Only for questions about the delivery.',
+  method: 'Delivery method',
+  summary: 'Order summary',
+  card: 'Card ending {last4}',
+  placed: 'Order placed',
+  checkAnswers: 'Check your order before you place it.',
+  items: 'Items',
+  free: 'Free'
+};
+function Checkout({
+  items = [],
+  currency = 'USD',
+  deliveryOptions = [],
+  defaultValue,
+  savedMethods,
+  taxRate,
+  discount,
+  onPlaceOrder,
+  onCancel,
+  signInHref,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('checkout');
+  const t = Object.assign({}, CHECKOUT_STRINGS, strings);
+  const [d, setD] = _react.default.useState(() => Object.assign({
+    email: '',
+    name: '',
+    street: '',
+    street2: '',
+    city: '',
+    region: '',
+    postal: '',
+    country: 'US',
+    phone: '',
+    delivery: deliveryOptions.length ? deliveryOptions[0].value : '',
+    payment: {
+      billingSame: true
+    }
+  }, defaultValue));
+  const set = k => e => setD(Object.assign({}, d, {
+    [k]: e && e.target ? e.target.value : e
+  }));
+  const method = deliveryOptions.find(o => o.value === d.delivery);
+  const totals = (0, _shared.orderTotals)(items, {
+    shipping: method ? method.price : 0,
+    taxRate,
+    discount
+  });
+  const saved = (savedMethods || []).find(m => m.id === (d.payment.method || (savedMethods && savedMethods.length ? savedMethods[0].id : 'card')));
+  const paidWith = saved ? saved.label : d.payment.number ? (0, _shared.fill)(t.card, {
+    last4: String(d.payment.number).slice(-4)
+  }) : '';
+  const steps = [{
+    id: 'contact',
+    label: t.contact,
+    content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.email,
+      description: t.emailHint,
+      required: true
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "email",
+      autoComplete: "email",
+      value: d.email,
+      onChange: set('email')
+    })), signInHref ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      as: "p"
+    }, t.account, " ", /*#__PURE__*/_react.default.createElement(_Link.Link, {
+      href: signInHref
+    }, t.signIn)) : null)
+  }, {
+    id: 'delivery',
+    label: t.delivery,
+    content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.name,
+      required: true
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      autoComplete: "shipping name",
+      value: d.name,
+      onChange: set('name')
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.street,
+      required: true
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      autoComplete: "shipping address-line1",
+      value: d.street,
+      onChange: set('street')
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.street2
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      autoComplete: "shipping address-line2",
+      value: d.street2,
+      onChange: set('street2')
+    })), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-commerce__pair"
+    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.city,
+      required: true
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      autoComplete: "shipping address-level2",
+      value: d.city,
+      onChange: set('city')
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.region
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      autoComplete: "shipping address-level1",
+      value: d.region,
+      onChange: set('region')
+    }))), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-commerce__pair"
+    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.postal,
+      required: true
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      data: true,
+      autoComplete: "shipping postal-code",
+      value: d.postal,
+      onChange: set('postal')
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.country
+    }, /*#__PURE__*/_react.default.createElement(_CountrySelect.CountrySelect, {
+      value: d.country,
+      onChange: c => setD(Object.assign({}, d, {
+        country: c
+      }))
+    }))), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.phone,
+      description: t.phoneHint
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "tel",
+      autoComplete: "shipping tel",
+      value: d.phone,
+      onChange: set('phone')
+    })), deliveryOptions.length ? /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: t.method,
+      value: d.delivery,
+      onChange: v => setD(Object.assign({}, d, {
+        delivery: v
+      })),
+      options: deliveryOptions.map(o => ({
+        value: o.value,
+        label: o.label + ' · ' + (o.price ? (0, _shared.money)(o.price, currency) : t.free),
+        description: o.description
+      }))
+    }) : null)
+  }, {
+    id: 'payment',
+    label: t.payment,
+    content: /*#__PURE__*/_react.default.createElement(PaymentFields, {
+      value: d.payment,
+      onChange: p => setD(Object.assign({}, d, {
+        payment: p
+      })),
+      savedMethods: savedMethods,
+      strings: strings
+    })
+  }];
+  const review = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p",
+    variant: "secondary"
+  }, t.checkAnswers), /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList, null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.email
+  }, d.email), /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.delivery
+  }, [d.name, d.street, d.street2, [d.postal, d.city].filter(Boolean).join(' '), d.region].filter(Boolean).join(', ')), method ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.method
+  }, method.label) : null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.payment
+  }, paidWith)), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-commerce-lines",
+    "aria-label": t.items
+  }, items.map(x => /*#__PURE__*/_react.default.createElement(_shared.CommerceLine, {
+    key: x.id,
+    item: x,
+    currency: currency
+  }))));
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--checkout', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__columns"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__main"
+  }, /*#__PURE__*/_react.default.createElement(_Wizard.Wizard, {
+    label: t.label,
+    steps: steps,
+    summary: review,
+    onCancel: onCancel,
+    onComplete: async () => {
+      if (onPlaceOrder) await onPlaceOrder(d);
+      (0, _announce.announce)(t.placed);
+    },
+    strings: {
+      complete: t.placeOrder,
+      summary: t.review,
+      cancel: t.cancel
+    }
+  })), /*#__PURE__*/_react.default.createElement("aside", {
+    className: "plx-commerce__aside",
+    "aria-label": t.summary
+  }, /*#__PURE__*/_react.default.createElement(_shared.OrderSummary, {
+    items: items,
+    currency: currency,
+    totals: totals,
+    showItems: true,
+    estimated: true,
+    headingLevel: 2
+  }))));
+}
+
+/* ── the order confirmation ── */
+const CONFIRM_STRINGS = {
+  title: 'Thank you. Your order is placed.',
+  number: 'Order number',
+  copy: 'Copy the order number',
+  sent: 'We sent a confirmation to {email}.',
+  next: 'What happens next',
+  items: 'Items',
+  view: 'View your order',
+  continue: 'Continue shopping',
+  delivery: 'Delivery',
+  method: 'Delivery method'
+};
+function OrderConfirmation({
+  orderNumber,
+  email,
+  items = [],
+  currency = 'USD',
+  totals,
+  delivery = {},
+  steps = [],
+  orderHref,
+  continueHref,
+  headingLevel = 1,
+  autoFocus = true,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('order-confirmation');
+  const t = Object.assign({}, CONFIRM_STRINGS, strings);
+  const uid = (0, _layer.useUid)('plx-commerce');
+  const heading = _react.default.useRef(null);
+  // the page's heading takes the focus when it opens: the success is the first thing read
+  _react.default.useEffect(() => {
+    if (autoFocus && heading.current) heading.current.focus();
+  }, []);
+  const H = 'h' + Math.min(6, Math.max(1, headingLevel)),
+    H2 = 'h' + Math.min(6, headingLevel + 1);
+  return /*#__PURE__*/_react.default.createElement("article", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--confirmation', className)
+  }, /*#__PURE__*/_react.default.createElement("header", {
+    className: "plx-commerce__confirmed"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.StatusIcon, {
+    tone: "success",
+    size: "lg"
+  }), /*#__PURE__*/_react.default.createElement(H, {
+    ref: heading,
+    tabIndex: -1,
+    className: "plx-commerce__title"
+  }, t.title), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__order-number"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, t.number), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, orderNumber), /*#__PURE__*/_react.default.createElement(_CopyButton.CopyButton, {
+    value: orderNumber,
+    label: t.copy,
+    size: "xs"
+  })), email ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p"
+  }, (0, _shared.fill)(t.sent, {
+    email
+  })) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__columns"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__main"
+  }, steps.length ? /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-commerce__section",
+    "aria-labelledby": uid + '-next'
+  }, /*#__PURE__*/_react.default.createElement(H2, {
+    id: uid + '-next',
+    className: "plx-commerce__subtitle"
+  }, t.next), /*#__PURE__*/_react.default.createElement(_Timeline.Timeline, {
+    label: t.next,
+    items: steps
+  })) : null, delivery.address || delivery.method ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList, null, delivery.address ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.delivery
+  }, delivery.address) : null, delivery.method ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.method
+  }, delivery.method) : null) : null, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-commerce-lines",
+    "aria-label": t.items
+  }, items.map(x => /*#__PURE__*/_react.default.createElement(_shared.CommerceLine, {
+    key: x.id,
+    item: x,
+    currency: currency
+  }))), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__links"
+  }, orderHref ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: orderHref,
+    variant: "standalone"
+  }, t.view) : null, continueHref ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: continueHref,
+    variant: "standalone"
+  }, t.continue) : null)), /*#__PURE__*/_react.default.createElement("aside", {
+    className: "plx-commerce__aside",
+    "aria-label": t.items
+  }, /*#__PURE__*/_react.default.createElement(_shared.OrderSummary, {
+    items: items,
+    currency: currency,
+    totals: totals,
+    headingLevel: Math.min(6, headingLevel + 1)
+  }))));
+}
+  } },
+  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ORDER_STATUSES = void 0;
+exports.OrderDetail = OrderDetail;
+exports.OrderManagement = OrderManagement;
+exports.OrderStatus = OrderStatus;
+exports.Returns = Returns;
+exports.SubscriptionManagement = SubscriptionManagement;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _useCollectionView = require("../../hooks/useCollectionView.js");
+var _CommandBar = require("../../patterns/CommandBar/CommandBar.jsx");
+var _FilterPanel = require("../../patterns/FilterPanel/FilterPanel.jsx");
+var _QuickFilter = require("../../patterns/QuickFilter/QuickFilter.jsx");
+var _EntityHeader = require("../../patterns/EntityHeader/EntityHeader.jsx");
+var _PropertyList = require("../../patterns/PropertyList/PropertyList.jsx");
+var _Wizard = require("../../patterns/Wizard/Wizard.jsx");
+var _SettingsLayout = require("../../patterns/SettingsLayout/SettingsLayout.jsx");
+var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Card = require("../../components/Card/Card.jsx");
+var _Timeline = require("../../components/Timeline/Timeline.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _RadioTiles = require("../../components/RadioTiles/RadioTiles.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
+var _shared = require("./shared.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: after the order
+   Summary: The pages that manage orders and plans (platform/templates/Commerce): order management (OrderManagement: the
+     orders in the DataTable with the command bar's search, filter, status and selection actions; OrderDetail: one order's
+     header, lines, totals, delivery, payment and history), subscription management (SubscriptionManagement: the plan,
+     changing it, the payment method, pausing or canceling, and the billing history, in settings cards) and returns
+     (Returns: the Wizard's items, reason, resolution and return method, the review with the refund, then the return's
+     status). Order statuses are Badges with their icon (ORDER_STATUSES). Commerce.jsx documents every template.
+   Usage:
+     <OrderManagement orders={orders} onOpen={open} onFulfill={fulfill} onCancel={cancel} onRefund={refund} />
+     <OrderDetail order={order} backHref="#/orders" onFulfill={…} onRefund={…} onCancel={…} />
+     <SubscriptionManagement subscription={sub} plans={PLANS} history={invoices} onChangePlan={change} onPause={pause} onCancel={cancel} />
+     <Returns order={order} reasons={REASONS} onSubmit={(request) => api.requestReturn(request)} />
+   Props:
+     See Commerce.jsx (ORDER_STATUSES, OrderManagement, OrderDetail, SubscriptionManagement, Returns).
+   Behavior:
+     See Commerce.jsx.
+*/
+// a calendar day ("2026-10-15") read in the reader's locale, at noon so no time zone moves it to another day
+const day = iso => iso ? (0, _format.formatDate)(/T/.test(iso) ? iso : iso + 'T12:00:00') : '';
+
+// the order statuses: each a Badge with its icon (never a dot); the actions each one allows
+const ORDER_STATUSES = exports.ORDER_STATUSES = {
+  unfulfilled: {
+    tone: 'waiting',
+    icon: 'schedule',
+    label: 'Unfulfilled'
+  },
+  fulfilled: {
+    tone: 'active',
+    icon: 'forward',
+    label: 'Shipped'
+  },
+  delivered: {
+    tone: 'success',
+    icon: 'circle-check',
+    label: 'Delivered'
+  },
+  returning: {
+    tone: 'action-required',
+    icon: 'ed-undo',
+    label: 'Return requested'
+  },
+  refunded: {
+    tone: 'neutral',
+    icon: 'ed-undo',
+    label: 'Refunded'
+  },
+  canceled: {
+    tone: 'neutral',
+    icon: 'do-not-disturb',
+    label: 'Canceled'
+  }
+};
+const canFulfill = o => o.status === 'unfulfilled';
+const canRefund = o => o.status === 'delivered' || o.status === 'returning' || o.status === 'fulfilled';
+const canCancel = o => o.status === 'unfulfilled';
+function OrderStatus({
+  status,
+  statuses
+}) {
+  const s = (statuses || ORDER_STATUSES)[status] || {
+    tone: 'neutral',
+    label: String(status || '')
+  };
+  return /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: s.tone,
+    icon: s.icon
+  }, s.label);
+}
+
+/* ── order management ── */
+const ORDERS_STRINGS = {
+  label: 'Orders',
+  search: 'Search orders',
+  count: '{n} orders',
+  one: '1 order',
+  noun: 'order',
+  plural: 'orders',
+  number: 'Order',
+  date: 'Date',
+  customer: 'Customer',
+  items: 'Items',
+  total: 'Total',
+  status: 'Status',
+  open: 'Open',
+  fulfill: 'Fulfill',
+  refund: 'Refund',
+  cancel: 'Cancel order',
+  cancelMany: 'Cancel orders',
+  cancelTitle: 'Cancel {what}?',
+  cancelText: 'The customer is told and paid back in full. This cannot be undone.',
+  keep: 'Keep the order',
+  notFulfillable: 'Only unfulfilled orders can be fulfilled',
+  notCancelable: 'Only unfulfilled orders can be canceled',
+  notRefundable: 'Only shipped or delivered orders can be refunded',
+  fulfilled: '{what} marked as shipped',
+  canceled: '{what} canceled'
+};
+function OrderManagement({
+  orders = [],
+  currency = 'USD',
+  onOpen,
+  onFulfill,
+  onCancel,
+  onRefund,
+  statuses,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('order-management');
+  const t = Object.assign({}, ORDERS_STRINGS, strings);
+  const S = statuses || ORDER_STATUSES;
+  const fields = _react.default.useMemo(() => [{
+    value: 'number',
+    label: t.number,
+    kind: 'text'
+  }, {
+    value: 'customer',
+    label: t.customer,
+    kind: 'text'
+  }, {
+    value: 'date',
+    label: t.date,
+    kind: 'date'
+  }, {
+    value: 'total',
+    label: t.total,
+    kind: 'number'
+  }, {
+    value: 'status',
+    label: t.status,
+    kind: 'select',
+    options: Object.keys(S).map(k => ({
+      value: k,
+      label: S[k].label
+    }))
+  }], [S]);
+  const v = (0, _useCollectionView.useCollectionView)(fields, {
+    text: o => [o.number, o.customer, o.email].join(' '),
+    quick: {
+      status: 'list'
+    }
+  });
+  const [selected, setSelected] = _react.default.useState([]);
+  const [asking, setAsking] = _react.default.useState(null);
+  const chosen = orders.filter(o => selected.indexOf(o.id) >= 0);
+  const what = list => list.length === 1 ? list[0].number : (0, _format.formatNumber)(list.length) + ' ' + t.plural;
+  const fulfill = list => {
+    if (onFulfill) onFulfill(list);
+    (0, _announce.announce)((0, _shared.fill)(t.fulfilled, {
+      what: what(list)
+    }));
+  };
+  const shown = orders.filter(v.test).length;
+  // the rows and columns keep their identity between renders, so the table is not rebuilt (and keeps its row labels)
+  const rows = _react.default.useMemo(() => orders.map(o => Object.assign({
+    count: (o.items || []).reduce((s, x) => s + (x.quantity || 0), 0)
+  }, o)), [orders]);
+  const columns = _react.default.useMemo(() => [{
+    title: t.number,
+    field: 'number',
+    kind: ['name', 'data'],
+    width: '--plx-ref-size-120px'
+  }, {
+    title: t.date,
+    field: 'date',
+    kind: 'data',
+    sorter: 'date',
+    render: o => day(o.date)
+  }, {
+    title: t.customer,
+    field: 'customer'
+  }, {
+    title: t.items,
+    field: 'count',
+    kind: 'data',
+    sorter: 'number',
+    hozAlign: 'right',
+    headerHozAlign: 'right',
+    width: '--plx-ref-size-80px'
+  }, {
+    title: t.total,
+    field: 'total',
+    kind: 'data',
+    sorter: 'number',
+    hozAlign: 'right',
+    headerHozAlign: 'right',
+    render: o => (0, _shared.money)(o.total, o.currency || currency)
+  }, {
+    title: t.status,
+    field: 'status',
+    kind: 'center',
+    render: o => /*#__PURE__*/_react.default.createElement(OrderStatus, {
+      status: o.status,
+      statuses: S
+    })
+  }], [S, currency, strings]);
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--orders', className),
+    "aria-label": t.label
+  }, /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
+    label: t.label,
+    count: shown === 1 ? t.one : (0, _shared.fill)(t.count, {
+      n: (0, _format.formatNumber)(shown)
+    }),
+    find: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarSearch, {
+      value: v.search,
+      onChange: e => v.setSearch(e.target.value),
+      onClear: () => v.setSearch(''),
+      placeholder: t.search,
+      label: t.search
+    }), /*#__PURE__*/_react.default.createElement(_FilterPanel.FilterPanel, v.filterProps), /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
+      label: t.status,
+      icon: "progress",
+      noun: t.status.toLowerCase(),
+      options: Object.keys(S).map(k => ({
+        value: k,
+        label: S[k].label
+      }))
+    }, v.quickProps('status')))),
+    selection: {
+      count: chosen.length,
+      noun: t.noun,
+      plural: t.plural,
+      onClear: () => setSelected([]),
+      actions: [{
+        id: 'fulfill',
+        label: t.fulfill,
+        icon: 'circle-check',
+        disabled: !chosen.every(canFulfill),
+        why: t.notFulfillable,
+        onSelect: () => fulfill(chosen)
+      }, {
+        id: 'cancel',
+        label: t.cancelMany,
+        icon: 'do-not-disturb',
+        danger: true,
+        disabled: !chosen.every(canCancel),
+        why: t.notCancelable,
+        onSelect: () => setAsking(chosen)
+      }]
+    }
+  }), /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: t.label,
+    data: rows,
+    columns: columns,
+    selectable: true,
+    selected: selected,
+    onSelectionChange: setSelected,
+    filter: v.test,
+    rowMenu: o => [{
+      label: t.open,
+      icon: 'open',
+      onSelect: () => onOpen && onOpen(o)
+    }, {
+      label: t.fulfill,
+      icon: 'circle-check',
+      disabled: !canFulfill(o),
+      onSelect: () => fulfill([o])
+    }, {
+      label: t.refund,
+      icon: 'ed-undo',
+      disabled: !canRefund(o),
+      onSelect: () => onRefund && onRefund(o)
+    }, {
+      separator: true
+    }, {
+      label: t.cancel,
+      icon: 'do-not-disturb',
+      danger: true,
+      disabled: !canCancel(o),
+      onSelect: () => setAsking([o])
+    }],
+    on: onOpen ? {
+      rowDblClick: (e, row) => onOpen(orders.find(o => o.id === row.getData().id))
+    } : undefined
+  }), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+    open: !!asking,
+    destructive: true,
+    title: asking ? (0, _shared.fill)(t.cancelTitle, {
+      what: what(asking)
+    }) : '',
+    message: t.cancelText,
+    confirmLabel: asking && asking.length > 1 ? t.cancelMany : t.cancel,
+    cancelLabel: t.keep,
+    onConfirm: () => {
+      if (onCancel) onCancel(asking);
+      (0, _announce.announce)((0, _shared.fill)(t.canceled, {
+        what: what(asking)
+      }));
+      setSelected([]);
+      setAsking(null);
+    },
+    onCancel: () => setAsking(null)
+  }));
+}
+
+/* ── one order ── */
+const DETAIL_STRINGS = {
+  context: 'Order',
+  back: 'Orders',
+  items: 'Items',
+  delivery: 'Delivery',
+  address: 'Address',
+  method: 'Method',
+  tracking: 'Tracking number',
+  payment: 'Payment',
+  history: 'History',
+  fulfill: 'Fulfill',
+  refund: 'Refund',
+  cancel: 'Cancel order',
+  return: 'Start a return',
+  cancelTitle: 'Cancel order {number}?',
+  cancelText: 'The customer is told and paid back in full. This cannot be undone.',
+  keep: 'Keep the order'
+};
+function OrderDetail({
+  order,
+  currency = 'USD',
+  backHref,
+  onFulfill,
+  onRefund,
+  onCancel,
+  onReturn,
+  statuses,
+  headingLevel = 1,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('order-detail');
+  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const o = order || {};
+  const uid = (0, _layer.useUid)('plx-commerce');
+  const [asking, setAsking] = _react.default.useState(false);
+  const cur = o.currency || currency;
+  const actions = [];
+  if (onFulfill) actions.push({
+    icon: 'circle-check',
+    label: t.fulfill,
+    primary: true,
+    disabled: !canFulfill(o),
+    onClick: () => onFulfill(o)
+  });
+  if (onRefund) actions.push({
+    icon: 'ed-undo',
+    label: t.refund,
+    disabled: !canRefund(o),
+    onClick: () => onRefund(o)
+  });
+  if (onReturn) actions.push({
+    icon: 'reply',
+    label: t.return,
+    disabled: o.status !== 'delivered',
+    onClick: () => onReturn(o)
+  });
+  const more = onCancel && canCancel(o) ? [{
+    icon: 'do-not-disturb',
+    label: t.cancel,
+    danger: true,
+    onSelect: () => setAsking(true)
+  }] : undefined;
+  const H2 = 'h' + Math.min(6, headingLevel + 1);
+  return /*#__PURE__*/_react.default.createElement("article", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--order', className)
+  }, backHref ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: backHref,
+    back: true
+  }, t.back) : null, /*#__PURE__*/_react.default.createElement(_EntityHeader.EntityHeader, {
+    media: {
+      icon: 'doc-text',
+      hue: 'gray'
+    },
+    context: t.context,
+    title: o.number,
+    headingLevel: headingLevel,
+    status: /*#__PURE__*/_react.default.createElement(OrderStatus, {
+      status: o.status,
+      statuses: statuses
+    }),
+    facts: [/*#__PURE__*/_react.default.createElement(_Text.Text, {
+      key: "d",
+      variant: "data"
+    }, day(o.date)), o.customer, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      key: "t",
+      variant: "data"
+    }, (0, _shared.money)(o.total, cur))].filter(Boolean),
+    actions: actions.length ? actions : undefined,
+    moreActions: more
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__columns"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__main"
+  }, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-commerce-lines",
+    "aria-label": t.items
+  }, (o.items || []).map(x => /*#__PURE__*/_react.default.createElement(_shared.CommerceLine, {
+    key: x.id,
+    item: x,
+    currency: cur
+  }))), o.delivery ? /*#__PURE__*/_react.default.createElement(_Card.Panel, {
+    title: t.delivery,
+    headingLevel: Math.min(6, headingLevel + 1)
+  }, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList, null, o.delivery.address ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.address
+  }, o.delivery.address) : null, o.delivery.method ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.method
+  }, o.delivery.method) : null, o.delivery.tracking ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.tracking,
+    data: true
+  }, o.delivery.tracking) : null)) : null, o.events && o.events.length ? /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-commerce__section",
+    "aria-labelledby": uid + '-history'
+  }, /*#__PURE__*/_react.default.createElement(H2, {
+    id: uid + '-history',
+    className: "plx-commerce__subtitle"
+  }, t.history), /*#__PURE__*/_react.default.createElement(_Timeline.Timeline, {
+    label: t.history,
+    items: o.events
+  })) : null), /*#__PURE__*/_react.default.createElement("aside", {
+    className: "plx-commerce__aside",
+    "aria-label": t.payment
+  }, /*#__PURE__*/_react.default.createElement(_shared.OrderSummary, {
+    items: o.items || [],
+    currency: cur,
+    totals: o.totals || (0, _shared.orderTotals)(o.items || [], {
+      shipping: o.shipping,
+      tax: o.tax
+    }),
+    headingLevel: Math.min(6, headingLevel + 1)
+  }, o.payment ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList, null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.payment
+  }, o.payment)) : null))), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+    open: asking,
+    destructive: true,
+    title: (0, _shared.fill)(t.cancelTitle, {
+      number: o.number
+    }),
+    message: t.cancelText,
+    confirmLabel: t.cancel,
+    cancelLabel: t.keep,
+    onConfirm: () => {
+      setAsking(false);
+      if (onCancel) onCancel(o);
+    },
+    onCancel: () => setAsking(false)
+  }));
+}
+
+/* ── subscription management ── */
+const SUB_STRINGS = {
+  plan: 'Your plan',
+  planName: 'Plan',
+  price: 'Price',
+  status: 'Status',
+  next: 'Next payment',
+  since: 'Member since',
+  ends: 'Access ends',
+  perPeriod: '{price} per {period}',
+  more: '{amount} more',
+  less: '{amount} less',
+  change: 'Change plan',
+  changeTitle: 'Change to {plan}?',
+  changeText: 'You will pay {price} from {date}. Until then your current plan stays as it is.',
+  changeConfirm: 'Change plan',
+  changed: 'Your plan changes to {plan} on {date}.',
+  plans: 'Plans',
+  current: 'Current plan',
+  method: 'Payment method',
+  update: 'Update payment method',
+  manage: 'Pause or cancel',
+  manageText: 'Pause to stop the payments for a while and keep your settings; cancel to end the plan. Either way you keep access until {date}.',
+  pause: 'Pause subscription',
+  pauseTitle: 'Pause your subscription?',
+  pauseText: 'No payment is taken while it is paused. Resume it whenever you like.',
+  resume: 'Resume subscription',
+  cancel: 'Cancel subscription',
+  cancelTitle: 'Cancel your subscription?',
+  cancelText: 'You keep access until {date}, and you will not be charged again.',
+  keep: 'Keep my plan',
+  history: 'Billing history',
+  date: 'Date',
+  description: 'Description',
+  amount: 'Amount',
+  invoice: 'Invoice',
+  invoiceFor: 'Invoice for {date}',
+  paused: 'Your subscription is paused.',
+  canceled: 'Your subscription is canceled.',
+  statuses: {
+    active: 'Active',
+    paused: 'Paused',
+    canceled: 'Canceled',
+    paid: 'Paid',
+    refunded: 'Refunded',
+    failed: 'Failed'
+  }
+};
+const SUB_TONES = {
+  active: ['success', 'circle-check'],
+  paused: ['waiting', 'schedule'],
+  canceled: ['neutral', 'do-not-disturb'],
+  paid: ['success', 'circle-check'],
+  refunded: ['neutral', 'ed-undo'],
+  failed: ['negative', 'alert']
+};
+function SubscriptionManagement({
+  subscription = {},
+  plans = [],
+  history = [],
+  currency = 'USD',
+  onChangePlan,
+  onPause,
+  onResume,
+  onCancel,
+  onUpdatePayment,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('subscription-management');
+  const t = Object.assign({}, SUB_STRINGS, strings);
+  const st = Object.assign({}, SUB_STRINGS.statuses, t.statuses);
+  const s = subscription;
+  const current = plans.find(p => p.id === s.plan) || {};
+  const [pick, setPick] = _react.default.useState(s.plan);
+  const [asking, setAsking] = _react.default.useState(null);
+  const [busy, setBusy] = _react.default.useState(false);
+  const target = plans.find(p => p.id === pick);
+  const per = p => (0, _shared.fill)(t.perPeriod, {
+    price: (0, _shared.money)(p.price, p.currency || currency),
+    period: p.period
+  });
+  const badge = k => /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: (SUB_TONES[k] || ['neutral'])[0],
+    icon: (SUB_TONES[k] || [])[1]
+  }, st[k] || k);
+  const diff = p => {
+    if (!current.price || p.id === current.id || p.period !== current.period) return '';
+    const d = p.price - current.price;
+    return d ? ' · ' + (0, _shared.fill)(d > 0 ? t.more : t.less, {
+      amount: (0, _shared.money)(Math.abs(d), currency)
+    }) : '';
+  };
+  const confirm = async () => {
+    const kind = asking;
+    setBusy(true);
+    try {
+      if (kind === 'change' && onChangePlan) {
+        await onChangePlan(target);
+        (0, _announce.announce)((0, _shared.fill)(t.changed, {
+          plan: target.name,
+          date: day(s.nextBilling)
+        }));
+      }
+      if (kind === 'pause' && onPause) {
+        await onPause();
+        (0, _announce.announce)(t.paused);
+      }
+      if (kind === 'cancel' && onCancel) {
+        await onCancel();
+        (0, _announce.announce)(t.canceled);
+      }
+    } finally {
+      setBusy(false);
+      setAsking(null);
+    }
+  };
+  const dialog = {
+    change: target ? {
+      title: (0, _shared.fill)(t.changeTitle, {
+        plan: target.name
+      }),
+      message: (0, _shared.fill)(t.changeText, {
+        price: per(target),
+        date: day(s.nextBilling)
+      }),
+      confirm: t.changeConfirm
+    } : null,
+    pause: {
+      title: t.pauseTitle,
+      message: t.pauseText,
+      confirm: t.pause
+    },
+    cancel: {
+      title: t.cancelTitle,
+      message: (0, _shared.fill)(t.cancelText, {
+        date: day(s.nextBilling)
+      }),
+      confirm: t.cancel,
+      destructive: true
+    }
+  }[asking];
+  const columns = [{
+    title: t.date,
+    field: 'date',
+    kind: 'data',
+    sorter: 'date',
+    render: r => day(r.date)
+  }, {
+    title: t.description,
+    field: 'description',
+    kind: 'wrap'
+  }, {
+    title: t.amount,
+    field: 'amount',
+    kind: 'data',
+    sorter: 'number',
+    hozAlign: 'right',
+    headerHozAlign: 'right',
+    render: r => (0, _shared.money)(r.amount, r.currency || currency)
+  }, {
+    title: t.status,
+    field: 'status',
+    kind: 'center',
+    render: r => badge(r.status)
+  }, {
+    title: t.invoice,
+    field: 'invoice',
+    kind: 'center',
+    headerSort: false,
+    render: r => r.invoice ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+      href: r.invoice,
+      variant: "subtle"
+    }, (0, _shared.fill)(t.invoiceFor, {
+      date: day(r.date)
+    })) : null
+  }];
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--subscription', className)
+  }, /*#__PURE__*/_react.default.createElement(_SettingsLayout.SettingsSection, {
+    title: t.plan
+  }, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList, null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.planName
+  }, current.name), current.price !== undefined ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.price,
+    data: true
+  }, per(current)) : null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.status
+  }, badge(s.status || 'active')), s.status === 'canceled' ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.ends,
+    data: true
+  }, day(s.endsAt || s.nextBilling)) : s.nextBilling ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.next,
+    data: true
+  }, day(s.nextBilling)) : null, s.since ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.since,
+    data: true
+  }, day(s.since)) : null)), plans.length > 1 && s.status !== 'canceled' ? /*#__PURE__*/_react.default.createElement(_SettingsLayout.SettingsSection, {
+    title: t.change
+  }, /*#__PURE__*/_react.default.createElement(_RadioTiles.RadioTiles, {
+    legend: t.plans,
+    legendHidden: true,
+    value: pick,
+    onChange: setPick,
+    options: plans.map(p => ({
+      value: p.id,
+      label: p.name,
+      description: (p.id === s.plan ? t.current + ' · ' : '') + per(p) + diff(p)
+    }))
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__row-actions"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    disabled: !target || pick === s.plan,
+    onClick: () => setAsking('change')
+  }, t.change))) : null, s.paymentMethod ? /*#__PURE__*/_react.default.createElement(_SettingsLayout.SettingsSection, {
+    title: t.method
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__method"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__method-text"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, null, s.paymentMethod.label), s.paymentMethod.description ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, s.paymentMethod.description) : null), onUpdatePayment ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: onUpdatePayment
+  }, t.update) : null)) : null, s.status !== 'canceled' && (onPause || onResume || onCancel) ? /*#__PURE__*/_react.default.createElement(_SettingsLayout.SettingsSection, {
+    title: t.manage
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p",
+    variant: "secondary"
+  }, (0, _shared.fill)(t.manageText, {
+    date: day(s.nextBilling)
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-commerce__row-actions"
+  }, s.status === 'paused' ? onResume ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: onResume
+  }, t.resume) : null : onPause ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => setAsking('pause')
+  }, t.pause) : null, onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "danger-secondary",
+    onClick: () => setAsking('cancel')
+  }, t.cancel) : null)) : null, history.length ? /*#__PURE__*/_react.default.createElement(_SettingsLayout.SettingsSection, {
+    title: t.history
+  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: t.history,
+    data: history,
+    columns: columns
+  })) : null, /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+    open: !!dialog,
+    title: dialog ? dialog.title : '',
+    message: dialog ? dialog.message : '',
+    confirmLabel: dialog ? dialog.confirm : '',
+    cancelLabel: t.keep,
+    destructive: !!(dialog && dialog.destructive),
+    onConfirm: busy ? undefined : confirm,
+    onCancel: () => setAsking(null)
+  }));
+}
+
+/* ── returns ── */
+const RETURN_STRINGS = {
+  label: 'Return items',
+  items: 'Items',
+  reason: 'Reason',
+  resolution: 'Resolution',
+  review: 'Review',
+  submit: 'Request return',
+  cancel: 'Cancel',
+  window: 'You can return most items within 30 days of delivery.',
+  choose: 'Choose at least one item to return.',
+  notReturnable: 'Cannot be returned',
+  quantity: 'How many, {title}',
+  why: 'Why are you returning them?',
+  whyRequired: 'Choose a reason.',
+  note: 'Anything else we should know? (optional)',
+  want: 'What would you like?',
+  wantRequired: 'Choose a refund or an exchange.',
+  send: 'How will you send them?',
+  sendRequired: 'Choose how to send them.',
+  refund: 'Refund',
+  refundTiming: 'The refund reaches your original payment method 5 to 10 business days after the items arrive.',
+  requested: 'Return requested',
+  requestedText: 'We emailed you the return label and the steps. Here is where your return stands.',
+  status: 'Return status',
+  returning: '{n} items',
+  returningOne: '1 item'
+};
+function Returns({
+  order = {},
+  reasons = [],
+  resolutions = [],
+  methods = [],
+  currency = 'USD',
+  status,
+  onSubmit,
+  onCancel,
+  headingLevel = 2,
+  strings,
+  className
+}) {
+  (0, _shared.useCommercePage)('returns');
+  const t = Object.assign({}, RETURN_STRINGS, strings);
+  const items = order.items || [];
+  const [chosen, setChosen] = _react.default.useState({});
+  const [reason, setReason] = _react.default.useState('');
+  const [note, setNote] = _react.default.useState('');
+  const [resolution, setResolution] = _react.default.useState('');
+  const [method, setMethod] = _react.default.useState('');
+  const [done, setDone] = _react.default.useState(false);
+  const cur = order.currency || currency;
+  const lines = items.filter(x => chosen[x.id]).map(x => Object.assign({}, x, {
+    quantity: chosen[x.id]
+  }));
+  const refund = lines.reduce((s, x) => s + x.price * x.quantity, 0);
+  const count = lines.reduce((s, x) => s + x.quantity, 0);
+  const label = (list, v) => (list.find(x => x.value === v) || {}).label || '';
+  const steps = [{
+    id: 'items',
+    label: t.items,
+    validate: () => lines.length ? '' : t.choose,
+    content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      as: "p",
+      variant: "secondary"
+    }, order.window || t.window), /*#__PURE__*/_react.default.createElement("ul", {
+      className: "plx-commerce__returnables",
+      "aria-label": t.items
+    }, items.map(x => {
+      const off = x.returnable === false;
+      return /*#__PURE__*/_react.default.createElement("li", {
+        key: x.id,
+        className: "plx-commerce__returnable"
+      }, /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+        label: x.title,
+        description: off ? x.reason || t.notReturnable : x.options,
+        disabled: off,
+        checked: !!chosen[x.id],
+        onChange: e => {
+          const n = Object.assign({}, chosen);
+          if (e.target.checked) n[x.id] = x.quantity;else delete n[x.id];
+          setChosen(n);
+        }
+      }), chosen[x.id] && x.quantity > 1 ? /*#__PURE__*/_react.default.createElement(_NumberInput.NumberInput, {
+        stepper: "quantity",
+        value: chosen[x.id],
+        min: 1,
+        max: x.quantity,
+        "aria-label": (0, _shared.fill)(t.quantity, {
+          title: x.title
+        }),
+        onChange: n => {
+          if (n) setChosen(Object.assign({}, chosen, {
+            [x.id]: n
+          }));
+        }
+      }) : null);
+    })))
+  }, {
+    id: 'reason',
+    label: t.reason,
+    validate: () => reason ? '' : t.whyRequired,
+    content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: t.why,
+      value: reason,
+      onChange: setReason,
+      options: reasons
+    }), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.note
+    }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+      rows: 3,
+      value: note,
+      onChange: e => setNote(e.target.value)
+    })))
+  }, {
+    id: 'resolution',
+    label: t.resolution,
+    validate: () => !resolution ? t.wantRequired : methods.length && !method ? t.sendRequired : '',
+    content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: t.want,
+      value: resolution,
+      onChange: setResolution,
+      options: resolutions
+    }), methods.length ? /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: t.send,
+      value: method,
+      onChange: setMethod,
+      options: methods
+    }) : null)
+  }];
+  const review = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList, null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.items
+  }, lines.map(x => x.title + (x.quantity > 1 ? ' × ' + (0, _format.formatNumber)(x.quantity) : '')).join(', ')), /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.reason
+  }, label(reasons, reason), note ? ' · ' + note : ''), /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.resolution
+  }, label(resolutions, resolution)), methods.length ? /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.send
+  }, label(methods, method)) : null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.refund,
+    data: true
+  }, (0, _shared.money)(refund, cur))), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p",
+    variant: "secondary"
+  }, t.refundTiming));
+  const H = 'h' + Math.min(6, Math.max(1, headingLevel));
+  if (done || status) {
+    return /*#__PURE__*/_react.default.createElement("section", {
+      className: (0, _cx.cx)('plx-commerce', 'plx-commerce--returns', className),
+      "aria-label": t.status
+    }, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+      tone: "success",
+      title: t.requested
+    }, t.requestedText), /*#__PURE__*/_react.default.createElement(H, {
+      className: "plx-commerce__subtitle"
+    }, t.status), /*#__PURE__*/_react.default.createElement(_Timeline.Timeline, {
+      label: t.status,
+      items: status || []
+    }));
+  }
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-commerce', 'plx-commerce--returns', className),
+    "aria-label": t.label
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__columns"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-commerce__main"
+  }, /*#__PURE__*/_react.default.createElement(_Wizard.Wizard, {
+    label: t.label,
+    steps: steps,
+    summary: review,
+    onCancel: onCancel,
+    strings: {
+      complete: t.submit,
+      summary: t.review,
+      cancel: t.cancel
+    },
+    onComplete: async () => {
+      if (onSubmit) await onSubmit({
+        order: order.number,
+        items: lines.map(x => ({
+          id: x.id,
+          quantity: x.quantity
+        })),
+        reason,
+        note,
+        resolution,
+        method
+      });
+      setDone(true);
+      (0, _announce.announce)(t.requested);
+    }
+  })), /*#__PURE__*/_react.default.createElement("aside", {
+    className: "plx-commerce__aside",
+    "aria-label": t.refund
+  }, /*#__PURE__*/_react.default.createElement(_Card.Panel, {
+    title: t.refund,
+    headingLevel: Math.min(6, headingLevel + 1)
+  }, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList, null, /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.items,
+    data: true
+  }, count === 1 ? t.returningOne : (0, _shared.fill)(t.returning, {
+    n: (0, _format.formatNumber)(count)
+  })), /*#__PURE__*/_react.default.createElement(_PropertyList.PropertyList.Item, {
+    label: t.refund,
+    data: true
+  }, (0, _shared.money)(refund, cur)))))));
+}
+  } },
+  "platform/templates/Commerce/Commerce.jsx": { deps: {"./shared.jsx":"platform/templates/Commerce/shared.jsx","./Storefront.jsx":"platform/templates/Commerce/Storefront.jsx","./Checkout.jsx":"platform/templates/Commerce/Checkout.jsx","./Account.jsx":"platform/templates/Commerce/Account.jsx"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "COMMERCE_PAGES", {
+  enumerable: true,
+  get: function () {
+    return _shared.COMMERCE_PAGES;
+  }
+});
+Object.defineProperty(exports, "Cart", {
+  enumerable: true,
+  get: function () {
+    return _Checkout.Cart;
+  }
+});
+Object.defineProperty(exports, "Checkout", {
+  enumerable: true,
+  get: function () {
+    return _Checkout.Checkout;
+  }
+});
+Object.defineProperty(exports, "CommerceLine", {
+  enumerable: true,
+  get: function () {
+    return _shared.CommerceLine;
+  }
+});
+Object.defineProperty(exports, "ORDER_STATUSES", {
+  enumerable: true,
+  get: function () {
+    return _Account.ORDER_STATUSES;
+  }
+});
+Object.defineProperty(exports, "OrderConfirmation", {
+  enumerable: true,
+  get: function () {
+    return _Checkout.OrderConfirmation;
+  }
+});
+Object.defineProperty(exports, "OrderDetail", {
+  enumerable: true,
+  get: function () {
+    return _Account.OrderDetail;
+  }
+});
+Object.defineProperty(exports, "OrderManagement", {
+  enumerable: true,
+  get: function () {
+    return _Account.OrderManagement;
+  }
+});
+Object.defineProperty(exports, "OrderStatus", {
+  enumerable: true,
+  get: function () {
+    return _Account.OrderStatus;
+  }
+});
+Object.defineProperty(exports, "OrderSummary", {
+  enumerable: true,
+  get: function () {
+    return _shared.OrderSummary;
+  }
+});
+Object.defineProperty(exports, "Payment", {
+  enumerable: true,
+  get: function () {
+    return _Checkout.Payment;
+  }
+});
+Object.defineProperty(exports, "PaymentFields", {
+  enumerable: true,
+  get: function () {
+    return _Checkout.PaymentFields;
+  }
+});
+Object.defineProperty(exports, "ProductDetail", {
+  enumerable: true,
+  get: function () {
+    return _Storefront.ProductDetail;
+  }
+});
+Object.defineProperty(exports, "ProductDiscovery", {
+  enumerable: true,
+  get: function () {
+    return _Storefront.ProductDiscovery;
+  }
+});
+Object.defineProperty(exports, "ProductListing", {
+  enumerable: true,
+  get: function () {
+    return _Storefront.ProductListing;
+  }
+});
+Object.defineProperty(exports, "Returns", {
+  enumerable: true,
+  get: function () {
+    return _Account.Returns;
+  }
+});
+Object.defineProperty(exports, "SubscriptionManagement", {
+  enumerable: true,
+  get: function () {
+    return _Account.SubscriptionManagement;
+  }
+});
+Object.defineProperty(exports, "cardBrand", {
+  enumerable: true,
+  get: function () {
+    return _Checkout.cardBrand;
+  }
+});
+Object.defineProperty(exports, "formatCardNumber", {
+  enumerable: true,
+  get: function () {
+    return _Checkout.formatCardNumber;
+  }
+});
+Object.defineProperty(exports, "orderTotals", {
+  enumerable: true,
+  get: function () {
+    return _shared.orderTotals;
+  }
+});
+Object.defineProperty(exports, "productFields", {
+  enumerable: true,
+  get: function () {
+    return _Storefront.productFields;
+  }
+});
+Object.defineProperty(exports, "useCommercePage", {
+  enumerable: true,
+  get: function () {
+    return _shared.useCommercePage;
+  }
+});
+var _shared = require("./shared.jsx");
+var _Storefront = require("./Storefront.jsx");
+var _Checkout = require("./Checkout.jsx");
+var _Account = require("./Account.jsx");
+  } },
+  "platform/components/Comment/Comment.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../Time/Time.jsx":"platform/components/Time/Time.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Comment = Comment;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Persona = require("../Persona/Persona.jsx");
+var _Time = require("../Time/Time.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Comment
+   Summary: A person, timestamp and plain text with explicit edit, resolve and reaction actions.
+   Usage: <Comment author={{name:"Maya Chen"}} body="Ready for review" time="2026-10-15T12:00:00Z" />
+   Props: author: Persona props; body: plain text; time: ISO time; own, edited, resolved: flags; reactions: [{id,label,count,active}]; onEdit(text), onResolve(next), onReact(id): optional async handlers; strings, className.
+   Behavior: Actions await callbacks, block duplicates, retain edits on failure and never mutate caller records.
+   Notes: Caller owns persistence and permissions; strings translates every built-in word. Existing roles only.
+*/
+function Comment({
+  author = {},
+  body = '',
+  time,
+  own = false,
+  edited = false,
+  resolved = false,
+  reactions = [],
+  onEdit,
+  onResolve,
+  onReact,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({
+    edit: 'Edit',
+    save: 'Save',
+    cancel: 'Cancel',
+    resolve: 'Resolve',
+    reopen: 'Reopen',
+    edited: 'Edited',
+    resolved: 'Resolved',
+    message: 'Comment',
+    empty: 'Enter a comment.',
+    failed: 'Could not save. Try again.'
+  }, strings);
+  const [editing, setEditing] = _react.default.useState(false),
+    [draft, setDraft] = _react.default.useState(body),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    mounted = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  _react.default.useEffect(() => {
+    if (!editing) setDraft(body);
+  }, [body, editing]);
+  async function act(fn, done) {
+    if (lock.current || !fn) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await fn();
+      if (mounted.current && done) done();
+    } catch (e) {
+      if (mounted.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (mounted.current) setBusy(false);
+    }
+  }
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, _extends({
+    as: "article",
+    className: (0, _cx.cx)('plx-comment', className),
+    "aria-busy": busy || undefined
+  }, rest), /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Persona.Persona, author), time ? /*#__PURE__*/_react.default.createElement(_Time.Time, {
+    value: time
+  }) : null, edited ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "pencil"
+  }, t.edited) : null, resolved ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check"
+  }, t.resolved) : null), editing ? /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.message,
+    error: error
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    value: draft,
+    disabled: busy,
+    onChange: e => setDraft(e.target.value)
+  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p",
+    className: "plx-comment__body"
+  }, body), !editing && error ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    role: "alert"
+  }, error) : null, /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, editing ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: busy,
+    onClick: () => {
+      if (!draft.trim()) {
+        setError(t.empty);
+        return;
+      }
+      act(() => onEdit(draft.trim()), () => setEditing(false));
+    }
+  }, t.save), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    disabled: busy,
+    onClick: () => {
+      setEditing(false);
+      setError('');
+    }
+  }, t.cancel)) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, own && onEdit ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    disabled: busy,
+    onClick: () => {
+      setDraft(body);
+      setEditing(true);
+      setError('');
+    }
+  }, t.edit) : null, onResolve ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    disabled: busy,
+    onClick: () => act(() => onResolve(!resolved))
+  }, resolved ? t.reopen : t.resolve) : null, reactions.map(r => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: r.id,
+    variant: "secondary",
+    "aria-pressed": !!r.active,
+    disabled: busy || !onReact,
+    onClick: () => act(() => onReact(r.id))
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, null, r.label), " ", /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, r.count))))));
+}
+  } },
+  "platform/patterns/CommentThread/CommentThread.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CommentThread = CommentThread;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Comment = require("../../components/Comment/Comment.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommentThread
+   Summary: An ordered comment conversation with a reply composer and explicit thread resolution.
+   Usage: <CommentThread comments={comments} onReply={saveReply} />
+   Props: comments: [{id,author,body,time,own,edited,reactions}]; title; resolved; onReply(text), onResolve(next), onEdit(id,text), onReact(id,reaction); strings, className.
+   Behavior: Reply submits nonblank text once, clears only after success, retains failed drafts and disables replies when resolved.
+   Notes: Caller owns persistence and permissions; strings translates every built-in word. Existing roles only.
+*/
+function CommentThread({
+  comments = [],
+  title,
+  resolved = false,
+  onReply,
+  onResolve,
+  onEdit,
+  onReact,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({
+    title: 'Comments',
+    reply: 'Reply',
+    send: 'Send reply',
+    resolve: 'Resolve thread',
+    reopen: 'Reopen thread',
+    resolved: 'Resolved',
+    empty: 'Enter a reply.',
+    failed: 'Could not save. Try again.'
+  }, strings);
+  const [draft, setDraft] = _react.default.useState(''),
+    [error, setError] = _react.default.useState(''),
+    [busy, setBusy] = _react.default.useState(false);
+  const lock = _react.default.useRef(false),
+    alive = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  async function run(fn, clear) {
+    if (lock.current || !fn) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await fn();
+      if (clear && alive.current) setDraft('');
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, _extends({
+    className: (0, _cx.cx)('plx-comment-thread', className),
+    "aria-label": title || t.title,
+    "aria-busy": busy || undefined
+  }, rest), /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "h3"
+  }, title || t.title), resolved ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "check",
+    tone: "success"
+  }, t.resolved) : null, onResolve ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    disabled: busy,
+    onClick: () => run(() => onResolve(!resolved))
+  }, resolved ? t.reopen : t.resolve) : null), /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, comments.map(c => /*#__PURE__*/_react.default.createElement(_Comment.Comment, _extends({
+    key: c.id
+  }, c, {
+    strings: strings,
+    onEdit: onEdit ? text => onEdit(c.id, text) : undefined,
+    onReact: onReact ? id => onReact(c.id, id) : undefined
+  })))), onReply && !resolved ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    as: "form",
+    onSubmit: e => {
+      e.preventDefault();
+      if (!draft.trim()) {
+        setError(t.empty);
+        return;
+      }
+      run(() => onReply(draft.trim()), true);
+    }
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.reply,
+    error: error
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    value: draft,
+    disabled: busy,
+    onChange: e => setDraft(e.target.value)
+  })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    disabled: busy
+  }, t.send)) : error ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    role: "alert"
+  }, error) : null);
+}
+  } },
+  "platform/patterns/ImageAnnotation/ImageAnnotation.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../utils/grid.js":"platform/utils/grid.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ImageAnnotation = ImageAnnotation;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _dnd = require("../../utils/dnd.js");
+var _grid = require("../../utils/grid.js");
+var _Image = require("../../components/Image/Image.jsx");
+var _CommentThread = require("../CommentThread/CommentThread.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ImageAnnotation
+   Summary: Named image pins and regions linked to comment threads without pointer-only interaction.
+   Usage: <ImageAnnotation src={image} alt="Review artwork" annotations={notes} onAdd={saveAnnotation} />
+   Props: src, alt: image; annotations: [{id,label,kind:"pin"|"region",location,x,y,comments}]; selectedId,onSelectionChange(id); onAdd({kind,location,text}), onReply(id,text); strings, className.
+   Behavior: Shows caller named locations as an accessible list beside the image. Selection opens its thread; adding requires location and comment and retains failures. Caller image coordinates are snapped to the existing four-pixel grid and drawn by the shared reposition engine; the named list remains the keyboard alternative.
+   Notes: Caller owns persistence and permissions; strings translates every built-in word. Existing roles only.
+*/
+function AnnotationMark({
+  annotation,
+  index,
+  active,
+  onSelect,
+  strings
+}) {
+  const position = {
+    x: (0, _grid.snapToGrid)(Number(annotation.x) || 0),
+    y: (0, _grid.snapToGrid)(Number(annotation.y) || 0)
+  };
+  const move = (0, _dnd.useReposition)({
+    name: annotation.label || annotation.location,
+    position,
+    disabled: true
+  });
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: move.props.ref,
+    className: (0, _cx.cx)('plx-image-annotation__mark', annotation.kind === 'region' && 'plx-image-annotation__mark--region'),
+    variant: "secondary",
+    "aria-label": (annotation.kind === 'region' ? strings.region : strings.pin) + ' ' + (index + 1) + ': ' + (annotation.label || annotation.location),
+    "aria-pressed": active,
+    onClick: onSelect
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, index + 1));
+}
+function ImageAnnotation({
+  src,
+  alt,
+  annotations = [],
+  selectedId,
+  onSelectionChange,
+  onAdd,
+  onReply,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({
+    title: 'Image annotations',
+    pin: 'Pin',
+    region: 'Region',
+    location: 'Location',
+    comment: 'Comment',
+    kind: 'Annotation type',
+    add: 'Add annotation',
+    empty: 'Enter a location and comment.',
+    failed: 'Could not save. Try again.',
+    none: 'No annotations'
+  }, strings);
+  const [own, setOwn] = _react.default.useState(null),
+    [kind, setKind] = _react.default.useState('pin'),
+    [location, setLocation] = _react.default.useState(''),
+    [text, setText] = _react.default.useState(''),
+    [error, setError] = _react.default.useState(''),
+    [busy, setBusy] = _react.default.useState(false);
+  const lock = _react.default.useRef(false),
+    alive = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  const id = selectedId === undefined ? own : selectedId,
+    active = annotations.find(a => a.id === id);
+  async function add(e) {
+    e.preventDefault();
+    if (lock.current || !onAdd) return;
+    if (!location.trim() || !text.trim()) {
+      setError(t.empty);
+      return;
+    }
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onAdd({
+        kind,
+        location: location.trim(),
+        text: text.trim()
+      });
+      if (alive.current) {
+        setText('');
+        setLocation('');
+      }
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, _extends({
+    className: (0, _cx.cx)('plx-image-annotation', className),
+    "aria-label": t.title
+  }, rest), /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: "plx-image-annotation__canvas",
+    gap: "none"
+  }, /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: src,
+    alt: alt,
+    ratio: "16-9",
+    fit: "contain"
+  }), annotations.map((a, i) => /*#__PURE__*/_react.default.createElement(AnnotationMark, {
+    key: a.id,
+    annotation: a,
+    index: i,
+    active: id === a.id,
+    strings: t,
+    onSelect: () => {
+      if (selectedId === undefined) setOwn(a.id);
+      if (onSelectionChange) onSelectionChange(a.id);
+    }
+  }))), /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, annotations.map((a, i) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: a.id,
+    variant: "secondary",
+    "aria-pressed": id === a.id,
+    onClick: () => {
+      if (selectedId === undefined) setOwn(a.id);
+      if (onSelectionChange) onSelectionChange(a.id);
+    }
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, i + 1), " ", /*#__PURE__*/_react.default.createElement(_Text.Text, null, a.label || a.location), " ", /*#__PURE__*/_react.default.createElement(_Text.Text, null, a.kind === 'region' ? t.region : t.pin)))), !annotations.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.none) : null, active ? /*#__PURE__*/_react.default.createElement(_CommentThread.CommentThread, {
+    key: active.id,
+    title: active.label || active.location,
+    comments: active.comments || [],
+    strings: strings,
+    onReply: onReply ? value => onReply(active.id, value) : undefined
+  }) : null, onAdd ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    as: "form",
+    onSubmit: add
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.kind
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    disabled: busy,
+    value: kind,
+    onChange: e => setKind(e.target.value),
+    options: [{
+      value: 'pin',
+      label: t.pin
+    }, {
+      value: 'region',
+      label: t.region
+    }]
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.location
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    value: location,
+    disabled: busy,
+    onChange: e => setLocation(e.target.value)
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.comment,
+    error: error
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    value: text,
+    disabled: busy,
+    onChange: e => setText(e.target.value)
+  })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    disabled: busy
+  }, t.add)) : null);
+}
+  } },
+  "platform/patterns/PresenceBar/PresenceBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PresenceBar = PresenceBar;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _AvatarGroup = require("../../components/AvatarGroup/AvatarGroup.jsx");
+var _Persona = require("../../components/Persona/Persona.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PresenceBar
+   Summary: The current viewers, editors and a keyboard reachable cursor list.
+   Usage: <PresenceBar people={people} mode="editors" />
+   Props: people: [{id,name,src,role:"viewer"|"editor",cursor}]; mode: viewers|editors|cursors; max; onPerson(id); strings, className.
+   Behavior: Filters by current activity, never invents live presence, exposes supplied cursor labels without geometric positioning.
+   Notes: Caller owns persistence and permissions; strings translates every built-in word. Existing roles only.
+*/
+function PresenceBar({
+  people = [],
+  mode = 'viewers',
+  max = 4,
+  onPerson,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({
+    viewers: 'Viewing',
+    editors: 'Editing',
+    cursors: 'Cursors',
+    empty: 'No one else here',
+    view: 'View person'
+  }, strings);
+  const m = ['viewers', 'editors', 'cursors'].includes(mode) ? mode : 'viewers';
+  const list = people.filter(p => m === 'editors' ? p.role === 'editor' : m === 'cursors' ? !!p.cursor : true);
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, _extends({
+    className: (0, _cx.cx)('plx-presence-bar', className),
+    "aria-label": t[m]
+  }, rest), /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "person"
+  }, t[m]), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, list.length), /*#__PURE__*/_react.default.createElement(_AvatarGroup.AvatarGroup, {
+    label: t[m],
+    people: list.map(p => ({
+      id: p.id,
+      name: p.name,
+      src: p.src
+    })),
+    max: max
+  })), !list.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : m === 'cursors' ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, list.map(p => /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true,
+    key: p.id
+  }, /*#__PURE__*/_react.default.createElement(_Persona.Persona, {
+    name: p.name,
+    src: p.src
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, null, p.cursor), onPerson ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    onClick: () => onPerson(p.id),
+    "aria-label": t.view + ' ' + p.name
+  }, t.view) : null))) : null);
+}
+  } },
+  "platform/components/MentionInput/MentionInput.jsx": { deps: {"react":null,"../Input/Input.jsx":"platform/components/Input/Input.jsx","../RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","../EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MentionInput = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Input = require("../Input/Input.jsx");
+var _RichTextEditor = require("../RichTextEditor/RichTextEditor.jsx");
+var _EntityPicker = require("../EntityPicker/EntityPicker.jsx");
+var _Button = require("../Button/Button.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · MentionInput
+   Summary: Mention a directory entity in plain text with EntityPicker, or in rich text with the existing editor engine.
+   Usage: <MentionInput label="Comment" value={text} onChange={setText} options={people} onMention={rememberEntity} />
+   Props:
+     mode: textarea (default) | rich; label; value, onChange(text): controlled plain text; defaultValue: initial rich HTML.
+     options: EntityPicker records [{ value, label, description }]; loadOptions(query): optional async directory.
+     onMention(option): plain-text selection callback, for retaining entity IDs; disabled; readOnly; strings: add, choose.
+     editorStrings: RichTextEditor words; pickerStrings: EntityPicker words; className; ref: textarea or rich wrapper.
+   Behavior:
+     Typing @ opens a named picker. Arrow Down moves into it; Escape closes it. The Add mention button opens it explicitly.
+     A selection replaces the trigger/query at the stored caret and returns focus. Rich text retains atomic engine mentions.
+   Notes:
+     Plain text is not an identity store: retain IDs through onMention. Rich HTML is cleaned by RichTextEditor.
+*/
+
+const MentionInput = exports.MentionInput = /*#__PURE__*/_react.default.forwardRef(function MentionInput({
+  mode = 'textarea',
+  label,
+  value = '',
+  onChange,
+  defaultValue = '',
+  options = [],
+  loadOptions,
+  onMention,
+  disabled = false,
+  readOnly = false,
+  strings,
+  editorStrings,
+  pickerStrings,
+  className
+}, ref) {
+  const t = Object.assign({
+    add: 'Add mention',
+    choose: 'Choose a person to mention'
+  }, strings);
+  const input = _react.default.useRef(null),
+    picker = _react.default.useRef(null),
+    range = _react.default.useRef({
+      start: value.length,
+      end: value.length
+    });
+  const [open, setOpen] = _react.default.useState(false),
+    [query, setQuery] = _react.default.useState('');
+  _react.default.useImperativeHandle(ref, () => input.current, [mode]);
+  const search = q => loadOptions ? loadOptions(q) : options.filter(o => (o.label + ' ' + (o.description || '')).toLowerCase().includes(q.toLowerCase()));
+  const capture = el => {
+    range.current = {
+      start: el.selectionStart,
+      end: el.selectionEnd
+    };
+  };
+  const change = e => {
+    const next = e.target.value;
+    capture(e.target);
+    if (onChange) onChange(next);
+    const match = next.slice(0, e.target.selectionStart).match(/(?:^|\s)@([^\s@]*)$/);
+    setOpen(!!match);
+    setQuery(match ? match[1] : '');
+  };
+  const pick = (id, option) => {
+    if (!option || disabled || readOnly) return;
+    const {
+        start,
+        end
+      } = range.current,
+      before = value.slice(0, start),
+      trigger = before.match(/(?:^|\s)@([^\s@]*)$/);
+    const at = trigger ? start - trigger[1].length - 1 : start,
+      inserted = '@' + option.label + ' ',
+      next = value.slice(0, at) + inserted + value.slice(end);
+    if (onChange) onChange(next);
+    if (onMention) onMention(option);
+    setOpen(false);
+    requestAnimationFrame(() => {
+      if (input.current) {
+        input.current.focus();
+        input.current.setSelectionRange(at + inserted.length, at + inserted.length);
+      }
+    });
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: mode === 'rich' ? input : undefined,
+    className: (0, _cx.cx)('plx-mention-input', 'plx-stack', className)
+  }, mode === 'rich' ? /*#__PURE__*/_react.default.createElement(_RichTextEditor.RichTextEditor, {
+    label: label,
+    defaultValue: defaultValue,
+    onChange: onChange,
+    disabled: disabled,
+    readOnly: readOnly,
+    strings: editorStrings,
+    mentions: {
+      search
+    }
+  }) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    ref: input,
+    "aria-label": label,
+    value: value,
+    onChange: change,
+    onSelect: e => capture(e.target),
+    disabled: disabled,
+    readOnly: readOnly,
+    onKeyDown: e => {
+      if (e.key === 'Escape') setOpen(false);else if (e.key === 'ArrowDown' && open && picker.current) {
+        e.preventDefault();
+        picker.current.focus();
+        picker.current.dispatchEvent(new KeyboardEvent('keydown', {
+          key: 'ArrowDown',
+          bubbles: true
+        }));
+      }
+    }
+  }), !disabled && !readOnly ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => {
+      if (input.current) capture(input.current);
+      setQuery('');
+      setOpen(!open);
+    }
+  }, t.add) : null, open && !disabled && !readOnly ? /*#__PURE__*/_react.default.createElement(_EntityPicker.EntityPicker, {
+    key: query,
+    ref: picker,
+    kind: "people",
+    label: t.choose,
+    options: loadOptions ? [] : options.filter(o => o.label.toLowerCase().includes(query.toLowerCase())),
+    loadOptions: loadOptions ? text => loadOptions(text || query) : undefined,
+    minChars: 0,
+    onChange: pick,
+    strings: pickerStrings
+  }) : null));
+});
+  } },
+  "platform/components/Announcement/Announcement.jsx": { deps: {"react":null,"../Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Announcement = Announcement;
+var _react = _interopRequireDefault(require("react"));
+var _Banner = require("../Banner/Banner.jsx");
+var _Card = require("../Card/Card.jsx");
+var _Dialog = require("../Dialog/Dialog.jsx");
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Announcement
+   Summary: The same announcement as a Banner, Card or Dialog, with explicit actions and recoverable dismissal.
+   Usage: <Announcement id="release" title="New workspace tools" onDismiss={markRead}>Details</Announcement>
+   Props:
+     id: changes reset dismissed state; variant: banner (default) | card | dialog; open: default true.
+     title, children, actions: application content; dismissible: default true; onDismiss(): optional persistence promise.
+     tone: existing Banner tone; strings: dismiss, failed; className.
+   Behavior: Dismissal waits for persistence and cannot repeat. A failure keeps the announcement visible.
+   Notes: No automatic expiry, navigation, analytics or persistence. Dialog uses native Platform focus management.
+*/
+
+function Announcement({
+  id,
+  variant = 'banner',
+  open = true,
+  title,
+  children,
+  actions,
+  dismissible = true,
+  onDismiss,
+  tone = 'info',
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    dismiss: 'Dismiss announcement',
+    failed: 'Could not dismiss this announcement. Try again.'
+  }, strings);
+  const [closed, setClosed] = _react.default.useState(false),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    epoch = _react.default.useRef(0);
+  _react.default.useEffect(() => {
+    epoch.current++;
+    lock.current = false;
+    setClosed(false);
+    setBusy(false);
+    setError('');
+    return () => {
+      epoch.current++;
+    };
+  }, [id, open]);
+  const dismiss = async () => {
+    if (!dismissible || lock.current) return;
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      if (onDismiss) await onDismiss();
+      if (at === epoch.current) setClosed(true);
+    } catch (e) {
+      if (at === epoch.current) setError(t.failed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  if (!open || closed) return null;
+  const content = /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-announcement', className),
+    "aria-busy": busy
+  }, children, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+  const close = dismissible ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: busy,
+    onClick: dismiss
+  }, t.dismiss) : null;
+  if (variant === 'dialog') return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: true,
+    title: title,
+    onClose: dismiss,
+    dismissible: dismissible && !busy,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, actions, close)
+  }, content);
+  if (variant === 'card') return /*#__PURE__*/_react.default.createElement(_Card.Card, {
+    title: title,
+    actions: actions
+  }, content, close);
+  return /*#__PURE__*/_react.default.createElement(_Banner.Banner, {
+    title: title,
+    tone: tone,
+    actions: actions,
+    onDismiss: dismissible && !busy ? dismiss : undefined,
+    strings: {
+      ...strings,
+      dismiss: t.dismiss
+    }
+  }, content);
+}
+  } },
+  "platform/patterns/AuditLog/AuditLog.jsx": { deps: {"react":null,"../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AuditLog = AuditLog;
+var _react = _interopRequireDefault(require("react"));
+var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _Persona = require("../../components/Persona/Persona.jsx");
+var _Time = require("../../components/Time/Time.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AuditLog
+   Summary: A read-only audit DataTable with actor, timestamp, action, target and optional before/after differences.
+   Usage: <AuditLog entries={events} variant="diff" label="Workspace history" />
+   Props:
+     entries: [{ id, actor: { name, src }, at, action, target, changes: [{ field, before, after }] }].
+     variant: table (default) | diff; label; strings: actor, at, action, target, changes, view, field, before, after, close.
+     className: additional classes; rows and difference values are rendered as text, never executable HTML.
+   Behavior: View changes opens the selected event's diff table. Closing restores focus. No actions mutate the log.
+   Notes: Supply authorized immutable audit events; retention, redaction and pagination belong to the caller.
+*/
+
+const display = v => v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
+function AuditLog({
+  entries = [],
+  variant = 'table',
+  label,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    actor: 'Actor',
+    at: 'Time',
+    action: 'Action',
+    target: 'Target',
+    changes: 'Changes',
+    view: 'View changes',
+    field: 'Field',
+    before: 'Before',
+    after: 'After',
+    close: 'Close'
+  }, strings);
+  const [active, setActive] = _react.default.useState(null),
+    entry = entries.find(a => a.id === active);
+  const columns = [{
+    field: 'actor',
+    title: t.actor,
+    type: 'person',
+    render: a => /*#__PURE__*/_react.default.createElement(_Persona.Persona, {
+      name: a.actor?.name || '',
+      src: a.actor?.src,
+      size: "xs"
+    })
+  }, {
+    field: 'at',
+    title: t.at,
+    kind: 'data',
+    type: 'date',
+    render: a => /*#__PURE__*/_react.default.createElement(_Time.Time, {
+      value: a.at
+    })
+  }, {
+    field: 'action',
+    title: t.action,
+    kind: 'wrap'
+  }, {
+    field: 'target',
+    title: t.target,
+    kind: 'wrap'
+  }];
+  if (variant === 'diff') columns.push({
+    field: 'changes',
+    title: t.changes,
+    kind: 'center',
+    headerSort: false,
+    render: a => a.changes?.length ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      onClick: () => setActive(a.id)
+    }, t.view) : null
+  });
+  const changes = (entry?.changes || []).map((a, i) => ({
+    id: i,
+    field: a.field,
+    before: display(a.before),
+    after: display(a.after)
+  }));
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-audit-log', className)
+  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: label,
+    data: entries,
+    columns: columns,
+    headerMenu: false
+  }), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: !!entry,
+    title: t.changes,
+    onClose: () => setActive(null),
+    size: "lg",
+    footer: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: () => setActive(null)
+    }, t.close)
+  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    label: t.changes,
+    data: changes,
+    headerMenu: false,
+    columns: [{
+      field: 'field',
+      title: t.field
+    }, {
+      field: 'before',
+      title: t.before,
+      kind: 'wrap'
+    }, {
+      field: 'after',
+      title: t.after,
+      kind: 'wrap'
+    }]
+  })));
+}
+  } },
+  "platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx": { deps: {"react":null,"../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ApprovalWorkflow = ApprovalWorkflow;
+var _react = _interopRequireDefault(require("react"));
+var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+var _ProgressSteps = require("../../components/ProgressSteps/ProgressSteps.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ApprovalWorkflow
+   Summary: Sequential or parallel reviewer decisions composed from ReviewFlow and ordered ProgressSteps.
+   Usage: <ApprovalWorkflow title="Artwork approval" steps={stages} reviewerId={me} onDecision={persistDecision} />
+   Props:
+     steps: [{ id, label, reviewers: [{ id, name, decision }], history }]; reviewerId: authorized current reviewer ID.
+     variant: sequential (default) | parallel | status (read only); title; onDecision({ stepId, reviewerId, decision, comment }).
+     strings: approve, changes, reject, comment, reason, failed, steps; reviewStrings: ReviewFlow words; className.
+   Behavior:
+     Sequential stages unlock only after earlier reviewers all approve. Parallel stages are independent.
+     Only an undecided assigned reviewer can submit. Reject/changes require a reason; failures preserve it for retry.
+   Notes:
+     The caller must authorize and persist decisions and reflect them in steps. This UI never grants approval on its own.
+*/
+
+const statusOf = step => {
+  const votes = (step.reviewers || []).map(a => a.decision);
+  return votes.includes('rejected') ? 'rejected' : votes.includes('changes-requested') ? 'changes-requested' : votes.length && votes.every(v => v === 'approved') ? 'approved' : 'in-review';
+};
+function ApprovalWorkflow({
+  title,
+  steps = [],
+  reviewerId,
+  variant = 'sequential',
+  onDecision,
+  strings,
+  reviewStrings,
+  className
+}) {
+  const t = Object.assign({
+    approve: 'Approve',
+    changes: 'Request changes',
+    reject: 'Reject',
+    comment: 'Comment',
+    reason: 'Explain why this needs changes.',
+    failed: 'Could not save this decision. Your comment is still available.',
+    steps: 'Approval stages',
+    recorded: 'Decision recorded'
+  }, strings);
+  const [comments, setComments] = _react.default.useState({}),
+    [errors, setErrors] = _react.default.useState({}),
+    [pending, setPending] = _react.default.useState({});
+  const locks = _react.default.useRef(new Set());
+  const [submitted, setSubmitted] = _react.default.useState({});
+  _react.default.useEffect(() => {
+    setSubmitted(p => {
+      const all = Object.entries(p),
+        remaining = all.filter(([key]) => !steps.some(s => (s.reviewers || []).some(a => key === s.id + ':' + a.id && a.decision)));
+      return remaining.length === all.length ? p : Object.fromEntries(remaining);
+    });
+  }, [steps]);
+  const states = steps.map(statusOf),
+    next = states.findIndex(s => s !== 'approved');
+  const overall = states.includes('rejected') ? 'rejected' : states.includes('changes-requested') ? 'changes-requested' : states.length && next < 0 ? 'approved' : 'in-review';
+  const eligible = (step, i) => !!reviewerId && !!onDecision && !submitted[step.id + ':' + reviewerId] && variant !== 'status' && (variant === 'parallel' || i === next) && states[i] === 'in-review' && (step.reviewers || []).some(a => a.id === reviewerId && !a.decision);
+  const decide = async (step, i, decision) => {
+    if (locks.current.has(step.id) || !eligible(step, i)) return;
+    const comment = (comments[step.id] || '').trim();
+    if (decision !== 'approved' && !comment) {
+      setErrors(p => ({
+        ...p,
+        [step.id]: t.reason
+      }));
+      return;
+    }
+    locks.current.add(step.id);
+    setPending(p => ({
+      ...p,
+      [step.id]: true
+    }));
+    setErrors(p => ({
+      ...p,
+      [step.id]: ''
+    }));
+    try {
+      await onDecision({
+        stepId: step.id,
+        reviewerId,
+        decision,
+        comment
+      });
+      setSubmitted(p => ({
+        ...p,
+        [step.id + ':' + reviewerId]: true
+      }));
+      setComments(p => ({
+        ...p,
+        [step.id]: ''
+      }));
+    } catch (e) {
+      setErrors(p => ({
+        ...p,
+        [step.id]: t.failed
+      }));
+    } finally {
+      locks.current.delete(step.id);
+      setPending(p => ({
+        ...p,
+        [step.id]: false
+      }));
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-approval-workflow', className)
+  }, /*#__PURE__*/_react.default.createElement(_ReviewFlow.WorkflowStatus, {
+    status: overall,
+    strings: reviewStrings,
+    role: "status"
+  }), variant === 'sequential' && steps.length ? /*#__PURE__*/_react.default.createElement(_ProgressSteps.ProgressSteps, {
+    label: t.steps,
+    current: next < 0 ? steps.length : next,
+    steps: steps.map((s, i) => ({
+      label: s.label,
+      status: states[i] === 'approved' ? 'complete' : ['rejected', 'changes-requested'].includes(states[i]) ? 'error' : i === next ? 'current' : 'upcoming'
+    }))
+  }) : null, steps.map((step, i) => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: step.id,
+    "aria-busy": !!pending[step.id]
+  }, /*#__PURE__*/_react.default.createElement(_ReviewFlow.ReviewFlow, {
+    title: step.label,
+    detail: title,
+    status: states[i],
+    reviewers: step.reviewers,
+    history: step.history,
+    strings: reviewStrings
+  }), eligible(step, i) ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.comment,
+    error: errors[step.id]
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    disabled: pending[step.id],
+    value: comments[step.id] || '',
+    onChange: e => setComments({
+      ...comments,
+      [step.id]: e.target.value
+    })
+  })), /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, [['rejected', t.reject], ['changes-requested', t.changes], ['approved', t.approve]].map(([decision, word]) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: decision,
+    disabled: pending[step.id],
+    variant: decision === 'approved' ? 'primary' : 'secondary',
+    onClick: () => decide(step, i, decision)
+  }, word)))) : null, submitted[step.id + ':' + reviewerId] ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check",
+    role: "status"
+  }, t.recorded) : null, errors[step.id] && !eligible(step, i) ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, errors[step.id]) : null)));
+}
+  } },
+  "platform/components/AILabel/AILabel.jsx": { deps: {"react":null,"../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AILabel = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Badge = require("../Badge/Badge.jsx");
+var _Stack = require("../Stack/Stack.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AILabel
+   Summary: Identify generated content through the existing sparkle icon and a readable label; no AI color.
+   Usage: <AILabel variant="badge" explanation="Generated from the selected sources."/>
+   Props:
+     variant: "badge" (default) | "inline" | "explanation".
+     children: the readable origin label; default strings.label.
+     explanation: text or a trusted React node disclosed in the explanation variant.
+     strings: { label, explain }; localized label and disclosure title.
+     className: extra classes on the label or trigger.
+     ref: forwarded to the explanation trigger button.
+   Behavior: An explanation is an explicit Popover disclosure, with inherited keyboard and dismissal behavior.
+   Notes: Identification does not imply accuracy, certainty or verified sources. No new accent or color is introduced.
+*/
+
+const AILabel = exports.AILabel = /*#__PURE__*/_react.default.forwardRef(function AILabel({
+  variant = 'badge',
+  children,
+  explanation,
+  strings,
+  className
+}, ref) {
+  const t = {
+      label: 'AI-generated',
+      explain: 'About this AI content',
+      ...strings
+    },
+    label = children || t.label,
+    cls = (0, _cx.cx)('plx-ai', 'plx-ai-label', className);
+  if (variant === 'explanation' && explanation) return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    label: t.explain,
+    title: t.explain,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      ref: ref,
+      className: cls,
+      variant: "ghost",
+      size: "sm",
+      icon: "sparkle"
+    }, label)
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, null, explanation));
+  return variant === 'inline' ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    as: "span",
+    className: cls
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "sparkle"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "span"
+  }, label)) : /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    className: cls,
+    tone: "neutral",
+    icon: "sparkle"
+  }, label);
+});
+  } },
+  "platform/components/GeneratedContent/GeneratedContent.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GeneratedContent = GeneratedContent;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+var _AILabel = require("../AILabel/AILabel.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · GeneratedContent
+   Summary: Retain generated content while people review versions, send feedback or explicitly regenerate it.
+   Usage: <GeneratedContent versions={versions} onRegenerate={regenerate} onFeedback={saveFeedback}/>
+   Props:
+     versions: [{ id, content, label }]; caller-owned generated versions, oldest first.
+     versionId: the selected id when controlled by the caller.
+     defaultVersionId: initial selected id; otherwise the latest version.
+     onVersionChange(id): called after explicit page navigation.
+     children: content when no versions are supplied.
+     loading: an external pending state; default false.
+     onRegenerate({ versionId, signal }): asynchronous regeneration; the caller supplies the new version.
+     onFeedback(value,context): asynchronous feedback; value is "helpful" or "unhelpful"; context is { versionId, signal }.
+     strings: { label, helpful, unhelpful, regenerate, previous, next, version, feedbackSaved, failed, pending, aiLabel }.
+     className: extra classes on the region.
+   Behavior: Async actions run once and retain the visible version on failure. Version changes cancel obsolete actions.
+     The caller adds regenerated versions to versions; the component never fabricates a new answer or persistence.
+   Notes: Render trusted React content, never raw model HTML. Feedback belongs to the selected version.
+*/
+
+const STRINGS = {
+  label: 'Generated content',
+  helpful: 'Helpful',
+  unhelpful: 'Not helpful',
+  regenerate: 'Regenerate',
+  previous: 'Previous version',
+  next: 'Next version',
+  version: 'Version',
+  feedbackSaved: 'Feedback saved',
+  failed: 'The action failed. Try again.',
+  pending: 'Working'
+};
+function GeneratedContent({
+  versions = [],
+  versionId,
+  defaultVersionId,
+  onVersionChange,
+  children,
+  loading = false,
+  onRegenerate,
+  onFeedback,
+  strings,
+  className
+}) {
+  const t = {
+      ...STRINGS,
+      ...strings
+    },
+    [own, setOwn] = _react.default.useState(defaultVersionId),
+    [busy, setBusy] = _react.default.useState(''),
+    [error, setError] = _react.default.useState(''),
+    [feedback, setFeedback] = _react.default.useState(null),
+    lock = _react.default.useRef(false),
+    epoch = _react.default.useRef(0),
+    controller = _react.default.useRef(null);
+  const id = versionId !== undefined ? versionId : own,
+    index = Math.max(0, versions.findIndex(v => v.id === (id ?? versions[versions.length - 1]?.id))),
+    version = versions[index];
+  _react.default.useEffect(() => {
+    epoch.current++;
+    controller.current?.abort();
+    lock.current = false;
+    setBusy('');
+    setError('');
+    setFeedback(null);
+    return () => {
+      epoch.current++;
+      controller.current?.abort();
+    };
+  }, [version?.id]);
+  const run = async (type, value) => {
+    const callback = type === 'regenerate' ? onRegenerate : onFeedback;
+    if (lock.current || loading || !callback) return;
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(type);
+    setError('');
+    const abort = new AbortController();
+    controller.current = abort;
+    try {
+      if (type === 'regenerate') await callback({
+        versionId: version?.id,
+        signal: abort.signal
+      });else await callback(value, {
+        versionId: version?.id,
+        signal: abort.signal
+      });
+      if (at === epoch.current && type === 'feedback') setFeedback(value);
+    } catch (e) {
+      if (at === epoch.current && !abort.signal.aborted) setError(e?.message || t.failed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy('');
+      }
+    }
+  };
+  const choose = i => {
+    if (busy || loading) return;
+    const v = versions[i];
+    if (!v) return;
+    if (versionId === undefined) setOwn(v.id);
+    onVersionChange?.(v.id);
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-ai', 'plx-generated-content', className),
+    role: "region",
+    "aria-label": t.label,
+    "aria-busy": !!busy || loading || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_AILabel.AILabel, {
+    strings: strings?.aiLabel
+  }), loading || busy ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "sparkle"
+  }, t.pending) : null), /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, version ? version.content : children), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, feedback ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, null, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "check",
+    role: "status"
+  }, t.feedbackSaved)) : null, versions.length > 1 ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: !!busy || loading || index <= 0,
+    onClick: () => choose(index - 1)
+  }, t.previous), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    role: "status"
+  }, t.version + ' ' + (index + 1) + ' / ' + versions.length), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: !!busy || loading || index >= versions.length - 1,
+    onClick: () => choose(index + 1)
+  }, t.next)) : null, /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, onFeedback ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    "aria-pressed": feedback === 'helpful',
+    disabled: !!busy || loading,
+    onClick: () => run('feedback', 'helpful')
+  }, t.helpful), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    "aria-pressed": feedback === 'unhelpful',
+    disabled: !!busy || loading,
+    onClick: () => run('feedback', 'unhelpful')
+  }, t.unhelpful)) : null, onRegenerate ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    icon: "refresh",
+    disabled: !!busy || loading,
+    onClick: () => run('regenerate')
+  }, t.regenerate) : null));
+}
+  } },
+  "platform/patterns/PromptHistory/PromptHistory.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PromptHistory = PromptHistory;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Time = require("../../components/Time/Time.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · PromptHistory
+   Summary: Reuse a saved prompt from a plain or searchable history, preserving the original prompt.
+   Usage: <PromptHistory items={history} searchable onSelect={reusePrompt}/>
+   Props:
+     items: [{ id, prompt, createdAt }]; saved prompts and optional ISO timestamps.
+     searchable: show the search field; default true.
+     onSelect(item): asynchronous reuse callback; never sends to a model implicitly.
+     strings: { label, search, empty, failed }; plus SearchField strings.
+     className: extra classes on the named region.
+   Behavior: Search filters text without mutating history. Selection waits once and reports errors in context.
+   Notes: Caller owns storage, privacy and retention; selecting a prompt never sends it to a model implicitly.
+*/
+
+function PromptHistory({
+  items = [],
+  searchable = true,
+  onSelect,
+  strings,
+  className
+}) {
+  const t = {
+      label: 'Prompt history',
+      search: 'Search prompts',
+      empty: 'No matching prompts.',
+      failed: 'The prompt could not be reused. Try again.',
+      ...strings
+    },
+    [query, setQuery] = _react.default.useState(''),
+    [busy, setBusy] = _react.default.useState(null),
+    [error, setError] = _react.default.useState(''),
+    lock = _react.default.useRef(false),
+    live = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    live.current = true;
+    return () => {
+      live.current = false;
+    };
+  }, []);
+  const visible = items.filter(i => String(i.prompt).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  const choose = async item => {
+    if (lock.current || !onSelect) return;
+    lock.current = true;
+    setBusy(item.id);
+    setError('');
+    try {
+      await onSelect(item);
+    } catch (e) {
+      if (live.current) setError(e?.message || t.failed);
+    } finally {
+      lock.current = false;
+      if (live.current) setBusy(null);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-prompt-history', className),
+    role: "region",
+    "aria-label": t.label
+  }, searchable ? /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    label: t.search,
+    placeholder: t.search,
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    onClear: () => setQuery(''),
+    strings: strings
+  }) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, visible.length ? visible.map(i => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: i.id,
+    gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    disabled: busy !== null || !onSelect,
+    "aria-busy": busy === i.id || undefined,
+    onClick: () => choose(i)
+  }, i.prompt), i.createdAt ? /*#__PURE__*/_react.default.createElement(_Time.Time, {
+    value: i.createdAt
+  }) : null)) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty));
+}
+  } },
+  "platform/components/Citation/Citation.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Citation = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+var _Link = require("../Link/Link.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Citation
+   Summary: A numbered source disclosure, source card or source list with real navigation links.
+   Usage: <Citation source={{id:'guide',title:'Project guide',href:'/guide',excerpt:'Scope and constraints.'}} index={1}/>
+   Props:
+     source: { id, title, href, excerpt, author }; one reference.
+     sources: source records for the list variant.
+     variant: "inline" (default) | "card" | "list".
+     index: a 1-based marker number; default 1.
+     strings: { source, open, unavailable, newTab }; localized labels and link announcements.
+     className: extra classes on the trigger or source container.
+     ref: forwarded to the inline source trigger button.
+   Behavior: A marker opens a Popover; its source link navigates. Unsafe URL protocols remain plain text.
+   Notes: A citation identifies a reference; it does not assert that the source was verified or supports every claim.
+*/
+
+function hrefOf(value) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  try {
+    const u = new URL(value, 'https://plenix.invalid/');
+    return ['http:', 'https:'].includes(u.protocol) ? value : null;
+  } catch (e) {
+    return null;
+  }
+}
+const Citation = exports.Citation = /*#__PURE__*/_react.default.forwardRef(function Citation({
+  source,
+  sources = [],
+  variant = 'inline',
+  index = 1,
+  strings,
+  className
+}, ref) {
+  const t = {
+    source: 'Source',
+    open: 'Open source',
+    unavailable: 'Source unavailable',
+    ...strings
+  };
+  const card = (s, key) => {
+    const title = s?.title || t.unavailable,
+      href = hrefOf(s?.href);
+    return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+      key: key,
+      className: "plx-citation__source",
+      gap: "xs"
+    }, href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+      href: href,
+      variant: "external",
+      target: "_blank",
+      rel: "noopener noreferrer",
+      strings: strings
+    }, title) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, title), s?.author ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, s.author) : null, s?.excerpt ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, s.excerpt) : null);
+  };
+  if (variant === 'list') return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-citation', className),
+    role: "list",
+    "aria-label": t.source
+  }, sources.map((s, i) => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: s.id || i,
+    role: "listitem"
+  }, card(s, s.id || i))));
+  if (variant === 'card') return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-citation', className)
+  }, card(source, 0));
+  return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    label: t.source + ' ' + index,
+    title: source?.title || t.source,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      ref: ref,
+      className: (0, _cx.cx)('plx-citation', className),
+      variant: "ghost",
+      size: "xs",
+      label: t.source + ' ' + index
+    }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      as: "span",
+      variant: "data"
+    }, '[' + index + ']'))
+  }, card(source, 0));
+});
+  } },
+  "platform/components/SuggestedAction/SuggestedAction.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SuggestedAction = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SuggestedAction
+   Summary: An optional suggestion as a compact action chip or a descriptive card, with explicit activation.
+   Usage: <SuggestedAction onAction={run}>Summarize selection</SuggestedAction>
+   Props:
+     variant: "chip" (default) | "card".
+     children: the specific action label.
+     description: a supporting description in the card variant.
+     onAction(): asynchronous explicit action.
+     disabled: whether activation is unavailable; default false.
+     strings: { failed, pending }; localized progress and fallback error.
+     className: extra classes on the outer layout.
+     ref: forwarded to the actual action button.
+   Behavior: Never runs merely because it appears. Pending actions cannot repeat; errors remain beside the suggestion.
+   Notes: Uses existing Button and sparkle icon roles only; there is no suggestion color or implicit acceptance.
+*/
+
+const SuggestedAction = exports.SuggestedAction = /*#__PURE__*/_react.default.forwardRef(function SuggestedAction({
+  variant = 'chip',
+  children,
+  description,
+  onAction,
+  disabled = false,
+  strings,
+  className
+}, ref) {
+  const t = {
+      failed: 'The action failed. Try again.',
+      pending: 'Working',
+      ...strings
+    },
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState(''),
+    lock = _react.default.useRef(false),
+    live = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    live.current = true;
+    return () => {
+      live.current = false;
+    };
+  }, []);
+  const act = async () => {
+    if (lock.current || disabled || !onAction) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onAction();
+    } catch (e) {
+      if (live.current) setError(e?.message || t.failed);
+    } finally {
+      lock.current = false;
+      if (live.current) setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-suggested-action', className)
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: ref,
+    variant: "secondary",
+    size: variant === 'card' ? 'md' : 'sm',
+    className: (0, _cx.cx)('plx-suggested-action__button', variant === 'card' && 'plx-suggested-action__button--card'),
+    icon: "sparkle",
+    disabled: disabled || busy || !onAction,
+    "aria-busy": busy || undefined,
+    onClick: act
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "span"
+  }, children), variant === 'card' && description ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "span",
+    variant: "caption"
+  }, description) : null), busy ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, null, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "sparkle",
+    role: "status"
+  }, t.pending)) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+});
+  } },
+  "platform/patterns/AISearch/AISearch.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","../../components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AISearch = AISearch;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _cx = require("../../utils/cx.js");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _GeneratedContent = require("../../components/GeneratedContent/GeneratedContent.jsx");
+var _Citation = require("../../components/Citation/Citation.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AISearch
+   Summary: Search with optional semantic matching, a clearly identified generated answer and linked sources above results.
+   Usage: <AISearch onSearch={({query,semantic,signal})=>search(query,semantic,signal)}/>
+   Props:
+     onSearch({ query, semantic, signal }): asynchronous search returning { answer, sources, results }.
+     defaultQuery: initial query text; default empty.
+     defaultSemantic: initial semantic matching choice; default false.
+     semanticToggle: show the explicit semantic Switch; default true.
+     strings: { label, query, search, semantic, results, empty, failed, pending, generatedContent, citation }.
+     className: extra classes on the named region.
+   Behavior: Only submit starts a request. A newer submit aborts and supersedes older work; errors preserve the previous result.
+     Changing the semantic toggle never submits or claims semantic support without the caller implementing it.
+   Notes: This is a UI adapter, not a model or search service; caller content must be trusted React nodes.
+*/
+
+const STRINGS = {
+  label: 'AI search',
+  query: 'Search query',
+  search: 'Search',
+  semantic: 'Use semantic search',
+  results: 'Search results',
+  empty: 'No results.',
+  failed: 'Search failed. Try again.',
+  pending: 'Searching'
+};
+function AISearch({
+  onSearch,
+  defaultQuery = '',
+  defaultSemantic = false,
+  semanticToggle = true,
+  strings,
+  className
+}) {
+  const t = {
+      ...STRINGS,
+      ...strings
+    },
+    [query, setQuery] = _react.default.useState(defaultQuery),
+    [semantic, setSemantic] = _react.default.useState(defaultSemantic),
+    [data, setData] = _react.default.useState(null),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState(''),
+    epoch = _react.default.useRef(0),
+    controller = _react.default.useRef(null),
+    pending = _react.default.useRef(null);
+  _react.default.useEffect(() => () => {
+    epoch.current++;
+    controller.current?.abort();
+  }, []);
+  const search = async e => {
+    e?.preventDefault();
+    if (!query.trim() || !onSearch) return;
+    const key = JSON.stringify([query.trim(), semantic]);
+    if (pending.current === key) return;
+    pending.current = key;
+    controller.current?.abort();
+    const abort = new AbortController(),
+      at = ++epoch.current;
+    controller.current = abort;
+    setBusy(true);
+    setError('');
+    try {
+      const next = await onSearch({
+        query: query.trim(),
+        semantic,
+        signal: abort.signal
+      });
+      if (at === epoch.current) setData(next || {
+        results: []
+      });
+    } catch (err) {
+      if (at === epoch.current && !abort.signal.aborted) setError(err?.message || t.failed);
+    } finally {
+      if (at === epoch.current) {
+        pending.current = null;
+        setBusy(false);
+      }
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-ai-search', className),
+    role: "region",
+    "aria-label": t.label
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    as: "form",
+    onSubmit: search
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    label: t.query,
+    placeholder: t.query,
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    onClear: () => setQuery(''),
+    strings: strings
+  }), semanticToggle ? /*#__PURE__*/_react.default.createElement(_Checkbox.Switch, {
+    label: t.semantic,
+    checked: semantic,
+    onChange: e => setSemantic(e.target.checked)
+  }) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    disabled: !query.trim() || !onSearch
+  }, t.search)), busy ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, null, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "sparkle",
+    role: "status"
+  }, t.pending)) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, data && data.answer !== undefined && data.answer !== null ? /*#__PURE__*/_react.default.createElement(_GeneratedContent.GeneratedContent, {
+    strings: strings?.generatedContent
+  }, data.answer, /*#__PURE__*/_react.default.createElement(_Citation.Citation, {
+    variant: "list",
+    sources: data.sources || [],
+    strings: strings?.citation
+  })) : null, data ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    role: "region",
+    "aria-label": t.results
+  }, (data.results || []).length ? (data.results || []).map(item => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: item.id,
+    gap: "xs"
+  }, item.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: item.href
+  }, item.title) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, item.title), item.description ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, item.description) : null)) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty)) : null);
+}
+  } },
+  "platform/patterns/Recommendation/Recommendation.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Recommendation = Recommendation;
+var _react = _interopRequireDefault(require("react"));
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+var _SuggestedAction = require("../../components/SuggestedAction/SuggestedAction.jsx");
+var _Carousel = require("../../components/Carousel/Carousel.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Recommendation
+   Summary: Optional recommendations in a manually controlled Carousel, with a reason when one is supplied.
+   Usage: <Recommendation items={items} variant="reason" onSelect={openItem}/>
+   Props:
+     items: [{ id, title, description, reason, href, content }]; caller-ranked recommendations.
+     variant: "row" (default) | "reason".
+     perView: slides per page, 1 through 4; default 3.
+     onSelect(item): optional asynchronous action for items without a navigation href.
+     strings: { label, open, why, empty, action }; plus Carousel strings.
+     className: extra classes on the outer layout.
+   Behavior: Never advances automatically or accepts a suggestion implicitly. Navigation remains a real Link.
+   Notes: Caller owns ranking and explanations; a recommendation does not assert verified suitability.
+*/
+
+function Recommendation({
+  items = [],
+  variant = 'row',
+  perView = 3,
+  onSelect,
+  strings,
+  className
+}) {
+  const t = {
+    label: 'Recommended for you',
+    open: 'Open',
+    why: 'Why recommended',
+    empty: 'No recommendations.',
+    ...strings
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-recommendation', className)
+  }, items.length ? /*#__PURE__*/_react.default.createElement(_Carousel.Carousel, {
+    label: t.label,
+    perView: perView,
+    autoplay: false,
+    strings: strings
+  }, items.map(item => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: item.id
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "h3",
+    variant: "heading"
+  }, item.title), item.content, item.description ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, item.description) : null, variant === 'reason' && item.reason ? /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    title: t.why,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      icon: "sparkle"
+    }, t.why)
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, null, item.reason)) : null, item.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: item.href
+  }, item.title) : onSelect ? /*#__PURE__*/_react.default.createElement(_SuggestedAction.SuggestedAction, {
+    strings: strings?.action,
+    onAction: () => onSelect(item)
+  }, t.open + ' ' + item.title) : null))) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty));
+}
+  } },
+  "platform/components/AIButton/AIButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AIButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AIButton
+   Summary: An explicitly named AI action using the existing sparkle icon, with optional action menu.
+   Usage: <AIButton label="Summarize" onAction={summarize} />
+   Props: label: accessible action name; mode: trigger|menu|icon; actions: [{id,label,disabled}]; onAction(id): async action; disabled; strings: label, failed, working; className; ref: native trigger.
+   Behavior: Never invokes generation automatically. Pending actions are inert; failures remain visible for retry.
+   Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
+*/
+const Trigger = /*#__PURE__*/_react.default.forwardRef(function Trigger({
+  externalRef,
+  ...props
+}, menuRef) {
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({}, props, {
+    ref: node => {
+      if (typeof menuRef === 'function') menuRef(node);else if (menuRef) menuRef.current = node;
+      if (typeof externalRef === 'function') externalRef(node);else if (externalRef) externalRef.current = node;
+    }
+  }));
+});
+const AIButton = exports.AIButton = /*#__PURE__*/_react.default.forwardRef(function AIButton({
+  label,
+  mode = 'trigger',
+  actions = [],
+  onAction,
+  disabled = false,
+  strings,
+  className
+}, ref) {
+  const t = Object.assign({
+      label: 'AI actions',
+      failed: 'Could not complete this action. Try again.',
+      working: 'Working'
+    }, strings),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    alive = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  async function run(id) {
+    if (disabled || lock.current || !onAction) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onAction(id);
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  const name = label || t.label,
+    props = {
+      icon: 'sparkle',
+      label: name,
+      iconOnly: mode === 'icon',
+      loading: busy,
+      disabled: disabled || !onAction || mode === 'menu' && !actions.length,
+      strings: {
+        working: t.working
+      },
+      children: name
+    };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-ai-button', className)
+  }, mode === 'menu' ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: name,
+    trigger: /*#__PURE__*/_react.default.createElement(Trigger, _extends({}, props, {
+      externalRef: ref,
+      caret: true
+    }))
+  }, actions.map(a => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: a.id,
+    icon: "sparkle",
+    disabled: disabled || busy || a.disabled || !onAction,
+    onSelect: () => run(a.id)
+  }, a.label))) : /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({}, props, {
+    ref: ref,
+    onClick: () => run()
+  })), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+});
+  } },
+  "platform/components/AIDisclaimer/AIDisclaimer.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AIDisclaimer = AIDisclaimer;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Link = require("../Link/Link.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AIDisclaimer
+   Summary: A plain language reminder to review AI output, inline or in a footer.
+   Usage: <AIDisclaimer href="/ai-policy">Check important details before using this content.</AIDisclaimer>
+   Props: variant: footer|inline; children: caller disclaimer text; href: optional policy URL; strings: message, learn; className.
+   Behavior: Renders text and a real policy link; never promises accuracy or substitutes for informed review.
+   Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
+*/
+function AIDisclaimer({
+  variant = 'footer',
+  children,
+  href,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({
+    message: 'AI-generated content may be inaccurate. Review important details.',
+    learn: 'About AI-generated content'
+  }, strings);
+  return /*#__PURE__*/_react.default.createElement(_Stack.Inline, _extends({
+    as: variant === 'inline' ? 'span' : 'footer',
+    wrap: true,
+    className: (0, _cx.cx)('plx-ai-disclaimer', className)
+  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "sparkle"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, children || t.message), href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: href
+  }, t.learn) : null);
+}
+  } },
+  "platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ConfidenceIndicator = ConfidenceIndicator;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ConfidenceIndicator
+   Summary: Caller supplied confidence with explicit text; numeric values use the data font.
+   Usage: <ConfidenceIndicator level="medium" />
+   Props: level: high|medium|low; variant: qualitative|numeric; value: numeric ratio0..1 for numeric; locale; strings: high,medium,low,unknown,label; className.
+   Behavior: Never derives confidence from output. Invalid or absent numeric values show Unknown; qualitative levels use the same existing neutral role.
+   Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
+*/
+function ConfidenceIndicator({
+  level,
+  variant = 'qualitative',
+  value,
+  locale,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({
+      high: 'High confidence',
+      medium: 'Medium confidence',
+      low: 'Low confidence',
+      unknown: 'Confidence unavailable',
+      label: 'Confidence'
+    }, strings),
+    valid = typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1,
+    text = variant === 'numeric' ? valid ? (0, _format.formatPercent)(value, {
+      locale
+    }) : t.unknown : t[level] && ['high', 'medium', 'low'].includes(level) ? t[level] : t.unknown;
+  return /*#__PURE__*/_react.default.createElement(_Stack.Inline, _extends({
+    className: (0, _cx.cx)('plx-confidence-indicator', className)
+  }, rest), /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "sparkle"
+  }, variant === 'numeric' && valid ? t.label : text), variant === 'numeric' && valid ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, text) : null);
+}
+  } },
+  "platform/patterns/AIExplanation/AIExplanation.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AIExplanation = AIExplanation;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+var _ConfidenceIndicator = require("../../components/ConfidenceIndicator/ConfidenceIndicator.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AIExplanation
+   Summary: A requested explanation and caller supplied factors, with optional confidence.
+   Usage: <AIExplanation summary="Suggested because it matches your saved topics." factors={reasons} />
+   Props: summary: explanation text; factors: [{id,label,detail}]; confidence: ConfidenceIndicator props; label,title; open,onOpenChange; strings: label,title,close; className.
+   Behavior: Opens only on request, uses the existing Popover focus/escape behavior and never invents reasons or confidence.
+   Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
+*/
+
+function AIExplanation({
+  summary,
+  factors = [],
+  confidence,
+  label,
+  title,
+  open,
+  onOpenChange,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    label: 'Why this?',
+    title: 'AI explanation',
+    close: 'Close'
+  }, strings);
+  return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    title: title || t.title,
+    open: open,
+    onOpenChange: onOpenChange,
+    closeButton: true,
+    strings: {
+      close: t.close
+    },
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: "sparkle"
+    }, label || t.label)
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-ai-explanation', className)
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p"
+  }, summary), factors.length ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    as: "ul"
+  }, factors.map(f => /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "li",
+    key: f.id
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "strong"
+  }, f.label), f.detail ? ' — ' + f.detail : null))) : null, confidence ? /*#__PURE__*/_react.default.createElement(_ConfidenceIndicator.ConfidenceIndicator, confidence) : null));
+}
+  } },
+  "platform/components/PromptSuggestions/PromptSuggestions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PromptSuggestions = PromptSuggestions;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Tag = require("../Tag/Tag.jsx");
+var _Card = require("../Card/Card.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · PromptSuggestions
+   Summary: Optional prompt choices as chips or cards; selecting one is an explicit action.
+   Usage: <PromptSuggestions options={prompts} onSelect={choosePrompt} />
+   Props: options: [{id,label,prompt,description,disabled}]; variant: chips|cards; onSelect(option): optional async callback; disabled; strings: label,empty,failed; className.
+   Behavior: Only explicit selection calls the handler; pending requests block repeats and failed choices remain available.
+   Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
+*/
+
+function PromptSuggestions({
+  options = [],
+  variant = 'chips',
+  onSelect,
+  disabled = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+      label: 'Prompt suggestions',
+      empty: 'No prompt suggestions',
+      failed: 'Could not use this suggestion. Try again.'
+    }, strings),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    alive = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  async function choose(o) {
+    if (disabled || o.disabled || lock.current || !onSelect) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onSelect(o);
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-prompt-suggestions', className),
+    "aria-label": t.label,
+    role: "group",
+    "aria-busy": busy || undefined
+  }, !options.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, options.map(o => variant === 'cards' ? /*#__PURE__*/_react.default.createElement(_Card.Card, {
+    key: o.id,
+    title: o.label
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, null, o.description ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, o.description) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    icon: "sparkle",
+    disabled: disabled || busy || o.disabled || !onSelect,
+    onClick: () => choose(o)
+  }, o.label))) : /*#__PURE__*/_react.default.createElement(_Tag.Chip, {
+    key: o.id,
+    disabled: disabled || busy || o.disabled || !onSelect,
+    onClick: () => choose(o)
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "sparkle"
+  }), o.label))), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+}
+  } },
+  "platform/components/SuggestedEdit/SuggestedEdit.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SuggestedEdit = SuggestedEdit;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SuggestedEdit
+   Summary: Review plain text changes and explicitly accept or reject individual edits or all outstanding edits.
+   Usage: <SuggestedEdit edits={edits} onDecision={persistDecision} />
+   Props: edits: [{id,before,after,status:"pending"|"accepted"|"rejected"}]; variant: diff|accept|reject|all; onDecision({ids,decision}): async; disabled; strings: label,before,after,accept,reject,acceptAll,accepted,rejected,empty,failed; className.
+   Behavior: Never applies edits automatically. Success records only the submitted edit version, failures preserve pending text, and a synchronous lock blocks duplicate requests.
+   Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
+*/
+
+const version = e => JSON.stringify([e.id, e.before, e.after]);
+function SuggestedEdit({
+  edits = [],
+  variant = 'diff',
+  onDecision,
+  disabled = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+      label: 'Suggested edits',
+      before: 'Before',
+      after: 'After',
+      accept: 'Accept',
+      reject: 'Reject',
+      acceptAll: 'Accept all',
+      accepted: 'Accepted',
+      rejected: 'Rejected',
+      empty: 'No suggested edits',
+      failed: 'Could not save this decision. Try again.'
+    }, strings),
+    [done, setDone] = _react.default.useState({}),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    alive = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  const state = e => e.status && e.status !== 'pending' ? e.status : done[version(e)],
+    pending = edits.filter(e => !state(e));
+  async function decide(list, decision) {
+    if (disabled || lock.current || !onDecision || !list.length) return;
+    const keys = list.map(version);
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onDecision({
+        ids: list.map(e => e.id),
+        decision
+      });
+      if (alive.current) setDone(p => {
+        const next = {
+          ...p
+        };
+        keys.forEach(k => {
+          next[k] = decision;
+        });
+        return next;
+      });
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-suggested-edit', className),
+    role: "group",
+    "aria-label": t.label,
+    "aria-busy": busy || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    icon: "sparkle"
+  }, t.label), !edits.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : null, edits.map(e => {
+    const s = state(e);
+    return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+      key: e.id,
+      className: "plx-suggested-edit__item"
+    }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      as: "p"
+    }, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.before + ': '), /*#__PURE__*/_react.default.createElement("del", {
+      className: "plx-suggested-edit__before"
+    }, e.before), " ", /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.after + ': '), /*#__PURE__*/_react.default.createElement("ins", {
+      className: "plx-suggested-edit__after"
+    }, e.after)), s ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+      icon: s === 'accepted' ? 'check' : 'close',
+      role: "status"
+    }, s === 'accepted' ? t.accepted : t.rejected) : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+      wrap: true
+    }, variant !== 'reject' ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: disabled || busy || !onDecision,
+      onClick: () => decide([e], 'accepted')
+    }, t.accept) : null, variant !== 'accept' ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "secondary",
+      disabled: disabled || busy || !onDecision,
+      onClick: () => decide([e], 'rejected')
+    }, t.reject) : null));
+  }), variant === 'all' && pending.length ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: disabled || busy || !onDecision,
+    onClick: () => decide(pending, 'accepted')
+  }, t.acceptAll) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+}
+  } },
+  "platform/components/RefineMenu/RefineMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RefineMenu = RefineMenu;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Stack = require("../Stack/Stack.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _Dialog = require("../Dialog/Dialog.jsx");
+var _Field = require("../Field/Field.jsx");
+var _Input = require("../Input/Input.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · RefineMenu
+   Summary: Requested text refinement by length, tone or a custom instruction.
+   Usage: <RefineMenu onRefine={requestRevision} />
+   Props: onRefine({action,tone?,prompt?}): async callback; disabled; label; strings: label,shorter,longer,tone,formal,casual,neutral,custom,prompt,apply,cancel,empty,failed; className.
+   Behavior: Quick actions use Menu; custom instructions use a named Dialog and preserve failed text. No refinement runs before selection.
+   Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
+*/
+
+function RefineMenu({
+  onRefine,
+  disabled = false,
+  label,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+      label: 'Refine',
+      shorter: 'Make shorter',
+      longer: 'Make longer',
+      tone: 'Change tone',
+      formal: 'Formal',
+      casual: 'Casual',
+      neutral: 'Neutral',
+      custom: 'Custom instruction',
+      prompt: 'Instruction',
+      apply: 'Apply instruction',
+      cancel: 'Cancel',
+      empty: 'Enter an instruction.',
+      failed: 'Could not refine this text. Try again.'
+    }, strings),
+    [custom, setCustom] = _react.default.useState(false),
+    [prompt, setPrompt] = _react.default.useState(''),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    alive = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  async function run(value) {
+    if (disabled || lock.current || !onRefine) return;
+    if (value.action === 'custom' && !prompt.trim()) {
+      setError(t.empty);
+      return;
+    }
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onRefine(value);
+      if (alive.current && value.action === 'custom') {
+        setCustom(false);
+        setPrompt('');
+      }
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-refine-menu', className)
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label || t.label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: "sparkle",
+      disabled: disabled || busy || !onRefine,
+      caret: true
+    }, label || t.label)
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: disabled || busy,
+    onSelect: () => run({
+      action: 'shorter'
+    })
+  }, t.shorter), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: disabled || busy,
+    onSelect: () => run({
+      action: 'longer'
+    })
+  }, t.longer), /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+    label: t.tone,
+    disabled: disabled || busy
+  }, ['formal', 'casual', 'neutral'].map(tone => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: tone,
+    disabled: disabled || busy,
+    onSelect: () => run({
+      action: 'tone',
+      tone
+    })
+  }, t[tone]))), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: disabled || busy,
+    onSelect: () => {
+      setError('');
+      setCustom(true);
+    }
+  }, t.custom)), error && !custom ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: custom,
+    title: t.custom,
+    onClose: () => {
+      if (!busy) setCustom(false);
+    },
+    dismissible: !busy,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: disabled || busy,
+      onClick: () => setCustom(false)
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      disabled: disabled || busy || !onRefine,
+      onClick: () => run({
+        action: 'custom',
+        prompt: prompt.trim()
+      })
+    }, t.apply))
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.prompt,
+    error: error
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    value: prompt,
+    disabled: disabled || busy,
+    onChange: e => setPrompt(e.target.value)
+  }))));
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "AIButton", {
+  enumerable: true,
+  get: function () {
+    return _AIButton.AIButton;
+  }
+});
+Object.defineProperty(exports, "AIDisclaimer", {
+  enumerable: true,
+  get: function () {
+    return _AIDisclaimer.AIDisclaimer;
+  }
+});
+Object.defineProperty(exports, "AIExplanation", {
+  enumerable: true,
+  get: function () {
+    return _AIExplanation.AIExplanation;
+  }
+});
+Object.defineProperty(exports, "AILabel", {
+  enumerable: true,
+  get: function () {
+    return _AILabel.AILabel;
+  }
+});
+Object.defineProperty(exports, "AISearch", {
+  enumerable: true,
+  get: function () {
+    return _AISearch.AISearch;
+  }
 });
 Object.defineProperty(exports, "AccessRequest", {
   enumerable: true,
@@ -57548,6 +64911,12 @@ Object.defineProperty(exports, "ActivityList", {
     return _ActivityList.ActivityList;
   }
 });
+Object.defineProperty(exports, "Announcement", {
+  enumerable: true,
+  get: function () {
+    return _Announcement.Announcement;
+  }
+});
 Object.defineProperty(exports, "AppHeader", {
   enumerable: true,
   get: function () {
@@ -57558,6 +64927,12 @@ Object.defineProperty(exports, "AppShell", {
   enumerable: true,
   get: function () {
     return _AppShell.AppShell;
+  }
+});
+Object.defineProperty(exports, "ApprovalWorkflow", {
+  enumerable: true,
+  get: function () {
+    return _ApprovalWorkflow.ApprovalWorkflow;
   }
 });
 Object.defineProperty(exports, "ArchiveRestore", {
@@ -57572,10 +64947,28 @@ Object.defineProperty(exports, "AreaChart", {
     return _AreaChart.AreaChart;
   }
 });
+Object.defineProperty(exports, "AssetGallery", {
+  enumerable: true,
+  get: function () {
+    return _AssetGallery.AssetGallery;
+  }
+});
 Object.defineProperty(exports, "AssignControl", {
   enumerable: true,
   get: function () {
     return _AssignControl.AssignControl;
+  }
+});
+Object.defineProperty(exports, "AttachmentPicker", {
+  enumerable: true,
+  get: function () {
+    return _AttachmentPicker.AttachmentPicker;
+  }
+});
+Object.defineProperty(exports, "AuditLog", {
+  enumerable: true,
+  get: function () {
+    return _AuditLog.AuditLog;
   }
 });
 Object.defineProperty(exports, "Auth", {
@@ -57728,6 +65121,12 @@ Object.defineProperty(exports, "CHART_PATTERNS", {
     return _a11y.CHART_PATTERNS;
   }
 });
+Object.defineProperty(exports, "COMMERCE_PAGES", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.COMMERCE_PAGES;
+  }
+});
 Object.defineProperty(exports, "CONTRAST_MINIMUMS", {
   enumerable: true,
   get: function () {
@@ -57756,6 +65155,12 @@ Object.defineProperty(exports, "Carousel", {
   enumerable: true,
   get: function () {
     return _Carousel.Carousel;
+  }
+});
+Object.defineProperty(exports, "Cart", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.Cart;
   }
 });
 Object.defineProperty(exports, "Cascader", {
@@ -57830,6 +65235,12 @@ Object.defineProperty(exports, "Checklist", {
     return _Checklist.Checklist;
   }
 });
+Object.defineProperty(exports, "Checkout", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.Checkout;
+  }
+});
 Object.defineProperty(exports, "Chip", {
   enumerable: true,
   get: function () {
@@ -57840,6 +65251,12 @@ Object.defineProperty(exports, "ChoiceList", {
   enumerable: true,
   get: function () {
     return _Checkbox.ChoiceList;
+  }
+});
+Object.defineProperty(exports, "Citation", {
+  enumerable: true,
+  get: function () {
+    return _Citation.Citation;
   }
 });
 Object.defineProperty(exports, "Code", {
@@ -57932,10 +65349,34 @@ Object.defineProperty(exports, "CommandPalette", {
     return _CommandPalette.CommandPalette;
   }
 });
+Object.defineProperty(exports, "Comment", {
+  enumerable: true,
+  get: function () {
+    return _Comment.Comment;
+  }
+});
+Object.defineProperty(exports, "CommentThread", {
+  enumerable: true,
+  get: function () {
+    return _CommentThread.CommentThread;
+  }
+});
+Object.defineProperty(exports, "CommerceLine", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.CommerceLine;
+  }
+});
 Object.defineProperty(exports, "ComparisonView", {
   enumerable: true,
   get: function () {
     return _ComparisonView.ComparisonView;
+  }
+});
+Object.defineProperty(exports, "ConfidenceIndicator", {
+  enumerable: true,
+  get: function () {
+    return _ConfidenceIndicator.ConfidenceIndicator;
   }
 });
 Object.defineProperty(exports, "ConfirmDialog", {
@@ -58106,10 +65547,22 @@ Object.defineProperty(exports, "Divider", {
     return _Divider.Divider;
   }
 });
+Object.defineProperty(exports, "DocumentViewer", {
+  enumerable: true,
+  get: function () {
+    return _DocumentViewer.DocumentViewer;
+  }
+});
 Object.defineProperty(exports, "DownloadButton", {
   enumerable: true,
   get: function () {
     return _DownloadButton.DownloadButton;
+  }
+});
+Object.defineProperty(exports, "DownloadManager", {
+  enumerable: true,
+  get: function () {
+    return _DownloadManager.DownloadManager;
   }
 });
 Object.defineProperty(exports, "DraftState", {
@@ -58250,6 +65703,12 @@ Object.defineProperty(exports, "FileList", {
     return _FileList.FileList;
   }
 });
+Object.defineProperty(exports, "FilePicker", {
+  enumerable: true,
+  get: function () {
+    return _FilePicker.FilePicker;
+  }
+});
 Object.defineProperty(exports, "FileRow", {
   enumerable: true,
   get: function () {
@@ -58328,6 +65787,12 @@ Object.defineProperty(exports, "Gauge", {
     return _Gauge.Gauge;
   }
 });
+Object.defineProperty(exports, "GeneratedContent", {
+  enumerable: true,
+  get: function () {
+    return _GeneratedContent.GeneratedContent;
+  }
+});
 Object.defineProperty(exports, "GeoMap", {
   enumerable: true,
   get: function () {
@@ -58398,6 +65863,12 @@ Object.defineProperty(exports, "Image", {
   enumerable: true,
   get: function () {
     return _Image.Image;
+  }
+});
+Object.defineProperty(exports, "ImageAnnotation", {
+  enumerable: true,
+  get: function () {
+    return _ImageAnnotation.ImageAnnotation;
   }
 });
 Object.defineProperty(exports, "ImageCrop", {
@@ -58508,6 +65979,12 @@ Object.defineProperty(exports, "MediaCard", {
     return _Card.MediaCard;
   }
 });
+Object.defineProperty(exports, "MediaPlayer", {
+  enumerable: true,
+  get: function () {
+    return _MediaPlayer.MediaPlayer;
+  }
+});
 Object.defineProperty(exports, "MediaViewer", {
   enumerable: true,
   get: function () {
@@ -58518,6 +65995,12 @@ Object.defineProperty(exports, "MegaMenu", {
   enumerable: true,
   get: function () {
     return _MegaMenu.MegaMenu;
+  }
+});
+Object.defineProperty(exports, "MentionInput", {
+  enumerable: true,
+  get: function () {
+    return _MentionInput.MentionInput;
   }
 });
 Object.defineProperty(exports, "Menu", {
@@ -58554,6 +66037,12 @@ Object.defineProperty(exports, "MenuSub", {
   enumerable: true,
   get: function () {
     return _Menu.MenuSub;
+  }
+});
+Object.defineProperty(exports, "MetadataEditor", {
+  enumerable: true,
+  get: function () {
+    return _MetadataEditor.MetadataEditor;
   }
 });
 Object.defineProperty(exports, "Metric", {
@@ -58610,6 +66099,12 @@ Object.defineProperty(exports, "NumberInput", {
     return _NumberInput.NumberInput;
   }
 });
+Object.defineProperty(exports, "ORDER_STATUSES", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.ORDER_STATUSES;
+  }
+});
 Object.defineProperty(exports, "Offboarding", {
   enumerable: true,
   get: function () {
@@ -58620,6 +66115,36 @@ Object.defineProperty(exports, "Onboarding", {
   enumerable: true,
   get: function () {
     return _Onboarding.Onboarding;
+  }
+});
+Object.defineProperty(exports, "OrderConfirmation", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.OrderConfirmation;
+  }
+});
+Object.defineProperty(exports, "OrderDetail", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.OrderDetail;
+  }
+});
+Object.defineProperty(exports, "OrderManagement", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.OrderManagement;
+  }
+});
+Object.defineProperty(exports, "OrderStatus", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.OrderStatus;
+  }
+});
+Object.defineProperty(exports, "OrderSummary", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.OrderSummary;
   }
 });
 Object.defineProperty(exports, "OtpInput", {
@@ -58668,6 +66193,18 @@ Object.defineProperty(exports, "PasswordResetForm", {
   enumerable: true,
   get: function () {
     return _Auth.PasswordResetForm;
+  }
+});
+Object.defineProperty(exports, "Payment", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.Payment;
+  }
+});
+Object.defineProperty(exports, "PaymentFields", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.PaymentFields;
   }
 });
 Object.defineProperty(exports, "PeopleGroup", {
@@ -58724,10 +66261,52 @@ Object.defineProperty(exports, "Portal", {
     return _portal.Portal;
   }
 });
+Object.defineProperty(exports, "PresenceBar", {
+  enumerable: true,
+  get: function () {
+    return _PresenceBar.PresenceBar;
+  }
+});
 Object.defineProperty(exports, "Preview", {
   enumerable: true,
   get: function () {
     return _Preview.Preview;
+  }
+});
+Object.defineProperty(exports, "ProductCard", {
+  enumerable: true,
+  get: function () {
+    return _ProductCard.ProductCard;
+  }
+});
+Object.defineProperty(exports, "ProductDetail", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.ProductDetail;
+  }
+});
+Object.defineProperty(exports, "ProductDiscovery", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.ProductDiscovery;
+  }
+});
+Object.defineProperty(exports, "ProductListing", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.ProductListing;
+  }
+});
+Object.defineProperty(exports, "ProductOptions", {
+  enumerable: true,
+  get: function () {
+    return _ProductOptions.ProductOptions;
+  }
+});
+Object.defineProperty(exports, "ProductPrice", {
+  enumerable: true,
+  get: function () {
+    return _ProductCard.ProductPrice;
   }
 });
 Object.defineProperty(exports, "ProgressBar", {
@@ -58752,6 +66331,18 @@ Object.defineProperty(exports, "PromptDialog", {
   enumerable: true,
   get: function () {
     return _Dialog.PromptDialog;
+  }
+});
+Object.defineProperty(exports, "PromptHistory", {
+  enumerable: true,
+  get: function () {
+    return _PromptHistory.PromptHistory;
+  }
+});
+Object.defineProperty(exports, "PromptSuggestions", {
+  enumerable: true,
+  get: function () {
+    return _PromptSuggestions.PromptSuggestions;
   }
 });
 Object.defineProperty(exports, "PropertyList", {
@@ -58844,6 +66435,12 @@ Object.defineProperty(exports, "ReadOnlyProvider", {
     return _ReadOnly.ReadOnlyProvider;
   }
 });
+Object.defineProperty(exports, "Recommendation", {
+  enumerable: true,
+  get: function () {
+    return _Recommendation.Recommendation;
+  }
+});
 Object.defineProperty(exports, "RecordPage", {
   enumerable: true,
   get: function () {
@@ -58856,6 +66453,18 @@ Object.defineProperty(exports, "ReferenceLine", {
     return _ReferenceLine.ReferenceLine;
   }
 });
+Object.defineProperty(exports, "RefineMenu", {
+  enumerable: true,
+  get: function () {
+    return _RefineMenu.RefineMenu;
+  }
+});
+Object.defineProperty(exports, "RelatedAssets", {
+  enumerable: true,
+  get: function () {
+    return _RelatedAssets.RelatedAssets;
+  }
+});
 Object.defineProperty(exports, "RelativeDateInput", {
   enumerable: true,
   get: function () {
@@ -58866,6 +66475,12 @@ Object.defineProperty(exports, "RenameAction", {
   enumerable: true,
   get: function () {
     return _RenameAction.RenameAction;
+  }
+});
+Object.defineProperty(exports, "RenditionList", {
+  enumerable: true,
+  get: function () {
+    return _RenditionList.RenditionList;
   }
 });
 Object.defineProperty(exports, "Resizable", {
@@ -58884,6 +66499,12 @@ Object.defineProperty(exports, "RetryNotice", {
   enumerable: true,
   get: function () {
     return _Retry.RetryNotice;
+  }
+});
+Object.defineProperty(exports, "Returns", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.Returns;
   }
 });
 Object.defineProperty(exports, "ReviewFlow", {
@@ -59180,6 +66801,24 @@ Object.defineProperty(exports, "Sticky", {
     return _Sticky.Sticky;
   }
 });
+Object.defineProperty(exports, "SubscriptionManagement", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.SubscriptionManagement;
+  }
+});
+Object.defineProperty(exports, "SuggestedAction", {
+  enumerable: true,
+  get: function () {
+    return _SuggestedAction.SuggestedAction;
+  }
+});
+Object.defineProperty(exports, "SuggestedEdit", {
+  enumerable: true,
+  get: function () {
+    return _SuggestedEdit.SuggestedEdit;
+  }
+});
 Object.defineProperty(exports, "Switch", {
   enumerable: true,
   get: function () {
@@ -59378,6 +67017,12 @@ Object.defineProperty(exports, "VersionCompare", {
     return _VersionCompare.VersionCompare;
   }
 });
+Object.defineProperty(exports, "VersionHistory", {
+  enumerable: true,
+  get: function () {
+    return _VersionHistory.VersionHistory;
+  }
+});
 Object.defineProperty(exports, "VersionLabel", {
   enumerable: true,
   get: function () {
@@ -59508,6 +67153,12 @@ Object.defineProperty(exports, "boxStats", {
   enumerable: true,
   get: function () {
     return _BoxPlot.boxStats;
+  }
+});
+Object.defineProperty(exports, "cardBrand", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.cardBrand;
   }
 });
 Object.defineProperty(exports, "chartAnnounce", {
@@ -59670,6 +67321,12 @@ Object.defineProperty(exports, "formatBytes", {
   enumerable: true,
   get: function () {
     return _format.formatBytes;
+  }
+});
+Object.defineProperty(exports, "formatCardNumber", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.formatCardNumber;
   }
 });
 Object.defineProperty(exports, "formatCompact", {
@@ -59948,6 +67605,12 @@ Object.defineProperty(exports, "onGrid", {
     return _grid.onGrid;
   }
 });
+Object.defineProperty(exports, "orderTotals", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.orderTotals;
+  }
+});
 Object.defineProperty(exports, "pageLayout", {
   enumerable: true,
   get: function () {
@@ -59994,6 +67657,12 @@ Object.defineProperty(exports, "pieSlices", {
   enumerable: true,
   get: function () {
     return _PieChart.pieSlices;
+  }
+});
+Object.defineProperty(exports, "productFields", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.productFields;
   }
 });
 Object.defineProperty(exports, "qrEncode", {
@@ -60204,6 +67873,12 @@ Object.defineProperty(exports, "useCommandBar", {
   enumerable: true,
   get: function () {
     return _CommandBar.useCommandBar;
+  }
+});
+Object.defineProperty(exports, "useCommercePage", {
+  enumerable: true,
+  get: function () {
+    return _Commerce.useCommercePage;
   }
 });
 Object.defineProperty(exports, "useDensity", {
@@ -60700,6 +68375,41 @@ var _FileList = require("./patterns/FileList/FileList.jsx");
 var _FileBrowser = require("./patterns/FileBrowser/FileBrowser.jsx");
 var _UploadManager = require("./patterns/UploadManager/UploadManager.jsx");
 var _VersionCompare = require("./patterns/VersionCompare/VersionCompare.jsx");
+var _AssetGallery = require("./patterns/AssetGallery/AssetGallery.jsx");
+var _DownloadManager = require("./patterns/DownloadManager/DownloadManager.jsx");
+var _MediaPlayer = require("./components/MediaPlayer/MediaPlayer.jsx");
+var _MetadataEditor = require("./patterns/MetadataEditor/MetadataEditor.jsx");
+var _RelatedAssets = require("./patterns/RelatedAssets/RelatedAssets.jsx");
+var _AttachmentPicker = require("./patterns/AttachmentPicker/AttachmentPicker.jsx");
+var _FilePicker = require("./patterns/FilePicker/FilePicker.jsx");
+var _RenditionList = require("./patterns/RenditionList/RenditionList.jsx");
+var _DocumentViewer = require("./components/DocumentViewer/DocumentViewer.jsx");
+var _VersionHistory = require("./patterns/VersionHistory/VersionHistory.jsx");
+var _ProductCard = require("./patterns/ProductCard/ProductCard.jsx");
+var _ProductOptions = require("./components/ProductOptions/ProductOptions.jsx");
+var _Commerce = require("./templates/Commerce/Commerce.jsx");
+var _Comment = require("./components/Comment/Comment.jsx");
+var _CommentThread = require("./patterns/CommentThread/CommentThread.jsx");
+var _ImageAnnotation = require("./patterns/ImageAnnotation/ImageAnnotation.jsx");
+var _PresenceBar = require("./patterns/PresenceBar/PresenceBar.jsx");
+var _MentionInput = require("./components/MentionInput/MentionInput.jsx");
+var _Announcement = require("./components/Announcement/Announcement.jsx");
+var _AuditLog = require("./patterns/AuditLog/AuditLog.jsx");
+var _ApprovalWorkflow = require("./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx");
+var _AILabel = require("./components/AILabel/AILabel.jsx");
+var _GeneratedContent = require("./components/GeneratedContent/GeneratedContent.jsx");
+var _PromptHistory = require("./patterns/PromptHistory/PromptHistory.jsx");
+var _Citation = require("./components/Citation/Citation.jsx");
+var _SuggestedAction = require("./components/SuggestedAction/SuggestedAction.jsx");
+var _AISearch = require("./patterns/AISearch/AISearch.jsx");
+var _Recommendation = require("./patterns/Recommendation/Recommendation.jsx");
+var _AIButton = require("./components/AIButton/AIButton.jsx");
+var _AIDisclaimer = require("./components/AIDisclaimer/AIDisclaimer.jsx");
+var _ConfidenceIndicator = require("./components/ConfidenceIndicator/ConfidenceIndicator.jsx");
+var _AIExplanation = require("./patterns/AIExplanation/AIExplanation.jsx");
+var _PromptSuggestions = require("./components/PromptSuggestions/PromptSuggestions.jsx");
+var _SuggestedEdit = require("./components/SuggestedEdit/SuggestedEdit.jsx");
+var _RefineMenu = require("./components/RefineMenu/RefineMenu.jsx");
   } }
   };
   var cache = {};

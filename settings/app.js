@@ -3585,7 +3585,13 @@ function Settings({
     id: 18,
     name: "branding"
   }]);
-  const [tagSearch, setTagSearch] = useState("");
+  const tagView = (0, _plenixPlatform.useCollectionView)([{
+    value: "name",
+    label: "Name",
+    kind: "text"
+  }], {
+    text: t => t.name
+  });
   const [tagAdding, setTagAdding] = useState(false);
   const [tagEditVal, setTagEditVal] = useState("");
   const tagName = v => v.trim().toLowerCase().replace(/\s+/g, "-");
@@ -3619,7 +3625,13 @@ function Settings({
     group: g.group
   })));
   const [projTypes, setProjTypes] = useState(defaultTypes);
-  const [ptSearch, setPtSearch] = useState("");
+  const ptView = (0, _plenixPlatform.useCollectionView)([{
+    value: "name",
+    label: "Name",
+    kind: "text"
+  }], {
+    text: t => t.name
+  });
   const [ptAdding, setPtAdding] = useState(false);
   const [ptEditVal, setPtEditVal] = useState("");
   const addPT = () => {
@@ -3705,7 +3717,7 @@ function Settings({
 
   // the accent colors to choose from: data handed to ColorSwatch (prefs.accent keeps the chosen value)
   const accent = _plenixPlatform.DATA_COLORS.indexOf(prefs.accent) >= 0 ? prefs.accent : _plenixPlatform.DATA_COLORS[0];
-  const visibleTags = tags.filter(t => !tagSearch || t.name.includes(tagSearch.toLowerCase()));
+  const visibleTags = tags.filter(tagView.test);
   const panels = {
     categories: /*#__PURE__*/React.createElement(Screen, {
       id: "categories",
@@ -3797,29 +3809,31 @@ function Settings({
     tags: /*#__PURE__*/React.createElement(Screen, {
       id: "tags",
       title: "Tags",
-      desc: "Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere.",
-      actions: /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-        variant: "primary",
-        icon: "plus",
-        onClick: () => {
-          setTagAdding(true);
-          setTagEditVal("");
-        }
-      }, "New tag")
+      desc: "Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere."
     }, /*#__PURE__*/React.createElement(Section, {
       title: "All tags",
       description: visibleTags.length + " of " + tags.length + " tags"
-    }, /*#__PURE__*/React.createElement(Row, {
-      label: "Search tags",
-      htmlFor: "settings-tag-search"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
-      id: "settings-tag-search",
-      value: tagSearch,
-      onChange: e => setTagSearch(e.target.value),
-      onClear: () => setTagSearch(""),
-      placeholder: "Search tags...",
-      label: "Search tags"
-    })), tagAdding && /*#__PURE__*/React.createElement(AddRow, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
+      label: "Tags",
+      sticky: false,
+      count: visibleTags.length + " tags",
+      actions: [{
+        id: "new",
+        label: "New tag",
+        icon: "plus",
+        primary: true,
+        onSelect: () => {
+          setTagAdding(true);
+          setTagEditVal("");
+        }
+      }],
+      find: /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarSearch, _extends({
+        id: "settings-tag-search"
+      }, tagView.searchProps, {
+        placeholder: "Search tags...",
+        label: "Search tags"
+      }))
+    }), tagAdding && /*#__PURE__*/React.createElement(AddRow, {
       id: "settings-new-tag",
       label: "New tag name",
       value: tagEditVal,
@@ -3847,29 +3861,31 @@ function Settings({
     projtypes: /*#__PURE__*/React.createElement(Screen, {
       id: "projtypes",
       title: "Project types",
-      desc: "Define the types of projects in your workspace. Applied when creating a project.",
-      actions: /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-        variant: "primary",
-        icon: "plus",
-        onClick: () => {
-          setPtAdding(true);
-          setPtEditVal("");
-        }
-      }, "New type")
+      desc: "Define the types of projects in your workspace. Applied when creating a project."
     }, /*#__PURE__*/React.createElement(Section, {
       title: "Find a project type",
       description: projTypes.length + " project types defined"
-    }, /*#__PURE__*/React.createElement(Row, {
-      label: "Search project types",
-      htmlFor: "settings-type-search"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
-      id: "settings-type-search",
-      value: ptSearch,
-      onChange: e => setPtSearch(e.target.value),
-      onClear: () => setPtSearch(""),
-      placeholder: "Search project types...",
-      label: "Search project types"
-    })), ptAdding && /*#__PURE__*/React.createElement(AddRow, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
+      label: "Project types",
+      sticky: false,
+      count: ptView.count(projTypes) + " project types",
+      actions: [{
+        id: "new",
+        label: "New type",
+        icon: "plus",
+        primary: true,
+        onSelect: () => {
+          setPtAdding(true);
+          setPtEditVal("");
+        }
+      }],
+      find: /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarSearch, _extends({
+        id: "settings-type-search"
+      }, ptView.searchProps, {
+        placeholder: "Search project types...",
+        label: "Search project types"
+      }))
+    }), ptAdding && /*#__PURE__*/React.createElement(AddRow, {
       id: "settings-new-type",
       label: "New project type name",
       value: ptEditVal,
@@ -3878,7 +3894,7 @@ function Settings({
       onAdd: addPT,
       onCancel: cancelPT
     })), (() => {
-      const filtered = projTypes.filter(t => !ptSearch || t.name.toLowerCase().includes(ptSearch.toLowerCase()));
+      const filtered = projTypes.filter(ptView.test);
       const groups = {};
       filtered.forEach(t => {
         if (!groups[t.group]) groups[t.group] = [];

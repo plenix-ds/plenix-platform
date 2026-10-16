@@ -1,0 +1,2 @@
+/* Plenix · MetadataEditor: composed regions use existing spacing roles. */
+.plx-metadata-editor{row-gap:var(--plx-comp-metadata-editor-gap);}

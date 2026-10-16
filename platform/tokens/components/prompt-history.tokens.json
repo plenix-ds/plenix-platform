@@ -1,0 +1,10 @@
+{
+  "$description": "PromptHistory: component spacing roles.",
+  "plx-comp": {
+    "prompt-history-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "PromptHistory: space between composed regions."
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "android-specialized|Share": {
+    "summary": "Comment conversations and named review locations use native controls with caller owned shared state.",
+    "variants": [
+      {
+        "name": "Comment: Default",
+        "web": "specialized|Comment",
+        "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "Comment: Own",
+        "web": "specialized|Comment",
+        "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "Comment: Edited",
+        "web": "specialized|Comment",
+        "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "Comment: Resolved",
+        "web": "specialized|Comment",
+        "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "Comment: With reactions",
+        "web": "specialized|Comment",
+        "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "CommentThread: Thread",
+        "web": "specialized|Comment thread",
+        "use": "Follow a conversation and send replies without losing failed drafts.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "CommentThread: Reply composer",
+        "web": "specialized|Comment thread",
+        "use": "Follow a conversation and send replies without losing failed drafts.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "CommentThread: Resolved",
+        "web": "specialized|Comment thread",
+        "use": "Follow a conversation and send replies without losing failed drafts.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "ImageAnnotation: Pins",
+        "web": "specialized|Annotation",
+        "use": "Review named image locations and their comment threads.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "ImageAnnotation: Regions",
+        "web": "specialized|Annotation",
+        "use": "Review named image locations and their comment threads.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "PresenceBar: Viewers",
+        "web": "specialized|Presence",
+        "use": "Identify current viewers, editors and supplied cursor locations.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "PresenceBar: Editors",
+        "web": "specialized|Presence",
+        "use": "Identify current viewers, editors and supplied cursor locations.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      },
+      {
+        "name": "PresenceBar: Cursors list",
+        "web": "specialized|Presence",
+        "use": "Identify current viewers, editors and supplied cursor locations.",
+        "compose": "Bind Text and Button actions to the shared conversation model."
+      }
+    ],
+    "anatomy": [
+      "Person identity and timestamp",
+      "Comment content or named image location",
+      "Explicit reply and resolution controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Collaboration spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd))",
+        "views": "Use the existing Plenix spacing role between native views."
+      }
+    ],
+    "states": [
+      {
+        "name": "Pending",
+        "behavior": "Prevent duplicate writes and retain draft text."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce recovery and preserve the draft."
+      }
+    ],
+    "code": {
+      "compose": [
+        "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "    Text(model.message)",
+        "    Button(onClick = model::sendReply) { Text(model.replyLabel) }",
+        "}"
+      ],
+      "views": [
+        "messageView.text = model.message",
+        "replyButton.setOnClickListener { model.sendReply() }"
+      ]
+    }
+  }
+}

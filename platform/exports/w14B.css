@@ -1,0 +1,8 @@
+@import url("../components/AILabel/ai-label.css");
+@import url("../components/GeneratedContent/generated-content.css");
+@import url("../patterns/PromptHistory/prompt-history.css");
+@import url("../components/Citation/citation.css");
+@import url("../components/SuggestedAction/suggested-action.css");
+@import url("../patterns/AISearch/ai-search.css");
+@import url("../patterns/Recommendation/recommendation.css");
+@import url("../system/ai.css");

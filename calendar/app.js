@@ -2489,7 +2489,11 @@ function CalendarScreen({
     screen.open([v, v === 'month' ? MONTH : v === 'week' ? iso(1) : iso(selDay)]);
   };
   const [activeCals] = useState(() => Object.fromEntries(_shared.CALENDARS.map(c => [c.id, true])));
-  const [activeTag, setActiveTag] = useState(null);
+  const collection = (0, _plenixPlatform.useCollectionView)([], {
+    text: e => e.title
+  });
+  const activeTag = collection.search;
+  const setActiveTag = value => collection.setSearch(value || '');
   const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const DAYS_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const firstDay = new Date(2026, 2, 1).getDay();
@@ -2497,7 +2501,7 @@ function CalendarScreen({
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= 31; d++) cells.push(d);
   const allTags = [...new Set(_shared.CAL_EVENTS.map(e => e.title.split('—')[0].split('(')[0].trim()))];
-  const visibleEvs = _shared.CAL_EVENTS.filter(e => activeCals[e.cal] && (!activeTag || e.title.toLowerCase().includes(activeTag.toLowerCase())));
+  const visibleEvs = _shared.CAL_EVENTS.filter(e => activeCals[e.cal] && collection.test(e));
   const evFor = n => visibleEvs.filter(e => e.date === n);
   const calName = id => (_shared.CALENDARS.find(c => c.id === id) || {}).label;
   // "2:00 PM" → 14; all-day events have no hour
@@ -2580,22 +2584,34 @@ function CalendarScreen({
       value: 'day',
       label: 'Day'
     }]
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    variant: "primary",
-    size: "sm",
-    icon: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
-      name: "plus"
-    })
-  }, "Add event"))), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
-    label: "Filter events"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Chip, {
-    selected: !activeTag,
-    onClick: () => setActiveTag(null)
-  }, "All"), allTags.map(tag => /*#__PURE__*/React.createElement(_plenixPlatform.Chip, {
-    key: tag,
-    selected: activeTag === tag,
-    onClick: () => setActiveTag(activeTag === tag ? null : tag)
-  }, tag)))), view === 'month' ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+  }))), /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
+    label: "Events",
+    sticky: false,
+    count: visibleEvs.length + ' events',
+    actions: [{
+      id: 'add',
+      label: 'Add event',
+      icon: 'plus',
+      primary: true
+    }],
+    view: /*#__PURE__*/React.createElement(_plenixPlatform.Menu, {
+      trigger: /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarButton, {
+        icon: "filter",
+        label: "Filter events",
+        active: !!activeTag,
+        caret: true
+      })
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.MenuRadioGroup, {
+      label: "Filter events",
+      value: activeTag,
+      onChange: setActiveTag
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.MenuItem, {
+      value: ""
+    }, "All"), allTags.map(tag => /*#__PURE__*/React.createElement(_plenixPlatform.MenuItem, {
+      key: tag,
+      value: tag
+    }, tag))))
+  })), view === 'month' ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     inset: "md",
     gap: "md",
     grow: true,

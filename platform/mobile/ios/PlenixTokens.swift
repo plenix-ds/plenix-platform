@@ -598,6 +598,7 @@ public enum Plenix {
         public static let navListItemPaddingInline: CGFloat = 8
         public static let navListItemRadius: CGFloat = 6
         public static let navPaneWidth: CGFloat = 240
+        public static let productCardRadius: CGFloat = 12
         public static let progressBarFillDuration: Double = 0.2
         public static let progressBarFillRadius: CGFloat = 9999
         public static let progressBarIndeterminateFillAnimationDuration: Double = 1.4

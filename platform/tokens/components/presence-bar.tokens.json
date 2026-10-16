@@ -1,0 +1,10 @@
+{
+  "$description": "PresenceBar spacing roles.",
+  "plx-comp": {
+    "presence-bar-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Space between PresenceBar regions."
+    }
+  }
+}

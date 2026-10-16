@@ -16,9 +16,11 @@
      options.quick: the quick filters, by field: "list" (the row's value is one of the chosen) | "date" (a date range)
      options.columns: the starting columns { order, hidden } (default every field, in order)
      options.view: the starting view { layout, size, height } (default list, medium cards, Short rows)
+     options.sort: starting [{ field, dir }] sort; Reset view returns to it
+     options.storageKey: collection state in localStorage, under storageKey + ".collection"
      options.today: the ISO date "today" is, for the date presets (default the current date)
    Returns:
-     { search, filter, quick, sort, group, columns, view, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
+     { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataTable's
        Tabulator instance), searchProps, filterProps, quickProps(key), sortProps, groupProps, columnsProps, viewProps,
        tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, onReady } }
@@ -31,14 +33,54 @@ import { matchesFilter, matchesDate, valueOf, fieldOf } from '../utils/fields.js
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 
 export function useCollectionView(fields, options = {}) {
-  const [search, setSearch] = React.useState('');
-  const [filter, setFilter] = React.useState({ join: 'and', items: [] });
-  const [quick, setQuickAll] = React.useState({});
-  const [sort, setSort] = React.useState([]);
-  const [group, setGroup] = React.useState([]);
-  const [columns, setColumns] = React.useState(() => options.columns || { order: fields.map((f) => f.value), hidden: [] });
-  const [view, setView] = React.useState(() => Object.assign({ layout: 'list', size: 'm', height: 'short' }, options.view));
+  const defaults = React.useRef(null);
+  if (!defaults.current) defaults.current = { search: '', filter: { join: 'and', items: [] }, quick: {}, sort: options.sort || [], group: [],
+    columns: options.columns || { order: fields.map((f) => f.value), hidden: [] },
+    view: Object.assign({ layout: 'list', size: 'm', height: 'short' }, options.view) };
+  const initial = React.useRef(null);
+  if (!initial.current) {
+    let saved = null;
+    try { saved = options.storageKey && JSON.parse(localStorage.getItem(options.storageKey + '.collection')); } catch (e) { /* unavailable or broken storage */ }
+    const object = (x) => x && typeof x === 'object' && !Array.isArray(x);
+    const level = (x) => object(x) && typeof x.field === 'string' && (x.dir === undefined || x.dir === 'asc' || x.dir === 'desc');
+    const filterNode = (x) => object(x) && Array.isArray(x.items) && x.items.every((it) => object(it) && (it.group ? filterNode(it) : typeof it.field === 'string'));
+    const valid = object(saved) && filterNode(saved.filter) && object(saved.quick) && object(saved.columns) && object(saved.view)
+      && ['list', 'gallery'].includes(saved.view.layout) && ['s', 'm', 'l'].includes(saved.view.size) && ['short', 'medium', 'tall', 'extra-tall'].includes(saved.view.height)
+      && Array.isArray(saved.sort) && saved.sort.every(level) && Array.isArray(saved.group) && saved.group.every(level)
+      && Object.values(saved.quick).every((q) => Array.isArray(q) || object(q)) && typeof saved.search === 'string'
+      && Array.isArray(saved.columns.order) && saved.columns.order.every((x) => typeof x === 'string')
+      && Array.isArray(saved.columns.hidden) && saved.columns.hidden.every((x) => typeof x === 'string');
+    if (valid) {
+      const known = new Set(fields.map((f) => f.value));
+      const prune = (node) => Object.assign({}, node, { items: node.items.filter((it) => it.group || known.has(it.field)).map((it) => it.group ? prune(it) : it) });
+      const order = saved.columns.order.filter((f) => known.has(f));
+      saved.filter = prune(saved.filter);
+      saved.sort = saved.sort.filter((it) => known.has(it.field)); saved.group = saved.group.filter((it) => known.has(it.field));
+      saved.quick = Object.fromEntries(Object.entries(saved.quick).filter(([key]) => known.has(key)));
+      saved.columns = { order: order.concat(fields.map((f) => f.value).filter((f) => !order.includes(f))), hidden: saved.columns.hidden.filter((f) => known.has(f)) };
+    }
+    initial.current = valid ? saved : defaults.current;
+  }
+  const [search, setSearch] = React.useState(initial.current.search);
+  const [filter, setFilter] = React.useState(initial.current.filter);
+  const [quick, setQuickAll] = React.useState(initial.current.quick);
+  const [sort, setSort] = React.useState(initial.current.sort);
+  const [group, setGroup] = React.useState(initial.current.group);
+  const [columns, setColumns] = React.useState(initial.current.columns);
+  const [view, setView] = React.useState(initial.current.view);
   const table = React.useRef(null);
+  const skipSave = React.useRef(false);
+  const [resetVersion, setResetVersion] = React.useState(0);
+  const reset = () => {
+    const d = defaults.current;
+    setSearch(d.search); setFilter(d.filter); setQuickAll(d.quick); setSort(d.sort); setGroup(d.group); setColumns(d.columns); setView(d.view);
+    skipSave.current = true; setResetVersion((n) => n + 1);
+    try { if (options.storageKey) localStorage.removeItem(options.storageKey + '.collection'); } catch (e) { /* unavailable storage */ }
+  };
+  React.useEffect(() => {
+    if (skipSave.current) { skipSave.current = false; return; }
+    try { if (options.storageKey) localStorage.setItem(options.storageKey + '.collection', JSON.stringify({ search, filter, quick, sort, group, columns, view })); } catch (e) { /* unavailable storage */ }
+  }, [search, filter, quick, sort, group, columns, view, options.storageKey, resetVersion]);
   const setQuick = (k, v) => setQuickAll((o) => Object.assign({}, o, { [k]: v }));
   const latest = React.useRef(); latest.current = { fields, options };
   const test = React.useCallback((row) => {
@@ -56,7 +98,7 @@ export function useCollectionView(fields, options = {}) {
   }, [search, filter, quick, group]);
   const sorters = group.map((g) => ({ field: g.field, dir: g.dir || 'asc' })).concat(sort.filter((s) => !group.some((g) => g.field === s.field)));
   return {
-    search, filter, quick, sort, group, columns, view, setSearch, setFilter, setQuick, setSort, setGroup, setColumns, setView, test, table,
+    search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick, setSort, setGroup, setColumns, setView, test, table,
     count: (rows) => rows.filter(test).length,
     searchProps: { value: search, onChange: (e) => setSearch(e.target.value), onClear: () => setSearch('') },
     filterProps: { fields, value: filter, onChange: setFilter },
@@ -64,7 +106,7 @@ export function useCollectionView(fields, options = {}) {
     sortProps: { fields, value: sort, onChange: setSort, grouped: group.length > 0 },
     groupProps: { fields: fields.some((f) => f.kind === 'select') ? fields.filter((f) => f.kind === 'select') : fields, value: group, onChange: setGroup, table },
     columnsProps: { fields, value: columns, onChange: setColumns },
-    viewProps: { value: view, onChange: setView },
+    viewProps: { value: view, onChange: setView, onReset: reset },
     tableProps: { filter: test, sort: sorters, groupBy: group.length ? group.map((g) => g.field) : false, columnOrder: columns.order, hiddenColumns: columns.hidden,
       rowHeight: view.height, onReady: (t) => { table.current = t; } },
   };

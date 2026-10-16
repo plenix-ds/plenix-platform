@@ -1,0 +1,93 @@
+{
+  "$description": "AI identification, generated content and search counterparts.",
+  "map": {
+    "specialized|AI label": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-content|Badge"
+      ]
+    },
+    "specialized|Generated content": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-data-display|Card"
+      ]
+    },
+    "specialized|Regenerate": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-data-display|Card"
+      ]
+    },
+    "specialized|Prompt history": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-data-display|List"
+      ]
+    },
+    "specialized|AI citation": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-data-display|Card"
+      ]
+    },
+    "specialized|Source reference": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-data-display|Card"
+      ]
+    },
+    "specialized|Suggested action": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-data-display|Card"
+      ]
+    },
+    "specialized|AI search": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-navigation|Search screen"
+      ]
+    },
+    "specialized|Semantic search": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-navigation|Search screen"
+      ]
+    },
+    "specialized|Recommendation": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-data-display|Carousel"
+      ]
+    },
+    "foundations|AI visual language": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-content|Badge"
+      ]
+    }
+  }
+}

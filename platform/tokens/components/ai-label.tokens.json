@@ -1,0 +1,10 @@
+{
+  "$description": "AILabel: component spacing roles.",
+  "plx-comp": {
+    "ai-label-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "AILabel: space between composed regions."
+    }
+  }
+}

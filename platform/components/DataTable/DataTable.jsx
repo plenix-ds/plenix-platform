@@ -52,7 +52,12 @@
        (4) Narrower, Wider, Fit to content, Move left, Move right, (5) Hide field, Show all fields
      columnMenu: the application's field actions, first in the column menu: [{ label, icon, onSelect(column, col), danger,
        disabled, separator }] (Edit field, Duplicate, Insert left, Insert right, Delete…), or (column) => that list
-     rowMenu: right-click on a row: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
+     rowMenuButton: with rowMenu, a sticky last-column ghost button (default true); false keeps right-click only
+     keepHiddenSelection: true (default) keeps selected rows hidden by filters; false deselects them
+     onSelectionChange(keys, selection): selection is { count, hidden }, for CommandBar selection.hidden
+     rowMenu: the button or right-click opens items: label, icon, danger, disabled, separator,
+       onSelect(data, row); action(data, row) is an alias. Development warns once for items with neither handler.
+       Item list: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
        (data) => that list
      rowHeight: the record rows' height step (owner, 2026-10-14): "short" (default: the density's row height, 28 / 32 /
        40) | "medium" (56px) | "tall" (88px) | "extra-tall" (128px), the same at every density; the person changes it in the
@@ -209,10 +214,12 @@ import { formatNumber } from '../../utils/format.js';
 import { gridPx } from '../../utils/grid.js';
 import { floatingScroll } from './floatingScroll.js';
 
+const INTERACTIVE = 'button, a, input, select, textarea, [role="button"], [data-plx-no-row-click]';
+const warnedItems = new Set();
 const SEP = '\u0000';
 const MIN = '--plx-ref-size-80px';   // the narrowest a resized column gets
 const STRINGS = {
-  empty: 'Nothing to show', clearSort: 'Clear sort', clearFilter: 'Clear filter',
+  rowActions: 'Row actions', empty: 'Nothing to show', clearSort: 'Clear sort', clearFilter: 'Clear filter',
   // the column menu's sort items, by the column's type (owner, 2026-10-14: Airtable's words)
   sortText: ['Sort A → Z', 'Sort Z → A'], sortNumber: ['Sort 1 → 9', 'Sort 9 → 1'], sortDate: ['Sort oldest → newest', 'Sort newest → oldest'],
   sortCheck: ['Sort unchecked → checked', 'Sort checked → unchecked'],
@@ -325,6 +332,7 @@ const plenixEditor = (type) => (cell, onRendered, success, cancel) => {
 // a plain value in its own element, so the cell aligns it to the middle of the row and a long value still ends in an ellipsis
 function valueFormatter(cell) {
   const v = cell.getValue(), s = document.createElement('span');
+  cell.getElement().setAttribute('dir', 'auto');
   s.className = 'plx-data-table__value'; s.textContent = v == null ? '' : String(v);
   return s;
 }
@@ -556,7 +564,14 @@ export function TableEngine(props) {
       const want = p.sort.filter((x) => x && col(x.field)).map((x) => ({ column: x.field, dir: x.dir === 'desc' ? 'desc' : 'asc' }));
       // (Tabulator's sort list ends with the main sort: the page's first level goes last)
       const now = t.getSorters().map((x) => ({ column: x.field, dir: x.dir })).reverse();
-      if (JSON.stringify(want) !== JSON.stringify(now)) { if (want.length) t.setSort(want.slice().reverse()); else t.clearSort(); }
+      if (want.length) {
+        if (JSON.stringify(want) !== JSON.stringify(now)) {
+          t.setSort(want.map((x) => Object.assign({}, x)).reverse()); t.plxViewSort = want;
+        }
+      } else if (t.plxViewSort) {
+        if (JSON.stringify(t.plxViewSort) === JSON.stringify(now)) t.clearSort();
+        t.plxViewSort = null;
+      }
     }
     if (p.groupBy !== undefined) {
       const list = [].concat(p.groupBy || []).filter((x) => typeof x === 'string' && col(x));
@@ -836,7 +851,7 @@ export function TableEngine(props) {
         };
       }
       if (kind === 'actions') Object.assign(d, { headerSort: false, resizable: false });
-      if (render) d.formatter = (cell) => { const id = String(cell.getRow().getIndex()) + SEP + c.field; owners.current.set(id, cell); return container(id); };
+      if (render) d.formatter = (cell) => { cell.getElement().setAttribute('dir', 'auto'); const id = String(cell.getRow().getIndex()) + SEP + c.field; owners.current.set(id, cell); return container(id); };
       if (filter && !isStatic) { d.headerPopup = filterPopup(c); d.headerPopupIcon = iconEl('filter').outerHTML; }
       if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c, labelAt >= i || !!c.frozen);
       // the header's chevron button (owner, 2026-10-14): shown while the header is hovered, it opens the same column menu
@@ -876,18 +891,37 @@ export function TableEngine(props) {
       const p = latest.current;
       const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || S.empty);
       // the row menu: the page's items, then (movable rows) the moves
+      let optsRowMenu;
       const movable = !isStatic && !!(p.options || {}).movableRows;
       const rowContextMenu = p.rowMenu || movable ? (e, row) => {
         const cur = latest.current.rowMenu, d = row.getData();
         const list = typeof cur === 'function' ? cur(d) : cur;
-        const items = (list || []).map((it) => (it.separator ? { separator: true } : {
+        const items = (list || []).map((it) => {
+          if (!it.separator && typeof it.onSelect !== 'function' && typeof it.action !== 'function' && !warnedItems.has(it.label) &&
+            !!React.createElement('span')._store) {
+            warnedItems.add(it.label); console.warn('Plenix DataTable: rowMenu item "' + it.label + '" needs onSelect or action.');
+          }
+          return it.separator ? { separator: true } : {
           label: menuLabel(it.label, it.icon, it.danger),
           disabled: typeof it.disabled === 'function' ? it.disabled(d) : !!it.disabled,
-          action: () => it.onSelect && it.onSelect(d, row)
-        }));
+          action: () => { const fn = typeof it.onSelect === 'function' ? it.onSelect : it.action; if (typeof fn === 'function') fn(d, row); }
+        }; });
         if (movable) { if (items.length) items.push({ separator: true }); items.push(...rowMoveItems(row)); }
         return items;
       } : undefined;
+      if (!isStatic && p.rowMenu && p.rowMenuButton !== false) {
+        const width = tablePx('--plx-comp-data-table-row-menu-width', host);
+        optsRowMenu = { title: S.rowActions, field: '_plxRowMenu', headerSort: false, resizable: false, frozen: true,
+          width, minWidth: width, maxWidth: width, cssClass: B + '__cell--row-menu ' + B + '__cell--actions',
+          formatter: (cell) => {
+            const button = el('button', 'plx-button plx-button--ghost plx-button--icon-only plx-button--size-sm ' + B + '__row-menu');
+            button.type = 'button'; button.setAttribute('aria-label', S.rowActions); button.setAttribute('aria-haspopup', 'menu');
+            const icon = el('span', 'plx-button__icon'); icon.appendChild(iconEl('more')); button.appendChild(icon);
+            button.addEventListener('click', (ev) => { ev.stopPropagation(); const r = button.getBoundingClientRect();
+              cell.getRow().getElement().dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: r.left, clientY: r.bottom })); });
+            return button;
+          } };
+      }
       const labelled = p.columns.some((c) => c.rowLabel);
       const leadPx = tablePx('--plx-comp-data-table-lead-column-width', host);
       const opts = {
@@ -915,6 +949,10 @@ export function TableEngine(props) {
           const own = latest.current.options && latest.current.options.rowFormatter;
           if (own) own(row);
           const e = row.getElement();
+          e.querySelectorAll('.tabulator-cell:not([data-plx-interactive])').forEach((cell) => {
+            cell.setAttribute('data-plx-interactive', '');
+            cell.addEventListener('click', (ev) => { if (ev.target.closest(INTERACTIVE)) ev.stopPropagation(); });
+          });
           if (!isStatic && latest.current.on && latest.current.on.rowClick && !e.hasAttribute('data-plx-open')) {
             e.setAttribute('data-plx-open', ''); e.tabIndex = 0;
             e.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target === e) { ev.preventDefault(); e.click(); } });
@@ -965,7 +1003,7 @@ export function TableEngine(props) {
         Object.assign(opts, { ajaxURL: 'plenix:rows', ajaxRequestFunc: request, sortMode: 'remote', filterMode: 'remote' });
         delete opts.data;
       }
-      opts.columns = defsOf(p.columns, host);
+      opts.columns = defsOf(p.columns, host).concat(optsRowMenu ? [optsRowMenu] : []);
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
       tableRef.current = table;
@@ -1014,8 +1052,22 @@ export function TableEngine(props) {
         // the body's scrollbars float over the rows and take no room (owner, 2026-10-15)
         if (!unfloat) unfloat = floatingScroll(host, host.querySelector('.tabulator-tableholder'));
         const on = isStatic ? {} : latest.current.on || {};
-        Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h) h(...a); }));
-        table.on('rowSelectionChanged', () => { const q = latest.current; if (!syncing.current && q.onSelectionChange) q.onSelectionChange(table.getSelectedData().map((x) => x[q.index || 'id'])); });
+        Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h && !(ev === 'rowClick' && a[0].target.closest(INTERACTIVE))) h(...a); }));
+        const selectionChanged = (activeRows = table.getRows('active')) => {
+          const q = latest.current; if (syncing.current || !q.onSelectionChange) return;
+          const rows = table.getSelectedRows(), visible = new Set(activeRows);
+          q.onSelectionChange(rows.map((r) => r.getData()[q.index || 'id']), { count: rows.length, hidden: rows.filter((r) => !visible.has(r)).length });
+        };
+        table.on('rowSelectionChanged', () => selectionChanged());
+        table.on('dataFiltered', (filters, activeRows) => {
+          if (latest.current.keepHiddenSelection === false) {
+            const active = new Set(activeRows);
+            syncing.current = true;
+            table.getSelectedRows().filter((r) => !active.has(r)).forEach((r) => r.deselect());
+            syncing.current = false;
+          }
+          selectionChanged(activeRows);
+        });
         syncSelection(table);
         if (!isStatic) {
           wireColumns(table); wireRows(table, host); wireGroups(table, host);
@@ -1101,7 +1153,7 @@ export function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
+  }, [shape, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
 
   // the footer's numbers, after each render of the rows: the page, its range and the total ("pages"), or the rows shown
   // and the total ("load-more"); a page's rows carry their place in the whole set

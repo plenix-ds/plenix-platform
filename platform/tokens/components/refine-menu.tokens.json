@@ -1,0 +1,10 @@
+{
+  "$description": "RefineMenu composition spacing.",
+  "plx-comp": {
+    "refine-menu-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between RefineMenu regions."
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$description": "VersionHistory: component spacing roles.",
+  "plx-comp": {
+    "version-history-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "VersionHistory: space between composed regions."
+    }
+  }
+}

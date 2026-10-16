@@ -1,0 +1,2 @@
+.plx-suggested-edit { gap: var(--plx-comp-suggested-edit-gap); }
+.plx-suggested-edit__before, .plx-suggested-edit__after { white-space: pre-wrap; overflow-wrap: anywhere; }

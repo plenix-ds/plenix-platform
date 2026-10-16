@@ -8,5 +8,4 @@
 .plx-search-ws__query{max-inline-size:var(--plx-comp-search-ws-query-max-width);}
 .plx-search-ws__query .plx-search{inline-size:100%;}
 .plx-search-ws__active{align-items:center;column-gap:var(--plx-comp-search-ws-active-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-search-ws-active-row-gap);}
-.plx-search-ws__bar{align-items:center;border-bottom-color:var(--plx-comp-search-ws-bar-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-search-ws-bar-border-bottom-width);column-gap:var(--plx-comp-search-ws-bar-gap);display:flex;padding-block-end:var(--plx-comp-search-ws-bar-padding-block-end);}
 .plx-search-ws__body{display:flex;flex-direction:column;min-block-size:0;row-gap:var(--plx-comp-search-ws-body-row-gap);}

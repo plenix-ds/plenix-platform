@@ -1,0 +1,2 @@
+.plx-comment { gap: var(--plx-comp-comment-gap); }
+.plx-comment__body { white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -36,7 +36,8 @@
      status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
        is short of room, and while rows are selected
      end: more controls at the very end (Export); hidden while rows are selected
-     selection: the selection (the swap): { count, actions, onClear, noun, plural, label }; while count is above 0 the bar
+     selection.hidden: how many selected records are hidden by filters (DataTable onSelectionChange supplies it)
+     selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
        while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
        with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
@@ -89,7 +90,7 @@ import { MenuSub, MenuItem, MenuRadioGroup } from '../../components/Menu/Menu.js
 import { QuickFilter } from '../QuickFilter/QuickFilter.jsx';
 import { DATE_PRESETS } from '../../utils/fields.js';
 
-const STRINGS = { more: 'More actions', actions: '{label} actions', find: 'Find and view', selected: '{n} selected',
+const STRINGS = { more: 'More actions', actions: '{label} actions', find: 'Find and view', selected: '{n} selected', hidden: ' ({n} hidden by filters)',
   clear: 'Clear the selection', clearName: '{n} selected, clear the selection', swapped: '{n} selected. Selection actions available.',
   cleared: 'Selection cleared.', why: 'Select {plural} to {action}', single: 'Select one {noun} to {action}' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
@@ -179,11 +180,13 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null
     : typeof count === 'string' || typeof count === 'number' ? <Text variant="data" className="plx-command-bar__count">{count}</Text> : count;
   // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
+  const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, { n: formatNumber(sel.hidden) }) : '';
+  const [hiddenBefore, hiddenAfter] = String(t.hidden).split('{n}');
   const [before, after] = String(t.selected).split('{n}');
   const clearEl = selecting ? (
     <Tooltip content={t.clear}>
-      <Button size="sm" variant="ghost" icon="close" className="plx-command-bar__clear" aria-label={fill(t.clearName, { n: formatNumber(selCount) })} onClick={() => sel.onClear && sel.onClear()}>
-        {before}<Text variant="data" className="plx-command-bar__number">{formatNumber(selCount)}</Text>{after}
+      <Button size="sm" variant="ghost" icon="close" className="plx-command-bar__clear" aria-label={fill(t.clearName, { n: formatNumber(selCount) }) + hiddenText} onClick={() => sel.onClear && sel.onClear()}>
+        {before}<Text variant="data" className="plx-command-bar__number">{formatNumber(selCount)}</Text>{after}{hiddenText ? <>{hiddenBefore}<Text variant="data">{formatNumber(sel.hidden)}</Text>{hiddenAfter}</> : null}
       </Button>
     </Tooltip>
   ) : null;

@@ -28,7 +28,8 @@
      Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
      Chat.Composer.sendLabel: default "Send"; disabled: the composer is inert
      Chat.Typing.label: the text announced to assistive technology (default "Typing")
-     Chat.Typing.className: more classes on the dots
+     Chat.Typing.variant: typing (default) | thinking | steps; steps: [{label,status}], current: active step index
+     Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
      className on every part: more classes
    Behavior:
      The thread is a log (role="log", aria-live="polite"): new messages are announced.
@@ -43,9 +44,19 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { Button } from '../Button/Button.jsx';
+import { Icon } from '../Icon/Icon.jsx';
+import { Spinner } from '../Loading/Loading.jsx';
+import { ProgressSteps } from '../ProgressSteps/ProgressSteps.jsx';
+import { Text } from '../Text/Text.jsx';
 import { Textarea } from '../Input/Input.jsx';
 
-function Typing({ label = 'Typing', className, ...rest }) {
+function Typing({ label, variant = 'typing', steps = [], current = 0, strings, className, ...rest }) {
+  const t = Object.assign({ thinking: 'Thinking' }, strings);
+  if (variant === 'thinking' || variant === 'steps') return <div className={cx('plx-chat__thinking', className)} role="status" {...rest}>
+    <div className="plx-chat__thinking-label"><Spinner size="sm" aria-hidden="true" role="presentation" label="" /><Icon name="sparkle"/><Text>{label || t.thinking}</Text></div>
+    {variant === 'steps' && steps.length ? <ProgressSteps label={label || t.thinking} steps={steps} current={current} strings={strings} /> : null}
+  </div>;
+  if (label === undefined) label = 'Typing';
   return (
     <span className={cx('plx-chat__typing', className)} role="status" {...rest}>
       <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />

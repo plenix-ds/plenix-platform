@@ -1,0 +1,10 @@
+{
+  "$description": "Comment spacing roles.",
+  "plx-comp": {
+    "comment-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Space between Comment regions."
+    }
+  }
+}

@@ -82,6 +82,12 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
   const res = [];
   // the design system is a submodule (plenix-design-system): without it (CI without DS_TOKEN), its views are skipped
   const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+  if (HAS_DS) {
+    await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' });
+    const regressions = require('./data-table-high.test.js');
+    const checks = await regressions(page) + await regressions.warning(page, BASE);
+    console.log('DT_HIGH_OK ' + checks + ' regression checks');
+  }
   if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its table views are skipped');
   for (const [url, steps, want] of VIEWS) {
     if (ONLY && !ONLY.test(url)) continue;   // DT_ONLY=<pattern>: only the views whose address matches

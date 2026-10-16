@@ -1,0 +1,2 @@
+/* Plenix · AuditLog: composed regions use existing spacing roles. */
+.plx-audit-log{row-gap:var(--plx-comp-audit-log-gap);}

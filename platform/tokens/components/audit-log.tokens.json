@@ -1,0 +1,10 @@
+{
+  "$description": "AuditLog: spacing between regions.",
+  "plx-comp": {
+    "audit-log-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "AuditLog: region spacing."
+    }
+  }
+}

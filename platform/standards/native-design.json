@@ -3,8 +3,6 @@
  "pages": {
   "android-actions|Button": {
    "summary": "A Plenix button on Android is the Material 3 Button, kept native in behavior (the ripple, the 48 dp touch target, TalkBack’s button role, keyboard and D-pad focus, font scale) and styled with the Plenix tokens: a 6 dp rounded rectangle 40 dp tall, a DM Sans semibold label at the label text role (Label large) and the Plenix action colors. Material’s default is a fully rounded container in the theme’s primary color with a Roboto label; Plenix keeps Material’s structure and replaces the look.",
-   "follows": "Material 3: Buttons",
-   "followsUrl": "https://m3.material.io/components/buttons/specs",
    "variants": [
     {
      "name": "Primary",
@@ -60,6 +58,36 @@
      "compose": "PlenixButton(variant = ButtonVariant.DangerSecondary)",
      "views": "MaterialButton, style Widget.Material3.Button.OutlinedButton, with the danger content color and stroke",
      "use": "A destructive action that is not the main action, such as Remove beside Save."
+    },
+    {
+     "name": "AIButton: Trigger",
+     "web": "specialized|AI trigger",
+     "use": "Request a clearly named AI action, never automatic generation.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "AIButton: With menu of AI actions",
+     "web": "specialized|AI trigger",
+     "use": "Request a clearly named AI action, never automatic generation.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "AIButton: Icon only",
+     "web": "specialized|AI trigger",
+     "use": "Request a clearly named AI action, never automatic generation.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "PromptSuggestions: Chips",
+     "web": "specialized|Prompt suggestions",
+     "use": "Offer optional prompt choices with explicit selection.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "PromptSuggestions: Cards",
+     "web": "specialized|Prompt suggestions",
+     "use": "Offer optional prompt choices with explicit selection.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
     }
    ],
    "anatomy": [
@@ -77,7 +105,10 @@
      "part": "C",
      "name": "Icon",
      "about": "An optional Material Symbol before the label, in the label color."
-    }
+    },
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
    ],
    "attributes": [
     {
@@ -200,6 +231,12 @@
      "views": "iconPadding = px(PlenixPlatform.buttonIconLabelGap)",
      "follows": "Material 3: Buttons",
      "followsUrl": "https://m3.material.io/components/buttons/specs"
+    },
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+     "views": "Use the existing Plenix spacing role between native controls."
     }
    ],
    "states": [
@@ -232,6 +269,14 @@
      "token": "Loading button on the web",
      "compose": "A CircularProgressIndicator in place of the icon, enabled = false",
      "views": "An IndeterminateDrawable (CircularProgressIndicatorSpec) as the icon, isEnabled = false"
+    },
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
     }
    ],
    "code": {
@@ -400,7 +445,9 @@
      "    border = PlenixColors.controlBorder.run { argb(light, dark) },",
      ")"
     ]
-   }
+   },
+   "follows": "Material 3: Buttons",
+   "followsUrl": "https://m3.material.io/components/buttons/specs"
   },
   "android-actions|Icon button": {
    "summary": "A Plenix icon button on Android is the Material 3 icon button, kept native in behavior (the ripple, the 48 dp touch target, TalkBack reading its label, a tooltip on long press) and styled with the Plenix tokens: a 40 dp square with a 6 dp radius, a 20 dp Material Symbol and the Plenix button colors. Material’s default is a circle in the theme colors; Plenix keeps Material’s structure and replaces the look. Every icon button has a label, read by TalkBack and shown as its tooltip.",
@@ -742,8 +789,6 @@
   },
   "android-actions|Menu": {
    "summary": "A Plenix menu on Android is the Material 3 menu (DropdownMenu in Compose, a popup list in Views), kept native in behavior (it opens from its button, closes on a tap outside or Back, moves focus with the keyboard or D-pad, and TalkBack reads its items) and styled with the Plenix menu tokens: an overlay surface with an 8 dp radius and a 1 dp border, 48 dp rows, DM Sans labels at the body text role and the Plenix danger and disabled colors. Material’s default is a tonal surface with a 4 dp radius and Roboto labels; Plenix keeps Material’s structure and replaces the look. Plenix decides the content as on every platform: short verb labels, sections in place of long lists, a check for toggles and destructive items last.",
-   "follows": "Material 3: Menus",
-   "followsUrl": "https://m3.material.io/components/menus/specs",
    "variants": [
     {
      "name": "Item",
@@ -799,6 +844,30 @@
      "compose": "A Text with semantics { heading() } above its items, a HorizontalDivider between sections",
      "views": "<group> with a header row; a divider between groups",
      "use": "A short name over a set of related items in a longer menu."
+    },
+    {
+     "name": "RefineMenu: Shorter",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "RefineMenu: Longer",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "RefineMenu: Tone",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "RefineMenu: Custom prompt",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
     }
    ],
    "anatomy": [
@@ -831,7 +900,10 @@
      "part": "F",
      "name": "Section title",
      "about": "A short name over a set of items, in DM Sans semibold at the eyebrow size, in the muted color."
-    }
+    },
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
    ],
    "attributes": [
     {
@@ -998,6 +1070,12 @@
      "views": "A header row that is not enabled, with the muted color",
      "follows": "Material 3: Menus",
      "followsUrl": "https://m3.material.io/components/menus/specs"
+    },
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+     "views": "Use the existing Plenix spacing role between native controls."
     }
    ],
    "states": [
@@ -1036,6 +1114,14 @@
      "token": "None",
      "compose": "expanded and onDismissRequest",
      "views": "show() and dismiss(); Back closes it"
+    },
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
     }
    ],
    "code": {
@@ -1189,7 +1275,9 @@
      "    showPlenixMenu(it, listOf(MenuEntry(getString(R.string.rename)), MenuEntry(getString(R.string.delete), danger = true))) { entry -> handle(entry) }",
      "}"
     ]
-   }
+   },
+   "follows": "Material 3: Menus",
+   "followsUrl": "https://m3.material.io/components/menus/specs"
   },
   "android-content|Avatar": {
    "summary": "A Plenix avatar on Android is a small composable (a ShapeableImageView or a TextView in Views), since Material 3 has no avatar component: a person’s picture or initials in a rounded square, never a circle, with the corner and the text size following the size. Initials are DM Sans bold in the avatar colors; a person’s own color uses its soft fill and text color; a category uses its category color. It is hidden from TalkBack unless it carries a label. Material’s lists show a 40 dp circle; Plenix keeps the list placement and replaces the shape and colors.",
@@ -1529,6 +1617,58 @@
      "compose": "A Text on a bordered rounded background, beside the title (the Label page)",
      "views": "A TextView with a MaterialShapeDrawable background (the Label page)",
      "use": "A status word beside a title, such as Published; each tone has its own fill, text and border."
+    },
+    {
+     "name": "AILabel: Badge",
+     "web": "specialized|AI label",
+     "compose": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "views": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "use": "Identify generated content with the existing sparkle icon and readable text."
+    },
+    {
+     "name": "AILabel: Inline",
+     "web": "specialized|AI label",
+     "compose": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "views": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "use": "Identify generated content with the existing sparkle icon and readable text."
+    },
+    {
+     "name": "AILabel: With explanation",
+     "web": "specialized|AI label",
+     "compose": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "views": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "use": "Identify generated content with the existing sparkle icon and readable text."
+    },
+    {
+     "name": "AI identification: existing roles",
+     "web": "foundations|AI visual language",
+     "compose": "Use existing Material 3 content and spacing roles with a readable origin label.",
+     "views": "Identify origin with text and a decorative sparkle, not a new color.",
+     "use": "Identify generated origin without implying correctness."
+    },
+    {
+     "name": "ConfidenceIndicator: High",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "ConfidenceIndicator: Medium",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "ConfidenceIndicator: Low",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "ConfidenceIndicator: Numeric",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
     }
    ],
    "anatomy": [
@@ -1556,7 +1696,13 @@
      "part": "E",
      "name": "Border",
      "about": "A 1 dp edge a step darker than the pill’s fill."
-    }
+    },
+    "Sparkle icon",
+    "Readable origin label",
+    "Optional explanation disclosure",
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
    ],
    "attributes": [
     {
@@ -1679,6 +1825,18 @@
      "views": "badge.setContentDescriptionQuantityStringsResource(R.plurals.unread_count)",
      "follows": "Material 3: Badges",
      "followsUrl": "https://m3.material.io/components/badges/overview"
+    },
+    {
+     "attribute": "AI composition spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+    },
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+     "views": "Use the existing Plenix spacing role between native controls."
     }
    ],
    "states": [
@@ -1705,6 +1863,22 @@
      "token": "plx-comp-count-pill-min-width (the pill grows with the text)",
      "compose": "Text(\"99+\")",
      "views": "badge.maxNumber = 99"
+    },
+    {
+     "name": "AILabel pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "AILabel failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
     }
    ],
    "code": {
@@ -1962,6 +2136,58 @@
     ]
    }
   },
+  "android-content|Text roles": {
+   "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+   "variants": [
+    {
+     "name": "AIDisclaimer: Footer",
+     "web": "specialized|AI disclaimer",
+     "use": "Remind people to check AI content and provide an optional policy link.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "AIDisclaimer: Inline",
+     "web": "specialized|AI disclaimer",
+     "use": "Remind people to check AI content and provide an optional policy link.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    }
+   ],
+   "anatomy": [
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+     "views": "Use the existing Plenix spacing role between native controls."
+    }
+   ],
+   "states": [
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+    }
+   ],
+   "code": {
+    "compose": [
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+     "    Text(model.reviewNotice)",
+     "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+     "}"
+    ],
+    "views": [
+     "noticeView.text = model.reviewNotice",
+     "actionButton.setOnClickListener { model.requestAction() }"
+    ]
+   }
+  },
   "android-data-display|Activity feed": {
    "summary": "A Plenix timeline on Android is a column of events in order, each a neutral marker on one line with its date in DM Mono, a title and a line or two about it; down the screen on a phone, across it for a few milestones on a large screen. Material 3 has no timeline component: Plenix draws the markers and the line in Compose (or a RecyclerView item decoration) with its own roles, and an event’s state is a Plenix badge after its title, never the marker’s color. TalkBack reads each event as one node: its time, title and description.",
    "variants": [
@@ -2203,6 +2429,73 @@
      "compose": "PlenixCard(…, accent = PlenixColors.dataColorBlue.current())",
      "views": "A LayerDrawable foreground with a PlenixComponent.cardAccentBorderInlineStartWidth start bar",
      "use": "A card that carries a color from the data, such as a project’s color."
+    },
+    {
+     "name": "GeneratedContent: With feedback",
+     "web": "specialized|Generated content",
+     "compose": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "views": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "use": "Review generated content, give feedback and move between caller-owned versions."
+    },
+    {
+     "name": "GeneratedContent: Regenerate",
+     "web": "specialized|Generated content",
+     "compose": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "views": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "use": "Review generated content, give feedback and move between caller-owned versions."
+    },
+    {
+     "name": "GeneratedContent: Versions pager",
+     "web": "specialized|Generated content",
+     "compose": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "views": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "use": "Review generated content, give feedback and move between caller-owned versions."
+    },
+    {
+     "name": "Citation: Inline marker",
+     "web": "specialized|AI citation",
+     "compose": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "views": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "use": "Show a numbered source reference with a real link and enough context to inspect it."
+    },
+    {
+     "name": "Citation: Source card",
+     "web": "specialized|AI citation",
+     "compose": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "views": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "use": "Show a numbered source reference with a real link and enough context to inspect it."
+    },
+    {
+     "name": "Citation: Source list",
+     "web": "specialized|AI citation",
+     "compose": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "views": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "use": "Show a numbered source reference with a real link and enough context to inspect it."
+    },
+    {
+     "name": "SuggestedAction: Chip",
+     "web": "specialized|Suggested action",
+     "compose": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "views": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "use": "Offer an optional action that runs only when explicitly activated."
+    },
+    {
+     "name": "SuggestedAction: Card",
+     "web": "specialized|Suggested action",
+     "compose": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "views": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "use": "Offer an optional action that runs only when explicitly activated."
+    },
+    {
+     "name": "Product card",
+     "material": "Outlined card with media and an action",
+     "web": "data-display|Product card",
+     "background": "plx-comp-product-card-background",
+     "content": "plx-comp-product-card-title-text",
+     "border": "plx-comp-product-card-border-color",
+     "compose": "PlenixProductCard(product, onClick = open, onAddToCart = add): an OutlinedCard with an AsyncImage, the name, the price row and a Button",
+     "views": "MaterialCardView with a ShapeableImageView, two TextViews and a MaterialButton",
+     "use": "One product in a catalog grid (LazyVerticalGrid) or a list."
     }
    ],
    "anatomy": [
@@ -2235,6 +2528,37 @@
      "part": "F",
      "name": "Accent edge",
      "about": "An optional 3 dp bar at the start edge in a color from the data."
+    },
+    "AILabel",
+    "Retained content",
+    "Version pager",
+    "Feedback and regenerate actions",
+    "Recoverable error",
+    "Numbered disclosure or source heading",
+    "Source Link",
+    "Author and excerpt",
+    "Sparkle action button",
+    "Optional description",
+    "Pending or error message",
+    {
+     "part": "A",
+     "name": "Picture",
+     "about": "The product at 1:1, ContentScale.Crop, with the sunken fill while it loads."
+    },
+    {
+     "part": "B",
+     "name": "Badges",
+     "about": "Sale and Out of stock, each a Plenix badge with its icon and its word."
+    },
+    {
+     "part": "C",
+     "name": "Price",
+     "about": "The price in DM Mono; on sale the old price after it, struck through and muted."
+    },
+    {
+     "part": "D",
+     "name": "Action",
+     "about": "Add to cart, its own button; disabled with its reason when out of stock."
     }
    ],
    "attributes": [
@@ -2369,6 +2693,39 @@
      "views": "foreground = LayerDrawable(arrayOf(ColorDrawable(accent))).apply { setLayerWidth(0, px(PlenixComponent.cardAccentBorderInlineStartWidth)); setLayerGravity(0, Gravity.START or Gravity.FILL_VERTICAL) }",
      "follows": "Material 3: Cards",
      "followsUrl": "https://m3.material.io/components/cards/specs"
+    },
+    {
+     "attribute": "AI composition spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+    },
+    {
+     "part": "C",
+     "attribute": "Price in the data font",
+     "token": "plx-comp-product-card-price-font-family",
+     "value": "A price is a technical value: DM Mono (the data role)",
+     "material": "Body large",
+     "compose": "Text(price, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
+     "views": "priceView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)"
+    },
+    {
+     "part": "C",
+     "attribute": "Old price on sale",
+     "token": "plx-comp-product-card-compare-text",
+     "value": "The muted content color, struck through, read as “was” by TalkBack",
+     "material": "None",
+     "compose": "Text(old, color = PlenixColors.contentMuted.current(), textDecoration = TextDecoration.LineThrough, modifier = Modifier.semantics { contentDescription = \"was $old\" })",
+     "views": "oldView.paintFlags = oldView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG"
+    },
+    {
+     "part": "A",
+     "attribute": "Card surface and corners",
+     "token": "plx-comp-product-card-radius",
+     "value": "The raised surface, the default border and the card corners (PlenixRadius.radiusCard12px)",
+     "material": "Medium shape",
+     "compose": "OutlinedCard(shape = RoundedCornerShape(PlenixRadius.radiusCard12px), colors = CardDefaults.outlinedCardColors(containerColor = PlenixColors.surfaceRaised.current()))",
+     "views": "card.radius = PlenixRadius.radiusCard12px; card.setCardBackgroundColor(PlenixColors.surfaceRaised.current())"
     }
    ],
    "states": [
@@ -2407,6 +2764,42 @@
      "token": "plx-sys-content-disabled",
      "compose": "OutlinedCard(enabled = false); disabledContentColor = PlenixColors.contentDisabled.current()",
      "views": "isEnabled = false; text in contentDisabled"
+    },
+    {
+     "name": "GeneratedContent pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "GeneratedContent failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "Citation pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "Citation failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "SuggestedAction pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "SuggestedAction failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "state": "Out of stock",
+     "token": "plx-comp-product-card-background",
+     "compose": "the action Button enabled = false with contentDescription naming why; the card still opens",
+     "views": "button.isEnabled = false; button.contentDescription set to the reason"
+    },
+    {
+     "state": "Pressed",
+     "token": "plx-comp-product-card-hover-shadow",
+     "compose": "the card’s ripple",
+     "views": "the card’s ripple foreground"
     }
    ],
    "code": {
@@ -2575,6 +2968,20 @@
      "compose": "LaunchedEffect(playing, page) { if (playing) { delay(interval); state.animateScrollToPage((page + 1) % count) } }",
      "views": "a Handler posting the next page while playing; removed in onPause",
      "use": "Decorative highlights only, always with Pause first."
+    },
+    {
+     "name": "Recommendation: Row",
+     "web": "specialized|Recommendation",
+     "compose": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "views": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "use": "Offer manually browsed recommendations with an explanation when one is available."
+    },
+    {
+     "name": "Recommendation: With reason",
+     "web": "specialized|Recommendation",
+     "compose": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "views": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "use": "Offer manually browsed recommendations with an explanation when one is available."
     }
    ],
    "anatomy": [
@@ -2602,7 +3009,11 @@
      "part": "E",
      "name": "Pause",
      "about": "The first control, only with autoplay."
-    }
+    },
+    "Named Carousel",
+    "Recommendation content",
+    "Optional reason Popover",
+    "Explicit Link or action"
    ],
    "attributes": [
     {
@@ -2714,6 +3125,12 @@
      "views": "handler.postDelayed(next, 6000L) // the web interval; Material advises no auto-advance",
      "follows": "Material 3: Carousel",
      "followsUrl": "https://m3.material.io/components/carousel/guidelines"
+    },
+    {
+     "attribute": "AI composition spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
     }
    ],
    "states": [
@@ -2746,6 +3163,14 @@
      "token": "plx-sys-content-disabled",
      "compose": "IconButton(enabled = page < count - 1)",
      "views": "isEnabled = page < count - 1"
+    },
+    {
+     "name": "Recommendation pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "Recommendation failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
     }
    ],
    "code": {
@@ -3440,6 +3865,85 @@
     ]
    }
   },
+  "android-data-display|Collection": {
+   "summary": "Browse images in responsive columns or justified rows, with optional full-screen preview.",
+   "variants": [
+    {
+     "name": "AssetGallery: Masonry",
+     "web": "specialized|Asset gallery",
+     "compose": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "views": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+    },
+    {
+     "name": "AssetGallery: Justified",
+     "web": "specialized|Asset gallery",
+     "compose": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "views": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+    },
+    {
+     "name": "AssetGallery: With lightbox",
+     "web": "specialized|Asset gallery",
+     "compose": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "views": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+    },
+    {
+     "name": "RelatedAssets: Strip",
+     "web": "specialized|Related assets",
+     "compose": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "views": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "use": "Offer related assets in a manual carousel or a responsive card grid."
+    },
+    {
+     "name": "RelatedAssets: Grid",
+     "web": "specialized|Related assets",
+     "compose": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "views": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "use": "Offer related assets in a manual carousel or a responsive card grid."
+    }
+   ],
+   "anatomy": [
+    "ContentGrid layout",
+    "Named MediaCards",
+    "Optional MediaViewer",
+    "Named collection",
+    "MediaCards with real links or callbacks",
+    "Manual carousel controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension."
+    }
+   ],
+   "states": [
+    {
+     "name": "AssetGallery recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    },
+    {
+     "name": "RelatedAssets recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// Bind Material controls to the retained screen model.",
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "    Text(model.title)",
+     "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+     "}"
+    ],
+    "views": [
+     "// Retain editable values in the ViewModel.",
+     "primaryButton.isEnabled = !model.busy"
+    ]
+   }
+  },
   "android-data-display|Data table": {
    "summary": "Plenix on Android shows files people compare by column the way the web’s file table does: a header row of column names that sort, then a row per file with its name and its facts in DM Mono, the owner, and the status as a badge with its icon. Material 3 has no data table component; Plenix builds it from a lazy list of rows with fixed columns on wide windows, and on a phone it becomes the list of each file’s name, size and date (the web’s narrow table). It keeps Android’s touch targets, its selection with a long press and TalkBack’s row and column reading, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the lines between rows.",
    "variants": [
@@ -3475,6 +3979,20 @@
      "compose": "Modifier.combinedClickable(onLongClick = select) and a Checkbox in the first column",
      "views": "SelectionTracker with a checkbox column",
      "use": "Choosing files for Download, Move to or Delete."
+    },
+    {
+     "name": "AuditLog: Table",
+     "web": "specialized|Audit history",
+     "compose": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "views": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "use": "Read immutable actor, time, action and target events and inspect their changes."
+    },
+    {
+     "name": "AuditLog: With diff",
+     "web": "specialized|Audit history",
+     "compose": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "views": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "use": "Read immutable actor, time, action and target events and inspect their changes."
     }
    ],
    "anatomy": [
@@ -3502,7 +4020,11 @@
      "part": "E",
      "name": "Selection",
      "about": "A checkbox in the first column; a long press starts selecting."
-    }
+    },
+    "Audit DataTable",
+    "Actor Persona",
+    "Timestamp Time",
+    "Optional before-and-after Dialog DataTable"
    ],
    "attributes": [
     {
@@ -3559,6 +4081,12 @@
      "views": "MaterialDividerItemDecoration with the divider color",
      "follows": "Material 3: Divider",
      "followsUrl": "https://m3.material.io/components/divider/overview"
+    },
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension."
     }
    ],
    "states": [
@@ -3585,6 +4113,10 @@
      "token": "plx-comp-file-row-background",
      "compose": "under the medium window class: two-line list items",
      "views": "a list layout for compact widths"
+    },
+    {
+     "name": "AuditLog recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
     }
    ],
    "code": {
@@ -3662,6 +4194,20 @@
      "compose": "PlenixListRow(headline, supporting, leading = { PlenixAvatar(name, size = AvatarSize.S40) }, trailing = { time })",
      "views": "A row layout: avatar, two TextViews, a trailing time",
      "use": "People, activity and records that need a line of details."
+    },
+    {
+     "name": "PromptHistory: List",
+     "web": "specialized|Prompt history",
+     "compose": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "views": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "use": "Find and reuse a saved prompt without implicitly sending it to a model."
+    },
+    {
+     "name": "PromptHistory: Search",
+     "web": "specialized|Prompt history",
+     "compose": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "views": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "use": "Find and reuse a saved prompt without implicitly sending it to a model."
     }
    ],
    "anatomy": [
@@ -3694,7 +4240,11 @@
      "part": "F",
      "name": "Divider",
      "about": "A 1 dp line between rows in the divider color; none after the last row."
-    }
+    },
+    "Optional SearchField",
+    "Prompt actions",
+    "Data-font timestamps",
+    "Empty or error message"
    ],
    "attributes": [
     {
@@ -3817,6 +4367,12 @@
      "views": "MaterialDividerItemDecoration: dividerColor, dividerThickness, isLastItemDecorated = false",
      "follows": "Material 3: Dividers",
      "followsUrl": "https://m3.material.io/components/divider/specs"
+    },
+    {
+     "attribute": "AI composition spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
     }
    ],
    "states": [
@@ -3855,6 +4411,14 @@
      "token": "plx-comp-row-button-disabled-text",
      "compose": "Modifier.selectable(enabled = false); ListItemDefaults.colors(disabledHeadlineColor = PlenixColors.contentDisabled.current())",
      "views": "itemView.isEnabled = false; text in contentDisabled"
+    },
+    {
+     "name": "PromptHistory pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "PromptHistory failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
     }
    ],
    "code": {
@@ -4296,6 +4860,39 @@
      "compose": "CircularProgressIndicator(progress = { value }, …) with the Plenix colors",
      "views": "CircularProgressIndicator, setProgressCompat(value, true)",
      "use": "A known amount in a small square place."
+    },
+    {
+     "name": "DownloadManager: Panel",
+     "web": "specialized|Download manager",
+     "compose": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "views": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "use": "Review download jobs and explicitly retry, cancel or open their results."
+    },
+    {
+     "name": "DownloadManager: Progress",
+     "web": "specialized|Download manager",
+     "compose": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "views": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "use": "Review download jobs and explicitly retry, cancel or open their results."
+    },
+    {
+     "name": "DownloadManager: Ready",
+     "web": "specialized|Download manager",
+     "compose": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "views": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "use": "Review download jobs and explicitly retry, cancel or open their results."
+    },
+    {
+     "name": "Chat.Typing: Thinking",
+     "web": "specialized|Thinking / processing state",
+     "use": "Communicate active work and caller supplied progress steps without invented completion.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "Chat.Typing: With steps",
+     "web": "specialized|Thinking / processing state",
+     "use": "Communicate active work and caller supplied progress steps without invented completion.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
     }
    ],
    "anatomy": [
@@ -4318,7 +4915,14 @@
      "part": "D",
      "name": "Value",
      "about": "An optional percentage or count at the end of the label row, muted."
-    }
+    },
+    "Named panel or list",
+    "FileRow per job",
+    "Progress and status",
+    "Retry, Cancel and ready file link",
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
    ],
    "attributes": [
     {
@@ -4441,6 +5045,18 @@
      "views": "contentDescription = label; the indicator reports its progress",
      "follows": "Material 3: Progress indicators",
      "followsUrl": "https://m3.material.io/components/progress-indicators/accessibility"
+    },
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension."
+    },
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+     "views": "Use the existing Plenix spacing role between native controls."
     }
    ],
    "states": [
@@ -4473,6 +5089,18 @@
      "token": "plx-comp-spinner-animation-duration",
      "compose": "CircularProgressIndicator(); Material’s rotation",
      "views": "CircularProgressIndicator isIndeterminate = true"
+    },
+    {
+     "name": "DownloadManager recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
     }
    ],
    "code": {
@@ -6494,8 +7122,6 @@
   },
   "android-forms|Radio group": {
    "summary": "A Plenix radio group on Android is a column of Material 3 RadioButton rows in a selectable group, kept native in behavior (each whole row selects its option, TalkBack reads the option, its state and its position in the group, keyboard and D-pad move between options, font scale) and styled with the Plenix tokens: the action color for the selected circle, a strong gray outline for the others, a legend over the group and labels in DM Sans at the body text role in 48 dp rows. Material’s default uses the theme’s primary and on-surface variant colors with Roboto labels; Plenix keeps Material’s circle, sizes and structure and replaces the colors and type. Use a radio group for two to about six options where one must be chosen; longer lists use an exposed dropdown menu.",
-   "follows": "Material 3: Radio button",
-   "followsUrl": "https://m3.material.io/components/radio-button/specs",
    "variants": [
     {
      "name": "Radio group",
@@ -6518,6 +7144,17 @@
      "compose": "An OutlinedCard per option with selectable(role = Role.RadioButton), its border and background from the tile tokens",
      "views": "MaterialCardView per option (isCheckable = true) in a group that keeps one checked",
      "use": "One choice where each option needs a description, such as a plan."
+    },
+    {
+     "name": "Product size",
+     "material": "Filter chips as a radio group",
+     "web": "specialized|Product options",
+     "background": "plx-comp-radio-tile-background",
+     "content": "plx-comp-radio-tile-label-text",
+     "border": "plx-comp-radio-tile-border-color",
+     "compose": "Row(Modifier.selectableGroup()) { sizes.forEach { FilterChip(selected, onClick, enabled = it.available, modifier = Modifier.semantics { role = Role.RadioButton }) } }",
+     "views": "ChipGroup with isSingleSelection and isSelectionRequired; a Chip per size, isEnabled for its stock",
+     "use": "A product’s sizes, one chosen."
     }
    ],
    "anatomy": [
@@ -6535,6 +7172,21 @@
      "part": "C",
      "name": "Option label",
      "about": "The option’s name in DM Sans at the body text role; the whole 48 dp row selects it."
+    },
+    {
+     "part": "A",
+     "name": "Option name",
+     "about": "Size and the chosen value."
+    },
+    {
+     "part": "B",
+     "name": "Size chips",
+     "about": "One per size, one chosen; a size out of stock is disabled."
+    },
+    {
+     "part": "C",
+     "name": "Note",
+     "about": "Why a size is missing, under the chips."
     }
    ],
    "attributes": [
@@ -6625,6 +7277,24 @@
      "views": "MaterialCardView: radius, strokeColor, strokeWidth, setCardBackgroundColor",
      "follows": "Material 3: Radio button",
      "followsUrl": "https://m3.material.io/components/radio-button/specs"
+    },
+    {
+     "part": "B",
+     "attribute": "Chosen size",
+     "token": "plx-comp-radio-tile-selected-border-color",
+     "value": "The action color marks the chosen chip (PlenixColors.actionPrimaryBackground)",
+     "material": "Selected container",
+     "compose": "FilterChipDefaults.filterChipBorder(selectedBorderColor = PlenixColors.actionPrimaryBackground.current(), enabled = true, selected = true)",
+     "views": "chip.chipStrokeColor = a ColorStateList with PlenixColors.actionPrimaryBackground for the checked state"
+    },
+    {
+     "part": "A",
+     "attribute": "Chosen value beside the name",
+     "token": "plx-comp-product-options-chosen-text",
+     "value": "The muted content color after “Size:”",
+     "material": "None",
+     "compose": "Text(buildAnnotatedString { append(\"Size: \"); withStyle(SpanStyle(color = PlenixColors.contentMuted.current())) { append(size) } })",
+     "views": "a SpannableString with a ForegroundColorSpan of PlenixColors.contentMuted"
     }
    ],
    "states": [
@@ -6657,6 +7327,18 @@
      "token": "The Material focus state layer",
      "compose": "The row takes focus (selectable)",
      "views": "The system focus highlight"
+    },
+    {
+     "state": "Out of stock",
+     "token": "plx-comp-radio-tile-disabled-opacity",
+     "compose": "enabled = false and the note as the chip’s stateDescription",
+     "views": "chip.isEnabled = false"
+    },
+    {
+     "state": "Nothing chosen",
+     "token": "plx-comp-product-options-error-text",
+     "compose": "an error Text under the chips in PlenixColors.feedbackDangerSolid, announced as a live region",
+     "views": "an error TextView with accessibilityLiveRegion polite"
     }
    ],
    "code": {
@@ -6779,7 +7461,9 @@
      "    setOnCheckedChangeListener { _, id -> format = id }",
      "}"
     ]
-   }
+   },
+   "follows": "Material 3: Radio button",
+   "followsUrl": "https://m3.material.io/components/radio-button/specs"
   },
   "android-forms|Search bar": {
    "summary": "A Plenix search bar on Android is the Material 3 search bar, kept native in behavior (it expands into the search view, with ripple, TalkBack semantics, the Search key on the keyboard and font scaling) and styled with the Plenix tokens: a 56 dp field with the 6 dp control radius, a 1 dp control border on the neutral fill, a DM Sans query in the body role and Plenix muted icons. Material’s default is a fully rounded bar in the surface container color with a tonal shadow; Plenix keeps Material’s structure and replaces the look.",
@@ -8639,6 +9323,20 @@
      "compose": "LazyColumn { stickyHeader { kind and count } items(first) { … } item { Show all } }",
      "views": "A header view type per kind in the adapter",
      "use": "A search across pages, files and people."
+    },
+    {
+     "name": "AISearch: Answer above results",
+     "web": "specialized|AI search",
+     "compose": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "views": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "use": "Place an identified generated answer and citations above normal search results."
+    },
+    {
+     "name": "AISearch: Semantic toggle",
+     "web": "specialized|AI search",
+     "compose": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "views": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "use": "Place an identified generated answer and citations above normal search results."
     }
    ],
    "anatomy": [
@@ -8666,7 +9364,11 @@
      "part": "E",
      "name": "Section header",
      "about": "The kind in the plural and its count, when results of several kinds are shown."
-    }
+    },
+    "Search form",
+    "Optional semantic Switch",
+    "Generated answer and sources",
+    "Result Links"
    ],
    "attributes": [
     {
@@ -8723,6 +9425,12 @@
      "views": "the leading view’s marginEnd from PlenixSpace.spaceInlineMd",
      "follows": "Material 3: Lists",
      "followsUrl": "https://m3.material.io/components/lists/overview"
+    },
+    {
+     "attribute": "AI composition spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
     }
    ],
    "states": [
@@ -8749,6 +9457,14 @@
      "token": "plx-sys-content-muted",
      "compose": "a Plenix empty state in the search view",
      "views": "an empty view in the adapter"
+    },
+    {
+     "name": "AISearch pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "AISearch failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
     }
    ],
    "code": {
@@ -9962,6 +10678,58 @@
     ]
    }
   },
+  "android-overlays|Consistent help": {
+   "summary": "AI interaction additions use existing native controls, explicit human review and caller supplied confidence.",
+   "variants": [
+    {
+     "name": "AIExplanation: Why this",
+     "web": "specialized|AI explainability",
+     "use": "Explain a recommendation with caller supplied reasons on request.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "AIExplanation: Factors",
+     "web": "specialized|AI explainability",
+     "use": "Explain a recommendation with caller supplied reasons on request.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    }
+   ],
+   "anatomy": [
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+     "views": "Use the existing Plenix spacing role between native controls."
+    }
+   ],
+   "states": [
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+    }
+   ],
+   "code": {
+    "compose": [
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+     "    Text(model.reviewNotice)",
+     "    Button(onClick = model::requestAction) { Text(model.actionLabel) }",
+     "}"
+    ],
+    "views": [
+     "noticeView.text = model.reviewNotice",
+     "actionButton.setOnClickListener { model.requestAction() }"
+    ]
+   }
+  },
   "android-overlays|ModalBottomSheet": {
    "summary": "A Plenix bottom sheet on Android is the Material 3 ModalBottomSheet (BottomSheetDialog in Views), kept native in behavior (drag to resize and dismiss, back to close, the scrim, TalkBack pane semantics) and styled with the Plenix dialog tokens: the overlay surface with 8 dp top corners, the drag handle and the title on the filled header band, the content with the drawer padding, an optional filled footer band, and a 50 % black scrim. Material’s default is a tonal sheet with 28 dp corners; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
@@ -10638,6 +11406,30 @@
      "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
      "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
      "use": "Archive is reversible. Keep an archived message with Restore available. Persist before updating the status; a failed action preserves the current record."
+    },
+    {
+     "name": "SuggestedEdit: Inline diff",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "SuggestedEdit: Accept",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "SuggestedEdit: Reject",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "SuggestedEdit: Accept all",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
     }
    ],
    "anatomy": [
@@ -10669,7 +11461,10 @@
     "Task heading",
     "Fields or status content",
     "Inline failure message",
-    "Primary and secondary actions"
+    "Primary and secondary actions",
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
    ],
    "attributes": [
     {
@@ -10738,6 +11533,12 @@
      "value": "DM Sans in the native body role",
      "compose": "MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS)",
      "views": "TextAppearance uses the generated DM Sans body role."
+    },
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
+     "views": "Use the existing Plenix spacing role between native controls."
     }
    ],
    "states": [
@@ -10780,6 +11581,14 @@
     {
      "name": "Complete",
      "behavior": "Update the record only after persistence succeeds."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
     }
    ],
    "code": {
@@ -10846,13 +11655,80 @@
      "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
      "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
      "use": "Use a Form on a page, or a ModalBottomSheet for a short edit. Retain values after errors; confirm leaving dirty edits. Save as requires a name and a selected destination and writes a separate copy."
+    },
+    {
+     "name": "MetadataEditor: Inline",
+     "web": "specialized|Metadata editor",
+     "compose": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "views": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+    },
+    {
+     "name": "MetadataEditor: Form",
+     "web": "specialized|Metadata editor",
+     "compose": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "views": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+    },
+    {
+     "name": "MetadataEditor: Bulk",
+     "web": "specialized|Metadata editor",
+     "compose": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "views": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+    },
+    {
+     "name": "MentionInput: In a text area",
+     "web": "specialized|Mention",
+     "compose": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "views": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "use": "Mention a directory entity in plain or formatted text while retaining its identity."
+    },
+    {
+     "name": "MentionInput: In rich text",
+     "web": "specialized|Mention",
+     "compose": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "views": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "use": "Mention a directory entity in plain or formatted text while retaining its identity."
+    },
+    {
+     "name": "ApprovalWorkflow: Sequential",
+     "web": "specialized|Approval workflow",
+     "compose": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "views": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+    },
+    {
+     "name": "ApprovalWorkflow: Parallel",
+     "web": "specialized|Approval workflow",
+     "compose": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "views": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+    },
+    {
+     "name": "ApprovalWorkflow: Status",
+     "web": "specialized|Approval workflow",
+     "compose": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "views": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "use": "Collect authorized reviewer decisions in sequential or parallel stages."
     }
    ],
    "anatomy": [
     "Task heading",
     "Fields or status content",
     "Inline failure message",
-    "Primary and secondary actions"
+    "Primary and secondary actions",
+    "Schema-defined fields",
+    "InlineEdit or form controls",
+    "Bulk apply checkboxes",
+    "Save, Reset and feedback",
+    "Named text editor",
+    "Mention trigger or Add mention button",
+    "EntityPicker or rich-text suggestion list",
+    "Overall WorkflowStatus",
+    "Sequential ProgressSteps",
+    "Read-only ReviewFlow per stage",
+    "Assigned reviewer comment and explicit decisions"
    ],
    "attributes": [
     {
@@ -10866,6 +11742,12 @@
      "value": "DM Sans in the native body role",
      "compose": "MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS)",
      "views": "TextAppearance uses the generated DM Sans body role."
+    },
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension."
     }
    ],
    "states": [
@@ -10884,6 +11766,18 @@
     {
      "name": "Complete",
      "behavior": "Update the record only after persistence succeeds."
+    },
+    {
+     "name": "MetadataEditor recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    },
+    {
+     "name": "MentionInput recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    },
+    {
+     "name": "ApprovalWorkflow recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
     }
    ],
    "code": {
@@ -11166,13 +12060,44 @@
      "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
      "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
      "use": "Keep field values by stable step id. Validate before moving forward, then validate all steps before Finish. Use a full screen for long flows; a dialog is for short flows."
+    },
+    {
+     "name": "Checkout",
+     "material": "A multi-step flow with a top app bar and a bottom action",
+     "web": "specialized|Checkout",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-content-default",
+     "border": null,
+     "compose": "NavHost of four step screens, each a Scaffold with the step in the TopAppBar and Next or Place order in the bottom bar",
+     "views": "A ViewPager2 of step fragments with a MaterialToolbar and a bottom MaterialButton",
+     "use": "Turning a cart into an order in a few steps."
     }
    ],
    "anatomy": [
     "Task heading",
     "Fields or status content",
     "Inline failure message",
-    "Primary and secondary actions"
+    "Primary and secondary actions",
+    {
+     "part": "A",
+     "name": "Step count",
+     "about": "“Step 2 of 4, Delivery” in the top app bar."
+    },
+    {
+     "part": "B",
+     "name": "Fields",
+     "about": "Grouped, each with its autofill hint and keyboard type."
+    },
+    {
+     "part": "C",
+     "name": "Total",
+     "about": "In DM Mono in the bottom bar; it opens the order summary sheet."
+    },
+    {
+     "part": "D",
+     "name": "Action",
+     "about": "Next, then Place order on the review."
+    }
    ],
    "attributes": [
     {
@@ -11186,6 +12111,24 @@
      "value": "DM Sans in the native body role",
      "compose": "MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS)",
      "views": "TextAppearance uses the generated DM Sans body role."
+    },
+    {
+     "part": "C",
+     "attribute": "Total in the data font",
+     "token": "plx-comp-commerce-summary-value-font-family",
+     "value": "Amounts are technical values: DM Mono (the data role)",
+     "material": "Title medium",
+     "compose": "Text(total, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
+     "views": "totalView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)"
+    },
+    {
+     "part": "B",
+     "attribute": "Card number field",
+     "token": "plx-comp-input-border-color",
+     "value": "The outlined field with the card autofill hint and the number keyboard; the border alone changes on focus or error",
+     "material": "OutlinedTextField",
+     "compose": "OutlinedTextField(number, onNumber, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.semantics { contentType = ContentType.CreditCardNumber })",
+     "views": "editText.setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER); editText.inputType = InputType.TYPE_CLASS_NUMBER"
     }
    ],
    "states": [
@@ -11204,6 +12147,18 @@
     {
      "name": "Complete",
      "behavior": "Update the record only after persistence succeeds."
+    },
+    {
+     "state": "Placing the order",
+     "token": "plx-sys-content-default",
+     "compose": "the Place order button shows a progress indicator and is disabled until the page answers",
+     "views": "button.isEnabled = false with a CircularProgressIndicator"
+    },
+    {
+     "state": "Declined",
+     "token": "plx-sys-feedback-danger-solid",
+     "compose": "an error message above the payment fields, every field kept, announced",
+     "views": "an error TextView with accessibilityLiveRegion assertive"
     }
    ],
    "code": {
@@ -11263,6 +12218,111 @@
      "compose": "the Plenix avatar (RoundedCornerShape(PlenixRadius.radiusAvatar8px)) beside Change photo and Remove photo",
      "views": "ShapeableImageView with the avatar corner",
      "use": "Profile and team pictures."
+    },
+    {
+     "name": "AttachmentPicker: Inline",
+     "web": "forms|Attachment picker",
+     "compose": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "views": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "use": "Attach validated local files with a reversible selection."
+    },
+    {
+     "name": "AttachmentPicker: Chips",
+     "web": "forms|Attachment picker",
+     "compose": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "views": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "use": "Attach validated local files with a reversible selection."
+    },
+    {
+     "name": "FilePicker: Files",
+     "web": "specialized|File picker",
+     "compose": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "views": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "use": "Choose existing files, assets or media within folders."
+    },
+    {
+     "name": "FilePicker: Assets",
+     "web": "specialized|File picker",
+     "compose": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "views": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "use": "Choose existing files, assets or media within folders."
+    },
+    {
+     "name": "FilePicker: Media only",
+     "web": "specialized|File picker",
+     "compose": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "views": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "use": "Choose existing files, assets or media within folders."
+    },
+    {
+     "name": "RenditionList: Table",
+     "web": "specialized|Renditions and derivatives",
+     "compose": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "views": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "use": "Download a specific stored derivative with format and size visible."
+    },
+    {
+     "name": "RenditionList: Menu",
+     "web": "specialized|Renditions and derivatives",
+     "compose": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "views": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "use": "Download a specific stored derivative with format and size visible."
+    },
+    {
+     "name": "DocumentViewer: PDF",
+     "web": "specialized|Document viewer",
+     "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Image pages",
+     "web": "specialized|Document viewer",
+     "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Text",
+     "web": "specialized|Document viewer",
+     "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Zoom",
+     "web": "specialized|Document viewer",
+     "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Page thumbnails",
+     "web": "specialized|Document viewer",
+     "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "VersionHistory: List",
+     "web": "specialized|Version history",
+     "compose": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "views": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "use": "Inspect earlier versions and restore one only after explicit confirmation."
+    },
+    {
+     "name": "VersionHistory: Restore",
+     "web": "specialized|Version history",
+     "compose": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "views": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "use": "Inspect earlier versions and restore one only after explicit confirmation."
+    },
+    {
+     "name": "VersionHistory: Preview",
+     "web": "specialized|Version history",
+     "compose": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "views": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "use": "Inspect earlier versions and restore one only after explicit confirmation."
     }
    ],
    "anatomy": [
@@ -11285,7 +12345,27 @@
      "part": "D",
      "name": "Actions",
      "about": "Replace and Remove, or Change photo and Remove photo."
-    }
+    },
+    "Device FileInput",
+    "Selected FileRows or removable chips",
+    "Validation Notice",
+    "Named dialog",
+    "Folder Tree",
+    "Search field",
+    "Selectable FileRows",
+    "Explicit Choose action",
+    "Rendition name",
+    "Format and byte size",
+    "DataTable or download menu",
+    "Page navigation",
+    "Stepped zoom",
+    "Page thumbnails",
+    "Named scroll viewport",
+    "Accessible PDF text",
+    "Timeline",
+    "VersionLabel",
+    "Optional preview",
+    "Confirmed restore and result Badge"
    ],
    "attributes": [
     {
@@ -11320,6 +12400,12 @@
      "views": "TextView with the R.font.dm_mono typeface",
      "follows": "Material 3: Typography",
      "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "attribute": "Lane C region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
     }
    ],
    "states": [
@@ -11340,6 +12426,46 @@
      "token": "plx-sys-feedback-danger-solid",
      "compose": "an inline Plenix danger message",
      "views": "an inline message view"
+    },
+    {
+     "name": "AttachmentPicker pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "AttachmentPicker failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "FilePicker pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "FilePicker failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "RenditionList pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "RenditionList failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "DocumentViewer pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "DocumentViewer failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "VersionHistory pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "VersionHistory failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
     }
    ],
    "code": {
@@ -11357,6 +12483,264 @@
     "views": [
      "val pick = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let(preview::setImageURI) }",
      "chooseButton.setOnClickListener { pick.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }"
+    ]
+   }
+  },
+  "android-specialized|Media player": {
+   "summary": "Play authorized audio and video with native controls, captions and a seekable transcript.",
+   "variants": [
+    {
+     "name": "MediaPlayer: Video",
+     "web": "specialized|Video player",
+     "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Audio",
+     "web": "specialized|Video player",
+     "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Captions",
+     "web": "specialized|Video player",
+     "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Transcript",
+     "web": "specialized|Video player",
+     "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Playback rate",
+     "web": "specialized|Video player",
+     "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Picture in picture",
+     "web": "specialized|Video player",
+     "compose": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "views": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    }
+   ],
+   "anatomy": [
+    "Native video or audio control",
+    "WebVTT caption tracks",
+    "Playback speed",
+    "Transcript toggle and timed segments",
+    "Optional picture in picture"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension."
+    }
+   ],
+   "states": [
+    {
+     "name": "MediaPlayer recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// Bind Material controls to the retained screen model.",
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "    Text(model.title)",
+     "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+     "}"
+    ],
+    "views": [
+     "// Retain editable values in the ViewModel.",
+     "primaryButton.isEnabled = !model.busy"
+    ]
+   }
+  },
+  "android-specialized|Notifications": {
+   "summary": "Show an announcement with explicit actions in the appropriate existing surface.",
+   "variants": [
+    {
+     "name": "Announcement: Banner",
+     "web": "specialized|Announcement",
+     "compose": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "views": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "use": "Show an announcement with explicit actions in the appropriate existing surface."
+    },
+    {
+     "name": "Announcement: Card",
+     "web": "specialized|Announcement",
+     "compose": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "views": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "use": "Show an announcement with explicit actions in the appropriate existing surface."
+    },
+    {
+     "name": "Announcement: Dialog",
+     "web": "specialized|Announcement",
+     "compose": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "views": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "use": "Show an announcement with explicit actions in the appropriate existing surface."
+    }
+   ],
+   "anatomy": [
+    "Title and content",
+    "Banner, Card or Dialog",
+    "Optional actions",
+    "Dismiss action and failure notice"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read the generated spacing dimension."
+    }
+   ],
+   "states": [
+    {
+     "name": "Announcement recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// Bind Material controls to the retained screen model.",
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "    Text(model.title)",
+     "    Button(onClick = model::performAction) { Text(model.actionLabel) }",
+     "}"
+    ],
+    "views": [
+     "// Retain editable values in the ViewModel.",
+     "primaryButton.isEnabled = !model.busy"
+    ]
+   }
+  },
+  "android-specialized|Share": {
+   "summary": "Comment conversations and named review locations use native controls with caller owned shared state.",
+   "variants": [
+    {
+     "name": "Comment: Default",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "Comment: Own",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "Comment: Edited",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "Comment: Resolved",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "Comment: With reactions",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "CommentThread: Thread",
+     "web": "specialized|Comment thread",
+     "use": "Follow a conversation and send replies without losing failed drafts.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "CommentThread: Reply composer",
+     "web": "specialized|Comment thread",
+     "use": "Follow a conversation and send replies without losing failed drafts.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "CommentThread: Resolved",
+     "web": "specialized|Comment thread",
+     "use": "Follow a conversation and send replies without losing failed drafts.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "ImageAnnotation: Pins",
+     "web": "specialized|Annotation",
+     "use": "Review named image locations and their comment threads.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "ImageAnnotation: Regions",
+     "web": "specialized|Annotation",
+     "use": "Review named image locations and their comment threads.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "PresenceBar: Viewers",
+     "web": "specialized|Presence",
+     "use": "Identify current viewers, editors and supplied cursor locations.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "PresenceBar: Editors",
+     "web": "specialized|Presence",
+     "use": "Identify current viewers, editors and supplied cursor locations.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    },
+    {
+     "name": "PresenceBar: Cursors list",
+     "web": "specialized|Presence",
+     "use": "Identify current viewers, editors and supplied cursor locations.",
+     "compose": "Bind Text and Button actions to the shared conversation model."
+    }
+   ],
+   "anatomy": [
+    "Person identity and timestamp",
+    "Comment content or named image location",
+    "Explicit reply and resolution controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Collaboration spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd))",
+     "views": "Use the existing Plenix spacing role between native views."
+    }
+   ],
+   "states": [
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate writes and retain draft text."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the draft."
+    }
+   ],
+   "code": {
+    "compose": [
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "    Text(model.message)",
+     "    Button(onClick = model::sendReply) { Text(model.replyLabel) }",
+     "}"
+    ],
+    "views": [
+     "messageView.text = model.message",
+     "replyButton.setOnClickListener { model.sendReply() }"
     ]
    }
   },
@@ -14299,6 +15683,95 @@
     ]
    }
   },
+  "ios-data-display|Collections": {
+   "summary": "Browse images in responsive columns or justified rows, with optional full-screen preview.",
+   "variants": [
+    {
+     "name": "AssetGallery: Masonry",
+     "web": "specialized|Asset gallery",
+     "swiftui": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "uikit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "appkit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+    },
+    {
+     "name": "AssetGallery: Justified",
+     "web": "specialized|Asset gallery",
+     "swiftui": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "uikit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "appkit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+    },
+    {
+     "name": "AssetGallery: With lightbox",
+     "web": "specialized|Asset gallery",
+     "swiftui": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "uikit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "appkit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+     "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+    },
+    {
+     "name": "RelatedAssets: Strip",
+     "web": "specialized|Related assets",
+     "swiftui": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "uikit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "appkit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "use": "Offer related assets in a manual carousel or a responsive card grid."
+    },
+    {
+     "name": "RelatedAssets: Grid",
+     "web": "specialized|Related assets",
+     "swiftui": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "uikit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "appkit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+     "use": "Offer related assets in a manual carousel or a responsive card grid."
+    }
+   ],
+   "anatomy": [
+    "ContentGrid layout",
+    "Named MediaCards",
+    "Optional MediaViewer",
+    "Named collection",
+    "MediaCards with real links or callbacks",
+    "Manual carousel controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the macOS spacing adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "AssetGallery recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    },
+    {
+     "name": "RelatedAssets recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "// Bind native controls to retained application state.",
+     "VStack(spacing: Plenix.Space.spaceStackMd) {",
+     "    Text(model.title)",
+     "    Button(model.actionLabel) { model.performAction() }",
+     "}"
+    ],
+    "uikit": [
+     "// Bind native controls to the retained screen model.",
+     "primaryButton.isEnabled = !model.busy"
+    ],
+    "appkit": [
+     "// Use the macOS token adapter for spacing and typography.",
+     "primaryButton.isEnabled = !model.busy"
+    ]
+   }
+  },
   "ios-data-display|Gauges": {
    "summary": "The Plenix gauge on iOS is SwiftUI’s Gauge in the accessoryCircular style or a semicircle drawn the Plenix way: the track in the subtle border color, the fill in the first data-viz color, the value in DM Mono in the middle, the ends under the arc, and, with thresholds, the warning and critical ranges and a status label. Gauge keeps its own accessibility (its value and range read by VoiceOver).",
    "variants": [
@@ -14562,6 +16035,22 @@
      "uikit": "headerMode = .supplementary with UIListContentConfiguration.groupedHeader()",
      "appkit": "A group row, or the table header for columns",
      "use": "A short label over a group of rows, so a single-column list has context."
+    },
+    {
+     "name": "AuditLog: Table",
+     "web": "specialized|Audit history",
+     "swiftui": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "uikit": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "appkit": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "use": "Read immutable actor, time, action and target events and inspect their changes."
+    },
+    {
+     "name": "AuditLog: With diff",
+     "web": "specialized|Audit history",
+     "swiftui": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "uikit": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "appkit": "Differences open only on request. Values render as text; audit events are never editable in the viewer.",
+     "use": "Read immutable actor, time, action and target events and inspect their changes."
     }
    ],
    "anatomy": [
@@ -14589,7 +16078,11 @@
      "part": "E",
      "name": "Separator",
      "about": "The table line between rows, drawn the full width of the section."
-    }
+    },
+    "Audit DataTable",
+    "Actor Persona",
+    "Timestamp Time",
+    "Optional before-and-after Dialog DataTable"
    ],
    "attributes": [
     {
@@ -14712,6 +16205,13 @@
      "uikit": "background.backgroundColor for state.isSelected; UICellAccessory.checkmark()",
      "appkit": "A custom NSTableRowView drawSelection(in:)",
      "follows": "Best practices"
+    },
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the macOS spacing adapter."
     }
    ],
    "states": [
@@ -14756,6 +16256,10 @@
      "swiftui": ".disabled(true)",
      "uikit": "shouldSelectItemAt returns false; content in the disabled color",
      "appkit": "shouldSelectRow returns false"
+    },
+    {
+     "name": "AuditLog recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
     }
    ],
    "code": {
@@ -15235,6 +16739,30 @@
      "uikit": "The same toast view; willPresent returns the options",
      "appkit": "willPresent returns the options; an in-window banner",
      "use": "News that arrives while the app is in front, when it cannot simply appear in place."
+    },
+    {
+     "name": "Announcement: Banner",
+     "web": "specialized|Announcement",
+     "swiftui": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "uikit": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "appkit": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "use": "Show an announcement with explicit actions in the appropriate existing surface."
+    },
+    {
+     "name": "Announcement: Card",
+     "web": "specialized|Announcement",
+     "swiftui": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "uikit": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "appkit": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "use": "Show an announcement with explicit actions in the appropriate existing surface."
+    },
+    {
+     "name": "Announcement: Dialog",
+     "web": "specialized|Announcement",
+     "swiftui": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "uikit": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "appkit": "No automatic expiry. Dismissal waits for persistence and preserves the announcement after failure.",
+     "use": "Show an announcement with explicit actions in the appropriate existing surface."
     }
    ],
    "anatomy": [
@@ -15267,7 +16795,11 @@
      "part": "F",
      "name": "Actions",
      "about": "Up to four time-saving actions, shown when the notification is expanded."
-    }
+    },
+    "Title and content",
+    "Banner, Card or Dialog",
+    "Optional actions",
+    "Dismiss action and failure notice"
    ],
    "attributes": [
     {
@@ -15379,6 +16911,13 @@
      "uikit": "UNMutableNotificationContent.badge; setBadgeCount(_:)",
      "appkit": "NSApp.dockTile.badgeLabel",
      "follows": "Badging"
+    },
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the macOS spacing adapter."
     }
    ],
    "states": [
@@ -15416,6 +16955,10 @@
      "swiftui": "willPresent returns [] and the app shows a Plenix toast or updates in place",
      "uikit": "The same",
      "appkit": "The same"
+    },
+    {
+     "name": "Announcement recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
     }
    ],
    "code": {
@@ -15556,6 +17099,30 @@
      "uikit": "UIActivityIndicatorView(style: .large)",
      "appkit": "NSProgressIndicator(style: .spinning), controlSize .regular",
      "use": "Loading a whole view whose size is unknown, centered in the place the content will take."
+    },
+    {
+     "name": "DownloadManager: Panel",
+     "web": "specialized|Download manager",
+     "swiftui": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "uikit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "appkit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "use": "Review download jobs and explicitly retry, cancel or open their results."
+    },
+    {
+     "name": "DownloadManager: Progress",
+     "web": "specialized|Download manager",
+     "swiftui": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "uikit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "appkit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "use": "Review download jobs and explicitly retry, cancel or open their results."
+    },
+    {
+     "name": "DownloadManager: Ready",
+     "web": "specialized|Download manager",
+     "swiftui": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "uikit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "appkit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+     "use": "Review download jobs and explicitly retry, cancel or open their results."
     }
    ],
    "anatomy": [
@@ -15583,7 +17150,11 @@
      "part": "E",
      "name": "Spinner",
      "about": "The system activity indicator in the Plenix primary action color, for work of an unknown amount."
-    }
+    },
+    "Named panel or list",
+    "FileRow per job",
+    "Progress and status",
+    "Retry, Cancel and ready file link"
    ],
    "attributes": [
     {
@@ -15695,6 +17266,13 @@
      "uikit": "style = .medium or .large",
      "appkit": "controlSize = .small (background work) or .regular",
      "follows": "macOS"
+    },
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the macOS spacing adapter."
     }
    ],
    "states": [
@@ -15732,6 +17310,10 @@
      "swiftui": "@Environment(\\.accessibilityReduceMotion)",
      "uikit": "UIAccessibility.isReduceMotionEnabled",
      "appkit": "NSWorkspace.shared.accessibilityDisplayShouldReduceMotion"
+    },
+    {
+     "name": "DownloadManager recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
     }
    ],
    "code": {
@@ -16107,6 +17689,96 @@
      "well.color = NSColor(Plenix.Colors.dataColorBlue)",
      "well.supportsAlpha = false",
      "well.setAccessibilityLabel(\"Label color\")"
+    ]
+   }
+  },
+  "ios-forms|Entering data": {
+   "summary": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection.",
+   "variants": [
+    {
+     "name": "MetadataEditor: Inline",
+     "web": "specialized|Metadata editor",
+     "swiftui": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "uikit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "appkit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+    },
+    {
+     "name": "MetadataEditor: Form",
+     "web": "specialized|Metadata editor",
+     "swiftui": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "uikit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "appkit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+    },
+    {
+     "name": "MetadataEditor: Bulk",
+     "web": "specialized|Metadata editor",
+     "swiftui": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "uikit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "appkit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+     "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+    },
+    {
+     "name": "MentionInput: In a text area",
+     "web": "specialized|Mention",
+     "swiftui": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "uikit": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "appkit": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "use": "Mention a directory entity in plain or formatted text while retaining its identity."
+    },
+    {
+     "name": "MentionInput: In rich text",
+     "web": "specialized|Mention",
+     "swiftui": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "uikit": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "appkit": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
+     "use": "Mention a directory entity in plain or formatted text while retaining its identity."
+    }
+   ],
+   "anatomy": [
+    "Schema-defined fields",
+    "InlineEdit or form controls",
+    "Bulk apply checkboxes",
+    "Save, Reset and feedback",
+    "Named text editor",
+    "Mention trigger or Add mention button",
+    "EntityPicker or rich-text suggestion list"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the macOS spacing adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "MetadataEditor recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    },
+    {
+     "name": "MentionInput recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "// Bind native controls to retained application state.",
+     "VStack(spacing: Plenix.Space.spaceStackMd) {",
+     "    Text(model.title)",
+     "    Button(model.actionLabel) { model.performAction() }",
+     "}"
+    ],
+    "uikit": [
+     "// Bind native controls to the retained screen model.",
+     "primaryButton.isEnabled = !model.busy"
+    ],
+    "appkit": [
+     "// Use the macOS token adapter for spacing and typography.",
+     "primaryButton.isEnabled = !model.busy"
     ]
    }
   },
@@ -16626,6 +18298,18 @@
      "uikit": "Not on iPhone and iPad",
      "appkit": "NSSegmentedControl, trackingMode .selectAny",
      "use": "Independent on or off options shown as one group, such as bold, italic and underline."
+    },
+    {
+     "name": "Product size",
+     "apple": "Segmented control, or a List with a checkmark",
+     "web": "specialized|Product options",
+     "background": "plx-sys-fill-neutral",
+     "content": "plx-sys-content-default",
+     "border": "plx-comp-radio-tile-border-color",
+     "swiftui": "Picker(\"Size\", selection: $size) { … }.pickerStyle(.segmented), or a List of sizes with a checkmark and a footnote for one out of stock",
+     "uikit": "UISegmentedControl with setEnabled(false, forSegmentAt:) for a size out of stock, its note in a footnote label",
+     "appkit": "NSSegmentedControl (a macOS build of the tokens is needed)",
+     "use": "A product’s sizes, with the chosen one named beside the option."
     }
    ],
    "anatomy": [
@@ -16643,6 +18327,21 @@
      "part": "C",
      "name": "Segment label",
      "about": "A short noun in title case, in DM Sans medium at the label size; muted until selected."
+    },
+    {
+     "part": "A",
+     "name": "Option name",
+     "about": "Size and the chosen value, in DM Sans."
+    },
+    {
+     "part": "B",
+     "name": "Segments",
+     "about": "One per size; a size out of stock is disabled."
+    },
+    {
+     "part": "C",
+     "name": "Note",
+     "about": "Why a size is missing (“Back in November”), under the control."
     }
    ],
    "attributes": [
@@ -16744,6 +18443,26 @@
      "uikit": "insertSegment(withTitle:at:animated:) or insertSegment(with:at:animated:)",
      "appkit": "setLabel(_:forSegment:) or setImage(_:forSegment:) with setToolTip",
      "follows": "Content"
+    },
+    {
+     "part": "A",
+     "attribute": "Chosen value beside the name",
+     "token": "plx-comp-product-options-chosen-text",
+     "value": "The chosen size in the muted content color after “Size:”",
+     "apple": "None",
+     "swiftui": "Text(\"Size: \").bold() + Text(size).foregroundColor(Plenix.Colors.contentMuted)",
+     "uikit": "an attributed string with Plenix.Colors.contentMuted for the value",
+     "appkit": "an attributed string (a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "B",
+     "attribute": "Chosen segment",
+     "token": "plx-comp-radio-tile-selected-border-color",
+     "value": "The action color (Plenix.Colors.actionPrimaryBackground) marks the chosen size",
+     "apple": "The selected segment tint",
+     "swiftui": ".tint(Plenix.Colors.actionPrimaryBackground)",
+     "uikit": "selectedSegmentTintColor = Plenix.Colors.actionPrimaryBackground",
+     "appkit": "the segment’s selected state (a macOS build of the tokens is needed)"
     }
    ],
    "states": [
@@ -16781,6 +18500,20 @@
      "swiftui": ".focusable(); the system draws the focus effect",
      "uikit": "The focus system",
      "appkit": "focusRingType = .default"
+    },
+    {
+     "state": "Out of stock",
+     "token": "plx-comp-radio-tile-disabled-opacity",
+     "swiftui": "the size’s row disabled with its note as a footnote",
+     "uikit": "setEnabled(false, forSegmentAt:)",
+     "appkit": "setEnabled(false, forSegment:)"
+    },
+    {
+     "state": "Nothing chosen",
+     "token": "plx-comp-product-options-error-text",
+     "swiftui": "Add to cart shows “Choose a size.” under the control in the danger color",
+     "uikit": "an error label under the control, posted to VoiceOver",
+     "appkit": "an error label"
     }
    ],
    "code": {
@@ -17148,6 +18881,18 @@
      "uikit": "UIStepper with minimumValue 1",
      "appkit": "NSStepper",
      "use": "A count of items, such as copies or seats, with a minimum of one."
+    },
+    {
+     "name": "Product quantity",
+     "apple": "Stepper",
+     "web": "specialized|Product options",
+     "background": "plx-sys-fill-neutral",
+     "content": "plx-sys-content-default",
+     "border": null,
+     "swiftui": "Stepper(value: $quantity, in: 1...stock) with the count in DM Mono in its label",
+     "uikit": "UIStepper with minimumValue 1 and maximumValue the stock, beside a UILabel in DM Mono",
+     "appkit": "NSStepper bound to an NSTextField with a NumberFormatter (a macOS build of the tokens is needed)",
+     "use": "How many of a product go in the cart, beside Add to cart."
     }
    ],
    "anatomy": [
@@ -17175,6 +18920,21 @@
      "part": "E",
      "name": "Value",
      "about": "The current value beside the stepper, in DM Sans with tabular digits, since the stepper itself shows none."
+    },
+    {
+     "part": "A",
+     "name": "Label",
+     "about": "Quantity, in DM Sans, the product named for VoiceOver."
+    },
+    {
+     "part": "B",
+     "name": "Count",
+     "about": "The number in DM Mono, beside the stepper."
+    },
+    {
+     "part": "C",
+     "name": "Stepper",
+     "about": "Minus and plus; minus dims at one, plus at the stock."
     }
    ],
    "attributes": [
@@ -17276,6 +19036,26 @@
      "uikit": "Not on iOS",
      "appkit": "Read NSEvent.modifierFlags.contains(.shift) in the action and add the larger step",
      "follows": "macOS"
+    },
+    {
+     "part": "B",
+     "attribute": "Count in the data font",
+     "token": "plx-comp-input-data-font-family",
+     "value": "The quantity is a technical value: DM Mono at the data size (the data role)",
+     "apple": "The label’s text",
+     "swiftui": "Text(quantity, format: .number).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .body))",
+     "uikit": "countLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
+     "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "A",
+     "attribute": "Accessible name",
+     "token": null,
+     "value": "“Quantity, Choir robe”: the product named with the control, as the web’s aria-label",
+     "apple": "accessibilityLabel",
+     "swiftui": ".accessibilityLabel(Text(\"Quantity, \\(product.title)\"))",
+     "uikit": "stepper.accessibilityLabel = \"Quantity, \" + product.title",
+     "appkit": "setAccessibilityLabel(_:)"
     }
    ],
    "states": [
@@ -17313,6 +19093,20 @@
      "swiftui": ".disabled(true)",
      "uikit": "isEnabled = false",
      "appkit": "isEnabled = false"
+    },
+    {
+     "state": "At one",
+     "token": "plx-sys-content-default",
+     "swiftui": "the minus half disabled by the range",
+     "uikit": "the decrement segment disabled at minimumValue",
+     "appkit": "NSStepper at minValue"
+    },
+    {
+     "state": "At the stock",
+     "token": "plx-sys-content-default",
+     "swiftui": "the plus half disabled by the range",
+     "uikit": "the increment segment disabled at maximumValue",
+     "appkit": "NSStepper at maxValue"
     }
    ],
    "code": {
@@ -19090,6 +20884,18 @@
      "uikit": "Collection view sections with a list header",
      "appkit": "Table view group rows (a macOS build of the tokens is needed)",
      "use": "A search across pages, files and people."
+    },
+    {
+     "name": "Product discovery",
+     "apple": "Searchable navigation stack with suggestions and scopes",
+     "web": "specialized|Product discovery",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-content-default",
+     "border": null,
+     "swiftui": ".searchable(text: $query) with .searchSuggestions { … } and .searchScopes($category) { … }",
+     "uikit": "UISearchController with a suggestions table and scopeButtonTitles for the categories",
+     "appkit": "NSSearchField with a menu of recent searches (a macOS build of the tokens is needed)",
+     "use": "The shop’s entry: search, browse by category, then the products."
     }
    ],
    "anatomy": [
@@ -19117,6 +20923,21 @@
      "part": "E",
      "name": "Section header",
      "about": "The kind in the plural and its count, when results of several kinds are shown."
+    },
+    {
+     "part": "A",
+     "name": "Search field",
+     "about": "In the navigation bar; suggestions come from product names."
+    },
+    {
+     "part": "B",
+     "name": "Categories",
+     "about": "The scope bar, or a grid of category cards while the field is empty."
+    },
+    {
+     "part": "C",
+     "name": "Results",
+     "about": "Product cards with their prices in DM Mono; the count is announced."
     }
    ],
    "attributes": [
@@ -19174,6 +20995,26 @@
      "uikit": "content.imageToTextPadding = Plenix.Space.spaceInlineMd",
      "appkit": "stack view spacing Plenix.Space.spaceInlineMd (a macOS build of the tokens is needed)",
      "follows": "Best practices"
+    },
+    {
+     "part": "C",
+     "attribute": "Price in the data font",
+     "token": "plx-comp-product-card-price-font-family",
+     "value": "A price is a technical value: DM Mono (the data role)",
+     "apple": "The secondary text",
+     "swiftui": "Text(price, format: .currency(code: currency)).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .headline))",
+     "uikit": "priceLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
+     "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "C",
+     "attribute": "Card surface",
+     "token": "plx-comp-product-card-background",
+     "value": "The raised surface with the default border and the card corners",
+     "apple": "The grouped background",
+     "swiftui": ".background(Plenix.Colors.surfaceRaised, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusCard12px))",
+     "uikit": "cell.contentView.backgroundColor = Plenix.Colors.surfaceRaised; layer.cornerRadius = Plenix.Radius.radiusCard12px",
+     "appkit": "the item’s layer (a macOS build of the tokens is needed)"
     }
    ],
    "states": [
@@ -19204,6 +21045,20 @@
      "swiftui": "ContentUnavailableView.search(text:)",
      "uikit": "a Plenix empty state in the results controller",
      "appkit": "an empty state view"
+    },
+    {
+     "state": "Empty field",
+     "token": "plx-sys-surface-default",
+     "swiftui": "the categories and recommendations",
+     "uikit": "the categories collection",
+     "appkit": "recent searches"
+    },
+    {
+     "state": "No result",
+     "token": "plx-sys-content-muted",
+     "swiftui": "ContentUnavailableView.search(text: query) with words to try",
+     "uikit": "an empty-state configuration with suggestions",
+     "appkit": "an empty view"
     }
    ],
    "code": {
@@ -22019,6 +23874,313 @@
     ]
    }
   },
+  "ios-patterns|Playing video": {
+   "summary": "Play authorized audio and video with native controls, captions and a seekable transcript.",
+   "variants": [
+    {
+     "name": "MediaPlayer: Video",
+     "web": "specialized|Video player",
+     "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Audio",
+     "web": "specialized|Video player",
+     "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Captions",
+     "web": "specialized|Video player",
+     "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Transcript",
+     "web": "specialized|Video player",
+     "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Playback rate",
+     "web": "specialized|Video player",
+     "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    },
+    {
+     "name": "MediaPlayer: Picture in picture",
+     "web": "specialized|Video player",
+     "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+     "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+    }
+   ],
+   "anatomy": [
+    "Native video or audio control",
+    "WebVTT caption tracks",
+    "Playback speed",
+    "Transcript toggle and timed segments",
+    "Optional picture in picture"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the macOS spacing adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "MediaPlayer recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "// Bind native controls to retained application state.",
+     "VStack(spacing: Plenix.Space.spaceStackMd) {",
+     "    Text(model.title)",
+     "    Button(model.actionLabel) { model.performAction() }",
+     "}"
+    ],
+    "uikit": [
+     "// Bind native controls to the retained screen model.",
+     "primaryButton.isEnabled = !model.busy"
+    ],
+    "appkit": [
+     "// Use the macOS token adapter for spacing and typography.",
+     "primaryButton.isEnabled = !model.busy"
+    ]
+   }
+  },
+  "ios-patterns|Ratings and reviews": {
+   "summary": "Collect authorized reviewer decisions in sequential or parallel stages.",
+   "variants": [
+    {
+     "name": "ApprovalWorkflow: Sequential",
+     "web": "specialized|Approval workflow",
+     "swiftui": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "uikit": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "appkit": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+    },
+    {
+     "name": "ApprovalWorkflow: Parallel",
+     "web": "specialized|Approval workflow",
+     "swiftui": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "uikit": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "appkit": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+    },
+    {
+     "name": "ApprovalWorkflow: Status",
+     "web": "specialized|Approval workflow",
+     "swiftui": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "uikit": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "appkit": "Sequential stages wait for prior approvals. Parallel reviewers act independently; rejection or requested changes require a reason. Failed persistence preserves comments.",
+     "use": "Collect authorized reviewer decisions in sequential or parallel stages."
+    }
+   ],
+   "anatomy": [
+    "Overall WorkflowStatus",
+    "Sequential ProgressSteps",
+    "Read-only ReviewFlow per stage",
+    "Assigned reviewer comment and explicit decisions"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the macOS spacing adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "ApprovalWorkflow recovery",
+     "behavior": "Retain current data after failure and offer an explicit retry."
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "// Bind native controls to retained application state.",
+     "VStack(spacing: Plenix.Space.spaceStackMd) {",
+     "    Text(model.title)",
+     "    Button(model.actionLabel) { model.performAction() }",
+     "}"
+    ],
+    "uikit": [
+     "// Bind native controls to the retained screen model.",
+     "primaryButton.isEnabled = !model.busy"
+    ],
+    "appkit": [
+     "// Use the macOS token adapter for spacing and typography.",
+     "primaryButton.isEnabled = !model.busy"
+    ]
+   }
+  },
+  "ios-specialized|Collaboration and sharing": {
+   "summary": "Comment conversations and named review locations use native controls with caller owned shared state.",
+   "variants": [
+    {
+     "name": "Comment: Default",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "Comment: Own",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "Comment: Edited",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "Comment: Resolved",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "Comment: With reactions",
+     "web": "specialized|Comment",
+     "use": "Read one plain text comment with its author, timestamp, status and permitted actions.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "CommentThread: Thread",
+     "web": "specialized|Comment thread",
+     "use": "Follow a conversation and send replies without losing failed drafts.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "CommentThread: Reply composer",
+     "web": "specialized|Comment thread",
+     "use": "Follow a conversation and send replies without losing failed drafts.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "CommentThread: Resolved",
+     "web": "specialized|Comment thread",
+     "use": "Follow a conversation and send replies without losing failed drafts.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "ImageAnnotation: Pins",
+     "web": "specialized|Annotation",
+     "use": "Review named image locations and their comment threads.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "ImageAnnotation: Regions",
+     "web": "specialized|Annotation",
+     "use": "Review named image locations and their comment threads.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "PresenceBar: Viewers",
+     "web": "specialized|Presence",
+     "use": "Identify current viewers, editors and supplied cursor locations.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "PresenceBar: Editors",
+     "web": "specialized|Presence",
+     "use": "Identify current viewers, editors and supplied cursor locations.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    },
+    {
+     "name": "PresenceBar: Cursors list",
+     "web": "specialized|Presence",
+     "use": "Identify current viewers, editors and supplied cursor locations.",
+     "swiftui": "Bind native text and Button actions to the shared conversation model.",
+     "uikit": "Bind labels and native controls to the shared conversation model.",
+     "appkit": "Bind native controls to the shared conversation model."
+    }
+   ],
+   "anatomy": [
+    "Person identity and timestamp",
+    "Comment content or named image location",
+    "Explicit reply and resolution controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Collaboration spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read the same spacing role from the macOS adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate writes and retain draft text."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the draft."
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "VStack(spacing: Plenix.Space.spaceStackMd) {",
+     "    Text(model.message)",
+     "    Button(model.replyLabel) { model.sendReply() }",
+     "}"
+    ],
+    "uikit": [
+     "messageLabel.text = model.message",
+     "replyButton.addTarget(model, action: #selector(model.sendReply), for: .touchUpInside)"
+    ],
+    "appkit": [
+     "messageLabel.stringValue = model.message"
+    ]
+   }
+  },
   "ios-specialized|File management": {
    "summary": "Plenix on iOS shows files and folders the way the web does and leaves choosing, opening and saving to the system: the document picker and the document browser, Quick Look for previews, the share sheet for sending. A file is its type’s symbol (or a thumbnail from QuickLookThumbnailing), its name with the extension kept in view when a long name is cut, and its size and date in DM Mono; a folder is the folder symbol, its name in DM Sans and its count. In a list each file is a row with its facts and a trailing menu of Rename, Download and Delete; during a transfer the row shows a linear progress view and Cancel. Apple’s default is the system list row; Plenix keeps the row, its swipe actions and its context menu and changes the look.",
    "variants": [
@@ -22069,6 +24231,126 @@
      "uikit": "UIProgressView in the cell’s accessory",
      "appkit": "NSProgressIndicator (a macOS build of the tokens is needed)",
      "use": "Each file of an upload or a download."
+    },
+    {
+     "name": "AttachmentPicker: Inline",
+     "web": "forms|Attachment picker",
+     "swiftui": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "uikit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "appkit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "use": "Attach validated local files with a reversible selection."
+    },
+    {
+     "name": "AttachmentPicker: Chips",
+     "web": "forms|Attachment picker",
+     "swiftui": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "uikit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "appkit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+     "use": "Attach validated local files with a reversible selection."
+    },
+    {
+     "name": "FilePicker: Files",
+     "web": "specialized|File picker",
+     "swiftui": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "uikit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "appkit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "use": "Choose existing files, assets or media within folders."
+    },
+    {
+     "name": "FilePicker: Assets",
+     "web": "specialized|File picker",
+     "swiftui": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "uikit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "appkit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "use": "Choose existing files, assets or media within folders."
+    },
+    {
+     "name": "FilePicker: Media only",
+     "web": "specialized|File picker",
+     "swiftui": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "uikit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "appkit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+     "use": "Choose existing files, assets or media within folders."
+    },
+    {
+     "name": "RenditionList: Table",
+     "web": "specialized|Renditions and derivatives",
+     "swiftui": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "uikit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "appkit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "use": "Download a specific stored derivative with format and size visible."
+    },
+    {
+     "name": "RenditionList: Menu",
+     "web": "specialized|Renditions and derivatives",
+     "swiftui": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "uikit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "appkit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+     "use": "Download a specific stored derivative with format and size visible."
+    },
+    {
+     "name": "DocumentViewer: PDF",
+     "web": "specialized|Document viewer",
+     "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Image pages",
+     "web": "specialized|Document viewer",
+     "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Text",
+     "web": "specialized|Document viewer",
+     "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Zoom",
+     "web": "specialized|Document viewer",
+     "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "DocumentViewer: Page thumbnails",
+     "web": "specialized|Document viewer",
+     "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+     "use": "Read paginated PDFs, images and text without leaving the application."
+    },
+    {
+     "name": "VersionHistory: List",
+     "web": "specialized|Version history",
+     "swiftui": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "uikit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "appkit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "use": "Inspect earlier versions and restore one only after explicit confirmation."
+    },
+    {
+     "name": "VersionHistory: Restore",
+     "web": "specialized|Version history",
+     "swiftui": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "uikit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "appkit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "use": "Inspect earlier versions and restore one only after explicit confirmation."
+    },
+    {
+     "name": "VersionHistory: Preview",
+     "web": "specialized|Version history",
+     "swiftui": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "uikit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "appkit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+     "use": "Inspect earlier versions and restore one only after explicit confirmation."
     }
    ],
    "anatomy": [
@@ -22096,7 +24378,27 @@
      "part": "E",
      "name": "Actions",
      "about": "A trailing menu with Rename, Download and Delete, the same actions as swipe actions and in the context menu."
-    }
+    },
+    "Device FileInput",
+    "Selected FileRows or removable chips",
+    "Validation Notice",
+    "Named dialog",
+    "Folder Tree",
+    "Search field",
+    "Selectable FileRows",
+    "Explicit Choose action",
+    "Rendition name",
+    "Format and byte size",
+    "DataTable or download menu",
+    "Page navigation",
+    "Stepped zoom",
+    "Page thumbnails",
+    "Named scroll viewport",
+    "Accessible PDF text",
+    "Timeline",
+    "VersionLabel",
+    "Optional preview",
+    "Confirmed restore and result Badge"
    ],
    "attributes": [
     {
@@ -22164,6 +24466,13 @@
      "uikit": "separatorConfiguration.color = Plenix.Colors.borderDivider",
      "appkit": "gridColor from the divider (a macOS build of the tokens is needed)",
      "follows": "iOS, iPadOS"
+    },
+    {
+     "attribute": "Lane C region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
     }
    ],
    "states": [
@@ -22194,6 +24503,46 @@
      "swiftui": "the reason in the danger content color with Try again",
      "uikit": "secondaryText in the danger content color",
      "appkit": "the reason in red with Try again"
+    },
+    {
+     "name": "AttachmentPicker pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "AttachmentPicker failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "FilePicker pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "FilePicker failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "RenditionList pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "RenditionList failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "DocumentViewer pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "DocumentViewer failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "VersionHistory pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "VersionHistory failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
     }
    ],
    "code": {
@@ -22234,6 +24583,474 @@
     "appkit": [
      "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
      "cell.textField?.lineBreakMode = .byTruncatingMiddle"
+    ]
+   }
+  },
+  "ios-specialized|Generative AI": {
+   "summary": "Wave 14 B additions: Identify generated content with the existing sparkle icon and readable text.",
+   "variants": [
+    {
+     "name": "AILabel: Badge",
+     "web": "specialized|AI label",
+     "swiftui": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "uikit": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "appkit": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "use": "Identify generated content with the existing sparkle icon and readable text."
+    },
+    {
+     "name": "AILabel: Inline",
+     "web": "specialized|AI label",
+     "swiftui": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "uikit": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "appkit": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "use": "Identify generated content with the existing sparkle icon and readable text."
+    },
+    {
+     "name": "AILabel: With explanation",
+     "web": "specialized|AI label",
+     "swiftui": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "uikit": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "appkit": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+     "use": "Identify generated content with the existing sparkle icon and readable text."
+    },
+    {
+     "name": "GeneratedContent: With feedback",
+     "web": "specialized|Generated content",
+     "swiftui": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "uikit": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "appkit": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "use": "Review generated content, give feedback and move between caller-owned versions."
+    },
+    {
+     "name": "GeneratedContent: Regenerate",
+     "web": "specialized|Generated content",
+     "swiftui": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "uikit": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "appkit": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "use": "Review generated content, give feedback and move between caller-owned versions."
+    },
+    {
+     "name": "GeneratedContent: Versions pager",
+     "web": "specialized|Generated content",
+     "swiftui": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "uikit": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "appkit": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+     "use": "Review generated content, give feedback and move between caller-owned versions."
+    },
+    {
+     "name": "PromptHistory: List",
+     "web": "specialized|Prompt history",
+     "swiftui": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "uikit": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "appkit": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "use": "Find and reuse a saved prompt without implicitly sending it to a model."
+    },
+    {
+     "name": "PromptHistory: Search",
+     "web": "specialized|Prompt history",
+     "swiftui": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "uikit": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "appkit": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+     "use": "Find and reuse a saved prompt without implicitly sending it to a model."
+    },
+    {
+     "name": "Citation: Inline marker",
+     "web": "specialized|AI citation",
+     "swiftui": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "uikit": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "appkit": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "use": "Show a numbered source reference with a real link and enough context to inspect it."
+    },
+    {
+     "name": "Citation: Source card",
+     "web": "specialized|AI citation",
+     "swiftui": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "uikit": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "appkit": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "use": "Show a numbered source reference with a real link and enough context to inspect it."
+    },
+    {
+     "name": "Citation: Source list",
+     "web": "specialized|AI citation",
+     "swiftui": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "uikit": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "appkit": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+     "use": "Show a numbered source reference with a real link and enough context to inspect it."
+    },
+    {
+     "name": "SuggestedAction: Chip",
+     "web": "specialized|Suggested action",
+     "swiftui": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "uikit": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "appkit": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "use": "Offer an optional action that runs only when explicitly activated."
+    },
+    {
+     "name": "SuggestedAction: Card",
+     "web": "specialized|Suggested action",
+     "swiftui": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "uikit": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "appkit": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+     "use": "Offer an optional action that runs only when explicitly activated."
+    },
+    {
+     "name": "AISearch: Answer above results",
+     "web": "specialized|AI search",
+     "swiftui": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "uikit": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "appkit": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "use": "Place an identified generated answer and citations above normal search results."
+    },
+    {
+     "name": "AISearch: Semantic toggle",
+     "web": "specialized|AI search",
+     "swiftui": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "uikit": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "appkit": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+     "use": "Place an identified generated answer and citations above normal search results."
+    },
+    {
+     "name": "Recommendation: Row",
+     "web": "specialized|Recommendation",
+     "swiftui": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "uikit": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "appkit": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "use": "Offer manually browsed recommendations with an explanation when one is available."
+    },
+    {
+     "name": "Recommendation: With reason",
+     "web": "specialized|Recommendation",
+     "swiftui": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "uikit": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "appkit": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+     "use": "Offer manually browsed recommendations with an explanation when one is available."
+    },
+    {
+     "name": "AI identification: existing roles",
+     "web": "foundations|AI visual language",
+     "swiftui": "Use a readable origin label with the existing sparkle icon; no AI color.",
+     "uikit": "Use existing semantic text and spacing roles.",
+     "appkit": "A static origin label does not claim verification.",
+     "use": "Identify generated origin without a new color or theme."
+    },
+    {
+     "name": "AIButton: Trigger",
+     "web": "specialized|AI trigger",
+     "use": "Request a clearly named AI action, never automatic generation.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "AIButton: With menu of AI actions",
+     "web": "specialized|AI trigger",
+     "use": "Request a clearly named AI action, never automatic generation.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "AIButton: Icon only",
+     "web": "specialized|AI trigger",
+     "use": "Request a clearly named AI action, never automatic generation.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "AIDisclaimer: Footer",
+     "web": "specialized|AI disclaimer",
+     "use": "Remind people to check AI content and provide an optional policy link.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "AIDisclaimer: Inline",
+     "web": "specialized|AI disclaimer",
+     "use": "Remind people to check AI content and provide an optional policy link.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "ConfidenceIndicator: High",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "ConfidenceIndicator: Medium",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "ConfidenceIndicator: Low",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "ConfidenceIndicator: Numeric",
+     "web": "specialized|Confidence / uncertainty",
+     "use": "Present supplied confidence without manufacturing a certainty score.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "AIExplanation: Why this",
+     "web": "specialized|AI explainability",
+     "use": "Explain a recommendation with caller supplied reasons on request.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "AIExplanation: Factors",
+     "web": "specialized|AI explainability",
+     "use": "Explain a recommendation with caller supplied reasons on request.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "PromptSuggestions: Chips",
+     "web": "specialized|Prompt suggestions",
+     "use": "Offer optional prompt choices with explicit selection.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "PromptSuggestions: Cards",
+     "web": "specialized|Prompt suggestions",
+     "use": "Offer optional prompt choices with explicit selection.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "Chat.Typing: Thinking",
+     "web": "specialized|Thinking / processing state",
+     "use": "Communicate active work and caller supplied progress steps without invented completion.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "Chat.Typing: With steps",
+     "web": "specialized|Thinking / processing state",
+     "use": "Communicate active work and caller supplied progress steps without invented completion.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "SuggestedEdit: Inline diff",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "SuggestedEdit: Accept",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "SuggestedEdit: Reject",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "SuggestedEdit: Accept all",
+     "web": "specialized|Suggested edit",
+     "use": "Inspect a proposed text change and explicitly accept or reject it.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "RefineMenu: Shorter",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "RefineMenu: Longer",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "RefineMenu: Tone",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "RefineMenu: Custom prompt",
+     "web": "specialized|Refine",
+     "use": "Request a length, tone or custom revision without silently changing the text.",
+     "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
+     "uikit": "Use accessible native actions and caller owned output.",
+     "appkit": "Use the same explicit review behavior with native controls."
+    }
+   ],
+   "anatomy": [
+    "Sparkle icon",
+    "Readable origin label",
+    "Optional explanation disclosure",
+    "AILabel",
+    "Retained content",
+    "Version pager",
+    "Feedback and regenerate actions",
+    "Recoverable error",
+    "Optional SearchField",
+    "Prompt actions",
+    "Data-font timestamps",
+    "Empty or error message",
+    "Numbered disclosure or source heading",
+    "Source Link",
+    "Author and excerpt",
+    "Sparkle action button",
+    "Optional description",
+    "Pending or error message",
+    "Search form",
+    "Optional semantic Switch",
+    "Generated answer and sources",
+    "Result Links",
+    "Named Carousel",
+    "Recommendation content",
+    "Optional reason Popover",
+    "Explicit Link or action",
+    "Named requested action",
+    "Supplied explanation or proposed content",
+    "Explicit review and recovery controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "AI composition spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+    },
+    {
+     "attribute": "AI interaction spacing",
+     "value": "plx-sys-space-stack-sm",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackSm)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackSm",
+     "appkit": "Read the same spacing role from the macOS adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "AILabel pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "AILabel failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "GeneratedContent pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "GeneratedContent failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "PromptHistory pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "PromptHistory failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "Citation pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "Citation failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "SuggestedAction pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "SuggestedAction failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "AISearch pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "AISearch failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "Recommendation pending",
+     "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+    },
+    {
+     "name": "Recommendation failed",
+     "behavior": "Retain values and explain recovery without dismissing the task."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Prevent duplicate requests; show actual processing without invented completion."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "// Use the existing semantic tokens and a visible AI origin label; no AI color.",
+     "Label(strings.generated, systemImage: \"sparkles\")",
+     "// Keep generated content in state while requests run.",
+     "Button(strings.regenerate) { Task { await model.regenerateSelectedVersion() } }",
+     "// A source is a native Link; a disclosure opens source details without navigating.",
+     "// Cancel obsolete search tasks; only the latest request may replace the result."
+    ],
+    "uikit": [
+     "// UIStackView composes the origin label, content, source links and explicit actions.",
+     "originLabel.text = strings.generated",
+     "// Keep prior text during an async regenerate and retain it on errors.",
+     "// Use a real link control for each source; do not claim sources are verified."
+    ],
+    "appkit": [
+     "// Compose an origin label and explicit actions from existing AppKit controls.",
+     "originLabel.stringValue = strings.generated",
+     "// NSPopover shows source details; a link navigates only after activation.",
+     "// Retain the current version until the caller supplies the regenerated result."
     ]
    }
   }

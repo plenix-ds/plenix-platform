@@ -205,6 +205,7 @@
     <dimen name="plx_component_nav_list_item_padding_inline">8dp</dimen>
     <dimen name="plx_component_nav_list_item_radius">6dp</dimen>
     <dimen name="plx_component_nav_pane_width">240dp</dimen>
+    <dimen name="plx_component_product_card_radius">12dp</dimen>
     <dimen name="plx_component_progress_bar_fill_radius">9999dp</dimen>
     <dimen name="plx_component_progress_bar_label_font_size">12dp</dimen>
     <dimen name="plx_component_progress_bar_row_gap">4dp</dimen>

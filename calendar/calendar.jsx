@@ -4,7 +4,7 @@
    entry: Back closes it; a search result opens it on its day; Platforms Standard 4.3). The view and its date are in the
    address too, each a screen: #/month/2026-03, #/week/2026-03-01 (the week's first day), #/day/2026-03-05; #/ is the
    current month. Closing an event returns to the view it was opened from. */
-import { Button, Card, Chip, DateBadge, EventChip, Icon, Inline, SegmentedControl, Stack, Tag, TagList, Text, TimeGrid, RowButton } from 'plenix-platform';
+import { CommandBar, CommandBarButton, Menu, MenuItem, MenuRadioGroup, useCollectionView, Button, Card, DateBadge, EventChip, Icon, Inline, SegmentedControl, Stack, Tag, Text, TimeGrid, RowButton } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { CALENDARS, CAL_EVENTS } from '../suite/shared.jsx';
 const { useState } = React;
@@ -28,7 +28,9 @@ export function CalendarScreen({ screen }) {
   const [evMeta, setEvMeta] = useState({});
   const setView = (v) => { setSelDay(selDay); screen.open([v, v === 'month' ? MONTH : v === 'week' ? iso(1) : iso(selDay)]); };
   const [activeCals] = useState(() => Object.fromEntries(CALENDARS.map((c) => [c.id, true])));
-  const [activeTag, setActiveTag] = useState(null);
+  const collection = useCollectionView([], { text: (e) => e.title });
+  const activeTag = collection.search;
+  const setActiveTag = (value) => collection.setSearch(value || '');
 
   const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const DAYS_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -36,7 +38,7 @@ export function CalendarScreen({ screen }) {
   const cells = []; for (let i = 0; i < firstDay; i++) cells.push(null); for (let d = 1; d <= 31; d++) cells.push(d);
 
   const allTags = [...new Set(CAL_EVENTS.map((e) => e.title.split('—')[0].split('(')[0].trim()))];
-  const visibleEvs = CAL_EVENTS.filter((e) => activeCals[e.cal] && (!activeTag || e.title.toLowerCase().includes(activeTag.toLowerCase())));
+  const visibleEvs = CAL_EVENTS.filter((e) => activeCals[e.cal] && collection.test(e));
   const evFor = (n) => visibleEvs.filter((e) => e.date === n);
   const calName = (id) => (CALENDARS.find((c) => c.id === id) || {}).label;
   // "2:00 PM" → 14; all-day events have no hour
@@ -58,13 +60,14 @@ export function CalendarScreen({ screen }) {
           </Inline>
           <Inline gap="sm">
             <SegmentedControl size="sm" label="Calendar view" value={view} onChange={setView} options={[{ value: 'month', label: 'Month' }, { value: 'week', label: 'Week' }, { value: 'day', label: 'Day' }]} />
-            <Button variant="primary" size="sm" icon={<Icon name="plus" />}>Add event</Button>
+
           </Inline>
         </Inline>
-        <TagList label="Filter events">
-          <Chip selected={!activeTag} onClick={() => setActiveTag(null)}>All</Chip>
-          {allTags.map((tag) => <Chip key={tag} selected={activeTag === tag} onClick={() => setActiveTag(activeTag === tag ? null : tag)}>{tag}</Chip>)}
-        </TagList>
+        <CommandBar label="Events" sticky={false} count={visibleEvs.length + ' events'}
+          actions={[{ id: 'add', label: 'Add event', icon: 'plus', primary: true }]}
+          view={<Menu trigger={<CommandBarButton icon="filter" label="Filter events" active={!!activeTag} caret />}>
+            <MenuRadioGroup label="Filter events" value={activeTag} onChange={setActiveTag}><MenuItem value="">All</MenuItem>{allTags.map((tag) => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}</MenuRadioGroup>
+          </Menu>} />
       </Stack>
 
       {view === 'month' ? (

@@ -1,0 +1,370 @@
+{
+  "android-content|Badge": {
+    "summary": "Wave 14 B additions: Identify generated content with the existing sparkle icon and readable text.",
+    "variants": [
+      {
+        "name": "AILabel: Badge",
+        "web": "specialized|AI label",
+        "compose": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+        "views": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+        "use": "Identify generated content with the existing sparkle icon and readable text."
+      },
+      {
+        "name": "AILabel: Inline",
+        "web": "specialized|AI label",
+        "compose": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+        "views": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+        "use": "Identify generated content with the existing sparkle icon and readable text."
+      },
+      {
+        "name": "AILabel: With explanation",
+        "web": "specialized|AI label",
+        "compose": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+        "views": "Disclose the explanation only on explicit activation. Identification never implies correctness or verification.",
+        "use": "Identify generated content with the existing sparkle icon and readable text."
+      },
+      {
+        "name": "AI identification: existing roles",
+        "web": "foundations|AI visual language",
+        "compose": "Use existing Material 3 content and spacing roles with a readable origin label.",
+        "views": "Identify origin with text and a decorative sparkle, not a new color.",
+        "use": "Identify generated origin without implying correctness."
+      }
+    ],
+    "anatomy": [
+      "Sparkle icon",
+      "Readable origin label",
+      "Optional explanation disclosure"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI composition spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+      }
+    ],
+    "states": [
+      {
+        "name": "AILabel pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "AILabel failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use existing Material 3 roles; a visible origin label accompanies the sparkle icon.",
+        "Text(strings.generated)",
+        "Button(onClick = model::regenerateSelectedVersion, enabled = !model.busy) { Text(strings.regenerate) }",
+        "// Source navigation uses a real URI action; source disclosure and navigation stay distinct.",
+        "// Keep prior content during errors; cancel obsolete searches in the ViewModel."
+      ],
+      "views": [
+        "// Bind ordinary text, source links and explicit action buttons to retained ViewModel state.",
+        "originLabel.text = strings.generated",
+        "regenerateButton.isEnabled = !model.busy",
+        "// Lifecycle-aware tasks prevent stale searches from replacing newer results."
+      ]
+    }
+  },
+  "android-data-display|Card": {
+    "summary": "Wave 14 B additions: Review generated content, give feedback and move between caller-owned versions.",
+    "variants": [
+      {
+        "name": "GeneratedContent: With feedback",
+        "web": "specialized|Generated content",
+        "compose": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+        "views": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+        "use": "Review generated content, give feedback and move between caller-owned versions."
+      },
+      {
+        "name": "GeneratedContent: Regenerate",
+        "web": "specialized|Generated content",
+        "compose": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+        "views": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+        "use": "Review generated content, give feedback and move between caller-owned versions."
+      },
+      {
+        "name": "GeneratedContent: Versions pager",
+        "web": "specialized|Generated content",
+        "compose": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+        "views": "Await actions once, retain content on failure and cancel obsolete work on version changes. The caller supplies regenerated versions.",
+        "use": "Review generated content, give feedback and move between caller-owned versions."
+      },
+      {
+        "name": "Citation: Inline marker",
+        "web": "specialized|AI citation",
+        "compose": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+        "views": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+        "use": "Show a numbered source reference with a real link and enough context to inspect it."
+      },
+      {
+        "name": "Citation: Source card",
+        "web": "specialized|AI citation",
+        "compose": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+        "views": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+        "use": "Show a numbered source reference with a real link and enough context to inspect it."
+      },
+      {
+        "name": "Citation: Source list",
+        "web": "specialized|AI citation",
+        "compose": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+        "views": "The marker opens a source Popover. Navigation remains a Link; unsafe URL protocols are not interactive.",
+        "use": "Show a numbered source reference with a real link and enough context to inspect it."
+      },
+      {
+        "name": "SuggestedAction: Chip",
+        "web": "specialized|Suggested action",
+        "compose": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+        "views": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+        "use": "Offer an optional action that runs only when explicitly activated."
+      },
+      {
+        "name": "SuggestedAction: Card",
+        "web": "specialized|Suggested action",
+        "compose": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+        "views": "Wait for the caller, prevent duplicate actions and expose a recoverable error without implying acceptance.",
+        "use": "Offer an optional action that runs only when explicitly activated."
+      }
+    ],
+    "anatomy": [
+      "AILabel",
+      "Retained content",
+      "Version pager",
+      "Feedback and regenerate actions",
+      "Recoverable error",
+      "Numbered disclosure or source heading",
+      "Source Link",
+      "Author and excerpt",
+      "Sparkle action button",
+      "Optional description",
+      "Pending or error message"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI composition spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+      }
+    ],
+    "states": [
+      {
+        "name": "GeneratedContent pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "GeneratedContent failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "Citation pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "Citation failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "SuggestedAction pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "SuggestedAction failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use existing Material 3 roles; a visible origin label accompanies the sparkle icon.",
+        "Text(strings.generated)",
+        "Button(onClick = model::regenerateSelectedVersion, enabled = !model.busy) { Text(strings.regenerate) }",
+        "// Source navigation uses a real URI action; source disclosure and navigation stay distinct.",
+        "// Keep prior content during errors; cancel obsolete searches in the ViewModel."
+      ],
+      "views": [
+        "// Bind ordinary text, source links and explicit action buttons to retained ViewModel state.",
+        "originLabel.text = strings.generated",
+        "regenerateButton.isEnabled = !model.busy",
+        "// Lifecycle-aware tasks prevent stale searches from replacing newer results."
+      ]
+    }
+  },
+  "android-data-display|List": {
+    "summary": "Wave 14 B additions: Find and reuse a saved prompt without implicitly sending it to a model.",
+    "variants": [
+      {
+        "name": "PromptHistory: List",
+        "web": "specialized|Prompt history",
+        "compose": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+        "views": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+        "use": "Find and reuse a saved prompt without implicitly sending it to a model."
+      },
+      {
+        "name": "PromptHistory: Search",
+        "web": "specialized|Prompt history",
+        "compose": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+        "views": "Filter without mutating history. An explicit selection invokes the caller once; failures preserve the prompt list.",
+        "use": "Find and reuse a saved prompt without implicitly sending it to a model."
+      }
+    ],
+    "anatomy": [
+      "Optional SearchField",
+      "Prompt actions",
+      "Data-font timestamps",
+      "Empty or error message"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI composition spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+      }
+    ],
+    "states": [
+      {
+        "name": "PromptHistory pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "PromptHistory failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use existing Material 3 roles; a visible origin label accompanies the sparkle icon.",
+        "Text(strings.generated)",
+        "Button(onClick = model::regenerateSelectedVersion, enabled = !model.busy) { Text(strings.regenerate) }",
+        "// Source navigation uses a real URI action; source disclosure and navigation stay distinct.",
+        "// Keep prior content during errors; cancel obsolete searches in the ViewModel."
+      ],
+      "views": [
+        "// Bind ordinary text, source links and explicit action buttons to retained ViewModel state.",
+        "originLabel.text = strings.generated",
+        "regenerateButton.isEnabled = !model.busy",
+        "// Lifecycle-aware tasks prevent stale searches from replacing newer results."
+      ]
+    }
+  },
+  "android-navigation|Search screen": {
+    "summary": "Wave 14 B additions: Place an identified generated answer and citations above normal search results.",
+    "variants": [
+      {
+        "name": "AISearch: Answer above results",
+        "web": "specialized|AI search",
+        "compose": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+        "views": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+        "use": "Place an identified generated answer and citations above normal search results."
+      },
+      {
+        "name": "AISearch: Semantic toggle",
+        "web": "specialized|AI search",
+        "compose": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+        "views": "Only submit searches. New requests abort and supersede stale results. Failed searches retain the previous answer; toggling semantic search never submits implicitly.",
+        "use": "Place an identified generated answer and citations above normal search results."
+      }
+    ],
+    "anatomy": [
+      "Search form",
+      "Optional semantic Switch",
+      "Generated answer and sources",
+      "Result Links"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI composition spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+      }
+    ],
+    "states": [
+      {
+        "name": "AISearch pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "AISearch failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use existing Material 3 roles; a visible origin label accompanies the sparkle icon.",
+        "Text(strings.generated)",
+        "Button(onClick = model::regenerateSelectedVersion, enabled = !model.busy) { Text(strings.regenerate) }",
+        "// Source navigation uses a real URI action; source disclosure and navigation stay distinct.",
+        "// Keep prior content during errors; cancel obsolete searches in the ViewModel."
+      ],
+      "views": [
+        "// Bind ordinary text, source links and explicit action buttons to retained ViewModel state.",
+        "originLabel.text = strings.generated",
+        "regenerateButton.isEnabled = !model.busy",
+        "// Lifecycle-aware tasks prevent stale searches from replacing newer results."
+      ]
+    }
+  },
+  "android-data-display|Carousel": {
+    "summary": "Wave 14 B additions: Offer manually browsed recommendations with an explanation when one is available.",
+    "variants": [
+      {
+        "name": "Recommendation: Row",
+        "web": "specialized|Recommendation",
+        "compose": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+        "views": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+        "use": "Offer manually browsed recommendations with an explanation when one is available."
+      },
+      {
+        "name": "Recommendation: With reason",
+        "web": "specialized|Recommendation",
+        "compose": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+        "views": "Never autoplay or navigate on appearance. Reasons come from the caller; real links keep normal browser behavior.",
+        "use": "Offer manually browsed recommendations with an explanation when one is available."
+      }
+    ],
+    "anatomy": [
+      "Named Carousel",
+      "Recommendation content",
+      "Optional reason Popover",
+      "Explicit Link or action"
+    ],
+    "attributes": [
+      {
+        "attribute": "AI composition spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+      }
+    ],
+    "states": [
+      {
+        "name": "Recommendation pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "Recommendation failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use existing Material 3 roles; a visible origin label accompanies the sparkle icon.",
+        "Text(strings.generated)",
+        "Button(onClick = model::regenerateSelectedVersion, enabled = !model.busy) { Text(strings.regenerate) }",
+        "// Source navigation uses a real URI action; source disclosure and navigation stay distinct.",
+        "// Keep prior content during errors; cancel obsolete searches in the ViewModel."
+      ],
+      "views": [
+        "// Bind ordinary text, source links and explicit action buttons to retained ViewModel state.",
+        "originLabel.text = strings.generated",
+        "regenerateButton.isEnabled = !model.busy",
+        "// Lifecycle-aware tasks prevent stale searches from replacing newer results."
+      ]
+    }
+  }
+}

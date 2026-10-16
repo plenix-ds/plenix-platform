@@ -1,0 +1,10 @@
+{
+  "$description": "AttachmentPicker: component spacing roles.",
+  "plx-comp": {
+    "attachment-picker-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "AttachmentPicker: space between composed regions."
+    }
+  }
+}

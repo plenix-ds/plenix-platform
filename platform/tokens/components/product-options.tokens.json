@@ -1,0 +1,21 @@
+{
+  "$description": "ProductOptions (platform/components/ProductOptions), library wave 13, lane A: its component tokens. The space between the options and inside each; the option's name and chosen value (the label roles, as RadioTiles' legend); the size tiles' narrowest width; the swatches' gap and the dimmed out of stock swatch (opacity-mid, as a disabled tile); the error line on the field error's roles. The tiles, swatches and stepper keep their own components' tokens.",
+  "plx-comp": {
+    "product-options-gap": { "$value": "{plx-sys.space-stack-md}", "$type": "dimension", "$description": "ProductOptions: the space between two options (space-stack-md)." },
+    "product-options-option-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "ProductOptions: the space between an option's name, its choices and its error (space-stack-xs)." },
+    "product-options-legend-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "ProductOptions: the option's name (content-default, as RadioTiles' legend)." },
+    "product-options-legend-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "ProductOptions: the option's name in the label font (font-label)." },
+    "product-options-legend-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "ProductOptions: the option's name and chosen value (12px, as RadioTiles' legend)." },
+    "product-options-legend-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "ProductOptions: the name line's height (20px)." },
+    "product-options-legend-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "ProductOptions: the gap between the option's name and its chosen value (space-inline-xs)." },
+    "product-options-label-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "ProductOptions: the option's name (semibold, as RadioTiles' legend)." },
+    "product-options-chosen-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "ProductOptions: the chosen value after the name (content-muted)." },
+    "product-options-chosen-font-weight": { "$value": "{plx-sys.font-weight-regular}", "$type": "fontWeight", "$description": "ProductOptions: the chosen value's weight (regular)." },
+    "product-options-size-min": { "$value": "{plx-ref.size-64px}", "$type": "dimension", "$description": "ProductOptions: a size tile's narrowest width; the tiles share the row (64px)." },
+    "product-options-swatch-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "ProductOptions: the gap between two color swatches (space-inline-sm)." },
+    "product-options-unavailable-opacity": { "$value": "{plx-sys.opacity-mid}", "$type": "number", "$description": "ProductOptions: an out of stock swatch, dimmed (opacity-mid, as a disabled radio tile)." },
+    "product-options-error-text": { "$value": "{plx-sys.feedback-danger-solid}", "$type": "color", "$description": "ProductOptions: an option's error (feedback-danger-solid, as Field's error)." },
+    "product-options-error-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "ProductOptions: the error's size (11px, as Field's error)." },
+    "product-options-error-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "ProductOptions: the gap between the error's icon and its words (space-inline-xs)." }
+  }
+}

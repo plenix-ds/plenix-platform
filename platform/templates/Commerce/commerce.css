@@ -1,0 +1,66 @@
+/* Plenix · Commerce templates (platform/templates/Commerce): region placement only. The page's column of parts; its
+   heading; the two columns (the main column and the summary at the end, stacked on a narrow page); the product page's
+   picture and buying column; the lines of a cart or an order (picture, text, quantity, line total, remove); the order
+   summary's totals; the payment fields' pairs; the confirmation's head. Every look inside is its component's.
+   Anatomy and API: Commerce.jsx. */
+.plx-commerce{container-type:inline-size;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-gap);}
+.plx-commerce__head{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-head-gap);}
+.plx-commerce__title{color:var(--plx-comp-commerce-title-text);font-family:var(--plx-comp-commerce-title-font-family);font-size:var(--plx-comp-commerce-title-font-size);font-weight:var(--plx-comp-commerce-title-font-weight);line-height:var(--plx-comp-commerce-title-line-height);margin-block-end:0;margin-block-start:0;}
+.plx-commerce__title:focus-visible{outline-color:var(--plx-comp-commerce-focus-outline-color);outline-offset:var(--plx-comp-commerce-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-commerce-focus-outline-width);}
+.plx-commerce__subtitle{color:var(--plx-comp-commerce-title-text);font-family:var(--plx-comp-commerce-title-font-family);font-size:var(--plx-comp-commerce-subtitle-font-size);font-weight:var(--plx-comp-commerce-subtitle-font-weight);line-height:var(--plx-comp-commerce-subtitle-line-height);margin-block-end:0;margin-block-start:0;}
+.plx-commerce__search{max-inline-size:var(--plx-comp-commerce-search-width);}
+.plx-commerce__section{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-section-gap);}
+.plx-commerce__list,.plx-commerce-lines,.plx-commerce__returnables,.plx-commerce-summary__items{list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+.plx-commerce__list{display:flex;flex-direction:column;row-gap:var(--plx-comp-commerce-section-gap);}
+.plx-commerce__ideas{align-items:center;column-gap:var(--plx-comp-commerce-inline-gap);display:flex;flex-wrap:wrap;justify-content:center;row-gap:var(--plx-comp-commerce-inline-gap);}
+/* two columns: the main column and the summary at its end */
+.plx-commerce__columns{align-items:start;column-gap:var(--plx-comp-commerce-columns-gap);display:grid;grid-template-columns:minmax(0, 1fr) var(--plx-comp-commerce-aside-width);row-gap:var(--plx-comp-commerce-gap);}
+.plx-commerce__main{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-gap);}
+.plx-commerce__aside{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-section-gap);}
+/* the product page: the pictures and the buying column */
+.plx-commerce__product{align-items:start;column-gap:var(--plx-comp-commerce-columns-gap);display:grid;grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);row-gap:var(--plx-comp-commerce-gap);}
+.plx-commerce__gallery{min-inline-size:0;}
+.plx-commerce__buy{align-items:flex-start;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-section-gap);}
+.plx-commerce__buy .plx-product-options{align-self:stretch;}
+.plx-commerce__rating,.plx-commerce__order-number,.plx-commerce__links,.plx-commerce__row-actions{align-items:center;column-gap:var(--plx-comp-commerce-inline-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-commerce-inline-gap);}
+.plx-commerce__order-number{align-items:baseline;}
+/* the lines of a cart or an order */
+.plx-commerce-lines{border-block-start-color:var(--plx-comp-commerce-line-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-commerce-line-border-width);display:flex;flex-direction:column;}
+.plx-commerce-line{align-items:center;border-block-end-color:var(--plx-comp-commerce-line-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-commerce-line-border-width);column-gap:var(--plx-comp-commerce-line-gap);display:grid;grid-template-columns:var(--plx-comp-commerce-line-media-width) minmax(0, 1fr) auto auto auto;padding-block-end:var(--plx-comp-commerce-line-padding-block);padding-block-start:var(--plx-comp-commerce-line-padding-block);row-gap:var(--plx-comp-commerce-line-row-gap);}
+.plx-commerce-line__media{display:block;min-inline-size:0;}
+.plx-commerce-line__placeholder{align-items:center;background-color:var(--plx-comp-commerce-placeholder-background);color:var(--plx-comp-commerce-placeholder-text);display:flex;justify-content:center;}
+.plx-commerce-line__text{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-line-text-gap);}
+.plx-commerce-line__total{font-family:var(--plx-comp-commerce-line-total-font-family);font-weight:var(--plx-comp-commerce-line-total-font-weight);min-inline-size:var(--plx-comp-commerce-line-total-width);text-align:end;}
+.plx-commerce-line__warning{grid-column:2 / -1;}
+/* the order summary's totals: the name at the start, the amount at the end, on one baseline */
+.plx-commerce-summary__items{display:flex;flex-direction:column;padding-block-end:var(--plx-comp-commerce-summary-gap);row-gap:var(--plx-comp-commerce-summary-gap);}
+.plx-commerce-summary__item,.plx-commerce-summary__row{align-items:baseline;column-gap:var(--plx-comp-commerce-inline-gap);display:flex;justify-content:space-between;}
+.plx-commerce-summary__name{min-inline-size:0;}
+.plx-commerce-summary__totals{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;row-gap:var(--plx-comp-commerce-summary-gap);}
+.plx-commerce-summary__label{color:var(--plx-comp-commerce-summary-label-text);}
+.plx-commerce-summary__value{font-family:var(--plx-comp-commerce-summary-value-font-family);margin-inline-start:0;}
+.plx-commerce-summary__row--total{border-block-start-color:var(--plx-comp-commerce-line-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-commerce-line-border-width);font-weight:var(--plx-comp-commerce-total-font-weight);padding-block-start:var(--plx-comp-commerce-summary-gap);}
+.plx-commerce-summary__row--total .plx-commerce-summary__label{color:var(--plx-comp-commerce-title-text);}
+.plx-commerce-summary__actions{display:flex;flex-direction:column;padding-block-start:var(--plx-comp-commerce-section-gap);row-gap:var(--plx-comp-commerce-section-gap);}
+.plx-commerce__promo{align-items:flex-end;column-gap:var(--plx-comp-commerce-inline-gap);display:grid;grid-template-columns:minmax(0, 1fr) auto;}
+/* the payment fields and other field pairs */
+.plx-commerce__payment,.plx-commerce__fields{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-section-gap);}
+.plx-commerce__fields{border-block-end-style:none;border-block-start-style:none;border-inline-end-style:none;border-inline-start-style:none;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-commerce__legend{color:var(--plx-comp-commerce-title-text);font-weight:var(--plx-comp-commerce-subtitle-font-weight);padding-inline-end:0;padding-inline-start:0;}
+.plx-commerce__pair{column-gap:var(--plx-comp-commerce-inline-gap);display:grid;grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);row-gap:var(--plx-comp-commerce-section-gap);}
+/* the confirmation's head; a saved payment method; a returnable item */
+.plx-commerce__confirmed{align-items:flex-start;display:flex;flex-direction:column;row-gap:var(--plx-comp-commerce-section-gap);}
+.plx-commerce__method,.plx-commerce__returnable{align-items:center;column-gap:var(--plx-comp-commerce-inline-gap);display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:var(--plx-comp-commerce-inline-gap);}
+.plx-commerce__method-text{display:flex;flex-direction:column;}
+.plx-commerce__returnables{display:flex;flex-direction:column;row-gap:var(--plx-comp-commerce-section-gap);}
+/* a narrow page: one column, the summary after the main column; a line's quantity and total under its text */
+@container (max-width: 839px){
+.plx-commerce__columns,.plx-commerce__product{grid-template-columns:minmax(0, 1fr);}
+}
+@container (max-width: 599px){
+.plx-commerce-line{grid-template-columns:var(--plx-comp-commerce-line-media-width) minmax(0, 1fr) auto;}
+.plx-commerce-line__quantity{grid-column:2;}
+.plx-commerce-line__total{grid-column:3;grid-row:1;}
+.plx-commerce-line__remove{grid-column:3;grid-row:2;justify-self:end;}
+.plx-commerce__pair{grid-template-columns:minmax(0, 1fr);}
+}

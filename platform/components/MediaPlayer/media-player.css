@@ -1,0 +1,4 @@
+/* Plenix · MediaPlayer: composed regions use existing spacing roles. */
+.plx-media-player{row-gap:var(--plx-comp-media-player-gap);}
+.plx-media-player__media{inline-size:100%;max-inline-size:100%;}
+.plx-media-player__transcript{padding-inline-start:var(--plx-comp-media-player-gap);list-style:none;}

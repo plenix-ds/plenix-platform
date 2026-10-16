@@ -1,0 +1,39 @@
+/* Plenix · DownloadManager
+   Summary: A named panel of queued, progressing, ready or failed downloads built from FileRow.
+   Usage: <DownloadManager items={jobs} onCancel={cancelJob} onRetry={retryJob} onDownload={downloadFile} />
+   Props:
+     items: [{ id, file, status: queued | progress | ready | failed, progress, error, href }].
+     onCancel(item), onRetry(item), onDownload(item): asynchronous application actions; variant: panel | progress | ready.
+     title: list name; strings: title, empty, queued, progress, ready, failed, actionFailed; className.
+   Behavior: Progress and errors remain caller-owned. Actions lock per item until settled; failures stay visible for retry.
+   Notes: A supplied ready URL is a real Link; onDownload initiates an explicit application download. No transfers start on render.
+*/
+import React from 'react';
+import { Panel } from '../../components/Card/Card.jsx';
+import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
+import { Badge } from '../../components/Badge/Badge.jsx';
+import { Notice } from '../../components/Notice/Notice.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { Stack } from '../../components/Stack/Stack.jsx';
+import { cx } from '../../utils/cx.js';
+
+export function DownloadManager({ items = [], onCancel, onRetry, onDownload, title, variant = 'panel', strings, className }) {
+  const t = Object.assign({ title: 'Downloads', empty: 'No downloads', queued: 'Queued', progress: 'Downloading', ready: 'Ready', failed: 'Download failed', actionFailed: 'Could not complete the download action. Try again.' }, strings);
+  const [pending, setPending] = React.useState({}), [errors, setErrors] = React.useState({});
+  const locks = React.useRef(new Set());
+  const run = async (item, action) => {
+    if (locks.current.has(item.id)) return; locks.current.add(item.id); setPending((p) => ({ ...p, [item.id]: true })); setErrors((p) => ({ ...p, [item.id]: '' }));
+    try { await action(item); } catch (e) { setErrors((p) => ({ ...p, [item.id]: t.actionFailed })); }
+    finally { locks.current.delete(item.id); setPending((p) => ({ ...p, [item.id]: false })); }
+  };
+  const content = <Stack className={cx('plx-download-manager', className)}>
+    {items.length ? <FileRowList label={title || t.title}>{items.map((a) => <FileRow key={a.id} as="li" file={a.file} aria-busy={!!pending[a.id]}
+      progress={a.status === 'progress' ? a.progress : undefined} progressLabel={t.progress}
+      error={a.status === 'failed' ? a.error || t.failed : undefined} status={<Badge tone={a.status === 'ready' ? 'success' : a.status === 'failed' ? 'negative' : 'active'} icon={a.status === 'ready' ? 'check' : a.status === 'failed' ? 'alert' : 'refresh'}>{t[a.status] || t.queued}</Badge>}
+      onCancel={onCancel && !pending[a.id] ? () => run(a, onCancel) : undefined} onRetry={onRetry && !pending[a.id] ? () => run(a, onRetry) : undefined}
+      onDownload={a.status === 'ready' && onDownload && !pending[a.id] ? () => run(a, onDownload) : undefined} strings={strings}
+      href={a.status === 'ready' ? a.href : undefined} />)}</FileRowList> : <EmptyState title={t.empty} />}
+    {Object.entries(errors).filter(([, error]) => error).map(([id, error]) => <Notice key={id} tone="danger">{error}</Notice>)}
+  </Stack>;
+  return variant === 'panel' ? <Panel title={title || t.title}>{content}</Panel> : content;
+}
