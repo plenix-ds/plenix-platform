@@ -1,0 +1,20 @@
+/* Plenix · ConnectedAccounts (platform/patterns/ConnectedAccounts): the services Plenix is linked to. A list of rows, a
+   line between them: the service's icon tile, its name with the status Badge, a line on what it is for, the linked
+   account and date (the data font), the reason of a failed connection in the danger color, and the action at the end.
+   The questions are ConfirmDialogs; their list of scopes is a plain bulleted list. Anatomy and API: ConnectedAccounts.jsx. */
+.plx-connected-accounts{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;min-inline-size:0;padding-inline-start:0;}
+.plx-connected-accounts__item{align-items:flex-start;border-block-end-color:var(--plx-comp-connected-accounts-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-connected-accounts-border-width);column-gap:var(--plx-comp-connected-accounts-gap);display:flex;flex-wrap:wrap;min-inline-size:0;padding-block-end:var(--plx-comp-connected-accounts-padding-block);padding-block-start:var(--plx-comp-connected-accounts-padding-block);row-gap:var(--plx-comp-connected-accounts-row-gap);}
+.plx-connected-accounts__item:last-child{border-block-end-style:none;}
+.plx-connected-accounts__tile{flex-shrink:0;}
+.plx-connected-accounts__body{display:flex;flex-basis:var(--plx-comp-connected-accounts-body-min-width);flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-connected-accounts-body-gap);}
+.plx-connected-accounts__head{align-items:center;column-gap:var(--plx-comp-connected-accounts-head-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-connected-accounts-body-gap);}
+.plx-connected-accounts__service{color:var(--plx-comp-connected-accounts-service-text);font-family:var(--plx-comp-connected-accounts-service-font-family);font-size:var(--plx-comp-connected-accounts-service-font-size);font-weight:var(--plx-comp-connected-accounts-service-font-weight);line-height:var(--plx-comp-connected-accounts-service-line-height);margin-block-end:0;margin-block-start:0;}
+.plx-connected-accounts__description,
+.plx-connected-accounts__detail,
+.plx-connected-accounts__error{font-size:var(--plx-comp-connected-accounts-detail-font-size);line-height:var(--plx-comp-connected-accounts-detail-line-height);margin-block-end:0;margin-block-start:0;}
+.plx-connected-accounts__description{color:var(--plx-comp-connected-accounts-description-text);}
+.plx-connected-accounts__detail{color:var(--plx-comp-connected-accounts-detail-text);}
+.plx-connected-accounts__date{font-family:var(--plx-comp-connected-accounts-data-font-family);}
+.plx-connected-accounts__error{color:var(--plx-comp-connected-accounts-error-text);}
+.plx-connected-accounts__actions{align-items:center;column-gap:var(--plx-comp-connected-accounts-actions-gap);display:flex;flex-shrink:0;flex-wrap:wrap;margin-inline-start:auto;row-gap:var(--plx-comp-connected-accounts-actions-gap);}
+.plx-connected-accounts__scopes{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:var(--plx-comp-connected-accounts-scopes-margin-top);padding-inline-start:var(--plx-comp-connected-accounts-scopes-indent);row-gap:var(--plx-comp-connected-accounts-scopes-gap);}

@@ -264,4 +264,10 @@ export { DeleteFlow } from './patterns/DeleteFlow/DeleteFlow.jsx';
 export { DuplicateAction, copyName } from './patterns/DuplicateAction/DuplicateAction.jsx';
 export { Publish } from './patterns/Publish/Publish.jsx';
 export { AssignControl } from './patterns/AssignControl/AssignControl.jsx';
+export { File, fileIcon, fileExtension } from './components/File/File.jsx';
+export { FileRow, FileRowList } from './components/FileRow/FileRow.jsx';
+export { Auth, SignInForm, SignUpForm, PasswordResetForm, MfaChallenge, SsoButtons, AccountRecovery } from './patterns/Auth/Auth.jsx';
+export { SessionTimeout, useSessionTimeout } from './patterns/SessionTimeout/SessionTimeout.jsx';
+export { RoleManager } from './patterns/RoleManager/RoleManager.jsx';
+export { ConnectedAccounts, ConnectedAccount } from './patterns/ConnectedAccounts/ConnectedAccounts.jsx';
 /* END library parts */

@@ -1,0 +1,72 @@
+{
+  "ios-specialized|File management": {
+    "summary": "Plenix on iOS shows files and folders the way the web does and leaves choosing, opening and saving to the system: the document picker and the document browser, Quick Look for previews, the share sheet for sending. A file is its type’s symbol (or a thumbnail from QuickLookThumbnailing), its name with the extension kept in view when a long name is cut, and its size and date in DM Mono; a folder is the folder symbol, its name in DM Sans and its count. In a list each file is a row with its facts and a trailing menu of Rename, Download and Delete; during a transfer the row shows a linear progress view and Cancel. Apple’s default is the system list row; Plenix keeps the row, its swipe actions and its context menu and changes the look.",
+    "variants": [
+      { "name": "File", "apple": "Label with the type’s SF Symbol and the file name", "web": "specialized|File", "background": null, "content": "plx-comp-file-name-text", "border": null, "swiftui": "PlenixFile(name: \"Letterhead 2026.pdf\", size: 1_240_000): the type symbol, the name in DM Mono with its extension kept, the facts muted", "uikit": "UIListContentConfiguration.cell() with image from the type and secondaryText for the facts", "appkit": "NSTableCellView with the file’s icon (a macOS build of the tokens is needed)", "use": "A stored file in a list, a picker or an attachment." },
+      { "name": "Folder", "apple": "Label with the folder symbol", "web": "specialized|Folder", "background": null, "content": "plx-comp-file-name-text", "border": null, "swiftui": "PlenixFile(name: \"Brand kit\", kind: .folder, count: 24)", "uikit": "the folder symbol and the count as secondaryText", "appkit": "NSTableCellView with the folder icon (a macOS build of the tokens is needed)", "use": "Places that hold files." },
+      { "name": "File row", "apple": "A List row with a context menu and swipe actions", "web": "specialized|File row", "background": "plx-comp-file-row-background", "content": "plx-comp-file-row-cell-text", "border": "plx-comp-file-row-border-color", "swiftui": "List(files, selection: $selection) { PlenixFileRow(file: $0) } with .contextMenu and .swipeActions", "uikit": "UICollectionView list with trailingSwipeActionsConfigurationProvider and a context menu", "appkit": "NSTableView rows (a macOS build of the tokens is needed)", "use": "Uploads, attachments and pickers." },
+      { "name": "File row with progress", "apple": "ProgressView(value:) in the row", "web": "specialized|File row", "background": "plx-comp-file-row-background", "content": "plx-comp-file-row-cell-text", "border": null, "swiftui": "ProgressView(value: progress).tint(Plenix.Colors.feedbackInfoSolid) and a Cancel button", "uikit": "UIProgressView in the cell’s accessory", "appkit": "NSProgressIndicator (a macOS build of the tokens is needed)", "use": "Each file of an upload or a download." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Type symbol or thumbnail", "about": "The type’s symbol in the muted color, or a small thumbnail from QuickLookThumbnailing." },
+      { "part": "B", "name": "Name", "about": "The stored name in DM Mono; a long name is cut in the middle so the extension stays." },
+      { "part": "C", "name": "Facts", "about": "The size (ByteCountFormatter) and the date, muted, in DM Mono; a folder’s count." },
+      { "part": "D", "name": "Selection", "about": "The list’s own selection in edit mode." },
+      { "part": "E", "name": "Actions", "about": "A trailing menu with Rename, Download and Delete, the same actions as swipe actions and in the context menu." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Type symbol", "token": "plx-comp-file-icon-color", "value": "The muted content color (Plenix.Colors.contentMuted)", "apple": "The system tint", "swiftui": "Image(systemName: symbol(for: file)).foregroundStyle(Plenix.Colors.contentMuted).accessibilityHidden(true)", "uikit": "imageProperties.tintColor = Plenix.Colors.contentMuted", "appkit": "the icon tinted with the muted color (a macOS build of the tokens is needed)", "follows": "Creating and opening files" },
+      { "part": "B", "attribute": "Name in the data font", "token": "plx-comp-file-name-data-font-family", "value": "A file name with its extension is a technical value: DM Mono at the body size (the data font)", "apple": "SF Pro", "swiftui": "Text(file.name).font(Plenix.Font.mono(Plenix.Platform.textBodySize, relativeTo: .body)).truncationMode(.middle).lineLimit(1)", "uikit": "textProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textBodySize); lineBreakMode = .byTruncatingMiddle", "appkit": "NSFont(name: Plenix.Font.mono, …) with truncatesMiddle (a macOS build of the tokens is needed)", "follows": "Creating and opening files" },
+      { "part": "C", "attribute": "Facts in the data font", "token": "plx-comp-file-meta-font-family", "value": "The size and date, muted, in DM Mono at the data size (the data role)", "apple": "The secondary text", "swiftui": "Text(facts).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentMuted)", "uikit": "secondaryTextProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize); color = Plenix.Colors.contentMuted", "appkit": "the secondary field in DM Mono, Plenix.Font.mono (a macOS build of the tokens is needed)", "follows": "Creating and opening files" },
+      { "part": "D", "attribute": "Selected row", "token": "plx-comp-file-row-selected-background", "value": "The selected fill (Plenix.Colors.stateSelected)", "apple": "The system selection", "swiftui": ".listRowBackground(isSelected ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault)", "uikit": "backgroundConfiguration.backgroundColor = isSelected ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault", "appkit": "the row view’s selection highlight (a macOS build of the tokens is needed)", "follows": "iOS, iPadOS" },
+      { "part": "E", "attribute": "Row actions", "token": null, "value": "Rename, Download and Delete in a menu, as swipe actions and in the context menu; Delete in the destructive role", "apple": "The same", "swiftui": ".swipeActions { Button(\"Delete\", role: .destructive) { … } }.contextMenu { Button(\"Rename…\") { … }; Button(\"Delete\", role: .destructive) { … } }", "uikit": "UIContextualAction(style: .destructive, title: \"Delete\")", "appkit": "an NSMenu on the row (a macOS build of the tokens is needed)", "follows": "Saving work" },
+      { "part": "E", "attribute": "Row line", "token": "plx-comp-file-row-border-color", "value": "The divider color between rows (Plenix.Colors.borderDivider)", "apple": "The system separator", "swiftui": ".listRowSeparatorTint(Plenix.Colors.borderDivider)", "uikit": "separatorConfiguration.color = Plenix.Colors.borderDivider", "appkit": "gridColor from the divider (a macOS build of the tokens is needed)", "follows": "iOS, iPadOS" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-comp-file-row-background", "swiftui": "the row on the default surface", "uikit": "the default background configuration", "appkit": "the row" },
+      { "state": "Selected", "token": "plx-comp-file-row-selected-background", "swiftui": "in edit mode, the selected fill", "uikit": "isSelected", "appkit": "selected row" },
+      { "state": "Transferring", "token": "plx-comp-file-row-cell-text", "swiftui": "ProgressView(value:) and Cancel in place of the facts", "uikit": "UIProgressView in the accessory", "appkit": "NSProgressIndicator" },
+      { "state": "Failed", "token": "plx-comp-file-row-error-text", "swiftui": "the reason in the danger content color with Try again", "uikit": "secondaryText in the danger content color", "appkit": "the reason in red with Try again" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// A Plenix file row on iOS: the type symbol, the name in DM Mono (cut in the middle), the facts, and its actions.",
+        "struct PlenixFileRow: View {",
+        "    let name: String",
+        "    let facts: String",
+        "    let symbol: String",
+        "    var onRename: () -> Void",
+        "    var onDelete: () -> Void",
+        "",
+        "    var body: some View {",
+        "        HStack(spacing: Plenix.Space.spaceInlineMd) {",
+        "            Image(systemName: symbol).foregroundStyle(Plenix.Colors.contentMuted).accessibilityHidden(true)",
+        "            Text(name).font(Plenix.Font.mono(Plenix.Platform.textBodySize, relativeTo: .body)).lineLimit(1).truncationMode(.middle)",
+        "            Spacer(minLength: Plenix.Space.spaceInlineSm)",
+        "            Text(facts).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentMuted)",
+        "        }",
+        "        .frame(minHeight: Plenix.Platform.controlTargetMin)",
+        "        .listRowSeparatorTint(Plenix.Colors.borderDivider)",
+        "        .contextMenu { Button(\"Rename…\", action: onRename); Button(\"Delete\", role: .destructive, action: onDelete) }",
+        "        .swipeActions { Button(\"Delete\", role: .destructive, action: onDelete) }",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "var content = UIListContentConfiguration.subtitleCell()",
+        "content.text = file.name",
+        "content.textProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textBodySize)!",
+        "content.textProperties.lineBreakMode = .byTruncatingMiddle",
+        "content.secondaryText = facts",
+        "content.secondaryTextProperties.color = Plenix.Colors.contentMuted",
+        "cell.contentConfiguration = content"
+      ],
+      "appkit": [
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "cell.textField?.lineBreakMode = .byTruncatingMiddle"
+      ]
+    }
+  }
+}

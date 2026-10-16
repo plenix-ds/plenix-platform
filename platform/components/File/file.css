@@ -1,0 +1,24 @@
+/* Plenix · File (platform/components/File): a file or a folder as one object. Its icon (or picture), its name (the base
+   name cut with an ellipsis, the extension kept in view) and its facts (size, date, count) on one baseline. A line has
+   no frame; a chip has the field's border and the default surface. Anatomy and API: File.jsx. */
+.plx-file{align-items:center;column-gap:var(--plx-comp-file-gap);display:inline-flex;max-inline-size:100%;min-inline-size:0;vertical-align:middle;}
+.plx-file--line{background-color:transparent;}
+.plx-file--chip{background-color:var(--plx-comp-file-chip-background);border-block-end-color:var(--plx-comp-file-chip-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-file-chip-border-width);border-block-start-color:var(--plx-comp-file-chip-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-file-chip-border-width);border-end-end-radius:var(--plx-comp-file-chip-radius);border-end-start-radius:var(--plx-comp-file-chip-radius);border-inline-end-color:var(--plx-comp-file-chip-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-file-chip-border-width);border-inline-start-color:var(--plx-comp-file-chip-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-file-chip-border-width);border-start-end-radius:var(--plx-comp-file-chip-radius);border-start-start-radius:var(--plx-comp-file-chip-radius);min-block-size:var(--plx-comp-file-chip-min-height);padding-inline-end:var(--plx-comp-file-chip-padding-inline);padding-inline-start:var(--plx-comp-file-chip-padding-inline);}
+.plx-file__icon{--plx-comp-icon-size:var(--plx-comp-file-icon-size);align-items:center;color:var(--plx-comp-file-icon-color);display:inline-flex;flex-shrink:0;justify-content:center;}
+.plx-file--folder .plx-file__icon{color:var(--plx-comp-file-folder-icon-color);}
+.plx-file__picture{block-size:var(--plx-comp-file-picture-size);border-end-end-radius:var(--plx-comp-file-picture-radius);border-end-start-radius:var(--plx-comp-file-picture-radius);border-start-end-radius:var(--plx-comp-file-picture-radius);border-start-start-radius:var(--plx-comp-file-picture-radius);flex-shrink:0;inline-size:var(--plx-comp-file-picture-size);object-fit:cover;}
+.plx-file__text{align-items:baseline;column-gap:var(--plx-comp-file-text-gap);display:flex;min-inline-size:0;}
+.plx-file__name{appearance:none;background-color:transparent;border-block-end-width:0;border-block-start-width:0;border-end-end-radius:var(--plx-comp-file-name-radius);border-end-start-radius:var(--plx-comp-file-name-radius);border-inline-end-width:0;border-inline-start-width:0;border-start-end-radius:var(--plx-comp-file-name-radius);border-start-start-radius:var(--plx-comp-file-name-radius);color:var(--plx-comp-file-name-text);display:flex;font-family:var(--plx-comp-file-name-font-family);font-size:var(--plx-comp-file-name-font-size);font-weight:var(--plx-comp-file-name-font-weight);line-height:var(--plx-comp-file-name-line-height);min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;text-align:start;text-decoration-line:none;white-space:nowrap;}
+.plx-file__name--data{font-family:var(--plx-comp-file-name-data-font-family);}
+.plx-file__base{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;}
+.plx-file__ext{flex-shrink:0;}
+a.plx-file__name,
+button.plx-file__name{cursor:pointer;}
+@media (hover: hover){
+  a.plx-file__name:hover{text-decoration-line:underline;}
+  button.plx-file__name:hover{background-color:var(--plx-comp-file-name-hover-background);}
+}
+a.plx-file__name:focus-visible,
+button.plx-file__name:focus-visible{outline-color:var(--plx-comp-file-focus-outline-color);outline-offset:var(--plx-comp-file-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-file-focus-outline-width);}
+.plx-file__meta{color:var(--plx-comp-file-meta-text);column-gap:var(--plx-comp-file-text-gap);display:inline-flex;flex-shrink:0;font-size:var(--plx-comp-file-meta-font-size);line-height:var(--plx-comp-file-meta-line-height);white-space:nowrap;}
+.plx-file__facts{font-family:var(--plx-comp-file-meta-font-family);}

@@ -1,0 +1,33 @@
+/* Plenix · FileRow (platform/components/FileRow): one file as a line in a list. The checkbox, the File (it grows), the
+   facts in cells of fixed widths (size and date in the data font, the owner, a status Badge), then the actions at the
+   end; a transfer shows a small bar and its percent, a failed one the danger icon and its reason. A line under each
+   row; the hover and selected fills of every list. Anatomy and API: FileRow.jsx. */
+.plx-file-row{align-items:center;background-color:var(--plx-comp-file-row-background);border-block-end-color:var(--plx-comp-file-row-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-file-row-border-width);column-gap:var(--plx-comp-file-row-gap);display:flex;list-style-type:none;min-block-size:var(--plx-comp-file-row-min-height);min-inline-size:0;padding-block-end:var(--plx-comp-file-row-padding-block);padding-block-start:var(--plx-comp-file-row-padding-block);padding-inline-end:var(--plx-comp-file-row-padding-inline);padding-inline-start:var(--plx-comp-file-row-padding-inline);}
+.plx-file-row--actions{padding-inline-end:var(--plx-comp-file-row-actions-padding-inline-end);}
+@media (hover: hover){
+  .plx-file-row:hover{background-color:var(--plx-comp-file-row-hover-background);}
+}
+.plx-file-row.is-hover{background-color:var(--plx-comp-file-row-hover-background);}
+.plx-file-row.is-selected{background-color:var(--plx-comp-file-row-selected-background);}
+.plx-file-row__select{display:inline-flex;flex-shrink:0;}
+.plx-file-row__select>.plx-check{align-items:center;}
+.plx-file-row__file{display:flex;flex-basis:0;flex-grow:1;min-inline-size:0;}
+.plx-file-row__cell{color:var(--plx-comp-file-row-cell-text);flex-shrink:0;font-size:var(--plx-comp-file-row-cell-font-size);line-height:var(--plx-comp-file-row-cell-line-height);overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-file-row__size{font-family:var(--plx-comp-file-row-data-font-family);inline-size:var(--plx-comp-file-row-size-width);text-align:end;}
+.plx-file-row__date{font-family:var(--plx-comp-file-row-data-font-family);inline-size:var(--plx-comp-file-row-date-width);}
+.plx-file-row__owner{inline-size:var(--plx-comp-file-row-owner-width);}
+.plx-file-row__status{display:inline-flex;}
+.plx-file-row__progress{align-items:center;column-gap:var(--plx-comp-file-row-progress-gap);display:inline-flex;flex-shrink:0;}
+.plx-file-row__bar{inline-size:var(--plx-comp-file-row-progress-width);}
+.plx-file-row__percent{color:var(--plx-comp-file-row-cell-text);font-family:var(--plx-comp-file-row-data-font-family);font-size:var(--plx-comp-file-row-cell-font-size);inline-size:var(--plx-comp-file-row-percent-width);line-height:var(--plx-comp-file-row-cell-line-height);text-align:end;}
+.plx-file-row__error{align-items:center;color:var(--plx-comp-file-row-error-text);column-gap:var(--plx-comp-file-row-progress-gap);display:inline-flex;flex-shrink:1;font-size:var(--plx-comp-file-row-cell-font-size);line-height:var(--plx-comp-file-row-cell-line-height);min-inline-size:0;}
+.plx-file-row__error-icon{--plx-comp-icon-size:var(--plx-comp-file-row-error-icon-size);flex-shrink:0;}
+.plx-file-row__error-text{overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-file-row__actions{align-items:center;column-gap:var(--plx-comp-file-row-actions-gap);display:inline-flex;flex-shrink:0;}
+/* the list of rows: no bullets, no indent, a line above the first row */
+.plx-file-row-list{border-block-start-color:var(--plx-comp-file-row-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-file-row-border-width);display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;min-inline-size:0;padding-inline-start:0;}
+/* Narrow windows (under 600px, --plx-sys-shell-phone-below): the owner and the date give way to the name; the size stays */
+@media (width < 600px){
+  .plx-file-row__owner,
+  .plx-file-row__date{display:none;}
+}

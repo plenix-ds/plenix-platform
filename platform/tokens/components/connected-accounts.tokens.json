@@ -1,0 +1,120 @@
+{
+  "$description": "ConnectedAccounts (platform/patterns/ConnectedAccounts), library wave 11, lane A: its pattern tokens. The rows (the line between them, their padding and gaps), the service’s name, the lines under it (what it is for, the linked account and date, the reason of a failure), the actions’ gap and the list of scopes in the Connect question. The status is Badge’s, the tile IconTile’s, the questions ConfirmDialog’s.",
+  "plx-comp": {
+    "connected-accounts-border-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "ConnectedAccounts: the line between rows (border-divider)."
+    },
+    "connected-accounts-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: that line’s width (border-width-thin)."
+    },
+    "connected-accounts-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: row padding top and bottom (space-inset-md)."
+    },
+    "connected-accounts-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: gap between the tile, the text and the actions (space-inline-md)."
+    },
+    "connected-accounts-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: gap when the actions wrap under the text (space-stack-sm)."
+    },
+    "connected-accounts-body-min-width": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: the text’s least width before the actions wrap under it (size-240px)."
+    },
+    "connected-accounts-body-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: gap between the lines of the text (space-stack-xs)."
+    },
+    "connected-accounts-head-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: gap between the service’s name and its status (space-inline-sm)."
+    },
+    "connected-accounts-service-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "ConnectedAccounts: service name color (content-default)."
+    },
+    "connected-accounts-service-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "ConnectedAccounts: service name font (font-heading)."
+    },
+    "connected-accounts-service-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: service name size (font-size-14)."
+    },
+    "connected-accounts-service-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "ConnectedAccounts: service name weight (font-weight-semibold)."
+    },
+    "connected-accounts-service-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: service name line height (size-20px)."
+    },
+    "connected-accounts-detail-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: size of the lines under the name (font-size-12)."
+    },
+    "connected-accounts-detail-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: line height of the lines under the name (size-16px)."
+    },
+    "connected-accounts-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ConnectedAccounts: what it is for (content-muted)."
+    },
+    "connected-accounts-detail-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ConnectedAccounts: the linked account and date line (content-muted)."
+    },
+    "connected-accounts-data-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "ConnectedAccounts: the date: the data font (font-data)."
+    },
+    "connected-accounts-error-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "ConnectedAccounts: why a connection failed (feedback-danger-content)."
+    },
+    "connected-accounts-actions-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: gap between the actions (space-inline-sm)."
+    },
+    "connected-accounts-scopes-margin-top": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: space above the list of scopes in the Connect question (space-stack-sm)."
+    },
+    "connected-accounts-scopes-indent": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: the list of scopes’ indent for its bullets (space-inset-lg)."
+    },
+    "connected-accounts-scopes-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "ConnectedAccounts: gap between the scopes (space-stack-xs)."
+    }
+  }
+}

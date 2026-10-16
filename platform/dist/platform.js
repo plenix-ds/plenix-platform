@@ -50002,11 +50002,2662 @@ function AssignControl({
   }, t.unassign) : null));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/File/File.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
+});
+exports.File = File;
+exports.fileExtension = fileExtension;
+exports.fileIcon = fileIcon;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · File
+   Summary: A file or a folder as one object, the same everywhere it appears (12 Specialized › Files, assets, and DAM ›
+     File, Folder): its type's icon (or a small picture), its name, with the extension kept in view when a long name is
+     cut, and its facts, the size and the date for a file, the number of items for a folder, in the data font. A line
+     inside lists, rows and pickers; a chip for attachments.
+   Usage:
+     <File name="Letterhead.pdf" size={1240000} modified="2026-10-14" />
+     <File kind="folder" name="Brand kit" count={24} onOpen={() => openFolder('brand')} />
+     <File name="Cross 014.png" src="/thumbs/cross-014.png" size={482000} href="/files/cross-014" />
+     <File name="Minutes 2026-10.docx" appearance="chip" size={88000} />
+   Props:
+     name: the file's or folder's name, as it is stored (required; never rewritten)
+     kind: "file" (default) | "folder"
+     size: the file's size in bytes (written by formatBytes: "1.2 MB"); a string is shown as it is
+     modified: when it last changed: a Date or "YYYY-MM-DD" (written by formatDate, short: "Oct 14")
+     count: a folder's number of items ("24 items")
+     meta: more facts after the size and the date (text or nodes; wrap technical values in <Text variant="data">)
+     type: the file's MIME type ("image/png"), used for the icon when the extension says nothing
+     icon: an icon name from platform/icons/map.json, instead of the type's own icon (fileIcon)
+     src: a small picture of the file (an image's thumbnail): drawn in place of the icon; it falls back to the icon
+     open: a folder shows the open folder icon (a folder open in a tree); default false
+     appearance: "line" (default: no frame, inside rows and lists) | "chip" (a framed chip: attachments, a field's value)
+     href: the name becomes a link to the file or folder; onOpen(): the name becomes a button that runs it (only one)
+     strings: the words, for other languages: { folder: "folder", items: "{n} items", item: "{n} item" }
+     className: more classes on the file
+   Behavior:
+     The name is one text: a long name is cut at the end of its base name with an ellipsis, so the extension (".pdf")
+       always stays in view; the full name is the element's title and its accessible name.
+     With href the name is a link (it goes to the file's page); with onOpen it is a button (it opens a viewer or the
+       folder in place). Either is the one Tab stop of the file; without them the file is static text.
+     A folder's name is followed by the word "folder" for screen readers (visually hidden), so the kind is never only
+       an icon.
+   Notes:
+     The icon is decorative: the name, with its extension, says the type. Icons by extension: fileIcon(name, type) (PDF,
+       PNG, JPG, SVG, PSD, AI, ZIP; documents, tables, code and images by kind; "document" otherwise).
+     File names (with their extension) are technical values: the data font. Folder names are labels: the UI font. Sizes,
+       dates and counts: the data font.
+     Other props pass through to the outer <span>.
+*/
+const STRINGS = {
+  folder: 'folder',
+  items: '{n} items',
+  item: '{n} item'
+};
+const BY_EXT = {
+  pdf: 'file-pdf',
+  png: 'file-png',
+  jpg: 'file-jpg',
+  jpeg: 'file-jpg',
+  svg: 'file-svg',
+  psd: 'file-psd',
+  ai: 'file-ai',
+  zip: 'file-zip',
+  rar: 'file-zip',
+  '7z': 'file-zip',
+  gz: 'file-zip',
+  tar: 'file-zip',
+  doc: 'doc-text',
+  docx: 'doc-text',
+  odt: 'doc-text',
+  rtf: 'doc-text',
+  txt: 'doc-text',
+  md: 'doc-text',
+  pages: 'doc-text',
+  xls: 'table',
+  xlsx: 'table',
+  ods: 'table',
+  csv: 'table',
+  numbers: 'table',
+  gif: 'image-a-2',
+  webp: 'image-a-2',
+  heic: 'image-a-2',
+  tif: 'image-a-2',
+  tiff: 'image-a-2',
+  avif: 'image-a-2',
+  bmp: 'image-a-2',
+  js: 'code',
+  jsx: 'code',
+  ts: 'code',
+  json: 'code',
+  html: 'code',
+  css: 'code',
+  xml: 'code',
+  yml: 'code',
+  yaml: 'code'
+};
+
+// the part after the last dot (not a leading dot: ".env" has no extension), lowercased
+function fileExtension(name) {
+  const s = String(name || '');
+  const i = s.lastIndexOf('.');
+  return i > 0 && i < s.length - 1 ? s.slice(i + 1).toLowerCase() : '';
+}
+
+// the icon of a file's type: by its extension, else by its MIME type, else "document"
+function fileIcon(name, type) {
+  const ext = fileExtension(name);
+  if (BY_EXT[ext]) return BY_EXT[ext];
+  if (/^image\//.test(type || '')) return 'image-a-2';
+  if (/^text\//.test(type || '')) return 'doc-text';
+  return 'document';
+}
+
+// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
+const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+function Picture({
+  src,
+  icon
+}) {
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+  }, [src]);
+  if (src && !failed) return /*#__PURE__*/_react.default.createElement("img", {
+    className: "plx-file__picture",
+    src: src,
+    alt: "",
+    loading: "lazy",
+    decoding: "async",
+    onError: () => setFailed(true)
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file__icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  }));
+}
+function File({
+  name = '',
+  kind = 'file',
+  size,
+  modified,
+  count,
+  meta,
+  type,
+  icon,
+  src,
+  open = false,
+  appearance = 'line',
+  href,
+  onOpen,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const folder = kind === 'folder';
+  const ext = folder ? '' : fileExtension(name);
+  const base = ext ? name.slice(0, name.length - ext.length - 1) : name;
+  const glyph = icon || (folder ? open ? 'folder-open' : 'folder' : fileIcon(name, type));
+  const facts = [];
+  if (!folder && size !== undefined && size !== null && size !== '') facts.push(typeof size === 'number' ? (0, _format.formatBytes)(size) : String(size));
+  if (folder && typeof count === 'number') facts.push(fill(count === 1 ? t.item : t.items, {
+    n: (0, _format.formatNumber)(count)
+  }));
+  if (modified) facts.push((0, _format.formatDate)(day(modified), {
+    dateStyle: 'short'
+  }));
+  const text = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file__base"
+  }, base), ext ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file__ext"
+  }, '.' + ext) : null, folder ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t.folder) : null);
+  const nameCls = (0, _cx.cx)('plx-file__name', !folder && 'plx-file__name--data');
+  const nameEl = href ? /*#__PURE__*/_react.default.createElement("a", {
+    className: nameCls,
+    href: href,
+    title: name
+  }, text) : onOpen ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: nameCls,
+    title: name,
+    onClick: onOpen
+  }, text) : /*#__PURE__*/_react.default.createElement("span", {
+    className: nameCls,
+    title: name
+  }, text);
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-file', 'plx-file--' + (folder ? 'folder' : 'file'), 'plx-file--' + (appearance === 'chip' ? 'chip' : 'line'), className)
+  }, rest), /*#__PURE__*/_react.default.createElement(Picture, {
+    src: folder ? null : src,
+    icon: glyph
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file__text"
+  }, nameEl, facts.length || meta ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file__meta"
+  }, facts.length ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file__facts"
+  }, facts.join(' · ')) : null, meta ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file__more"
+  }, meta) : null) : null));
+}
+  } },
+  "platform/components/FileRow/FileRow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../File/File.jsx":"platform/components/File/File.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FileRow = FileRow;
+exports.FileRowList = FileRowList;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _File = require("../File/File.jsx");
+var _Checkbox = require("../Checkbox/Checkbox.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
+var _RenameAction = require("../../patterns/RenameAction/RenameAction.jsx");
+var _DeleteFlow = require("../../patterns/DeleteFlow/DeleteFlow.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileRow, FileRowList
+   Summary: One file or folder as a line in a list (12 Specialized › Files, assets, and DAM › File row): a checkbox to
+     select it, the File (its type icon and its name, which opens it), its facts in their own cells (size, date, owner,
+     a status Badge), and its actions at the end: Download, and a More actions menu with Rename… and Delete. While it
+     moves (an upload, a download) the row shows its progress, and an error with Try again when the transfer fails.
+   Usage:
+     <FileRowList label="Uploads">
+       <FileRow as="li" file={{ name: 'Letterhead.pdf', size: 1240000, modified: '2026-10-14' }} owner="Maya Chen"
+         selectable selected={sel.includes('f1')} onSelectChange={(on) => toggle('f1', on)} onOpen={() => view('f1')}
+         onDownload={() => download('f1')} onRename={(name) => rename('f1', name)} onDelete={() => remove('f1')} names={others} />
+       <FileRow as="li" file={{ name: 'Cross 014.png', size: 482000 }} progress={42} progressLabel="Uploading" onCancel={stop} />
+       <FileRow as="li" file={{ name: 'Border 007.svg', size: 96000 }} error="The connection was lost." onRetry={retry} />
+     </FileRowList>
+   Props:
+     file: what the row shows: File's props ({ name, kind, size, modified, type, src, count, open }); required
+     as: the row's element: "div" (default) | "li" (inside a <ul>, so a screen reader counts the files)
+     selectable: a checkbox at the start named "Select {name}" (default false)
+     selected: the row is selected (its checkbox is checked and the row takes the selected fill); default false
+     onSelectChange(checked, event): runs when the checkbox changes
+     href, onOpen(): the name opens the file (a link to its page, or a button that opens a viewer or the folder)
+     owner: who owns it (text), a cell after the facts
+     status: a status Badge (with its icon), a cell after the owner
+     progress: a transfer under way: how much is done, 0 to 100 (a ProgressBar in place of the facts and the actions
+       other than Cancel); leave it out when no transfer runs
+     progressLabel: what the transfer is ("Uploading", "Downloading"); the bar's accessible name with the file's name
+     onCancel(): shows Cancel during a transfer
+     error: a failed transfer or a file that cannot be opened: the reason, in words (the row takes the error state)
+     onRetry(): shows Try again beside the error
+     onDownload(): shows the Download button
+     onRename(name): Rename… in the More actions menu: the rename dialog (RenameAction, the extension kept)
+     names: the other names in the same folder; a new name may not be one of them
+     onDelete(file): Delete in the More actions menu: the confirmation (DeleteFlow) and then this
+     deleteVariant: DeleteFlow's variant: "confirm" (default) | "trash" | "undo"; onRestore(file): its Undo
+     actions: more menu items (MenuItem) at the top of the More actions menu
+     strings: the words, for other languages: { select: "Select {name}", more: "More actions for {name}", download:
+       "Download {name}", rename: "Rename…", delete: "Delete", cancel: "Cancel", retry: "Try again", transfer:
+       "{label} {name}", uploading: "Uploading", file: "file", files: "files", folder: "folder",
+       folders: "folders", items: "{n} items", item: "{n} item" }
+     className: more classes on the row
+     FileRowList.label: the list's accessible name ("Attachments", "Uploads"); FileRowList.children: its FileRows (as="li")
+     FileRowList.className: more classes on the <ul>
+   Behavior:
+     The row is not one big target: the checkbox selects, the name opens, each action is its own button; each is a Tab
+       stop in reading order, always visible (never only on hover).
+     The row takes the hover fill under the pointer and the selected fill while selected; a failed row keeps its fill and
+       shows the danger icon and the reason in words.
+     Rename… opens the rename dialog with the base name selected; Delete asks first (or deletes with Undo, by
+       deleteVariant) and says what happened in a toast.
+     During a transfer the bar is a progressbar named "{label} {name}"; the percent beside it is in the data font.
+   Notes:
+     Rows go in a FileRowList (as="li": a <ul> without bullets, a line above the first row) for uploads, attachments
+       and pickers. Files people compare by column (size, date, owner, sorted and filtered) belong in the DataTable.
+     Other props pass through to the row element.
+*/
+const STRINGS = {
+  select: 'Select {name}',
+  more: 'More actions for {name}',
+  download: 'Download {name}',
+  rename: 'Rename…',
+  delete: 'Delete',
+  cancel: 'Cancel',
+  retry: 'Try again',
+  transfer: '{label} {name}',
+  uploading: 'Uploading',
+  file: 'file',
+  files: 'files',
+  folder: 'folder',
+  folders: 'folders',
+  items: '{n} items',
+  item: '{n} item'
+};
+// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
+const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+function FileRow({
+  file,
+  as = 'div',
+  selectable = false,
+  selected = false,
+  onSelectChange,
+  href,
+  onOpen,
+  owner,
+  status,
+  progress,
+  progressLabel,
+  onCancel,
+  error,
+  onRetry,
+  onDownload,
+  onRename,
+  names,
+  onDelete,
+  deleteVariant = 'confirm',
+  onRestore,
+  actions,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const f = file || {};
+  const name = f.name || '';
+  const folder = f.kind === 'folder';
+  const [ask, setAsk] = _react.default.useState(null); // "rename" | "delete"
+  const moving = typeof progress === 'number';
+  const menu = !moving && (onRename || onDelete || actions);
+  const withActions = !!(menu || onDownload);
+  const Tag = as === 'li' ? 'li' : 'div';
+  // the File without its facts: the facts are the row's own cells
+  const fileProps = {
+    name,
+    kind: f.kind,
+    type: f.type,
+    src: f.src,
+    icon: f.icon,
+    open: f.open
+  };
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: (0, _cx.cx)('plx-file-row', moving && 'plx-file-row--progress', withActions && 'plx-file-row--actions', selected && 'is-selected', error && 'is-error', className)
+  }, rest), selectable ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__select"
+  }, /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    "aria-label": fill(t.select, {
+      name
+    }),
+    checked: !!selected,
+    onChange: e => onSelectChange && onSelectChange(e.target.checked, e)
+  })) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__file"
+  }, /*#__PURE__*/_react.default.createElement(_File.File, _extends({}, fileProps, {
+    href: href,
+    onOpen: onOpen
+  }))), error ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__error",
+    role: "alert"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "alert",
+    className: "plx-file-row__error-icon"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__error-text"
+  }, error)) : moving ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__progress"
+  }, /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+    className: "plx-file-row__bar",
+    size: "sm",
+    value: Math.max(0, Math.min(100, progress)),
+    label: fill(t.transfer, {
+      label: progressLabel || t.uploading,
+      name
+    }),
+    labelHidden: true
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__percent",
+    "aria-hidden": "true"
+  }, (0, _format.formatPercent)(Math.max(0, Math.min(100, progress)) / 100))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(FileFacts, {
+    file: f,
+    t: t
+  }), owner ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__cell plx-file-row__owner"
+  }, owner) : null, status ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__cell plx-file-row__status"
+  }, status) : null), withActions || moving && onCancel || error && onRetry ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__actions"
+  }, error && onRetry ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    icon: "refresh",
+    onClick: onRetry
+  }, t.retry) : null, moving && onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    onClick: onCancel
+  }, t.cancel) : null, !moving && onDownload ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    iconOnly: true,
+    icon: "download-tray",
+    label: fill(t.download, {
+      name
+    }),
+    onClick: onDownload
+  }) : null, menu ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: fill(t.more, {
+      name
+    }),
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      variant: "ghost",
+      iconOnly: true,
+      icon: "more",
+      label: fill(t.more, {
+        name
+      })
+    })
+  }, actions || null, actions && (onRename || onDelete) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, onRename ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "rename",
+    onSelect: () => setAsk('rename')
+  }, t.rename) : null, onDelete ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "trash",
+    danger: true,
+    onSelect: () => setAsk('delete')
+  }, t.delete) : null) : null) : null, onRename ? /*#__PURE__*/_react.default.createElement(_RenameAction.RenameAction, {
+    variant: "dialog",
+    open: ask === 'rename',
+    onClose: () => setAsk(null),
+    value: name,
+    extension: !folder,
+    names: names,
+    onRename: onRename
+  }) : null, onDelete ? /*#__PURE__*/_react.default.createElement(_DeleteFlow.DeleteFlow, {
+    variant: deleteVariant,
+    open: ask === 'delete',
+    onClose: () => setAsk(null),
+    items: [{
+      id: f.id || name,
+      label: name
+    }],
+    noun: folder ? t.folder : t.file,
+    plural: folder ? t.folders : t.files,
+    onDelete: () => onDelete(f),
+    onRestore: onRestore ? () => onRestore(f) : undefined
+  }) : null);
+}
+
+// the facts as cells: the size (or a folder's count) and the date, each in the data font
+function FileFacts({
+  file,
+  t
+}) {
+  const folder = file.kind === 'folder';
+  const size = folder ? typeof file.count === 'number' ? fill(file.count === 1 ? t.item : t.items, {
+    n: (0, _format.formatNumber)(file.count)
+  }) : '' : typeof file.size === 'number' ? (0, _format.formatBytes)(file.size) : file.size || '';
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-row__cell plx-file-row__size"
+  }, size), file.modified ? /*#__PURE__*/_react.default.createElement("time", {
+    className: "plx-file-row__cell plx-file-row__date",
+    dateTime: typeof file.modified === 'string' ? file.modified : (0, _format.dateTimeAttr)(file.modified)
+  }, (0, _format.formatDate)(day(file.modified), {
+    dateStyle: 'medium'
+  })) : null);
+}
+function FileRowList({
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("ul", _extends({
+    className: (0, _cx.cx)('plx-file-row-list', className),
+    "aria-label": label
+  }, rest), children);
+}
+  } },
+  "platform/patterns/Auth/Auth.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Form/Form.jsx":"platform/patterns/Form/Form.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AccountRecovery = AccountRecovery;
+exports.Auth = Auth;
+exports.MfaChallenge = MfaChallenge;
+exports.PasswordResetForm = PasswordResetForm;
+exports.SignInForm = SignInForm;
+exports.SignUpForm = SignUpForm;
+exports.SsoButtons = SsoButtons;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _InputGroup = require("../../components/InputGroup/InputGroup.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _OtpInput = require("../../components/OtpInput/OtpInput.jsx");
+var _Loading = require("../../components/Loading/Loading.jsx");
+var _Form = require("../Form/Form.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Auth, SignInForm, SignUpForm, PasswordResetForm, MfaChallenge, SsoButtons, AccountRecovery
+   Summary: Getting people into their account and back in when something is lost (10 Patterns › Authentication and
+     permissions: Sign in, Sign up, Password reset, Multi-factor authentication, Single sign-on, Account recovery). Auth
+     is the frame: a centered card under the page's header, one column without a frame on narrow windows (the Plenix
+     login's layout, promoted from services/login). The forms go inside it: SignInForm (an email or user name, a password
+     with Show, Keep me signed in), SignUpForm (name, email, a new password with its rule shown first, the terms),
+     PasswordResetForm (the email, the neutral "check your email" step, the new password, done), MfaChallenge (the code
+     from the chosen method in an OtpInput, Remember this device, another method, a recovery code), SsoButtons (a button
+     per identity provider, named in words, and the work-email step that finds the organization's) and AccountRecovery
+     (a backup code, another sign-in method, or the administrator's help, then the notice that it was used).
+   Usage:
+     <Auth page title="Sign in to Plenix" description="Use your Plenix user name or email.">
+       <SignInForm onSubmit={signIn} error={error} forgot={{ onClick: () => setView('reset') }}
+         signUp={{ href: '/auth/sign-up' }} sso={<SsoButtons providers={[{ id: 'google', label: 'Google' }]} onProvider={go} />} />
+     </Auth>
+     <Auth title="Create your account"><SignUpForm onSubmit={create} terms={<>I agree to the <Link href="/terms">terms</Link></>} /></Auth>
+     <Auth title="Reset your password"><PasswordResetForm onRequest={send} onReset={save} signIn={{ href: '/auth/sign-in' }} /></Auth>
+     <Auth title="Two-step verification"><MfaChallenge methods={METHODS} onVerify={verify} onResend={resend} recovery={{ onClick: recover }} /></Auth>
+     <Auth title="Recover your account"><AccountRecovery onCode={useCode} admin="Parish office (office@lighthouseway.org)" /></Auth>
+   Props:
+     Auth.title: the card's heading (h1 on a page of its own); Auth.description: one line under it
+     Auth.page: the frame fills the window below the header and centers the card (a page of its own); default false
+     Auth.footer: a line under the card's body (a link to another flow, the legal line)
+     Auth.headingLevel: the title's level (default 1); Auth.className: more classes; Auth.children: the form
+     links: wherever a form names one (forgot, signUp, signIn, recovery, back): { href } is a Link (another page) or
+       { onClick } a ghost button (another step of the same card); { label } replaces its words; leave it out for none
+     SignInForm.onSubmit({ identifier, password, keep }): runs when both fields have a value
+     SignInForm.error: the one general error after a failed sign-in ("Email or password is incorrect."), never which part
+     SignInForm.defaultIdentifier: the identifier kept after a failure; SignInForm.busy: the button shows its spinner
+     SignInForm.keepSignedIn: shows Keep me signed in (default true); keepDescription: the line under it
+     SignInForm.forgot, signUp: links; SignInForm.sso: SsoButtons above the form, then "or"
+     SignUpForm.onSubmit({ name, email, password, terms }); SignUpForm.minLength: the password's least length (default 12)
+     SignUpForm.terms: the consent's label (text or nodes with a Link); it must be checked; SignUpForm.signIn: a link
+     SignUpForm.errors: { name, email, password, terms } from the server (an email already in use); busy; sso
+     PasswordResetForm.step: "request" | "sent" | "new" | "done" (controlled); defaultStep: the first (default "request")
+     PasswordResetForm.onRequest(email): sends the link; the form moves to "sent" by itself unless step is controlled
+     PasswordResetForm.onResend(email): Send the link again; onReset(password): saves the new one, then "done"
+     PasswordResetForm.expires: how long the link works, in words ("30 minutes"); minLength (default 12); error; busy;
+       signIn: the link back to sign in
+     MfaChallenge.methods: [{ id, kind: "app" | "sms" | "email" | "key", label, detail }] (detail: "to the phone ending 42");
+       the first is used unless defaultMethod names another
+     MfaChallenge.onVerify(code, { method, remember }): the code once every box is filled (or Verify); a security key: null
+     MfaChallenge.onResend(method): Send a new code (sms, email), offered after resendAfter seconds (default 30)
+     MfaChallenge.remember: shows Remember this device for 30 days (default true); length: the code's length (default 6)
+     MfaChallenge.autoFocus: the first box takes focus when the step appears (default false; a page of its own sets it)
+     MfaChallenge.error: the code was wrong or expired; busy; recovery: the link to account recovery
+     SsoButtons.providers: [{ id, label }]: Continue with {label}, one button each; onProvider(provider) hands over
+     SsoButtons.organization: shows Continue with SSO and its work-email step; onOrganization(email) finds the provider
+     SsoButtons.redirecting: the name of the provider being opened: a status line with a spinner replaces the buttons
+     SsoButtons.error: why the provider refused, and who to ask
+     AccountRecovery.step: "choose" | "code" | "help" | "done" (controlled); defaultStep (default "choose")
+     AccountRecovery.onCode(code): checks a backup code; onFactor(): another sign-in method; admin: who helps when none
+       works (shown in "help"); onSetUp(): Set up a new sign-in method after recovery; error; busy; back: a link
+     strings: every form's words, for other languages; each form's own STRINGS in this file name every key
+     className: more classes on a form
+   Behavior:
+     Every field takes paste and the password manager's autofill (autocomplete username, current-password, new-password,
+       email, one-time-code); nothing blocks paste.
+     A form is checked when it is submitted: each empty or wrong field says what to do under it and focus moves to the
+       first; nothing is disabled before.
+     Show password turns the password into text and back (a toggle button, aria-pressed); it never leaves the field.
+     A failed sign-in keeps the identifier and says one general error at the top of the form (role alert).
+     The reset's "sent" step says the same whether or not the email has an account.
+     The code fills from a pasted or autofilled message; the last box verifies at once.
+     The SSO hand-over and every step change are announced (a status line).
+   Notes:
+     Sign in, not Log in, everywhere. Never ask for the same thing twice (no "confirm password"). Offer single sign-on
+       first where the organization uses it. Security questions are never a recovery method.
+     services/login is the Plenix sign-in service; it draws this layout with the release's classes (login.css).
+*/
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const around = (s, key, node) => {
+  const p = String(s).split('{' + key + '}');
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, p[0], p.length > 1 ? node : null, p.slice(1).join(''));
+};
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const H = ({
+  level,
+  ...props
+}) => /*#__PURE__*/_react.default.createElement('h' + Math.min(6, Math.max(1, level || 1)), props);
+
+/* ── the frame ── */
+function Auth({
+  title,
+  description,
+  page = false,
+  footer,
+  headingLevel = 1,
+  className,
+  children,
+  ...rest
+}) {
+  const id = (0, _layer.useUid)('plx-auth');
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-auth', page && 'plx-auth--page', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-auth__card",
+    "aria-labelledby": title ? id : undefined
+  }, title || description ? /*#__PURE__*/_react.default.createElement("header", {
+    className: "plx-auth__header"
+  }, title ? /*#__PURE__*/_react.default.createElement(H, {
+    level: headingLevel,
+    id: id,
+    className: "plx-auth__title"
+  }, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-auth__description"
+  }, description) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-auth__body"
+  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-auth__footer"
+  }, footer) : null));
+}
+
+/* ── shared parts ── */
+// a way to another page (a Link) or to another step of the same card (a ghost button): never a link that acts
+function Alt({
+  to,
+  children
+}) {
+  if (!to) return null;
+  const text = to.label || children;
+  if (to.href) return /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    variant: "standalone",
+    href: to.href
+  }, text);
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "sm",
+    onClick: to.onClick
+  }, text);
+}
+function Alts({
+  children
+}) {
+  const list = _react.default.Children.toArray(children).filter(Boolean);
+  return list.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-auth__links"
+  }, list) : null;
+}
+function Or({
+  text
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-auth__or"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-auth__or-text"
+  }, text));
+}
+function Submit({
+  busy,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    type: "submit",
+    variant: "primary",
+    loading: !!busy,
+    className: "plx-auth__submit"
+  }, rest), children);
+}
+// a password field with Show: a toggle button joined to the field's end
+const Password = /*#__PURE__*/_react.default.forwardRef(function Password({
+  show,
+  hide,
+  value,
+  onChange,
+  autoComplete,
+  invalid,
+  id,
+  ...rest
+}, ref) {
+  const [visible, setVisible] = _react.default.useState(false);
+  return /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, _extends({
+    id: id,
+    invalid: invalid
+  }, rest, {
+    end: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      iconOnly: true,
+      icon: visible ? 'visibility-off' : 'visibility',
+      label: visible ? hide : show,
+      pressed: visible,
+      onClick: () => setVisible(!visible)
+    })
+  }), /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: ref,
+    type: visible ? 'text' : 'password',
+    value: value,
+    onChange: onChange,
+    autoComplete: autoComplete,
+    autoCapitalize: "off",
+    spellCheck: false
+  }));
+});
+// checks fields on submit: { key: message }, focuses the first with a message
+function useCheck(refs) {
+  const [errors, setErrors] = _react.default.useState({});
+  const check = found => {
+    setErrors(found);
+    const first = Object.keys(refs).find(k => found[k] && refs[k].current);
+    if (first) refs[first].current.focus();
+    return !Object.keys(found).some(k => found[k]);
+  };
+  const clear = k => {
+    if (errors[k]) setErrors(Object.assign({}, errors, {
+      [k]: ''
+    }));
+  };
+  return [errors, check, clear];
+}
+
+/* ── Sign in ── */
+const SIGN_IN = {
+  label: 'Sign in',
+  identifier: 'Email or user name',
+  password: 'Password',
+  show: 'Show password',
+  hide: 'Hide password',
+  keep: 'Keep me signed in',
+  keepDescription: 'For 30 days on this device. Otherwise, for 12 hours.',
+  submit: 'Sign in',
+  forgot: 'Forgot your password?',
+  signUp: 'Create an account',
+  or: 'or',
+  needIdentifier: 'Enter your email or user name.',
+  needPassword: 'Enter your password.'
+};
+function SignInForm({
+  onSubmit,
+  error,
+  defaultIdentifier = '',
+  busy = false,
+  keepSignedIn = true,
+  keepDescription,
+  forgot,
+  signUp,
+  sso,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, SIGN_IN, strings);
+  const [identifier, setIdentifier] = _react.default.useState(defaultIdentifier);
+  const [password, setPassword] = _react.default.useState('');
+  const [keep, setKeep] = _react.default.useState(false);
+  const refs = {
+    identifier: _react.default.useRef(null),
+    password: _react.default.useRef(null)
+  };
+  const [errors, check, clear] = useCheck(refs);
+  const submit = e => {
+    e.preventDefault();
+    if (check({
+      identifier: identifier.trim() ? '' : t.needIdentifier,
+      password: password ? '' : t.needPassword
+    }) && onSubmit) {
+      onSubmit({
+        identifier: identifier.trim(),
+        password,
+        keep
+      });
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-auth__flow', className)
+  }, sso ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, sso, /*#__PURE__*/_react.default.createElement(Or, {
+    text: t.or
+  })) : null, /*#__PURE__*/_react.default.createElement(_Form.Form, _extends({
+    label: t.label,
+    noValidate: true,
+    onSubmit: submit,
+    className: "plx-auth__form"
+  }, rest), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.identifier,
+    error: errors.identifier || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: refs.identifier,
+    value: identifier,
+    onChange: e => {
+      setIdentifier(e.target.value);
+      clear('identifier');
+    },
+    invalid: !!error || undefined,
+    autoComplete: "username",
+    autoCapitalize: "off",
+    spellCheck: false
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.password,
+    error: errors.password || undefined
+  }, /*#__PURE__*/_react.default.createElement(Password, {
+    ref: refs.password,
+    show: t.show,
+    hide: t.hide,
+    value: password,
+    onChange: e => {
+      setPassword(e.target.value);
+      clear('password');
+    },
+    autoComplete: "current-password",
+    invalid: !!error || undefined
+  })), keepSignedIn ? /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    label: t.keep,
+    description: keepDescription === undefined ? t.keepDescription : keepDescription,
+    checked: keep,
+    onChange: e => setKeep(e.target.checked)
+  }) : null, /*#__PURE__*/_react.default.createElement(Submit, {
+    busy: busy
+  }, t.submit)), /*#__PURE__*/_react.default.createElement(Alts, null, /*#__PURE__*/_react.default.createElement(Alt, {
+    to: forgot
+  }, t.forgot), /*#__PURE__*/_react.default.createElement(Alt, {
+    to: signUp
+  }, t.signUp)));
+}
+
+/* ── Sign up ── */
+const SIGN_UP = {
+  label: 'Create an account',
+  name: 'Full name',
+  email: 'Email',
+  password: 'Password',
+  show: 'Show password',
+  hide: 'Hide password',
+  rule: 'At least {n} characters. A few words you’ll remember work well.',
+  submit: 'Create account',
+  signIn: 'Already have an account? Sign in',
+  or: 'or',
+  needName: 'Enter your name.',
+  needEmail: 'Enter your email, like name@example.org.',
+  needPassword: 'Use at least {n} characters.',
+  needTerms: 'Agree to the terms to create an account.'
+};
+function SignUpForm({
+  onSubmit,
+  errors: server,
+  busy = false,
+  minLength = 12,
+  terms,
+  signIn,
+  sso,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, SIGN_UP, strings);
+  const [v, setV] = _react.default.useState({
+    name: '',
+    email: '',
+    password: '',
+    terms: false
+  });
+  const refs = {
+    name: _react.default.useRef(null),
+    email: _react.default.useRef(null),
+    password: _react.default.useRef(null),
+    terms: _react.default.useRef(null)
+  };
+  const termsError = (0, _layer.useUid)('plx-auth-terms');
+  const [errors, check, clear] = useCheck(refs);
+  const set = (k, x) => {
+    setV(Object.assign({}, v, {
+      [k]: x
+    }));
+    clear(k);
+  };
+  const err = k => errors[k] || server && server[k] || undefined;
+  const submit = e => {
+    e.preventDefault();
+    const found = {
+      name: v.name.trim() ? '' : t.needName,
+      email: EMAIL.test(v.email.trim()) ? '' : t.needEmail,
+      password: v.password.length >= minLength ? '' : fill(t.needPassword, {
+        n: minLength
+      }),
+      terms: !terms || v.terms ? '' : t.needTerms
+    };
+    if (check(found) && onSubmit) onSubmit({
+      name: v.name.trim(),
+      email: v.email.trim(),
+      password: v.password,
+      terms: v.terms
+    });
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-auth__flow', className)
+  }, sso ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, sso, /*#__PURE__*/_react.default.createElement(Or, {
+    text: t.or
+  })) : null, /*#__PURE__*/_react.default.createElement(_Form.Form, _extends({
+    label: t.label,
+    noValidate: true,
+    onSubmit: submit,
+    className: "plx-auth__form"
+  }, rest), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.name,
+    error: err('name')
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: refs.name,
+    value: v.name,
+    onChange: e => set('name', e.target.value),
+    autoComplete: "name"
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.email,
+    error: err('email')
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: refs.email,
+    type: "email",
+    value: v.email,
+    onChange: e => set('email', e.target.value),
+    autoComplete: "email"
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.password,
+    description: fill(t.rule, {
+      n: minLength
+    }),
+    error: err('password')
+  }, /*#__PURE__*/_react.default.createElement(Password, {
+    ref: refs.password,
+    show: t.show,
+    hide: t.hide,
+    value: v.password,
+    onChange: e => set('password', e.target.value),
+    autoComplete: "new-password"
+  })), terms ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-auth__consent"
+  }, /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    ref: refs.terms,
+    label: terms,
+    checked: v.terms,
+    onChange: e => set('terms', e.target.checked),
+    "aria-invalid": err('terms') ? true : undefined,
+    "aria-describedby": err('terms') ? termsError : undefined
+  }), err('terms') ? /*#__PURE__*/_react.default.createElement("p", {
+    id: termsError,
+    className: "plx-auth__error"
+  }, err('terms')) : null) : null, /*#__PURE__*/_react.default.createElement(Submit, {
+    busy: busy
+  }, t.submit)), /*#__PURE__*/_react.default.createElement(Alts, null, /*#__PURE__*/_react.default.createElement(Alt, {
+    to: signIn
+  }, t.signIn)));
+}
+
+/* ── Password reset ── */
+const RESET = {
+  label: 'Reset your password',
+  email: 'Email',
+  emailHint: 'The email of your Plenix account.',
+  send: 'Send reset link',
+  sent: 'If an account uses {email}, we sent it a link to reset the password. The link works for {expires} and only once.',
+  resend: 'Send the link again',
+  resent: 'Sent again',
+  newPassword: 'New password',
+  rule: 'At least {n} characters.',
+  show: 'Show password',
+  hide: 'Hide password',
+  save: 'Reset password',
+  others: 'You’ll be signed out on your other devices.',
+  done: 'Your password is reset. Sign in with the new one.',
+  signIn: 'Back to sign in',
+  signInNow: 'Sign in',
+  needEmail: 'Enter your email, like name@example.org.',
+  needPassword: 'Use at least {n} characters.',
+  expires: '30 minutes'
+};
+function PasswordResetForm({
+  step,
+  defaultStep = 'request',
+  onRequest,
+  onResend,
+  onReset,
+  expires,
+  minLength = 12,
+  error,
+  busy = false,
+  signIn,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, RESET, strings);
+  const [own, setOwn] = _react.default.useState(defaultStep);
+  const now = step || own;
+  const move = s => {
+    if (!step) setOwn(s);
+  };
+  const [email, setEmail] = _react.default.useState('');
+  const [password, setPassword] = _react.default.useState('');
+  const refs = {
+    email: _react.default.useRef(null),
+    password: _react.default.useRef(null)
+  };
+  const [errors, check, clear] = useCheck(refs);
+  _react.default.useEffect(() => {
+    if (now === 'sent' || now === 'done') (0, _announce.announce)(now === 'sent' ? fill(t.sent, {
+      email: email || '…',
+      expires: expires || t.expires
+    }) : t.done);
+  }, [now]);
+  const request = e => {
+    e.preventDefault();
+    if (!check({
+      email: EMAIL.test(email.trim()) ? '' : t.needEmail
+    })) return;
+    if (onRequest) onRequest(email.trim());
+    move('sent');
+  };
+  const reset = e => {
+    e.preventDefault();
+    if (!check({
+      password: password.length >= minLength ? '' : fill(t.needPassword, {
+        n: minLength
+      })
+    })) return;
+    if (onReset) onReset(password);
+    move('done');
+  };
+  let body;
+  if (now === 'sent') {
+    body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-auth__form"
+    }, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+      tone: "info"
+    }, around(fill(t.sent, {
+      expires: expires || t.expires
+    }), 'email', /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-auth__data"
+    }, email))), onResend ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      className: "plx-auth__submit",
+      onClick: () => {
+        onResend(email);
+        (0, _announce.announce)(t.resent);
+      }
+    }, t.resend) : null);
+  } else if (now === 'new') {
+    body = /*#__PURE__*/_react.default.createElement(_Form.Form, _extends({
+      label: t.label,
+      noValidate: true,
+      onSubmit: reset,
+      className: "plx-auth__form"
+    }, rest), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+      tone: "danger"
+    }, error) : null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.newPassword,
+      description: fill(t.rule, {
+        n: minLength
+      }),
+      error: errors.password || undefined
+    }, /*#__PURE__*/_react.default.createElement(Password, {
+      ref: refs.password,
+      show: t.show,
+      hide: t.hide,
+      value: password,
+      onChange: e => {
+        setPassword(e.target.value);
+        clear('password');
+      },
+      autoComplete: "new-password"
+    })), /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-auth__note"
+    }, t.others), /*#__PURE__*/_react.default.createElement(Submit, {
+      busy: busy
+    }, t.save));
+  } else if (now === 'done') {
+    body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-auth__form"
+    }, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+      tone: "success"
+    }, t.done), signIn ? signIn.href ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      href: signIn.href,
+      className: "plx-auth__submit"
+    }, t.signInNow) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      onClick: signIn.onClick,
+      className: "plx-auth__submit"
+    }, t.signInNow) : null);
+  } else {
+    body = /*#__PURE__*/_react.default.createElement(_Form.Form, _extends({
+      label: t.label,
+      noValidate: true,
+      onSubmit: request,
+      className: "plx-auth__form"
+    }, rest), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+      tone: "danger"
+    }, error) : null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.email,
+      description: t.emailHint,
+      error: errors.email || undefined
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      ref: refs.email,
+      type: "email",
+      value: email,
+      onChange: e => {
+        setEmail(e.target.value);
+        clear('email');
+      },
+      autoComplete: "email"
+    })), /*#__PURE__*/_react.default.createElement(Submit, {
+      busy: busy
+    }, t.send));
+  }
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-auth__flow', className),
+    "data-plx-step": now
+  }, body, now !== 'done' ? /*#__PURE__*/_react.default.createElement(Alts, null, /*#__PURE__*/_react.default.createElement(Alt, {
+    to: signIn
+  }, t.signIn)) : null);
+}
+
+/* ── Multi-factor authentication ── */
+const MFA = {
+  label: 'Two-step verification',
+  code: 'Verification code',
+  app: 'Enter the {n}-digit code from your authenticator app.',
+  sms: 'Enter the {n}-digit code we sent {detail}.',
+  email: 'Enter the {n}-digit code we emailed {detail}.',
+  key: 'Insert your security key, or hold it near your device, and touch it.',
+  useKey: 'Use security key',
+  remember: 'Remember this device for 30 days',
+  verify: 'Verify',
+  resend: 'Send a new code',
+  resendIn: 'You can ask for a new code in {s} seconds.',
+  resent: 'A new code is on its way.',
+  other: 'Use another method',
+  methods: 'Choose how to verify',
+  choose: 'Continue',
+  recovery: 'Use a recovery code',
+  needCode: 'Enter all {n} characters of the code.'
+};
+function MfaChallenge({
+  methods = [{
+    id: 'app',
+    kind: 'app',
+    label: 'Authenticator app'
+  }],
+  defaultMethod,
+  onVerify,
+  onResend,
+  resendAfter = 30,
+  remember: showRemember = true,
+  length = 6,
+  error,
+  busy = false,
+  recovery,
+  autoFocus = false,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, MFA, strings);
+  const [methodId, setMethodId] = _react.default.useState(defaultMethod || methods[0] && methods[0].id);
+  const [choosing, setChoosing] = _react.default.useState(false);
+  const [pick, setPick] = _react.default.useState(methodId);
+  const [code, setCode] = _react.default.useState('');
+  const [remember, setRemember] = _react.default.useState(false);
+  const [wait, setWait] = _react.default.useState(resendAfter);
+  const [own, setOwn] = _react.default.useState('');
+  const first = _react.default.useRef(null);
+  const method = methods.find(m => m.id === methodId) || methods[0] || {
+    kind: 'app'
+  };
+  const sends = method.kind === 'sms' || method.kind === 'email';
+  const changed = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    setWait(resendAfter);
+    setCode('');
+    setOwn('');
+    // another method chosen: focus its code (or its first control)
+    if (changed.current && first.current && first.current.focus) first.current.focus();
+    changed.current = true;
+  }, [methodId]);
+  _react.default.useEffect(() => {
+    if (!sends || wait <= 0) return undefined;
+    const id = setTimeout(() => setWait(wait - 1), 1000);
+    return () => clearTimeout(id);
+  }, [wait, sends]);
+  const verify = c => {
+    if (method.kind !== 'key' && String(c || '').length < length) {
+      setOwn(fill(t.needCode, {
+        n: length
+      }));
+      return;
+    }
+    setOwn('');
+    if (onVerify) onVerify(method.kind === 'key' ? null : c, {
+      method: method.id,
+      remember
+    });
+  };
+  const submit = e => {
+    e.preventDefault();
+    verify(code);
+  };
+  if (choosing) {
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-auth__flow', className)
+    }, /*#__PURE__*/_react.default.createElement(_Form.Form, {
+      label: t.methods,
+      noValidate: true,
+      className: "plx-auth__form",
+      onSubmit: e => {
+        e.preventDefault();
+        setMethodId(pick);
+        setChoosing(false);
+      }
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: t.methods,
+      value: pick,
+      onChange: setPick,
+      options: methods.map(m => ({
+        value: m.id,
+        label: m.label,
+        description: m.detail
+      }))
+    }), /*#__PURE__*/_react.default.createElement(Submit, null, t.choose)));
+  }
+  const hint = method.kind === 'key' ? t.key : fill(t[method.kind] || t.app, {
+    n: length,
+    detail: method.detail || ''
+  });
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-auth__flow', className)
+  }, /*#__PURE__*/_react.default.createElement(_Form.Form, _extends({
+    label: t.label,
+    noValidate: true,
+    onSubmit: submit,
+    className: "plx-auth__form"
+  }, rest), method.kind === 'key' ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-auth__note"
+  }, hint) : /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.code,
+    description: hint,
+    error: own || error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_OtpInput.OtpInput, {
+    ref: first,
+    length: length,
+    value: code,
+    onChange: c => {
+      setCode(c);
+      if (own) setOwn('');
+    },
+    onComplete: verify,
+    autoFocus: autoFocus
+  })), method.kind === 'key' && error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, showRemember ? /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    label: t.remember,
+    checked: remember,
+    onChange: e => setRemember(e.target.checked)
+  }) : null, /*#__PURE__*/_react.default.createElement(Submit, {
+    busy: busy
+  }, method.kind === 'key' ? t.useKey : t.verify), sends && onResend ? wait > 0 ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-auth__note",
+    "aria-live": "off"
+  }, around(t.resendIn, 's', /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-auth__data"
+  }, wait))) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "sm",
+    onClick: () => {
+      onResend(method.id);
+      setWait(resendAfter);
+      (0, _announce.announce)(t.resent);
+    }
+  }, t.resend) : null), /*#__PURE__*/_react.default.createElement(Alts, null, methods.length > 1 ? /*#__PURE__*/_react.default.createElement(Alt, {
+    to: {
+      onClick: () => {
+        setPick(methodId);
+        setChoosing(true);
+      }
+    }
+  }, t.other) : null, /*#__PURE__*/_react.default.createElement(Alt, {
+    to: recovery
+  }, t.recovery)));
+}
+
+/* ── Single sign-on ── */
+const SSO = {
+  label: 'Single sign-on',
+  provider: 'Continue with {name}',
+  organization: 'Continue with single sign-on (SSO)',
+  email: 'Work email',
+  emailHint: 'We’ll find your organization’s sign-in from it.',
+  next: 'Continue',
+  redirecting: 'Taking you to {name}…',
+  needEmail: 'Enter your work email, like name@example.org.',
+  back: 'Back'
+};
+function SsoButtons({
+  providers = [],
+  onProvider,
+  organization = false,
+  onOrganization,
+  redirecting,
+  error,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, SSO, strings);
+  const [asking, setAsking] = _react.default.useState(false);
+  const [email, setEmail] = _react.default.useState('');
+  const refs = {
+    email: _react.default.useRef(null)
+  };
+  const [errors, check, clear] = useCheck(refs);
+  _react.default.useEffect(() => {
+    if (redirecting) (0, _announce.announce)(fill(t.redirecting, {
+      name: redirecting
+    }));
+  }, [redirecting]);
+  if (redirecting) {
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      className: (0, _cx.cx)('plx-auth__sso', className)
+    }, rest), /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-auth__status"
+    }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+      size: "sm",
+      label: fill(t.redirecting, {
+        name: redirecting
+      })
+    }), /*#__PURE__*/_react.default.createElement("span", {
+      "aria-hidden": "true"
+    }, fill(t.redirecting, {
+      name: redirecting
+    }))));
+  }
+  if (asking) {
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      className: (0, _cx.cx)('plx-auth__sso', className)
+    }, rest), /*#__PURE__*/_react.default.createElement(_Form.Form, {
+      label: t.label,
+      noValidate: true,
+      className: "plx-auth__form",
+      onSubmit: e => {
+        e.preventDefault();
+        if (check({
+          email: EMAIL.test(email.trim()) ? '' : t.needEmail
+        }) && onOrganization) onOrganization(email.trim());
+      }
+    }, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+      tone: "danger"
+    }, error) : null, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.email,
+      description: t.emailHint,
+      error: errors.email || undefined
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      ref: refs.email,
+      type: "email",
+      value: email,
+      onChange: e => {
+        setEmail(e.target.value);
+        clear('email');
+      },
+      autoComplete: "email",
+      autoFocus: true
+    })), /*#__PURE__*/_react.default.createElement(Submit, null, t.next)), /*#__PURE__*/_react.default.createElement(Alts, null, /*#__PURE__*/_react.default.createElement(Alt, {
+      to: {
+        onClick: () => setAsking(false)
+      }
+    }, t.back)));
+  }
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-auth__sso', className),
+    role: "group",
+    "aria-label": t.label
+  }, rest), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, providers.map(p => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: p.id,
+    icon: p.icon,
+    className: "plx-auth__submit",
+    onClick: () => onProvider && onProvider(p)
+  }, fill(t.provider, {
+    name: p.label
+  }))), organization ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    icon: "lock",
+    className: "plx-auth__submit",
+    onClick: () => setAsking(true)
+  }, t.organization) : null);
+}
+
+/* ── Account recovery ── */
+const RECOVERY = {
+  label: 'Recover your account',
+  how: 'How do you want to get back in?',
+  code: 'Use a backup code',
+  codeHint: 'One of the codes you saved when you set up two-step verification. Each works once.',
+  factor: 'Use another sign-in method',
+  factorHint: 'A security key, or the authenticator app on another device.',
+  help: 'Ask your administrator',
+  helpHint: 'They confirm it’s you and reset your two-step verification.',
+  next: 'Continue',
+  backupCode: 'Backup code',
+  verify: 'Use code',
+  needCode: 'Enter a backup code.',
+  contact: 'Contact {admin}. Tell them you can’t use your two-step verification; they’ll check it’s you before they reset it.',
+  contactShort: 'Contact your administrator. Tell them you can’t use your two-step verification; they’ll check it’s you before they reset it.',
+  done: 'You’re back in. We emailed every address on your account to say a backup code was used.',
+  setUp: 'Set up a new sign-in method',
+  back: 'Back to sign in',
+  otherWays: 'Other ways to get back in'
+};
+function AccountRecovery({
+  step,
+  defaultStep = 'choose',
+  onCode,
+  onFactor,
+  admin,
+  onSetUp,
+  error,
+  busy = false,
+  back,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, RECOVERY, strings);
+  const [own, setOwn] = _react.default.useState(defaultStep);
+  const now = step || own;
+  const move = s => {
+    if (!step) setOwn(s);
+  };
+  const options = [{
+    value: 'code',
+    label: t.code,
+    description: t.codeHint
+  }];
+  if (onFactor) options.push({
+    value: 'factor',
+    label: t.factor,
+    description: t.factorHint
+  });
+  options.push({
+    value: 'help',
+    label: t.help,
+    description: t.helpHint
+  });
+  const [pick, setPick] = _react.default.useState('code');
+  const [code, setCode] = _react.default.useState('');
+  const refs = {
+    code: _react.default.useRef(null)
+  };
+  const [errors, check, clear] = useCheck(refs);
+  // a step people moved to: focus its field (not on the first render: the page decides where focus starts)
+  const moved = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (moved.current && now === 'code' && refs.code.current) refs.code.current.focus();
+    if (now === 'done') (0, _announce.announce)(t.done);
+    moved.current = true;
+  }, [now]);
+  let body;
+  if (now === 'code') {
+    body = /*#__PURE__*/_react.default.createElement(_Form.Form, _extends({
+      label: t.backupCode,
+      noValidate: true,
+      className: "plx-auth__form",
+      onSubmit: e => {
+        e.preventDefault();
+        if (check({
+          code: code.trim() ? '' : t.needCode
+        }) && onCode) onCode(code.trim().replace(/\s+/g, ''));
+      }
+    }, rest), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.backupCode,
+      description: t.codeHint,
+      error: errors.code || error || undefined
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      ref: refs.code,
+      data: true,
+      value: code,
+      onChange: e => {
+        setCode(e.target.value);
+        clear('code');
+      },
+      autoComplete: "one-time-code",
+      autoCapitalize: "off",
+      spellCheck: false
+    })), /*#__PURE__*/_react.default.createElement(Submit, {
+      busy: busy
+    }, t.verify));
+  } else if (now === 'help') {
+    body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-auth__form"
+    }, /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-auth__note"
+    }, admin ? around(t.contact, 'admin', /*#__PURE__*/_react.default.createElement("strong", {
+      className: "plx-auth__strong"
+    }, admin)) : t.contactShort));
+  } else if (now === 'done') {
+    body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-auth__form"
+    }, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+      tone: "success"
+    }, t.done), onSetUp ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      className: "plx-auth__submit",
+      onClick: onSetUp
+    }, t.setUp) : null);
+  } else {
+    body = /*#__PURE__*/_react.default.createElement(_Form.Form, _extends({
+      label: t.label,
+      noValidate: true,
+      className: "plx-auth__form",
+      onSubmit: e => {
+        e.preventDefault();
+        if (pick === 'factor') {
+          if (onFactor) onFactor();
+        } else move(pick);
+      }
+    }, rest), /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: t.how,
+      value: pick,
+      onChange: setPick,
+      options: options
+    }), /*#__PURE__*/_react.default.createElement(Submit, null, t.next));
+  }
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-auth__flow', className),
+    "data-plx-step": now
+  }, body, /*#__PURE__*/_react.default.createElement(Alts, null, now === 'code' || now === 'help' ? /*#__PURE__*/_react.default.createElement(Alt, {
+    to: {
+      onClick: () => move('choose')
+    }
+  }, t.otherWays) : null, now !== 'done' ? /*#__PURE__*/_react.default.createElement(Alt, {
+    to: back
+  }, t.back) : null));
+}
+  } },
+  "platform/patterns/SessionTimeout/SessionTimeout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SessionTimeout = SessionTimeout;
+exports.useSessionTimeout = useSessionTimeout;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SessionTimeout, useSessionTimeout
+   Summary: Ending a session that nobody is using without losing anyone's work (10 Patterns › Authentication and
+     permissions › Session timeout). Before the end, a warning: an alert dialog that says how long is left, counting down
+     in the data font, with Stay signed in (focused) and Sign out. After the end, the signed-out message: what happened,
+     that the work was kept, and Sign in again, which brings people back to where they were. useSessionTimeout keeps the
+     time: activity restarts it, the warning opens before the end, and the end signs out.
+   Usage:
+     const s = useSessionTimeout({ timeout: 30 * 60, warnBefore: 120, onTimeout: () => api.signOut() });
+     <SessionTimeout state={s.state} expiresAt={s.expiresAt} idleMinutes={30} onStay={s.stay} onSignOut={s.signOut}
+       onSignIn={() => location.assign('/auth/sign-in?rd=' + encodeURIComponent(location.pathname))} />
+     <SessionTimeout state="signed-out" inline idleMinutes={30} onSignIn={signIn} />     the signed-out page's message
+   Props:
+     state: "active" (default: nothing shows) | "warning" (the warning with its countdown) | "signed-out"
+     expiresAt: when the session ends, in milliseconds (Date.now() + …); the countdown counts to it
+     remaining: instead, the seconds left (a countdown the page keeps itself)
+     idleMinutes: how long without activity ends a session; said in the signed-out message
+     saved: what happened to the work, said in both ("Your changes are saved."); default strings.saved
+     onStay(): Stay signed in, Escape and the close button: the session goes on (the time restarts)
+     onSignOut(): Sign out now
+     onExpire(): runs once when the countdown reaches zero (useSessionTimeout signs out by itself)
+     onSignIn(): Sign in again, in the signed-out message
+     inline: the message is drawn in the page (a signed-out page, a pane) instead of a dialog; default false
+     strings: the words, for other languages: { warningTitle: "Your session is about to end", warning: "You’ll be signed
+       out in {time} because you haven’t been active.", stay: "Stay signed in", signOut: "Sign out", signedOutTitle: "You
+       were signed out", signedOut: "For your security, you were signed out after {minutes} minutes without activity.",
+       signedOutShort: "For your security, you were signed out because you weren’t active.", saved: "Your changes are
+       saved.", signIn: "Sign in again", left: "{time} left", ended: "Signed out" }
+     className: more classes on the dialog or the inline message
+     useSessionTimeout({ timeout, warnBefore, onTimeout, events }): timeout and warnBefore in seconds (default 1800 and
+       120); events: the activity that restarts the time (default pointerdown, keydown, wheel, touchstart). It returns
+       { state, expiresAt, stay(), signOut() }; activity restarts the time only while state is "active" (in the warning
+       only Stay signed in does).
+   Behavior:
+     The warning is an alert dialog: focus starts on Stay signed in; Escape and the close button also stay. The countdown
+       is a timer that is not read every second: the dialog's opening says how long is left, and the time is announced
+       politely at one minute, 30 seconds and 10 seconds.
+     At zero onExpire runs and the warning gives way to the signed-out message, which cannot be dismissed: Sign in again
+       is the way on.
+     The time is written m:ss in the data font with tabular figures, so it does not shift as it counts.
+   Notes:
+     WCAG 2.2.1 Timing adjustable: warn at least 20 seconds before the end (two minutes is better) and let one action
+       extend it. Save the work before signing out, and say so.
+     The server decides when a session ends; the page only shows it. Keep the two clocks in step (expiresAt from the
+       server's answer).
+*/
+
+const STRINGS = {
+  warningTitle: 'Your session is about to end',
+  warning: 'You’ll be signed out in {time} because you haven’t been active.',
+  stay: 'Stay signed in',
+  signOut: 'Sign out',
+  signedOutTitle: 'You were signed out',
+  signedOut: 'For your security, you were signed out after {minutes} minutes without activity.',
+  signedOutShort: 'For your security, you were signed out because you weren’t active.',
+  saved: 'Your changes are saved.',
+  signIn: 'Sign in again',
+  left: '{time} left',
+  ended: 'Signed out'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const clock = sec => {
+  const s = Math.max(0, Math.ceil(sec));
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+};
+const around = (s, key, node) => {
+  const p = String(s).split('{' + key + '}');
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, p[0], p.length > 1 ? node : null, p.slice(1).join(''));
+};
+const MILESTONES = [60, 30, 10];
+
+// the seconds left, from expiresAt (ticking every second) or from remaining
+function useLeft(state, expiresAt, remaining) {
+  const [now, setNow] = _react.default.useState(() => Date.now());
+  _react.default.useEffect(() => {
+    if (state !== 'warning' || typeof expiresAt !== 'number') return undefined;
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [state, expiresAt]);
+  if (typeof remaining === 'number') return remaining;
+  if (typeof expiresAt === 'number') return Math.max(0, (expiresAt - now) / 1000);
+  return 0;
+}
+function SessionTimeout({
+  state = 'active',
+  expiresAt,
+  remaining,
+  idleMinutes,
+  saved,
+  onStay,
+  onSignOut,
+  onExpire,
+  onSignIn,
+  inline = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const left = useLeft(state, expiresAt, remaining);
+  const stayRef = _react.default.useRef(null);
+  const signInRef = _react.default.useRef(null);
+  const said = _react.default.useRef({});
+  const expired = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (state === 'warning') {
+      said.current = {};
+      expired.current = false;
+    }
+  }, [state, expiresAt]);
+  _react.default.useEffect(() => {
+    if (state !== 'warning') return;
+    MILESTONES.forEach(m => {
+      if (left <= m && left > m - 5 && !said.current[m]) {
+        said.current[m] = true;
+        (0, _announce.announce)(fill(t.left, {
+          time: clock(left)
+        }));
+      }
+    });
+    if (left <= 0 && !expired.current) {
+      expired.current = true;
+      if (onExpire) onExpire();
+    }
+  }, [state, Math.ceil(left)]);
+  const savedLine = saved === false ? null : saved || t.saved;
+  const time = /*#__PURE__*/_react.default.createElement("time", {
+    className: "plx-session-timeout__time",
+    role: "timer",
+    dateTime: 'PT' + Math.ceil(Math.max(0, left)) + 'S'
+  }, clock(left));
+  if (state !== 'warning' && state !== 'signed-out') return null;
+  const warning = state === 'warning';
+  // the main sentence: the dialog's description (read when it opens); the line about the work under it
+  const lead = warning ? around(t.warning, 'time', time) : idleMinutes ? around(t.signedOut, 'minutes', /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-session-timeout__inline-time"
+  }, idleMinutes)) : t.signedOutShort;
+  const more = savedLine ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-session-timeout__text"
+  }, savedLine) : null;
+  const actions = warning ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: onSignOut
+  }, t.signOut), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: stayRef,
+    variant: "primary",
+    onClick: onStay
+  }, t.stay)) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: signInRef,
+    variant: "primary",
+    onClick: onSignIn
+  }, t.signIn);
+  const title = warning ? t.warningTitle : t.signedOutTitle;
+  if (inline) {
+    return /*#__PURE__*/_react.default.createElement(Inline, {
+      kind: state,
+      title: title,
+      actions: actions,
+      className: className
+    }, /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-session-timeout__text"
+    }, lead), more);
+  }
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: true,
+    role: "alertdialog",
+    size: "sm",
+    title: title,
+    description: lead,
+    footer: actions,
+    onClose: warning ? onStay : undefined,
+    dismissible: warning,
+    initialFocus: warning ? stayRef : signInRef,
+    className: (0, _cx.cx)('plx-session-timeout', 'plx-session-timeout--' + state, className)
+  }, more);
+}
+
+// the message drawn in the page: a region named by its title, the text, then the actions
+function Inline({
+  kind,
+  title,
+  actions,
+  className,
+  children
+}) {
+  const id = (0, _layer.useUid)('plx-session-timeout');
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-session-timeout', 'plx-session-timeout--' + kind, 'plx-session-timeout--inline', className),
+    "aria-labelledby": id
+  }, /*#__PURE__*/_react.default.createElement("h2", {
+    id: id,
+    className: "plx-session-timeout__title"
+  }, title), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-session-timeout__body"
+  }, children), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-session-timeout__actions"
+  }, actions));
+}
+function useSessionTimeout({
+  timeout = 1800,
+  warnBefore = 120,
+  onTimeout,
+  events = ['pointerdown', 'keydown', 'wheel', 'touchstart']
+} = {}) {
+  const [expiresAt, setExpiresAt] = _react.default.useState(() => Date.now() + timeout * 1000);
+  const [state, setState] = _react.default.useState('active');
+  const stateRef = _react.default.useRef(state);
+  stateRef.current = state;
+  const end = _react.default.useRef(onTimeout);
+  end.current = onTimeout;
+  const stay = _react.default.useCallback(() => {
+    setExpiresAt(Date.now() + timeout * 1000);
+    setState('active');
+  }, [timeout]);
+  const signOut = _react.default.useCallback(() => {
+    setState('signed-out');
+    if (end.current) end.current();
+  }, []);
+  // activity restarts the time while nothing is shown
+  _react.default.useEffect(() => {
+    const restart = () => {
+      if (stateRef.current === 'active') setExpiresAt(Date.now() + timeout * 1000);
+    };
+    events.forEach(e => window.addEventListener(e, restart, {
+      passive: true
+    }));
+    return () => events.forEach(e => window.removeEventListener(e, restart));
+  }, [timeout, events.join(' ')]);
+  // the warning before the end, and the end
+  _react.default.useEffect(() => {
+    if (state === 'signed-out') return undefined;
+    const tick = () => {
+      const left = (expiresAt - Date.now()) / 1000;
+      if (left <= 0) signOut();else if (left <= warnBefore && stateRef.current === 'active') setState('warning');
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [expiresAt, warnBefore, state, signOut]);
+  return {
+    state,
+    expiresAt,
+    stay,
+    signOut
+  };
+}
+  } },
+  "platform/patterns/RoleManager/RoleManager.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","../DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RoleManager = RoleManager;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Fieldset = require("../../components/Fieldset/Fieldset.jsx");
+var _IconTile = require("../../components/IconTile/IconTile.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _RoleLabel = require("../../components/RoleLabel/RoleLabel.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _ResourceList = require("../ResourceList/ResourceList.jsx");
+var _PermissionSummary = require("../PermissionSummary/PermissionSummary.jsx");
+var _AssignControl = require("../AssignControl/AssignControl.jsx");
+var _DuplicateAction = require("../DuplicateAction/DuplicateAction.jsx");
+var _DeleteFlow = require("../DeleteFlow/DeleteFlow.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RoleManager
+   Summary: The roles of a workspace and what each allows, in two views (10 Patterns › Authentication and permissions ›
+     Roles). The roles list: each role by its name, the one sentence of what it can do, and how many people hold it,
+     with Create role. The role detail: the role (its RoleLabel and description), its permissions (a built-in role's as a
+     summary of what it can and cannot do; a custom role's as checkboxes by group), and its members, with Add a member
+     (AssignControl), Remove, Duplicate (DuplicateAction) and, for a custom role, Delete (DeleteFlow). A role that must
+     keep a member (the owner) cannot lose its last one.
+   Usage:
+     <RoleManager label="Roles" roles={roles} permissions={PERMISSIONS} people={people} onChange={setRoles} />
+     <RoleManager roles={roles} permissions={PERMISSIONS} people={people} view="detail" roleId="editor"
+       onViewChange={(view, id) => route(view, id)} onChange={setRoles} />
+   Props:
+     roles: the roles, in order: [{ id, name, description, builtIn, category, permissions, members, required }]
+     roles[].builtIn: "owner" | "editor" | "viewer" for a built-in role (its RoleLabel; its permissions cannot change);
+       leave it out for a custom role
+     roles[].category: a custom role's category color (RoleLabel's category)
+     roles[].permissions: the ids of the permissions the role allows
+     roles[].members: the values of the people who hold it (people[].value)
+     roles[].required: the role always keeps at least one member (the owner): its last member cannot be removed
+     permissions: every permission, in order: [{ id, label, group, description }]; groups keep the order they first appear in
+     people: the people of the workspace: EntityPicker's options ([{ value, label, description, src }])
+     onChange(roles, change): the new list of roles after every change; change says what happened: { type: "create" |
+       "duplicate" | "delete" | "permissions" | "add-member" | "remove-member", role, person }
+     view: "list" | "detail" (controlled); roleId: the role the detail shows; onViewChange(view, roleId) runs on every move
+     defaultView, defaultRoleId: the first view when the page does not control it (default "list")
+     readOnly: the roles and members show without any change (people who cannot manage roles)
+     label: the roles list's name (default strings.roles)
+     headingLevel: the level of the detail's title (default 2; its sections one below)
+     strings: the words, for other languages: { roles: "Roles", create: "Create role", createTitle: "Create role", name:
+       "Name", description: "Description", descriptionHint: "One sentence on what people with this role can do.",
+       startFrom: "Start with the permissions of", empty: "Enter a name.", taken: "A role named {name} already exists.",
+       back: "All roles", members: "Members", member: "member", membersCount: "{n} members", memberCount: "{n} member",
+       builtIn: "Built-in", custom: "Custom", permissions: "Permissions", builtInNote: "Built-in roles can’t be changed.
+       Duplicate one to make your own.", addMember: "Add a member", remove: "Remove {name}", lastMember: "{role} needs at
+       least one member. Add someone else first.", noMembers: "Nobody has this role yet.", role: "role", cancel: "Cancel", delete: "Delete",
+       added: "{name} added to {role}", removed: "{name} removed from {role}", created: "{name} created",
+       access: "People with the {role} role", people: "{n} people", peopleOne: "{n} person", allowed: "{permission} allowed for
+       {role}", denied: "{permission} no longer allowed for {role}" }
+     className: more classes on the manager
+   Behavior:
+     The list is a ResourceList: a role's name opens its detail; All roles goes back. Focus moves to the detail's title
+       when it opens and back to the role's name when the list returns.
+     A custom role's permission checkboxes save at once (onChange) and are announced; a built-in role shows the
+       PermissionSummary of its permissions.
+     Removing the last member of a required role does nothing but say why, in a notice above the members.
+     Create role asks for a name (unique, not empty) and the role to start from; the new role opens.
+   Notes:
+     Few roles that match real jobs (Viewer, Editor, Owner) and custom roles only when needed. Every change should go
+       to the workspace's audit log (onChange's change says what to record).
+*/
+const STRINGS = {
+  roles: 'Roles',
+  create: 'Create role',
+  createTitle: 'Create role',
+  name: 'Name',
+  description: 'Description',
+  descriptionHint: 'One sentence on what people with this role can do.',
+  startFrom: 'Start with the permissions of',
+  empty: 'Enter a name.',
+  taken: 'A role named {name} already exists.',
+  back: 'All roles',
+  members: 'Members',
+  member: 'member',
+  membersCount: '{n} members',
+  memberCount: '{n} member',
+  builtIn: 'Built-in',
+  custom: 'Custom',
+  permissions: 'Permissions',
+  builtInNote: 'Built-in roles can’t be changed. Duplicate one to make your own.',
+  addMember: 'Add a member',
+  remove: 'Remove {name}',
+  lastMember: '{role} needs at least one member. Add someone else first.',
+  noMembers: 'Nobody has this role yet.',
+  role: 'role',
+  cancel: 'Cancel',
+  delete: 'Delete',
+  added: '{name} added to {role}',
+  removed: '{name} removed from {role}',
+  created: '{name} created',
+  access: 'People with the {role} role',
+  people: '{n} people',
+  peopleOne: '{n} person',
+  allowed: '{permission} allowed for {role}',
+  denied: '{permission} no longer allowed for {role}'
+};
+const ROLE_ICONS = {
+  owner: 'settings-permissions',
+  editor: 'pencil',
+  viewer: 'visibility'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const around = (s, key, node) => {
+  const p = String(s).split('{' + key + '}');
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, p[0], p.length > 1 ? node : null, p.slice(1).join(''));
+};
+const H = /*#__PURE__*/_react.default.forwardRef(function H({
+  level,
+  ...props
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement('h' + Math.min(6, Math.max(2, level)), Object.assign({
+    ref
+  }, props));
+});
+function groupsOf(permissions) {
+  const order = [];
+  const by = {};
+  permissions.forEach(p => {
+    const g = p.group || '';
+    if (!by[g]) {
+      by[g] = [];
+      order.push(g);
+    }
+    by[g].push(p);
+  });
+  return order.map(g => [g, by[g]]);
+}
+function RoleManager({
+  roles = [],
+  permissions = [],
+  people = [],
+  onChange,
+  view,
+  roleId,
+  onViewChange,
+  defaultView = 'list',
+  defaultRoleId,
+  readOnly = false,
+  label,
+  headingLevel = 2,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [ownView, setOwnView] = _react.default.useState(defaultView);
+  const [ownId, setOwnId] = _react.default.useState(defaultRoleId || roles[0] && roles[0].id);
+  const shown = view || ownView;
+  const id = roleId !== undefined ? roleId : ownId;
+  const role = roles.find(r => r.id === id);
+  const back = _react.default.useRef(null); // the role whose name to focus when the list returns
+  const go = (v, rid) => {
+    if (v === 'list') back.current = id;
+    if (view === undefined) setOwnView(v);
+    if (roleId === undefined && rid !== undefined) setOwnId(rid);
+    if (onViewChange) onViewChange(v, rid);
+  };
+  const change = (next, c) => {
+    if (onChange) onChange(next, c);
+  };
+  const editable = !readOnly && !!onChange;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-role-manager', 'plx-role-manager--' + (shown === 'detail' && role ? 'detail' : 'list'), className)
+  }, rest), shown === 'detail' && role ? /*#__PURE__*/_react.default.createElement(RoleDetail, {
+    role: role,
+    roles: roles,
+    permissions: permissions,
+    people: people,
+    t: t,
+    editable: editable,
+    headingLevel: headingLevel,
+    onBack: () => go('list'),
+    change: change,
+    onOpen: rid => go('detail', rid)
+  }) : /*#__PURE__*/_react.default.createElement(RoleList, {
+    roles: roles,
+    t: t,
+    label: label,
+    editable: editable,
+    focusId: back,
+    change: change,
+    permissions: permissions,
+    onOpen: rid => go('detail', rid)
+  }));
+}
+function RoleList({
+  roles,
+  t,
+  label,
+  editable,
+  focusId,
+  change,
+  onOpen
+}) {
+  const box = _react.default.useRef(null);
+  const [creating, setCreating] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    // back from a detail: focus the name of the role that was open
+    if (!focusId.current || !box.current) return;
+    const i = roles.findIndex(r => r.id === focusId.current);
+    const names = box.current.querySelectorAll('.plx-resource-list__opener');
+    if (names[i] && names[i].focus) names[i].focus();
+    focusId.current = null;
+  }, []);
+  const items = roles.map(r => {
+    const n = (r.members || []).length;
+    return {
+      id: r.id,
+      name: r.name,
+      description: r.description,
+      onOpen: () => onOpen(r.id),
+      media: /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
+        icon: ROLE_ICONS[r.builtIn] || 'person',
+        size: "sm"
+      }),
+      meta: /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-role-manager__meta"
+      }, /*#__PURE__*/_react.default.createElement("span", null, around(n === 1 ? t.memberCount : t.membersCount, 'n', /*#__PURE__*/_react.default.createElement(_Text.Text, {
+        variant: "data"
+      }, (0, _format.formatNumber)(n)))), /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-role-manager__kind"
+      }, r.builtIn ? t.builtIn : t.custom))
+    };
+  });
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: box,
+    className: "plx-role-manager__list"
+  }, editable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-role-manager__bar"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    icon: "plus",
+    onClick: () => setCreating(true)
+  }, t.create)) : null, /*#__PURE__*/_react.default.createElement(_ResourceList.ResourceList, {
+    label: label || t.roles,
+    noun: t.role,
+    items: items
+  }), editable ? /*#__PURE__*/_react.default.createElement(CreateRole, {
+    open: creating,
+    roles: roles,
+    t: t,
+    onClose: () => setCreating(false),
+    onCreate: r => {
+      setCreating(false);
+      change(roles.concat(r), {
+        type: 'create',
+        role: r
+      });
+      (0, _announce.announce)(fill(t.created, {
+        name: r.name
+      }));
+      onOpen(r.id);
+    }
+  }) : null);
+}
+
+// a new custom role: its name, a sentence, and the role whose permissions it starts with
+function CreateRole({
+  open,
+  roles,
+  t,
+  onClose,
+  onCreate
+}) {
+  const [name, setName] = _react.default.useState('');
+  const [about, setAbout] = _react.default.useState('');
+  const [from, setFrom] = _react.default.useState('');
+  const [error, setError] = _react.default.useState('');
+  const field = _react.default.useRef(null);
+  const formId = (0, _layer.useUid)('plx-role-manager-create');
+  _react.default.useEffect(() => {
+    if (open) {
+      setName('');
+      setAbout('');
+      setFrom(roles[roles.length > 1 ? 1 : 0] ? roles[roles.length > 1 ? 1 : 0].id : '');
+      setError('');
+    }
+  }, [open]);
+  const submit = e => {
+    e.preventDefault();
+    const n = name.trim();
+    const problem = !n ? t.empty : roles.some(r => r.name.toLowerCase() === n.toLowerCase()) ? fill(t.taken, {
+      name: '“' + n + '”'
+    }) : '';
+    setError(problem);
+    if (problem) {
+      if (field.current) field.current.focus();
+      return;
+    }
+    const base = roles.find(r => r.id === from);
+    onCreate({
+      id: 'role-' + Date.now().toString(36),
+      name: n,
+      description: about.trim(),
+      permissions: base ? (base.permissions || []).slice() : [],
+      members: []
+    });
+  };
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    onClose: onClose,
+    title: t.createTitle,
+    size: "sm",
+    initialFocus: field,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: onClose
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      type: "submit",
+      form: formId
+    }, t.create))
+  }, /*#__PURE__*/_react.default.createElement("form", {
+    id: formId,
+    noValidate: true,
+    onSubmit: submit,
+    className: "plx-role-manager__form"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.name,
+    required: true,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: field,
+    value: name,
+    onChange: e => {
+      setName(e.target.value);
+      if (error) setError('');
+    }
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.description,
+    description: t.descriptionHint
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    rows: 2,
+    value: about,
+    onChange: e => setAbout(e.target.value)
+  })), /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+    label: t.startFrom,
+    value: from,
+    onChange: setFrom,
+    options: roles.map(r => ({
+      value: r.id,
+      label: r.name,
+      description: r.description
+    }))
+  })));
+}
+function RoleDetail({
+  role,
+  roles,
+  permissions,
+  people,
+  t,
+  editable,
+  headingLevel,
+  onBack,
+  change,
+  onOpen
+}) {
+  const title = _react.default.useRef(null);
+  const [warning, setWarning] = _react.default.useState('');
+  _react.default.useEffect(() => {
+    if (title.current) title.current.focus();
+    setWarning('');
+  }, [role.id]);
+  const members = role.members || [];
+  const custom = !role.builtIn;
+  const update = (patch, c) => change(roles.map(r => r.id === role.id ? Object.assign({}, r, patch) : r), Object.assign({
+    role: role.id
+  }, c));
+  const person = v => people.find(p => p.value === v) || {
+    value: v,
+    label: v
+  };
+  const toggle = (p, on) => {
+    const next = on ? (role.permissions || []).concat(p.id) : (role.permissions || []).filter(x => x !== p.id);
+    update({
+      permissions: next
+    }, {
+      type: 'permissions',
+      permission: p.id,
+      allowed: on
+    });
+    (0, _announce.announce)(fill(on ? t.allowed : t.denied, {
+      permission: p.label,
+      role: role.name
+    }));
+  };
+  const add = v => {
+    if (!v || members.includes(v)) return;
+    setWarning('');
+    update({
+      members: members.concat(v)
+    }, {
+      type: 'add-member',
+      person: v
+    }); // AssignControl announces it (strings.assigned)
+  };
+  const remove = v => {
+    if (role.required && members.length <= 1) {
+      setWarning(fill(t.lastMember, {
+        role: role.name
+      }));
+      return;
+    }
+    update({
+      members: members.filter(m => m !== v)
+    }, {
+      type: 'remove-member',
+      person: v
+    });
+    (0, _announce.announce)(fill(t.removed, {
+      name: person(v).label,
+      role: role.name
+    }));
+  };
+  const allowed = new Set(role.permissions || []);
+  const sub = headingLevel + 1;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-role-manager__detail"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-role-manager__back"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "sm",
+    icon: "arrow-left",
+    onClick: onBack
+  }, t.back)), /*#__PURE__*/_react.default.createElement("header", {
+    className: "plx-role-manager__header"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-role-manager__heading"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    level: headingLevel,
+    ref: title,
+    tabIndex: -1,
+    className: "plx-role-manager__title"
+  }, role.name), /*#__PURE__*/_react.default.createElement(_RoleLabel.RoleLabel, {
+    role: role.builtIn || 'custom',
+    label: role.builtIn ? undefined : role.name,
+    category: role.category,
+    description: role.description
+  })), editable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-role-manager__actions"
+  }, /*#__PURE__*/_react.default.createElement(_DuplicateAction.DuplicateAction, {
+    variant: "rename",
+    name: role.name,
+    noun: t.role,
+    taken: roles.map(r => r.name),
+    size: "sm",
+    options: [{
+      id: 'members',
+      label: t.members
+    }],
+    onDuplicate: (n, chosen) => {
+      const copy = {
+        id: 'role-' + Date.now().toString(36),
+        name: n,
+        description: role.description,
+        permissions: (role.permissions || []).slice(),
+        members: (chosen || []).includes('members') ? members.slice() : []
+      };
+      change(roles.concat(copy), {
+        type: 'duplicate',
+        role: copy,
+        from: role.id
+      });
+      onOpen(copy.id);
+    }
+  }), custom ? /*#__PURE__*/_react.default.createElement(_DeleteFlow.DeleteFlow, {
+    items: [{
+      id: role.id,
+      label: role.name
+    }],
+    noun: t.role,
+    onDelete: () => {
+      change(roles.filter(r => r.id !== role.id), {
+        type: 'delete',
+        role: role.id
+      });
+      onBack();
+    },
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "danger-secondary",
+      icon: "trash"
+    }, t.delete)
+  }) : null) : null, role.description ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-role-manager__description"
+  }, role.description) : null), /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-role-manager__section",
+    "aria-labelledby": 'plx-rm-perm-' + role.id
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    level: sub,
+    id: 'plx-rm-perm-' + role.id,
+    className: "plx-role-manager__section-title"
+  }, t.permissions), custom && editable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-role-manager__groups"
+  }, groupsOf(permissions).map(([g, list]) => /*#__PURE__*/_react.default.createElement(_Fieldset.Fieldset, {
+    key: g || 'all',
+    legend: g || t.permissions,
+    hideLegend: !g
+  }, list.map(p => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    key: p.id,
+    label: p.label,
+    description: p.description,
+    checked: allowed.has(p.id),
+    onChange: e => toggle(p, e.target.checked)
+  }))))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_PermissionSummary.PermissionSummary, {
+    icon: "settings-users",
+    access: fill(t.access, {
+      role: role.name
+    }),
+    detail: fill(members.length === 1 ? t.peopleOne : t.people, {
+      n: (0, _format.formatNumber)(members.length)
+    }),
+    can: permissions.filter(p => allowed.has(p.id)).map(p => p.label),
+    cannot: permissions.filter(p => !allowed.has(p.id)).map(p => p.label)
+  }), editable && !custom ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-role-manager__note"
+  }, t.builtInNote) : null)), /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-role-manager__section",
+    "aria-labelledby": 'plx-rm-members-' + role.id
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    level: sub,
+    id: 'plx-rm-members-' + role.id,
+    className: "plx-role-manager__section-title"
+  }, t.members, " ", /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-role-manager__count"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, (0, _format.formatNumber)(members.length)))), warning ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "warning",
+    onDismiss: () => setWarning('')
+  }, warning) : null, members.length ? /*#__PURE__*/_react.default.createElement(_ResourceList.ResourceList, {
+    label: t.members,
+    noun: t.member,
+    items: members.map(v => {
+      const p = person(v);
+      return {
+        id: v,
+        name: p.label,
+        description: p.description,
+        avatar: {
+          name: p.label,
+          src: p.src
+        },
+        meta: /*#__PURE__*/_react.default.createElement(_RoleLabel.RoleLabel, {
+          role: role.builtIn || 'custom',
+          label: role.builtIn ? undefined : role.name,
+          category: role.category
+        }),
+        actions: editable ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+          size: "xs",
+          variant: "ghost",
+          iconOnly: true,
+          icon: "close",
+          label: fill(t.remove, {
+            name: p.label
+          }),
+          onClick: () => remove(v)
+        }) : null
+      };
+    })
+  }) : /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-role-manager__note"
+  }, t.noMembers), editable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-role-manager__add"
+  }, /*#__PURE__*/_react.default.createElement(_AssignControl.AssignControl, {
+    label: t.addMember,
+    people: people.filter(p => !members.includes(p.value)),
+    value: null,
+    clearable: false,
+    onChange: v => add(v),
+    strings: {
+      assigned: fill(t.added, {
+        name: '{name}',
+        role: role.name
+      })
+    }
+  })) : null));
+}
+  } },
+  "platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ConnectedAccount = ConnectedAccount;
+exports.ConnectedAccounts = ConnectedAccounts;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _IconTile = require("../../components/IconTile/IconTile.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ConnectedAccounts, ConnectedAccount
+   Summary: The accounts on other services that Plenix is linked to, and the way to link or unlink each (10 Patterns ›
+     Authentication and permissions › Account connection). One row per service: its icon, its name and what it is for,
+     its status as a Badge with its icon (Not connected, Connected, Connection error), the linked account in the data font,
+     and its action. Connect first says what Plenix will be able to do there and only then hands over to the service;
+     Disconnect asks first and says what stops working; a failed connection says why and offers Reconnect.
+   Usage:
+     <ConnectedAccounts label="Connected accounts" accounts={[
+         { id: 'drive', service: 'Google Drive', icon: 'folder', description: 'Open and save files from your Drive.',
+           status: 'connected', account: 'maya@lighthouseway.org', connectedAt: '2026-10-02',
+           scopes: ['See and open the files you choose', 'Save new files to a Plenix folder'],
+           loses: 'Files linked from Drive stop opening in Plenix.' },
+         { id: 'mail', service: 'Mailchimp', icon: 'mail', status: 'error', account: 'parish-office', error: 'Access expired on Oct 12.' },
+       ]} onConnect={(a) => startOAuth(a.id)} onDisconnect={(a) => unlink(a.id)} onReconnect={(a) => startOAuth(a.id)} />
+     <ConnectedAccount account={drive} onConnect={…} onDisconnect={…} />
+   Props:
+     accounts: the services, in order: [{ id, service, icon, description, status, account, connectedAt, scopes, loses,
+       error, busy }]
+     accounts[].service: the service's name (required): the row's title and every question names it
+     accounts[].icon: its icon from platform/icons/map.json (default "link"); services are named in words, never by a logo alone
+     accounts[].description: one line on what the connection is for
+     accounts[].status: "disconnected" (default) | "connected" | "error"
+     accounts[].account: the linked account on that service (an email or a user name), in the data font
+     accounts[].connectedAt: when it was linked ("YYYY-MM-DD"), in the data font
+     accounts[].scopes: what Plenix may do there, in plain words: listed before Connect hands over
+     accounts[].loses: what stops working when it is disconnected (the Disconnect question says it)
+     accounts[].error: why the connection failed, in words, and what to do
+     accounts[].busy: the hand-over or the unlinking is under way: its button shows the spinner
+     label: the list's accessible name (default strings.label)
+     onConnect(account): runs after the Connect question is confirmed: hand over to the service (OAuth)
+     onDisconnect(account): runs after the Disconnect question is confirmed
+     onReconnect(account): Reconnect on a failed connection (no question: the person already agreed)
+     confirm: false connects and disconnects without the questions (default true)
+     headingLevel: the level of each service's name (default 3)
+     strings: the words, for other languages: { label: "Connected accounts", connect: "Connect", disconnect: "Disconnect",
+       reconnect: "Reconnect", cancel: "Cancel", connected: "Connected", disconnected: "Not connected", error:
+       "Connection error", as: "As {account}", since: "since {date}", connectTitle: "Connect {service}?", connectMessage:
+       "You’ll sign in to {service} to allow this. Plenix will be able to:", continue: "Continue to {service}",
+       disconnectTitle: "Disconnect {service}?", disconnectMessage: "You can connect it again at any time.",
+       done: "{service} connected", undone: "{service} disconnected" }
+     className: more classes on the list
+     ConnectedAccount.account: one service, as in accounts; its other props as ConnectedAccounts' (one row, not a list)
+   Behavior:
+     Connect opens a question that lists the scopes and names the service; Continue runs onConnect, which hands over
+       to the service's own sign-in (Plenix never asks for another service's password).
+     Disconnect opens a question that says what stops working; Disconnect in it runs onDisconnect.
+     Each change of status is announced ("Google Drive connected") when the row's status changes.
+     The questions are dialogs: focus starts in them and returns to the button when they close.
+   Notes:
+     The status is the Badge's word and icon; the connected account and date are technical values (the data font).
+     One row per service; for many accounts on one service, a row per account with the account in the title.
+*/
+const STRINGS = {
+  label: 'Connected accounts',
+  connect: 'Connect',
+  disconnect: 'Disconnect',
+  reconnect: 'Reconnect',
+  cancel: 'Cancel',
+  connected: 'Connected',
+  disconnected: 'Not connected',
+  error: 'Connection error',
+  as: 'As {account}',
+  since: 'since {date}',
+  connectTitle: 'Connect {service}?',
+  connectMessage: 'You’ll sign in to {service} to allow this. Plenix will be able to:',
+  continue: 'Continue to {service}',
+  disconnectTitle: 'Disconnect {service}?',
+  disconnectMessage: 'You can connect it again at any time.',
+  done: '{service} connected',
+  undone: '{service} disconnected'
+};
+// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
+const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const STATUS = {
+  connected: ['success', 'check'],
+  disconnected: ['neutral', 'link'],
+  error: ['negative', 'alert']
+};
+// a sentence with a node in place of {key}: the words around it stay in the UI font
+const around = (s, key, node) => {
+  const p = String(s).split('{' + key + '}');
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, p[0], p.length > 1 ? node : null, p.slice(1).join(''));
+};
+const H = ({
+  level,
+  ...props
+}) => /*#__PURE__*/_react.default.createElement('h' + Math.min(6, Math.max(2, level || 3)), props);
+function ConnectedAccount({
+  account,
+  onConnect,
+  onDisconnect,
+  onReconnect,
+  confirm = true,
+  headingLevel = 3,
+  strings,
+  as = 'div',
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const a = account || {};
+  const status = STATUS[a.status] ? a.status : 'disconnected';
+  const [ask, setAsk] = _react.default.useState(null); // "connect" | "disconnect"
+  const seen = _react.default.useRef(status);
+  _react.default.useEffect(() => {
+    if (seen.current !== status) {
+      if (status === 'connected') (0, _announce.announce)(fill(t.done, {
+        service: a.service
+      }));else if (status === 'disconnected' && seen.current === 'connected') (0, _announce.announce)(fill(t.undone, {
+        service: a.service
+      }));
+      seen.current = status;
+    }
+  }, [status]);
+  const connect = () => {
+    setAsk(null);
+    if (onConnect) onConnect(a);
+  };
+  const disconnect = () => {
+    setAsk(null);
+    if (onDisconnect) onDisconnect(a);
+  };
+  const Tag = as === 'li' ? 'li' : 'div';
+  const [tone, icon] = STATUS[status];
+  const word = status === 'connected' ? t.connected : status === 'error' ? t.error : t.disconnected;
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: (0, _cx.cx)('plx-connected-accounts__item', className),
+    "data-plx-state": status
+  }, rest), /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
+    className: "plx-connected-accounts__tile",
+    icon: a.icon || 'link',
+    size: "md"
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-connected-accounts__body"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-connected-accounts__head"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    level: headingLevel,
+    className: "plx-connected-accounts__service"
+  }, a.service), /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: tone,
+    icon: icon
+  }, word)), a.description ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-connected-accounts__description"
+  }, a.description) : null, status !== 'disconnected' && (a.account || a.connectedAt) ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-connected-accounts__detail"
+  }, a.account ? around(t.as, 'account', /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, a.account)) : null, a.account && a.connectedAt ? ', ' : null, a.connectedAt ? around(t.since, 'date', /*#__PURE__*/_react.default.createElement("time", {
+    className: "plx-connected-accounts__date",
+    dateTime: typeof a.connectedAt === 'string' ? a.connectedAt : (0, _format.dateTimeAttr)(a.connectedAt)
+  }, (0, _format.formatDate)(day(a.connectedAt)))) : null) : null, status === 'error' && a.error ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-connected-accounts__error"
+  }, a.error) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-connected-accounts__actions"
+  }, status === 'error' && onReconnect ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    loading: !!a.busy,
+    onClick: () => onReconnect(a)
+  }, t.reconnect) : null, status === 'disconnected' && onConnect ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    loading: !!a.busy,
+    onClick: () => confirm ? setAsk('connect') : connect()
+  }, t.connect) : null, status !== 'disconnected' && onDisconnect ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: status === 'error' ? 'ghost' : 'secondary',
+    loading: status === 'connected' && !!a.busy,
+    onClick: () => confirm ? setAsk('disconnect') : disconnect()
+  }, t.disconnect) : null), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+    open: ask === 'connect',
+    title: fill(t.connectTitle, {
+      service: a.service
+    }),
+    message: fill(t.connectMessage, {
+      service: a.service
+    }),
+    confirmLabel: fill(t.continue, {
+      service: a.service
+    }),
+    cancelLabel: t.cancel,
+    onConfirm: connect,
+    onCancel: () => setAsk(null)
+  }, a.scopes && a.scopes.length ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-connected-accounts__scopes"
+  }, a.scopes.map((s, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: i
+  }, s))) : null), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+    open: ask === 'disconnect',
+    destructive: true,
+    title: fill(t.disconnectTitle, {
+      service: a.service
+    }),
+    message: [a.loses, t.disconnectMessage].filter(Boolean).join(' '),
+    confirmLabel: t.disconnect,
+    cancelLabel: t.cancel,
+    onConfirm: disconnect,
+    onCancel: () => setAsk(null)
+  }));
+}
+function ConnectedAccounts({
+  accounts = [],
+  label,
+  className,
+  strings,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const {
+    onConnect,
+    onDisconnect,
+    onReconnect,
+    confirm,
+    headingLevel,
+    ...own
+  } = rest;
+  return /*#__PURE__*/_react.default.createElement("ul", _extends({
+    className: (0, _cx.cx)('plx-connected-accounts', className),
+    "aria-label": label || t.label
+  }, own), accounts.map(a => /*#__PURE__*/_react.default.createElement(ConnectedAccount, {
+    key: a.id || a.service,
+    as: "li",
+    account: a,
+    onConnect: onConnect,
+    onDisconnect: onDisconnect,
+    onReconnect: onReconnect,
+    confirm: confirm,
+    headingLevel: headingLevel,
+    strings: strings
+  })));
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "AccountRecovery", {
+  enumerable: true,
+  get: function () {
+    return _Auth.AccountRecovery;
+  }
 });
 Object.defineProperty(exports, "ActionBar", {
   enumerable: true,
@@ -50042,6 +52693,12 @@ Object.defineProperty(exports, "AssignControl", {
   enumerable: true,
   get: function () {
     return _AssignControl.AssignControl;
+  }
+});
+Object.defineProperty(exports, "Auth", {
+  enumerable: true,
+  get: function () {
+    return _Auth.Auth;
   }
 });
 Object.defineProperty(exports, "Avatar", {
@@ -50392,6 +53049,18 @@ Object.defineProperty(exports, "ConfirmDialog", {
     return _Dialog.ConfirmDialog;
   }
 });
+Object.defineProperty(exports, "ConnectedAccount", {
+  enumerable: true,
+  get: function () {
+    return _ConnectedAccounts.ConnectedAccount;
+  }
+});
+Object.defineProperty(exports, "ConnectedAccounts", {
+  enumerable: true,
+  get: function () {
+    return _ConnectedAccounts.ConnectedAccounts;
+  }
+});
 Object.defineProperty(exports, "ContentGrid", {
   enumerable: true,
   get: function () {
@@ -50644,10 +53313,28 @@ Object.defineProperty(exports, "Figure", {
     return _Figure.Figure;
   }
 });
+Object.defineProperty(exports, "File", {
+  enumerable: true,
+  get: function () {
+    return _File.File;
+  }
+});
 Object.defineProperty(exports, "FileInput", {
   enumerable: true,
   get: function () {
     return _FileInput.FileInput;
+  }
+});
+Object.defineProperty(exports, "FileRow", {
+  enumerable: true,
+  get: function () {
+    return _FileRow.FileRow;
+  }
+});
+Object.defineProperty(exports, "FileRowList", {
+  enumerable: true,
+  get: function () {
+    return _FileRow.FileRowList;
   }
 });
 Object.defineProperty(exports, "FilterBar", {
@@ -50926,6 +53613,12 @@ Object.defineProperty(exports, "Metric", {
     return _Metric.Metric;
   }
 });
+Object.defineProperty(exports, "MfaChallenge", {
+  enumerable: true,
+  get: function () {
+    return _Auth.MfaChallenge;
+  }
+});
 Object.defineProperty(exports, "MillerColumns", {
   enumerable: true,
   get: function () {
@@ -51008,6 +53701,12 @@ Object.defineProperty(exports, "PanelSplitter", {
   enumerable: true,
   get: function () {
     return _Resizable.PanelSplitter;
+  }
+});
+Object.defineProperty(exports, "PasswordResetForm", {
+  enumerable: true,
+  get: function () {
+    return _Auth.PasswordResetForm;
   }
 });
 Object.defineProperty(exports, "PeopleGroup", {
@@ -51250,6 +53949,12 @@ Object.defineProperty(exports, "RoleLabel", {
     return _RoleLabel.RoleLabel;
   }
 });
+Object.defineProperty(exports, "RoleManager", {
+  enumerable: true,
+  get: function () {
+    return _RoleManager.RoleManager;
+  }
+});
 Object.defineProperty(exports, "RowButton", {
   enumerable: true,
   get: function () {
@@ -51334,6 +54039,12 @@ Object.defineProperty(exports, "SessionProvider", {
     return _SessionProvider.SessionProvider;
   }
 });
+Object.defineProperty(exports, "SessionTimeout", {
+  enumerable: true,
+  get: function () {
+    return _SessionTimeout.SessionTimeout;
+  }
+});
 Object.defineProperty(exports, "SettingsLayout", {
   enumerable: true,
   get: function () {
@@ -51382,6 +54093,18 @@ Object.defineProperty(exports, "SidePanel", {
     return _SidePanel.SidePanel;
   }
 });
+Object.defineProperty(exports, "SignInForm", {
+  enumerable: true,
+  get: function () {
+    return _Auth.SignInForm;
+  }
+});
+Object.defineProperty(exports, "SignUpForm", {
+  enumerable: true,
+  get: function () {
+    return _Auth.SignUpForm;
+  }
+});
 Object.defineProperty(exports, "Skeleton", {
   enumerable: true,
   get: function () {
@@ -51428,6 +54151,12 @@ Object.defineProperty(exports, "Spotlight", {
   enumerable: true,
   get: function () {
     return _Spotlight.Spotlight;
+  }
+});
+Object.defineProperty(exports, "SsoButtons", {
+  enumerable: true,
+  get: function () {
+    return _Auth.SsoButtons;
   }
 });
 Object.defineProperty(exports, "Stack", {
@@ -51872,6 +54601,18 @@ Object.defineProperty(exports, "encodeBarcode", {
   enumerable: true,
   get: function () {
     return _barcode.encodeBarcode;
+  }
+});
+Object.defineProperty(exports, "fileExtension", {
+  enumerable: true,
+  get: function () {
+    return _File.fileExtension;
+  }
+});
+Object.defineProperty(exports, "fileIcon", {
+  enumerable: true,
+  get: function () {
+    return _File.fileIcon;
   }
 });
 Object.defineProperty(exports, "flingDistance", {
@@ -52576,6 +55317,12 @@ Object.defineProperty(exports, "useSession", {
     return _SessionProvider.useSession;
   }
 });
+Object.defineProperty(exports, "useSessionTimeout", {
+  enumerable: true,
+  get: function () {
+    return _SessionTimeout.useSessionTimeout;
+  }
+});
 Object.defineProperty(exports, "useSortable", {
   enumerable: true,
   get: function () {
@@ -52871,6 +55618,12 @@ var _DeleteFlow = require("./patterns/DeleteFlow/DeleteFlow.jsx");
 var _DuplicateAction = require("./patterns/DuplicateAction/DuplicateAction.jsx");
 var _Publish = require("./patterns/Publish/Publish.jsx");
 var _AssignControl = require("./patterns/AssignControl/AssignControl.jsx");
+var _File = require("./components/File/File.jsx");
+var _FileRow = require("./components/FileRow/FileRow.jsx");
+var _Auth = require("./patterns/Auth/Auth.jsx");
+var _SessionTimeout = require("./patterns/SessionTimeout/SessionTimeout.jsx");
+var _RoleManager = require("./patterns/RoleManager/RoleManager.jsx");
+var _ConnectedAccounts = require("./patterns/ConnectedAccounts/ConnectedAccounts.jsx");
   } }
   };
   var cache = {};

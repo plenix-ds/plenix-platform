@@ -1,0 +1,150 @@
+{
+  "$description": "Auth (platform/patterns/Auth), library wave 11, lane A: its pattern tokens. The frame promoted from the Plenix login (the page’s padding, the card’s fill, border, corners, padding and width: a small dialog’s), the title and its line, the gaps of the forms, the links, the “or” between single sign-on and the form, the notes, the data font of emails and counts, and the error under the consent. The fields, buttons, notices and the code boxes are Field’s, Button’s, Notice’s and OtpInput’s.",
+  "plx-comp": {
+    "auth-page-padding-block": {
+      "$value": "{plx-sys.space-layout-xl}",
+      "$type": "dimension",
+      "$description": "Auth: a page of its own: padding above and below the card (space-layout-xl)."
+    },
+    "auth-page-padding-inline": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "Auth: a page of its own: padding at the sides (space-inset-md); on narrow windows also above the form."
+    },
+    "auth-card-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "Auth: card fill (surface-default)."
+    },
+    "auth-card-border-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "Auth: card border (border-subtle)."
+    },
+    "auth-card-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Auth: card border width, and the footer’s and the “or” lines (border-width-thin)."
+    },
+    "auth-card-radius": {
+      "$value": "{plx-sys.radius-surface-8px}",
+      "$type": "dimension",
+      "$description": "Auth: card corners (radius-surface-8px)."
+    },
+    "auth-card-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "Auth: card width: a small dialog’s (size-400px, as dialog-sm-max-width)."
+    },
+    "auth-card-padding": {
+      "$value": "{plx-sys.space-inset-xl}",
+      "$type": "dimension",
+      "$description": "Auth: card padding (space-inset-xl)."
+    },
+    "auth-card-gap": {
+      "$value": "{plx-sys.space-stack-lg}",
+      "$type": "dimension",
+      "$description": "Auth: gap between the header, the body and the footer (space-stack-lg)."
+    },
+    "auth-header-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Auth: gap between the title and its line (space-stack-xs)."
+    },
+    "auth-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Auth: title color, and the status line’s (content-default)."
+    },
+    "auth-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "Auth: title font (font-heading)."
+    },
+    "auth-title-font-size": {
+      "$value": "{plx-ref.font-size-20}",
+      "$type": "dimension",
+      "$description": "Auth: title size (font-size-20)."
+    },
+    "auth-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Auth: title weight (font-weight-semibold)."
+    },
+    "auth-title-line-height": {
+      "$value": "{plx-ref.size-28px}",
+      "$type": "dimension",
+      "$description": "Auth: title line height (size-28px)."
+    },
+    "auth-muted-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Auth: the title’s line, the notes, the footer and “or” (content-muted)."
+    },
+    "auth-text-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Auth: the lines’ and notes’ size (font-size-13)."
+    },
+    "auth-text-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "Auth: the lines’ and notes’ line height (size-20px)."
+    },
+    "auth-small-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Auth: “or” and the consent’s error size (font-size-12)."
+    },
+    "auth-small-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "Auth: “or” and the consent’s error line height (size-16px)."
+    },
+    "auth-footer-border-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "Auth: the line above the footer (border-divider)."
+    },
+    "auth-flow-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Auth: gap between single sign-on, “or”, the form and the links (space-stack-md)."
+    },
+    "auth-form-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Auth: gap between a form’s fields (space-stack-md)."
+    },
+    "auth-links-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Auth: gap between the links to the other flows (space-inline-sm)."
+    },
+    "auth-or-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Auth: gap between “or” and its lines, and the spinner and its words (space-inline-sm)."
+    },
+    "auth-or-line-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "Auth: the lines beside “or” (border-divider)."
+    },
+    "auth-data-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "Auth: an email and a count in a sentence: the data font (font-data)."
+    },
+    "auth-strong-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Auth: the administrator’s name in the recovery help (font-weight-semibold)."
+    },
+    "auth-error-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "Auth: the consent’s error (feedback-danger-content)."
+    }
+  }
+}

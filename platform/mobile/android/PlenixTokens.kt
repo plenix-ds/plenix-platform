@@ -485,6 +485,8 @@ object PlenixMotion {
 /** The component values the Plenix native designs use (dp; durations in milliseconds). */
 object PlenixComponent {
     val activityListItemBorderBottomWidth = 1.dp
+    val authCardRadius = 8.dp
+    val authTitleFontSize = 20.dp
     val avatar20FontSize = 10.dp
     val avatar20Radius = 4.dp
     val avatar20Width = 20.dp

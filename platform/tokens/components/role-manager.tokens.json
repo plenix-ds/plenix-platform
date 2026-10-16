@@ -1,0 +1,135 @@
+{
+  "$description": "RoleManager (platform/patterns/RoleManager), library wave 11, lane A: its pattern tokens. The gaps of the two views (the list under its bar; the detail’s header and sections), the detail’s title and section titles, the muted lines (Built-in or Custom, the description, the notes, the count), the permission groups’ grid and the Create role form. The rows are ResourceList’s, the roles RoleLabel’s, the permissions PermissionSummary’s and Checkbox’s.",
+  "plx-comp": {
+    "role-manager-list-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "RoleManager: the list view: gap between the bar and the list (space-stack-md)."
+    },
+    "role-manager-section-gap": {
+      "$value": "{plx-sys.space-stack-xl}",
+      "$type": "dimension",
+      "$description": "RoleManager: the detail view: gap between the way back, the header and the sections (space-stack-xl)."
+    },
+    "role-manager-section-inner-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "RoleManager: gap inside a section, under its title (space-stack-md)."
+    },
+    "role-manager-meta-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "RoleManager: gap between a row’s member count and its kind, and a section title and its count (space-inline-sm)."
+    },
+    "role-manager-muted-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "RoleManager: the muted lines: Built-in or Custom, the description, the notes, the count (content-muted)."
+    },
+    "role-manager-header-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "RoleManager: gap between the title, its RoleLabel and the actions (space-inline-md)."
+    },
+    "role-manager-header-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "RoleManager: gap between the header’s lines (space-stack-xs)."
+    },
+    "role-manager-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "RoleManager: the titles’ color (content-default)."
+    },
+    "role-manager-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "RoleManager: the role’s title font (font-heading)."
+    },
+    "role-manager-title-font-size": {
+      "$value": "{plx-ref.font-size-18}",
+      "$type": "dimension",
+      "$description": "RoleManager: the role’s title size (font-size-18)."
+    },
+    "role-manager-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "RoleManager: the titles’ weight (font-weight-semibold)."
+    },
+    "role-manager-title-line-height": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "RoleManager: the role’s title line height (size-24px)."
+    },
+    "role-manager-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "RoleManager: focus ring on the title when the detail opens by keyboard (focus-ring-color)."
+    },
+    "role-manager-focus-outline-width": {
+      "$value": "{plx-sys.focus-ring-width}",
+      "$type": "dimension",
+      "$description": "RoleManager: that ring’s width (focus-ring-width)."
+    },
+    "role-manager-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "RoleManager: that ring’s offset (focus-ring-offset)."
+    },
+    "role-manager-actions-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "RoleManager: gap between Duplicate and Delete (space-inline-sm)."
+    },
+    "role-manager-text-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "RoleManager: the description’s and notes’ size (font-size-13)."
+    },
+    "role-manager-text-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "RoleManager: the description’s and notes’ line height (size-20px)."
+    },
+    "role-manager-section-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "RoleManager: a section title’s font (font-heading)."
+    },
+    "role-manager-section-title-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension",
+      "$description": "RoleManager: a section title’s size (font-size-14)."
+    },
+    "role-manager-section-title-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "RoleManager: a section title’s line height (size-20px)."
+    },
+    "role-manager-count-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "RoleManager: the member count beside the section title (font-weight-regular)."
+    },
+    "role-manager-groups-gap": {
+      "$value": "{plx-sys.space-stack-lg}",
+      "$type": "dimension",
+      "$description": "RoleManager: gap between the permission groups (space-stack-lg)."
+    },
+    "role-manager-group-min-width": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "RoleManager: a permission group’s least width before the groups wrap (size-240px)."
+    },
+    "role-manager-add-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "RoleManager: Add a member: the picker’s greatest width (size-400px)."
+    },
+    "role-manager-form-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "RoleManager: Create role: gap between the fields (space-stack-md)."
+    }
+  }
+}

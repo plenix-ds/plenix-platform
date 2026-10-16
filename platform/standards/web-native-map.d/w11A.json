@@ -1,0 +1,17 @@
+{
+  "$description": "Library part w11A (wave 11, lane A): the iOS and Android counterparts of files (File management and Lists and tables on iOS, File and photo pickers and List on Android) and of the account patterns: signing in, up and back in (Managing accounts, Sign in with Apple, Digit entry views and Text fields on iOS; Sign-in and account, OutlinedTextField on Android), the session timeout (Alerts, AlertDialog), roles (Collaboration and sharing and Privacy on iOS, Permissions on Android) and account connection (Managing accounts, Sign-in and account). Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "specialized|File": { "ios": ["ios-specialized|File management"], "android": ["android-specialized|File and photo pickers"] },
+    "specialized|Folder": { "ios": ["ios-specialized|File management"], "android": ["android-specialized|File and photo pickers"] },
+    "specialized|File row": { "ios": ["ios-data-display|Lists and tables", "ios-specialized|File management"], "android": ["android-data-display|List", "android-specialized|File and photo pickers"] },
+    "patterns|Sign in": { "ios": ["ios-patterns|Managing accounts", "ios-forms|Text fields"], "android": ["android-patterns|Sign-in and account", "android-forms|OutlinedTextField"] },
+    "patterns|Sign up": { "ios": ["ios-patterns|Managing accounts", "ios-forms|Text fields"], "android": ["android-patterns|Sign-in and account", "android-forms|OutlinedTextField"] },
+    "patterns|Password reset": { "ios": ["ios-patterns|Managing accounts"], "android": ["android-patterns|Sign-in and account"] },
+    "patterns|Multi-factor authentication": { "ios": ["ios-patterns|Managing accounts", "ios-forms|Digit entry views"], "android": ["android-patterns|Sign-in and account", "android-forms|OutlinedTextField"] },
+    "patterns|Single sign-on": { "ios": ["ios-specialized|Sign in with Apple", "ios-patterns|Managing accounts"], "android": ["android-patterns|Sign-in and account"] },
+    "patterns|Account recovery": { "ios": ["ios-patterns|Managing accounts"], "android": ["android-patterns|Sign-in and account"] },
+    "patterns|Session timeout": { "ios": ["ios-overlays|Alerts"], "android": ["android-overlays|AlertDialog"] },
+    "patterns|Roles": { "ios": ["ios-specialized|Collaboration and sharing", "ios-patterns|Privacy"], "android": ["android-patterns|Permissions"] },
+    "patterns|Account connection": { "ios": ["ios-patterns|Managing accounts"], "android": ["android-patterns|Sign-in and account"] }
+  }
+}

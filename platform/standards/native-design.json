@@ -10335,6 +10335,237 @@
     ]
    }
   },
+  "android-patterns|Sign-in and account": {
+   "summary": "Plenix on Android signs people in, up and back in through the platform’s Credential Manager first (passkeys, saved passwords, Sign in with Google), and with a form when needed: OutlinedTextFields whose autofill types the platform understands (username, password, newPassword, smsOtpCode), a password field with a trailing Show toggle, one general error above the fields, and the primary button as wide as the form at the 48 dp target. The second step takes the code from the SMS Retriever or the user’s paste; a session about to end is an AlertDialog that keeps the work; each linked service is a list row with its status in words. On a compact window the form fills the screen under the top app bar; on medium and expanded windows it sits in a card a small dialog wide, as on the web.",
+   "variants": [
+    {
+     "name": "Sign in",
+     "material": "OutlinedTextField pair and a filled Button; Credential Manager getCredential",
+     "web": "patterns|Sign in",
+     "background": "plx-comp-auth-card-background",
+     "content": "plx-comp-auth-title-text",
+     "border": "plx-comp-auth-card-border-color",
+     "compose": "PlenixSignIn(error = error, onSubmit = ::signIn): OutlinedTextFields with ContentType.Username and ContentType.Password, a full-width Button",
+     "views": "TextInputLayout with autofillHints USERNAME and PASSWORD, endIconMode PASSWORD_TOGGLE",
+     "use": "The entry to every signed-in part of the app."
+    },
+    {
+     "name": "Sign up",
+     "material": "OutlinedTextField with supportingText for the rule",
+     "web": "patterns|Sign up",
+     "background": "plx-comp-auth-card-background",
+     "content": "plx-comp-auth-muted-text",
+     "border": "plx-comp-auth-card-border-color",
+     "compose": "OutlinedTextField(…, supportingText = { Text(\"At least 12 characters.\") }) with ContentType.NewPassword",
+     "views": "TextInputLayout.helperText for the rule; autofillHints NEW_PASSWORD",
+     "use": "Creating an account with only what is needed now."
+    },
+    {
+     "name": "Two-step code",
+     "material": "One OutlinedTextField for the code (SMS Retriever fills it)",
+     "web": "patterns|Multi-factor authentication",
+     "background": "plx-comp-auth-card-background",
+     "content": "plx-comp-auth-muted-text",
+     "border": null,
+     "compose": "OutlinedTextField(code, …, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)) with ContentType.SmsOtpCode",
+     "views": "autofillHints SMS_OTP_CODE; inputType number",
+     "use": "The second step after the password."
+    },
+    {
+     "name": "Single sign-on",
+     "material": "Sign in with Google through Credential Manager; Custom Tabs for an organization’s provider",
+     "web": "patterns|Single sign-on",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-content-default",
+     "border": "plx-sys-border-default",
+     "compose": "OutlinedButton(onClick = { signInWithProvider(google) }) { Text(\"Continue with Google\") } in the Plenix secondary look",
+     "views": "MaterialButton (outlined) opening CustomTabsIntent for the provider",
+     "use": "Organizations that sign in with their own provider."
+    },
+    {
+     "name": "Session timeout",
+     "material": "AlertDialog",
+     "web": "patterns|Session timeout",
+     "background": "plx-comp-dialog-background",
+     "content": "plx-comp-session-timeout-text",
+     "border": null,
+     "compose": "AlertDialog(title = { Text(\"Your session is about to end\") }, confirmButton = { Button(stay) { Text(\"Stay signed in\") } }, dismissButton = { TextButton(signOut) { Text(\"Sign out\") } })",
+     "views": "MaterialAlertDialogBuilder with Stay signed in as the positive button",
+     "use": "Before an idle session ends."
+    },
+    {
+     "name": "Account connection",
+     "material": "A ListItem per service with a trailing button",
+     "web": "patterns|Account connection",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-connected-accounts-service-text",
+     "border": "plx-comp-connected-accounts-border-color",
+     "compose": "ListItem(headlineContent = { Text(service) }, supportingContent = { Text(account) }, trailingContent = { OutlinedButton(connect) { Text(\"Connect\") } })",
+     "views": "a RecyclerView row with a MaterialButton",
+     "use": "The services the app is linked to, in Settings."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Title and line",
+     "about": "Sign in to Plenix, and what to use, in the Plenix title and muted roles."
+    },
+    {
+     "part": "B",
+     "name": "Fields",
+     "about": "The identifier and the password with its Show toggle, their autofill types set."
+    },
+    {
+     "part": "C",
+     "name": "General error",
+     "about": "One message above the fields after a failure, never which part was wrong."
+    },
+    {
+     "part": "D",
+     "name": "Primary button",
+     "about": "Sign in, as wide as the form, at least 48 dp tall."
+    },
+    {
+     "part": "E",
+     "name": "Other flows",
+     "about": "Forgot your password? and Create an account as text buttons."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "Field border",
+     "token": "plx-sys-field-border",
+     "value": "The Plenix field border; only its color changes on focus and error",
+     "material": "outline",
+     "compose": "OutlinedTextFieldDefaults.colors(unfocusedBorderColor = PlenixColors.fieldBorder.current(), focusedBorderColor = PlenixColors.focusRingColor.current(), errorBorderColor = PlenixColors.feedbackDangerContent.current())",
+     "views": "boxStrokeColor from PlenixColors.fieldBorder; boxStrokeErrorColor from the danger content",
+     "follows": "Material 3: Text fields",
+     "followsUrl": "https://m3.material.io/components/text-fields/guidelines"
+    },
+    {
+     "part": "B",
+     "attribute": "Field fill",
+     "token": "plx-sys-field-background",
+     "value": "The Plenix field fill",
+     "material": "Transparent",
+     "compose": "OutlinedTextFieldDefaults.colors(unfocusedContainerColor = PlenixColors.fieldBackground.current(), focusedContainerColor = PlenixColors.fieldBackground.current())",
+     "views": "boxBackgroundColor = PlenixColors.fieldBackground.light.toArgb()",
+     "follows": "Material 3: Text fields",
+     "followsUrl": "https://m3.material.io/components/text-fields/specs"
+    },
+    {
+     "part": "B",
+     "attribute": "Show password",
+     "token": null,
+     "value": "A trailing icon button that shows and hides the password, named Show password",
+     "material": "Trailing icon",
+     "compose": "trailingIcon = { IconButton(onClick = { visible = !visible }) { Icon(if (visible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility, contentDescription = \"Show password\") } }",
+     "views": "endIconMode = END_ICON_PASSWORD_TOGGLE",
+     "follows": "Material 3: Text fields",
+     "followsUrl": "https://m3.material.io/components/text-fields/guidelines"
+    },
+    {
+     "part": "C",
+     "attribute": "General error",
+     "token": "plx-sys-feedback-danger-content",
+     "value": "The danger content color on the danger soft fill, with the alert icon and words; announced",
+     "material": "None",
+     "compose": "Row(Modifier.background(PlenixColors.feedbackDangerSoft.current(), RoundedCornerShape(PlenixRadius.radiusControl4px)).padding(PlenixSpace.spaceInsetSm).semantics { liveRegion = LiveRegionMode.Assertive }) { Text(error, color = PlenixColors.feedbackDangerContent.current()) }",
+     "views": "a TextView with accessibilityLiveRegion = assertive",
+     "follows": "Material 3: Text fields (error)",
+     "followsUrl": "https://m3.material.io/components/text-fields/guidelines"
+    },
+    {
+     "part": "D",
+     "attribute": "Primary button",
+     "token": "plx-sys-action-primary-background",
+     "value": "The primary fill, as wide as the form, at least the 48 dp target",
+     "material": "Filled button",
+     "compose": "Button(onClick = submit, modifier = Modifier.fillMaxWidth().heightIn(min = PlenixPlatform.controlTargetMin), colors = ButtonDefaults.buttonColors(PlenixColors.actionPrimaryBackground.current(), PlenixColors.actionPrimaryContent.current())) { Text(\"Sign in\") }",
+     "views": "MaterialButton with layout_width match_parent and backgroundTint from the primary fill",
+     "follows": "Material 3: Buttons",
+     "followsUrl": "https://m3.material.io/components/buttons/guidelines"
+    },
+    {
+     "part": "A",
+     "attribute": "Card on medium windows",
+     "token": "plx-comp-auth-card-radius",
+     "value": "Medium and expanded windows: the form on the default surface with the subtle border and 8 dp corners, a small dialog wide; compact: the form fills the screen",
+     "material": "None",
+     "compose": "if (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT) Surface(shape = RoundedCornerShape(PlenixRadius.radiusSurface8px), border = BorderStroke(PlenixBorder.borderWidthThin, PlenixColors.borderSubtle.current())) { form() } else form()",
+     "views": "a MaterialCardView on sw600dp layouts",
+     "follows": "Material 3: Canonical layouts",
+     "followsUrl": "https://m3.material.io/foundations/layout/canonical-layouts/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-sys-field-border",
+     "compose": "the fields empty, Sign in enabled",
+     "views": "the fields empty"
+    },
+    {
+     "state": "Focused field",
+     "token": "plx-sys-focus-ring-color",
+     "compose": "focusedBorderColor: only the border’s color changes",
+     "views": "boxStrokeColor on focus"
+    },
+    {
+     "state": "Checking",
+     "token": "plx-sys-action-primary-background",
+     "compose": "a CircularProgressIndicator inside the button while the server answers",
+     "views": "a progress indicator drawable on the button"
+    },
+    {
+     "state": "Failed",
+     "token": "plx-sys-feedback-danger-content",
+     "compose": "the general error shown and announced; the identifier kept",
+     "views": "the error TextView shown; announceForAccessibility"
+    },
+    {
+     "state": "Dark",
+     "token": "plx-comp-auth-card-background",
+     "compose": "PlenixColors pairs follow isSystemInDarkTheme()",
+     "views": "the night resources"
+    }
+   ],
+   "code": {
+    "compose": [
+     "import androidx.compose.foundation.background",
+     "import androidx.compose.foundation.layout.*",
+     "import androidx.compose.foundation.shape.RoundedCornerShape",
+     "import androidx.compose.material3.*",
+     "import androidx.compose.runtime.*",
+     "import androidx.compose.ui.Modifier",
+     "import plenix.tokens.*",
+     "",
+     "// the Plenix sign-in form: autofill types, the Plenix field look, one general error, a full-width button",
+     "@Composable",
+     "fun PlenixSignIn(error: String?, onSubmit: (String, String) -> Unit) {",
+     "    var user by remember { mutableStateOf(\"\") }",
+     "    var password by remember { mutableStateOf(\"\") }",
+     "    Column(Modifier.padding(PlenixSpace.spaceInsetXl), verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "        Text(\"Sign in to Plenix\", fontSize = PlenixPlatform.textTitleSize, color = PlenixColors.contentDefault.current())",
+     "        if (error != null) Text(error, color = PlenixColors.feedbackDangerContent.current(),",
+     "            modifier = Modifier.fillMaxWidth().background(PlenixColors.feedbackDangerSoft.current(), RoundedCornerShape(PlenixRadius.radiusControl4px)).padding(PlenixSpace.spaceInsetSm))",
+     "        OutlinedTextField(user, { user = it }, label = { Text(\"Email or user name\") }, modifier = Modifier.fillMaxWidth())",
+     "        PlenixPasswordField(password, { password = it }, label = \"Password\")",
+     "        Button(onClick = { onSubmit(user, password) }, modifier = Modifier.fillMaxWidth().heightIn(min = PlenixPlatform.controlTargetMin),",
+     "            colors = ButtonDefaults.buttonColors(PlenixColors.actionPrimaryBackground.current(), PlenixColors.actionPrimaryContent.current())) { Text(\"Sign in\") }",
+     "    }",
+     "}"
+    ],
+    "views": [
+     "userLayout.editText?.setAutofillHints(View.AUTOFILL_HINT_USERNAME)",
+     "passwordLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE",
+     "passwordLayout.editText?.setAutofillHints(View.AUTOFILL_HINT_PASSWORD)",
+     "signIn.backgroundTintList = ColorStateList.valueOf(PlenixColors.actionPrimaryBackground.light.toArgb())"
+    ]
+   }
+  },
   "android-specialized|File and photo pickers": {
    "summary": "A Plenix image upload on Android opens the system photo picker (PickVisualMedia) or the document picker (OpenDocument) from a Plenix outlined button and shows the chosen picture in a frame of a fixed ratio with the media radius and the thin default border, its name in DM Mono, and Replace and Remove beside it; a profile picture is the Plenix avatar (a rounded square, never a circle) with Change photo and Remove photo. The system picker stays as Android draws it; Plenix styles the control that opens it and what shows after.",
    "variants": [
@@ -20354,6 +20585,489 @@
      "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
      "folderView.registerForDraggedTypes([.fileURL])",
      "// draggingEntered(_:) returns .move for a taken type and [] for a refused one"
+    ]
+   }
+  },
+  "ios-patterns|Managing accounts": {
+   "summary": "Plenix on iOS signs people in, up and back in with the system’s own help: Sign in with Apple and passkeys first where the service offers them, the password fields that the system’s password manager and the one-time-code autofill understand (textContentType username, password, newPassword, oneTimeCode), and the session ending with an alert that keeps the work. Plenix styles what the app draws: the form on the grouped surface with the Plenix field border and fill, the primary button as wide as the form at the touch height, one general error above the fields, the links to the other flows as plain buttons, and every account’s connection as a row with its status in words. Apple’s default is a plain Form; Plenix keeps its structure and the system sheets and changes the look.",
+   "variants": [
+    {
+     "name": "Sign in",
+     "apple": "Form with TextField(.username) and SecureField(.password); ASAuthorizationController for passkeys",
+     "web": "patterns|Sign in",
+     "background": "plx-comp-auth-card-background",
+     "content": "plx-comp-auth-title-text",
+     "border": "plx-comp-auth-card-border-color",
+     "swiftui": "PlenixSignIn(onSubmit: signIn): TextField with .textContentType(.username), SecureField with .textContentType(.password), a full-width prominent button",
+     "uikit": "UITextField.textContentType = .username and .password in a UIStackView on the grouped background",
+     "appkit": "NSTextField and NSSecureTextField with contentType (a macOS build of the tokens is needed)",
+     "use": "The entry to every signed-in part of the app."
+    },
+    {
+     "name": "Sign up",
+     "apple": "Form with .newPassword and the system’s strong password suggestion",
+     "web": "patterns|Sign up",
+     "background": "plx-comp-auth-card-background",
+     "content": "plx-comp-auth-muted-text",
+     "border": "plx-comp-auth-card-border-color",
+     "swiftui": "SecureField with .textContentType(.newPassword) and the rule as a footer Text in the Plenix muted color",
+     "uikit": "passwordRules = UITextInputPasswordRules(descriptor: \"minlength: 12;\")",
+     "appkit": "NSSecureTextField with contentType .newPassword (a macOS build of the tokens is needed)",
+     "use": "Creating an account with only what is needed now."
+    },
+    {
+     "name": "Two-step code",
+     "apple": "One TextField with .oneTimeCode (the code from Messages fills it)",
+     "web": "patterns|Multi-factor authentication",
+     "background": "plx-comp-auth-card-background",
+     "content": "plx-comp-auth-muted-text",
+     "border": null,
+     "swiftui": "TextField(\"Code\", text: $code).textContentType(.oneTimeCode).keyboardType(.numberPad), the digit boxes of the Digit entry views page",
+     "uikit": "textContentType = .oneTimeCode; keyboardType = .numberPad",
+     "appkit": "NSTextField with contentType .oneTimeCode (a macOS build of the tokens is needed)",
+     "use": "The second step after the password."
+    },
+    {
+     "name": "Single sign-on",
+     "apple": "SignInWithAppleButton and ASWebAuthenticationSession for the organization’s provider",
+     "web": "patterns|Single sign-on",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-content-default",
+     "border": "plx-sys-border-default",
+     "swiftui": "SignInWithAppleButton(.continue) styled by the system; other providers as Plenix secondary buttons that open ASWebAuthenticationSession",
+     "uikit": "ASAuthorizationAppleIDButton; ASWebAuthenticationSession(url:callbackURLScheme:)",
+     "appkit": "ASAuthorizationAppleIDButton (a macOS build of the tokens is needed)",
+     "use": "Organizations that sign in with their own provider."
+    },
+    {
+     "name": "Session timeout",
+     "apple": "An alert before the session ends",
+     "web": "patterns|Session timeout",
+     "background": "plx-comp-dialog-background",
+     "content": "plx-comp-session-timeout-text",
+     "border": null,
+     "swiftui": ".alert(\"Your session is about to end\", isPresented: $warning) { Button(\"Sign out\", role: .destructive) { … }; Button(\"Stay signed in\") { … } }",
+     "uikit": "UIAlertController(title:message:preferredStyle: .alert) with the preferred action Stay signed in",
+     "appkit": "NSAlert with Stay signed in first (a macOS build of the tokens is needed)",
+     "use": "Before an idle session ends."
+    },
+    {
+     "name": "Account connection",
+     "apple": "A List row per service with its status and a button",
+     "web": "patterns|Account connection",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-connected-accounts-service-text",
+     "border": "plx-comp-connected-accounts-border-color",
+     "swiftui": "List { ForEach(accounts) { PlenixAccountRow(account: $0) } }, Connect opening ASWebAuthenticationSession",
+     "uikit": "UICollectionView list with a custom cell per service",
+     "appkit": "NSTableView rows (a macOS build of the tokens is needed)",
+     "use": "The services the app is linked to, in Settings."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Title and line",
+     "about": "Sign in to Plenix, and what to use, in the Plenix title and muted roles."
+    },
+    {
+     "part": "B",
+     "name": "Fields",
+     "about": "The identifier and the password with Show, their text content types set so the system fills them."
+    },
+    {
+     "part": "C",
+     "name": "General error",
+     "about": "One message above the fields after a failure, never which part was wrong."
+    },
+    {
+     "part": "D",
+     "name": "Primary button",
+     "about": "Sign in, as wide as the form, at the touch height."
+    },
+    {
+     "part": "E",
+     "name": "Other flows",
+     "about": "Forgot your password? and Create an account as plain buttons, or links to the web pages."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Title",
+     "token": "plx-comp-auth-title-font-size",
+     "value": "The title role in DM Sans semibold (Plenix.Platform.textTitleSize)",
+     "apple": "The navigation title",
+     "swiftui": "Text(\"Sign in to Plenix\").font(Plenix.Font.sans(Plenix.Platform.textTitleSize, relativeTo: .title2)).foregroundStyle(Plenix.Colors.contentDefault)",
+     "uikit": "titleLabel.font = UIFontMetrics(forTextStyle: .title2).scaledFont(for: UIFont(name: Plenix.Font.sans, size: Plenix.Platform.textTitleSize)!)",
+     "appkit": "NSTextField(labelWithString:) in DM Sans (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Field border",
+     "token": "plx-sys-field-border",
+     "value": "The Plenix field border; only its color changes on focus and error",
+     "apple": "The rounded border style",
+     "swiftui": ".overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px).strokeBorder(focused ? Plenix.Colors.focusRingColor : Plenix.Colors.fieldBorder, lineWidth: Plenix.Border.borderWidthThin))",
+     "uikit": "layer.borderColor = Plenix.Colors.fieldBorder.cgColor; layer.borderWidth = Plenix.Border.borderWidthThin",
+     "appkit": "the bezel replaced by a layer border (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Field fill",
+     "token": "plx-sys-field-background",
+     "value": "The Plenix field fill (Plenix.Colors.fieldBackground)",
+     "apple": "The system background",
+     "swiftui": ".background(Plenix.Colors.fieldBackground)",
+     "uikit": "backgroundColor = Plenix.Colors.fieldBackground",
+     "appkit": "backgroundColor from the field fill (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Autofill",
+     "token": null,
+     "value": "username, password, newPassword and oneTimeCode content types, so passwords, passkeys and codes fill themselves",
+     "apple": "The same",
+     "swiftui": ".textContentType(.username), .textContentType(.password), .textContentType(.oneTimeCode)",
+     "uikit": "textContentType = .username / .password / .newPassword / .oneTimeCode",
+     "appkit": "contentType = .username / .password (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "C",
+     "attribute": "General error",
+     "token": "plx-sys-feedback-danger-content",
+     "value": "The danger content color on the danger soft fill, with the alert icon and words",
+     "apple": "None",
+     "swiftui": "Label(error, systemImage: \"exclamationmark.circle\").foregroundStyle(Plenix.Colors.feedbackDangerContent).padding(Plenix.Space.spaceInsetSm).background(Plenix.Colors.feedbackDangerSoft, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px))",
+     "uikit": "a UILabel with Plenix.Colors.feedbackDangerContent on Plenix.Colors.feedbackDangerSoft; UIAccessibility.post(notification: .announcement, argument: error)",
+     "appkit": "an NSTextField in the danger content color (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Primary button",
+     "token": "plx-sys-action-primary-background",
+     "value": "The primary fill, as wide as the form, at least the touch target (Plenix.Platform.controlTargetMin)",
+     "apple": "A prominent button",
+     "swiftui": "Button(\"Sign in\", action: submit).frame(maxWidth: .infinity, minHeight: Plenix.Platform.controlTargetMin).background(Plenix.Colors.actionPrimaryBackground, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px)).foregroundStyle(Plenix.Colors.actionPrimaryContent)",
+     "uikit": "UIButton.Configuration.filled() with baseBackgroundColor = Plenix.Colors.actionPrimaryBackground",
+     "appkit": "NSButton with bezelColor from the primary fill (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "A",
+     "attribute": "Card on wide windows",
+     "token": "plx-comp-auth-card-radius",
+     "value": "On iPad and in a window wider than compact: the form on the default surface with the subtle border and 8-point corners; on iPhone the grouped form without a card",
+     "apple": "A grouped Form",
+     "swiftui": "Form { … }.frame(maxWidth: Plenix.Component.dialogSmMaxWidth) on regular width; .formStyle(.grouped) on compact",
+     "uikit": "a container view with layer.cornerRadius = Plenix.Radius.radiusSurface8px on regular size classes",
+     "appkit": "an NSBox (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-sys-field-border",
+     "swiftui": "the fields empty, Sign in enabled",
+     "uikit": "the fields empty",
+     "appkit": "the fields empty"
+    },
+    {
+     "state": "Focused field",
+     "token": "plx-sys-focus-ring-color",
+     "swiftui": "@FocusState: the field’s border in the focus color",
+     "uikit": "textFieldDidBeginEditing: borderColor = focusRingColor",
+     "appkit": "becomeFirstResponder"
+    },
+    {
+     "state": "Checking",
+     "token": "plx-sys-action-primary-background",
+     "swiftui": "ProgressView inside the button while the server answers",
+     "uikit": "configuration.showsActivityIndicator = true",
+     "appkit": "an NSProgressIndicator beside the button"
+    },
+    {
+     "state": "Failed",
+     "token": "plx-sys-feedback-danger-content",
+     "swiftui": "the general error shown and announced; the identifier kept",
+     "uikit": "the error label shown; the announcement posted",
+     "appkit": "the error label shown"
+    },
+    {
+     "state": "Signed out after inactivity",
+     "token": "plx-comp-session-timeout-text",
+     "swiftui": "the alert, then the sign-in screen with what happened",
+     "uikit": "UIAlertController, then the sign-in screen",
+     "appkit": "NSAlert, then the sign-in window"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// The Plenix sign-in form on iOS: the system’s autofill, the Plenix field look, one general error, a full-width button.",
+     "struct PlenixSignIn: View {",
+     "    var error: String?",
+     "    var onSubmit: (String, String) -> Void",
+     "    @State private var user = \"\"",
+     "    @State private var password = \"\"",
+     "",
+     "    var body: some View {",
+     "        VStack(alignment: .leading, spacing: Plenix.Space.spaceStackMd) {",
+     "            Text(\"Sign in to Plenix\").font(Plenix.Font.sans(Plenix.Platform.textTitleSize, relativeTo: .title2))",
+     "            if let error {",
+     "                Label(error, systemImage: \"exclamationmark.circle\")",
+     "                    .foregroundStyle(Plenix.Colors.feedbackDangerContent)",
+     "                    .padding(Plenix.Space.spaceInsetSm)",
+     "                    .background(Plenix.Colors.feedbackDangerSoft, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px))",
+     "            }",
+     "            TextField(\"Email or user name\", text: $user).textContentType(.username).textInputAutocapitalization(.never)",
+     "            SecureField(\"Password\", text: $password).textContentType(.password)",
+     "            Button(\"Sign in\") { onSubmit(user, password) }",
+     "                .frame(maxWidth: .infinity, minHeight: Plenix.Platform.controlTargetMin)",
+     "                .background(Plenix.Colors.actionPrimaryBackground, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl4px))",
+     "                .foregroundStyle(Plenix.Colors.actionPrimaryContent)",
+     "        }",
+     "        .padding(Plenix.Space.spaceInsetXl)",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "userField.textContentType = .username",
+     "passwordField.textContentType = .password",
+     "[userField, passwordField].forEach { $0.layer.borderColor = Plenix.Colors.fieldBorder.cgColor; $0.layer.borderWidth = Plenix.Border.borderWidthThin; $0.backgroundColor = Plenix.Colors.fieldBackground }",
+     "var config = UIButton.Configuration.filled()",
+     "config.baseBackgroundColor = Plenix.Colors.actionPrimaryBackground",
+     "signInButton.configuration = config"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "userField.contentType = .username",
+     "passwordField.contentType = .password"
+    ]
+   }
+  },
+  "ios-specialized|File management": {
+   "summary": "Plenix on iOS shows files and folders the way the web does and leaves choosing, opening and saving to the system: the document picker and the document browser, Quick Look for previews, the share sheet for sending. A file is its type’s symbol (or a thumbnail from QuickLookThumbnailing), its name with the extension kept in view when a long name is cut, and its size and date in DM Mono; a folder is the folder symbol, its name in DM Sans and its count. In a list each file is a row with its facts and a trailing menu of Rename, Download and Delete; during a transfer the row shows a linear progress view and Cancel. Apple’s default is the system list row; Plenix keeps the row, its swipe actions and its context menu and changes the look.",
+   "variants": [
+    {
+     "name": "File",
+     "apple": "Label with the type’s SF Symbol and the file name",
+     "web": "specialized|File",
+     "background": null,
+     "content": "plx-comp-file-name-text",
+     "border": null,
+     "swiftui": "PlenixFile(name: \"Letterhead 2026.pdf\", size: 1_240_000): the type symbol, the name in DM Mono with its extension kept, the facts muted",
+     "uikit": "UIListContentConfiguration.cell() with image from the type and secondaryText for the facts",
+     "appkit": "NSTableCellView with the file’s icon (a macOS build of the tokens is needed)",
+     "use": "A stored file in a list, a picker or an attachment."
+    },
+    {
+     "name": "Folder",
+     "apple": "Label with the folder symbol",
+     "web": "specialized|Folder",
+     "background": null,
+     "content": "plx-comp-file-name-text",
+     "border": null,
+     "swiftui": "PlenixFile(name: \"Brand kit\", kind: .folder, count: 24)",
+     "uikit": "the folder symbol and the count as secondaryText",
+     "appkit": "NSTableCellView with the folder icon (a macOS build of the tokens is needed)",
+     "use": "Places that hold files."
+    },
+    {
+     "name": "File row",
+     "apple": "A List row with a context menu and swipe actions",
+     "web": "specialized|File row",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-row-cell-text",
+     "border": "plx-comp-file-row-border-color",
+     "swiftui": "List(files, selection: $selection) { PlenixFileRow(file: $0) } with .contextMenu and .swipeActions",
+     "uikit": "UICollectionView list with trailingSwipeActionsConfigurationProvider and a context menu",
+     "appkit": "NSTableView rows (a macOS build of the tokens is needed)",
+     "use": "Uploads, attachments and pickers."
+    },
+    {
+     "name": "File row with progress",
+     "apple": "ProgressView(value:) in the row",
+     "web": "specialized|File row",
+     "background": "plx-comp-file-row-background",
+     "content": "plx-comp-file-row-cell-text",
+     "border": null,
+     "swiftui": "ProgressView(value: progress).tint(Plenix.Colors.feedbackInfoSolid) and a Cancel button",
+     "uikit": "UIProgressView in the cell’s accessory",
+     "appkit": "NSProgressIndicator (a macOS build of the tokens is needed)",
+     "use": "Each file of an upload or a download."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Type symbol or thumbnail",
+     "about": "The type’s symbol in the muted color, or a small thumbnail from QuickLookThumbnailing."
+    },
+    {
+     "part": "B",
+     "name": "Name",
+     "about": "The stored name in DM Mono; a long name is cut in the middle so the extension stays."
+    },
+    {
+     "part": "C",
+     "name": "Facts",
+     "about": "The size (ByteCountFormatter) and the date, muted, in DM Mono; a folder’s count."
+    },
+    {
+     "part": "D",
+     "name": "Selection",
+     "about": "The list’s own selection in edit mode."
+    },
+    {
+     "part": "E",
+     "name": "Actions",
+     "about": "A trailing menu with Rename, Download and Delete, the same actions as swipe actions and in the context menu."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Type symbol",
+     "token": "plx-comp-file-icon-color",
+     "value": "The muted content color (Plenix.Colors.contentMuted)",
+     "apple": "The system tint",
+     "swiftui": "Image(systemName: symbol(for: file)).foregroundStyle(Plenix.Colors.contentMuted).accessibilityHidden(true)",
+     "uikit": "imageProperties.tintColor = Plenix.Colors.contentMuted",
+     "appkit": "the icon tinted with the muted color (a macOS build of the tokens is needed)",
+     "follows": "Creating and opening files"
+    },
+    {
+     "part": "B",
+     "attribute": "Name in the data font",
+     "token": "plx-comp-file-name-data-font-family",
+     "value": "A file name with its extension is a technical value: DM Mono at the body size (the data font)",
+     "apple": "SF Pro",
+     "swiftui": "Text(file.name).font(Plenix.Font.mono(Plenix.Platform.textBodySize, relativeTo: .body)).truncationMode(.middle).lineLimit(1)",
+     "uikit": "textProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textBodySize); lineBreakMode = .byTruncatingMiddle",
+     "appkit": "NSFont(name: Plenix.Font.mono, …) with truncatesMiddle (a macOS build of the tokens is needed)",
+     "follows": "Creating and opening files"
+    },
+    {
+     "part": "C",
+     "attribute": "Facts in the data font",
+     "token": "plx-comp-file-meta-font-family",
+     "value": "The size and date, muted, in DM Mono at the data size (the data role)",
+     "apple": "The secondary text",
+     "swiftui": "Text(facts).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentMuted)",
+     "uikit": "secondaryTextProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize); color = Plenix.Colors.contentMuted",
+     "appkit": "the secondary field in DM Mono, Plenix.Font.mono (a macOS build of the tokens is needed)",
+     "follows": "Creating and opening files"
+    },
+    {
+     "part": "D",
+     "attribute": "Selected row",
+     "token": "plx-comp-file-row-selected-background",
+     "value": "The selected fill (Plenix.Colors.stateSelected)",
+     "apple": "The system selection",
+     "swiftui": ".listRowBackground(isSelected ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault)",
+     "uikit": "backgroundConfiguration.backgroundColor = isSelected ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault",
+     "appkit": "the row view’s selection highlight (a macOS build of the tokens is needed)",
+     "follows": "iOS, iPadOS"
+    },
+    {
+     "part": "E",
+     "attribute": "Row actions",
+     "token": null,
+     "value": "Rename, Download and Delete in a menu, as swipe actions and in the context menu; Delete in the destructive role",
+     "apple": "The same",
+     "swiftui": ".swipeActions { Button(\"Delete\", role: .destructive) { … } }.contextMenu { Button(\"Rename…\") { … }; Button(\"Delete\", role: .destructive) { … } }",
+     "uikit": "UIContextualAction(style: .destructive, title: \"Delete\")",
+     "appkit": "an NSMenu on the row (a macOS build of the tokens is needed)",
+     "follows": "Saving work"
+    },
+    {
+     "part": "E",
+     "attribute": "Row line",
+     "token": "plx-comp-file-row-border-color",
+     "value": "The divider color between rows (Plenix.Colors.borderDivider)",
+     "apple": "The system separator",
+     "swiftui": ".listRowSeparatorTint(Plenix.Colors.borderDivider)",
+     "uikit": "separatorConfiguration.color = Plenix.Colors.borderDivider",
+     "appkit": "gridColor from the divider (a macOS build of the tokens is needed)",
+     "follows": "iOS, iPadOS"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-file-row-background",
+     "swiftui": "the row on the default surface",
+     "uikit": "the default background configuration",
+     "appkit": "the row"
+    },
+    {
+     "state": "Selected",
+     "token": "plx-comp-file-row-selected-background",
+     "swiftui": "in edit mode, the selected fill",
+     "uikit": "isSelected",
+     "appkit": "selected row"
+    },
+    {
+     "state": "Transferring",
+     "token": "plx-comp-file-row-cell-text",
+     "swiftui": "ProgressView(value:) and Cancel in place of the facts",
+     "uikit": "UIProgressView in the accessory",
+     "appkit": "NSProgressIndicator"
+    },
+    {
+     "state": "Failed",
+     "token": "plx-comp-file-row-error-text",
+     "swiftui": "the reason in the danger content color with Try again",
+     "uikit": "secondaryText in the danger content color",
+     "appkit": "the reason in red with Try again"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// A Plenix file row on iOS: the type symbol, the name in DM Mono (cut in the middle), the facts, and its actions.",
+     "struct PlenixFileRow: View {",
+     "    let name: String",
+     "    let facts: String",
+     "    let symbol: String",
+     "    var onRename: () -> Void",
+     "    var onDelete: () -> Void",
+     "",
+     "    var body: some View {",
+     "        HStack(spacing: Plenix.Space.spaceInlineMd) {",
+     "            Image(systemName: symbol).foregroundStyle(Plenix.Colors.contentMuted).accessibilityHidden(true)",
+     "            Text(name).font(Plenix.Font.mono(Plenix.Platform.textBodySize, relativeTo: .body)).lineLimit(1).truncationMode(.middle)",
+     "            Spacer(minLength: Plenix.Space.spaceInlineSm)",
+     "            Text(facts).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentMuted)",
+     "        }",
+     "        .frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "        .listRowSeparatorTint(Plenix.Colors.borderDivider)",
+     "        .contextMenu { Button(\"Rename…\", action: onRename); Button(\"Delete\", role: .destructive, action: onDelete) }",
+     "        .swipeActions { Button(\"Delete\", role: .destructive, action: onDelete) }",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "var content = UIListContentConfiguration.subtitleCell()",
+     "content.text = file.name",
+     "content.textProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textBodySize)!",
+     "content.textProperties.lineBreakMode = .byTruncatingMiddle",
+     "content.secondaryText = facts",
+     "content.secondaryTextProperties.color = Plenix.Colors.contentMuted",
+     "cell.contentConfiguration = content"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "cell.textField?.lineBreakMode = .byTruncatingMiddle"
     ]
    }
   }

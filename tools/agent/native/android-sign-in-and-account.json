@@ -1,0 +1,68 @@
+{
+  "android-patterns|Sign-in and account": {
+    "summary": "Plenix on Android signs people in, up and back in through the platform’s Credential Manager first (passkeys, saved passwords, Sign in with Google), and with a form when needed: OutlinedTextFields whose autofill types the platform understands (username, password, newPassword, smsOtpCode), a password field with a trailing Show toggle, one general error above the fields, and the primary button as wide as the form at the 48 dp target. The second step takes the code from the SMS Retriever or the user’s paste; a session about to end is an AlertDialog that keeps the work; each linked service is a list row with its status in words. On a compact window the form fills the screen under the top app bar; on medium and expanded windows it sits in a card a small dialog wide, as on the web.",
+    "variants": [
+      { "name": "Sign in", "material": "OutlinedTextField pair and a filled Button; Credential Manager getCredential", "web": "patterns|Sign in", "background": "plx-comp-auth-card-background", "content": "plx-comp-auth-title-text", "border": "plx-comp-auth-card-border-color", "compose": "PlenixSignIn(error = error, onSubmit = ::signIn): OutlinedTextFields with ContentType.Username and ContentType.Password, a full-width Button", "views": "TextInputLayout with autofillHints USERNAME and PASSWORD, endIconMode PASSWORD_TOGGLE", "use": "The entry to every signed-in part of the app." },
+      { "name": "Sign up", "material": "OutlinedTextField with supportingText for the rule", "web": "patterns|Sign up", "background": "plx-comp-auth-card-background", "content": "plx-comp-auth-muted-text", "border": "plx-comp-auth-card-border-color", "compose": "OutlinedTextField(…, supportingText = { Text(\"At least 12 characters.\") }) with ContentType.NewPassword", "views": "TextInputLayout.helperText for the rule; autofillHints NEW_PASSWORD", "use": "Creating an account with only what is needed now." },
+      { "name": "Two-step code", "material": "One OutlinedTextField for the code (SMS Retriever fills it)", "web": "patterns|Multi-factor authentication", "background": "plx-comp-auth-card-background", "content": "plx-comp-auth-muted-text", "border": null, "compose": "OutlinedTextField(code, …, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)) with ContentType.SmsOtpCode", "views": "autofillHints SMS_OTP_CODE; inputType number", "use": "The second step after the password." },
+      { "name": "Single sign-on", "material": "Sign in with Google through Credential Manager; Custom Tabs for an organization’s provider", "web": "patterns|Single sign-on", "background": "plx-sys-surface-default", "content": "plx-sys-content-default", "border": "plx-sys-border-default", "compose": "OutlinedButton(onClick = { signInWithProvider(google) }) { Text(\"Continue with Google\") } in the Plenix secondary look", "views": "MaterialButton (outlined) opening CustomTabsIntent for the provider", "use": "Organizations that sign in with their own provider." },
+      { "name": "Session timeout", "material": "AlertDialog", "web": "patterns|Session timeout", "background": "plx-comp-dialog-background", "content": "plx-comp-session-timeout-text", "border": null, "compose": "AlertDialog(title = { Text(\"Your session is about to end\") }, confirmButton = { Button(stay) { Text(\"Stay signed in\") } }, dismissButton = { TextButton(signOut) { Text(\"Sign out\") } })", "views": "MaterialAlertDialogBuilder with Stay signed in as the positive button", "use": "Before an idle session ends." },
+      { "name": "Account connection", "material": "A ListItem per service with a trailing button", "web": "patterns|Account connection", "background": "plx-sys-surface-default", "content": "plx-comp-connected-accounts-service-text", "border": "plx-comp-connected-accounts-border-color", "compose": "ListItem(headlineContent = { Text(service) }, supportingContent = { Text(account) }, trailingContent = { OutlinedButton(connect) { Text(\"Connect\") } })", "views": "a RecyclerView row with a MaterialButton", "use": "The services the app is linked to, in Settings." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Title and line", "about": "Sign in to Plenix, and what to use, in the Plenix title and muted roles." },
+      { "part": "B", "name": "Fields", "about": "The identifier and the password with its Show toggle, their autofill types set." },
+      { "part": "C", "name": "General error", "about": "One message above the fields after a failure, never which part was wrong." },
+      { "part": "D", "name": "Primary button", "about": "Sign in, as wide as the form, at least 48 dp tall." },
+      { "part": "E", "name": "Other flows", "about": "Forgot your password? and Create an account as text buttons." }
+    ],
+    "attributes": [
+      { "part": "B", "attribute": "Field border", "token": "plx-sys-field-border", "value": "The Plenix field border; only its color changes on focus and error", "material": "outline", "compose": "OutlinedTextFieldDefaults.colors(unfocusedBorderColor = PlenixColors.fieldBorder.current(), focusedBorderColor = PlenixColors.focusRingColor.current(), errorBorderColor = PlenixColors.feedbackDangerContent.current())", "views": "boxStrokeColor from PlenixColors.fieldBorder; boxStrokeErrorColor from the danger content", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/guidelines" },
+      { "part": "B", "attribute": "Field fill", "token": "plx-sys-field-background", "value": "The Plenix field fill", "material": "Transparent", "compose": "OutlinedTextFieldDefaults.colors(unfocusedContainerColor = PlenixColors.fieldBackground.current(), focusedContainerColor = PlenixColors.fieldBackground.current())", "views": "boxBackgroundColor = PlenixColors.fieldBackground.light.toArgb()", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/specs" },
+      { "part": "B", "attribute": "Show password", "token": null, "value": "A trailing icon button that shows and hides the password, named Show password", "material": "Trailing icon", "compose": "trailingIcon = { IconButton(onClick = { visible = !visible }) { Icon(if (visible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility, contentDescription = \"Show password\") } }", "views": "endIconMode = END_ICON_PASSWORD_TOGGLE", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/guidelines" },
+      { "part": "C", "attribute": "General error", "token": "plx-sys-feedback-danger-content", "value": "The danger content color on the danger soft fill, with the alert icon and words; announced", "material": "None", "compose": "Row(Modifier.background(PlenixColors.feedbackDangerSoft.current(), RoundedCornerShape(PlenixRadius.radiusControl4px)).padding(PlenixSpace.spaceInsetSm).semantics { liveRegion = LiveRegionMode.Assertive }) { Text(error, color = PlenixColors.feedbackDangerContent.current()) }", "views": "a TextView with accessibilityLiveRegion = assertive", "follows": "Material 3: Text fields (error)", "followsUrl": "https://m3.material.io/components/text-fields/guidelines" },
+      { "part": "D", "attribute": "Primary button", "token": "plx-sys-action-primary-background", "value": "The primary fill, as wide as the form, at least the 48 dp target", "material": "Filled button", "compose": "Button(onClick = submit, modifier = Modifier.fillMaxWidth().heightIn(min = PlenixPlatform.controlTargetMin), colors = ButtonDefaults.buttonColors(PlenixColors.actionPrimaryBackground.current(), PlenixColors.actionPrimaryContent.current())) { Text(\"Sign in\") }", "views": "MaterialButton with layout_width match_parent and backgroundTint from the primary fill", "follows": "Material 3: Buttons", "followsUrl": "https://m3.material.io/components/buttons/guidelines" },
+      { "part": "A", "attribute": "Card on medium windows", "token": "plx-comp-auth-card-radius", "value": "Medium and expanded windows: the form on the default surface with the subtle border and 8 dp corners, a small dialog wide; compact: the form fills the screen", "material": "None", "compose": "if (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT) Surface(shape = RoundedCornerShape(PlenixRadius.radiusSurface8px), border = BorderStroke(PlenixBorder.borderWidthThin, PlenixColors.borderSubtle.current())) { form() } else form()", "views": "a MaterialCardView on sw600dp layouts", "follows": "Material 3: Canonical layouts", "followsUrl": "https://m3.material.io/foundations/layout/canonical-layouts/overview" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-sys-field-border", "compose": "the fields empty, Sign in enabled", "views": "the fields empty" },
+      { "state": "Focused field", "token": "plx-sys-focus-ring-color", "compose": "focusedBorderColor: only the border’s color changes", "views": "boxStrokeColor on focus" },
+      { "state": "Checking", "token": "plx-sys-action-primary-background", "compose": "a CircularProgressIndicator inside the button while the server answers", "views": "a progress indicator drawable on the button" },
+      { "state": "Failed", "token": "plx-sys-feedback-danger-content", "compose": "the general error shown and announced; the identifier kept", "views": "the error TextView shown; announceForAccessibility" },
+      { "state": "Dark", "token": "plx-comp-auth-card-background", "compose": "PlenixColors pairs follow isSystemInDarkTheme()", "views": "the night resources" }
+    ],
+    "code": {
+      "compose": [
+        "import androidx.compose.foundation.background",
+        "import androidx.compose.foundation.layout.*",
+        "import androidx.compose.foundation.shape.RoundedCornerShape",
+        "import androidx.compose.material3.*",
+        "import androidx.compose.runtime.*",
+        "import androidx.compose.ui.Modifier",
+        "import plenix.tokens.*",
+        "",
+        "// the Plenix sign-in form: autofill types, the Plenix field look, one general error, a full-width button",
+        "@Composable",
+        "fun PlenixSignIn(error: String?, onSubmit: (String, String) -> Unit) {",
+        "    var user by remember { mutableStateOf(\"\") }",
+        "    var password by remember { mutableStateOf(\"\") }",
+        "    Column(Modifier.padding(PlenixSpace.spaceInsetXl), verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+        "        Text(\"Sign in to Plenix\", fontSize = PlenixPlatform.textTitleSize, color = PlenixColors.contentDefault.current())",
+        "        if (error != null) Text(error, color = PlenixColors.feedbackDangerContent.current(),",
+        "            modifier = Modifier.fillMaxWidth().background(PlenixColors.feedbackDangerSoft.current(), RoundedCornerShape(PlenixRadius.radiusControl4px)).padding(PlenixSpace.spaceInsetSm))",
+        "        OutlinedTextField(user, { user = it }, label = { Text(\"Email or user name\") }, modifier = Modifier.fillMaxWidth())",
+        "        PlenixPasswordField(password, { password = it }, label = \"Password\")",
+        "        Button(onClick = { onSubmit(user, password) }, modifier = Modifier.fillMaxWidth().heightIn(min = PlenixPlatform.controlTargetMin),",
+        "            colors = ButtonDefaults.buttonColors(PlenixColors.actionPrimaryBackground.current(), PlenixColors.actionPrimaryContent.current())) { Text(\"Sign in\") }",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "userLayout.editText?.setAutofillHints(View.AUTOFILL_HINT_USERNAME)",
+        "passwordLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE",
+        "passwordLayout.editText?.setAutofillHints(View.AUTOFILL_HINT_PASSWORD)",
+        "signIn.backgroundTintList = ColorStateList.valueOf(PlenixColors.actionPrimaryBackground.light.toArgb())"
+      ]
+    }
+  }
+}

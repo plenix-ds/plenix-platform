@@ -1,0 +1,120 @@
+{
+  "$description": "FileRow (platform/components/FileRow), library wave 11, lane A: its component tokens. The row’s height, padding, gaps and the line under it; the hover and selected fills; the cells (their widths, color and type; sizes and dates in the data font); the transfer’s bar width and percent; the error’s color and icon; the actions’ gap.",
+  "plx-comp": {
+    "file-row-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "FileRow: row fill at rest (surface-default)."
+    },
+    "file-row-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "FileRow: row fill under the pointer (state-hover)."
+    },
+    "file-row-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "FileRow: row fill while selected (state-selected)."
+    },
+    "file-row-border-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "FileRow: the line under each row and above the list (border-divider)."
+    },
+    "file-row-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "FileRow: that line’s width (border-width-thin)."
+    },
+    "file-row-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "FileRow: gap between the row’s parts (space-inline-md)."
+    },
+    "file-row-min-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension",
+      "$description": "FileRow: row least height (control-height-prominent)."
+    },
+    "file-row-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "FileRow: row padding top and bottom (space-inset-xs)."
+    },
+    "file-row-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "FileRow: row padding at the start and end (space-inset-sm)."
+    },
+    "file-row-actions-padding-inline-end": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "FileRow: padding at the end of a row with actions: the ghost buttons bring their own (space-inset-xs)."
+    },
+    "file-row-cell-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "FileRow: cell color: size, date, owner, percent (content-muted)."
+    },
+    "file-row-cell-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "FileRow: cell size (font-size-12)."
+    },
+    "file-row-cell-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "FileRow: cell line height (size-16px)."
+    },
+    "file-row-data-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "FileRow: sizes, dates and the percent: the data font (font-data)."
+    },
+    "file-row-size-width": {
+      "$value": "{plx-ref.size-100px}",
+      "$type": "dimension",
+      "$description": "FileRow: size cell width, room for a folder’s count (size-100px)."
+    },
+    "file-row-date-width": {
+      "$value": "{plx-ref.size-100px}",
+      "$type": "dimension",
+      "$description": "FileRow: date cell width (size-100px)."
+    },
+    "file-row-owner-width": {
+      "$value": "{plx-ref.size-120px}",
+      "$type": "dimension",
+      "$description": "FileRow: owner cell width (size-120px)."
+    },
+    "file-row-progress-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "FileRow: gap between the bar and its percent, and the error icon and its reason (space-inline-sm)."
+    },
+    "file-row-progress-width": {
+      "$value": "{plx-ref.size-120px}",
+      "$type": "dimension",
+      "$description": "FileRow: transfer bar width (size-120px)."
+    },
+    "file-row-percent-width": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "FileRow: percent width (size-40px)."
+    },
+    "file-row-error-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "FileRow: error icon and reason color (feedback-danger-content)."
+    },
+    "file-row-error-icon-size": {
+      "$value": "{plx-sys.control-icon-inline}",
+      "$type": "dimension",
+      "$description": "FileRow: error icon size (control-icon-inline)."
+    },
+    "file-row-actions-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "FileRow: gap between the actions (space-inline-xs)."
+    }
+  }
+}

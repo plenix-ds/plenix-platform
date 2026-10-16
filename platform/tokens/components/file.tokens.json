@@ -1,0 +1,145 @@
+{
+  "$description": "File (platform/components/File), library wave 11, lane A: its component tokens. The gaps, the type icon and the picture, the name (the data font for a file name, the UI font for a folder) with its hover fill and focus ring, the facts line, and the chip's frame.",
+  "plx-comp": {
+    "file-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "File: gap between the icon and the text (space-inline-sm)."
+    },
+    "file-text-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "File: gap between the name and the facts (space-inline-sm)."
+    },
+    "file-icon-size": {
+      "$value": "{plx-sys.control-icon-inline}",
+      "$type": "dimension",
+      "$description": "File: type icon size (control-icon-inline)."
+    },
+    "file-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "File: type icon color (content-muted)."
+    },
+    "file-folder-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "File: folder icon color (content-muted; a folder is told by its icon and its word, never by a color)."
+    },
+    "file-picture-size": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "File: the picture’s width and height (size-20px)."
+    },
+    "file-picture-radius": {
+      "$value": "{plx-sys.radius-media-4px}",
+      "$type": "dimension",
+      "$description": "File: the picture’s corners (radius-media-4px)."
+    },
+    "file-name-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "File: name color (content-default)."
+    },
+    "file-name-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "File: a folder’s name: the UI font (font-body)."
+    },
+    "file-name-data-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "File: a file’s name with its extension: the data font (font-data)."
+    },
+    "file-name-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "File: name size (font-size-13)."
+    },
+    "file-name-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "File: name weight (font-weight-regular)."
+    },
+    "file-name-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "File: name line height (size-20px)."
+    },
+    "file-name-radius": {
+      "$value": "{plx-sys.radius-control-4px}",
+      "$type": "dimension",
+      "$description": "File: the corners of the name’s hover fill and focus ring (radius-control-4px)."
+    },
+    "file-name-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "File: a name that is a button: its hover fill (state-hover)."
+    },
+    "file-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "File: focus ring color on a name that is a link or a button (focus-ring-color)."
+    },
+    "file-focus-outline-width": {
+      "$value": "{plx-sys.focus-ring-width}",
+      "$type": "dimension",
+      "$description": "File: focus ring width (focus-ring-width)."
+    },
+    "file-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "File: focus ring offset (focus-ring-offset)."
+    },
+    "file-meta-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "File: facts color: size, date, count (content-muted)."
+    },
+    "file-meta-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "File: facts font: the data font (font-data)."
+    },
+    "file-meta-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "File: facts size (font-size-12)."
+    },
+    "file-meta-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "File: facts line height (size-16px)."
+    },
+    "file-chip-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "File: chip fill (surface-default)."
+    },
+    "file-chip-border-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "File: chip border (border-subtle)."
+    },
+    "file-chip-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "File: chip border width (border-width-thin)."
+    },
+    "file-chip-radius": {
+      "$value": "{plx-sys.radius-control-4px}",
+      "$type": "dimension",
+      "$description": "File: chip corners (radius-control-4px)."
+    },
+    "file-chip-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "File: chip least height (control-height-standard)."
+    },
+    "file-chip-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "File: chip padding at the start and end (space-inset-sm)."
+    }
+  }
+}

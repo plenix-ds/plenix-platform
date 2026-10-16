@@ -91,6 +91,8 @@
     <dimen name="plx_shell_shell_rail_below">840dp</dimen>
     <dimen name="plx_shell_shell_inspector_overlay_below">1024dp</dimen>
     <dimen name="plx_component_activity_list_item_border_bottom_width">1dp</dimen>
+    <dimen name="plx_component_auth_card_radius">8dp</dimen>
+    <dimen name="plx_component_auth_title_font_size">20dp</dimen>
     <dimen name="plx_component_avatar_20_font_size">10dp</dimen>
     <dimen name="plx_component_avatar_20_radius">4dp</dimen>
     <dimen name="plx_component_avatar_20_width">20dp</dimen>

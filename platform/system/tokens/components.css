@@ -2437,6 +2437,37 @@
   --plx-comp-assign-control-form-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-auth-page-padding-block: var(--plx-sys-space-layout-xl);
+  --plx-comp-auth-page-padding-inline: var(--plx-sys-space-inset-md);
+  --plx-comp-auth-card-background: var(--plx-sys-surface-default);
+  --plx-comp-auth-card-border-color: var(--plx-sys-border-subtle);
+  --plx-comp-auth-card-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-auth-card-radius: var(--plx-sys-radius-surface-8px);
+  --plx-comp-auth-card-max-width: var(--plx-ref-size-400px);
+  --plx-comp-auth-card-padding: var(--plx-sys-space-inset-xl);
+  --plx-comp-auth-card-gap: var(--plx-sys-space-stack-lg);
+  --plx-comp-auth-header-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-auth-title-text: var(--plx-sys-content-default);
+  --plx-comp-auth-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-auth-title-font-size: var(--plx-ref-font-size-20);
+  --plx-comp-auth-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-auth-title-line-height: var(--plx-ref-size-28px);
+  --plx-comp-auth-muted-text: var(--plx-sys-content-muted);
+  --plx-comp-auth-text-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-auth-text-line-height: var(--plx-ref-size-20px);
+  --plx-comp-auth-small-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-auth-small-line-height: var(--plx-ref-size-16px);
+  --plx-comp-auth-footer-border-color: var(--plx-sys-border-divider);
+  --plx-comp-auth-flow-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-auth-form-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-auth-links-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-auth-or-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-auth-or-line-color: var(--plx-sys-border-divider);
+  --plx-comp-auth-data-font-family: var(--plx-sys-font-data);
+  --plx-comp-auth-strong-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-auth-error-text: var(--plx-sys-feedback-danger-content);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-avatar-presence-ring-color: var(--plx-sys-surface-default);
   --plx-comp-avatar-presence-ring-width: var(--plx-sys-border-width-medium);
   --plx-comp-avatar-presence-offset: calc(-1 * var(--plx-sys-border-width-medium));
@@ -3041,6 +3072,31 @@
   --plx-comp-comparison-view-divider-width: var(--plx-sys-border-width-thick);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-connected-accounts-border-color: var(--plx-sys-border-divider);
+  --plx-comp-connected-accounts-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-connected-accounts-padding-block: var(--plx-sys-space-inset-md);
+  --plx-comp-connected-accounts-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-connected-accounts-row-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-connected-accounts-body-min-width: var(--plx-ref-size-240px);
+  --plx-comp-connected-accounts-body-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-connected-accounts-head-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-connected-accounts-service-text: var(--plx-sys-content-default);
+  --plx-comp-connected-accounts-service-font-family: var(--plx-sys-font-heading);
+  --plx-comp-connected-accounts-service-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-connected-accounts-service-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-connected-accounts-service-line-height: var(--plx-ref-size-20px);
+  --plx-comp-connected-accounts-detail-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-connected-accounts-detail-line-height: var(--plx-ref-size-16px);
+  --plx-comp-connected-accounts-description-text: var(--plx-sys-content-muted);
+  --plx-comp-connected-accounts-detail-text: var(--plx-sys-content-muted);
+  --plx-comp-connected-accounts-data-font-family: var(--plx-sys-font-data);
+  --plx-comp-connected-accounts-error-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-connected-accounts-actions-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-connected-accounts-scopes-margin-top: var(--plx-sys-space-stack-sm);
+  --plx-comp-connected-accounts-scopes-indent: var(--plx-sys-space-inset-lg);
+  --plx-comp-connected-accounts-scopes-gap: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-content-grid-masonry-row-gap: var(--plx-sys-card-grid-gap);
   --plx-comp-content-grid-justified-last-row-grow: 1000;
   --plx-comp-content-grid-ratio-1-1: 1;
@@ -3352,6 +3408,36 @@
   --plx-comp-figure-overlay-padding-inline: var(--plx-sys-space-inset-sm);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-file-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-file-text-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-file-icon-size: var(--plx-sys-control-icon-inline);
+  --plx-comp-file-icon-color: var(--plx-sys-content-muted);
+  --plx-comp-file-folder-icon-color: var(--plx-sys-content-muted);
+  --plx-comp-file-picture-size: var(--plx-ref-size-20px);
+  --plx-comp-file-picture-radius: var(--plx-sys-radius-media-4px);
+  --plx-comp-file-name-text: var(--plx-sys-content-default);
+  --plx-comp-file-name-font-family: var(--plx-sys-font-body);
+  --plx-comp-file-name-data-font-family: var(--plx-sys-font-data);
+  --plx-comp-file-name-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-file-name-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-file-name-line-height: var(--plx-ref-size-20px);
+  --plx-comp-file-name-radius: var(--plx-sys-radius-control-4px);
+  --plx-comp-file-name-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-file-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-file-focus-outline-width: var(--plx-sys-focus-ring-width);
+  --plx-comp-file-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-file-meta-text: var(--plx-sys-content-muted);
+  --plx-comp-file-meta-font-family: var(--plx-sys-font-data);
+  --plx-comp-file-meta-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-file-meta-line-height: var(--plx-ref-size-16px);
+  --plx-comp-file-chip-background: var(--plx-sys-surface-default);
+  --plx-comp-file-chip-border-color: var(--plx-sys-border-subtle);
+  --plx-comp-file-chip-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-file-chip-radius: var(--plx-sys-radius-control-4px);
+  --plx-comp-file-chip-min-height: var(--plx-sys-control-height-standard);
+  --plx-comp-file-chip-padding-inline: var(--plx-sys-space-inset-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-file-input-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-file-input-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-file-input-summary-text: var(--plx-sys-content-subtle);
@@ -3364,6 +3450,31 @@
   --plx-comp-file-input-item-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-file-input-icon-size: var(--plx-sys-control-icon-inline);
   --plx-comp-file-input-icon-color: var(--plx-sys-content-muted);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-file-row-background: var(--plx-sys-surface-default);
+  --plx-comp-file-row-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-file-row-selected-background: var(--plx-sys-state-selected);
+  --plx-comp-file-row-border-color: var(--plx-sys-border-divider);
+  --plx-comp-file-row-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-file-row-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-file-row-min-height: var(--plx-sys-control-height-prominent);
+  --plx-comp-file-row-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-file-row-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-file-row-actions-padding-inline-end: var(--plx-sys-space-inset-xs);
+  --plx-comp-file-row-cell-text: var(--plx-sys-content-muted);
+  --plx-comp-file-row-cell-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-file-row-cell-line-height: var(--plx-ref-size-16px);
+  --plx-comp-file-row-data-font-family: var(--plx-sys-font-data);
+  --plx-comp-file-row-size-width: var(--plx-ref-size-100px);
+  --plx-comp-file-row-date-width: var(--plx-ref-size-100px);
+  --plx-comp-file-row-owner-width: var(--plx-ref-size-120px);
+  --plx-comp-file-row-progress-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-file-row-progress-width: var(--plx-ref-size-120px);
+  --plx-comp-file-row-percent-width: var(--plx-ref-size-40px);
+  --plx-comp-file-row-error-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-file-row-error-icon-size: var(--plx-sys-control-icon-inline);
+  --plx-comp-file-row-actions-gap: var(--plx-sys-space-inline-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-find-panel-min-width: var(--plx-ref-size-400px);
@@ -4383,6 +4494,34 @@
   --plx-comp-role-label-icon-size: var(--plx-sys-icon-size-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-role-manager-list-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-role-manager-section-gap: var(--plx-sys-space-stack-xl);
+  --plx-comp-role-manager-section-inner-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-role-manager-meta-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-role-manager-muted-text: var(--plx-sys-content-muted);
+  --plx-comp-role-manager-header-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-role-manager-header-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-role-manager-title-text: var(--plx-sys-content-default);
+  --plx-comp-role-manager-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-role-manager-title-font-size: var(--plx-ref-font-size-18);
+  --plx-comp-role-manager-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-role-manager-title-line-height: var(--plx-ref-size-24px);
+  --plx-comp-role-manager-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-role-manager-focus-outline-width: var(--plx-sys-focus-ring-width);
+  --plx-comp-role-manager-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-role-manager-actions-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-role-manager-text-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-role-manager-text-line-height: var(--plx-ref-size-20px);
+  --plx-comp-role-manager-section-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-role-manager-section-title-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-role-manager-section-title-line-height: var(--plx-ref-size-20px);
+  --plx-comp-role-manager-count-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-role-manager-groups-gap: var(--plx-sys-space-stack-lg);
+  --plx-comp-role-manager-group-min-width: var(--plx-ref-size-240px);
+  --plx-comp-role-manager-add-max-width: var(--plx-ref-size-400px);
+  --plx-comp-role-manager-form-gap: var(--plx-sys-space-stack-md);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-sankey-diagram-link-opacity: var(--plx-sys-opacity-low);
   --plx-comp-sankey-diagram-link-active-opacity: var(--plx-sys-opacity-mid);
   --plx-comp-sankey-diagram-label-text: var(--plx-sys-content-default);
@@ -4488,6 +4627,23 @@
   --plx-comp-search-result-meta-font-size: var(--plx-ref-font-size-12);
   --plx-comp-search-result-actions-gap: var(--plx-sys-space-cluster-xs);
   --plx-comp-search-result-actions-z-index: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-session-timeout-text: var(--plx-sys-content-default);
+  --plx-comp-session-timeout-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-session-timeout-line-height: var(--plx-ref-size-20px);
+  --plx-comp-session-timeout-time-font-family: var(--plx-sys-font-data);
+  --plx-comp-session-timeout-time-text: var(--plx-sys-content-default);
+  --plx-comp-session-timeout-time-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-session-timeout-inline-max-width: var(--plx-ref-size-400px);
+  --plx-comp-session-timeout-inline-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-session-timeout-title-text: var(--plx-sys-content-default);
+  --plx-comp-session-timeout-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-session-timeout-title-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-session-timeout-title-font-weight: var(--plx-sys-font-weight-bold);
+  --plx-comp-session-timeout-title-line-height: var(--plx-ref-size-20px);
+  --plx-comp-session-timeout-body-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-session-timeout-actions-gap: var(--plx-sys-space-inline-sm);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-slider-track-height: var(--plx-ref-size-4px);

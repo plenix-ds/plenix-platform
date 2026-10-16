@@ -478,6 +478,8 @@ public enum Plenix {
     /// The component values the Plenix native designs use (sizes in points, durations in seconds).
     public enum Component {
         public static let activityListItemBorderBottomWidth: CGFloat = 1
+        public static let authCardRadius: CGFloat = 8
+        public static let authTitleFontSize: CGFloat = 20
         public static let avatar20FontSize: CGFloat = 10
         public static let avatar20Radius: CGFloat = 4
         public static let avatar20Width: CGFloat = 20

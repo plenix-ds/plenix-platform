@@ -1,5 +1,10 @@
-### Changed
-- AppHeader: the pinned-app links leave the header when the header itself is narrower than Wide (840px), not the
-  screen (owner, 2026-10-15, GitHub #27). In a split view, an embedded page or a panel the header no longer crowds;
-  search spans the bar. Apps to check: none need changes; the class `plx-app-header--compact` marks the state.
-- docs/touch-options records the two decisions (the pane's size menu with touch: no change).
+### Added
+- Library wave 11, lane A (accounts and files): File (file or folder, as a line or a chip, by type icon, with size; a long
+  name is cut before its extension), FileRow and FileRowList (selected, progress, actions; rename and delete through
+  RenameAction and DeleteFlow), Auth (SignInForm, SignUpForm, PasswordResetForm, MfaChallenge, SsoButtons,
+  AccountRecovery), SessionTimeout and useSessionTimeout (an alert dialog; the time left said at 60, 30 and 10 seconds),
+  RoleManager (roles list and detail; the owner role keeps its last member), ConnectedAccounts (connect lists the scopes
+  first; disconnect asks).
+- Native designs: iOS Managing accounts and File management; Android Sign-in and account.
+### Fixed
+- Design system: "All roleses" — a title already in the plural (Roles) keeps its plural.
