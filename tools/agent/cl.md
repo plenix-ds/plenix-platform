@@ -1,6 +1,5 @@
-### Changed
-- No status dots left in the applications (owner, 2026-10-14: a status is never a dot). By its place: the Asset
-  Manager's status bar says "Library online" with the success icon; the current version in the inspector has a
-  "Current version" badge with its icon; task priority (Tasks, Dashboard) is its icon and a short word ("High",
-  "Medium", "Low"); a project's status in the navigation pane is its status icon with the status spoken. Shapes on
-  avatars (presence) stay.
+### Added
+- docs/reading-pane-study: an Outlook-style layout drawn live with Platform components (owner, 2026-10-16): the header
+  row, the navigation pane, a table, and the selected item's reading pane, with Outlook's switches (reading pane
+  right, bottom or off; one-line or two-line rows) and the pane going under the list when there is no room. A study for
+  the owner, not a Platform part yet.

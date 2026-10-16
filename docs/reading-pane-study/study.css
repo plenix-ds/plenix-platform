@@ -1,0 +1,10 @@
+/* Reading pane study (owner, 2026-10-16): the two panes beside the navigation pane. A study stylesheet, not a Platform
+   part: tokens only; what the owner chooses becomes a page template with its own tokens. */
+.study-panes{display:grid;gap:var(--plx-ref-space-16px);min-block-size:0;}
+.study-area{container-name:study-area;container-type:inline-size;}
+.study-panes--right{align-items:start;grid-template-columns:minmax(0,auto) minmax(var(--plx-ref-size-320px),1fr);}
+.study-panes--bottom{grid-template-rows:auto auto;}
+.study-reading{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-surface-8px);border-style:solid;border-width:var(--plx-sys-border-width-default);min-inline-size:0;padding:var(--plx-ref-space-24px);}
+.study-list{min-inline-size:0;}
+/* not room for both (the list at its size plus a 320px reading pane): the reading pane goes under the list */
+@container study-area (width < 900px){.study-panes--right{grid-template-columns:minmax(0,1fr);}}
