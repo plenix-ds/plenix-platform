@@ -1,0 +1,4 @@
+.plx-image-annotation { gap: var(--plx-comp-image-annotation-gap); }
+.plx-image-annotation__canvas { position: relative; }
+.plx-image-annotation__mark { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
+.plx-image-annotation__mark--region { min-inline-size: var(--plx-comp-image-annotation-region-width); min-block-size: var(--plx-comp-image-annotation-region-height); }

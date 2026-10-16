@@ -1,0 +1,10 @@
+{
+  "$description": "CommentThread spacing roles.",
+  "plx-comp": {
+    "comment-thread-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Space between CommentThread regions."
+    }
+  }
+}
