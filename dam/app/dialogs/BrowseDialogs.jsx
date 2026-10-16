@@ -19,7 +19,7 @@
    their own selection, starting from the legacy defaults. Actions with no back end yet confirm with a toast. */
 import React from 'react';
 import {
-  Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataTable, Tag, TagList, TagInput, Button, Icon,
+  Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, LegacyDataTable as DataTable, Tag, TagList, TagInput, Button, Icon,
   Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorPicker, CATEGORY_COLORS,
 } from 'plenix-platform';
 

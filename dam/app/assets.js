@@ -1230,7 +1230,7 @@ function Properties({
     title: "Enabled for",
     collapsible: true,
     description: "Groups and roles that can use this module."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Enabled for",
     data: enabled,
     columns: [roleCol, switchCol('Enabled')]
@@ -1239,7 +1239,7 @@ function Properties({
     collapsible: true,
     defaultExpanded: false,
     description: "The actions of this module and the roles that may run them."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Actions",
     data: rowsOf(D.ACTIONS, ['name', 'roles']),
     columns: [{
@@ -1266,7 +1266,7 @@ function Properties({
     collapsible: true,
     defaultExpanded: false,
     description: "Groups and roles that can view all folders for this module."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "View all folders",
     data: viewAll,
     columns: [roleCol, switchCol('View all')]
@@ -1275,7 +1275,7 @@ function Properties({
     collapsible: true,
     defaultExpanded: false,
     description: "Groups and roles that can edit all folders for this module."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Edit all folders",
     data: editAll,
     columns: [roleCol, switchCol('Edit all')]
@@ -1320,7 +1320,7 @@ function Fields({
     value: q,
     onChange: setQ,
     label: 'Search ' + D.FIELD_TOTAL + ' fields'
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Fields",
     data: rows,
     empty: "No fields match",
@@ -1479,7 +1479,7 @@ function Transcoding({
     })
   }, /*#__PURE__*/_react.default.createElement(Section, {
     title: "Preset configuration"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Conversion presets",
     data: rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media']),
     columns: [{
@@ -1543,7 +1543,7 @@ function Users({
     value: q,
     onChange: setQ,
     label: "Search users"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Users",
     empty: "No users match",
     data: rowsOf(D.USERS.filter(r => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login']),
@@ -1690,7 +1690,7 @@ function EmailTemplates({
     description: "The notification emails the catalog sends, and the template file behind each one."
   }, /*#__PURE__*/_react.default.createElement(Section, {
     title: "Templates"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Email templates",
     data: rowsOf(D.EMAIL_TEMPLATES, ['name', 'file']),
     columns: [{
@@ -1738,7 +1738,7 @@ function CatalogParameters({
     value: q,
     onChange: setQ,
     label: "Search catalog settings"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Catalog parameters",
     empty: "No settings match",
     data: rows.map(([label, id, value, kind]) => ({
@@ -1881,7 +1881,7 @@ function Database({
     filter: true,
     kind: c === 'Asset title' ? 'name' : c === 'Created on' ? 'data' : undefined
   }));
-  const grid = label => /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  const grid = label => /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: label,
     data: rows,
     columns: columns,
@@ -2031,7 +2031,7 @@ function Customizations({
     tone: "warning",
     variant: "danger-secondary",
     act: act
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Customizations",
     selectable: true,
     selected: sel,
@@ -2072,7 +2072,7 @@ function Scheduler({
     })
   }, /*#__PURE__*/_react.default.createElement(Section, {
     title: "Scheduled tasks"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Scheduled tasks",
     data: rowsOf(D.SCHEDULED, ['name', 'path', 'status']),
     columns: [{
@@ -3318,7 +3318,7 @@ function FieldVisibilityDialog({
     value: q,
     onChange: e => setQ(e.target.value),
     onClear: () => setQ('')
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: title,
     data: rows,
     empty: EMPTY_TEXT,
@@ -3430,7 +3430,7 @@ function CatEditFieldsDialog({
     label: "Edit for all users",
     checked: forAll,
     onChange: e => setForAll(e.target.checked)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, {
     label: "Edit fields",
     data: fields.map(f => ({
       id: f.name,
@@ -6634,7 +6634,7 @@ function HomePage() {
         danger: label === 'Delete',
         onSelect: act(msg, 'info')
       }, label)))
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, _extends({
       label: "Categories",
       data: D.CATEGORY_CARDS,
       selectable: true,
@@ -6682,7 +6682,7 @@ function HomePage() {
       title: c.name,
       meta: c.count + ' assets',
       onOpen: () => openCategory(c.name)
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, _extends({
       label: "Collections",
       data: D.COLLECTION_CARDS,
       on: {
@@ -6734,7 +6734,7 @@ function HomePage() {
       selectLabel: 'Select ' + a.name,
       onOpen: () => openAsset(a.id),
       "aria-current": asset === a.id ? 'true' : undefined
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.LegacyDataTable, _extends({
       label: "Search results",
       data: list,
       selectable: true,
@@ -7583,7 +7583,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    with one publisher, its consumers and its removal condition listed here. */
 
 // the Asset Manager's pages are built on tables: start loading their engine while the page draws (batch 237)
-_plenixPlatform.DataTable.preload();
+_plenixPlatform.LegacyDataTable.preload();
 const PAGES = {
   'my-account': _MyAccountPage.MyAccountPage,
   'system-settings': _SystemSettingsPage.SystemSettingsPage,

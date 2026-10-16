@@ -3,7 +3,7 @@
    the open one in a SidePanel.
    Screens (Platforms Standard 4.3): the list (#/) and an open file (#/file/<n>), a history entry each: Back closes the
    file; closing the panel goes to the list. */
-import { EntityHeader, CommandBar, CommandBarSearch, FilterPanel, SortPanel, ColumnsMenu, ViewMenu, useCollectionView, DataTable, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
+import { EntityHeader, CommandBar, CommandBarSearch, FilterPanel, SortPanel, ColumnsMenu, ViewMenu, useCollectionView, LegacyDataTable as DataTable, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_FILES } from '../suite/shared.jsx';
 const { useState } = React;

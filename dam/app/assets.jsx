@@ -17,7 +17,7 @@
    with one publisher, its consumers and its removal condition listed here. */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider, ToastProvider, SessionProvider, DataTable } from 'plenix-platform';
+import { ThemeProvider, ToastProvider, SessionProvider, LegacyDataTable as DataTable } from 'plenix-platform';
 import { MyAccountPage } from './pages/MyAccountPage.jsx';
 import { SystemSettingsPage } from './pages/SystemSettingsPage.jsx';
 import { HomePage } from './pages/home/HomePage.jsx';

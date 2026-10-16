@@ -6,6 +6,20 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.51.0] - 2026-10-16
+
+### Changed
+- **`DataTable` is the TanStack table** (owner, 2026-10-16: Tabulator performed badly; the design spec documents only
+  the TanStack table, and new applications are built on it). Same props and look; Plenix callbacks
+  (`onRowClick(record, event)`, `onRowDoubleClick`, `onCellEdit(record, change)`), `tree`/`treeColumn`/`treeExpanded`,
+  `groupBy`, `sort`, `movableRows`/`movableColumns` as props. `DataTable.useActions` and `DataTable.preload` stay.
+- The design spec no longer documents Tabulator: the Data table page, its guidelines, the Table page and the layout lab
+  describe the TanStack table; every example uses the Plenix props.
+### Deprecated
+- `LegacyDataTable`: the Tabulator table, kept only for the existing applications until they move (they import it
+  under their local name DataTable; nothing changes for them). Apps to check: an app that imports `DataTable` and
+  passes Tabulator `options`, `on` or `onReady` should import `LegacyDataTable` until it moves to the Plenix props.
+
 ## [0.50.0] - 2026-10-16
 
 ### Added

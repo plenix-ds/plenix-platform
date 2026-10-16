@@ -1840,7 +1840,7 @@ function FindWorkspace({
       icon: "sparkle",
       onClick: () => onAskAI(query)
     }, "Ask AI") : null
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.LegacyDataTable, {
     label: (app === "home" ? "Everything" : src.label) + " search results",
     columns: src.columns,
     data: found.map(r => ({

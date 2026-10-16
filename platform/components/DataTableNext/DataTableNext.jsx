@@ -74,7 +74,7 @@ function NextEngine(props) {
   const [autoSizing,setAutoSizing]=React.useState({});
   const [rowHeight,setRowHeight]=React.useState(initial.rowHeight),[wrapHeaders,setWrapHeaders]=React.useState(initial.wrapHeaders);
   const [filterField,setFilterField]=React.useState(null);
-  const [edited,setEdited]=React.useState(null),[editing,setEditing]=React.useState(null),[expanded,setExpanded]=React.useState(options.dataTreeStartExpanded ?? false);
+  const [edited,setEdited]=React.useState(null),[editing,setEditing]=React.useState(null),[expanded,setExpanded]=React.useState(props.treeExpanded ?? options.dataTreeStartExpanded ?? false);
   const [localGroups,setGroups]=React.useState(initial.groupBy),[groupOwner,setGroupOwner]=React.useState(null),[collapsed,setCollapsed]=React.useState(()=>new Set(initial.collapsed));
   const [loaded,setLoaded]=React.useState(props.pageSize||50),[printing,setPrinting]=React.useState(false);
   const groupSignal=JSON.stringify(props.groupBy),groupBy=groupOwner===groupSignal?localGroups:props.groupBy??localGroups;

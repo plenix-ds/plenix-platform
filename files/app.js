@@ -1840,7 +1840,7 @@ function FindWorkspace({
       icon: "sparkle",
       onClick: () => onAskAI(query)
     }, "Ask AI") : null
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.LegacyDataTable, {
     label: (app === "home" ? "Everything" : src.label) + " search results",
     columns: src.columns,
     data: found.map(r => ({
@@ -2566,7 +2566,7 @@ function FilesScreen({
     })), /*#__PURE__*/React.createElement(_plenixPlatform.ViewMenu, _extends({}, v.viewProps, {
       gallery: false
     })))
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, _extends({
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.LegacyDataTable, _extends({
     label: "Files",
     data: ROWS,
     selected: sel === null ? [] : [sel],
@@ -2631,7 +2631,7 @@ var _files = require("./files.jsx");
 /* Plenix · Files (files/main.jsx): the application's page entry; build-app.js compiles it to files/app.js. */
 
 // the file list is a table: start loading its engine while the page draws (batch 237)
-_plenixPlatform.DataTable.preload();
+_plenixPlatform.LegacyDataTable.preload();
 (0, _suite.mountSuite)('files', ({
   screen
 }) => /*#__PURE__*/React.createElement(_files.FilesScreen, {

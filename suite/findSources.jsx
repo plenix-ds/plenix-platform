@@ -2,7 +2,7 @@
    the main work area: inside an application (Notes, Files…) it searches only that application, with that application's
    filters; on the dashboard home it searches everything, with a Section filter. Each source says what its rows are, which
    text is searched, its filters and its result columns; FindWorkspace draws them with the Platform SearchWorkspace. */
-import { SearchWorkspace, DataTable, Tag, Badge, Button, Text } from 'plenix-platform';
+import { SearchWorkspace, LegacyDataTable as DataTable, Tag, Badge, Button, Text } from 'plenix-platform';
 import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, CAL_EVENTS, CONTACTS, PROJECTS, THREADS } from './shared.jsx';
 const {useState}=React;
 
