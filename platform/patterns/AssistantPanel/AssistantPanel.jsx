@@ -1,0 +1,23 @@
+/* Plenix · AssistantPanel
+   Summary: Contextual AI conversation in an existing inspector or a dismissible responsive Sheet.
+   Usage: <AssistantPanel open={open} onOpenChange={setOpen} messages={messages} onSend={send}/>
+   Props:
+     open: visible (default true); onOpenChange(open): caller-owned disclosure state.
+     variant: inspector (default) | overlay; title: panel heading.
+     context: optional trusted React content explaining what will be sent; chat: extra AIChat props.
+     strings: title,close and nested chat; className: extra classes; remaining props reach AIChat.
+   Behavior: Inspector follows SidePanel window classes; overlay uses Sheet focus containment, Escape and return focus.
+     Closing never sends a prompt or silently cancels the caller transport. Draft lifetime follows the caller props.
+   Notes: Compose inside AppShell.panel for the inspector. Caller owns context permissions and transport cancellation.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { SidePanel } from '../SidePanel/SidePanel.jsx';
+import { Sheet } from '../../components/Sheet/Sheet.jsx';
+import { Stack } from '../../components/Stack/Stack.jsx';
+import { AIChat } from '../AIChat/AIChat.jsx';
+export function AssistantPanel({open=true,onOpenChange,variant='inspector',title,context,chat={},strings,className,...rest}){
+ const t={title:'AI assistant',close:'Close AI assistant',...strings},name=title||t.title,body=<Stack className="plx-assistant-panel__body">{context}<AIChat {...chat} {...rest} title={name} strings={t.chat||chat.strings}/></Stack>;
+ if(variant==='overlay')return <Sheet open={open} onClose={()=>onOpenChange?.(false)} title={name} icon="sparkle" closeLabel={t.close} className={cx('plx-assistant-panel',className)}>{body}</Sheet>;
+ return <SidePanel open={open} onOpenChange={onOpenChange} title={name} label={name} icon="sparkle" collapseLabel={t.close} className={cx('plx-assistant-panel',className)}>{body}</SidePanel>;
+}

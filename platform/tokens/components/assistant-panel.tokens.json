@@ -1,0 +1,10 @@
+{
+  "$description": "AssistantPanel existing-role composition spacing.",
+  "plx-comp": {
+    "assistant-panel-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between AssistantPanel regions."
+    }
+  }
+}
