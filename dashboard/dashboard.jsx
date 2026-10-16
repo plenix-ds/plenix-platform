@@ -97,7 +97,7 @@ export function TasksWidget({ handle,  onViewAll, prefs }) {
     <Panel icon="circle-check" title="To do" actions={<Inline gap="xs"><Badge tone="waiting" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{pending.map((t) => (
         <Inline key={t.id} gap="sm" justify="between" align="baseline">
-          <Inline gap="xs">{showPri ? <Priority pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
+          <Inline gap="xs" align="baseline">{showPri ? <Priority pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
           {showDue ? <Text variant="data">{t.due}</Text> : null}
         </Inline>
       ))}</Stack>

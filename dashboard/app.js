@@ -791,12 +791,21 @@ const PRI_TONE = exports.PRI_TONE = {
     med: "Medium",
     low: "Low"
   };
+// the word in the row's secondary text (12px), so it shares the task's and the date's size and baseline
 const Priority = ({
   pri
-}) => /*#__PURE__*/React.createElement(_plenixPlatform.StatusIcon, {
+}) => /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+  gap: "2xs",
+  align: "baseline"
+}, /*#__PURE__*/React.createElement(_plenixPlatform.StatusIcon, {
   tone: PRI_TONE[pri] || "neutral",
-  size: "sm"
-}, PRI_WORD[pri] || pri, /*#__PURE__*/React.createElement(_plenixPlatform.VisuallyHidden, null, " priority"));
+  size: "sm",
+  label: PRI_LABEL[pri],
+  className: "plx-u-self-center"
+}), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+  variant: "secondary",
+  "aria-hidden": "true"
+}, PRI_WORD[pri] || pri));
 exports.Priority = Priority;
 const STATUS_TONE = exports.STATUS_TONE = {
   active: "success",
@@ -2454,7 +2463,8 @@ function TasksWidget({
     justify: "between",
     align: "baseline"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    gap: "xs"
+    gap: "xs",
+    align: "baseline"
   }, showPri ? /*#__PURE__*/React.createElement(_shared.Priority, {
     pri: t.pri
   }) : null, /*#__PURE__*/React.createElement(_plenixPlatform.Checkbox, {

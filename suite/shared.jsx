@@ -1,5 +1,5 @@
 /* Plenix suite · shared (suite/shared.jsx). Split out of app/plenix.jsx in batch 113; edit here. */
-import { Avatar, StatusIcon, VisuallyHidden } from 'plenix-platform';
+import { Avatar, Inline, StatusIcon, Text } from 'plenix-platform';
 const {useState,useRef,useEffect,useCallback}=React;
 
 
@@ -186,6 +186,7 @@ export const Av=({name,av,avColor,size=28})=>{const s=AV_SIZES.reduce((a,b)=>Mat
 // a status is never a dot (owner, 2026-10-14): priority is its icon and a short word; a project's status, in the tight nav
 // row, its icon with its name spoken
 export const PRI_TONE={high:"danger",med:"warning",low:"success"}, PRI_LABEL={high:"High priority",med:"Medium priority",low:"Low priority"}, PRI_WORD={high:"High",med:"Medium",low:"Low"};
-export const Priority=({pri})=><StatusIcon tone={PRI_TONE[pri]||"neutral"} size="sm">{PRI_WORD[pri]||pri}<VisuallyHidden> priority</VisuallyHidden></StatusIcon>;
+// the word in the row's secondary text (12px), so it shares the task's and the date's size and baseline
+export const Priority=({pri})=><Inline gap="2xs" align="baseline"><StatusIcon tone={PRI_TONE[pri]||"neutral"} size="sm" label={PRI_LABEL[pri]} className="plx-u-self-center"/><Text variant="secondary" aria-hidden="true">{PRI_WORD[pri]||pri}</Text></Inline>;
 export const STATUS_TONE={active:"success",paused:"warning",completed:"neutral"};
 export const ProjStatus=({s})=><StatusIcon tone={STATUS_TONE[s]||"neutral"} size="sm" label={"Status: "+s}/>;

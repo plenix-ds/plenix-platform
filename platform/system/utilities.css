@@ -287,6 +287,7 @@
 .plx-u-resize-vertical{resize:vertical !important;}
 .plx-u-right-0{right:0 !important;}
 .plx-u-right-4px{right:var(--plx-ref-space-4px) !important;}
+.plx-u-self-center{align-self:center !important;}
 .plx-u-self-start{align-self:start !important;}
 .plx-u-self-stretch{align-self:stretch !important;}
 .plx-u-shadow-card{box-shadow:var(--plx-sys-shadow-card) !important;}
