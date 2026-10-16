@@ -1,0 +1,76 @@
+/* Plenix · page templates
+   Summary: Reusable page compositions from existing Platform components, preserving the layout standard.
+   Usage: <ListingPage title="Records" rows={rows} columns={columns} />
+   Props:
+     title: page title; description: supporting text; actions: existing Platform actions; children: page content.
+     header, sideNav, footer: AppShell slots; mainId: unique skip-link target when embedded.
+     rows, columns: DataTable data; items: feature cards; onOpen: card action; empty: custom empty state.
+     initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel: FormFlow contract; fields: render function.
+     pane, paneTitle, detailOpen, onBack: SecondaryPane master-detail contract.
+     sections: [{id,title,content}] for detail navigation; query, onQueryChange: controlled search.
+     strings: visible fallback words, all overridable; error: 404, 403 or 500; onRetry: retry callback.
+     auth: Auth properties; form: authentication form slot; toolbar, tools, inspector: workspace slots.
+   Behavior: Templates never persist, authenticate or fetch. Applications own handlers, route/history and data. Create and edit pages require the application ToastProvider used by FormFlow.
+   Notes: No colors or new layout values; existing components own responsive presentation and keyboard behavior.
+*/
+import React from 'react';
+import { AppShell, PageContent } from '../../patterns/AppShell/AppShell.jsx';
+import { RecordPage } from '../../patterns/RecordPage/RecordPage.jsx';
+import { SecondaryPane } from '../../patterns/SecondaryPane/SecondaryPane.jsx';
+import { FeatureCard } from '../../patterns/FeatureCard/FeatureCard.jsx';
+import { FormFlow } from '../../patterns/FormFlow/FormFlow.jsx';
+import { Auth } from '../../patterns/Auth/Auth.jsx';
+import { SearchWorkspace } from '../../patterns/SearchWorkspace/SearchWorkspace.jsx';
+import { Stack } from '../../components/Stack/Stack.jsx';
+import { ContentGrid } from '../../patterns/ContentGrid/ContentGrid.jsx';
+import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { Button } from '../../components/Button/Button.jsx';
+import { Link } from '../../components/Link/Link.jsx';
+import { Panel } from '../../components/Card/Card.jsx';
+const WORDS = { empty: 'No records yet', emptyDescription: 'Create a record to get started.', pane: 'Records', sections: 'On this page', retry: 'Try again', home: 'Go home', search: 'Search results', tools: 'Tools', inspector: 'Options' };
+function Frame({ page = 'workspace', title, description, actions, header, sideNav, footer, mainId, children }) {
+  const id = React.useId();
+  return <AppShell page={page} header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}>
+    <PageContent><RecordPage header={title ? <RecordPage.Header title={title} description={description} actions={actions} /> : null}>{children}</RecordPage></PageContent>
+  </AppShell>;
+}
+function Cards({ items = [], onOpen }) { return <ContentGrid>{items.map(item => <FeatureCard key={item.id} title={item.title} description={item.description} icon={item.icon || 'folder'} href={item.href} onOpen={!item.href && onOpen ? () => onOpen(item) : undefined} />)}</ContentGrid>; }
+function NoRecords({ strings, empty }) { const t = { ...WORDS, ...strings }; return empty || <EmptyState title={t.empty}>{t.emptyDescription}</EmptyState>; }
+export function ListingPage({ rows = [], columns = [], empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{rows.length ? <DataTable data={rows} columns={columns} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
+export function ContentManagementPage({ items = [], onOpen, empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{items.length ? <Cards items={items} onOpen={onOpen} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
+export function LandingPage({ items = [], onOpen, children, ...rest }) { return <Frame {...rest}><Stack gap="lg">{children}<Cards items={items} onOpen={onOpen} /></Stack></Frame>; }
+export function HomePage(props) { return <LandingPage {...props} page="dashboard" />; }
+function FormPage({ mode, fields, initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel, strings, title, children, ...rest }) {
+  return <Frame {...rest} page="form" title={title}><FormFlow mode={mode} title={title} surface="page" initialValue={initialValue} sessionKey={sessionKey} validate={validate} onSubmit={onSubmit} onSuccess={onSuccess} onCancel={onCancel} strings={strings}>{fields || children}</FormFlow></Frame>;
+}
+export function CreatePage(props) { return <FormPage {...props} mode="create" />; }
+export function EditPage(props) { return <FormPage {...props} mode="edit" />; }
+export function MasterDetailPage({ pane, paneTitle, detailOpen = false, onBack, strings, children, header, sideNav, footer, mainId }) {
+  const t = { ...WORDS, ...strings }, id = React.useId();
+  return <AppShell page="master-detail" header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}><div className="plx-page-panes"><SecondaryPane title={paneTitle || t.pane} detailOpen={detailOpen} onBack={onBack}>{pane}</SecondaryPane><PageContent>{children}</PageContent></div></AppShell>;
+}
+export function SplitWorkspace(props) { return <MasterDetailPage {...props} />; }
+export function SinglePaneWorkspace({ toolbar, children, ...rest }) { return <Frame {...rest}><Stack gap="md">{toolbar}{children}</Stack></Frame>; }
+export function FullScreenWorkspace({ tools, inspector, toolbar, children, strings, mainId }) {
+  const t = { ...WORDS, ...strings }, id = React.useId();
+  return <AppShell page="editor" mainId={mainId || 'plx-template-' + id}><div className="plx-page-panes">
+    {tools ? <SecondaryPane title={t.tools} width="sm">{tools}</SecondaryPane> : null}
+    <PageContent><Stack gap="md">{toolbar}{children}</Stack></PageContent>
+    {inspector ? <SecondaryPane title={t.inspector} side="end">{inspector}</SecondaryPane> : null}
+  </div></AppShell>;
+}
+export function FullScreenExperience({ children, ...rest }) { return <Frame {...rest} page="editor">{children}</Frame>; }
+export function DetailPage({ sections = [], strings, children, title, description, actions, ...rest }) {
+  const t = { ...WORDS, ...strings };
+  return <MasterDetailPage {...rest} paneTitle={t.sections} detailOpen pane={<Stack gap="sm">{sections.map(s => <Link key={s.id} href={'#' + s.id}>{s.title}</Link>)}</Stack>}><Stack gap="lg"><RecordPage.Header title={title} description={description} actions={actions} />{children}{sections.map(s => <section key={s.id} id={s.id} aria-label={s.title}><Panel title={s.title}>{s.content}</Panel></section>)}</Stack></MasterDetailPage>;
+}
+export function SearchResultsPage({ query = '', onQueryChange, rows = [], columns = [], strings, children, title, ...rest }) {
+  const t = { ...WORDS, ...strings };
+  return <Frame {...rest}><SearchWorkspace title={title || t.search} query={query} onQueryChange={onQueryChange} count={rows.length}>{children}{rows.length ? <DataTable data={rows} columns={columns} /> : <NoRecords strings={strings} />}</SearchWorkspace></Frame>;
+}
+export function AuthenticationPage({ auth, form, children, header, footer, mainId }) { return <Frame header={header} footer={footer} mainId={mainId} page="form"><Auth {...auth}>{form || children}</Auth></Frame>; }
+export function ErrorPage({ error = 404, onRetry, homeHref, strings, ...rest }) {
+  const t = { ...WORDS, ...strings }, errors = { 404: ['Page not found', 'Check the address or return home.'], 403: ['Access denied', 'Ask the owner for access to this page.'], 500: ['Something went wrong', 'Try again or return home.'] }, copy = errors[error] || errors[500];
+  return <Frame {...rest} page="detail"><EmptyState kind={error === 404 ? 'not-found' : error === 403 ? 'permission-denied' : undefined} tone={error === 500 ? 'error' : undefined} title={t.title || copy[0]} action={<Stack gap="sm">{onRetry ? <Button onClick={onRetry}>{t.retry}</Button> : null}{homeHref ? <Link href={homeHref}>{t.home}</Link> : null}</Stack>}>{t.description || copy[1]}</EmptyState></Frame>;
+}

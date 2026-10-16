@@ -1,0 +1,2 @@
+/* Bound embedded page templates to the existing sample frame size. */
+.ds-w15a-template .plx-app-shell{block-size:var(--plx-ref-size-400px);inline-size:100%;}

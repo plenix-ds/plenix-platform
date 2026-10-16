@@ -1,0 +1,93 @@
+{
+  "$description": "Wave 15 A counterparts. Existing template record maps remain authoritative.",
+  "map": {
+    "page-structures|Landing page": {
+      "ios": [
+        "ios-layout|Scroll views"
+      ],
+      "android": [
+        "android-screen-structures|Detail"
+      ]
+    },
+    "page-structures|Create page": {
+      "ios": [
+        "ios-forms|Entering data"
+      ],
+      "android": [
+        "android-forms|Form screen"
+      ]
+    },
+    "page-structures|Edit page": {
+      "ios": [
+        "ios-forms|Entering data"
+      ],
+      "android": [
+        "android-forms|Form screen"
+      ]
+    },
+    "page-structures|Authentication page": {
+      "ios": [
+        "ios-forms|Entering data"
+      ],
+      "android": [
+        "android-forms|Form screen"
+      ]
+    },
+    "page-structures|Error page": {
+      "ios": [
+        "ios-layout|Scroll views"
+      ],
+      "android": [
+        "android-screen-structures|Detail"
+      ]
+    },
+    "page-structures|Full-screen experience": {
+      "ios": [
+        "ios-layout|Scroll views"
+      ],
+      "android": [
+        "android-screen-structures|Detail"
+      ]
+    },
+    "page-structures|Split workspace": {
+      "ios": [
+        "ios-layout|Split views"
+      ],
+      "android": [
+        "android-screen-structures|List-detail"
+      ]
+    },
+    "page-structures|Authentication template": {
+      "ios": [
+        "ios-forms|Entering data"
+      ],
+      "android": [
+        "android-forms|Form screen"
+      ]
+    },
+    "implementation|Angular": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|Implementations and controls"
+      ]
+    },
+    "implementation|Analytics instrumentation": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|Implementations and controls"
+      ]
+    },
+    "implementation|Figma libraries": {
+      "ios": [
+        "ios-implementation|How to build"
+      ],
+      "android": [
+        "android-implementation|Implementations and controls"
+      ]
+    }
+  }
+}

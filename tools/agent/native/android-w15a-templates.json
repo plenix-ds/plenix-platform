@@ -1,0 +1,203 @@
+{
+  "android-screen-structures|Detail": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Landing page",
+        "web": "page-structures|Landing page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      },
+      {
+        "name": "Wave 15 Error page",
+        "web": "page-structures|Error page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      },
+      {
+        "name": "Wave 15 Full-screen experience",
+        "web": "page-structures|Full-screen experience",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "compose": "MaterialTheme.colorScheme.onSurface",
+        "views": "Use the existing Plenix contentDefault color role"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "compose": [
+        "Scaffold { content() }"
+      ],
+      "views": [
+        "Use existing page containers and lifecycle-aware event handlers."
+      ]
+    }
+  },
+  "android-forms|Form screen": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Create page",
+        "web": "page-structures|Create page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      },
+      {
+        "name": "Wave 15 Edit page",
+        "web": "page-structures|Edit page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      },
+      {
+        "name": "Wave 15 Authentication page",
+        "web": "page-structures|Authentication page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      },
+      {
+        "name": "Wave 15 Authentication template",
+        "web": "page-structures|Authentication template",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "compose": "MaterialTheme.colorScheme.onSurface",
+        "views": "Use the existing Plenix contentDefault color role"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "compose": [
+        "Scaffold { content() }"
+      ],
+      "views": [
+        "Use existing page containers and lifecycle-aware event handlers."
+      ]
+    }
+  },
+  "android-screen-structures|List-detail": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Split workspace",
+        "web": "page-structures|Split workspace",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "compose": "ListDetailPaneScaffold(listPane = list, detailPane = detail)",
+        "views": "Use the existing responsive activity layout and native controls."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "compose": "MaterialTheme.colorScheme.onSurface",
+        "views": "Use the existing Plenix contentDefault color role"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "compose": [
+        "Scaffold { content() }"
+      ],
+      "views": [
+        "Use existing page containers and lifecycle-aware event handlers."
+      ]
+    }
+  },
+  "android-implementation|Implementations and controls": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Angular",
+        "web": "implementation|Angular",
+        "use": "Read-only implementation guidance; no native dependency on a web framework.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      },
+      {
+        "name": "Wave 15 Analytics instrumentation",
+        "web": "implementation|Analytics instrumentation",
+        "use": "Read-only implementation guidance; no native dependency on a web framework.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      },
+      {
+        "name": "Wave 15 Figma libraries",
+        "web": "implementation|Figma libraries",
+        "use": "Read-only implementation guidance; no native dependency on a web framework.",
+        "compose": "Scaffold { pageContent() }",
+        "views": "Use the existing responsive activity layout and native controls."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "compose": "MaterialTheme.colorScheme.onSurface",
+        "views": "Use the existing Plenix contentDefault color role"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "compose": [
+        "Scaffold { content() }"
+      ],
+      "views": [
+        "Use existing page containers and lifecycle-aware event handlers."
+      ]
+    }
+  }
+}

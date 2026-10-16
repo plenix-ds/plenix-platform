@@ -1,0 +1,230 @@
+{
+  "ios-layout|Scroll views": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Landing page",
+        "web": "page-structures|Landing page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      },
+      {
+        "name": "Wave 15 Error page",
+        "web": "page-structures|Error page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      },
+      {
+        "name": "Wave 15 Full-screen experience",
+        "web": "page-structures|Full-screen experience",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+        "uikit": "label.textColor = Plenix.Color.contentDefault",
+        "appkit": "label.textColor = Plenix.Color.contentDefault"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "swiftui": [
+        "NavigationStack { ScrollView { content } }"
+      ],
+      "uikit": [
+        "Use the existing navigation controller and scroll view."
+      ],
+      "appkit": [
+        "Use the existing split view controller and scroll view."
+      ]
+    }
+  },
+  "ios-forms|Entering data": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Create page",
+        "web": "page-structures|Create page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "Form { fields }; keep draft on save failure",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      },
+      {
+        "name": "Wave 15 Edit page",
+        "web": "page-structures|Edit page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "Form { fields }; keep draft on save failure",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      },
+      {
+        "name": "Wave 15 Authentication page",
+        "web": "page-structures|Authentication page",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      },
+      {
+        "name": "Wave 15 Authentication template",
+        "web": "page-structures|Authentication template",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+        "uikit": "label.textColor = Plenix.Color.contentDefault",
+        "appkit": "label.textColor = Plenix.Color.contentDefault"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "swiftui": [
+        "NavigationStack { ScrollView { content } }"
+      ],
+      "uikit": [
+        "Use the existing navigation controller and scroll view."
+      ],
+      "appkit": [
+        "Use the existing split view controller and scroll view."
+      ]
+    }
+  },
+  "ios-layout|Split views": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Split workspace",
+        "web": "page-structures|Split workspace",
+        "use": "Use existing page structure, application navigation and native control behavior.",
+        "swiftui": "NavigationSplitView { list } detail: { detail }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+        "uikit": "label.textColor = Plenix.Color.contentDefault",
+        "appkit": "label.textColor = Plenix.Color.contentDefault"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "swiftui": [
+        "NavigationStack { ScrollView { content } }"
+      ],
+      "uikit": [
+        "Use the existing navigation controller and scroll view."
+      ],
+      "appkit": [
+        "Use the existing split view controller and scroll view."
+      ]
+    }
+  },
+  "ios-implementation|How to build": {
+    "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+    "variants": [
+      {
+        "name": "Wave 15 Angular",
+        "web": "implementation|Angular",
+        "use": "Read-only implementation guidance; no native dependency on a web framework.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      },
+      {
+        "name": "Wave 15 Analytics instrumentation",
+        "web": "implementation|Analytics instrumentation",
+        "use": "Read-only implementation guidance; no native dependency on a web framework.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      },
+      {
+        "name": "Wave 15 Figma libraries",
+        "web": "implementation|Figma libraries",
+        "use": "Read-only implementation guidance; no native dependency on a web framework.",
+        "swiftui": "NavigationStack { pageContent }",
+        "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+        "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+      }
+    ],
+    "anatomy": [
+      "Page title and task actions",
+      "Existing native content and navigation controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Content color",
+        "token": "plx-sys-content-default",
+        "value": "Existing text role",
+        "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+        "uikit": "label.textColor = Plenix.Color.contentDefault",
+        "appkit": "label.textColor = Plenix.Color.contentDefault"
+      }
+    ],
+    "states": {
+      "default": "Content and actions follow existing controls.",
+      "loading": "Keep content while requests are pending; disable duplicate submissions.",
+      "error": "Preserve field values and offer a recovery action."
+    },
+    "code": {
+      "swiftui": [
+        "NavigationStack { ScrollView { content } }"
+      ],
+      "uikit": [
+        "Use the existing navigation controller and scroll view."
+      ],
+      "appkit": [
+        "Use the existing split view controller and scroll view."
+      ]
+    }
+  }
+}
