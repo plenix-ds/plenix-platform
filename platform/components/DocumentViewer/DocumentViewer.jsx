@@ -1,10 +1,20 @@
 /* Plenix · DocumentViewer
    Summary: Read PDF, image pages or text with page navigation, thumbnails and stepped zoom.
    Usage: <DocumentViewer kind="pdf" src="/files/report.pdf" label="Report"/>
-   Props: kind: pdf | images | text; src: PDF URL or Uint8Array; pages: [{id,src,alt,thumbnail}]; text;
-     label; thumbnails: true; initialPage: 1; initialZoom: 100 (50,75,100,125,150,200);
-     pdfModuleUrl/pdfWorkerUrl: optional URLs when serving the vendor files separately; strings: previous,next,page,zoom,
-       thumbnails,loading,failed,empty,retry; onPageChange(page); className.
+   Props:
+     kind: "pdf" | "images" | "text" (default).
+     src: a PDF URL or Uint8Array; the viewer loads the vendored PDF.js lazily.
+     pages: [{ id, src, alt, thumbnail }]; image document pages.
+     text: plain document text for kind="text".
+     label: the accessible document name; defaults to strings.document.
+     thumbnails: show page thumbnails when more than one page exists; default true.
+     initialPage: first page to show, 1-based; default 1.
+     initialZoom: 50, 75, 100, 125, 150 or 200 percent; default 100.
+     pdfModuleUrl: optional separate URL for the vendored PDF.js ES module.
+     pdfWorkerUrl: optional separate URL for the matching PDF.js worker.
+     strings: { document, previous, next, page, zoom, thumbnails, loading, failed, empty, retry }.
+     onPageChange(page): called after explicit page navigation.
+     className: extra classes on the document region.
    Behavior: Navigation clamps to available pages. PDF loading and rendering are cancellable; stale loads cannot replace
      a newer document. Errors offer Retry. PDF text is exposed alongside the canvas for assistive technology.
    Notes: PDF.js 4.10.38 (Apache-2.0) is vendored beside this component. URLs must obey the application CSP/CORS policy.
@@ -41,9 +51,9 @@ export function DocumentViewer({kind='text',src,pages=[],text='',label,thumbnail
  },[kind,pdf,current,zoom]);
  const move=n=>{const next=Math.max(1,Math.min(count,n));setPage(next);onPageChange?.(next);};
  return <Stack className={cx('plx-document-viewer',className)} aria-label={label||t.document} role="region">
- <Inline wrap><Button onClick={()=>move(current-1)} disabled={current<=1||!count}>{t.previous}</Button><Text kind="data" role="status">{t.page+' '+current+' / '+count}</Text><Button onClick={()=>move(current+1)} disabled={current>=count||!count}>{t.next}</Button><Field label={t.zoom}><Select className="plx-document-viewer__zoom" value={zoom} onChange={e=>setZoom(Number(e.target.value))} options={ZOOMS.map(z=>({value:z,label:z+'%'}))}/></Field></Inline>
+ <Inline wrap><Button onClick={()=>move(current-1)} disabled={current<=1||!count}>{t.previous}</Button><Text variant="data" role="status">{t.page+' '+current+' / '+count}</Text><Button onClick={()=>move(current+1)} disabled={current>=count||!count}>{t.next}</Button><Field label={t.zoom}><Select className="plx-document-viewer__zoom" value={zoom} onChange={e=>setZoom(Number(e.target.value))} options={ZOOMS.map(z=>({value:z,label:z+'%'}))}/></Field></Inline>
  {loading?<Text role="status">{t.loading}</Text>:null}{error?<Notice tone="danger" actions={<Button onClick={()=>setAttempt(v=>v+1)}>{t.retry}</Button>}>{error}</Notice>:null}
- {thumbnails&&count>1?<Inline wrap role="group" aria-label={t.thumbnails}>{Array.from({length:count},(_,i)=><Button key={i} aria-current={current===i+1?'page':undefined} onClick={()=>move(i+1)}>{kind==='pdf'&&pdf?<PdfThumbnail pdf={pdf} number={i+1} label={t.page+' '+(i+1)}/>:kind==='images'&&pages[i]?.thumbnail?<Image src={pages[i].thumbnail} alt={pages[i].alt||t.page+' '+(i+1)}/>:<>{t.page} <Text as="span" kind="data">{i+1}</Text></>}</Button>)}</Inline>:null}
+ {thumbnails&&count>1?<Inline wrap role="group" aria-label={t.thumbnails}>{Array.from({length:count},(_,i)=><Button key={i} aria-current={current===i+1?'page':undefined} onClick={()=>move(i+1)}>{kind==='pdf'&&pdf?<PdfThumbnail pdf={pdf} number={i+1} label={t.page+' '+(i+1)}/>:kind==='images'&&pages[i]?.thumbnail?<Image src={pages[i].thumbnail} alt={pages[i].alt||t.page+' '+(i+1)}/>:<>{t.page} <Text as="span" variant="data">{i+1}</Text></>}</Button>)}</Inline>:null}
  <div className="plx-document-viewer__viewport" data-zoom={zoom} tabIndex={0} role="region" aria-label={label||t.page} aria-busy={loading||undefined}>
  {kind==='pdf'&&pdf?<><canvas ref={canvas} role="img" aria-label={(label||t.page)+' '+current}/><Text className="plx-document-viewer__pdf-text">{accessible}</Text></>:kind==='images'&&pages[current-1]?<Image key={pages[current-1].src} src={pages[current-1].src} alt={pages[current-1].alt||t.page+' '+current} fit="contain"/>:kind==='text'&&text?<pre className="plx-document-viewer__text">{text}</pre>:!loading&&!error?<Text>{t.empty}</Text>:null}
  </div></Stack>;

@@ -1,8 +1,17 @@
 /* Plenix · AttachmentPicker
    Summary: Attach device files as removable rows or chips without uploading them implicitly.
    Usage: <AttachmentPicker value={files} onChange={setFiles} accept=".pdf" multiple />
-   Props: value: File[]; onChange(next); variant: inline | chips; accept: extension/MIME list; multiple: true;
-     maxFiles, maxSize: optional count and per-file byte limits; disabled; strings: label, remove, invalid, limit, empty.
+   Props:
+     value: the controlled array of local File objects; default empty.
+     onChange(next): called with the validated complete attachment list.
+     variant: "inline" (default) | "chips".
+     accept: file extensions or MIME patterns accepted by the device picker and validation.
+     multiple: allow several attachments; default true.
+     maxFiles: optional maximum total attachment count.
+     maxSize: optional maximum byte size per file.
+     disabled: prevent adding and removing attachments; default false.
+     strings: { label, remove, invalid, limit, empty }; plus FileInput and FileRow strings.
+     className: extra classes on the outer layout.
    Behavior: Validate a batch before changing it; preserve attachments on errors; allow same-named distinct files.
    Notes: The caller owns upload and persistence. Limits apply to device files, not an authorization policy.
 */
@@ -27,6 +36,6 @@ export function AttachmentPicker({value=[],onChange,variant='inline',accept='',m
  };
  return <Stack className={cx('plx-attachment-picker',className)}><FileInput strings={strings} key={inputKey} label={t.label} accept={accept} multiple={multiple} disabled={disabled} onChange={add}/>
   {error?<Notice tone="danger">{error}</Notice>:null}
-  {!value.length?<Text>{t.empty}</Text>:variant==='chips'?<TagList label={t.label}>{value.map((f,i)=><Tag key={i} onRemove={disabled?undefined:()=>remove(i)} removeLabel={t.remove.replace('{name}',f.name)}><Text kind="data">{f.name}</Text></Tag>)}</TagList>:<FileRowList label={t.label}>{value.map((f,i)=><FileRow strings={strings} as="li" key={i} file={{name:f.name,size:f.size,type:f.type}} actions={!disabled?<MenuItem onSelect={()=>remove(i)}>{t.remove.replace('{name}',f.name)}</MenuItem>:null}/>)}</FileRowList>}
+  {!value.length?<Text>{t.empty}</Text>:variant==='chips'?<TagList label={t.label}>{value.map((f,i)=><Tag key={i} onRemove={disabled?undefined:()=>remove(i)} removeLabel={t.remove.replace('{name}',f.name)}><Text variant="data">{f.name}</Text></Tag>)}</TagList>:<FileRowList label={t.label}>{value.map((f,i)=><FileRow strings={strings} as="li" key={i} file={{name:f.name,size:f.size,type:f.type}} actions={!disabled?<MenuItem onSelect={()=>remove(i)}>{t.remove.replace('{name}',f.name)}</MenuItem>:null}/>)}</FileRowList>}
  </Stack>;
 }

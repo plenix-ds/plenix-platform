@@ -1,8 +1,17 @@
 /* Plenix · FilePicker
    Summary: Pick stored files, assets or media from a folder tree in a dialog.
    Usage: <FilePicker open items={items} folders={folders} onPick={saveSelection} onClose={close}/>
-   Props: items: [{id,name,kind,type,folderId,size,disabled}]; folders: Tree nodes; mode: files | assets | media;
-     multiple; initialSelected: ids; onPick(items): async; strings: title,folders,search,empty,pick,cancel,failed.
+   Props:
+     open: show the dialog; default false.
+     onClose(): cancel or close after successful persistence.
+     items: [{ id, name, kind, type, folderId, size, disabled, asset }]; stored files.
+     folders: Tree nodes for stored folders.
+     mode: "files" (default) | "assets" | "media"; assets requires asset=true or kind="asset".
+     multiple: allow several selected items; default false.
+     initialSelected: selected file ids when opening.
+     onPick(items): asynchronous persistence callback for explicit Choose.
+     strings: { title, all, folders, search, empty, pick, cancel, failed }; plus FileRow strings.
+     className: extra classes on the dialog content layout.
    Behavior: Folder and query filter visible rows; selection survives filters, but invalid/deleted items never submit.
      Cancel never commits; pending writes cannot repeat or dismiss. Reopening clears query and stale requests.
    Notes: Uses Tree and FileRow directly; no dependency on FileBrowser or implicit device access.

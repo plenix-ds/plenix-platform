@@ -1,8 +1,14 @@
 /* Plenix · VersionHistory
    Summary: A version timeline with an optional preview and a confirmed restore.
    Usage: <VersionHistory versions={versions} currentId="v2" onRestore={restore}/>
-   Props: versions: [{id,version,date,dateTime,author,description,preview}]; currentId; onPreview(version);
-     onRestore(version): async; variant: list | restore | preview; strings: label,preview,restore,confirm,cancel,failed,restored,empty.
+   Props:
+     versions: [{ id, version, date, dateTime, author, description, preview }]; retained saved versions.
+     currentId: the current version id; it is never offered as a restore target.
+     onPreview(version): optional explicit preview callback.
+     onRestore(version): asynchronous confirmed restoration callback.
+     variant: "list" (default) | "restore" | "preview".
+     strings: { label, preview, restore, confirm, cancel, failed, restored, empty }.
+     className: extra classes on the outer layout.
    Behavior: Preview never restores. Restore requires confirmation and waits for persistence; errors keep context.
    Notes: Caller owns version storage, authorization and currentId. No history is rewritten optimistically.
 */

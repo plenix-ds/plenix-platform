@@ -1,8 +1,11 @@
 /* Plenix · RenditionList
    Summary: Stored derivatives with format and byte size, as a DataTable or a menu of downloads.
    Usage: <RenditionList items={renditions} variant="table"/>
-   Props: items: [{id,name,format,size,href,fileName,onDownload,progress}]; variant: table | menu;
-     strings: label,name,format,size,download,empty; className.
+   Props:
+     items: [{ id, name, format, size, href, fileName, onDownload, progress }]; stored derivatives.
+     variant: "table" (default) | "menu".
+     strings: { label, name, format, size, download, empty }.
+     className: extra classes on the outer layout.
    Behavior: Each action downloads the specific stored rendition; busy downloads cannot repeat.
    Notes: Links retain browser download behavior. File preparation belongs to the caller.
 */
