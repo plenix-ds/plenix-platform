@@ -20,13 +20,16 @@ assert.equal(index.files.types, 'plenix.d.ts');
 assert.ok(fs.readFileSync(path.join(cdn, index.files.readme), 'utf8').includes('[plenix.d.ts](plenix.d.ts)'));
 if (index.files.docs) assert.equal(JSON.parse(fs.readFileSync(path.join(cdn, index.files.docs))).types, '../plenix.d.ts');
 const archive = zlib.gunzipSync(fs.readFileSync(path.join(cdn, index.files.bundle)));
-let extracted;
+let extracted; const archivedNames = new Set();
 for (let offset = 0; offset + 512 <= archive.length;) {
   const header = archive.subarray(offset, offset + 512), name = header.subarray(0, 100).toString().split('\0')[0];
   if (!name) break;
+  archivedNames.add(name);
   const size = parseInt(header.subarray(124, 136).toString().replace(/\0/g, '').trim(), 8);
   if (name === 'plenix.d.ts') extracted = archive.subarray(offset + 512, offset + 512 + size).toString();
   offset += 512 + Math.ceil(size / 512) * 512;
 }
 assert.equal(extracted, types);
+const readme = fs.readFileSync(path.join(cdn, index.files.readme), 'utf8');
+for (const link of readme.matchAll(/\]\(([^)]+)\)/g)) if (!/^https?:/.test(link[1])) assert.ok(archivedNames.has(link[1]), 'Offline README link does not resolve: ' + link[1]);
 console.log('CDN_TYPES_OK ' + names.length + ' declarations, hashed manifest and archive bytes match; missing/unsupported exports rejected');

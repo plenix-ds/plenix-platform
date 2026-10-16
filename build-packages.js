@@ -238,7 +238,7 @@ copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
 // The CDN and npm declarations share the same generated source, including its export-coverage gate.
 copy(path.join(R, 'index.d.ts'), path.join(CDN, 'plenix.d.ts'));
-write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nChanges: [CHANGELOG.md](CHANGELOG.md). Component documentation: [docs/index.json](docs/index.json).\n');
+write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
 // the DataTable's engine (Tabulator, MIT): loaded by the DataTable from ./vendor/tabulator/ next to plenix.js, and shipped in the
