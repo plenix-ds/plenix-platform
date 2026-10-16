@@ -1,0 +1,317 @@
+{
+  "ios-data-display|Collections": {
+    "summary": "Browse images in responsive columns or justified rows, with optional full-screen preview.",
+    "variants": [
+      {
+        "name": "AssetGallery: Masonry",
+        "web": "specialized|Asset gallery",
+        "swiftui": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "uikit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "appkit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+      },
+      {
+        "name": "AssetGallery: Justified",
+        "web": "specialized|Asset gallery",
+        "swiftui": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "uikit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "appkit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+      },
+      {
+        "name": "AssetGallery: With lightbox",
+        "web": "specialized|Asset gallery",
+        "swiftui": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "uikit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "appkit": "Card titles open the preview when enabled. Keyboard navigation and focus return come from MediaViewer.",
+        "use": "Browse images in responsive columns or justified rows, with optional full-screen preview."
+      },
+      {
+        "name": "RelatedAssets: Strip",
+        "web": "specialized|Related assets",
+        "swiftui": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "uikit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "appkit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "use": "Offer related assets in a manual carousel or a responsive card grid."
+      },
+      {
+        "name": "RelatedAssets: Grid",
+        "web": "specialized|Related assets",
+        "swiftui": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "uikit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "appkit": "Recommendations stay caller-owned. Link titles navigate and callback titles open a view; carousel never autoplays.",
+        "use": "Offer related assets in a manual carousel or a responsive card grid."
+      }
+    ],
+    "anatomy": [
+      "ContentGrid layout",
+      "Named MediaCards",
+      "Optional MediaViewer",
+      "Named collection",
+      "MediaCards with real links or callbacks",
+      "Manual carousel controls"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read the macOS spacing adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "AssetGallery recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      },
+      {
+        "name": "RelatedAssets recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Bind native controls to retained application state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title)",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind native controls to the retained screen model.",
+        "primaryButton.isEnabled = !model.busy"
+      ],
+      "appkit": [
+        "// Use the macOS token adapter for spacing and typography.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "ios-feedback|Progress indicators": {
+    "summary": "Review download jobs and explicitly retry, cancel or open their results.",
+    "variants": [
+      {
+        "name": "DownloadManager: Panel",
+        "web": "specialized|Download manager",
+        "swiftui": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "uikit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "appkit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "use": "Review download jobs and explicitly retry, cancel or open their results."
+      },
+      {
+        "name": "DownloadManager: Progress",
+        "web": "specialized|Download manager",
+        "swiftui": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "uikit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "appkit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "use": "Review download jobs and explicitly retry, cancel or open their results."
+      },
+      {
+        "name": "DownloadManager: Ready",
+        "web": "specialized|Download manager",
+        "swiftui": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "uikit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "appkit": "Rendering never starts a download. Actions lock per job while awaiting the caller, with recoverable errors.",
+        "use": "Review download jobs and explicitly retry, cancel or open their results."
+      }
+    ],
+    "anatomy": [
+      "Named panel or list",
+      "FileRow per job",
+      "Progress and status",
+      "Retry, Cancel and ready file link"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read the macOS spacing adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "DownloadManager recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Bind native controls to retained application state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title)",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind native controls to the retained screen model.",
+        "primaryButton.isEnabled = !model.busy"
+      ],
+      "appkit": [
+        "// Use the macOS token adapter for spacing and typography.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "ios-patterns|Playing video": {
+    "summary": "Play authorized audio and video with native controls, captions and a seekable transcript.",
+    "variants": [
+      {
+        "name": "MediaPlayer: Video",
+        "web": "specialized|Video player",
+        "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Audio",
+        "web": "specialized|Video player",
+        "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Captions",
+        "web": "specialized|Video player",
+        "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Transcript",
+        "web": "specialized|Video player",
+        "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Playback rate",
+        "web": "specialized|Video player",
+        "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      },
+      {
+        "name": "MediaPlayer: Picture in picture",
+        "web": "specialized|Video player",
+        "swiftui": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "uikit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "appkit": "Nothing autoplays. Captions use native controls. Transcript seeks require loaded metadata; PiP appears only in supporting browsers.",
+        "use": "Play authorized audio and video with native controls, captions and a seekable transcript."
+      }
+    ],
+    "anatomy": [
+      "Native video or audio control",
+      "WebVTT caption tracks",
+      "Playback speed",
+      "Transcript toggle and timed segments",
+      "Optional picture in picture"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read the macOS spacing adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "MediaPlayer recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Bind native controls to retained application state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title)",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind native controls to the retained screen model.",
+        "primaryButton.isEnabled = !model.busy"
+      ],
+      "appkit": [
+        "// Use the macOS token adapter for spacing and typography.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  },
+  "ios-forms|Entering data": {
+    "summary": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection.",
+    "variants": [
+      {
+        "name": "MetadataEditor: Inline",
+        "web": "specialized|Metadata editor",
+        "swiftui": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "uikit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "appkit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+      },
+      {
+        "name": "MetadataEditor: Form",
+        "web": "specialized|Metadata editor",
+        "swiftui": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "uikit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "appkit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+      },
+      {
+        "name": "MetadataEditor: Bulk",
+        "web": "specialized|Metadata editor",
+        "swiftui": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "uikit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "appkit": "Bulk submission includes only checked fields. Validation and persistence failures preserve the draft; Reset guards unsaved edits.",
+        "use": "Edit asset metadata with inline saves or a validated form and explicit bulk field selection."
+      }
+    ],
+    "anatomy": [
+      "Schema-defined fields",
+      "InlineEdit or form controls",
+      "Bulk apply checkboxes",
+      "Save, Reset and feedback"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read the macOS spacing adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "MetadataEditor recovery",
+        "behavior": "Retain current data after failure and offer an explicit retry."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Bind native controls to retained application state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title)",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind native controls to the retained screen model.",
+        "primaryButton.isEnabled = !model.busy"
+      ],
+      "appkit": [
+        "// Use the macOS token adapter for spacing and typography.",
+        "primaryButton.isEnabled = !model.busy"
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$description": "MediaPlayer: spacing between regions.",
+  "plx-comp": {
+    "media-player-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "MediaPlayer: region spacing."
+    }
+  }
+}

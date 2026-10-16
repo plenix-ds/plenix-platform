@@ -1,0 +1,10 @@
+{
+  "$description": "MetadataEditor: spacing between regions.",
+  "plx-comp": {
+    "metadata-editor-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "MetadataEditor: region spacing."
+    }
+  }
+}

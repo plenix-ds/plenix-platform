@@ -1,0 +1,21 @@
+/* Plenix · RelatedAssets
+   Summary: Related images as a responsive grid or a manually navigated carousel.
+   Usage: <RelatedAssets items={assets} variant="strip" label="Related assets" onOpen={openAsset} />
+   Props: items: [{ id, src, alt, title, meta, href }]; variant: strip | grid; label; onOpen(item); strings: empty; className.
+   Behavior: Asset links navigate; callbacks open application views. The carousel never advances automatically.
+   Notes: Reuses MediaCard, Carousel and ContentGrid; recommendations and their order belong to the caller.
+*/
+import React from 'react';
+import { Carousel } from '../../components/Carousel/Carousel.jsx';
+import { MediaCard } from '../../components/Card/Card.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
+import { Stack } from '../../components/Stack/Stack.jsx';
+import { cx } from '../../utils/cx.js';
+
+export function RelatedAssets({ items = [], variant = 'strip', label, onOpen, strings, className }) {
+  const t = Object.assign({ empty: 'No related assets' }, strings);
+  const cards = items.map((a) => <MediaCard key={a.id} src={a.src} alt={a.alt} title={a.title} meta={a.meta} href={a.href} onOpen={!a.href && onOpen ? () => onOpen(a) : undefined} />);
+  return <Stack className={cx('plx-related-assets', className)}>{!items.length ? <EmptyState title={t.empty} /> : variant === 'grid'
+    ? <ContentGrid label={label}>{cards}</ContentGrid> : <Carousel label={label} perView={2} strings={strings}>{cards}</Carousel>}</Stack>;
+}

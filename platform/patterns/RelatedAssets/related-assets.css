@@ -1,0 +1,2 @@
+/* Plenix · RelatedAssets: composed regions use existing spacing roles. */
+.plx-related-assets{row-gap:var(--plx-comp-related-assets-gap);}

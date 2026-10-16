@@ -1,0 +1,85 @@
+{
+  "$description": "Wave12B gallery, download, media and metadata counterparts.",
+  "map": {
+    "specialized|Asset gallery": {
+      "ios": [
+        "ios-data-display|Collections"
+      ],
+      "android": [
+        "android-data-display|Collection"
+      ]
+    },
+    "specialized|Download manager": {
+      "ios": [
+        "ios-feedback|Progress indicators"
+      ],
+      "android": [
+        "android-feedback|Progress indicators"
+      ]
+    },
+    "specialized|Video player": {
+      "ios": [
+        "ios-patterns|Playing video"
+      ],
+      "android": [
+        "android-specialized|Media player"
+      ]
+    },
+    "specialized|Metadata editor": {
+      "ios": [
+        "ios-forms|Entering data"
+      ],
+      "android": [
+        "android-patterns|Form"
+      ]
+    },
+    "specialized|Related assets": {
+      "ios": [
+        "ios-data-display|Collections"
+      ],
+      "android": [
+        "android-data-display|Collection"
+      ]
+    },
+    "content|Image gallery": {
+      "ios": [
+        "ios-data-display|Collections"
+      ],
+      "android": [
+        "android-data-display|Collection"
+      ]
+    },
+    "content|Video": {
+      "ios": [
+        "ios-patterns|Playing video"
+      ],
+      "android": [
+        "android-specialized|Media player"
+      ]
+    },
+    "content|Audio": {
+      "ios": [
+        "ios-patterns|Playing video"
+      ],
+      "android": [
+        "android-specialized|Media player"
+      ]
+    },
+    "specialized|Audio player": {
+      "ios": [
+        "ios-patterns|Playing video"
+      ],
+      "android": [
+        "android-specialized|Media player"
+      ]
+    },
+    "interaction|Captions and transcripts": {
+      "ios": [
+        "ios-patterns|Playing video"
+      ],
+      "android": [
+        "android-specialized|Media player"
+      ]
+    }
+  }
+}

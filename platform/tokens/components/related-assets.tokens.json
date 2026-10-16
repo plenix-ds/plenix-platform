@@ -1,0 +1,10 @@
+{
+  "$description": "RelatedAssets: spacing between regions.",
+  "plx-comp": {
+    "related-assets-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "RelatedAssets: region spacing."
+    }
+  }
+}

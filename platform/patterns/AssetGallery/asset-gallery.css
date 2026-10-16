@@ -1,0 +1,2 @@
+/* Plenix · AssetGallery: composed regions use existing spacing roles. */
+.plx-asset-gallery{row-gap:var(--plx-comp-asset-gallery-gap);}
