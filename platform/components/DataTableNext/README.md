@@ -15,12 +15,7 @@ The shim is not a full Tabulator module API: advanced modules, mutable row/cell 
 
 ## Current integration gates
 
-- The requested wDTN export/record filenames are rejected by build-exports.js and build-spec-parts.js. build-app.js
-  also rejects TanStack package imports. Those builders are outside #128's owned-file list. The exact minimal proposal
-  is build-integration-proposal.json; it has not been applied to those files pending owner scope approval.
-- `node tests/data-table-next-build-proposal.js build-app.js` verifies those exact changes in memory. The same command
-  accepts check-system.js and check-spec.js. It labels its output PROPOSAL_ONLY and edits no builder source.
-  Passing proposal verification is not claimed as a passing regular build; the PR remains a draft.
+- The owner authorized the three builder changes on 2026-10-16. The regular build now accepts the exact wDTN export/record name and bundles the four TanStack packages with their production browser branches. No runtime vendor path is added.
 - Frozen virtual rows need #127's owned shared-CSS fix (overflow:hidden → overflow:clip). #128 does not edit that file.
   Until #127 is integrated, `DT_SHARED_CSS=<path to #126's data-table.css> node tests/data-table-next.test.js` explicitly
   verifies the pending dependency; without it the focused frozen regression stays a failure.
@@ -33,5 +28,5 @@ The shim is not a full Tabulator module API: advanced modules, mutable row/cell 
 - `node tests/data-table-next-perf.test.js`: both engines, 600 rows, 8 columns and 18/14 hidden, plain/saved views and rich-cell scrolling.
 - `LOOK_DIR=<folder> node tests/data-table-next-look.test.js`: paired light/dark screenshots and core style equality.
   Reviewed captures are in tests/data-table-next-review; they are review artifacts, not replacement visual baselines.
-- Once the proposed build scope is approved, the DS overlay appends a side-by-side trial to the existing DataTable record
+- The DS overlay appends a side-by-side trial to the existing DataTable record
   only with `?engine=next`; normal examples, taxonomy, stylesheets and other lane records remain unchanged.
