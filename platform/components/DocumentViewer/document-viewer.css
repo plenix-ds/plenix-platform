@@ -1,0 +1,13 @@
+/* Plenix · DocumentViewer: existing Platform roles, no new surfaces. */
+.plx-document-viewer{row-gap:var(--plx-comp-document-viewer-gap);}
+
+.plx-document-viewer__viewport{max-block-size:var(--plx-comp-document-viewer-height);overflow:auto;}
+.plx-document-viewer__viewport canvas{display:block;}
+.plx-document-viewer__text{font-family:var(--plx-comp-document-viewer-font);font-size:var(--plx-comp-document-viewer-text-size);line-height:var(--plx-comp-document-viewer-line-height);white-space:pre-wrap;}
+.plx-document-viewer__viewport[data-zoom="50"] > .plx-image,.plx-document-viewer__viewport[data-zoom="50"] > .plx-document-viewer__text{zoom:var(--plx-comp-document-viewer-zoom-50);}
+.plx-document-viewer__viewport[data-zoom="75"] > .plx-image,.plx-document-viewer__viewport[data-zoom="75"] > .plx-document-viewer__text{zoom:var(--plx-comp-document-viewer-zoom-75);}
+.plx-document-viewer__viewport[data-zoom="100"] > .plx-image,.plx-document-viewer__viewport[data-zoom="100"] > .plx-document-viewer__text{zoom:var(--plx-comp-document-viewer-zoom-100);}
+.plx-document-viewer__viewport[data-zoom="125"] > .plx-image,.plx-document-viewer__viewport[data-zoom="125"] > .plx-document-viewer__text{zoom:var(--plx-comp-document-viewer-zoom-125);}
+.plx-document-viewer__viewport[data-zoom="150"] > .plx-image,.plx-document-viewer__viewport[data-zoom="150"] > .plx-document-viewer__text{zoom:var(--plx-comp-document-viewer-zoom-150);}
+.plx-document-viewer__viewport[data-zoom="200"] > .plx-image,.plx-document-viewer__viewport[data-zoom="200"] > .plx-document-viewer__text{zoom:var(--plx-comp-document-viewer-zoom-200);}
+.plx-document-viewer__zoom .plx-input{font-family:var(--plx-comp-document-viewer-font);}

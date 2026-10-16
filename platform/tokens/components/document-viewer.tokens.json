@@ -1,0 +1,60 @@
+{
+  "$description": "DocumentViewer: component spacing roles.",
+  "plx-comp": {
+    "document-viewer-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "DocumentViewer: space between composed regions."
+    },
+    "document-viewer-height": {
+      "$value": "{plx-ref.size-560px}",
+      "$type": "dimension",
+      "$description": "DocumentViewer height using existing type and size roles."
+    },
+    "document-viewer-font": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "DocumentViewer font using existing type and size roles."
+    },
+    "document-viewer-text-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "DocumentViewer text-size using existing type and size roles."
+    },
+    "document-viewer-line-height": {
+      "$value": "{plx-sys.label-height-20px}",
+      "$type": "dimension",
+      "$description": "DocumentViewer line-height using existing type and size roles."
+    },
+    "document-viewer-zoom-50": {
+      "$value": 0.5,
+      "$type": "number",
+      "$description": "Document geometry zoom step 50 percent."
+    },
+    "document-viewer-zoom-75": {
+      "$value": 0.75,
+      "$type": "number",
+      "$description": "Document geometry zoom step 75 percent."
+    },
+    "document-viewer-zoom-100": {
+      "$value": 1,
+      "$type": "number",
+      "$description": "Document geometry zoom step 100 percent."
+    },
+    "document-viewer-zoom-125": {
+      "$value": 1.25,
+      "$type": "number",
+      "$description": "Document geometry zoom step 125 percent."
+    },
+    "document-viewer-zoom-150": {
+      "$value": 1.5,
+      "$type": "number",
+      "$description": "Document geometry zoom step 150 percent."
+    },
+    "document-viewer-zoom-200": {
+      "$value": 2,
+      "$type": "number",
+      "$description": "Document geometry zoom step 200 percent."
+    }
+  }
+}

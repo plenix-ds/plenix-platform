@@ -1,0 +1,5 @@
+@import url("../patterns/AttachmentPicker/attachment-picker.css");
+@import url("../patterns/FilePicker/file-picker.css");
+@import url("../patterns/RenditionList/rendition-list.css");
+@import url("../components/DocumentViewer/document-viewer.css");
+@import url("../patterns/VersionHistory/version-history.css");

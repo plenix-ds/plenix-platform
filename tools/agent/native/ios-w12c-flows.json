@@ -1,0 +1,228 @@
+{
+  "ios-specialized|File management": {
+    "summary": "Lane C additions: Attach validated local files with a reversible selection.",
+    "variants": [
+      {
+        "name": "AttachmentPicker: Inline",
+        "web": "forms|Attachment picker",
+        "swiftui": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "uikit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "appkit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "use": "Attach validated local files with a reversible selection."
+      },
+      {
+        "name": "AttachmentPicker: Chips",
+        "web": "forms|Attachment picker",
+        "swiftui": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "uikit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "appkit": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "use": "Attach validated local files with a reversible selection."
+      },
+      {
+        "name": "FilePicker: Files",
+        "web": "specialized|File picker",
+        "swiftui": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "uikit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "appkit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "use": "Choose existing files, assets or media within folders."
+      },
+      {
+        "name": "FilePicker: Assets",
+        "web": "specialized|File picker",
+        "swiftui": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "uikit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "appkit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "use": "Choose existing files, assets or media within folders."
+      },
+      {
+        "name": "FilePicker: Media only",
+        "web": "specialized|File picker",
+        "swiftui": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "uikit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "appkit": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "use": "Choose existing files, assets or media within folders."
+      },
+      {
+        "name": "RenditionList: Table",
+        "web": "specialized|Renditions and derivatives",
+        "swiftui": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "uikit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "appkit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "use": "Download a specific stored derivative with format and size visible."
+      },
+      {
+        "name": "RenditionList: Menu",
+        "web": "specialized|Renditions and derivatives",
+        "swiftui": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "uikit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "appkit": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "use": "Download a specific stored derivative with format and size visible."
+      },
+      {
+        "name": "DocumentViewer: PDF",
+        "web": "specialized|Document viewer",
+        "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Image pages",
+        "web": "specialized|Document viewer",
+        "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Text",
+        "web": "specialized|Document viewer",
+        "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Zoom",
+        "web": "specialized|Document viewer",
+        "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Page thumbnails",
+        "web": "specialized|Document viewer",
+        "swiftui": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "uikit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "appkit": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "VersionHistory: List",
+        "web": "specialized|Version history",
+        "swiftui": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "uikit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "appkit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "use": "Inspect earlier versions and restore one only after explicit confirmation."
+      },
+      {
+        "name": "VersionHistory: Restore",
+        "web": "specialized|Version history",
+        "swiftui": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "uikit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "appkit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "use": "Inspect earlier versions and restore one only after explicit confirmation."
+      },
+      {
+        "name": "VersionHistory: Preview",
+        "web": "specialized|Version history",
+        "swiftui": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "uikit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "appkit": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "use": "Inspect earlier versions and restore one only after explicit confirmation."
+      }
+    ],
+    "anatomy": [
+      "Device FileInput",
+      "Selected FileRows or removable chips",
+      "Validation Notice",
+      "Named dialog",
+      "Folder Tree",
+      "Search field",
+      "Selectable FileRows",
+      "Explicit Choose action",
+      "Rendition name",
+      "Format and byte size",
+      "DataTable or download menu",
+      "Page navigation",
+      "Stepped zoom",
+      "Page thumbnails",
+      "Named scroll viewport",
+      "Accessible PDF text",
+      "Timeline",
+      "VersionLabel",
+      "Optional preview",
+      "Confirmed restore and result Badge"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane C region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "AttachmentPicker pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "AttachmentPicker failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "FilePicker pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "FilePicker failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "RenditionList pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "RenditionList failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "DocumentViewer pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "DocumentViewer failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "VersionHistory pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "VersionHistory failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Bind imported URLs to retained attachment state; access security-scoped URLs while reading.",
+        "Button(strings.attach) { importing = true }",
+        ".fileImporter(isPresented: $importing, allowedContentTypes: model.allowedTypes, allowsMultipleSelection: true) { result in",
+        "    model.accept(result) // validate all URLs before replacing attachments",
+        "}",
+        "// Stored FilePicker rows use a List(selection:) and an explicit Choose action.",
+        "// Document previews use PDFKit.PDFView; update document and scaleFactor from state.",
+        "// A restore alert calls await model.restore(version), then updates currentId on success."
+      ],
+      "uikit": [
+        "// UIDocumentPickerViewController imports local files; UICollectionView lists existing server assets.",
+        "let picker = UIDocumentPickerViewController(forOpeningContentTypes: model.allowedTypes)",
+        "picker.allowsMultipleSelection = true",
+        "// PDFView.document = PDFDocument(url: source); page and scale controls remain named.",
+        "// UIContextMenuInteraction offers each stored rendition as its own download.",
+        "// UIAlertController confirms restore before the async write; retain the version on error."
+      ],
+      "appkit": [
+        "// NSOpenPanel returns device URLs; do not upload merely because a file was selected.",
+        "let panel = NSOpenPanel()",
+        "panel.allowsMultipleSelection = true",
+        "// PDFKit PDFView supplies pages, zoom and selectable text.",
+        "// NSOutlineView selects stored folders; an explicit button commits server-file selection.",
+        "// NSAlert confirms version restoration; leave the history intact on error."
+      ]
+    }
+  }
+}

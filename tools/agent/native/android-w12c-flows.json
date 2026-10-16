@@ -1,0 +1,206 @@
+{
+  "android-specialized|File and photo pickers": {
+    "summary": "Lane C additions: Attach validated local files with a reversible selection.",
+    "variants": [
+      {
+        "name": "AttachmentPicker: Inline",
+        "web": "forms|Attachment picker",
+        "compose": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "views": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "use": "Attach validated local files with a reversible selection."
+      },
+      {
+        "name": "AttachmentPicker: Chips",
+        "web": "forms|Attachment picker",
+        "compose": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "views": "Validate types, per-file size and count before accepting a batch; remove without uploading.",
+        "use": "Attach validated local files with a reversible selection."
+      },
+      {
+        "name": "FilePicker: Files",
+        "web": "specialized|File picker",
+        "compose": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "views": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "use": "Choose existing files, assets or media within folders."
+      },
+      {
+        "name": "FilePicker: Assets",
+        "web": "specialized|File picker",
+        "compose": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "views": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "use": "Choose existing files, assets or media within folders."
+      },
+      {
+        "name": "FilePicker: Media only",
+        "web": "specialized|File picker",
+        "compose": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "views": "Keep selection through filters; restrict media mode to audio, image and video. Cancel never commits; await persistence before closing.",
+        "use": "Choose existing files, assets or media within folders."
+      },
+      {
+        "name": "RenditionList: Table",
+        "web": "specialized|Renditions and derivatives",
+        "compose": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "views": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "use": "Download a specific stored derivative with format and size visible."
+      },
+      {
+        "name": "RenditionList: Menu",
+        "web": "specialized|Renditions and derivatives",
+        "compose": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "views": "Download only the selected rendition. Pending downloads cannot repeat; links keep native download semantics.",
+        "use": "Download a specific stored derivative with format and size visible."
+      },
+      {
+        "name": "DocumentViewer: PDF",
+        "web": "specialized|Document viewer",
+        "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Image pages",
+        "web": "specialized|Document viewer",
+        "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Text",
+        "web": "specialized|Document viewer",
+        "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Zoom",
+        "web": "specialized|Document viewer",
+        "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "DocumentViewer: Page thumbnails",
+        "web": "specialized|Document viewer",
+        "compose": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "views": "Load PDF.js locally; cancel obsolete documents and canvas rendering. Expose PDF text, keyboard-accessible scrolling and recoverable load errors.",
+        "use": "Read paginated PDFs, images and text without leaving the application."
+      },
+      {
+        "name": "VersionHistory: List",
+        "web": "specialized|Version history",
+        "compose": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "views": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "use": "Inspect earlier versions and restore one only after explicit confirmation."
+      },
+      {
+        "name": "VersionHistory: Restore",
+        "web": "specialized|Version history",
+        "compose": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "views": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "use": "Inspect earlier versions and restore one only after explicit confirmation."
+      },
+      {
+        "name": "VersionHistory: Preview",
+        "web": "specialized|Version history",
+        "compose": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "views": "Preview never changes saved data. Await a confirmed restore, prevent repeats and retain the version on failure.",
+        "use": "Inspect earlier versions and restore one only after explicit confirmation."
+      }
+    ],
+    "anatomy": [
+      "Device FileInput",
+      "Selected FileRows or removable chips",
+      "Validation Notice",
+      "Named dialog",
+      "Folder Tree",
+      "Search field",
+      "Selectable FileRows",
+      "Explicit Choose action",
+      "Rendition name",
+      "Format and byte size",
+      "DataTable or download menu",
+      "Page navigation",
+      "Stepped zoom",
+      "Page thumbnails",
+      "Named scroll viewport",
+      "Accessible PDF text",
+      "Timeline",
+      "VersionLabel",
+      "Optional preview",
+      "Confirmed restore and result Badge"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane C region spacing",
+        "value": "plx-sys-space-stack-md",
+        "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+        "views": "Read the generated spacing dimension for plx-sys-space-stack-md."
+      }
+    ],
+    "states": [
+      {
+        "name": "AttachmentPicker pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "AttachmentPicker failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "FilePicker pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "FilePicker failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "RenditionList pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "RenditionList failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "DocumentViewer pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "DocumentViewer failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "VersionHistory pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "VersionHistory failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use OpenMultipleDocuments with caller-owned accepted MIME types and retained selection.",
+        "val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->",
+        "    model.validateAndAttach(uris)",
+        "}",
+        "Button(onClick = { picker.launch(model.acceptedTypes) }) { Text(strings.attach) }",
+        "// Stored-file selection uses named checkboxes and an explicit Choose button.",
+        "// Render local PDF pages with PdfRenderer; cancel outdated rendering and expose extracted text.",
+        "// AlertDialog confirms a version restore; show progress until model.restore completes."
+      ],
+      "views": [
+        "// ACTION_OPEN_DOCUMENT lets people attach device files without implicit upload.",
+        "val request = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {",
+        "    type = model.acceptedMimeType",
+        "    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)",
+        "}",
+        "// Bind server folders to a retained tree/list selection, never a device URI picker.",
+        "// PdfRenderer.Page renders into a bitmap; page/zoom controls and extracted text stay accessible.",
+        "// MaterialAlertDialogBuilder confirms restore before an asynchronous repository write."
+      ]
+    }
+  }
+}

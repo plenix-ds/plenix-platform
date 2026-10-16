@@ -1,0 +1,15 @@
+{
+  "$description": "RenditionList: component spacing roles.",
+  "plx-comp": {
+    "rendition-list-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "RenditionList: space between composed regions."
+    },
+    "rendition-list-data-font": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "Rendition menu file names, formats and sizes use DM Mono."
+    }
+  }
+}

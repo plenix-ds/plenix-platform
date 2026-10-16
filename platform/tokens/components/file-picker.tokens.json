@@ -1,0 +1,10 @@
+{
+  "$description": "FilePicker: component spacing roles.",
+  "plx-comp": {
+    "file-picker-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "FilePicker: space between composed regions."
+    }
+  }
+}
