@@ -339,4 +339,5 @@ export { ListingPage, ContentManagementPage, LandingPage, HomePage, CreatePage, 
 export { browserSupport } from './utils/browserSupport.js';
 export { LocaleProvider, useLocale, createTranslator } from './providers/LocaleProvider.jsx';
 export { SplitView, ReadingPane } from './patterns/SplitView/SplitView.jsx';
+export { Heading } from './components/Heading/Heading.jsx';
 /* END library parts */

@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.44.0] - 2026-10-16
+
+### Added
+- `Heading` (GitHub #56): the title of a page (`level={1}`, 20px bold) or a section of it (levels 2–4: 18, 15, 13px
+  semibold; 5 and 6 draw like 4), in the heading font. The level is the outline (it renders h1–h6); `size` changes only
+  the look. Tokens `--plx-comp-heading-*`; classes `plx-heading`, `plx-heading--size-1…4`. The design system's Heading
+  page shows it beside SectionHeading (the small uppercase group label).
+
 ## [0.43.0] - 2026-10-16
 
 ### Added

@@ -1,0 +1,7 @@
+/* Plenix · Heading (platform/components/Heading): a page or section title on the type scale, levels 1–4 by size.
+   Every value is a --plx-comp-heading-* token. */
+.plx-heading{color:var(--plx-comp-heading-text);font-family:var(--plx-comp-heading-font-family);line-height:var(--plx-comp-heading-line-height);margin-block:0;text-transform:none;}
+.plx-heading--size-1{font-size:var(--plx-comp-heading-size-1-font-size);font-weight:var(--plx-comp-heading-size-1-font-weight);}
+.plx-heading--size-2{font-size:var(--plx-comp-heading-size-2-font-size);font-weight:var(--plx-comp-heading-size-2-font-weight);}
+.plx-heading--size-3{font-size:var(--plx-comp-heading-size-3-font-size);font-weight:var(--plx-comp-heading-size-3-font-weight);}
+.plx-heading--size-4{font-size:var(--plx-comp-heading-size-4-font-size);font-weight:var(--plx-comp-heading-size-4-font-weight);}

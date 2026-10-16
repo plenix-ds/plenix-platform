@@ -3796,6 +3796,19 @@
   --plx-comp-geo-map-controls-gap: var(--plx-sys-space-stack-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-heading-text: var(--plx-sys-content-default);
+  --plx-comp-heading-font-family: var(--plx-sys-font-heading);
+  --plx-comp-heading-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-heading-size-1-font-size: var(--plx-ref-font-size-20);
+  --plx-comp-heading-size-1-font-weight: var(--plx-sys-font-weight-bold);
+  --plx-comp-heading-size-2-font-size: var(--plx-ref-font-size-18);
+  --plx-comp-heading-size-2-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-heading-size-3-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-heading-size-3-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-heading-size-4-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-heading-size-4-font-weight: var(--plx-sys-font-weight-semibold);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-heat-map-cell-radius: var(--plx-sys-shape-2xs);
   --plx-comp-heat-map-cell-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-heat-map-empty-background: var(--plx-sys-surface-default);
