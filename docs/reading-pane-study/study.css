@@ -29,18 +29,16 @@
 .study-reading__body{padding:var(--plx-ref-space-24px);}
 .study-reading>.plx-empty-state{margin:auto;}
 
-/* the divider is a handlebar (owner, 2026-10-16, prototypr "Handlebars in UI design"): no line, a pill handle in the
-   middle of the gutter. Only the handle grabs (a precise target: the edge is the handle's 16 × 48 box); once grabbed, the drag
-   follows the pointer anywhere along the axis; on release the list snaps to its steps. The handle darkens on hover and
-   takes the focus color while focused or dragged. */
-.study-panes .plx-resizable__edge{align-items:center;display:flex;justify-content:center;}
-.study-panes .plx-resizable__edge--inline{block-size:var(--plx-ref-space-48px);inline-size:var(--plx-ref-space-16px);inset-block-end:auto;inset-block-start:calc(50% - var(--plx-ref-space-24px));inset-inline-end:calc(-1 * var(--plx-ref-space-16px));}
-.study-panes .plx-resizable__edge--block{block-size:var(--plx-ref-space-16px);inline-size:var(--plx-ref-space-48px);inset-block-end:calc(-1 * var(--plx-ref-space-16px));inset-inline-end:auto;inset-inline-start:calc(50% - var(--plx-ref-space-24px));}
-.study-panes .plx-resizable__edge::after{background-color:var(--plx-sys-border-strong);border-radius:var(--plx-sys-radius-pill);content:"";}
-.study-panes .plx-resizable__edge--inline::after{block-size:var(--plx-ref-space-40px);inline-size:var(--plx-ref-space-4px);}
-.study-panes .plx-resizable__edge--block::after{block-size:var(--plx-ref-space-4px);inline-size:var(--plx-ref-space-40px);}
-.study-panes .plx-resizable__edge:hover::after{background-color:var(--plx-sys-content-muted);}
-.study-panes .plx-resizable__edge:focus-visible::after,.study-panes .plx-resizable__edge:active::after{background-color:var(--plx-sys-focus-ring-color);}
+/* the divider (owner, 2026-10-16, option B): the whole gap between the panes is the target (the resize cursor
+   anywhere along it); a grip of three solid 4px dots, 8px apart, sits in its middle. The dots are the strong border color
+   at rest and the focus color while the gap is hovered, focused or dragged. */
+.study-panes .plx-resizable__edge{align-items:center;color:var(--plx-sys-border-strong);display:flex;justify-content:center;}
+.study-panes .plx-resizable__edge--inline{cursor:col-resize;inline-size:var(--plx-ref-space-16px);inset-block-end:0;inset-block-start:0;inset-inline-end:calc(-1 * var(--plx-ref-space-16px));}
+.study-panes .plx-resizable__edge--block{block-size:var(--plx-ref-space-16px);cursor:row-resize;inset-block-end:calc(-1 * var(--plx-ref-space-16px));inset-inline-end:0;inset-inline-start:0;}
+.study-panes .plx-resizable__edge::after{background-color:currentColor;block-size:var(--plx-ref-space-4px);border-radius:var(--plx-sys-radius-pill);content:"";inline-size:var(--plx-ref-space-4px);}
+.study-panes .plx-resizable__edge--inline::after{box-shadow:0 calc(-1 * var(--plx-ref-space-8px)) 0 0 currentColor,0 var(--plx-ref-space-8px) 0 0 currentColor;}
+.study-panes .plx-resizable__edge--block::after{box-shadow:calc(-1 * var(--plx-ref-space-8px)) 0 0 0 currentColor,var(--plx-ref-space-8px) 0 0 0 currentColor;}
+.study-panes .plx-resizable__edge:hover,.study-panes .plx-resizable__edge:focus-visible,.study-panes .plx-resizable__edge:active{color:var(--plx-sys-focus-ring-color);}
 .study-panes .plx-resizable__edge:focus-visible{outline:none;}
 
 /* not room for both side by side (the list at its size plus a 320px reading pane): they stack */

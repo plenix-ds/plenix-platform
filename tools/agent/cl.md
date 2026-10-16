@@ -1,4 +1,4 @@
-### Fixed
-- docs/reading-pane-study: the thin line under the reading pane's actions shows (it took a border-width role that does
-  not exist, so it was 0px); it uses the table's border width and stops 16px short of each edge.
-- The local preview server no longer stops after 15 minutes (.claude/launch.json lifts the test time limit for it).
+### Changed
+- docs/reading-pane-study: the divider is the whole gap between the panes (owner, 2026-10-16, option B): the resize
+  cursor anywhere along it, and a grip of three solid 4px dots in its middle, the strong border color at rest and the
+  focus color while hovered, focused or dragged.
