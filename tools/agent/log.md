@@ -1,3 +1,3 @@
-## Batch 395 (2026-10-16): divider option B
-- Owner chose B over a hover line (Outlook, VS Code) and the handlebar: the whole 16px gap is the edge (full height),
-  three 4px dots (one dot + two box-shadow copies, 8px apart, currentColor). Measured: edge 16 x 699 = the gap. Released as {V}.
+## Batch 396 (2026-10-16): divider after reui.io
+- Owner sent two reui.io examples (line + pill, resize cursor). Built: ::before line 1px x full gap, ::after pill 8 x 32.
+  Measured: edge 16 x 699, line 1px x 699, pill 8 x 32. Released as {V}.

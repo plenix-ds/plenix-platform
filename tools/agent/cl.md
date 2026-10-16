@@ -1,4 +1,4 @@
 ### Changed
-- docs/reading-pane-study: the divider is the whole gap between the panes (owner, 2026-10-16, option B): the resize
-  cursor anywhere along it, and a grip of three solid 4px dots in its middle, the strong border color at rest and the
-  focus color while hovered, focused or dragged.
+- docs/reading-pane-study: the divider follows reui.io's Resizable (owner's examples, 2026-10-16): a 1px line the full
+  length of the gap and an 8 x 32px rounded pill centered on it, in the table's border color; the whole gap is the
+  target with the resize cursor; the pill darkens on hover; line and pill take the focus color when focused or dragged.
