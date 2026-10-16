@@ -153,6 +153,7 @@ public enum Plenix {
         public static let statusPillNegativeBackground = Plenix.color(light: 0xFFFDE7E7, dark: 0xFF56585E)
         public static let statusPillNegativeBorder = Plenix.color(light: 0xFFE96060, dark: 0xFF444444)
         public static let statusPillNegativeText = Plenix.color(light: 0xFF990000, dark: 0xFFFDE7E7)
+        public static let cardSurfaceRim = Plenix.color(light: 0xFFF3F3F3, dark: 0xFF34363B)
         public static let fillNeutral = Plenix.color(light: 0xFFF3F3F3, dark: 0xFF444444)
         public static let fillNeutralHover = Plenix.color(light: 0xFFE8E9EC, dark: 0xFF56585E)
         public static let fillNeutralBorder = Plenix.color(light: 0xFFD0D0D0, dark: 0xFF34363B)

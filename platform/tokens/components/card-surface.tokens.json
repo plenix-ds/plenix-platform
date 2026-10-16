@@ -1,0 +1,35 @@
+{
+  "$description": "Card and Panel: their surface (Flat, the default; Glow; Inset) and elevation (Outline, the default; Halo; Lifted; Floating) (owner, 2026-10-15, the card builder). Every combination is allowed; the design system shows them all with the card builder.",
+  "plx-comp": {
+    "card-surface-glow-image": {
+      "$value": "radial-gradient(ellipse at center, {plx-sys.surface-default} 55%, {plx-sys.card-surface-rim} 100%)",
+      "$type": "string",
+      "$description": "Glow: the card surface in the middle (to 55%), fading to the rim color at the edges."
+    },
+    "card-surface-inset-shadow": {
+      "$value": "inset 0 0 {plx-ref.space-12px} {plx-sys.card-surface-rim}",
+      "$type": "shadow",
+      "$description": "Inset: a 12px soft inner edge in the rim color."
+    },
+    "card-elevation-border-color": {
+      "$value": "transparent",
+      "$type": "color",
+      "$description": "Halo, Lifted and Floating: no visible border (the 1px stays, transparent, so the card keeps its size)."
+    },
+    "card-elevation-halo-shadow": {
+      "$value": "{plx-sys.shadow-halo}",
+      "$type": "shadow",
+      "$description": "Halo: a thin even shadow."
+    },
+    "card-elevation-lifted-shadow": {
+      "$value": "{plx-sys.shadow-lifted}",
+      "$type": "shadow",
+      "$description": "Lifted: a fuller even shadow (the shadow of menus that open)."
+    },
+    "card-elevation-floating-shadow": {
+      "$value": "{plx-sys.shadow-floating}",
+      "$type": "shadow",
+      "$description": "Floating: soft and wide."
+    }
+  }
+}

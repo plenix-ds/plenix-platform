@@ -2742,6 +2742,14 @@
   --plx-comp-card-toggle-z-index: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-card-surface-glow-image: radial-gradient(ellipse at center, var(--plx-sys-surface-default) 55%, var(--plx-sys-card-surface-rim) 100%);
+  --plx-comp-card-surface-inset-shadow: inset 0 0 var(--plx-ref-space-12px) var(--plx-sys-card-surface-rim);
+  --plx-comp-card-elevation-border-color: transparent;
+  --plx-comp-card-elevation-halo-shadow: var(--plx-sys-shadow-halo);
+  --plx-comp-card-elevation-lifted-shadow: var(--plx-sys-shadow-lifted);
+  --plx-comp-card-elevation-floating-shadow: var(--plx-sys-shadow-floating);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-carousel-gap: var(--plx-sys-space-inline-md);
   --plx-comp-carousel-peek: var(--plx-ref-size-40px);
   --plx-comp-carousel-controls-gap: var(--plx-sys-space-stack-sm);

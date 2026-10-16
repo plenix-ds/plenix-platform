@@ -828,6 +828,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Panel.onToggle(next): runs when a collapsible panel opens or closes
      Panel.children: the body
      Panel.className: more classes on the <section>
+     Panel.surface, Panel.elevation: as Card's
      Panel.strings: the words it announces, for other languages: { collapse: "Collapse {title}", expand: "Expand {title}",
        section: "section" } ({title} is the title, or the section word when the title is not text)
      Card.title: the card title; with onOpen or href it is the card's link or button
@@ -839,6 +840,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Card.headingLevel: the heading level of the title (default 3)
      Card.children: the body
      Card.className: more classes on the <article>
+     Card.surface: "flat" (default) | "glow" (the surface in the middle fading to a rim one step off it) | "inset" (a soft
+       12px inner edge in the rim color) (owner, 2026-10-15, the card builder)
+     Card.elevation: "outline" (default: the 1px border) | "halo" (a thin even shadow) | "lifted" (a fuller even shadow,
+       as menus that open) | "floating" (soft and wide); halo, lifted and floating have no visible border. Any surface with any
+       elevation.
      Card.expandable: true adds an Expand/Collapse button at the end of the header that shows or hides the body; the title,
        the meta and the actions stay (Expandable card, library wave 8); default false
      Card.defaultExpanded: whether an expandable card starts open (default false: its summary only)
@@ -918,6 +924,8 @@ function Panel({
   description,
   actions,
   footer,
+  surface = 'flat',
+  elevation = 'outline',
   flush = false,
   headingLevel = 2,
   collapsible = false,
@@ -939,7 +947,7 @@ function Panel({
   };
   return /*#__PURE__*/_react.default.createElement("section", _extends({
     "aria-labelledby": title ? id : undefined,
-    className: (0, _cx.cx)('plx-panel', collapsible && !open && 'is-collapsed', className)
+    className: (0, _cx.cx)('plx-panel', surface !== 'flat' && 'plx-panel--' + surface, elevation !== 'outline' && 'plx-panel--' + elevation, collapsible && !open && 'is-collapsed', className)
   }, rest), title || actions || collapsible ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-panel__header"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -1000,6 +1008,8 @@ function Card({
   title,
   meta,
   actions,
+  surface = 'flat',
+  elevation = 'outline',
   selected = false,
   href,
   onOpen,
@@ -1025,7 +1035,7 @@ function Card({
   };
   const hasBody = children !== undefined && children !== null;
   return /*#__PURE__*/_react.default.createElement("article", _extends({
-    className: (0, _cx.cx)('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className),
+    className: (0, _cx.cx)('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className),
     "data-plx-color": accent || undefined
   }, rest), title || expandable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__header"

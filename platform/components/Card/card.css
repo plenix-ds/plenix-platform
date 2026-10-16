@@ -81,3 +81,23 @@
 .plx-media-card-stack__back,.plx-media-card-stack__middle{background-color:var(--plx-comp-media-card-stack-sheet-background);block-size:var(--plx-comp-media-card-stack-sheet-height);border-block-end-style:none;border-block-start-color:var(--plx-comp-media-card-stack-sheet-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-media-card-stack-sheet-border-width);border-inline-end-color:var(--plx-comp-media-card-stack-sheet-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-media-card-stack-sheet-border-width);border-inline-start-color:var(--plx-comp-media-card-stack-sheet-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-media-card-stack-sheet-border-width);border-start-end-radius:var(--plx-comp-media-card-stack-sheet-radius);border-start-start-radius:var(--plx-comp-media-card-stack-sheet-radius);box-sizing:border-box;display:block;}
 .plx-media-card-stack__back{margin-inline-end:var(--plx-comp-media-card-stack-back-inset);margin-inline-start:var(--plx-comp-media-card-stack-back-inset);}
 .plx-media-card-stack__middle{margin-inline-end:var(--plx-comp-media-card-stack-middle-inset);margin-inline-start:var(--plx-comp-media-card-stack-middle-inset);}
+
+/* surface and elevation (owner, 2026-10-15, the card builder): Card and Panel take a surface (Flat, the default; Glow;
+   Inset) and an elevation (Outline, the default; Halo; Lifted; Floating), in any combination. An elevated surface has no
+   visible border; Inset with an elevation draws both shadows. The interactive card's hover shadow still wins on hover. */
+.plx-card--glow{background-image:var(--plx-comp-card-surface-glow-image);}
+.plx-card--inset{box-shadow:var(--plx-comp-card-surface-inset-shadow);}
+.plx-card--halo{border-bottom-color:var(--plx-comp-card-elevation-border-color);border-left-color:var(--plx-comp-card-elevation-border-color);border-right-color:var(--plx-comp-card-elevation-border-color);border-top-color:var(--plx-comp-card-elevation-border-color);box-shadow:var(--plx-comp-card-elevation-halo-shadow);}
+.plx-card--inset.plx-card--halo{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-halo-shadow);}
+.plx-card--lifted{border-bottom-color:var(--plx-comp-card-elevation-border-color);border-left-color:var(--plx-comp-card-elevation-border-color);border-right-color:var(--plx-comp-card-elevation-border-color);border-top-color:var(--plx-comp-card-elevation-border-color);box-shadow:var(--plx-comp-card-elevation-lifted-shadow);}
+.plx-card--inset.plx-card--lifted{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-lifted-shadow);}
+.plx-card--floating{border-bottom-color:var(--plx-comp-card-elevation-border-color);border-left-color:var(--plx-comp-card-elevation-border-color);border-right-color:var(--plx-comp-card-elevation-border-color);border-top-color:var(--plx-comp-card-elevation-border-color);box-shadow:var(--plx-comp-card-elevation-floating-shadow);}
+.plx-card--inset.plx-card--floating{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-floating-shadow);}
+.plx-panel--glow{background-image:var(--plx-comp-card-surface-glow-image);}
+.plx-panel--inset{box-shadow:var(--plx-comp-card-surface-inset-shadow);}
+.plx-panel--halo{border-bottom-color:var(--plx-comp-card-elevation-border-color);border-left-color:var(--plx-comp-card-elevation-border-color);border-right-color:var(--plx-comp-card-elevation-border-color);border-top-color:var(--plx-comp-card-elevation-border-color);box-shadow:var(--plx-comp-card-elevation-halo-shadow);}
+.plx-panel--inset.plx-panel--halo{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-halo-shadow);}
+.plx-panel--lifted{border-bottom-color:var(--plx-comp-card-elevation-border-color);border-left-color:var(--plx-comp-card-elevation-border-color);border-right-color:var(--plx-comp-card-elevation-border-color);border-top-color:var(--plx-comp-card-elevation-border-color);box-shadow:var(--plx-comp-card-elevation-lifted-shadow);}
+.plx-panel--inset.plx-panel--lifted{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-lifted-shadow);}
+.plx-panel--floating{border-bottom-color:var(--plx-comp-card-elevation-border-color);border-left-color:var(--plx-comp-card-elevation-border-color);border-right-color:var(--plx-comp-card-elevation-border-color);border-top-color:var(--plx-comp-card-elevation-border-color);box-shadow:var(--plx-comp-card-elevation-floating-shadow);}
+.plx-panel--inset.plx-panel--floating{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-floating-shadow);}

@@ -149,6 +149,7 @@ object PlenixColors {
     val statusPillNegativeBackground = Pair(Color(0xFFFDE7E7), Color(0xFF56585E))
     val statusPillNegativeBorder = Pair(Color(0xFFE96060), Color(0xFF444444))
     val statusPillNegativeText = Pair(Color(0xFF990000), Color(0xFFFDE7E7))
+    val cardSurfaceRim = Pair(Color(0xFFF3F3F3), Color(0xFF34363B))
     val fillNeutral = Pair(Color(0xFFF3F3F3), Color(0xFF444444))
     val fillNeutralHover = Pair(Color(0xFFE8E9EC), Color(0xFF56585E))
     val fillNeutralBorder = Pair(Color(0xFFD0D0D0), Color(0xFF34363B))

@@ -1,18 +1,8 @@
 ### Added
-- Library wave 13, lane A (Claude): ProductCard and ProductPrice, ProductOptions (sizes, color swatches, quantity), and
-  the Commerce templates (discovery, listing, detail, cart, checkout, payment form UI only, confirmation, orders,
-  subscriptions, returns), each claiming its page kind.
-- By Codex (PRs #102–#106, #109–#112, checked by the integrator; CI blocked by billing):
-  - Wave 12 B: AssetGallery, DownloadManager, MediaPlayer, MetadataEditor, RelatedAssets.
-  - Wave 12 C: AttachmentPicker, FilePicker, RenditionList, DocumentViewer, VersionHistory.
-  - Wave 13 B: Comment, CommentThread, ImageAnnotation, PresenceBar.
-  - Wave 13 C: MentionInput, Announcement, AuditLog, ApprovalWorkflow.
-  - Wave 14 B and C (AI parts, existing roles and the sparkle icon only, no AI color): AILabel, GeneratedContent,
-    PromptHistory, Citation, SuggestedAction, AISearch, Recommendation, AIButton, AIDisclaimer, ConfidenceIndicator,
-    AIExplanation, PromptSuggestions, SuggestedEdit, RefineMenu, Thinking states.
-  - DataTable (RedSave DT-1, 2, 3, 4, 9, 11, 17): a default sort, a visible row menu button, documented row-menu items,
-    remembered views, text direction per cell, hidden selection counted, clicks on controls inside rows ignored.
-- Native designs for all of them.
-### Changed
-- The other applications use the command bar (Codex, #110); the Asset Manager's Search workspace moved off BulkActions,
-  which is deprecated (use CommandBar's selection state) and stays exported for one release (#109).
+- Card and Panel: `surface` ("flat" default, "glow", "inset") and `elevation` ("outline" default, "halo", "lifted",
+  "floating"), in any combination (owner, 2026-10-15, the card builder). Halo, Lifted and Floating have no visible
+  border and an even shadow with no offset; Glow fades the surface to a rim one step off it; Inset draws a soft 12px
+  inner edge. New theme roles: shadow-halo, shadow-floating, card-surface-rim (gray-100; dark gray-900).
+- Design system: the card builder on the Card page (choose a surface and an elevation; the card states its makeup,
+  "Surface: Glow, Elevation: Halo"), every surface, every elevation, and all twelve combinations; Panel shows its
+  surfaces and elevations.

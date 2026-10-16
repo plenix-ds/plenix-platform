@@ -145,6 +145,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color statusPillNegativeBackground;
   final Color statusPillNegativeBorder;
   final Color statusPillNegativeText;
+  final Color cardSurfaceRim;
   final Color fillNeutral;
   final Color fillNeutralHover;
   final Color fillNeutralBorder;
@@ -488,6 +489,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.statusPillNegativeBackground,
     required this.statusPillNegativeBorder,
     required this.statusPillNegativeText,
+    required this.cardSurfaceRim,
     required this.fillNeutral,
     required this.fillNeutralHover,
     required this.fillNeutralBorder,
@@ -832,6 +834,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusPillNegativeBackground: Color(0xFFFDE7E7),
     statusPillNegativeBorder: Color(0xFFE96060),
     statusPillNegativeText: Color(0xFF990000),
+    cardSurfaceRim: Color(0xFFF3F3F3),
     fillNeutral: Color(0xFFF3F3F3),
     fillNeutralHover: Color(0xFFE8E9EC),
     fillNeutralBorder: Color(0xFFD0D0D0),
@@ -1176,6 +1179,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusPillNegativeBackground: Color(0xFF56585E),
     statusPillNegativeBorder: Color(0xFF444444),
     statusPillNegativeText: Color(0xFFFDE7E7),
+    cardSurfaceRim: Color(0xFF34363B),
     fillNeutral: Color(0xFF444444),
     fillNeutralHover: Color(0xFF56585E),
     fillNeutralBorder: Color(0xFF34363B),

@@ -1052,6 +1052,26 @@
       "$type": "shadow",
       "$description": "Lifted (owner, 2026-10-15, the card builder): a fuller even shadow with no offset (Material elevation 2 without its offsets); every menu, list and popover that opens, and Lifted cards. Dark: black."
     },
+    "shadow-halo": {
+      "$value": "0 0 1px {plx-ref.color-black-alpha-20}, 0 0 1px {plx-ref.color-black-alpha-14}, 0 0 3px {plx-ref.color-black-alpha-12}",
+      "$type": "shadow",
+      "$description": "Halo (owner, 2026-10-15, the card builder): a thin even shadow with no offset (Material elevation 1 without its offsets); Halo cards and panels. Dark: black."
+    },
+    "shadow-floating": {
+      "$value": "0 0 1px {plx-ref.color-black-alpha-20}, 0 0 3px {plx-ref.color-black-alpha-14}, 0 0 6px {plx-ref.color-black-alpha-12}",
+      "$type": "shadow",
+      "$description": "Floating (owner, 2026-10-15, the card builder): soft and wide, even on all sides; Floating cards and panels. Dark: black."
+    },
+    "card-surface-rim": {
+      "$value": "{plx-ref.color-gray-100}",
+      "$type": "color",
+      "$description": "The rim of a Glow or Inset card or panel (owner, 2026-10-15, the card builder): one step off the card surface (gray-100 on white; gray-900 on the dark card surface, gray-800).",
+      "$extensions": {
+        "plenix": {
+          "group": "surface"
+        }
+      }
+    },
     "shadow-modal": {
       "$value": "0 0 40px {plx-ref.color-gray-800}, 0 0 0 1px {plx-ref.color-gray-800}",
       "$type": "shadow"

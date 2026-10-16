@@ -1,9 +1,8 @@
-## Batch 387 (2026-10-15): nine Codex PRs and wave 13 A
-- take-pr.js on #102, #104, #103, #106, #105, #109, #110, #111, #112 (no file changed by two PRs); take-lane.js on wave
-  13 A (22 files). Natives merged additively (89 pages). Quick gates: SYSTEM_OK, SPEC_OK (743 records). GitHub CI
-  cannot start (billing); Codex ran each lane's checks locally. The big test suite waits for the very end (owner).
-- AI parts checked: ai.tokens.json holds one spacing role; no color added.
-- Needs the owner (13 A): sale/out-of-stock/low-stock tones; order status tones; missing cart, card, truck and receipt
-  icons (substitutes used); semibold line totals; product swatches named with category colors. Known: a selectable
-  off-screen DataTable given sort/groupBy/columnOrder loses its checkbox labels (13 A avoided it; a DataTable task).
-  Released as {V}.
+## Batch 388 (2026-10-16): the card builder
+- Built in the design system from DS components, every value a token (the experiment on the desktop server had raw
+  rgba values, fixed widths and leftovers; none of that came over): shadow geometry in the three theme roles (as the
+  approved shadow-lifted), the glow gradient and inset as card-surface tokens, sample widths on the grid.
+- Dark rim: the owner said gray-800, but the dark card surface is gray-800, so Glow and Inset were invisible; set to
+  gray-900 (one step off the surface, the experiment's own rule) and flagged for the owner.
+- Codex now owns every remaining library lane (owner, 2026-10-16): briefs #39 (14 A) and #42 (15 A) pushed.
+- Checked: SYSTEM_OK, SPEC_OK; 24 sample cards render with the right values, light and dark. Released as {V}.
