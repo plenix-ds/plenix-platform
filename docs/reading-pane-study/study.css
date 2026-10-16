@@ -25,7 +25,7 @@
 
 .study-reading__actions{align-items:center;display:flex;gap:var(--plx-ref-space-8px);padding-block:var(--plx-ref-space-12px);padding-inline:var(--plx-ref-space-16px);position:relative;}
 /* the thin line under the actions: inset from the pane's edges (owner, 2026-10-16: it does not touch the edges) */
-.study-reading__actions::after{background-color:var(--plx-comp-data-table-border-color);block-size:var(--plx-sys-border-width-default);content:"";inset-block-end:0;inset-inline-end:var(--plx-ref-space-16px);inset-inline-start:var(--plx-ref-space-16px);position:absolute;}
+.study-reading__actions::after{background-color:var(--plx-comp-data-table-border-color);block-size:var(--plx-comp-data-table-border-width);content:"";inset-block-end:0;inset-inline-end:var(--plx-ref-space-16px);inset-inline-start:var(--plx-ref-space-16px);position:absolute;}
 .study-reading__body{padding:var(--plx-ref-space-24px);}
 .study-reading>.plx-empty-state{margin:auto;}
 

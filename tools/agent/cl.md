@@ -1,6 +1,4 @@
-### Changed
-- docs/reading-pane-study (owner, 2026-10-16): the divider is a handlebar, after prototypr's "Handlebars in UI design": a
-  pill in the middle of the gutter, no line; only the handle grabs (16 × 48), the drag then follows along the axis, and
-  the list snaps to set widths (360–720px) or heights (200–500px); the handle darkens on hover and takes the focus color
-  when focused. The reading pane's actions sit in their own row with a thin line under them, inset from the pane's
-  edges.
+### Fixed
+- docs/reading-pane-study: the thin line under the reading pane's actions shows (it took a border-width role that does
+  not exist, so it was 0px); it uses the table's border width and stops 16px short of each edge.
+- The local preview server no longer stops after 15 minutes (.claude/launch.json lifts the test time limit for it).

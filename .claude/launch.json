@@ -4,7 +4,10 @@
     {
       "name": "plenix-static",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["-e", "require('./tests/lib.js').serve(8767).then(() => console.log('Serving /Plenix/ on 8767'))"],
+      "runtimeArgs": [
+        "-e",
+        "process.env.TEST_TIMEOUT_MS = '86400000'; require('./tests/lib.js').serve(8767).then(() => console.log('Serving /Plenix/ on 8767'))"
+      ],
       "port": 8767
     }
   ]
