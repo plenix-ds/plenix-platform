@@ -59,10 +59,24 @@ categories to be told apart):
 - **Brown** (base brown-500, soft brown-100/300) becomes **Orange**'s exact colors (orange-500, orange-100, orange-300)
 - **Lime** (green-150) becomes **Yellow**'s base (yellow-150, formerly yellow-175)
 - **Blue** (blue-500) becomes **blue-400**, the primary brand blue (buttons, focus ring, links)
-- **Cyan**'s base (cyan-500) becomes cyan-300, the same as its own soft border
+- **Cyan**'s base (cyan-500) becomes cyan-300, the same as its own soft border (decided: see the rule above)
 - **Olive** (yellow-600) becomes green-500; **Beige**'s border (yellow-250) becomes orange-200
 
-Apply the chart as written, then list these collisions (and any other two categories that end up with the same base,
+**Decided by the owner (2026-10-16): a category's border is never its base color.** Wherever a category's
+`-soft-border` resolves to the same color as its base (`--plx-sys-category-<name>`), the border takes the next darker
+shade of the same family (higher number = darker, Oklab L), never a color from another family and never a new value.
+After the chart this means at least:
+
+| Category | Base | Border today → after |
+|---|---|---|
+| Cyan | cyan-300 | cyan-300 → **cyan-700** (the family is 700 / 300 / 100) |
+| Pink | pink-300 | pink-300 → **pink-700** (700 / 300 / 100) |
+| Lavender | purple-300 | purple-300 → **purple-500** (900 / 700 / 500 / 300 / 100) |
+
+Check every category for it after the migration (the test should too), apply it, and list each change. Keep the text
+(`-on-soft`) contrast on the soft background at 4.5 : 1 or more.
+
+The other collisions are still the owner's to decide. Apply the chart as written, then list these collisions (and any other two categories that end up with the same base,
 soft, border or text color) with a short table, so the owner can decide. Do not invent a different mapping.
 
 ### Files you own
