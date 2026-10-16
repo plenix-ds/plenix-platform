@@ -1,0 +1,9 @@
+/* Library part w09C (wave 9, lane C): chart accessibility, Sparkline, LollipopChart, ScatterChart, FunnelChart, Treemap, GanttChart and GeoMap. */
+@import url("../charts/chart-a11y.css");
+@import url("../charts/sparkline.css");
+@import url("../charts/lollipop-chart.css");
+@import url("../charts/scatter-chart.css");
+@import url("../charts/funnel-chart.css");
+@import url("../charts/treemap.css");
+@import url("../charts/gantt-chart.css");
+@import url("../charts/geo-map.css");

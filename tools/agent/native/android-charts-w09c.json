@@ -1,0 +1,641 @@
+{
+ "android-data-display|Charts": {
+  "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values. The charts of wave 9 are drawn on the same Canvas: lines, steps, areas, heat map cells and waterfall bars; a word cloud is a custom Layout and a network graph or diagram a transformable Canvas with semantics per item.",
+  "variants": [
+   {
+    "name": "Column chart (band scale)",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Chart foundations",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "PlenixChart(title, takeaway) { drawRect(color = datavizCategorical1, …) per category }",
+    "views": "A custom View that draws the columns in onDraw with Paint colors from PlenixColors",
+    "use": "Amounts per category in the categories’ own order: months, products, regions."
+   },
+   {
+    "name": "Line over time (time scale)",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Chart foundations",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-2",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "PlenixChart(title, takeaway) { drawPath(path, color = datavizCategorical2, style = Stroke(width = PlenixBorder.borderWidthMedium.toPx(), cap = StrokeCap.Round)) }",
+    "views": "The custom View drawing a Path with a round-capped stroke Paint",
+    "use": "A series over time; the axis ticks fall on calendar steps."
+   },
+   {
+    "name": "Log value axis",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Chart foundations",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-3",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "The same frame with a log scale (log10 of each value mapped to the plot height)",
+    "views": "The same View with a log scale",
+    "use": "Values that span several orders of magnitude, said in the description."
+   },
+   {
+    "name": "Legend under the plot",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Chart legend",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-chart-legend-label-text",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "FlowRow { series.forEach { LegendItem(it.label, it.color) } } under the Canvas",
+    "views": "A ChipGroup-like row of TextViews with a colored square drawable under the chart",
+    "use": "Two or more series whose marks cannot be labeled directly."
+   },
+   {
+    "name": "Selection tooltip",
+    "material": "Plain tooltip surface (as a rich tooltip)",
+    "web": "data-display|Chart tooltip",
+    "background": "plx-comp-chart-tooltip-background",
+    "content": "plx-comp-chart-tooltip-value-text",
+    "border": "plx-comp-chart-tooltip-border-color",
+    "compose": "pointerInput { detectDragGestures { … selected = xAt(it) } } and a Surface card at the selection",
+    "views": "A PopupWindow at the touched position, updated from onTouchEvent",
+    "use": "The exact values where people drag along the chart."
+   },
+   {
+    "name": "Data labels",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Data label",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-chart-data-label-text",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "drawText(measurer, value, topLeft, style = TextStyle(fontFamily = Mono))",
+    "views": "canvas.drawText(value, x, y, monoPaint)",
+    "use": "The values people compare on a bar or column chart with few marks."
+   },
+   {
+    "name": "Right value axis",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Axis",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-chart-tick-label-text",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "Tick labels drawn after the plot’s end edge, start-aligned",
+    "views": "Labels drawn after the plot in onDraw",
+    "use": "The latest value read at the end edge."
+   },
+   {
+    "name": "Vertical grid lines",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Grid line",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "drawLine(borderSubtle, Offset(x, 0f), Offset(x, height)) per tick",
+    "views": "canvas.drawLine per tick with gridPaint",
+    "use": "Bar charts, whose values run across."
+   },
+   {
+    "name": "Reference line",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Reference line",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-chart-reference-line-color",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "drawLine(contentSubtle, start, end, pathEffect = PathEffect.dashPathEffect(dash))",
+    "views": "refPaint.pathEffect = DashPathEffect(dash, 0f)",
+    "use": "A target, an average or a date, named at its end."
+   },
+   {
+    "name": "Threshold",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Threshold",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-alert-critical",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "drawLine(datavizAlertCritical, start, end, pathEffect = dashed)",
+    "views": "thresholdPaint.color = PlenixColors.datavizAlertCritical.light.toArgb()",
+    "use": "A limit the data should stay under or above, with its name and value."
+   },
+   {
+    "name": "Point annotation",
+    "material": "None (no Material chart component)",
+    "web": "data-display|Annotation",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-chart-annotation-label-text",
+    "border": "plx-comp-chart-annotation-ring-color",
+    "compose": "drawCircle(contentDefault, radius, center, style = Stroke(width)) and drawText(note)",
+    "views": "canvas.drawCircle with a stroke Paint, then the note",
+    "use": "One or two notes that explain a spike or an event."
+   },
+   {
+    "name": "Line chart",
+    "material": "A Canvas path per series (Material 3 has no chart component)",
+    "web": "data-display|Line chart",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "drawPath(linePath(values), PlenixColors.datavizCategorical1.current(), style = Stroke(PlenixBorder.borderWidthMedium.toPx()))",
+    "views": "A custom View drawing a Path in onDraw",
+    "use": "Trends over time for up to five series; a missing value leaves a gap."
+   },
+   {
+    "name": "Step chart",
+    "material": "The same path drawn with horizontal and vertical segments",
+    "web": "data-display|Step chart",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "drawPath(stepPath(values), color, style = Stroke(PlenixBorder.borderWidthMedium.toPx()))",
+    "views": "Path.lineTo for each step in onDraw",
+    "use": "Values that hold until the next change."
+   },
+   {
+    "name": "Area chart",
+    "material": "A filled Canvas path down to the baseline or the series under it",
+    "web": "data-display|Area chart",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-2",
+    "border": "plx-comp-chart-grid-line-color",
+    "compose": "drawPath(areaPath(values, base), color, alpha = PlenixOpacity.opacityHigh)",
+    "views": "Path with Paint.Style.FILL in onDraw",
+    "use": "Volumes over time, stacked or as shares."
+   },
+   {
+    "name": "Heat map",
+    "material": "A grid of drawRect cells in the sequential data-viz steps",
+    "web": "data-display|Heat map",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-sequential-4",
+    "border": "plx-comp-heat-map-empty-border-color",
+    "compose": "cells.forEach { drawRect(sequentialStep(it.value), topLeft = it.origin, size = cell) }",
+    "views": "Canvas.drawRect per cell in onDraw",
+    "use": "Patterns across two dimensions."
+   },
+   {
+    "name": "Waterfall",
+    "material": "Floating bars from the running total",
+    "web": "data-display|Waterfall",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-status-positive",
+    "border": "plx-comp-waterfall-chart-connector-color",
+    "compose": "drawRect(if (step.change > 0) up else down, topLeft = Offset(x, y(step.to)), size = Size(barWidth, height))",
+    "views": "Canvas.drawRect per step in onDraw",
+    "use": "How a total changed step by step."
+   },
+   {
+    "name": "Word cloud",
+    "material": "A custom Layout of Text composables",
+    "web": "data-display|Word cloud",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-word-cloud-text",
+    "border": "plx-sys-border-subtle",
+    "compose": "Layout(content = { words.forEach { Text(it.text, fontFamily = PlenixFonts.SANS) } }) { measurables, c -> placeOnSpiral(measurables, c) }",
+    "views": "A custom ViewGroup placing TextViews on a spiral",
+    "use": "A first impression of free text."
+   },
+   {
+    "name": "Network graph",
+    "material": "A Canvas of nodes and edges with semantics per node",
+    "web": "data-display|Graph / network",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-network-graph-edge-color",
+    "compose": "Canvas(Modifier.transformable(state)) { drawEdges(); drawNodes() } with a semantics node per node",
+    "views": "A custom View with ScaleGestureDetector and an AccessibilityNodeProvider",
+    "use": "How items connect; pinch to zoom, drag to pan."
+   },
+   {
+    "name": "Diagram",
+    "material": "A Canvas of shapes and connectors in a scrollable box",
+    "web": "data-display|Diagram",
+    "background": "plx-comp-diagram-shape-background",
+    "content": "plx-comp-diagram-label-text",
+    "border": "plx-comp-diagram-shape-border-color",
+    "compose": "Box(Modifier.horizontalScroll(h).verticalScroll(v)) { PlenixDiagram(steps) }",
+    "views": "A ScrollView holding the drawn diagram",
+    "use": "Processes and structures read in one direction."
+   },
+   {
+    "name": "Gauge",
+    "material": "CircularProgressIndicator drawn as a semicircle (a determinate arc)",
+    "web": "data-display|Gauge",
+    "background": "plx-comp-gauge-track-color",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-sys-dataviz-alert-warning",
+    "compose": "Canvas { drawArc(track, startAngle = 180f, sweepAngle = 180f, useCenter = false, style = Stroke(width)) }",
+    "views": "A custom View drawing two arcs in onDraw",
+    "use": "One value in a range, with progressBarRangeInfo semantics."
+   },
+   {
+    "name": "TalkBack and keyboard exploration",
+    "material": "Semantics per value and focus with the arrow keys",
+    "web": "data-display|Chart interaction",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-chart-tooltip-value-text",
+    "border": "plx-comp-chart-interaction-focus-border-color",
+    "compose": "Modifier.focusable().onKeyEvent { moveTo(it.key) }.semantics { liveRegion = LiveRegionMode.Polite }",
+    "views": "onKeyDown moves the selection; announceForAccessibility says the value",
+    "use": "Every value reachable by keyboard and TalkBack; the tooltip follows."
+   },
+   {
+    "name": "Sparkline",
+    "material": "None (no Material chart component)",
+    "compose": "PlenixSparkline(values, height = 24.dp): a Canvas path in datavizCategorical1, no axes",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Sparkline",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "A trend inside a sentence, a table cell or a metric: no axes, no labels; the takeaway is said in words beside it."
+   },
+   {
+    "name": "Lollipop chart",
+    "material": "None (no Material chart component)",
+    "compose": "PlenixChart { drawLine(stem) + drawCircle(dot) per category in datavizCategorical1 }",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Lollipop chart",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "Many categories compared by amount, with less ink than columns: a thin stem and a dot per category."
+   },
+   {
+    "name": "Scatter plot",
+    "material": "None (no Material chart component)",
+    "compose": "PlenixChart { drawCircle per item, colored by series (datavizCategorical1…n) }",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Scatter plot",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "How two measures relate across many items: size against downloads, price against rating."
+   },
+   {
+    "name": "Bubble chart",
+    "material": "None (no Material chart component)",
+    "compose": "PlenixChart { drawCircle(radius = sqrt(value) scaled) per item }",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Bubble chart",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "A scatter plot with a third measure as the dot's area."
+   },
+   {
+    "name": "Funnel",
+    "material": "None (no Material chart component)",
+    "compose": "PlenixChart { drawRect centered per step, width by count; the kept share as text }",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Funnel",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "How many people keep going through the steps of a process, and where they drop off."
+   },
+   {
+    "name": "Treemap",
+    "material": "None (no Material chart component)",
+    "compose": "A Canvas with the squarified layout; tiles in datavizCategorical colors, labels where they fit",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Treemap",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "Parts of a whole when there are too many for a pie: storage by type, budget by team."
+   },
+   {
+    "name": "Gantt chart",
+    "material": "None (no Material chart component)",
+    "compose": "PlenixChart { drawRect(start..end) per task row; a vertical line at today }",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Gantt chart",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "Tasks over time: when each starts and ends, what is done, and today's line."
+   },
+   {
+    "name": "Choropleth map",
+    "material": "None (no Material chart component)",
+    "compose": "A Canvas of region paths filled with the sequential data-viz steps (or the Maps SDK's Polygon)",
+    "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+    "web": "data-display|Choropleth map",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-dataviz-categorical-1",
+    "border": "plx-comp-chart-grid-line-color",
+    "use": "A value per region, as a shade of one data-viz scale: regions with more are darker."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Title",
+    "about": "Names what is measured, in sentence case; it is the chart’s content description."
+   },
+   {
+    "part": "B",
+    "name": "Description",
+    "about": "One or two sentences with the takeaway, in secondary text; TalkBack reads it after the title."
+   },
+   {
+    "part": "C",
+    "name": "Plot area",
+    "about": "The marks between the axes; the height comes from the Plenix sizes, the width fills the screen."
+   },
+   {
+    "part": "D",
+    "name": "Marks",
+    "about": "Bars, lines and points in the data-viz colors, by the series’ order in the data."
+   },
+   {
+    "part": "E",
+    "name": "Grid lines and baseline",
+    "about": "Light lines behind the marks; the baseline at zero in the stronger border color."
+   },
+   {
+    "part": "F",
+    "name": "Tick labels",
+    "about": "Values, dates and categories in DM Mono, in the reader’s locale."
+   },
+   {
+    "part": "G",
+    "name": "Data",
+    "about": "The same values as a list one tap away (Show the data)."
+   },
+   {
+    "part": "H",
+    "name": "Legend",
+    "about": "Each series’ swatch and name under the plot; hidden when there is one series."
+   },
+   {
+    "part": "I",
+    "name": "Selection tooltip",
+    "about": "The exact values where people drag: a rule at the position and a card on the overlay surface, values in DM Mono."
+   },
+   {
+    "part": "J",
+    "name": "Data labels",
+    "about": "Values written by their marks in DM Mono."
+   },
+   {
+    "part": "K",
+    "name": "Reference line or threshold",
+    "about": "A dashed rule at a value that matters, named at its end; a threshold in the alert colors."
+   },
+   {
+    "part": "L",
+    "name": "Annotation",
+    "about": "A ring on a point with a short note, or a shaded span with its name."
+   },
+   {
+    "part": "M",
+    "name": "Axis title",
+    "about": "The measure and its unit beside the axis, in secondary text."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Title",
+    "token": "plx-comp-chart-title-font-size",
+    "value": "DM Sans semibold at the Title medium role",
+    "material": "Title medium",
+    "compose": "Text(title, style = textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, PlenixPlatform.textHeadingWeight))",
+    "views": "TextView with the Plenix title text appearance (DM Sans)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/overview"
+   },
+   {
+    "part": "B",
+    "attribute": "Description color",
+    "token": "plx-comp-chart-description-text",
+    "value": "Secondary text (plx-sys-content-subtle)",
+    "material": "On surface variant",
+    "compose": "color = PlenixColors.contentSubtle.current()",
+    "views": "textView.setTextColor(PlenixColors.contentSubtle.light.toArgb())",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   },
+   {
+    "part": "D",
+    "attribute": "Series colors",
+    "token": "plx-sys-dataviz-categorical-1",
+    "value": "The six categorical data-viz colors in the series’ order (blue, green, purple, red, brown, gray), the same in light and dark",
+    "material": "None",
+    "compose": "val series = listOf(PlenixColors.datavizCategorical1.current(), PlenixColors.datavizCategorical2.current(), PlenixColors.datavizCategorical3.current())",
+    "views": "paint.color = PlenixColors.datavizCategorical1.light.toArgb()",
+    "follows": "Material 3: Color contrast",
+    "followsUrl": "https://m3.material.io/foundations/designing/color-contrast"
+   },
+   {
+    "part": "D",
+    "attribute": "Line width",
+    "token": "plx-comp-chart-line-width",
+    "value": "2 dp (plx-sys-border-width-medium), round caps and joins",
+    "material": "None",
+    "compose": "Stroke(width = PlenixBorder.borderWidthMedium.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)",
+    "views": "paint.strokeWidth = px(PlenixBorder.borderWidthMedium); paint.strokeCap = Paint.Cap.ROUND",
+    "follows": "Material 3: Color contrast",
+    "followsUrl": "https://m3.material.io/foundations/designing/color-contrast"
+   },
+   {
+    "part": "E",
+    "attribute": "Grid line color",
+    "token": "plx-comp-chart-grid-line-color",
+    "value": "The subtle border (gray 200 light, gray 700 dark), 1 dp",
+    "material": "Outline variant",
+    "compose": "drawLine(PlenixColors.borderSubtle.current(), start, end, strokeWidth = PlenixBorder.borderWidthThin.toPx())",
+    "views": "gridPaint.color = PlenixColors.borderSubtle.light.toArgb(); gridPaint.strokeWidth = px(PlenixBorder.borderWidthThin)",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   },
+   {
+    "part": "E",
+    "attribute": "Baseline color",
+    "token": "plx-comp-chart-axis-line-color",
+    "value": "The strong border (gray 500), 1 dp, at zero",
+    "material": "Outline",
+    "compose": "drawLine(PlenixColors.borderStrong.current(), baselineStart, baselineEnd, strokeWidth = PlenixBorder.borderWidthThin.toPx())",
+    "views": "axisPaint.color = PlenixColors.borderStrong.light.toArgb()",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   },
+   {
+    "part": "F",
+    "attribute": "Tick label font",
+    "token": "plx-comp-chart-tick-label-font-family",
+    "value": "DM Mono (the data role) at the data size, secondary text",
+    "material": "Body small",
+    "compose": "TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize) // Mono: FontFamily(Font(GoogleFont(PlenixFonts.MONO), fontProvider))",
+    "views": "labelPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/overview"
+   },
+   {
+    "part": "G",
+    "attribute": "Accessibility",
+    "token": "None (content)",
+    "value": "One node named by the title with the takeaway as its state description; the list carries every value",
+    "material": "None",
+    "compose": "Modifier.semantics(mergeDescendants = true) { contentDescription = title; stateDescription = takeaway }",
+    "views": "chartView.contentDescription = title; ViewCompat.setStateDescription(chartView, takeaway)",
+    "follows": "Material 3: Accessible design",
+    "followsUrl": "https://m3.material.io/foundations/designing/overview"
+   },
+   {
+    "part": "H",
+    "attribute": "Legend name color",
+    "token": "plx-comp-chart-legend-label-text",
+    "value": "The default content color, DM Sans; swatches 12 dp squares in the series colors",
+    "material": "On surface",
+    "compose": "Text(label, color = PlenixColors.contentDefault.current())",
+    "views": "label.setTextColor(PlenixColors.contentDefault.light.toArgb())",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   },
+   {
+    "part": "I",
+    "attribute": "Tooltip surface",
+    "token": "plx-comp-chart-tooltip-background",
+    "value": "The overlay surface with the default border, the menu radius (8 dp) and the menu shadow",
+    "material": "Surface container",
+    "compose": "Surface(color = PlenixColors.surfaceOverlay.current(), shape = RoundedCornerShape(PlenixRadius.radiusMenu8px))",
+    "views": "card.setCardBackgroundColor(PlenixColors.surfaceOverlay.light.toArgb())",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   },
+   {
+    "part": "I",
+    "attribute": "Tooltip value font",
+    "token": "plx-comp-chart-tooltip-value-font-family",
+    "value": "DM Mono (the data role) at the data size",
+    "material": "Body small",
+    "compose": "Text(value, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
+    "views": "value.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/applying-type"
+   },
+   {
+    "part": "J",
+    "attribute": "Data label font",
+    "token": "plx-comp-chart-data-label-font-family",
+    "value": "DM Mono (the data role) at the caption size",
+    "material": "Label small",
+    "compose": "drawText(measurer, value, topLeft, style = TextStyle(fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textCaptionSize))",
+    "views": "monoPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/applying-type"
+   },
+   {
+    "part": "K",
+    "attribute": "Reference line color",
+    "token": "plx-comp-chart-reference-line-color",
+    "value": "The subtle content color, 1 dp, dashed; a threshold 2 dp in the alert warning or critical color",
+    "material": "Outline",
+    "compose": "drawLine(PlenixColors.contentSubtle.current(), start, end, strokeWidth = PlenixBorder.borderWidthThin.toPx(), pathEffect = dashed)",
+    "views": "refPaint.color = PlenixColors.contentSubtle.light.toArgb()",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   },
+   {
+    "part": "L",
+    "attribute": "Annotation ring",
+    "token": "plx-comp-chart-annotation-ring-color",
+    "value": "The default content color, 2 dp; the note in DM Sans, medium weight",
+    "material": "On surface",
+    "compose": "drawCircle(PlenixColors.contentDefault.current(), radius, center, style = Stroke(PlenixBorder.borderWidthMedium.toPx()))",
+    "views": "ringPaint.strokeWidth = px(PlenixBorder.borderWidthMedium)",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   },
+   {
+    "part": "M",
+    "attribute": "Axis title color",
+    "token": "plx-comp-chart-axis-label-text",
+    "value": "Secondary text (plx-sys-content-subtle), DM Sans medium",
+    "material": "On surface variant",
+    "compose": "Text(title, color = PlenixColors.contentSubtle.current())",
+    "views": "axisTitle.setTextColor(PlenixColors.contentSubtle.light.toArgb())",
+    "follows": "Material 3: Color roles",
+    "followsUrl": "https://m3.material.io/styles/color/roles"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-sys-surface-default, plx-sys-dataviz-categorical-1",
+    "compose": "The chart at rest",
+    "views": "The View at rest"
+   },
+   {
+    "state": "Dark",
+    "token": "plx-sys-border-subtle, plx-sys-content-subtle",
+    "compose": "PlenixColors pairs follow isSystemInDarkTheme(); data-viz colors stay the same",
+    "views": "The dark values from the night resources"
+   },
+   {
+    "state": "Empty or failed",
+    "token": "plx-sys-content-subtle",
+    "compose": "A message with a Retry button in place of the plot",
+    "views": "A message view with a retry button in place of the chart"
+   },
+   {
+    "state": "Focused value",
+    "token": "plx-comp-chart-interaction-focus-border-color, plx-comp-chart-tooltip-background",
+    "compose": "The focused value shows the tooltip; its text is the live region’s",
+    "views": "The selected value is announced with announceForAccessibility"
+   }
+  ],
+  "code": {
+   "compose": [
+    "import androidx.compose.foundation.Canvas",
+    "import androidx.compose.foundation.layout.*",
+    "import androidx.compose.material3.*",
+    "import androidx.compose.runtime.Composable",
+    "import androidx.compose.ui.Modifier",
+    "import androidx.compose.ui.geometry.Offset",
+    "import androidx.compose.ui.semantics.*",
+    "import androidx.compose.ui.text.TextStyle",
+    "import androidx.compose.ui.unit.Dp",
+    "import plenix.tokens.*",
+    "",
+    "// Mono: the DM Mono family (PlenixFonts.MONO), set once next to Sans in the app theme",
+    "// plotHeight: the web token --plx-comp-chart-plot-height-md; the library tokens are not generated for Android yet",
+    "@Composable",
+    "fun PlenixChart(title: String, takeaway: String, plotHeight: Dp, values: List<Float>, labels: List<String>) {",
+    "    val bar = PlenixColors.datavizCategorical1.current()",
+    "    val grid = PlenixColors.borderSubtle.current()",
+    "    val base = PlenixColors.borderStrong.current()",
+    "    Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm),",
+    "        modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = title; stateDescription = takeaway }) {",
+    "        Text(title, style = textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, PlenixPlatform.textHeadingWeight))",
+    "        Text(takeaway, color = PlenixColors.contentSubtle.current())",
+    "        Canvas(Modifier.fillMaxWidth().height(plotHeight)) {",
+    "            val max = values.maxOrNull() ?: return@Canvas",
+    "            val step = size.width / values.size",
+    "            listOf(max, max / 2).forEach { v -> val y = size.height - v / max * size.height",
+    "                drawLine(grid, Offset(0f, y), Offset(size.width, y), strokeWidth = PlenixBorder.borderWidthThin.toPx()) }",
+    "            values.forEachIndexed { i, v -> val h = v / max * size.height",
+    "                drawRect(bar, topLeft = Offset(i * step + PlenixSpace.spaceStackXs.toPx(), size.height - h), size = androidx.compose.ui.geometry.Size(step - PlenixSpace.spaceStackSm.toPx(), h)) }",
+    "            drawLine(base, Offset(0f, size.height), Offset(size.width, size.height), strokeWidth = PlenixBorder.borderWidthThin.toPx())",
+    "        }",
+    "        Row { labels.forEach { Text(it, Modifier.weight(1f), style = TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize), color = PlenixColors.contentSubtle.current()) } }   // Mono: PlenixFonts.MONO, the data role",
+    "    }",
+    "}"
+   ],
+   "views": [
+    "// A custom View for the plot; the title and takeaway are TextViews above it, the list of values a RecyclerView behind Show the data",
+    "class PlenixChartView(context: Context) : View(context) {",
+    "    var values: List<Float> = emptyList()",
+    "    private val bar = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = PlenixColors.datavizCategorical1.light.toArgb() }",
+    "    private val grid = Paint().apply { color = PlenixColors.borderSubtle.light.toArgb(); strokeWidth = px(PlenixBorder.borderWidthThin) }",
+    "    private val label = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = ResourcesCompat.getFont(context, R.font.dm_mono); color = PlenixColors.contentSubtle.light.toArgb() }",
+    "    override fun onDraw(canvas: Canvas) {",
+    "        val max = values.maxOrNull() ?: return",
+    "        val step = width.toFloat() / values.size",
+    "        canvas.drawLine(0f, height.toFloat(), width.toFloat(), height.toFloat(), grid)",
+    "        values.forEachIndexed { i, v -> val h = v / max * height",
+    "            canvas.drawRect(i * step + px(PlenixSpace.spaceStackXs), height - h, (i + 1) * step - px(PlenixSpace.spaceStackXs), height.toFloat(), bar) }",
+    "    }",
+    "}",
+    "// chartView.contentDescription = title; ViewCompat.setStateDescription(chartView, takeaway)"
+   ]
+  }
+ }
+}

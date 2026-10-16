@@ -1,0 +1,10 @@
+/* Plenix · LollipopChart (platform/charts/LollipopChart.jsx), drawn in ChartFrame (system/charts.css) with the chart parts.
+   Stems and dots take the chart's data-viz color (data-plx-dataviz); the horizontal chart's names get the room of the
+   category column (the frame's start margin token, set here). Every value is a --plx-comp-lollipop-* token. */
+.plx-lollipop--horizontal{--plx-comp-chart-margin-inline-start:var(--plx-comp-lollipop-category-width);}
+.plx-lollipop--vertical{--plx-comp-chart-margin-block-start:var(--plx-comp-lollipop-value-room);}
+.plx-lollipop__stem,.plx-lollipop__dot{--plx-comp-lollipop-color:var(--plx-comp-lollipop-default-color);}
+.plx-lollipop__stem[data-plx-dataviz],.plx-lollipop__dot[data-plx-dataviz]{--plx-comp-lollipop-color:var(--plx-comp-data-color);}
+.plx-lollipop__stem{fill:none;stroke:var(--plx-comp-lollipop-color);stroke-width:var(--plx-comp-lollipop-stem-width);}
+.plx-lollipop__dot{fill:var(--plx-comp-lollipop-color);r:var(--plx-comp-lollipop-dot-radius);stroke:var(--plx-comp-lollipop-dot-outline);stroke-width:var(--plx-comp-lollipop-dot-outline-width);}
+/* the active dot (pointer or keyboard) gets the active ring around it (plx-chart-keys__ring, chart-a11y.css) */

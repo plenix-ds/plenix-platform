@@ -1,17 +1,8 @@
 ### Added
-- Library wave 10, lane A (drag and drop): the dnd engine (`useSortable`, `useDraggable`, `useDropTarget`,
-  `useReposition`; pointer, pen, touch and keyboard: Space/Enter picks up, arrows move, Space/Enter drops, Escape
-  cancels; every move announced; auto-scroll near edges), DragHandle, SortableList (vertical, grid, handles, move
-  buttons, between lists), DropZone data drops (`onDropItem`, `accepts`, a refusing state), Resizable (with a size menu
-  for resizing without dragging; PanelSplitter moved here, still exported from AppShell), RenameAction (inline and
-  dialog; F2; selects the name before the extension).
-- Library wave 10, lane B (record flows): DeleteFlow (confirm, type to confirm, undo, move to trash), DuplicateAction
-  (copy at once with Undo, then rename), Publish (draft, scheduled, published; schedule; unpublish with Undo),
-  ReviewFlow and ReviewQueue (approve, request changes, reject with a reason; human review), AssignControl (assign,
-  reassign, delegate with dates), WorkflowStatus.
-- Native designs: iOS Drag and drop, iOS Undo and redo, Android Gestures (drag), Android Confirmation.
-### Changed
-- Versions follow semver from this release on (owner, 2026-10-15, RedSave #27): new or rewritten components raise the
-  minor version, fixes the patch version; a rewrite is listed here under "Changed" with what an application must check.
-- Agents find their task briefs in tools/agent/tasks/ (AGENTS.md › Finding your work); the plan of record is pinned
-  issue #3 on GitHub, one issue per task.
+- Library wave 9, lane C: Sparkline, Metric card, LollipopChart, ScatterChart (and bubbles), FunnelChart, Treemap,
+  GanttChart, GeoMap (and choropleth); the chart accessibility rules (`summarizeSeries`, `ChartPatterns` textures).
+- `useChartPoints`: the standard chart interaction for charts of separate marks (steps, tiles, regions, points): one
+  Tab stop on the plot, the arrow keys, each value said; every chart now reads the same way with the keyboard.
+- Native designs: the new chart kinds on the iOS and Android Charts pages.
+- docs/touch-options: the two open touch decisions drawn as options (the pane's size menu with touch; the AppHeader's
+  links in a narrow header), for the owner.

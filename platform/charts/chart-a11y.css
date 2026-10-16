@@ -1,0 +1,14 @@
+/* Plenix · Chart accessibility (platform/charts/chart-a11y.css; the helpers are platform/charts/a11y.js): the ring a chart draws around its active mark, and
+   the textures (ChartPatterns) drawn over a mark in the surface color so a series is told by more than its color. Every
+   value is a --plx-comp-chart-keys-* or --plx-comp-chart-pattern-* token on an existing role. */
+
+/* the ring around the active mark (pointer or keyboard): a stroke in the default content color, no fill */
+.plx-chart-keys__ring{fill:none;pointer-events:none;stroke:var(--plx-comp-chart-keys-ring-color);stroke-width:var(--plx-comp-chart-keys-ring-width);}
+
+/* the pointer's target of one point or category: invisible, it takes the pointer for the whole band */
+.plx-chart-keys__hit{fill:none;pointer-events:all;}
+
+/* ── ChartPatterns: textures in the surface color over a mark (the overlay takes no pointer) ── */
+.plx-chart-pattern{pointer-events:none;}
+.plx-chart-pattern__stroke{fill:none;stroke:var(--plx-comp-chart-pattern-color);stroke-linecap:square;stroke-width:var(--plx-comp-chart-pattern-width);}
+.plx-chart-pattern__dot{fill:var(--plx-comp-chart-pattern-color);}

@@ -1,0 +1,16 @@
+{
+  "$description": "Library part w09C (wave 9, lane C): the iOS and Android counterparts of chart accessibility (the HIG's Charting data and Accessibility pages; TalkBack on Android), the sparkline, lollipop, scatter, bubble, funnel, treemap, Gantt and choropleth charts (Swift Charts on iOS, the Compose chart parts on Android: the Charts pages), the metric card (Boxes on iOS, Metric on Android) and the map (Maps on both). Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "data-display|Chart accessibility": { "ios": ["ios-data-display|Charting data", "ios-interaction|Accessibility"], "android": ["android-data-display|Charts", "android-interaction|TalkBack"] },
+    "data-display|Sparkline": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Metric card": { "ios": ["ios-layout|Boxes"], "android": ["android-data-display|Metric"] },
+    "data-display|Lollipop chart": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Scatter plot": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Bubble chart": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Funnel": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Treemap": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Gantt chart": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Choropleth map": { "ios": ["ios-specialized|Maps"], "android": ["android-specialized|Maps"] },
+    "data-display|Map": { "ios": ["ios-specialized|Maps"], "android": ["android-specialized|Maps"] }
+  }
+}

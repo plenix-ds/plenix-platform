@@ -2769,6 +2769,12 @@
   --plx-comp-chart-tick-label-font-size: var(--plx-ref-font-size-11);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-chart-keys-ring-color: var(--plx-sys-content-default);
+  --plx-comp-chart-keys-ring-width: var(--plx-sys-border-width-medium);
+  --plx-comp-chart-pattern-color: var(--plx-sys-surface-default);
+  --plx-comp-chart-pattern-width: var(--plx-sys-border-width-thin);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-chart-interaction-focus-border-width: var(--plx-sys-border-width-medium);
   --plx-comp-chart-interaction-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-chart-interaction-focus-radius: var(--plx-sys-shape-xs);
@@ -3450,6 +3456,27 @@
   --plx-comp-form-two-column-grid-template-columns: var(--plx-ref-size-160px) minmax(var(--plx-sys-field-width-md),var(--plx-sys-field-width-lg));
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-funnel-stage-width: var(--plx-ref-size-120px);
+  --plx-comp-funnel-label-room: var(--plx-ref-size-96px);
+  --plx-comp-funnel-label-room-block: var(--plx-ref-size-24px);
+  --plx-comp-funnel-drop-background: var(--plx-sys-surface-sunken);
+  --plx-comp-funnel-name-room-block: var(--plx-ref-size-40px);
+  --plx-comp-funnel-edge: var(--plx-ref-size-8px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-gantt-default-color: var(--plx-sys-dataviz-categorical-1);
+  --plx-comp-gantt-task-width: var(--plx-ref-size-140px);
+  --plx-comp-gantt-label-room: var(--plx-ref-size-40px);
+  --plx-comp-gantt-margin-block-start: var(--plx-ref-size-24px);
+  --plx-comp-gantt-task-text: var(--plx-sys-content-default);
+  --plx-comp-gantt-task-font-family: var(--plx-sys-font-label);
+  --plx-comp-gantt-task-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-gantt-link-color: var(--plx-sys-content-subtle);
+  --plx-comp-gantt-link-width: var(--plx-sys-border-width-thin);
+  --plx-comp-gantt-milestone-outline: var(--plx-sys-surface-default);
+  --plx-comp-gantt-milestone-outline-width: var(--plx-sys-border-width-thin);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-gauge-width-sm: var(--plx-ref-size-160px);
   --plx-comp-gauge-width-md: var(--plx-ref-size-200px);
   --plx-comp-gauge-width-lg: var(--plx-ref-size-240px);
@@ -3471,6 +3498,17 @@
   --plx-comp-gauge-end-font-size: var(--plx-ref-font-size-11);
   --plx-comp-gauge-end-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-gauge-end-inset: var(--plx-ref-size-12px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-geo-map-default-color: var(--plx-sys-dataviz-categorical-1);
+  --plx-comp-geo-map-land: var(--plx-sys-surface-sunken);
+  --plx-comp-geo-map-border-color: var(--plx-sys-border-default);
+  --plx-comp-geo-map-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-geo-map-gap-color: var(--plx-sys-surface-default);
+  --plx-comp-geo-map-marker-radius: var(--plx-ref-size-4px);
+  --plx-comp-geo-map-marker-outline: var(--plx-sys-surface-default);
+  --plx-comp-geo-map-marker-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-geo-map-controls-gap: var(--plx-sys-space-stack-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-heat-map-cell-radius: var(--plx-sys-shape-2xs);
@@ -3736,6 +3774,15 @@
   --plx-comp-loading-overlay-progress-max-width: var(--plx-ref-size-240px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-lollipop-default-color: var(--plx-sys-dataviz-categorical-1);
+  --plx-comp-lollipop-category-width: var(--plx-ref-size-96px);
+  --plx-comp-lollipop-value-room: var(--plx-ref-size-24px);
+  --plx-comp-lollipop-stem-width: var(--plx-sys-border-width-medium);
+  --plx-comp-lollipop-dot-radius: var(--plx-ref-size-4px);
+  --plx-comp-lollipop-dot-outline: var(--plx-sys-surface-default);
+  --plx-comp-lollipop-dot-outline-width: var(--plx-sys-border-width-thin);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-mega-menu-sections-margin-block-start: var(--plx-sys-space-stack-xs);
   --plx-comp-mega-menu-column-gap: var(--plx-sys-space-inline-lg);
   --plx-comp-mega-menu-row-gap: var(--plx-sys-space-stack-lg);
@@ -3762,6 +3809,10 @@
   --plx-comp-menu-sub-offset: calc(var(--plx-sys-space-inset-xs) + var(--plx-sys-border-width-thin));
   --plx-comp-menu-sub-fallback-inset-block-start: 0;
   --plx-comp-menu-sub-fallback-inset-inline-start: 100%;
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-metric-trend-min-width: var(--plx-ref-size-96px);
+  --plx-comp-metric-card-row-gap: var(--plx-sys-space-stack-sm);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-miller-columns-background: var(--plx-sys-surface-default);
@@ -4346,6 +4397,20 @@
   --plx-comp-sankey-diagram-value-font-weight: var(--plx-sys-font-weight-regular);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-scatter-default-color: var(--plx-sys-dataviz-categorical-1);
+  --plx-comp-scatter-margin-block-start: var(--plx-ref-size-8px);
+  --plx-comp-scatter-margin-inline-end: var(--plx-ref-size-16px);
+  --plx-comp-scatter-margin-block-end: var(--plx-ref-size-44px);
+  --plx-comp-scatter-margin-inline-start: var(--plx-ref-size-64px);
+  --plx-comp-scatter-point-radius: var(--plx-ref-size-4px);
+  --plx-comp-scatter-point-opacity: var(--plx-sys-opacity-high);
+  --plx-comp-scatter-bubble-opacity: var(--plx-sys-opacity-mid);
+  --plx-comp-scatter-point-outline-width: var(--plx-sys-border-width-thin);
+  --plx-comp-scatter-trend-width: var(--plx-sys-border-width-medium);
+  --plx-comp-scatter-trend-dash: var(--plx-ref-size-8px);
+  --plx-comp-scatter-trend-gap: var(--plx-ref-size-4px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-scrim-background: var(--plx-sys-scrim);
   --plx-comp-scrim-opacity: var(--plx-sys-opacity-mid);
   --plx-comp-scrim-light-opacity: var(--plx-sys-opacity-low);
@@ -4457,6 +4522,17 @@
   --plx-comp-sortable-list-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-sortable-list-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-sortable-list-focus-outline-width: var(--plx-sys-border-width-medium);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-sparkline-default-color: var(--plx-sys-dataviz-categorical-1);
+  --plx-comp-sparkline-inline-width: var(--plx-ref-size-96px);
+  --plx-comp-sparkline-inline-height: var(--plx-ref-size-24px);
+  --plx-comp-sparkline-fill-height: var(--plx-ref-size-32px);
+  --plx-comp-sparkline-line-width: var(--plx-sys-border-width-medium);
+  --plx-comp-sparkline-area-opacity: var(--plx-sys-opacity-low);
+  --plx-comp-sparkline-point-radius: var(--plx-ref-size-4px);
+  --plx-comp-sparkline-point-outline: var(--plx-sys-surface-default);
+  --plx-comp-sparkline-point-outline-width: var(--plx-sys-border-width-thin);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-split-button-joined-radius: var(--plx-sys-shape-none);
@@ -4754,6 +4830,23 @@
   --plx-comp-tree-select-empty-text: var(--plx-sys-content-subtle);
   --plx-comp-tree-select-empty-font-size: var(--plx-ref-font-size-12);
   --plx-comp-tree-select-empty-padding-block: var(--plx-sys-space-inset-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-treemap-gap-color: var(--plx-sys-surface-default);
+  --plx-comp-treemap-gap-width: var(--plx-sys-border-width-medium);
+  --plx-comp-treemap-label-text: var(--plx-sys-content-default);
+  --plx-comp-treemap-label-font-family: var(--plx-sys-font-label);
+  --plx-comp-treemap-label-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-treemap-value-font-family: var(--plx-sys-font-data);
+  --plx-comp-treemap-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-treemap-label-halo-color: var(--plx-sys-surface-default);
+  --plx-comp-treemap-label-halo-width: var(--plx-sys-border-width-thick);
+  --plx-comp-treemap-group-border-color: var(--plx-sys-border-strong);
+  --plx-comp-treemap-group-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-treemap-group-label-text: var(--plx-sys-content-default);
+  --plx-comp-treemap-group-label-font-family: var(--plx-sys-font-label);
+  --plx-comp-treemap-group-label-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-treemap-group-label-font-weight: var(--plx-sys-font-weight-semibold);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-user-card-gap: var(--plx-sys-space-stack-md);

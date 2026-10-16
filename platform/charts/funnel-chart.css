@@ -1,0 +1,7 @@
+/* Plenix · FunnelChart (platform/charts/FunnelChart.jsx), drawn in ChartFrame (system/charts.css) with the chart parts. The
+   bars are the frame's marks (plx-chart__mark, the data-viz color); the stage before's length sits behind each bar in the
+   sunken surface color; the frame keeps room for the stage names and the labels (its margin tokens, set here). Every
+   value is a --plx-comp-funnel-* token. */
+.plx-funnel--vertical{--plx-comp-chart-margin-block-end:var(--plx-comp-funnel-edge);--plx-comp-chart-margin-inline-start:var(--plx-comp-funnel-stage-width);--plx-comp-chart-margin-inline-end:var(--plx-comp-funnel-label-room);}
+.plx-funnel--horizontal{--plx-comp-chart-margin-inline-start:var(--plx-comp-funnel-edge);--plx-comp-chart-margin-block-end:var(--plx-comp-funnel-name-room-block);--plx-comp-chart-margin-block-start:var(--plx-comp-funnel-label-room-block);}
+.plx-funnel__drop{fill:var(--plx-comp-funnel-drop-background);}

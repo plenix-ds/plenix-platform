@@ -3034,6 +3034,94 @@
      "compose": "Modifier.focusable().onKeyEvent { moveTo(it.key) }.semantics { liveRegion = LiveRegionMode.Polite }",
      "views": "onKeyDown moves the selection; announceForAccessibility says the value",
      "use": "Every value reachable by keyboard and TalkBack; the tooltip follows."
+    },
+    {
+     "name": "Sparkline",
+     "material": "None (no Material chart component)",
+     "compose": "PlenixSparkline(values, height = 24.dp): a Canvas path in datavizCategorical1, no axes",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Sparkline",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "A trend inside a sentence, a table cell or a metric: no axes, no labels; the takeaway is said in words beside it."
+    },
+    {
+     "name": "Lollipop chart",
+     "material": "None (no Material chart component)",
+     "compose": "PlenixChart { drawLine(stem) + drawCircle(dot) per category in datavizCategorical1 }",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Lollipop chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "Many categories compared by amount, with less ink than columns: a thin stem and a dot per category."
+    },
+    {
+     "name": "Scatter plot",
+     "material": "None (no Material chart component)",
+     "compose": "PlenixChart { drawCircle per item, colored by series (datavizCategorical1…n) }",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Scatter plot",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "How two measures relate across many items: size against downloads, price against rating."
+    },
+    {
+     "name": "Bubble chart",
+     "material": "None (no Material chart component)",
+     "compose": "PlenixChart { drawCircle(radius = sqrt(value) scaled) per item }",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Bubble chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "A scatter plot with a third measure as the dot's area."
+    },
+    {
+     "name": "Funnel",
+     "material": "None (no Material chart component)",
+     "compose": "PlenixChart { drawRect centered per step, width by count; the kept share as text }",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Funnel",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "How many people keep going through the steps of a process, and where they drop off."
+    },
+    {
+     "name": "Treemap",
+     "material": "None (no Material chart component)",
+     "compose": "A Canvas with the squarified layout; tiles in datavizCategorical colors, labels where they fit",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Treemap",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "Parts of a whole when there are too many for a pie: storage by type, budget by team."
+    },
+    {
+     "name": "Gantt chart",
+     "material": "None (no Material chart component)",
+     "compose": "PlenixChart { drawRect(start..end) per task row; a vertical line at today }",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Gantt chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "Tasks over time: when each starts and ends, what is done, and today's line."
+    },
+    {
+     "name": "Choropleth map",
+     "material": "None (no Material chart component)",
+     "compose": "A Canvas of region paths filled with the sequential data-viz steps (or the Maps SDK's Polygon)",
+     "views": "A custom View that draws it in onDraw with Paint colors from PlenixColors",
+     "web": "data-display|Choropleth map",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "A value per region, as a shade of one data-viz scale: regions with more are darker."
     }
    ],
    "anatomy": [
@@ -12866,6 +12954,102 @@
      "uikit": "The same on the hosted SwiftUI Chart",
      "appkit": "The same on the hosted SwiftUI Chart",
      "use": "Each value read by VoiceOver and the audio graph; scrubbing shows the tooltip."
+    },
+    {
+     "name": "Sparkline",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "Chart(points) { LineMark(x: .value(\"Week\", $0.week), y: .value(\"Downloads\", $0.count)) }.chartXAxis(.hidden).chartYAxis(.hidden).frame(height: 24)",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Sparkline",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "A trend inside a sentence, a table cell or a metric: no axes, no labels; the takeaway is said in words beside it."
+    },
+    {
+     "name": "Lollipop chart",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "Chart(rows) { RuleMark(x: .value(\"Team\", $0.team), yStart: 0, yEnd: .value(\"Tasks\", $0.count)); PointMark(x: .value(\"Team\", $0.team), y: .value(\"Tasks\", $0.count)) }",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Lollipop chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "Many categories compared by amount, with less ink than columns: a thin stem and a dot per category."
+    },
+    {
+     "name": "Scatter plot",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "Chart(items) { PointMark(x: .value(\"Size\", $0.size), y: .value(\"Downloads\", $0.downloads)).foregroundStyle(by: .value(\"Type\", $0.type)) }",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Scatter plot",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "How two measures relate across many items: size against downloads, price against rating."
+    },
+    {
+     "name": "Bubble chart",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "Chart(items) { PointMark(x: …, y: …).symbolSize(by: .value(\"Revenue\", $0.revenue)) }",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Bubble chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "A scatter plot with a third measure as the dot's area."
+    },
+    {
+     "name": "Funnel",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "Chart(steps) { BarMark(xStart: .value(\"Start\", -$0.count / 2), xEnd: .value(\"End\", $0.count / 2), y: .value(\"Step\", $0.name)) }  // centered bars, the kept share as a label",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Funnel",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "How many people keep going through the steps of a process, and where they drop off."
+    },
+    {
+     "name": "Treemap",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "A Canvas with the squarified layout (Swift Charts has no treemap mark); tiles in the data-viz colors, labels where they fit",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Treemap",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "Parts of a whole when there are too many for a pie: storage by type, budget by team."
+    },
+    {
+     "name": "Gantt chart",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "Chart(tasks) { BarMark(xStart: .value(\"Start\", $0.start), xEnd: .value(\"End\", $0.end), y: .value(\"Task\", $0.name)); RuleMark(x: .value(\"Today\", today)) }",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Gantt chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "Tasks over time: when each starts and ends, what is done, and today's line."
+    },
+    {
+     "name": "Choropleth map",
+     "apple": "Swift Charts / MapKit",
+     "swiftui": "Map { ForEach(regions) { MapPolygon(coordinates: $0.outline).foregroundStyle(stepColor($0.value)) } }  // MapKit",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "web": "data-display|Choropleth map",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "use": "A value per region, as a shade of one data-viz scale: regions with more are darker."
     }
    ],
    "anatomy": [
