@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.47.0] - 2026-10-16
+
+### Added
+- TypeScript declarations on the CDN (#130): every version ships `plenix.d.ts` beside `plenix.esm.js`, listed in
+  `bundle-manifest.json` and included in the tgz; the build fails when a public export has no declaration.
+- QuickFilter `required` for single-choice filters (#131): no All option and no clear; the first option is the value
+  when none is set, and a saved view restores it.
+- The command bar folds its quick filters (with their counts) and end controls into More as it narrows (#132).
+- MediaCard `aspect` "9/16" and "3/4" (#133); mixed shapes in a grid keep their footers aligned.
+- MediaViewer shows video items; MediaPlayer `audio` plays a separate sound track in sync with the video (#134).
+
 ## [0.46.0] - 2026-10-16
 
 ### Added

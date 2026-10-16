@@ -101,3 +101,12 @@
 .plx-panel--inset.plx-panel--lifted{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-lifted-shadow);}
 .plx-panel--floating{border-bottom-color:var(--plx-comp-card-elevation-border-color);border-left-color:var(--plx-comp-card-elevation-border-color);border-right-color:var(--plx-comp-card-elevation-border-color);border-top-color:var(--plx-comp-card-elevation-border-color);box-shadow:var(--plx-comp-card-elevation-floating-shadow);}
 .plx-panel--inset.plx-panel--floating{box-shadow:var(--plx-comp-card-surface-inset-shadow),var(--plx-comp-card-elevation-floating-shadow);}
+
+/* Each media box keeps its shape; mixed grid rows share the footer baseline without stretching the text. */
+.plx-media-card__media{flex-shrink:0;}
+.plx-media-card__info{flex-shrink:0;margin-block-start:auto;}
+.plx-media-card__media[data-plx-aspect="4/3"]{aspect-ratio:var(--plx-comp-media-card-aspect-4-3);}
+.plx-media-card__media[data-plx-aspect="1/1"]{aspect-ratio:var(--plx-comp-media-card-aspect-1-1);}
+.plx-media-card__media[data-plx-aspect="16/9"]{aspect-ratio:var(--plx-comp-media-card-aspect-16-9);}
+.plx-media-card__media[data-plx-aspect="9/16"]{aspect-ratio:var(--plx-comp-media-card-aspect-9-16);}
+.plx-media-card__media[data-plx-aspect="3/4"]{aspect-ratio:var(--plx-comp-media-card-aspect-3-4);}

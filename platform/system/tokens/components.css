@@ -4097,6 +4097,13 @@
   --plx-comp-lollipop-dot-outline-width: var(--plx-sys-border-width-thin);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-media-card-aspect-4-3: var(--plx-ref-ratio-4-3);
+  --plx-comp-media-card-aspect-1-1: var(--plx-ref-ratio-1-1);
+  --plx-comp-media-card-aspect-16-9: var(--plx-ref-ratio-16-9);
+  --plx-comp-media-card-aspect-9-16: var(--plx-ref-ratio-9-16);
+  --plx-comp-media-card-aspect-3-4: var(--plx-ref-ratio-3-4);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-media-card-type-inset-block-start: var(--plx-sys-space-inset-xs);
   --plx-comp-media-card-type-inset-inline-end: var(--plx-sys-space-inset-xs);
   --plx-comp-media-card-status-padding-block-start: var(--plx-sys-space-stack-xs);

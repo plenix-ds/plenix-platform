@@ -941,7 +941,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MediaCard.title: the asset name; with onOpen or href it is the tile's link or button
      MediaCard.meta: technical data (size, type, date)
      MediaCard.badge: a badge over the media
-     MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
+     MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9" | "9/16" | "3/4"
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
      MediaCard.onSelectChange(checked, event): the event carries Shift, Ctrl and ⌘ (pass it to useSelection().choose(key, event) for ranges); runs when the selection box changes, or when the card is clicked anywhere but its
@@ -13628,6 +13628,25 @@ function BarActions({
   }) : null, danger.map(one));
 }
   } },
+  "platform/patterns/QuickFilter/single-choice.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.singleChoice = singleChoice;
+/* Plenix · singleChoice
+   Summary: Normalize a single quick choice, preserving the collection's array value shape.
+   Usage: singleChoice(options, value, required)
+   Props: options are strings or value descriptors; value is the current selection; required chooses the first fallback.
+   Behavior: Keep at most one valid value; a required empty choice falls back to the first option.
+   Notes: Shared by the hook, panel and folded radio group. */
+function singleChoice(options, value, required) {
+  const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
+  const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
+  return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
+}
+  } },
   "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -14128,7 +14147,7 @@ function matchesDate(range, value, today) {
   return (!range.from || d >= range.from) && (!range.to || d <= range.to);
 }
   } },
-  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14136,6 +14155,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.QuickFilter = QuickFilter;
 var _react = _interopRequireDefault(require("react"));
+var _singleChoice = require("./single-choice.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
 var _Field = require("../../components/Field/Field.jsx");
@@ -14157,11 +14177,13 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
      <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
    Props:
-     kind: "list" (default) | "date"
+     kind: "list" (default) | "single" | "date"
+     required: (single) hides All and Clear; defaults an empty choice to the first option
+     Single choices use the same array value shape as list filters, with at most one entry.
      label: the button's words ("Category", "Type", "Tags", "Date")
      icon: its icon
      noun: (list) the word for one value, for the find field ("Find a tag")
-     options: (list) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
+     options: (list, single) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
      counts: optional Map (or object) from option value to faceted count; useCollectionView.quickProps supplies it
        An option's explicit count wins, including zero; without counts the existing labels remain unchanged
      value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
@@ -14173,7 +14195,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
      The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
      range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
-     chosen.
+     chosen. A required single choice omits All and Clear.
    Notes:
      The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
 
@@ -14181,6 +14203,7 @@ const STRINGS = {
   find: 'Find a {noun}',
   none: 'No {noun} matches',
   clear: 'Clear',
+  all: 'All',
   presets: _fields.DATE_PRESETS,
   custom: 'Custom range',
   from: 'From',
@@ -14201,11 +14224,17 @@ function QuickFilter({
   value,
   onChange,
   counts,
+  required = false,
   inline = false,
   strings
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const [q, setQ] = _react.default.useState('');
+  const first = (options || [])[0],
+    firstValue = typeof first === 'string' ? first : first && first.value;
+  _react.default.useEffect(() => {
+    if (kind === 'single' && required && (!value || !value.length) && firstValue !== undefined && onChange) onChange([firstValue]);
+  }, [kind, required, value, firstValue, onChange]);
   const countOf = o => o.count !== undefined ? o.count : counts instanceof Map ? counts.get(o.value) || 0 : counts ? Object.prototype.hasOwnProperty.call(counts, o.value) ? counts[o.value] : 0 : undefined;
   const counted = (o, label) => {
     const n = countOf(o);
@@ -14283,8 +14312,46 @@ function QuickFilter({
       inline: inline
     }, body);
   }
-  const list = asOptions(options),
-    chosen = value || [];
+  const list = asOptions(options);
+  if (kind === 'single') {
+    const chosen = (0, _singleChoice.singleChoice)(list, value, required);
+    const choices = list.map(o => ({
+      value: o.value,
+      label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
+        color: o.color
+      }, o.label))
+    }));
+    if (!required) choices.unshift({
+      value: '',
+      label: t.all
+    });
+    const body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel"
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: label,
+      value: chosen.length ? chosen[0] : '',
+      options: choices,
+      onChange: v => onChange(v === '' ? [] : [v])
+    }));
+    const footer = required ? null : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "filter-off",
+      disabled: !chosen.length,
+      onClick: () => onChange([])
+    }, t.clear);
+    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+      icon: icon,
+      label: label,
+      title: label,
+      count: chosen.length,
+      caret: true,
+      size: "sm",
+      footer: footer,
+      inline: inline
+    }, body);
+  }
+  const chosen = value || [];
   const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
   const body = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-find-panel plx-find-panel--checklist"
@@ -14332,7 +14399,64 @@ function QuickFilter({
   }, body);
 }
   } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/QuickFilter/single-menu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SingleQuickFilterMenu = SingleQuickFilterMenu;
+var _react = _interopRequireDefault(require("react"));
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _singleChoice = require("./single-choice.js");
+var _Text = require("../../components/Text/Text.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SingleQuickFilterMenu
+   Summary: A quick filter's single-choice radio group inside More.
+   Usage: <SingleQuickFilterMenu {...quickFilter} />
+   Props: label, options, value, required, onChange, counts and strings are the QuickFilter descriptor.
+   Behavior: Required choices omit All; radio changes preserve the collection's array shape.
+   Notes: The CommandBar folding task 132 consumes this shared group. */
+
+function SingleQuickFilterMenu({
+  label,
+  options = [],
+  value,
+  required,
+  onChange,
+  counts,
+  strings
+}) {
+  const chosen = (0, _singleChoice.singleChoice)(options, value, required);
+  const items = options.map(option => typeof option === 'string' ? {
+    value: option,
+    label: option
+  } : option);
+  if (!required) items.unshift({
+    value: '',
+    label: strings && strings.all || 'All'
+  });
+  return /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: label,
+    value: chosen.length ? chosen[0] : '',
+    onChange: v => onChange && onChange(v === '' ? [] : [v])
+  }, items.map(option => {
+    const count = option.count !== undefined ? option.count : counts instanceof Map ? counts.get(option.value) || 0 : counts ? counts[option.value] || 0 : undefined;
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: option.value,
+      value: option.value
+    }, count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+      as: "span",
+      gap: "xs"
+    }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _format.formatNumber)(count))));
+  }));
+}
+  } },
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14355,6 +14479,8 @@ var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _BarActions = require("./BarActions.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
+var _singleMenu = require("../QuickFilter/single-menu.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
 var _fields = require("../../utils/fields.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
@@ -14391,14 +14517,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      actions[].primary: the page's one primary command (filled; it keeps its label); default none
      find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
      quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
-       options, value, onChange, kind }]; when the bar is short of room they fold into More after the commands, each a
+       options, value, onChange, kind, required, counts }]; when the bar is short of room they fold into More after the commands, each a
        submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
      view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
      count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
        rows are selected ("× N selected" takes its place)
      status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
        is short of room, and while rows are selected
-     end: more controls at the very end (Export); hidden while rows are selected
+     end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
+       fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
+       items are Menu children or MenuItem descriptors, including checked toggles.
      selection.hidden: how many selected records are hidden by filters (DataTable onSelectionChange supplies it)
      selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
@@ -14538,10 +14666,13 @@ function CommandBar({
   const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
   const shown = selecting ? selActs : shape === 'view' ? [] : actions;
   const quick = selecting ? [] : quickFilters;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length;
+  const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
+  const endContent = ending ? ending.content : end;
+  const endFold = !selecting && ending && ending.fold;
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
   const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
   const ctx = _react.default.useMemo(() => ({
     iconOnly: step >= ICONS,
@@ -14550,14 +14681,29 @@ function CommandBar({
     searchOpen: searchOpen && step >= SEARCH,
     setSearchOpen
   }), [step, searchOpen]);
-  // the commands fold first (from the end, Delete last); then the quick filters, from the end
+  // Commands fold first (from the end, Delete last), then an opted-in end control, then quick filters.
   const foldAll = Math.max(0, step - SEARCH);
   const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
-  const quickAway = Math.min(quick.length, foldAll - fold);
+  const endAway = !!endFold && foldAll > fold;
+  const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
   const quickKept = quick.slice(0, quick.length - quickAway),
     quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map(q => {
     const id = q.id || q.label;
+    const counted = option => {
+      const count = option.count !== undefined ? option.count : q.counts instanceof Map ? q.counts.get(option.value) || 0 : q.counts ? q.counts[option.value] || 0 : undefined;
+      return count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+        as: "span",
+        gap: "xs"
+      }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+        variant: "data"
+      }, (0, _format.formatNumber)(count)));
+    };
+    if (q.kind === 'single') return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: id,
+      label: q.label,
+      icon: q.icon
+    }, /*#__PURE__*/_react.default.createElement(_singleMenu.SingleQuickFilterMenu, q));
     if (q.kind === 'date') {
       const d = Object.assign({
         preset: 'any',
@@ -14577,7 +14723,7 @@ function CommandBar({
       }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
         key: p.value,
         value: p.value
-      }, p.label))));
+      }, counted(p)))));
     }
     const chosen = q.value || [];
     return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
@@ -14592,8 +14738,21 @@ function CommandBar({
       checked: chosen.indexOf(o.value) >= 0,
       keepOpen: true,
       onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
-    }, o.label || o.value)));
+    }, counted(o))));
   });
+  const endMenu = endAway ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+    key: "plx-end",
+    label: endFold.label,
+    icon: endFold.icon
+  }, Array.isArray(endFold.items) && endFold.items.length && ! /*#__PURE__*/_react.default.isValidElement(endFold.items[0]) ? endFold.items.map(item => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: item.id || item.label,
+    icon: item.icon,
+    checked: item.checked,
+    disabled: item.disabled,
+    danger: item.danger,
+    onSelect: item.onSelect
+  }, item.label)) : endFold.items) : null;
+  const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
   // the swap is announced (the focus stays where it is, on the table)
   const was = _react.default.useRef(selecting);
   _react.default.useEffect(() => {
@@ -14610,7 +14769,7 @@ function CommandBar({
   const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
     action: String(a.label).toLowerCase()
   }, words));
-  const acts = shown.length || quickMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  const acts = shown.length || extraMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__actions"
   }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
     actions: shown,
@@ -14620,7 +14779,7 @@ function CommandBar({
     dangerClass: "plx-command-bar__danger",
     off: selecting ? off : undefined,
     why: selecting ? why : undefined,
-    extra: quickMenu
+    extra: extraMenu
   })) : null;
   const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
     key: q.id || q.label
@@ -14662,11 +14821,12 @@ function CommandBar({
     variant: "secondary",
     className: "plx-command-bar__status"
   }, status);
-  const tail = countEl || statusEl || end || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  const keptEnd = !selecting && !endAway ? endContent : null;
+  const tail = countEl || statusEl || keptEnd || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__end"
   }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
     orientation: "vertical"
-  }) : null, countEl, statusEl, selecting ? null : end, clearEl) : null;
+  }) : null, countEl, statusEl, keptEnd, clearEl) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
   const onKeyDown = selecting && sel.onClear ? e => {
     if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
@@ -20282,7 +20442,353 @@ function Tree({
   }, renderNodes(nodes, 1));
 }
   } },
-  "platform/components/MediaViewer/MediaViewer.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/MediaPlayer/useSeparateAudio.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useSeparateAudio = useSeparateAudio;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useSeparateAudio
+   Summary: Synchronize a separate sound source with native video transport and controls.
+   Usage: const failed = useSeparateAudio(videoRef, audioRef, src, audio, kind);
+   Props: refs point to the native elements; src/audio identify the current sources; kind defaults to video.
+   Behavior: Video drives play, pause, seeking, rate, volume and mute. Correct drift above a quarter second.
+   Notes: The video source is expected to be silent when its sound is supplied separately. No autoplay is added. */
+
+const DRIFT_SECONDS = 0.25;
+function useSeparateAudio(video, sound, src, audio, kind) {
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+    const v = video.current,
+      a = sound.current;
+    if (!v) return undefined;
+    if (kind === 'audio' || !audio || !a) return () => v.pause();
+    let live = true,
+      broken = false,
+      mutedBeforeFailure = false;
+    const fail = () => {
+      if (!live || broken) return;
+      broken = true;
+      mutedBeforeFailure = v.muted;
+      a.pause();
+      v.muted = true;
+      setFailed(true);
+    };
+    const align = (force = false) => {
+      if (broken) {
+        if (!v.muted) v.muted = true;
+        return;
+      }
+      a.playbackRate = v.playbackRate;
+      a.volume = v.volume;
+      a.muted = v.muted;
+      if (a.readyState >= 1 && (force || Math.abs(a.currentTime - v.currentTime) > DRIFT_SECONDS)) {
+        try {
+          a.currentTime = v.currentTime;
+        } catch (error) {/* retry when metadata or the next time update arrives */}
+      }
+    };
+    const play = () => {
+      if (!live || broken || v.paused || v.seeking || v.ended || v.readyState < 3) return;
+      if (!a.paused) {
+        align(false);
+        return;
+      }
+      align(true);
+      const result = a.play();
+      if (result && result.catch) result.catch(error => {
+        if (live && !v.paused && !v.seeking && error.name !== 'AbortError') fail();
+      });
+    };
+    const pause = () => a.pause(),
+      seek = () => {
+        pause();
+        align(true);
+      },
+      tick = () => align(false),
+      resume = () => {
+        align(true);
+        play();
+      };
+    const events = {
+      play,
+      playing: play,
+      pause,
+      ended: pause,
+      waiting: pause,
+      stalled: pause,
+      seeking: seek,
+      seeked: resume,
+      ratechange: tick,
+      volumechange: tick,
+      timeupdate: tick,
+      error: pause,
+      emptied: pause
+    };
+    Object.entries(events).forEach(([name, handler]) => v.addEventListener(name, handler));
+    a.addEventListener('loadedmetadata', resume);
+    a.addEventListener('canplay', play);
+    a.addEventListener('error', fail);
+    align(true);
+    if (a.error) fail();else play();
+    return () => {
+      live = false;
+      Object.entries(events).forEach(([name, handler]) => v.removeEventListener(name, handler));
+      a.removeEventListener('loadedmetadata', resume);
+      a.removeEventListener('canplay', play);
+      a.removeEventListener('error', fail);
+      a.pause();
+      v.pause();
+      if (broken) v.muted = mutedBeforeFailure;
+    };
+  }, [video, sound, src, audio, kind]);
+  return failed;
+}
+  } },
+  "platform/components/MediaPlayer/MediaPlayer.jsx": { deps: {"react":null,"./useSeparateAudio.js":"platform/components/MediaPlayer/useSeparateAudio.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MediaPlayer = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _useSeparateAudio = require("./useSeparateAudio.js");
+var _Stack = require("../Stack/Stack.jsx");
+var _Field = require("../Field/Field.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Slider = require("../Slider/Slider.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Link = require("../Link/Link.jsx");
+var _layer = require("../../utils/layer.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · MediaPlayer
+   Summary: Native audio/video playback with captions, a seekable transcript, playback rate and optional picture in picture.
+   Usage: <MediaPlayer src={url} label="Project walkthrough" tracks={captions} transcript={segments} />
+   Props:
+     src: media URL; kind: video (default) | audio; label: accessible media name; poster; crossOrigin.
+     audio: (video) separate sound URL for a silent video source; native video controls drive both streams.
+       A failed sound source leaves the video muted and announces the failure.
+     tracks: [{ src, label, language, kind: captions | subtitles, default }], WebVTT sources.
+     transcript: [{ start: seconds, text }]; showTranscript: initial transcript visibility (default false).
+     rates: positive playback speeds (default [0.5, 1, 1.5, 2]); pictureInPicture: offer the browser feature (default true).
+     onTimeChange(seconds), onError(event): media events; strings: rate, transcript, hideTranscript, pip, exitPip,
+       unsupported, failed, pipFailed, seek, fallback, audioFailed, volume, mute; className; ref: the HTMLMediaElement.
+   Behavior:
+     Browser controls provide play, pause, seek, volume and caption selection. Nothing autoplays.
+     A silent video has no native volume control: separate sound adds the existing Slider and a Mute toggle.
+     Transcript buttons seek only after media metadata is available. Failed PiP requests stay recoverable.
+   Notes:
+     Applications supply authorized sources, captions and transcripts. Browser controls follow the user's OS.
+*/
+
+const clock = seconds => {
+  const n = Math.max(0, Math.floor(Number(seconds) || 0));
+  return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
+};
+const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef(function MediaPlayer({
+  src,
+  audio,
+  kind = 'video',
+  label,
+  poster,
+  crossOrigin,
+  tracks = [],
+  transcript = [],
+  showTranscript = false,
+  rates = [0.5, 1, 1.5, 2],
+  pictureInPicture = true,
+  onTimeChange,
+  onError,
+  strings,
+  className
+}, ref) {
+  const t = Object.assign({
+    rate: 'Playback speed',
+    transcript: 'Show transcript',
+    hideTranscript: 'Hide transcript',
+    pip: 'Picture in picture',
+    exitPip: 'Exit picture in picture',
+    unsupported: 'Picture in picture is unavailable.',
+    failed: 'This media could not be played.',
+    pipFailed: 'Could not change picture in picture. Try again.',
+    seek: 'Seek to {time}',
+    fallback: 'Open media file',
+    volume: 'Volume',
+    mute: 'Mute',
+    audioFailed: 'The separate sound track could not be played. Video is playing muted.'
+  }, strings);
+  const media = _react.default.useRef(null),
+    id = (0, _layer.useUid)('plx-media-player'),
+    epoch = _react.default.useRef(0),
+    lock = _react.default.useRef(false);
+  const sound = _react.default.useRef(null),
+    audioFailed = (0, _useSeparateAudio.useSeparateAudio)(media, sound, src, audio, kind);
+  _react.default.useImperativeHandle(ref, () => media.current, [kind, src]);
+  const [rate, setRate] = _react.default.useState(1),
+    [visible, setVisible] = _react.default.useState(showTranscript),
+    [ready, setReady] = _react.default.useState(false),
+    [pip, setPip] = _react.default.useState(false),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const [volume, setVolume] = _react.default.useState(1),
+    [muted, setMuted] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    if (media.current) {
+      setVolume(media.current.volume);
+      setMuted(media.current.muted);
+    }
+    epoch.current++;
+    lock.current = false;
+    setReady(false);
+    setRate(1);
+    setError('');
+    setPip(false);
+    setBusy(false);
+    return () => {
+      epoch.current++;
+    };
+  }, [src, kind]);
+  const speeds = Array.from(new Set([1].concat(rates.filter(n => Number.isFinite(n) && n > 0)))).sort((a, b) => a - b);
+  const capable = kind !== 'audio' && typeof document !== 'undefined' && !!document.pictureInPictureEnabled;
+  const togglePip = async () => {
+    if (lock.current || !media.current) return;
+    const at = epoch.current;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      if (document.pictureInPictureElement === media.current) await document.exitPictureInPicture();else await media.current.requestPictureInPicture();
+    } catch (e) {
+      if (at === epoch.current) setError(t.pipFailed);
+    } finally {
+      if (at === epoch.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  const Tag = kind === 'audio' ? 'audio' : 'video';
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-media-player', className)
+  }, /*#__PURE__*/_react.default.createElement(Tag, {
+    key: kind + ':' + src,
+    ref: media,
+    className: "plx-media-player__media",
+    src: src,
+    poster: kind === 'audio' ? undefined : poster,
+    controls: true,
+    playsInline: true,
+    preload: "metadata",
+    crossOrigin: crossOrigin,
+    "aria-label": label,
+    onLoadedMetadata: () => {
+      setReady(true);
+      setError('');
+    },
+    onTimeUpdate: e => {
+      if (onTimeChange) onTimeChange(e.currentTarget.currentTime);
+    },
+    onVolumeChange: event => {
+      setVolume(event.currentTarget.volume);
+      setMuted(event.currentTarget.muted);
+    },
+    onRateChange: event => setRate(event.currentTarget.playbackRate),
+    onEnterPictureInPicture: () => setPip(true),
+    onLeavePictureInPicture: () => setPip(false),
+    onError: e => {
+      setReady(false);
+      setError(t.failed);
+      if (onError) onError(e);
+    }
+  }, tracks.map((a, i) => /*#__PURE__*/_react.default.createElement("track", {
+    key: a.src + i,
+    src: a.src,
+    kind: a.kind || 'captions',
+    srcLang: a.language,
+    label: a.label,
+    default: !!a.default
+  })), src ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: src
+  }, t.fallback) : null), kind !== 'audio' && audio ? /*#__PURE__*/_react.default.createElement("audio", {
+    ref: sound,
+    src: audio,
+    crossOrigin: crossOrigin,
+    preload: "metadata",
+    hidden: true,
+    "aria-hidden": "true"
+  }) : null, /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.rate
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: String(rate),
+    options: speeds.map(n => ({
+      value: String(n),
+      label: n + '×'
+    })),
+    onChange: e => {
+      const next = Number(e.target.value);
+      if (media.current) {
+        media.current.playbackRate = next;
+        setRate(next);
+      }
+    }
+  })), kind !== 'audio' && audio ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Slider.Slider, {
+    className: "plx-media-player__volume",
+    label: t.volume,
+    value: Math.round(volume * 100),
+    min: 0,
+    max: 100,
+    unit: "%",
+    disabled: audioFailed,
+    onChange: next => {
+      if (media.current) media.current.volume = next / 100;
+    }
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    pressed: muted,
+    disabled: audioFailed,
+    onClick: () => {
+      if (media.current) media.current.muted = !media.current.muted;
+    }
+  }, t.mute)) : null, transcript.length ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    "aria-expanded": visible,
+    "aria-controls": id,
+    onClick: () => setVisible(!visible)
+  }, visible ? t.hideTranscript : t.transcript) : null, pictureInPicture && capable ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: !ready || busy,
+    onClick: togglePip
+  }, pip ? t.exitPip : t.pip) : null), visible && transcript.length ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    id: id,
+    as: "ol",
+    className: "plx-media-player__transcript"
+  }, transcript.map((segment, i) => /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    as: "li",
+    key: i,
+    align: "start"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: !ready || !Number.isFinite(segment.start) || segment.start < 0,
+    label: t.seek.replace('{time}', clock(segment.start)),
+    onClick: () => {
+      media.current.currentTime = segment.start;
+    }
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, clock(segment.start))), /*#__PURE__*/_react.default.createElement(_Text.Text, null, segment.text)))) : null, audioFailed ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "warning"
+  }, t.audioFailed) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+});
+  } },
+  "platform/components/MediaViewer/MediaViewer.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20293,18 +20799,21 @@ var _react = _interopRequireDefault(require("react"));
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
+var _MediaPlayer = require("../MediaPlayer/MediaPlayer.jsx");
+var _useGesture = require("../../hooks/useGesture.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _direction = require("../../utils/direction.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · MediaViewer
-   Summary: A full-screen preview of images, one at a time (the lightbox).
+   Summary: A full-screen preview of images and videos, one at a time (the lightbox).
    Usage:
      <MediaViewer open={open} onClose={close} items={[{ src, alt, title, meta: ['JPG', '2.4 MB'] }]}
        index={at} onIndexChange={(next) => …} actions={<…/>} />
    Props:
      open: whether the viewer is shown
      onClose(): runs from the close button and Escape
-     items: the images: [{ src, alt, title, meta }]
+     items: [{ src, alt, title, meta, kind: "image" | "video", poster, audio, tracks }]
+       Videos use MediaPlayer; audio is a separate sound URL. Leaving or closing an item pauses its playback.
      items[].meta: an array of short technical values shown under the title
      index: the shown item, when controlled
      defaultIndex: the first shown item, when uncontrolled (default 0)
@@ -20317,6 +20826,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Behavior:
      Arrow Left / Right go to the previous / next item in reading order (in a right-to-left page Arrow Right goes back);
      with more than one item there are also Previous and Next buttons.
+     Swipe an image or the stage background to move; native media controls keep their own gestures and arrow keys.
      Going past the last item wraps to the first, and back.
      Escape closes.
      Focus stays inside and returns to the opener.
@@ -20354,7 +20864,6 @@ function MediaViewer({
     modal: true,
     onEscape: onClose
   });
-  if (!open || !items.length) return null;
   const go = n => {
     const next = (n + items.length) % items.length;
     if (index === undefined) setOwn(next);
@@ -20362,8 +20871,15 @@ function MediaViewer({
   };
   const item = items[at] || items[0];
   const many = items.length > 1;
+  const stage = _react.default.useRef(null);
+  (0, _useGesture.useGesture)(stage, {
+    disabled: !open || !many,
+    axis: 'x',
+    onSwipe: gesture => go(at + (gesture.inline === 'start' ? 1 : -1))
+  });
+  if (!open || !items.length) return null;
   const onKeyDown = e => {
-    if (!many) return;
+    if (!many || e.defaultPrevented || e.target.closest('video,audio,input,select,textarea,[contenteditable="true"]')) return;
     const step = (0, _direction.arrowStep)(e, e.currentTarget, {
       vertical: false
     });
@@ -20403,8 +20919,20 @@ function MediaViewer({
   })) : null, /*#__PURE__*/_react.default.createElement("figure", {
     className: "plx-media-viewer__figure"
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-media-viewer__stage"
-  }, /*#__PURE__*/_react.default.createElement("img", {
+    ref: stage,
+    className: (0, _cx.cx)('plx-media-viewer__stage', 'plx-gesture--pan-x', item.kind === 'video' && 'plx-media-viewer__stage--video'),
+    onPointerDownCapture: event => {
+      if (event.target.closest('video,audio,button,input,select,a')) event.stopPropagation();
+    }
+  }, item.kind === 'video' ? /*#__PURE__*/_react.default.createElement(_MediaPlayer.MediaPlayer, {
+    key: at,
+    src: item.src,
+    audio: item.audio,
+    poster: item.poster,
+    tracks: item.tracks,
+    label: item.title || label || t.label
+  }) : /*#__PURE__*/_react.default.createElement("img", {
+    draggable: false,
     src: item.src,
     alt: item.alt || '',
     className: "plx-media-viewer__image"
@@ -39626,7 +40154,7 @@ function ViewMenu({
   }, menu) : menu;
 }
   } },
-  "platform/hooks/useCollectionView.js": { deps: {"react":null,"../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/hooks/useCollectionView.js": { deps: {"react":null,"../patterns/QuickFilter/single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39634,6 +40162,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.useCollectionView = useCollectionView;
 var _react = _interopRequireDefault(require("react"));
+var _singleChoice = require("../patterns/QuickFilter/single-choice.js");
 var _fields = require("../utils/fields.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · useCollectionView (platform/hooks/useCollectionView.js)
@@ -39652,7 +40181,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      fields: the collection's fields (utils/fields.js)
      options.data: optional source rows for immediate facet counts; otherwise the ready DataTable supplies its data
      options.text(row): the text the search looks in (without it there is no search)
-     options.quick: the quick filters, by field: "list" (the row's value is one of the chosen) | "date" (a date range)
+     options.quick: the quick filters, by field: "list" (the row's value is one of the chosen) | "date" (a date range), or { kind: "single", required: true }.
+       Single choices use field.options (or quick descriptor.options); required choices default to the first option.
      options.columns: the starting columns { order, hidden } (default every field, in order)
      options.view: the starting view { layout, size, height } (default list, medium cards, Short rows)
      options.sort: starting [{ field, dir }] sort; Reset view returns to it
@@ -39670,6 +40200,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
 function useCollectionView(fields, options = {}) {
+  const config = key => typeof (options.quick || {})[key] === 'string' ? {
+    kind: options.quick[key]
+  } : (options.quick || {})[key] || {};
+  const choices = key => config(key).options || (fields.find(field => field.value === key) || {}).options || [];
+  const normalizeQuick = quick => Object.assign({}, quick, Object.fromEntries(Object.keys(options.quick || {}).filter(key => config(key).kind === 'single').map(key => [key, (0, _singleChoice.singleChoice)(choices(key), quick[key], config(key).required)])));
   const defaults = _react.default.useRef(null);
   if (!defaults.current) defaults.current = {
     search: '',
@@ -39677,7 +40212,7 @@ function useCollectionView(fields, options = {}) {
       join: 'and',
       items: []
     },
-    quick: {},
+    quick: normalizeQuick({}),
     sort: options.sort || [],
     group: [],
     columns: options.columns || {
@@ -39715,7 +40250,9 @@ function useCollectionView(fields, options = {}) {
         hidden: saved.columns.hidden.filter(f => known.has(f))
       };
     }
-    initial.current = valid ? saved : defaults.current;
+    initial.current = Object.assign({}, valid ? saved : defaults.current, {
+      quick: normalizeQuick(valid ? saved.quick : defaults.current.quick)
+    });
   }
   const [search, setSearch] = _react.default.useState(initial.current.search);
   const [filter, setFilter] = _react.default.useState(initial.current.filter);
@@ -39782,7 +40319,7 @@ function useCollectionView(fields, options = {}) {
     } catch (e) {/* unavailable storage */}
   }, [search, filter, quick, sort, group, columns, view, options.storageKey, resetVersion]);
   const setQuick = (k, v) => setQuickAll(o => Object.assign({}, o, {
-    [k]: v
+    [k]: config(k).kind === 'single' ? (0, _singleChoice.singleChoice)(choices(k), v, config(k).required) : v
   }));
   const latest = _react.default.useRef();
   latest.current = {
@@ -39802,7 +40339,7 @@ function useCollectionView(fields, options = {}) {
       const f = (0, _fields.fieldOf)(fs, k),
         v = f ? (0, _fields.valueOf)(f, row) : row[k],
         chosen = quick[k];
-      if (o.quick[k] === 'date') {
+      if ((typeof o.quick[k] === 'string' ? o.quick[k] : o.quick[k].kind) === 'date') {
         if (!(0, _fields.matchesDate)(chosen, v, o.today)) return false;
       } else if (chosen && chosen.length && ![].concat(v).some(x => chosen.indexOf(x) >= 0)) return false;
     }
@@ -39821,7 +40358,7 @@ function useCollectionView(fields, options = {}) {
     const counts = new Map(),
       field = fields.find(f => f.value === key);
     const rows = source.filter(row => testExcept(row, key));
-    if (options.quick && options.quick[key] === 'date') {
+    if (config(key).kind === 'date') {
       _fields.DATE_PRESETS.concat({
         value: 'custom'
       }).forEach(preset => counts.set(preset.value, rows.filter(row => (0, _fields.matchesDate)(Object.assign({}, quick[key], {
@@ -39866,7 +40403,9 @@ function useCollectionView(fields, options = {}) {
       onChange: setFilter
     },
     quickProps: k => ({
-      value: quick[k] || (options.quick && options.quick[k] === 'date' ? {
+      kind: config(k).kind || 'list',
+      required: !!config(k).required,
+      value: quick[k] || (config(k).kind === 'date' ? {
         preset: 'any',
         from: '',
         to: ''
@@ -59418,197 +59957,6 @@ function DownloadManager({
     title: title || t.title
   }, content) : content;
 }
-  } },
-  "platform/components/MediaPlayer/MediaPlayer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MediaPlayer = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _Stack = require("../Stack/Stack.jsx");
-var _Field = require("../Field/Field.jsx");
-var _Input = require("../Input/Input.jsx");
-var _Button = require("../Button/Button.jsx");
-var _Text = require("../Text/Text.jsx");
-var _Notice = require("../Notice/Notice.jsx");
-var _Link = require("../Link/Link.jsx");
-var _layer = require("../../utils/layer.js");
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · MediaPlayer
-   Summary: Native audio/video playback with captions, a seekable transcript, playback rate and optional picture in picture.
-   Usage: <MediaPlayer src={url} label="Project walkthrough" tracks={captions} transcript={segments} />
-   Props:
-     src: media URL; kind: video (default) | audio; label: accessible media name; poster; crossOrigin.
-     tracks: [{ src, label, language, kind: captions | subtitles, default }], WebVTT sources.
-     transcript: [{ start: seconds, text }]; showTranscript: initial transcript visibility (default false).
-     rates: positive playback speeds (default [0.5, 1, 1.5, 2]); pictureInPicture: offer the browser feature (default true).
-     onTimeChange(seconds), onError(event): media events; strings: rate, transcript, hideTranscript, pip, exitPip,
-       unsupported, failed, pipFailed, seek, fallback; className; ref: the HTMLMediaElement.
-   Behavior:
-     Browser controls provide play, pause, seek, volume and caption selection. Nothing autoplays.
-     Transcript buttons seek only after media metadata is available. Failed PiP requests stay recoverable.
-   Notes:
-     Applications supply authorized sources, captions and transcripts. Browser controls follow the user's OS.
-*/
-
-const clock = seconds => {
-  const n = Math.max(0, Math.floor(Number(seconds) || 0));
-  return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
-};
-const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef(function MediaPlayer({
-  src,
-  kind = 'video',
-  label,
-  poster,
-  crossOrigin,
-  tracks = [],
-  transcript = [],
-  showTranscript = false,
-  rates = [0.5, 1, 1.5, 2],
-  pictureInPicture = true,
-  onTimeChange,
-  onError,
-  strings,
-  className
-}, ref) {
-  const t = Object.assign({
-    rate: 'Playback speed',
-    transcript: 'Show transcript',
-    hideTranscript: 'Hide transcript',
-    pip: 'Picture in picture',
-    exitPip: 'Exit picture in picture',
-    unsupported: 'Picture in picture is unavailable.',
-    failed: 'This media could not be played.',
-    pipFailed: 'Could not change picture in picture. Try again.',
-    seek: 'Seek to {time}',
-    fallback: 'Open media file'
-  }, strings);
-  const media = _react.default.useRef(null),
-    id = (0, _layer.useUid)('plx-media-player'),
-    epoch = _react.default.useRef(0),
-    lock = _react.default.useRef(false);
-  _react.default.useImperativeHandle(ref, () => media.current, [kind, src]);
-  const [rate, setRate] = _react.default.useState(1),
-    [visible, setVisible] = _react.default.useState(showTranscript),
-    [ready, setReady] = _react.default.useState(false),
-    [pip, setPip] = _react.default.useState(false),
-    [busy, setBusy] = _react.default.useState(false),
-    [error, setError] = _react.default.useState('');
-  _react.default.useEffect(() => {
-    epoch.current++;
-    lock.current = false;
-    setReady(false);
-    setRate(1);
-    setError('');
-    setPip(false);
-    setBusy(false);
-    return () => {
-      epoch.current++;
-    };
-  }, [src, kind]);
-  const speeds = Array.from(new Set([1].concat(rates.filter(n => Number.isFinite(n) && n > 0)))).sort((a, b) => a - b);
-  const capable = kind !== 'audio' && typeof document !== 'undefined' && !!document.pictureInPictureEnabled;
-  const togglePip = async () => {
-    if (lock.current || !media.current) return;
-    const at = epoch.current;
-    lock.current = true;
-    setBusy(true);
-    setError('');
-    try {
-      if (document.pictureInPictureElement === media.current) await document.exitPictureInPicture();else await media.current.requestPictureInPicture();
-    } catch (e) {
-      if (at === epoch.current) setError(t.pipFailed);
-    } finally {
-      if (at === epoch.current) {
-        lock.current = false;
-        setBusy(false);
-      }
-    }
-  };
-  const Tag = kind === 'audio' ? 'audio' : 'video';
-  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
-    className: (0, _cx.cx)('plx-media-player', className)
-  }, /*#__PURE__*/_react.default.createElement(Tag, {
-    key: kind + ':' + src,
-    ref: media,
-    className: "plx-media-player__media",
-    src: src,
-    poster: kind === 'audio' ? undefined : poster,
-    controls: true,
-    playsInline: true,
-    preload: "metadata",
-    crossOrigin: crossOrigin,
-    "aria-label": label,
-    onLoadedMetadata: () => {
-      setReady(true);
-      setError('');
-    },
-    onTimeUpdate: e => {
-      if (onTimeChange) onTimeChange(e.currentTarget.currentTime);
-    },
-    onEnterPictureInPicture: () => setPip(true),
-    onLeavePictureInPicture: () => setPip(false),
-    onError: e => {
-      setReady(false);
-      setError(t.failed);
-      if (onError) onError(e);
-    }
-  }, tracks.map((a, i) => /*#__PURE__*/_react.default.createElement("track", {
-    key: a.src + i,
-    src: a.src,
-    kind: a.kind || 'captions',
-    srcLang: a.language,
-    label: a.label,
-    default: !!a.default
-  })), src ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
-    href: src
-  }, t.fallback) : null), /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-    wrap: true
-  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-    label: t.rate
-  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
-    value: String(rate),
-    options: speeds.map(n => ({
-      value: String(n),
-      label: n + '×'
-    })),
-    onChange: e => {
-      const next = Number(e.target.value);
-      if (media.current) {
-        media.current.playbackRate = next;
-        setRate(next);
-      }
-    }
-  })), transcript.length ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    "aria-expanded": visible,
-    "aria-controls": id,
-    onClick: () => setVisible(!visible)
-  }, visible ? t.hideTranscript : t.transcript) : null, pictureInPicture && capable ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    disabled: !ready || busy,
-    onClick: togglePip
-  }, pip ? t.exitPip : t.pip) : null), visible && transcript.length ? /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
-    id: id,
-    as: "ol",
-    className: "plx-media-player__transcript"
-  }, transcript.map((segment, i) => /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-    as: "li",
-    key: i,
-    align: "start"
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    disabled: !ready || !Number.isFinite(segment.start) || segment.start < 0,
-    label: t.seek.replace('{time}', clock(segment.start)),
-    onClick: () => {
-      media.current.currentTime = segment.start;
-    }
-  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data"
-  }, clock(segment.start))), /*#__PURE__*/_react.default.createElement(_Text.Text, null, segment.text)))) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
-    tone: "danger"
-  }, error) : null);
-});
   } },
   "platform/patterns/MetadataEditor/MetadataEditor.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
