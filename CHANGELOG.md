@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.40.8] - 2026-10-16
+
+### Fixed
+- docs/reading-pane-study: the divider's pill sits on the middle line of the gap (it took the offset of Resizable's own
+  hover line and sat against the reading pane's border).
+
 ## [0.40.7] - 2026-10-16
 
 ### Changed

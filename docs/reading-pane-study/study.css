@@ -40,7 +40,9 @@
 .study-panes .plx-resizable__edge--inline::before{block-size:100%;inline-size:var(--plx-comp-data-table-border-width);}
 .study-panes .plx-resizable__edge--block::before{block-size:var(--plx-comp-data-table-border-width);inline-size:100%;}
 /* the pill */
-.study-panes .plx-resizable__edge::after{background-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-pill);content:"";position:relative;}
+/* (Resizable's own ::after is its hover line, offset into the edge: the pill takes none of its offsets) */
+.study-panes .plx-resizable__edge::after{background-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-pill);content:"";inset:auto;position:relative;}
+.study-panes .plx-resizable__edge.is-hover::after{background-color:var(--plx-sys-border-strong);}
 .study-panes .plx-resizable__edge--inline::after{block-size:var(--plx-ref-space-32px);inline-size:var(--plx-ref-space-8px);}
 .study-panes .plx-resizable__edge--block::after{block-size:var(--plx-ref-space-8px);inline-size:var(--plx-ref-space-32px);}
 .study-panes .plx-resizable__edge:hover::after{background-color:var(--plx-sys-border-strong);}
