@@ -1,0 +1,10 @@
+{
+  "$description": "AISearch: component spacing roles.",
+  "plx-comp": {
+    "ai-search-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "AISearch: space between composed regions."
+    }
+  }
+}

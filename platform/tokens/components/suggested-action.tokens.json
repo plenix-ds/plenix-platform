@@ -1,0 +1,10 @@
+{
+  "$description": "SuggestedAction: component spacing roles.",
+  "plx-comp": {
+    "suggested-action-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "SuggestedAction: space between composed regions."
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$description": "AI identification foundation: spacing alias only. No AI color, accent, palette or theme.",
+  "plx-sys": {
+    "ai-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Spacing between the existing sparkle icon and its readable origin label."
+    }
+  }
+}
