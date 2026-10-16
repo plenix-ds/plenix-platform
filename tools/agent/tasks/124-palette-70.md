@@ -108,3 +108,16 @@ Never edit generated files. Do not edit the design system's code (it reads the p
 2. `docs/color-consolidation/plenix-revised-70-color-proposal.md` (the owner's proposal; the chart is authoritative)
 3. `tools/agent/color-migration.js` and its report `tools/agent/color-migration.report.txt` (the first consolidation)
 4. `docs/pills-and-colors.md` (what each category uses today)
+
+### Owner decisions (2026-10-16, after PR #125's review)
+
+1. **Light status-away** → `brown-600` (#765600; the old yellow-700), not the revalued yellow-500 (#d5a300, 2.32:1).
+   Keep the 3:1 minimum.
+2. **The Brown category is retired:** Orange is the one category for that color ("not called brown but Orange, just
+   one color token, no need for duplication"). The categories go from 20 to 19: `--plx-sys-category-brown*` become
+   deprecated aliases of `--plx-sys-category-orange*` for one release; CATEGORY_COLORS, the color pickers, the
+   docs and the tests drop Brown; data that names "brown" shows as Orange.
+3. **Lime and the Blue category stay as the chart says** (Lime shares Yellow's base; Blue is blue-400, the brand blue).
+4. The other category borders stay as already applied (Cyan cyan-700, Pink pink-700, Lavender purple-500).
+
+Then the PR leaves draft: list the final role changes and the 19 categories, both modes.

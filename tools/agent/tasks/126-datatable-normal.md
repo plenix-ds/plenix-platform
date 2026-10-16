@@ -87,3 +87,15 @@ Never edit generated files or the applications.
 2. `Redsave-v1/docs/plenix-datatable-issues.md` #19–#21 (the measurements above are theirs)
 3. The header comments of `DataTable.jsx` and `strict.js`; Tabulator's docs on `initialSort`, `initialFilter`, column
    `visible`, `blockRedraw` / `restoreRedraw`, `setColumns`, and its virtual DOM renderer
+
+### Owner decision (2026-10-16, after PR #127's review)
+
+**Allow inline values that equal a token.** Update the runtime style audit (`platform/dev/style-audit.js`) and any
+check that enforces the same rule: an inline size Tabulator writes is accepted when it equals a Plenix token value and
+sits on the grid (the row heights from the `--plx-comp-data-table-*` / density tokens); a 1px line is accepted when it
+equals the border-width token (`--plx-sys-border-width-thin`). Anything else inline stays an error. This is the owner's
+existing rule for JavaScript sizes, written into the checker.
+
+Then finish the performance work: today's prototype is much faster on saved views (1,518 → 128 ms; 3,593 → 221 ms),
+but some view changes got slower (for example sort with 18/14 columns 50 → 149 ms, filter 45 → 105 ms). Meet the
+targets (open < 150 ms, restore < 300 ms, a view change < 50 ms) or explain what still costs the time.
