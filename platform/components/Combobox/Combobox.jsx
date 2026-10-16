@@ -7,6 +7,7 @@
      <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
      <Combobox marks="radio" options={…} value={…} onChange={…} />                                     // radio select
    Props:
+     size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
      value: the chosen value, for a single choice
      values: the chosen values, with multiple
@@ -55,7 +56,7 @@ const STRINGS = { loading: 'Loading…', error: 'The options could not be loaded
 
 export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate,
   placeholder, label, invalid, disabled, emptyText = 'No matches', loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
-  className, id, ...rest }, ref) {
+  className, id, size, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
   const auto = 'plx-cb' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -121,11 +122,11 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   };
   const optId = (i) => auto + '-o' + i;
   return (
-    <div ref={wrap} className={cx('plx-combobox', multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
+    <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
       <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
           return <Tag key={v} onRemove={() => onChange(chosen.filter((x) => x !== v))} removeLabel={'Remove ' + t}>{t}</Tag>; }) : null}
-        <input ref={input} id={id} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
+        <input ref={input} id={id} size={size === 'sm' || size === 'md' ? undefined : size} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
           aria-activedescendant={open && items[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
           value={open || multiple ? text : (current ? current.label : '')} placeholder={multiple && chosen.length ? '' : (current && !open ? current.label : placeholder)}
           onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />

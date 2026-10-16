@@ -1,0 +1,2 @@
+/* Plenix · AssistantPanel uses existing component roles. */
+.plx-assistant-panel { row-gap: var(--plx-comp-assistant-panel-gap); }

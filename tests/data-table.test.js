@@ -83,6 +83,13 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
   // the design system is a submodule (plenix-design-system): without it (CI without DS_TOKEN), its views are skipped
   const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
   if (HAS_DS) {
+    // Each focused source bundle gets its own page; Tabulator patches stay isolated from the app-view checks.
+    for (const [label, file] of [['Faceted quick-filter counts', './collection-facets.test.js'], ['Canonical multi-value groups', './multi-groups.test.js'], ['Remaining DataTable contracts', './data-table-rest.test.js']]) {
+      const focused = await browser.newPage();
+      try { await focused.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); const count = await require(file)(focused); res.push([label + ' (' + count + ' checks)', true]); }
+      catch (error) { res.push([label, false, error.message]); }
+      finally { await focused.close(); }
+    }
     await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' });
     const regressions = require('./data-table-high.test.js');
     const checks = await regressions(page) + await regressions.warning(page, BASE);

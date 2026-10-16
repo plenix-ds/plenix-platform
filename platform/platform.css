@@ -264,6 +264,10 @@
 @import url("components/Announcement/announcement.css");
 @import url("patterns/AuditLog/audit-log.css");
 @import url("patterns/ApprovalWorkflow/approval-workflow.css");
+@import url("components/PromptInput/prompt-input.css");
+@import url("components/StreamingText/streaming-text.css");
+@import url("patterns/AIChat/ai-chat.css");
+@import url("patterns/AssistantPanel/assistant-panel.css");
 @import url("components/AILabel/ai-label.css");
 @import url("components/GeneratedContent/generated-content.css");
 @import url("patterns/PromptHistory/prompt-history.css");

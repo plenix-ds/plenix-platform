@@ -346,22 +346,22 @@
 /* (a size container has no width of its own content: the grid takes its container's full width, as a block does, and
    where the container takes the width of its content, the grid asks for a table's width) */
 .plx-data-table.plx-data-table--list{box-sizing:border-box;contain-intrinsic-inline-size:var(--plx-comp-data-table-list-intrinsic-width);container-name:plx-data-table;container-type:inline-size;inline-size:100%;}
-@container plx-data-table (max-width: 599px){
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-header{display:none;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-tableholder .tabulator-table{inline-size:auto;min-inline-size:0;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs){align-items:center;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;padding-block-end:var(--plx-comp-data-table-list-padding-block);padding-block-start:var(--plx-comp-data-table-list-padding-block);}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell:not(.plx-data-table__cell--key):not(.tabulator-row-header):not(.plx-data-table__cell--handle):not(.plx-data-table__cell--actions){display:none;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell::before{content:none;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.tabulator-row-header{grid-column:1;grid-row:1 / span 8;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--handle{grid-column:2;grid-row:1 / span 8;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--actions{contain:none;grid-column:4;grid-row:1 / span 8;inline-size:auto;max-inline-size:none;min-inline-size:0;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key{contain:none;display:block;grid-column:3;inline-size:auto;line-height:var(--plx-comp-data-table-list-line-height);max-inline-size:none;min-height:0;min-inline-size:0;overflow:hidden;position:relative;text-align:start;text-overflow:ellipsis;white-space:nowrap;}
+
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-header{display:none;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-tableholder .tabulator-table{inline-size:auto;min-inline-size:0;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs){align-items:center;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;padding-block-end:var(--plx-comp-data-table-list-padding-block);padding-block-start:var(--plx-comp-data-table-list-padding-block);}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell:not(.plx-data-table__cell--key):not(.tabulator-row-header):not(.plx-data-table__cell--handle):not(.plx-data-table__cell--actions){display:none;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell::before{content:none;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell.tabulator-row-header{grid-column:1;grid-row:1 / span 8;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--handle{grid-column:2;grid-row:1 / span 8;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--actions{contain:none;grid-column:4;grid-row:1 / span 8;inline-size:auto;max-inline-size:none;min-inline-size:0;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key{contain:none;display:block;grid-column:3;inline-size:auto;line-height:var(--plx-comp-data-table-list-line-height);max-inline-size:none;min-height:0;min-inline-size:0;overflow:hidden;position:relative;text-align:start;text-overflow:ellipsis;white-space:nowrap;}
   /* a group row in the list: its first cell, as wide as the list */
-  .plx-data-table.plx-data-table--list .plx-data-table__group-cell:not(.plx-data-table__group-cell--first){display:none;}
-  .plx-data-table.plx-data-table--list .plx-data-table__group-cell--first{max-inline-size:100%;}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key-first{font-weight:var(--plx-comp-data-table-name-font-weight);}
-  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key:not(.plx-data-table__cell--key-first){color:var(--plx-comp-data-table-list-detail-text);padding-block-start:var(--plx-comp-data-table-list-row-gap);}
-}
+  .plx-data-table.plx-data-table--narrow .plx-data-table__group-cell:not(.plx-data-table__group-cell--first){display:none;}
+  .plx-data-table.plx-data-table--narrow .plx-data-table__group-cell--first{max-inline-size:100%;}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key-first{font-weight:var(--plx-comp-data-table-name-font-weight);}
+  .plx-data-table.plx-data-table--narrow .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key:not(.plx-data-table__cell--key-first){color:var(--plx-comp-data-table-list-detail-text);padding-block-start:var(--plx-comp-data-table-list-row-gap);}
+
 /* the footer of the modes "pages" and "load-more" (owner, 2026-10-14): under the grid, a line above it; the range or the
    count (the data font), the rows-per-page choice and Pagination ("pages"), or Load more ("load-more") */
 .plx-data-table__footer{align-items:center;border-top-color:var(--plx-comp-data-table-footer-border-color);border-top-style:solid;border-top-width:var(--plx-comp-data-table-line-width);color:var(--plx-comp-data-table-footer-text);column-gap:var(--plx-comp-data-table-footer-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-data-table-footer-font-size);padding-block-end:var(--plx-comp-data-table-footer-padding-block);padding-block-start:var(--plx-comp-data-table-footer-padding-block);padding-inline-end:var(--plx-comp-data-table-footer-padding-inline);padding-inline-start:var(--plx-comp-data-table-footer-padding-inline);row-gap:var(--plx-comp-data-table-footer-row-gap);}
@@ -392,9 +392,9 @@
    text wraps and ends in "…" on the last line that leaves at least P at the bottom; a picture fills the row less P above
    and below, keeping its aspect */
 .plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell{align-content:start;align-items:center;display:grid;grid-auto-columns:minmax(0,max-content);grid-auto-flow:column;grid-template-rows:minmax(var(--plx-comp-data-table-text-line-height),auto);line-height:var(--plx-comp-data-table-text-line-height);overflow:hidden;padding-block-end:var(--plx-comp-data-table-cell-padding-block);padding-block-start:var(--plx-comp-data-table-cell-padding-block);}
-.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-data-table__value,
-.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell.plx-data-table__cell--wrap .plx-data-table__value{-webkit-box-orient:vertical;-webkit-line-clamp:round(down, calc((var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2) / var(--plx-comp-data-table-text-line-height)), 1);display:-webkit-box;line-height:var(--plx-comp-data-table-text-line-height);max-block-size:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);overflow:hidden;overflow-wrap:anywhere;white-space:normal;}
-.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell img,
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-data-table__value:not(.plx-data-table__rich),
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell.plx-data-table__cell--wrap .plx-data-table__value:not(.plx-data-table__rich){-webkit-box-orient:vertical;-webkit-line-clamp:round(down, calc((var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2) / var(--plx-comp-data-table-text-line-height)), 1);display:-webkit-box;line-height:var(--plx-comp-data-table-text-line-height);max-block-size:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);overflow:hidden;overflow-wrap:anywhere;white-space:normal;}
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell img:not(.plx-avatar__image),
 .plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-thumbnail{block-size:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);inline-size:auto;max-inline-size:100%;object-fit:contain;}
 /* column headers (owner, 2026-10-14): the type icon before the name (its size token is 0 in Compact: a 28px header row is
    too small for it), the name cut with "…" */
@@ -477,3 +477,9 @@
 .plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--row-menu{position:sticky;inset-inline-end:0;padding:0;justify-content:center;}
 .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-menu > .plx-data-table__row-menu{opacity:1;}
 .plx-data-table__row-menu { inline-size: var(--plx-comp-data-table-row-menu-width); min-block-size: var(--plx-sys-control-target-min); padding: 0; }
+
+/* Native rich cells and the approved-role proposal for unavailable/deleted values. */
+.plx-data-table__rich{display:inline-flex;align-items:center;column-gap:var(--plx-comp-data-table-cell-rich-gap);}
+.plx-data-table__deleted{color:var(--plx-comp-data-table-cell-deleted-text);font-style:italic;}
+.plx-data-table__length-probe{position:absolute;visibility:hidden;block-size:0;pointer-events:none;}
+.plx-data-table__rich .plx-avatar{font-size:var(--plx-comp-data-table-font-size);}

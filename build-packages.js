@@ -343,6 +343,49 @@ if (fs.existsSync(STEPS)) for (const f of fs.readdirSync(STEPS).filter((x) => x.
   stepNotes.push(f.replace(/\.js$/, '') + (note ? ' (' + note + ')' : ''));
 }
 
+// ---------- offline CDN bundle (runtime files only; no network needed after extraction) ----------
+function cdnOfflineBundle() {
+  const crypto = require('crypto'), zlib = require('zlib');
+  const assets = new Map();
+  const add = (relative) => {
+    const file = path.join(CDN, relative);
+    if (fs.statSync(file).isDirectory()) for (const name of fs.readdirSync(file).sort()) add(relative + '/' + name);
+    else assets.set(relative, fs.readFileSync(file));
+  };
+  for (const name of ['plenix.esm.js', 'plenix.js', 'plenix.css', 'plenix.min.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
+  const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
+  const manifest = { version: VERSION, algorithm: 'sha256', description: 'Hashes cover every runtime file. This manifest is excluded from its own list; the CDN index hashes the complete archive.', files: [...assets].map(([name, data]) => ({ path: name, bytes: data.length, sha256: hash(data) })) };
+  const manifestName = 'bundle-manifest.json';
+  const manifestData = Buffer.from(JSON.stringify(manifest, null, 2) + '\n');
+  assets.set(manifestName, manifestData);
+  // USTAR is read by both Windows bsdtar and Unix tar; fixed metadata keeps identical inputs reproducible.
+  const blocks = [];
+  for (const [relative, data] of assets) {
+    const header = Buffer.alloc(512), octal = (offset, length, value) => {
+      const text = value.toString(8); if (text.length > length - 1) throw new Error('Offline bundle entry is too large: ' + relative);
+      header.write(text.padStart(length - 1, '0') + '\0', offset, length, 'ascii');
+    };
+    let name = relative, prefix = '';
+    if (Buffer.byteLength(name) > 100) { const split = relative.lastIndexOf('/'); name = relative.slice(split + 1); prefix = relative.slice(0, split); }
+    if (Buffer.byteLength(name) > 100 || Buffer.byteLength(prefix) > 155 || relative.startsWith('/') || relative.split('/').includes('..')) throw new Error('Unsafe or unsupported offline bundle path: ' + relative);
+    header.write(name, 0, 100, 'utf8'); octal(100, 8, 420); octal(108, 8, 0); octal(116, 8, 0); octal(124, 12, data.length); octal(136, 12, 0);
+    header.fill(32, 148, 156); header[156] = 48; header.write('ustar\0', 257, 6, 'ascii'); header.write('00', 263, 2, 'ascii'); header.write(prefix, 345, 155, 'utf8');
+    const checksum = header.reduce((sum, byte) => sum + byte, 0); header.write(checksum.toString(8).padStart(6, '0') + '\0 ', 148, 8, 'ascii');
+    blocks.push(header, data); if (data.length % 512) blocks.push(Buffer.alloc(512 - data.length % 512));
+  }
+  blocks.push(Buffer.alloc(1024));
+  const archive = zlib.gzipSync(Buffer.concat(blocks), { level: 9 }), archiveName = 'plenix-' + VERSION + '.tgz';
+  write(path.join(CDN, archiveName), archive); write(path.join(CDN, manifestName), manifestData);
+  const cdnIndexFile = path.join(CDN, 'index.json'), cdnIndex = JSON.parse(fs.readFileSync(cdnIndexFile, 'utf8'));
+  cdnIndex.files.bundle = archiveName; cdnIndex.files.bundleManifest = manifestName;
+  cdnIndex.bundle = { href: archiveName, bytes: archive.length, sha256: hash(archive), manifest: manifestName, files: manifest.files.length };
+  json(cdnIndexFile, cdnIndex);
+  const versionsFile = path.join(REL, 'cdn', 'index.json'), versions = JSON.parse(fs.readFileSync(versionsFile, 'utf8'));
+  const current = versions.versions.find((entry) => entry.version === VERSION); if (current) current.bundle = VERSION + '/' + archiveName;
+  json(versionsFile, versions);
+}
+cdnOfflineBundle();
+
 const kb = (f) => Math.round(fs.statSync(f).size / 1024) + ' KB';
 console.log('Plenix ' + VERSION + ': packages ' + ['tokens', 'icons', 'styles', 'react'].map((n) => SCOPE + '/' + n).join(', '));
 console.log('  styles/plenix.css ' + kb(path.join(S, 'plenix.css')) + ' (min ' + kb(path.join(S, 'plenix.min.css')) + '), react ' + kb(path.join(R, 'dist', 'index.js')) + ' ESM, ' + exportsList.length + ' exports, ' + icons.length + ' icons, ' + tokens.length + ' tokens');

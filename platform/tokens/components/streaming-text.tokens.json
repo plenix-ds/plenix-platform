@@ -1,0 +1,10 @@
+{
+  "$description": "StreamingText existing-role composition spacing.",
+  "plx-comp": {
+    "streaming-text-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between StreamingText regions."
+    }
+  }
+}

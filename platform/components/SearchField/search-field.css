@@ -45,3 +45,6 @@
 .plx-search--bar{flex-grow:0;flex-shrink:0;inline-size:var(--plx-comp-search-bar-width);}
 .plx-search--fill{inline-size:100%;}
 .plx-search__over{align-items:center;background-color:var(--plx-comp-search-over-background);border-radius:var(--plx-comp-search-over-radius);box-sizing:border-box;display:flex;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;padding-inline-end:var(--plx-comp-search-over-padding-inline);padding-inline-start:var(--plx-comp-search-over-padding-inline);position:absolute;z-index:var(--plx-comp-search-over-z-index);}
+
+/* Search already uses the toolbar height by default; this makes the shared small-size API explicit. */
+.plx-search--size-sm{--plx-comp-search-input-min-height:var(--plx-comp-search-small-min-height);}

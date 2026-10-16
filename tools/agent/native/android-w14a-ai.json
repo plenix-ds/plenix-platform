@@ -1,0 +1,249 @@
+{
+  "android-forms|OutlinedTextField": {
+    "summary": "AI conversation additions use existing controls, retain drafts and mark generated output without a new color.",
+    "variants": [
+      {
+        "name": "PromptInput: Single line",
+        "web": "specialized|Prompt input",
+        "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+        "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "PromptInput: Multi line",
+        "web": "specialized|Prompt input",
+        "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+        "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "PromptInput: Attachments",
+        "web": "specialized|Prompt input",
+        "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+        "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "PromptInput: Stop",
+        "web": "specialized|Prompt input",
+        "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+        "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "PromptInput: Model chip",
+        "web": "specialized|Prompt input",
+        "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+        "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+        "views": "Use named native controls and retain failed drafts."
+      }
+    ],
+    "anatomy": [
+      "Visible Field label",
+      "Input or Textarea",
+      "Optional local FileInput",
+      "Model chip menu",
+      "Send or Stop action",
+      "Retained error"
+    ],
+    "attributes": [
+      {
+        "attribute": "Composition spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Read the spacing role from the generated token adapter.",
+        "views": "Read the spacing role from the Android token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "Generating",
+        "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Keep the draft and explain how to try again."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use native text fields, named buttons and caller-owned transport.",
+        "TextField(value = draft, onValueChange = onDraftChange, label = { Text(strings.prompt) })",
+        "// Announce completion or stop; preserve partial output."
+      ],
+      "views": [
+        "promptField.setContentDescription(strings.prompt);",
+        "// Restore focus on dismissal and retain the draft on failure."
+      ]
+    }
+  },
+  "android-feedback|Progress indicators": {
+    "summary": "AI conversation additions use existing controls, retain drafts and mark generated output without a new color.",
+    "variants": [
+      {
+        "name": "StreamingText: Streaming",
+        "web": "specialized|Streaming response",
+        "use": "Read partial plain-text output without screen-reader interruption on every token.",
+        "compose": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "StreamingText: Done",
+        "web": "specialized|Streaming response",
+        "use": "Read partial plain-text output without screen-reader interruption on every token.",
+        "compose": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "StreamingText: Stopped",
+        "web": "specialized|Streaming response",
+        "use": "Read partial plain-text output without screen-reader interruption on every token.",
+        "compose": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+        "views": "Use named native controls and retain failed drafts."
+      }
+    ],
+    "anatomy": [
+      "Status Badge with icon",
+      "Retained response text",
+      "Persistent completion LiveRegion"
+    ],
+    "attributes": [
+      {
+        "attribute": "Composition spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Read the spacing role from the generated token adapter.",
+        "views": "Read the spacing role from the Android token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "Generating",
+        "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Keep the draft and explain how to try again."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use native text fields, named buttons and caller-owned transport.",
+        "TextField(value = draft, onValueChange = onDraftChange, label = { Text(strings.prompt) })",
+        "// Announce completion or stop; preserve partial output."
+      ],
+      "views": [
+        "promptField.setContentDescription(strings.prompt);",
+        "// Restore focus on dismissal and retain the draft on failure."
+      ]
+    }
+  },
+  "android-screen-structures|Detail": {
+    "summary": "AI conversation additions use existing controls, retain drafts and mark generated output without a new color.",
+    "variants": [
+      {
+        "name": "AIChat: Panel",
+        "web": "specialized|AI chat",
+        "use": "Have an explicitly identified conversation with AI while retaining review, citations and caller-owned history.",
+        "compose": "Suggestions fill the draft and focus it without sending. Caller owns each response and transport. Source links navigate; feedback, regenerate and refine are explicit.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "AIChat: Full page",
+        "web": "specialized|AI chat",
+        "use": "Have an explicitly identified conversation with AI while retaining review, citations and caller-owned history.",
+        "compose": "Suggestions fill the draft and focus it without sending. Caller owns each response and transport. Source links navigate; feedback, regenerate and refine are explicit.",
+        "views": "Use named native controls and retain failed drafts."
+      }
+    ],
+    "anatomy": [
+      "Chat header with AILabel",
+      "Keyboard reachable Chat thread",
+      "GeneratedContent and StreamingText",
+      "Citation source links",
+      "Optional RefineMenu and PromptSuggestions",
+      "PromptInput and AIDisclaimer"
+    ],
+    "attributes": [
+      {
+        "attribute": "Composition spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Read the spacing role from the generated token adapter.",
+        "views": "Read the spacing role from the Android token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "Generating",
+        "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Keep the draft and explain how to try again."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use native text fields, named buttons and caller-owned transport.",
+        "TextField(value = draft, onValueChange = onDraftChange, label = { Text(strings.prompt) })",
+        "// Announce completion or stop; preserve partial output."
+      ],
+      "views": [
+        "promptField.setContentDescription(strings.prompt);",
+        "// Restore focus on dismissal and retain the draft on failure."
+      ]
+    }
+  },
+  "android-screen-structures|Supporting pane": {
+    "summary": "AI conversation additions use existing controls, retain drafts and mark generated output without a new color.",
+    "variants": [
+      {
+        "name": "AssistantPanel: Inspector",
+        "web": "specialized|AI assistant",
+        "use": "Bring an AI conversation alongside current work using an existing inspector or responsive overlay.",
+        "compose": "Inspector adapts through SidePanel; overlay contains and restores focus through Sheet. Dismissal reports closed state and never sends or silently cancels transport.",
+        "views": "Use named native controls and retain failed drafts."
+      },
+      {
+        "name": "AssistantPanel: Overlay",
+        "web": "specialized|AI assistant",
+        "use": "Bring an AI conversation alongside current work using an existing inspector or responsive overlay.",
+        "compose": "Inspector adapts through SidePanel; overlay contains and restores focus through Sheet. Dismissal reports closed state and never sends or silently cancels transport.",
+        "views": "Use named native controls and retain failed drafts."
+      }
+    ],
+    "anatomy": [
+      "SidePanel or Sheet",
+      "Named header and dismissal",
+      "Caller-supplied context",
+      "AIChat"
+    ],
+    "attributes": [
+      {
+        "attribute": "Composition spacing",
+        "value": "plx-sys-space-stack-sm",
+        "compose": "Read the spacing role from the generated token adapter.",
+        "views": "Read the spacing role from the Android token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "Generating",
+        "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Keep the draft and explain how to try again."
+      }
+    ],
+    "code": {
+      "compose": [
+        "// Use native text fields, named buttons and caller-owned transport.",
+        "TextField(value = draft, onValueChange = onDraftChange, label = { Text(strings.prompt) })",
+        "// Announce completion or stop; preserve partial output."
+      ],
+      "views": [
+        "promptField.setContentDescription(strings.prompt);",
+        "// Restore focus on dismissal and retain the draft on failure."
+      ]
+    }
+  }
+}

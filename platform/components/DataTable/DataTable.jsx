@@ -33,11 +33,15 @@
      columns[].summary: "sum" | "count" | "average" | "min" | "max": the column's summary in each group header (grouped
        tables; off by default), its value in the data font
      columns[].icon: the Plenix icon name a "kind: icon" column shows in its header (its title is the accessible name)
+     columns[].empty: text for a null, undefined or empty-string value; zero and false remain values.
+     columns[].type: bytes formats file sizes in DM Mono and sorts/filters the raw bytes; filter accepts "> 2 MB".
+     columns[].kind: deleted (muted italic), avatar-name ({name,src}), tags ([{label,category}]) and badge ({label,tone,icon}) use inert native cells without portals.
      columns[].render(data, cell): the cell's content as a React element (badges, buttons, links); state and context work
+       In a virtual grid only visible cells (and one parked focused cell) mount React. Keep durable edits in row or app state.
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
      columns[].rowLabel: true: the row header: this column and the columns before it are pinned and shaded like the
        header row (and so is the checkbox column)
-     columns[].width: a size token ("--plx-ref-size-240px"; a number snaps to the nearest one), Tabulator's width option;
+     columns[].width: a CSS length ("12ch", "240px") or size token ("--plx-ref-size-240px"); numbers snap to a size token;
        without it Tabulator measures the column's content and the column shares the room left with the others.
        minWidth / maxWidth: the narrowest and widest the column gets (size tokens; minWidth default 80px)
      index: the field that identifies a row; default "id"
@@ -55,6 +59,9 @@
      rowMenuButton: with rowMenu, a sticky last-column ghost button (default true); false keeps right-click only
      keepHiddenSelection: true (default) keeps selected rows hidden by filters; false deselects them
      onSelectionChange(keys, selection): selection is { count, hidden }, for CommandBar selection.hidden
+     DataTable.useActions(actions, selectedKeys, strings): wrap selection commands for CommandBar; requires ToastProvider.
+       An undo handler receives the captured keys and action result. Row-menu undo(data,row,result) works directly.
+       message: completion toast; commit(...args,result): optional finalization after Undo expires; strings.undo, actionDone, actionFailed, undoFailed.
      rowMenu: the button or right-click opens items: label, icon, danger, disabled, separator,
        onSelect(data, row); action(data, row) is an alias. Development warns once for items with neither handler.
        Item list: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
@@ -71,7 +78,11 @@
      filter(row): which rows show (the FilterPanel's and quick filters' test, utils/fields.js matchesFilter); added to
        the header filters, applied again when the function changes
      sort: [{ field, dir: "asc" | "desc" }], the first the main sort (the SortPanel's levels, the GroupPanel's first)
-     groupBy: a field, a list of fields (nested groups, the GroupPanel's levels) or false
+     groupBy: a field, a list of fields (nested groups, the GroupPanel's levels) or false. A type: multi / multi: true
+       column repeats each record in its distinct membership groups; selection and public row APIs remain by record.
+       fetchRows groups only the records loaded on that page (or pages loaded so far), never unfetched server records.
+       DataTable onSelectionChange and declarative on callbacks use canonical records. Raw Tabulator t.on events remain
+       advanced physical-membership events; use the documented DataTable callbacks for record-based application state.
      columnOrder: the fields in their order (the ColumnsMenu's); pinned columns keep their place
      hiddenColumns: the fields not shown (the ColumnsMenu's)
      onAddToGroup(value, path): a grouped table's add row: a + one Short row tall at the end of each group; off without it
@@ -81,7 +92,8 @@
      onRetry(): the error state's one recovery action (Retry); a grid whose engine failed to load retries it as well
      keyColumns: the fields a Narrow grid keeps (its list layout); default the first column plus the next two (icon,
        actions and handle columns are not counted)
-     narrow: "list" (the DataTable's default: under 600px of its own width, a list of the key columns) | "table" (the
+     narrowAt: threshold as px or a size token (default --plx-ref-size-600px).
+     narrow: "auto" switches when the key columns cannot fit; otherwise "list" (the DataTable's default: under 600px of its own width, a list of the key columns) | "table" (the
        static Table's default: the columns stay and scroll sideways)
      storageKey: keeps the person's view (sort, column widths, order and hidden columns, the row height step, Wrap
        headers, the grouping and its closed groups) in this browser under the key and restores it the next time the grid
@@ -198,6 +210,11 @@
 */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { cellValue, byteMatches, compareCells } from './cells.js';
+import { useDataTableActions } from './actions.jsx';
+import { ToastProvider } from '../Toast/Toast.jsx';
+import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
+import { MultiTable } from './MultiTable.jsx';
 import { cx } from '../../utils/cx.js';
 import { loadTabulator, tablePx } from './tabulator.js';
 import { remeasure, reshare, virtualResync, virtualPrint, groupAt } from './strict.js';
@@ -215,6 +232,10 @@ import { gridPx } from '../../utils/grid.js';
 import { floatingScroll } from './floatingScroll.js';
 
 const INTERACTIVE = 'button, a, input, select, textarea, [role="button"], [data-plx-no-row-click]';
+const rowsOf=(table,range)=>table.plxRows?table.plxRows(range):table.getRows(range);
+const selectedOf=table=>table.plxSelectedRows?table.plxSelectedRows():table.getSelectedRows();
+const dataOf=row=>Object.prototype.hasOwnProperty.call(row,'plxData')?row.plxData():row.getData();
+const selectRow=(row,on)=>on?(Object.prototype.hasOwnProperty.call(row,'plxSelect')?row.plxSelect():row.select()):(Object.prototype.hasOwnProperty.call(row,'plxDeselect')?row.plxDeselect():row.deselect());
 const warnedItems = new Set();
 const SEP = '\u0000';
 const MIN = '--plx-ref-size-80px';   // the narrowest a resized column gets
@@ -225,7 +246,7 @@ const STRINGS = {
   sortCheck: ['Sort unchecked → checked', 'Sort checked → unchecked'],
   filterBy: 'Filter by this field', group: 'Group by this field', ungroup: 'Ungroup', fit: 'Fit to content', hide: 'Hide field', showAll: 'Show all fields',
   filter: 'Filter', any: 'Any', contains: 'Contains…', clear: 'Clear', apply: 'Apply', selectRow: 'Select row',
-  failed: 'The table could not load', retry: 'Retry', moveUp: 'Move up', moveDown: 'Move down', moveTop: 'Move to top', moveBottom: 'Move to bottom',
+  failed: 'The table could not load', retry: 'Retry', selectAll: 'Select all rows', deleted: 'Deleted', bytesQuery: 'For example, > 2 MB', invalidBytes: 'Enter a byte size and an optional comparison, such as > 2 MB', moveUp: 'Move up', moveDown: 'Move down', moveTop: 'Move to top', moveBottom: 'Move to bottom',
   moveRow: 'Move row', moveLeft: 'Move left', moveRight: 'Move right', narrower: 'Narrower', wider: 'Wider', resize: 'Resize',
   range: '{first}–{last} of {total}', count: '{shown} of {total}', perPage: 'Rows per page', pages: '{label} pages', loadMore: 'Load more',
   loaded: '{n} more rows loaded, {shown} of {total}',
@@ -239,7 +260,7 @@ const STRINGS = {
 // the row height steps (owner, 2026-10-14): Short is the density's row height; the others are fixed tokens
 const ROW_HEIGHTS = ['short', 'medium', 'tall', 'extra-tall'];
 // a column's type (columns[].type, or what its kind and sorter say) -> the icon before its name in the header
-const TYPE_ICONS = { text: 'ed-text', number: 'field-number', currency: 'field-currency', date: 'calendar', select: 'field-select', checkbox: 'select',
+const TYPE_ICONS = { text: 'ed-text', number: 'field-number', bytes: 'attachment', multi: 'field-select', currency: 'field-currency', date: 'calendar', select: 'field-select', checkbox: 'select',
   file: 'attachment', image: 'image-a-2', link: 'link', person: 'person', 'long-text': 'field-long-text' };
 const typeOf = (c) => {
   if (c.type && TYPE_ICONS[c.type]) return c.type;
@@ -252,7 +273,7 @@ const typeOf = (c) => {
   return 'text';
 };
 // the column menu's sort words for a type
-const sortWords = (S, type) => (type === 'number' || type === 'currency' ? S.sortNumber : type === 'date' ? S.sortDate : type === 'checkbox' ? S.sortCheck : S.sortText);
+const sortWords = (S, type) => (type === 'number' || type === 'currency' || type === 'bytes' ? S.sortNumber : type === 'date' ? S.sortDate : type === 'checkbox' ? S.sortCheck : S.sortText);
 // the columns that hold a mark, not a value (the checkbox, an icon column, a row handle, row actions, the view column)
 const markColumn = (c) => !!c.isRowHeader || /__cell--select|__cell--icon|__w-lead|__w-view|__cell--handle|__cell--view/.test(String((c.definition && c.definition.cssClass) || ''));
 // a column summary over a group's rows (columns[].summary: "sum" | "count" | "average" | "min" | "max")
@@ -315,9 +336,9 @@ const sizeOf = (v, host) => (typeof v === 'string' && /^(var\()?--/.test(v) ? ta
 // a width as a size token's name ("240px"): a token as given, a number snapped to the nearest token
 const sizeName = (v, host) => {
   if (v == null || v === '' || v === true) return null;
-  const m = /--plx-ref-size-(\d+px)/.exec(String(v)); if (m) return m[1];
-  const px = typeof v === 'number' ? v : sizeOf(v, host);
-  return px ? snapSize(px, SIZE_STEPS[0], SIZE_STEPS[SIZE_STEPS.length - 1]) + 'px' : null;
+  const m = /^(?:--plx-ref-size-(\d+px)|var\(\s*--plx-ref-size-(\d+px)\s*\))$/.exec(String(v).trim()); if (m) return m[1] || m[2];
+  const px = typeof v === 'number' ? v : tablePx(v, host);
+  return px ? typeof v==='number'?snapSize(px,SIZE_STEPS[0],SIZE_STEPS[SIZE_STEPS.length-1])+'px':gridPx(px,{el:host}) : null;
 };
 // the editor for "input" and "number": a Plenix input (Tabulator's own writes its padding and width inline)
 const plenixEditor = (type) => (cell, onRendered, success, cancel) => {
@@ -342,9 +363,10 @@ const viewPx = (v) => (typeof v === 'number' ? v : /^\d+(\.\d+)?px$/.test(String
 // the engine both components run on: props.isStatic makes the static Table (no sorting, filters, menus, selection,
 // resizing, moving, editing or row clicks), with its own classes (plx-table…) and stylesheet
 // the row checkbox (batch 246): a plain click toggles the row; Shift or Ctrl/Cmd use Tabulator's range and add selection
-function rowCheckbox(cell) {
+function rowCheckbox(cell, strings, recordIndex) {
   const row = cell.getRow(), table = cell.getTable(), box = document.createElement('input');
   box.type = 'checkbox';
+  box.setAttribute('aria-label', strings.selectRow+' '+String(row.getData()[recordIndex]??row.getIndex()));
   box.checked = row.isSelected();
   box.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -369,7 +391,7 @@ export function TableEngine(props) {
   // (--plx-sys-data-table-*, --plx-comp-data-table-*); isStatic only switches the interaction off
   const isStatic = !!props.isStatic, B = 'plx-data-table';
   const { label, data, columns, index = 'id', selectable = false, selected, headerMenu = true, rowMenu, empty, height, options, className,
-    error: failure, onRetry, keyColumns, narrow = isStatic ? 'table' : 'list', storageKey, mode = 'fill', pageSize, pageSizes = PAGE_SIZES, fetchRows, search,
+    error: failure, onRetry, keyColumns, narrow = isStatic ? 'table' : 'list', narrowAt = LIST_WIDTH, storageKey, mode = 'fill', pageSize, pageSizes = PAGE_SIZES, fetchRows, search,
     rowHeight = 'short', wrapHeaders = false, viewMenu = false, columnMenu, onAddToGroup, strings } = props;
   const S = React.useMemo(() => Object.assign({}, STRINGS, strings), [strings]);
   // the mode: the static Table draws every row; a DataTable fills the room by default
@@ -388,7 +410,7 @@ export function TableEngine(props) {
   const step = pageSize > 0 ? pageSize : PAGE;
   // the Narrow list: its key columns, and whether it hides any (a grid whose columns are all key columns stays a table)
   const keys = keyFields(columns, keyColumns);
-  const listed = narrow === 'list' && columns.some((c) => listable(c) && keys.indexOf(c.field) < 0);
+  const listed = narrow === 'auto' ? columns.some(listable) : narrow === 'list' && columns.some((c) => listable(c) && keys.indexOf(c.field) < 0);
   // a Narrow grid that is a list now (its rows are taller than the density's: drawn in full, not virtually)
   const [listNow, setListNow] = React.useState(false);
   const listRef = React.useRef(false); listRef.current = listNow;
@@ -427,6 +449,7 @@ export function TableEngine(props) {
   const closedRef = React.useRef(new Set((kept && kept.closed) || []));   // the closed groups (their path keys), kept in the view
   const viewNode = React.useRef(null);   // the view menu's place in the header (the view column's title)
   if (!viewNode.current && typeof document !== 'undefined') viewNode.current = el('span', B + '__portal');
+  const narrowRef = React.useRef(null);
   const fitRef = React.useRef(null);     // the room "fill" measures, once more (a header that grew)
   const stickyRef = React.useRef(null);  // the sticky group rows' stand-ins (a virtual grid whose group row is not drawn)
 
@@ -466,7 +489,7 @@ export function TableEngine(props) {
       hidden: t.getColumns().filter((c) => !c.isVisible()).map((c) => c.getField()).filter(Boolean),
       // the view's own settings (owner, 2026-10-14): the row height step, Wrap headers, the grouping and its closed groups
       rowHeight: stepRef.current, wrapHeaders: wrapRef.current,
-      groupBy: typeof g === 'string' || (Array.isArray(g) && g.every((x) => typeof x === 'string')) ? g : false,
+      groupBy: typeof g === 'string' || (Array.isArray(g) && g.every((x) => typeof x === 'string')) ? g : groupFields(t),
       closed: Array.from(closedRef.current),
     });
   };
@@ -516,7 +539,7 @@ export function TableEngine(props) {
   // a row one place up or down, or to the top or bottom (the handle's menu, the row menu, Alt + the arrow keys)
   const moveRow = (row, where) => {
     const t = tableRef.current; if (!t) return false;
-    const rows = t.getRows('active'), prev = row.getPrevRow(), next = row.getNextRow();
+    const rows = rowsOf(t, 'active'), prev = row.getPrevRow(), next = row.getNextRow();
     // (Tabulator's row.move(target, true) places the row above the target, false below it)
     if (where === 'up' && prev) row.move(prev, true);
     else if (where === 'down' && next) row.move(next, false);
@@ -539,7 +562,7 @@ export function TableEngine(props) {
   // ---- group rows, Airtable style (owner, 2026-10-14) ----
   // a group's place: the values of its groups from the top ("["Vendor A","Box"]"), the key of its open/closed state
   const pathKey = (g) => JSON.stringify(g && g.getPath ? g.getPath() : []);
-  const groupFields = (t) => [].concat((t && t.options.groupBy) || []).filter((f) => typeof f === 'string');
+  const groupFields = (t) => [].concat((t && t.options.groupBy) || []).map(f=>typeof f==='function'?f.plxField:f).filter(f=>typeof f==='string');
   // the grouped-by columns are tinted (their headers and cells): a class on the cells drawn now; rowFormatter marks the rest
   const tintGrouped = (t) => {
     const want = groupFields(t), key = want.join(SEP);
@@ -549,7 +572,7 @@ export function TableEngine(props) {
     t.columnManager.columnsByIndex.forEach((c) => { if (c.element) c.element.classList.toggle(B + '__cell--grouped', on(c)); });
     t.rowManager.rows.forEach((r) => (r.cells || []).forEach((cell) => { if (cell.element) cell.element.classList.toggle(B + '__cell--grouped', on(cell.column)); }));
   };
-  const groupBy = (t, field) => { t.setGroupBy(field); tintGrouped(t); saveView(); };
+  const groupBy = (t, field) => { t.setGroupBy(field); latest.current._onGroupChange?.(field); tintGrouped(t); saveView(); };
   // the page's view (filter, sort, groupBy, columnOrder, hiddenColumns: the command bar's panels), applied to the grid;
   // a part left undefined is not touched
   const applyView = (t) => {
@@ -574,7 +597,7 @@ export function TableEngine(props) {
       }
     }
     if (p.groupBy !== undefined) {
-      const list = [].concat(p.groupBy || []).filter((x) => typeof x === 'string' && col(x));
+      const list = [].concat(p.groupBy || []).filter((x) => (typeof x === 'string' && col(x)) || (typeof x === 'function' && x.plxField && col(x.plxField)));
       const g = list.length ? (list.length === 1 ? list[0] : list) : false;
       if (JSON.stringify(g) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, g);
     }
@@ -613,13 +636,14 @@ export function TableEngine(props) {
   // Tabulator's group header (groupHeader): its parts, filled when the row is drawn (drawGroup): the add row of the group
   // above, the gap band, and the header: chevron, eyebrow (the grouped-by field), the value as its column draws it, the count
   const groupHeader = (value, count, rowsData, comp) => {
+    if(latest.current._recordIndex&&latest.current._recordIndex!==index){rowsData=[...new Map((rowsData||[]).map(row=>[row[latest.current._recordIndex],row])).values()];count=rowsData.length;}
     const g = comp && comp._group, t = tableRef.current;
     const inner = el('div', B + '__group-inner');
     const add = el('div', B + '__group-add'), band = el('div', B + '__group-band'), head = el('div', B + '__group-head');
     band.setAttribute('aria-hidden', 'true');
     inner.appendChild(add); inner.appendChild(band); inner.appendChild(head);
     if (!g || !t) return inner;
-    const c = (latest.current.columns || []).find((x) => x.field === g.field) || null;
+    const c = (latest.current.columns || []).find((x) => x.field === (g.field || groupFields(t)[g.level||0])) || null;
     const text = value == null || value === '' ? S.noValue : String(value);
     const lab = el('div', B + '__group-label');
     const chev = el('span', B + '__group-chevron'); chev.setAttribute('aria-hidden', 'true'); chev.appendChild(iconEl('chevron-down'));
@@ -730,7 +754,7 @@ export function TableEngine(props) {
       const field = column.getField();
       filters(field).forEach((f) => T().removeFilter(f.field, f.type, f.value));
       const on = value !== '' && value != null;
-      if (on) T().addFilter(field, kind === 'list' ? '=' : 'like', value);
+      if (on) {const c=latest.current.columns.find(c=>c.field===field);T().addFilter(field,c?.type==='bytes'?'plxBytes':kind==='list'?'=':'like',value);}
       column.getElement().classList.toggle('is-filtered', on);
     };
     const close = () => document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -748,7 +772,7 @@ export function TableEngine(props) {
         (function walk(rows) { rows.forEach((r) => { if (r[field] != null && r[field] !== '') values.push(r[field]); if (r._children) walk(r._children); }); })(latest.current.data || []);
         [''].concat(Array.from(new Set(values)).sort()).forEach((v) => { const o = el('option', null, v === '' ? S.any : String(v)); o.value = v; input.appendChild(o); });
       } else {
-        input = el('input', 'plx-input plx-data-table__filter-input'); input.type = 'text'; input.placeholder = S.contains;
+        input = el('input', 'plx-input plx-data-table__filter-input'); input.type = 'text'; input.placeholder = c.type==='bytes'?S.bytesQuery:S.contains;
       }
       input.id = id; input.value = active ? active.value : '';
       const actions = el('div', 'plx-data-table__filter-actions');
@@ -809,7 +833,7 @@ export function TableEngine(props) {
     };
 
     const defs = cols.map((c, i) => {
-      const { kind, icon, render, filter, rowLabel, type, summary, ...rest } = c;
+      const { kind, icon, render, filter, rowLabel, type, summary, empty: cellEmpty, multi, ...rest } = c;
       const d = { ...rest };
       if (isStatic) { Object.assign(d, { headerSort: false, resizable: false }); delete d.editor; delete d.headerContextMenu; delete d.headerPopup; delete d.cellClick; delete d.rowHandle; }
       // the width (owner, 2026-10-13): Tabulator measures the content, and the columns without a width share the room
@@ -820,7 +844,7 @@ export function TableEngine(props) {
       const leadPx = tablePx('--plx-comp-data-table-lead-column-width', host), floor = tablePx(MIN, host);
       const wName = lead ? null : sizeName(d.width, host), minName = sizeName(d.minWidth, host), maxName = sizeName(d.maxWidth, host);
       const w = lead ? leadPx : wName ? parseInt(wName, 10) : undefined;
-      const hz = lead ? 'center' : d.hozAlign, hh = lead ? 'center' : d.headerHozAlign;
+      const hz = lead ? 'center' : d.hozAlign || (type==='bytes'?'right':undefined), hh = lead ? 'center' : d.headerHozAlign || (type==='bytes'?'right':undefined);
       const align = hz && hz !== 'left' ? B + '__cell--align-' + hz : null;
       const headAlign = hh && hh !== 'left' ? B + '__head-align-' + hh : null;
       const pinned = labelAt >= i || !!c.frozen;
@@ -830,13 +854,16 @@ export function TableEngine(props) {
       if (lead) d.maxWidth = leadPx; else if (maxName) d.maxWidth = parseInt(maxName, 10);
       // resizable where interaction is on: Tabulator's resize handle on the header (not on pinned, mark or action columns)
       d.resizable = !isStatic && !lead && kind !== 'actions' && !pinned && c.resizable !== false ? 'header' : false;
-      d.cssClass = cx(c.cssClass, kind && [].concat(kind).map((k) => B + '__cell--' + k).join(' '), (rowLabel || (labelAt > i)) && B + '__cell--row-label',
+      d.cssClass = cx(c.cssClass, (type==='bytes'?['data'].concat(kind||[]):kind) && [].concat(type==='bytes'?['data'].concat(kind||[]):kind).map((k) => B + '__cell--' + k).join(' '), (rowLabel || (labelAt > i)) && B + '__cell--row-label',
         lead && B + '__w-lead', align, headAlign, c.rowHandle && B + '__cell--handle',
         keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
       if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');
       if (labelAt >= i) d.frozen = true;
       // a plain value: in its own element (vertical alignment: middle, with its ellipsis)
-      if (!render && !c.rowHandle && (d.formatter === undefined || d.formatter === 'plaintext')) d.formatter = valueFormatter;
+      if (!render && !c.rowHandle && (d.formatter === undefined || d.formatter === 'plaintext')) d.formatter = cellValue(c,S);
+      if(type==='bytes'&&d.sorter===undefined)d.sorter='number';
+      // Tabulator's inferred sorter assumes scalars; native rich and multi values retain canonical arrays or objects.
+      if ((type === 'multi' || multi || [].concat(kind || []).some(k => ['multi', 'tags', 'avatar-name', 'badge', 'deleted'].includes(k))) && d.sorter === undefined) d.sorter = compareCells;
       if (lead) {
         // the lead width and centered (its classes)
         d.titleFormatter = () => { const s = el('span', B + '__header-icon'); s.title = c.title || c.field; s.setAttribute('role', 'img'); s.setAttribute('aria-label', s.title); s.appendChild(iconEl(icon || 'circle-info')); return s; };
@@ -851,7 +878,7 @@ export function TableEngine(props) {
         };
       }
       if (kind === 'actions') Object.assign(d, { headerSort: false, resizable: false });
-      if (render) d.formatter = (cell) => { cell.getElement().setAttribute('dir', 'auto'); const id = String(cell.getRow().getIndex()) + SEP + c.field; owners.current.set(id, cell); return container(id); };
+      if (render) d.formatter = (cell) => { cell.getElement().setAttribute('dir', 'auto'); const id = String(dataOf(cell.getRow())[index]) + SEP + c.field; owners.current.set(id, cell); return container(id); };
       if (filter && !isStatic) { d.headerPopup = filterPopup(c); d.headerPopupIcon = iconEl('filter').outerHTML; }
       if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c, labelAt >= i || !!c.frozen);
       // the header's chevron button (owner, 2026-10-14): shown while the header is hovered, it opens the same column menu
@@ -938,7 +965,7 @@ export function TableEngine(props) {
         // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
         // plain click mean "only this row", so a checked box could not be unchecked; Shift and Ctrl/Cmd keep their range
         // and add meanings. The header checkbox stays Tabulator's (select all / none).
-        rowHeader: p.selectable ? { formatter: rowCheckbox, titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true,
+        rowHeader: p.selectable ? { formatter: cell=>rowCheckbox(cell,S,p._recordIndex||p.index||'id'), titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true,
           width: leadPx, minWidth: leadPx, maxWidth: leadPx,
           cssClass: cx('plx-data-table__cell--select', B + '__w-lead', B + '__cell--align-center', B + '__head-align-center', labelled && 'plx-data-table__cell--row-label'),
         } : false,
@@ -993,17 +1020,18 @@ export function TableEngine(props) {
           const q = latest.current, size = M === 'pages' ? params.size || step : step;
           const ask = { page: M === 'pages' ? params.page || 1 : 1, size, sort: (params.sort || []).map((x) => ({ field: x.field, dir: x.dir })),
             filters: (params.filter || []).map((x) => ({ field: x.field, type: x.type, value: x.value })), search: q.search };
-          loadRef.current = { pages: 1, ask, busy: false };
+          const requestState = loadRef.current = { pages: 1, ask, busy: false }; setBusy(false);
           return Promise.resolve(q.fetchRows(ask)).then((r) => {
             const rows = (r && r.rows) || [], total = r && r.total != null ? Number(r.total) : rows.length;
-            totalRef.current = total;
+            if (loadRef.current === requestState) totalRef.current = total;
             return M === 'pages' ? { last_page: Math.max(1, Math.ceil(total / size)), last_row: total, data: rows } : rows;
-          }, (err) => { if (alive) setError(err || new Error('The rows could not load')); throw err; });
+          }, (err) => { if (alive && loadRef.current === requestState) setError(err || new Error('The rows could not load')); throw err; });
         };
         Object.assign(opts, { ajaxURL: 'plenix:rows', ajaxRequestFunc: request, sortMode: 'remote', filterMode: 'remote' });
         delete opts.data;
       }
       opts.columns = defsOf(p.columns, host).concat(optsRowMenu ? [optsRowMenu] : []);
+      Tabulator.extendModule('filter','filters',{plxBytes:(query,value)=>byteMatches(query,value)});
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
       tableRef.current = table;
@@ -1036,7 +1064,7 @@ export function TableEngine(props) {
         // when it already matches)
         if (table) syncSelection(table);
         // the header checkbox (Tabulator's select all / none) gets the same full-cell target as the rows'
-        host.querySelectorAll('.tabulator-header .tabulator-row-header input[type="checkbox"]').forEach((b) => { if (!b.closest('.plx-data-table__check')) { const at = b.parentNode, next = b.nextSibling; at.insertBefore(checkTarget(b), next); } });
+        host.querySelectorAll('.tabulator-header .tabulator-row-header input[type="checkbox"]').forEach((b) => { b.setAttribute('aria-label',S.selectAll); if (!b.closest('.plx-data-table__check')) { const at = b.parentNode, next = b.nextSibling; at.insertBefore(checkTarget(b), next); } });
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => { if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', S.selectRow + ' ' + (n + 1)); });
         // a row handle is a Tab stop: Enter or Space opens its move menu, Alt + the arrow keys move the row
         if (table && !isStatic) nameGrips(table);
@@ -1046,24 +1074,26 @@ export function TableEngine(props) {
           h.setAttribute('aria-keyshortcuts', 'Alt+ArrowUp Alt+ArrowDown Alt+Home Alt+End');
         });
       };
-      table.on('renderComplete', () => { aria(); syncFoot(table); watchEnd(table); });
+      table.on('scrollVertical',()=>bump());
+      table.on('renderComplete', () => { bump(); aria(); syncFoot(table); watchEnd(table); });
       table.on('tableBuilt', () => {
-        aria(); builtRef.current = true; fitRoom(); syncFoot(table); watchEnd(table);
+        if (!alive || tableRef.current !== table) return;
+        aria(); builtRef.current = true; narrowRef.current?.(); fitRoom(); syncFoot(table); watchEnd(table);
         // the body's scrollbars float over the rows and take no room (owner, 2026-10-15)
         if (!unfloat) unfloat = floatingScroll(host, host.querySelector('.tabulator-tableholder'));
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h && !(ev === 'rowClick' && a[0].target.closest(INTERACTIVE))) h(...a); }));
-        const selectionChanged = (activeRows = table.getRows('active')) => {
+        const selectionChanged = (activeRows = rowsOf(table, 'active')) => {
           const q = latest.current; if (syncing.current || !q.onSelectionChange) return;
-          const rows = table.getSelectedRows(), visible = new Set(activeRows);
-          q.onSelectionChange(rows.map((r) => r.getData()[q.index || 'id']), { count: rows.length, hidden: rows.filter((r) => !visible.has(r)).length });
+          const rows = selectedOf(table), visible = new Set(activeRows);
+          q.onSelectionChange(rows.map((r) => dataOf(r)[q.index || 'id']), { count: rows.length, hidden: rows.filter((r) => !visible.has(r)).length });
         };
         table.on('rowSelectionChanged', () => selectionChanged());
         table.on('dataFiltered', (filters, activeRows) => {
           if (latest.current.keepHiddenSelection === false) {
             const active = new Set(activeRows);
             syncing.current = true;
-            table.getSelectedRows().filter((r) => !active.has(r)).forEach((r) => r.deselect());
+            selectedOf(table).filter((r) => !active.has(r)).forEach((r) => selectRow(r,false));
             syncing.current = false;
           }
           selectionChanged(activeRows);
@@ -1074,8 +1104,10 @@ export function TableEngine(props) {
           restoreView(table); applyView(table); table.on('dataSorted', () => saveView());
           tintGrouped(table);
         }
+        if (!alive || tableRef.current !== table) return;
         if (latest.current.onReady) latest.current.onReady(table);
-        bump();
+        if (!alive || tableRef.current !== table) return;
+        syncFoot(table); watchEnd(table); bump();
       });
     }).catch((err) => { if (alive) setError(err); });
     fitRef.current = () => fitRoom();
@@ -1118,7 +1150,8 @@ export function TableEngine(props) {
     const onWindow = () => { fitRoom(); };
     win.addEventListener('resize', onWindow);
     let shownBefore = !!(frameRef.current && frameRef.current.offsetWidth), lastWidth = frameRef.current ? frameRef.current.offsetWidth : 0, frame = 0;
-    const narrowNow = (width) => listed && width > 0 && width < tablePx(LIST_WIDTH, frameRef.current);
+    const narrowNow = width => {if(!listed||width<=0)return false;let limit=typeof narrowAt==='number'?narrowAt:tablePx(narrowAt,frameRef.current);if(narrow==='auto'){const t=tableRef.current;limit=t&&builtRef.current?t.getColumns().filter(c=>keys.includes(c.getField())||!c.getField()).reduce((sum,c)=>sum+(c.getDefinition().width||c.getDefinition().minWidth||c.getWidth()),0):0;}return width<limit;};
+    narrowRef.current=()=>{const f=frameRef.current;if(f)setListNow(narrowNow(f.offsetWidth));};
     const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
       const width = frameRef.current ? frameRef.current.offsetWidth : 0, now = !!width;
       // a Narrow grid that became a list (or a table again): drawn again with the renderer that fits
@@ -1153,7 +1186,7 @@ export function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
+  }, [shape, index, narrow, narrowAt, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
 
   // the footer's numbers, after each render of the rows: the page, its range and the total ("pages"), or the rows shown
   // and the total ("load-more"); a page's rows carry their place in the whole set
@@ -1165,7 +1198,7 @@ export function TableEngine(props) {
       const size = t.getPageSize() || step, page = t.getPage() || 1, max = t.getPageMax() || 1;
       next = { page, max, size, total };
       if (t.element) t.element.setAttribute('aria-rowcount', String(total + 1));
-      t.getRows('display').forEach((r, i) => { const e = r.getElement(); if (e) e.setAttribute('aria-rowindex', String((page - 1) * size + i + 2)); });
+      rowsOf(t, 'display').forEach((r, i) => { const e = r.getElement(); if (e) e.setAttribute('aria-rowindex', String((page - 1) * size + i + 2)); });
     } else next = { shown: remote ? t.getDataCount() : Math.min(countRef.current, total), total };
     footRef.current = next;
     setFoot((f) => (f && Object.keys(next).every((k) => f[k] === next[k]) ? f : next));
@@ -1179,7 +1212,7 @@ export function TableEngine(props) {
       ioRef.current = new win.IntersectionObserver((list) => { if (list.some((e) => e.isIntersecting) && loadMoreRef.current) loadMoreRef.current(); },
         { root: holder, rootMargin: tablePx(AHEAD, hostRef.current) + 'px' });
     }
-    const rows = t.getRows('display'), last = rows[rows.length - 1], el = last ? last.getElement() : null;
+    const rows = rowsOf(t, 'display'), last = rows[rows.length - 1], el = last ? last.getElement() : null;
     if (el === ioRef.current.plxEl) return;
     ioRef.current.disconnect(); ioRef.current.plxEl = el;
     if (el) ioRef.current.observe(el);
@@ -1192,8 +1225,7 @@ export function TableEngine(props) {
     const before = f.shown, had = hostRef.current && hostRef.current.ownerDocument.activeElement;
     L.busy = true; setBusy(true);
     const done = () => {
-      L.busy = false; setBusy(false);
-      if (tableRef.current !== t) return;
+      L.busy = false; if (loadRef.current !== L || tableRef.current !== t) return; setBusy(false);
       if (holder && holder.scrollTop !== top) holder.scrollTop = top;
       syncFoot(t); watchEnd(t);
       const now = footRef.current || f;
@@ -1201,13 +1233,13 @@ export function TableEngine(props) {
       // the last rows came: the Load more button goes, and the focus it had goes to the scrolling body
       if (now.shown >= now.total && had && had.closest && had.closest('.' + B + '__more') && holder) holder.focus({ preventScroll: true });
     };
-    const fail = (err) => { L.busy = false; setBusy(false); setError(err || new Error('The rows could not load')); };
+    const fail = (err) => { L.busy = false; if (loadRef.current !== L || tableRef.current !== t) return; setBusy(false); setError(err || new Error('The rows could not load')); };
     if (!remote) { countRef.current = Math.min(f.total, countRef.current + step); Promise.resolve(t.setPageSize(countRef.current)).then(done, fail); return; }
     const ask = Object.assign({}, L.ask, { page: L.pages + 1, size: step, search: latest.current.search });
     Promise.resolve(latest.current.fetchRows(ask)).then((r) => {
-      if (tableRef.current !== t) return null;
+      if (tableRef.current !== t || loadRef.current !== L) return null;
       L.pages += 1; if (r && r.total != null) totalRef.current = Number(r.total);
-      return t.addData((r && r.rows) || [], false);
+      return (t.plxAddData||t.addData.bind(t))((r && r.rows) || [], false);
     }).then(done, fail);
   };
   loadMoreRef.current = loadMore;
@@ -1225,7 +1257,7 @@ export function TableEngine(props) {
   const wireRows = (table, host) => {
     if (!(latest.current.options || {}).movableRows || host.hasAttribute('data-plx-move')) return;
     host.setAttribute('data-plx-move', '');
-    const rowOf = (el) => { const r = el && el.closest('.tabulator-row'); return r ? table.getRows().find((x) => x.getElement() === r) : null; };
+    const rowOf = (el) => { const r = el && el.closest('.tabulator-row'); return r ? rowsOf(table).find((x) => x.getElement() === r) : null; };
     const clear = () => host.querySelectorAll('.' + B + '__drop').forEach((x) => x.classList.remove(B + '__drop'));
     host.addEventListener('pointerdown', (ev) => { const h = ev.target.closest && ev.target.closest('.' + B + '__cell--handle'); if (h) h.draggable = true; });
     host.addEventListener('dragstart', (ev) => {
@@ -1398,11 +1430,11 @@ export function TableEngine(props) {
   const syncSelection = (table) => {
     const want = latest.current.selected; if (!want || !table) return;
     const key = latest.current.index || 'id';
-    const have = new Set(table.getSelectedData().map((x) => String(x[key]))), goal = new Set(want.map(String));
+    const have = new Set(selectedOf(table).map((row) => String(dataOf(row)[key]))), goal = new Set(want.map(String));
     if (have.size === goal.size && Array.from(goal).every((k) => have.has(k))) return;
     syncing.current = true;
-    table.getSelectedRows().forEach((r) => { if (!goal.has(String(r.getData()[key]))) r.deselect(); });
-    table.getRows().forEach((r) => { if (goal.has(String(r.getData()[key])) && !r.isSelected()) r.select(); });
+    selectedOf(table).forEach((r) => { if (!goal.has(String(dataOf(r)[key]))) selectRow(r,false); });
+    rowsOf(table).forEach((r) => { if (goal.has(String(dataOf(r)[key])) && !r.isSelected()) selectRow(r,true); });
     syncing.current = false;
   };
   React.useEffect(() => { if (builtRef.current) syncSelection(tableRef.current); }, [(selected || []).join(SEP)]);
@@ -1430,7 +1462,7 @@ export function TableEngine(props) {
     shown.current = snap(data);
     // new rows clear Tabulator's selection: that is not the person changing it; the page's selection is applied again
     syncing.current = true;
-    table.replaceData(data || []).then(() => {
+    (table.plxReplaceData||table.replaceData.bind(table))(data || []).then(() => {
       syncing.current = false;
       syncSelection(table);
       const keep = new Set();
@@ -1450,7 +1482,7 @@ export function TableEngine(props) {
       const [key, field] = id.split(SEP);
       const c = columns.find((x) => x.field === field);
       const cell = owners.current.get(id);
-      if (!c || !c.render || !cell || !key) return;
+      if (!c || !c.render || !cell || !key || !(node.isConnected||node.contains(table.rowManager.renderer.plxFocus))) return;
       // one element is the cell's own content (vertical alignment: middle); text, or text with elements (a sentence with a code
       // part), flows as one line of text in a value element, as a plain value does
       // (a list or fragment holding one element and no text is that element)
@@ -1463,7 +1495,7 @@ export function TableEngine(props) {
     // a group row's value, drawn as its column's cells draw it (a badge column shows the badge)
     groupCells.current.forEach((g, key) => {
       const c = columns.find((x) => x.field === g.c.field) || g.c;
-      if (!c.render) return;
+      if (!c.render || !g.node.isConnected) return;
       portals.push(ReactDOM.createPortal(c.render(g.row, null), g.node, 'group' + SEP + key));
     });
     // the view menu (owner, 2026-10-14): Row height (a check on the current step, like Airtable) and Wrap headers
@@ -1512,7 +1544,7 @@ export function TableEngine(props) {
     );
   }
   return (
-    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', M === 'pages' && B + '--pages', M === 'load-more' && B + '--load-more', className)} data-plx-render={virtual ? 'virtual' : undefined}
+    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', listNow && B+'--narrow', M === 'pages' && B + '--pages', M === 'load-more' && B + '--load-more', className)} data-plx-render={virtual ? 'virtual' : undefined}
       data-plx-height={height && height !== '100%' ? (sizeName(height) || undefined) : undefined} data-plx-fit={autoFit ? '' : undefined}
       data-plx-row-height={isStatic || listNow ? undefined : rowStep} data-plx-wrap-headers={!isStatic && wrapHead ? '' : undefined}>
       {failed ? (
@@ -1532,6 +1564,8 @@ export function TableEngine(props) {
 }
 
 // the interactive table: records to sort, filter, select, open, edit, group or nest
-export function DataTable(props) { return <TableEngine {...props} isStatic={false} />; }
+function ActionTable(props){const rowMenu=useDataTableActions(props.rowMenu,undefined,props.strings);return <MultiTable {...props} rowMenu={rowMenu}/>;}
+export function DataTable(props) { const toast=useOptionalToast();return toast?<ActionTable {...props}/>:<ToastProvider><ActionTable {...props}/></ToastProvider>; }
+DataTable.useActions=useDataTableActions;
 // starts loading the engine before the first grid mounts (a page whose first screen has a table calls it as it starts)
 DataTable.preload = () => { loadTabulator().catch(() => {}); };

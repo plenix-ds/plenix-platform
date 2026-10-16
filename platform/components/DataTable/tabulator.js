@@ -6,7 +6,7 @@
    Props:
      loadTabulator(win): adds Tabulator's core stylesheet and script to the page once (the given window's, default this
        one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
-     tablePx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
+     tablePx(token, element): a size token or CSS length in pixels (Tabulator takes numeric widths); 0 when unknown
      prefetchTabulator(): fetches the two files into the browser's cache without running them (no-op when loaded)
      vendorBase(): the address of the vendor folder (see Behavior); the RichTextEditor engine loads from it too
    Behavior:
@@ -104,9 +104,19 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof w
 // a token's value on the page, as pixels: '--plx-ref-size-36px' -> 36; the token written inside var() is accepted too
 export function tablePx(token, el) {
   if (!token || typeof document === 'undefined') return 0;
-  const m = /--[\w-]+/.exec(String(token));
-  if (!m) return parseFloat(token) || 0;
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(m[0]).trim();
+  const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());
+  if (!m) {
+    if (typeof token === 'number' || /^\d+(?:\.\d+)?px$/.test(String(token))) return parseFloat(token) || 0;
+    const host = el || document.documentElement, doc = host.ownerDocument || document, win = doc.defaultView;
+    if (!win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
+    // Measure a caller CSS length in the container's inherited font and available width, without an inline style or a retained rule.
+    const sheet = new win.CSSStyleSheet(), before = doc.adoptedStyleSheets, probe = doc.createElement('span');
+    sheet.replaceSync('.plx-data-table__length-probe{inline-size:' + String(token) + ';}');
+    probe.className = 'plx-data-table__length-probe';
+    try { doc.adoptedStyleSheets = before.concat(sheet); host.appendChild(probe); return probe.getBoundingClientRect().width || 0; }
+    finally { probe.remove(); doc.adoptedStyleSheets = before; }
+  }
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(m[1] || m[2]).trim();
   if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
-  return parseFloat(v) || 0;
+  return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tablePx(v, el) : 0;
 }

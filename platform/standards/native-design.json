@@ -5013,6 +5013,27 @@
      "web": "specialized|Thinking / processing state",
      "use": "Communicate active work and caller supplied progress steps without invented completion.",
      "compose": "Use named native controls and explicit model callbacks; never auto-accept generated edits."
+    },
+    {
+     "name": "StreamingText: Streaming",
+     "web": "specialized|Streaming response",
+     "use": "Read partial plain-text output without screen-reader interruption on every token.",
+     "compose": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "StreamingText: Done",
+     "web": "specialized|Streaming response",
+     "use": "Read partial plain-text output without screen-reader interruption on every token.",
+     "compose": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "StreamingText: Stopped",
+     "web": "specialized|Streaming response",
+     "use": "Read partial plain-text output without screen-reader interruption on every token.",
+     "compose": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+     "views": "Use named native controls and retain failed drafts."
     }
    ],
    "anatomy": [
@@ -5042,7 +5063,10 @@
     "Retry, Cancel and ready file link",
     "Named requested action",
     "Supplied explanation or proposed content",
-    "Explicit review and recovery controls"
+    "Explicit review and recovery controls",
+    "Status Badge with icon",
+    "Retained response text",
+    "Persistent completion LiveRegion"
    ],
    "attributes": [
     {
@@ -5177,6 +5201,12 @@
      "value": "plx-sys-space-stack-sm",
      "compose": "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))",
      "views": "Use the existing Plenix spacing role between native controls."
+    },
+    {
+     "attribute": "Composition spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Read the spacing role from the generated token adapter.",
+     "views": "Read the spacing role from the Android token adapter."
     }
    ],
    "states": [
@@ -5221,6 +5251,14 @@
     {
      "name": "Failed",
      "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+    },
+    {
+     "name": "Generating",
+     "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep the draft and explain how to try again."
     }
    ],
    "code": {
@@ -6773,10 +6811,67 @@
     ]
    }
   },
+  "android-forms|Form screen": {
+   "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+   "variants": [
+    {
+     "name": "Wave 15 Create page",
+     "web": "page-structures|Create page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    },
+    {
+     "name": "Wave 15 Edit page",
+     "web": "page-structures|Edit page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    },
+    {
+     "name": "Wave 15 Authentication page",
+     "web": "page-structures|Authentication page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    },
+    {
+     "name": "Wave 15 Authentication template",
+     "web": "page-structures|Authentication template",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    }
+   ],
+   "anatomy": [
+    "Page title and task actions",
+    "Existing native content and navigation controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "compose": "MaterialTheme.colorScheme.onSurface",
+     "views": "Use the existing Plenix contentDefault color role"
+    }
+   ],
+   "states": {
+    "default": "Content and actions follow existing controls.",
+    "loading": "Keep content while requests are pending; disable duplicate submissions.",
+    "error": "Preserve field values and offer a recovery action."
+   },
+   "code": {
+    "compose": [
+     "Scaffold { content() }"
+    ],
+    "views": [
+     "Use existing page containers and lifecycle-aware event handlers."
+    ]
+   }
+  },
   "android-forms|OutlinedTextField": {
    "summary": "A Plenix text field on Android is the Material 3 outlined text field, kept native in behavior (the label that floats into the outline, the keyboard type, autofill, the cursor and selection handles, TalkBack reading the label, helper and error, font scale) and styled with the Plenix tokens: a white container at least 56 dp tall with a 6 dp radius and a 1 dp border, DM Sans text at the body text role and the Plenix field colors. Focus and an error change only the border color, never its width. Material’s default has a 4 dp radius and a border that thickens to 2 dp in the primary color on focus; Plenix keeps Material’s structure and replaces the look.",
-   "follows": "Material 3: Text fields",
-   "followsUrl": "https://m3.material.io/components/text-fields/specs",
    "variants": [
     {
      "name": "Text field",
@@ -6821,6 +6916,41 @@
      "compose": "readOnly = true (the value can be selected and copied)",
      "views": "TextInputEditText with isFocusable = true, isCursorVisible = false, inputType = InputType.TYPE_NULL",
      "use": "A value people can read and copy but not change here."
+    },
+    {
+     "name": "PromptInput: Single line",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "PromptInput: Multi line",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "PromptInput: Attachments",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "PromptInput: Stop",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "PromptInput: Model chip",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "compose": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "views": "Use named native controls and retain failed drafts."
     }
    ],
    "anatomy": [
@@ -6848,7 +6978,13 @@
      "part": "E",
      "name": "Trailing icon",
      "about": "An optional icon button, such as Clear or Show password."
-    }
+    },
+    "Visible Field label",
+    "Input or Textarea",
+    "Optional local FileInput",
+    "Model chip menu",
+    "Send or Stop action",
+    "Retained error"
    ],
    "attributes": [
     {
@@ -7026,6 +7162,12 @@
      "views": "app:endIconMode; setEndIconTintList",
      "follows": "Material 3: Text fields",
      "followsUrl": "https://m3.material.io/components/text-fields/specs"
+    },
+    {
+     "attribute": "Composition spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Read the spacing role from the generated token adapter.",
+     "views": "Read the spacing role from the Android token adapter."
     }
    ],
    "states": [
@@ -7058,6 +7200,14 @@
      "token": "plx-comp-input-readonly-background",
      "compose": "readOnly = true; the sunken container",
      "views": "inputType = InputType.TYPE_NULL; boxBackgroundColor = the sunken color"
+    },
+    {
+     "name": "Generating",
+     "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep the draft and explain how to try again."
     }
    ],
    "code": {
@@ -7238,7 +7388,9 @@
      "val email = findViewById<TextInputLayout>(R.id.email_layout).apply { plenix() }",
      "email.error = if (valid) null else getString(R.string.email_invalid)   // the border turns the danger color; TalkBack reads it"
     ]
-   }
+   },
+   "follows": "Material 3: Text fields",
+   "followsUrl": "https://m3.material.io/components/text-fields/specs"
   },
   "android-forms|Radio group": {
    "summary": "A Plenix radio group on Android is a column of Material 3 RadioButton rows in a selectable group, kept native in behavior (each whole row selects its option, TalkBack reads the option, its state and its position in the group, keyboard and D-pad move between options, font scale) and styled with the Plenix tokens: the action color for the selected circle, a strong gray outline for the others, a legend over the group and labels in DM Sans at the body text role in 48 dp rows. Material’s default uses the theme’s primary and on-surface variant colors with Roboto labels; Plenix keeps Material’s circle, sizes and structure and replaces the colors and type. Use a radio group for two to about six options where one must be chosen; longer lists use an exposed dropdown menu.",
@@ -8856,13 +9008,36 @@
      "use": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
      "compose": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
      "views": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog."
+    },
+    {
+     "name": "Wave 15 Angular",
+     "web": "implementation|Angular",
+     "use": "Read-only implementation guidance; no native dependency on a web framework.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    },
+    {
+     "name": "Wave 15 Analytics instrumentation",
+     "web": "implementation|Analytics instrumentation",
+     "use": "Read-only implementation guidance; no native dependency on a web framework.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    },
+    {
+     "name": "Wave 15 Figma libraries",
+     "web": "implementation|Figma libraries",
+     "use": "Read-only implementation guidance; no native dependency on a web framework.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
     }
    ],
    "anatomy": [
     "Application locale and catalog",
     "Accessible content",
     "Named actions and recovery",
-    "Build or review evidence"
+    "Build or review evidence",
+    "Page title and task actions",
+    "Existing native content and navigation controls"
    ],
    "attributes": [
     {
@@ -8870,6 +9045,13 @@
      "value": "Application-owned complete messages and platform locale formatting",
      "compose": "Read localized resources and format values in the active locale; preserve the person’s draft.",
      "views": "Read localized resources and format values in the active locale; preserve the person’s draft."
+    },
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "compose": "MaterialTheme.colorScheme.onSurface",
+     "views": "Use the existing Plenix contentDefault color role"
     }
    ],
    "states": [
@@ -12721,6 +12903,184 @@
      "primaryButton.text = model.actionLabel",
      "primaryButton.setOnClickListener { model.submit() }",
      "// Keep errors attached to their fields and restore focus after a modal task."
+    ]
+   }
+  },
+  "android-screen-structures|Detail": {
+   "summary": "AI conversation additions use existing controls, retain drafts and mark generated output without a new color.",
+   "variants": [
+    {
+     "name": "AIChat: Panel",
+     "web": "specialized|AI chat",
+     "use": "Have an explicitly identified conversation with AI while retaining review, citations and caller-owned history.",
+     "compose": "Suggestions fill the draft and focus it without sending. Caller owns each response and transport. Source links navigate; feedback, regenerate and refine are explicit.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "AIChat: Full page",
+     "web": "specialized|AI chat",
+     "use": "Have an explicitly identified conversation with AI while retaining review, citations and caller-owned history.",
+     "compose": "Suggestions fill the draft and focus it without sending. Caller owns each response and transport. Source links navigate; feedback, regenerate and refine are explicit.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "Wave 15 Landing page",
+     "web": "page-structures|Landing page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    },
+    {
+     "name": "Wave 15 Error page",
+     "web": "page-structures|Error page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    },
+    {
+     "name": "Wave 15 Full-screen experience",
+     "web": "page-structures|Full-screen experience",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "Scaffold { pageContent() }",
+     "views": "Use the existing responsive activity layout and native controls."
+    }
+   ],
+   "anatomy": [
+    "Chat header with AILabel",
+    "Keyboard reachable Chat thread",
+    "GeneratedContent and StreamingText",
+    "Citation source links",
+    "Optional RefineMenu and PromptSuggestions",
+    "PromptInput and AIDisclaimer",
+    "Page title and task actions",
+    "Existing native content and navigation controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Composition spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Read the spacing role from the generated token adapter.",
+     "views": "Read the spacing role from the Android token adapter."
+    },
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "compose": "MaterialTheme.colorScheme.onSurface",
+     "views": "Use the existing Plenix contentDefault color role"
+    }
+   ],
+   "states": [
+    {
+     "name": "Generating",
+     "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep the draft and explain how to try again."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// Use native text fields, named buttons and caller-owned transport.",
+     "TextField(value = draft, onValueChange = onDraftChange, label = { Text(strings.prompt) })",
+     "// Announce completion or stop; preserve partial output."
+    ],
+    "views": [
+     "promptField.setContentDescription(strings.prompt);",
+     "// Restore focus on dismissal and retain the draft on failure."
+    ]
+   }
+  },
+  "android-screen-structures|List-detail": {
+   "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+   "variants": [
+    {
+     "name": "Wave 15 Split workspace",
+     "web": "page-structures|Split workspace",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "compose": "ListDetailPaneScaffold(listPane = list, detailPane = detail)",
+     "views": "Use the existing responsive activity layout and native controls."
+    }
+   ],
+   "anatomy": [
+    "Page title and task actions",
+    "Existing native content and navigation controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "compose": "MaterialTheme.colorScheme.onSurface",
+     "views": "Use the existing Plenix contentDefault color role"
+    }
+   ],
+   "states": {
+    "default": "Content and actions follow existing controls.",
+    "loading": "Keep content while requests are pending; disable duplicate submissions.",
+    "error": "Preserve field values and offer a recovery action."
+   },
+   "code": {
+    "compose": [
+     "Scaffold { content() }"
+    ],
+    "views": [
+     "Use existing page containers and lifecycle-aware event handlers."
+    ]
+   }
+  },
+  "android-screen-structures|Supporting pane": {
+   "summary": "AI conversation additions use existing controls, retain drafts and mark generated output without a new color.",
+   "variants": [
+    {
+     "name": "AssistantPanel: Inspector",
+     "web": "specialized|AI assistant",
+     "use": "Bring an AI conversation alongside current work using an existing inspector or responsive overlay.",
+     "compose": "Inspector adapts through SidePanel; overlay contains and restores focus through Sheet. Dismissal reports closed state and never sends or silently cancels transport.",
+     "views": "Use named native controls and retain failed drafts."
+    },
+    {
+     "name": "AssistantPanel: Overlay",
+     "web": "specialized|AI assistant",
+     "use": "Bring an AI conversation alongside current work using an existing inspector or responsive overlay.",
+     "compose": "Inspector adapts through SidePanel; overlay contains and restores focus through Sheet. Dismissal reports closed state and never sends or silently cancels transport.",
+     "views": "Use named native controls and retain failed drafts."
+    }
+   ],
+   "anatomy": [
+    "SidePanel or Sheet",
+    "Named header and dismissal",
+    "Caller-supplied context",
+    "AIChat"
+   ],
+   "attributes": [
+    {
+     "attribute": "Composition spacing",
+     "value": "plx-sys-space-stack-sm",
+     "compose": "Read the spacing role from the generated token adapter.",
+     "views": "Read the spacing role from the Android token adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "Generating",
+     "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep the draft and explain how to try again."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// Use native text fields, named buttons and caller-owned transport.",
+     "TextField(value = draft, onValueChange = onDraftChange, label = { Text(strings.prompt) })",
+     "// Announce completion or stop; preserve partial output."
+    ],
+    "views": [
+     "promptField.setContentDescription(strings.prompt);",
+     "// Restore focus on dismissal and retain the draft on failure."
     ]
    }
   },
@@ -18301,6 +18661,38 @@
      "uikit": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
      "appkit": "Plain text selections replace the stored caret query and return focus. Rich text delegates atomic mentions to the existing editor engine.",
      "use": "Mention a directory entity in plain or formatted text while retaining its identity."
+    },
+    {
+     "name": "Wave 15 Create page",
+     "web": "page-structures|Create page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "Form { fields }; keep draft on save failure",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    },
+    {
+     "name": "Wave 15 Edit page",
+     "web": "page-structures|Edit page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "Form { fields }; keep draft on save failure",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    },
+    {
+     "name": "Wave 15 Authentication page",
+     "web": "page-structures|Authentication page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    },
+    {
+     "name": "Wave 15 Authentication template",
+     "web": "page-structures|Authentication template",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
     }
    ],
    "anatomy": [
@@ -18310,7 +18702,9 @@
     "Save, Reset and feedback",
     "Named text editor",
     "Mention trigger or Add mention button",
-    "EntityPicker or rich-text suggestion list"
+    "EntityPicker or rich-text suggestion list",
+    "Page title and task actions",
+    "Existing native content and navigation controls"
    ],
    "attributes": [
     {
@@ -18319,6 +18713,14 @@
      "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
      "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
      "appkit": "Read the macOS spacing adapter."
+    },
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+     "uikit": "label.textColor = Plenix.Color.contentDefault",
+     "appkit": "label.textColor = Plenix.Color.contentDefault"
     }
    ],
    "states": [
@@ -20927,6 +21329,30 @@
      "swiftui": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
      "uikit": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog.",
      "appkit": "This package runs on the web or Node. Native applications use their own controls and may consume the same read-only design-system catalog."
+    },
+    {
+     "name": "Wave 15 Angular",
+     "web": "implementation|Angular",
+     "use": "Read-only implementation guidance; no native dependency on a web framework.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    },
+    {
+     "name": "Wave 15 Analytics instrumentation",
+     "web": "implementation|Analytics instrumentation",
+     "use": "Read-only implementation guidance; no native dependency on a web framework.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    },
+    {
+     "name": "Wave 15 Figma libraries",
+     "web": "implementation|Figma libraries",
+     "use": "Read-only implementation guidance; no native dependency on a web framework.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
     }
    ],
    "anatomy": [
@@ -20936,7 +21362,9 @@
     "Application locale and catalog",
     "Accessible content",
     "Named actions and recovery",
-    "Build or review evidence"
+    "Build or review evidence",
+    "Page title and task actions",
+    "Existing native content and navigation controls"
    ],
    "attributes": [
     {
@@ -20952,6 +21380,14 @@
      "swiftui": "Read localized resources and format values in the active locale; preserve the person’s draft.",
      "uikit": "Read localized resources and format values in the active locale; preserve the person’s draft.",
      "appkit": "Read localized resources and format values in the active locale; preserve the person’s draft."
+    },
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+     "uikit": "label.textColor = Plenix.Color.contentDefault",
+     "appkit": "label.textColor = Plenix.Color.contentDefault"
     }
    ],
    "states": [
@@ -21061,6 +21497,65 @@
     ]
    }
   },
+  "ios-layout|Scroll views": {
+   "summary": "Wave 15 page compositions use the existing native page structure and existing roles. Navigation, forms, errors and instrumentation remain application owned.",
+   "variants": [
+    {
+     "name": "Wave 15 Landing page",
+     "web": "page-structures|Landing page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    },
+    {
+     "name": "Wave 15 Error page",
+     "web": "page-structures|Error page",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    },
+    {
+     "name": "Wave 15 Full-screen experience",
+     "web": "page-structures|Full-screen experience",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "NavigationStack { pageContent }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
+    }
+   ],
+   "anatomy": [
+    "Page title and task actions",
+    "Existing native content and navigation controls"
+   ],
+   "attributes": [
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+     "uikit": "label.textColor = Plenix.Color.contentDefault",
+     "appkit": "label.textColor = Plenix.Color.contentDefault"
+    }
+   ],
+   "states": {
+    "default": "Content and actions follow existing controls.",
+    "loading": "Keep content while requests are pending; disable duplicate submissions.",
+    "error": "Preserve field values and offer a recovery action."
+   },
+   "code": {
+    "swiftui": [
+     "NavigationStack { ScrollView { content } }"
+    ],
+    "uikit": [
+     "Use the existing navigation controller and scroll view."
+    ],
+    "appkit": [
+     "Use the existing split view controller and scroll view."
+    ]
+   }
+  },
   "ios-layout|Split views": {
    "summary": "Plenix on iOS compares two versions of one item the way the web’s version comparison does: on iPad and in landscape the two versions side by side in the columns of a split view, each headed by its version and date in DM Mono, the changed values marked with a Changed badge; on iPhone one version after the other with a segmented control to switch, a slider over two pictures, or the text’s lines with the added and removed ones marked by a sign and a word. Apple’s default is the split view’s plain columns; Plenix keeps the split view, its column widths and its gestures, and changes the look: Plenix surfaces, DM Sans and DM Mono, and the success and danger soft surfaces for added and removed lines.",
    "variants": [
@@ -21099,6 +21594,14 @@
      "uikit": "UICollectionView list of diff lines",
      "appkit": "NSTableView of lines (a macOS build of the tokens is needed)",
      "use": "Documents, captions and descriptions."
+    },
+    {
+     "name": "Wave 15 Split workspace",
+     "web": "page-structures|Split workspace",
+     "use": "Use existing page structure, application navigation and native control behavior.",
+     "swiftui": "NavigationSplitView { list } detail: { detail }",
+     "uikit": "Use the existing navigation or split-view controller; preserve values on failure.",
+     "appkit": "Use the existing window and split-view controller; keep keyboard navigation."
     }
    ],
    "anatomy": [
@@ -21126,7 +21629,9 @@
      "part": "E",
      "name": "Change steps",
      "about": "Previous change and Next change in the toolbar move to each change."
-    }
+    },
+    "Page title and task actions",
+    "Existing native content and navigation controls"
    ],
    "attributes": [
     {
@@ -21194,6 +21699,14 @@
      "uikit": "stackView.spacing = Plenix.Space.spaceInlineMd",
      "appkit": "the split view’s divider (a macOS build of the tokens is needed)",
      "follows": "iOS"
+    },
+    {
+     "attribute": "Content color",
+     "token": "plx-sys-content-default",
+     "value": "Existing text role",
+     "swiftui": ".foregroundStyle(Plenix.Color.contentDefault)",
+     "uikit": "label.textColor = Plenix.Color.contentDefault",
+     "appkit": "label.textColor = Plenix.Color.contentDefault"
     }
    ],
    "states": [
@@ -26042,6 +26555,102 @@
      "swiftui": "Use named native controls and explicit model callbacks; never auto-accept generated edits.",
      "uikit": "Use accessible native actions and caller owned output.",
      "appkit": "Use the same explicit review behavior with native controls."
+    },
+    {
+     "name": "PromptInput: Single line",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "swiftui": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "PromptInput: Multi line",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "swiftui": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "PromptInput: Attachments",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "swiftui": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "PromptInput: Stop",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "swiftui": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "PromptInput: Model chip",
+     "web": "specialized|Prompt input",
+     "use": "Write, attach context and choose an available model before explicitly sending a prompt.",
+     "swiftui": "Enter sends once; Shift+Enter starts a line. IME composition does not submit. Failed requests retain the draft; Stop delegates transport cancellation.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "StreamingText: Streaming",
+     "web": "specialized|Streaming response",
+     "use": "Read partial plain-text output without screen-reader interruption on every token.",
+     "swiftui": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "StreamingText: Done",
+     "web": "specialized|Streaming response",
+     "use": "Read partial plain-text output without screen-reader interruption on every token.",
+     "swiftui": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "StreamingText: Stopped",
+     "web": "specialized|Streaming response",
+     "use": "Read partial plain-text output without screen-reader interruption on every token.",
+     "swiftui": "Only lifecycle transitions announce. Streaming tokens stay quiet; completion or stop announces the retained response. Content is plain text, never model HTML.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "AIChat: Panel",
+     "web": "specialized|AI chat",
+     "use": "Have an explicitly identified conversation with AI while retaining review, citations and caller-owned history.",
+     "swiftui": "Suggestions fill the draft and focus it without sending. Caller owns each response and transport. Source links navigate; feedback, regenerate and refine are explicit.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "AIChat: Full page",
+     "web": "specialized|AI chat",
+     "use": "Have an explicitly identified conversation with AI while retaining review, citations and caller-owned history.",
+     "swiftui": "Suggestions fill the draft and focus it without sending. Caller owns each response and transport. Source links navigate; feedback, regenerate and refine are explicit.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "AssistantPanel: Inspector",
+     "web": "specialized|AI assistant",
+     "use": "Bring an AI conversation alongside current work using an existing inspector or responsive overlay.",
+     "swiftui": "Inspector adapts through SidePanel; overlay contains and restores focus through Sheet. Dismissal reports closed state and never sends or silently cancels transport.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
+    },
+    {
+     "name": "AssistantPanel: Overlay",
+     "web": "specialized|AI assistant",
+     "use": "Bring an AI conversation alongside current work using an existing inspector or responsive overlay.",
+     "swiftui": "Inspector adapts through SidePanel; overlay contains and restores focus through Sheet. Dismissal reports closed state and never sends or silently cancels transport.",
+     "uikit": "Use native accessible controls and retained caller-owned draft.",
+     "appkit": "Use native accessible controls and the same explicit request boundary."
     }
    ],
    "anatomy": [
@@ -26073,7 +26682,26 @@
     "Explicit Link or action",
     "Named requested action",
     "Supplied explanation or proposed content",
-    "Explicit review and recovery controls"
+    "Explicit review and recovery controls",
+    "Visible Field label",
+    "Input or Textarea",
+    "Optional local FileInput",
+    "Model chip menu",
+    "Send or Stop action",
+    "Retained error",
+    "Status Badge with icon",
+    "Retained response text",
+    "Persistent completion LiveRegion",
+    "Chat header with AILabel",
+    "Keyboard reachable Chat thread",
+    "GeneratedContent and StreamingText",
+    "Citation source links",
+    "Optional RefineMenu and PromptSuggestions",
+    "PromptInput and AIDisclaimer",
+    "SidePanel or Sheet",
+    "Named header and dismissal",
+    "Caller-supplied context",
+    "AIChat"
    ],
    "attributes": [
     {
@@ -26089,6 +26717,15 @@
      "swiftui": "VStack(spacing: Plenix.Space.spaceStackSm)",
      "uikit": "UIStackView.spacing = Plenix.Space.spaceStackSm",
      "appkit": "Read the same spacing role from the macOS adapter."
+    },
+    {
+     "attribute": "Composition spacing",
+     "value": "plx-sys-space-stack-sm",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackSm)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackSm",
+     "appkit": "Read the same spacing role from the macOS adapter.",
+     "compose": "Read the spacing role from the generated token adapter.",
+     "views": "Read the spacing role from the Android token adapter."
     }
    ],
    "states": [
@@ -26155,6 +26792,14 @@
     {
      "name": "Failed",
      "behavior": "Announce recovery and preserve the custom instruction or proposed edit."
+    },
+    {
+     "name": "Generating",
+     "behavior": "Offer a named Stop action and retain partial output without speaking every token."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep the draft and explain how to try again."
     }
    ],
    "code": {

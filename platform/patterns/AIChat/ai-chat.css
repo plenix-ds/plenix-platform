@@ -1,0 +1,2 @@
+/* Plenix · AIChat uses existing component roles. */
+.plx-ai-chat { row-gap: var(--plx-comp-ai-chat-gap); }

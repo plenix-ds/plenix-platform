@@ -8,7 +8,7 @@ const data = JSON.parse(fs.readFileSync(F, 'utf8'));
 let n = 0;
 // a page that already exists keeps what it has: the fragment's variants (and anatomy, attributes, states rows) are added
 // by name, never replacing another lane's designs (2026-10-15: two lanes wrote android-patterns|Confirmation)
-const union = (a, b, key) => { const seen = new Set((a || []).map((x) => (key ? x[key] : JSON.stringify(x)))); return (a || []).concat((b || []).filter((x) => !seen.has(key ? x[key] : JSON.stringify(x)))); };
+const union = (a, b, key) => { if (!Array.isArray(a) || !Array.isArray(b)) return a !== undefined ? a : b; const seen = new Set((a || []).map((x) => (key ? x[key] : JSON.stringify(x)))); return (a || []).concat((b || []).filter((x) => !seen.has(key ? x[key] : JSON.stringify(x)))); };
 for (const f of files) {
   const frag = JSON.parse(fs.readFileSync(f, 'utf8'));
   for (const [k, v] of Object.entries(frag)) {

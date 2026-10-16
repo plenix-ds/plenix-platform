@@ -1,0 +1,15 @@
+{
+  "$description": "DataTable cell additions use existing roles.",
+  "plx-comp": {
+    "data-table-cell-rich-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Spacing within inert rich cells."
+    },
+    "data-table-cell-deleted-text": {
+      "$value": "{plx-sys.data-table-text-muted}",
+      "$type": "color",
+      "$description": "Muted text for a deleted value; italic is also used."
+    }
+  }
+}

@@ -1,0 +1,2 @@
+/* Plenix · PromptInput uses existing component roles. */
+.plx-prompt-input { row-gap: var(--plx-comp-prompt-input-gap); }

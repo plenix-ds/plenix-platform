@@ -24,3 +24,6 @@
 /* loading (loadOptions, loading) and a failed load: rows in place of the options */
 .plx-combobox__loading{align-items:center;color:var(--plx-comp-combobox-loading-text);column-gap:var(--plx-comp-combobox-loading-gap);display:flex;font-size:var(--plx-comp-combobox-loading-font-size);padding-block-end:var(--plx-comp-combobox-loading-padding-block);padding-block-start:var(--plx-comp-combobox-loading-padding-block);padding-inline-end:var(--plx-comp-combobox-loading-padding-inline);padding-inline-start:var(--plx-comp-combobox-loading-padding-inline);}
 .plx-combobox__error{color:var(--plx-comp-combobox-error-text);}
+
+/* The field may still grow to hold multiple values; its minimum follows the small control role. */
+.plx-combobox--size-sm{--plx-comp-input-min-height:var(--plx-comp-combobox-small-min-height);}

@@ -1,0 +1,10 @@
+{
+  "$description": "PromptInput existing-role composition spacing.",
+  "plx-comp": {
+    "prompt-input-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between PromptInput regions."
+    }
+  }
+}

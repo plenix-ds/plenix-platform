@@ -1,0 +1,37 @@
+{
+  "$description": "AI conversation compositions reuse native controls and explicit human requests.",
+  "map": {
+    "specialized|Prompt input": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-forms|OutlinedTextField"
+      ]
+    },
+    "specialized|Streaming response": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-feedback|Progress indicators"
+      ]
+    },
+    "specialized|AI chat": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-screen-structures|Detail"
+      ]
+    },
+    "specialized|AI assistant": {
+      "ios": [
+        "ios-specialized|Generative AI"
+      ],
+      "android": [
+        "android-screen-structures|Supporting pane"
+      ]
+    }
+  }
+}

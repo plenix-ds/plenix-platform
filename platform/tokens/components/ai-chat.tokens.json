@@ -1,0 +1,10 @@
+{
+  "$description": "AIChat existing-role composition spacing.",
+  "plx-comp": {
+    "ai-chat-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Space between AIChat regions."
+    }
+  }
+}

@@ -1,0 +1,4 @@
+@import url("../components/PromptInput/prompt-input.css");
+@import url("../components/StreamingText/streaming-text.css");
+@import url("../patterns/AIChat/ai-chat.css");
+@import url("../patterns/AssistantPanel/assistant-panel.css");

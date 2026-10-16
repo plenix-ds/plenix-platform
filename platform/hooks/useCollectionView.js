@@ -12,6 +12,7 @@
      <DataTable label="Assets" data={rows} columns={columns} {...v.tableProps} />
    Props:
      fields: the collection's fields (utils/fields.js)
+     options.data: optional source rows for immediate facet counts; otherwise the ready DataTable supplies its data
      options.text(row): the text the search looks in (without it there is no search)
      options.quick: the quick filters, by field: "list" (the row's value is one of the chosen) | "date" (a date range)
      options.columns: the starting columns { order, hidden } (default every field, in order)
@@ -22,13 +23,14 @@
    Returns:
      { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataTable's
-       Tabulator instance), searchProps, filterProps, quickProps(key), sortProps, groupProps, columnsProps, viewProps,
+       Tabulator instance), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
        tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, onReady } }
    Notes:
      The groups' order follows their levels: tableProps.sort is the group levels, then the sort levels. "Hide empty groups"
-     on a level leaves out the rows whose value for it is empty. */
+     on a level leaves out the rows whose value for it is empty. Quick counts apply search, advanced filters and every
+     other quick filter, excluding only their own selection. Repeated values in one row count that record once. */
 import React from 'react';
-import { matchesFilter, matchesDate, valueOf, fieldOf } from '../utils/fields.js';
+import { matchesFilter, matchesDate, valueOf, fieldOf, DATE_PRESETS } from '../utils/fields.js';
 
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 
@@ -69,6 +71,16 @@ export function useCollectionView(fields, options = {}) {
   const [columns, setColumns] = React.useState(initial.current.columns);
   const [view, setView] = React.useState(initial.current.view);
   const table = React.useRef(null);
+  const [tableRows, setTableRows] = React.useState(null);
+  const detach = React.useRef(() => {});
+  React.useEffect(() => () => detach.current(), []);
+  const onReady = React.useCallback((t) => {
+    detach.current(); table.current = t;
+    const sync = () => { const data = t.plxData ? t.plxData() : t.getData(); setTableRows(Array.isArray(data) ? data.slice() : []); };
+    sync();
+    if (t.on) { t.on('dataLoaded', sync); t.on('dataChanged', sync); }
+    detach.current = () => { if (t.off) { t.off('dataLoaded', sync); t.off('dataChanged', sync); } };
+  }, []);
   const skipSave = React.useRef(false);
   const [resetVersion, setResetVersion] = React.useState(0);
   const reset = () => {
@@ -83,12 +95,13 @@ export function useCollectionView(fields, options = {}) {
   }, [search, filter, quick, sort, group, columns, view, options.storageKey, resetVersion]);
   const setQuick = (k, v) => setQuickAll((o) => Object.assign({}, o, { [k]: v }));
   const latest = React.useRef(); latest.current = { fields, options };
-  const test = React.useCallback((row) => {
+  const testExcept = React.useCallback((row, except) => {
     const { fields: fs, options: o } = latest.current;
     const q = search.trim().toLowerCase();
     if (q && o.text && String(o.text(row)).toLowerCase().indexOf(q) < 0) return false;
     if (!matchesFilter(filter, row, fs, o.today)) return false;
     for (const k of Object.keys(o.quick || {})) {
+      if (k === except) continue;
       const f = fieldOf(fs, k), v = f ? valueOf(f, row) : row[k], chosen = quick[k];
       if (o.quick[k] === 'date') { if (!matchesDate(chosen, v, o.today)) return false; }
       else if (chosen && chosen.length && ![].concat(v).some((x) => chosen.indexOf(x) >= 0)) return false;
@@ -96,18 +109,32 @@ export function useCollectionView(fields, options = {}) {
     for (const g of group) if (g.hideEmpty) { const f = fieldOf(fs, g.field); if (blank(f ? valueOf(f, row) : row[g.field])) return false; }
     return true;
   }, [search, filter, quick, group]);
+  const test = React.useCallback((row) => testExcept(row), [testExcept]);
+  const source = Array.isArray(options.data) ? options.data : tableRows;
+  const facets = new Map();
+  const countsFor = (key) => {
+    if (!source) return undefined;
+    if (facets.has(key)) return facets.get(key);
+    const counts = new Map(), field = fields.find((f) => f.value === key);
+    const rows = source.filter((row) => testExcept(row, key));
+    if (options.quick && options.quick[key] === 'date') {
+      DATE_PRESETS.concat({ value: 'custom' }).forEach((preset) => counts.set(preset.value, rows.filter((row) => matchesDate(Object.assign({}, quick[key], { preset: preset.value }), field ? valueOf(field, row) : row[key], options.today)).length));
+    } else rows.forEach((row) => new Set([].concat(field ? valueOf(field, row) : row[key])).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1)));
+    facets.set(key, counts); return counts;
+  };
+  const groupable = fields.filter((f) => f.kind === 'select' || f.kind === 'multi');
   const sorters = group.map((g) => ({ field: g.field, dir: g.dir || 'asc' })).concat(sort.filter((s) => !group.some((g) => g.field === s.field)));
   return {
     search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick, setSort, setGroup, setColumns, setView, test, table,
     count: (rows) => rows.filter(test).length,
     searchProps: { value: search, onChange: (e) => setSearch(e.target.value), onClear: () => setSearch('') },
     filterProps: { fields, value: filter, onChange: setFilter },
-    quickProps: (k) => ({ value: quick[k] || (options.quick && options.quick[k] === 'date' ? { preset: 'any', from: '', to: '' } : []), onChange: (v) => setQuick(k, v) }),
+    quickProps: (k) => ({ value: quick[k] || (options.quick && options.quick[k] === 'date' ? { preset: 'any', from: '', to: '' } : []), onChange: (v) => setQuick(k, v), counts: countsFor(k) }),
     sortProps: { fields, value: sort, onChange: setSort, grouped: group.length > 0 },
-    groupProps: { fields: fields.some((f) => f.kind === 'select') ? fields.filter((f) => f.kind === 'select') : fields, value: group, onChange: setGroup, table },
+    groupProps: { fields: groupable.length ? groupable : fields, value: group, onChange: setGroup, table },
     columnsProps: { fields, value: columns, onChange: setColumns },
     viewProps: { value: view, onChange: setView, onReset: reset },
     tableProps: { filter: test, sort: sorters, groupBy: group.length ? group.map((g) => g.field) : false, columnOrder: columns.order, hiddenColumns: columns.hidden,
-      rowHeight: view.height, onReady: (t) => { table.current = t; } },
+      rowHeight: view.height, onReady },
   };
 }
