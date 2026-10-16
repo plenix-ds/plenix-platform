@@ -1,0 +1,10 @@
+{
+  "$description": "ExportDialog: component spacing roles.",
+  "plx-comp": {
+    "export-dialog-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "ExportDialog: space between composed regions."
+    }
+  }
+}

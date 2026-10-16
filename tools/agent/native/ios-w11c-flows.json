@@ -1,0 +1,362 @@
+{
+  "ios-specialized|File management": {
+    "summary": "Lane C additions: Choose a supported source before importing records.",
+    "variants": [
+      {
+        "name": "ImportDialog: File",
+        "web": "actions|Import",
+        "swiftui": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "uikit": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "appkit": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "use": "Choose a supported source before importing records."
+      },
+      {
+        "name": "ImportDialog: Paste",
+        "web": "actions|Import",
+        "swiftui": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "uikit": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "appkit": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "use": "Choose a supported source before importing records."
+      },
+      {
+        "name": "ImportDialog: URL",
+        "web": "actions|Import",
+        "swiftui": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "uikit": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "appkit": "Validate the source, await the caller reader and keep the draft after errors. No arbitrary URL is fetched by the component.",
+        "use": "Choose a supported source before importing records."
+      },
+      {
+        "name": "ImportWizard: Map columns",
+        "web": "patterns|Import workflow",
+        "swiftui": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "uikit": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "appkit": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "use": "Map source columns to target fields, review values and report the persisted result."
+      },
+      {
+        "name": "ImportWizard: Review",
+        "web": "patterns|Import workflow",
+        "swiftui": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "uikit": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "appkit": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "use": "Map source columns to target fields, review values and report the persisted result."
+      },
+      {
+        "name": "ImportWizard: Results",
+        "web": "patterns|Import workflow",
+        "swiftui": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "uikit": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "appkit": "Required mappings must be complete. Finish persists once and displays results; failed writes preserve the mapping and rows.",
+        "use": "Map source columns to target fields, review values and report the persisted result."
+      },
+      {
+        "name": "ExportDialog: Format",
+        "web": "actions|Export",
+        "swiftui": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "uikit": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "appkit": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "use": "Export an explicit record scope and format, immediately or in the background."
+      },
+      {
+        "name": "ExportDialog: Selection or all records",
+        "web": "actions|Export",
+        "swiftui": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "uikit": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "appkit": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "use": "Export an explicit record scope and format, immediately or in the background."
+      },
+      {
+        "name": "ExportDialog: Background export",
+        "web": "actions|Export",
+        "swiftui": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "uikit": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "appkit": "Selection is unavailable when empty. Export waits for the caller and retains options on error; no download file is fabricated.",
+        "use": "Export an explicit record scope and format, immediately or in the background."
+      }
+    ],
+    "anatomy": [
+      "Source mode tabs",
+      "File picker and drop zone",
+      "Pasted text or URL field",
+      "Import action and recoverable error",
+      "Source ImportDialog",
+      "Target-to-source mapping fields",
+      "Review DataTable",
+      "Completion status and row count",
+      "Format selector",
+      "Selection or all-record scope",
+      "Background option",
+      "Queued or ready Badge and optional download Link"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane C region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "ImportDialog pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "ImportDialog failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "ImportWizard pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "ImportWizard failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "ExportDialog pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "ExportDialog failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Use native forms, sheets and accessibility with application-owned state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind a UIStackView of native named controls to the screen model.",
+        "statusLabel.text = model.statusTitle",
+        "// Preserve values after persistence errors; restore focus after modal tasks."
+      ],
+      "appkit": [
+        "// Use a macOS token adapter for DM Sans, spacing and semantic colors.",
+        "statusLabel.stringValue = model.statusTitle"
+      ]
+    }
+  },
+  "ios-patterns|Managing accounts": {
+    "summary": "Lane C additions: Request permission without implying that submission grants access.",
+    "variants": [
+      {
+        "name": "AccessRequest: Request",
+        "web": "patterns|Access request",
+        "swiftui": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "uikit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "appkit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "use": "Request permission without implying that submission grants access."
+      },
+      {
+        "name": "AccessRequest: Pending",
+        "web": "patterns|Access request",
+        "swiftui": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "uikit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "appkit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "use": "Request permission without implying that submission grants access."
+      },
+      {
+        "name": "AccessRequest: Approved",
+        "web": "patterns|Access request",
+        "swiftui": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "uikit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "appkit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "use": "Request permission without implying that submission grants access."
+      },
+      {
+        "name": "AccessRequest: Denied",
+        "web": "patterns|Access request",
+        "swiftui": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "uikit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "appkit": "Await the request, show Pending only after it succeeds, and retain a failed message. Only the server can approve access.",
+        "use": "Request permission without implying that submission grants access."
+      },
+      {
+        "name": "TrialUpgrade: Trial banner",
+        "web": "patterns|Trial and upgrade",
+        "swiftui": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "uikit": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "appkit": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "use": "Explain a trial and compare caller-supplied plans before an explicit upgrade."
+      },
+      {
+        "name": "TrialUpgrade: Upgrade dialog",
+        "web": "patterns|Trial and upgrade",
+        "swiftui": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "uikit": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "appkit": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "use": "Explain a trial and compare caller-supplied plans before an explicit upgrade."
+      },
+      {
+        "name": "TrialUpgrade: Plan comparison",
+        "web": "patterns|Trial and upgrade",
+        "swiftui": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "uikit": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "appkit": "Opening plans never purchases one. Upgrade waits for the caller and retains selection on failure; prices and billing terms belong to the application.",
+        "use": "Explain a trial and compare caller-supplied plans before an explicit upgrade."
+      },
+      {
+        "name": "Offboarding: Cancel subscription",
+        "web": "patterns|Offboarding",
+        "swiftui": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "uikit": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "appkit": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "use": "Let people preserve their data before a clearly confirmed account or subscription change."
+      },
+      {
+        "name": "Offboarding: Export data",
+        "web": "patterns|Offboarding",
+        "swiftui": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "uikit": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "appkit": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "use": "Let people preserve their data before a clearly confirmed account or subscription change."
+      },
+      {
+        "name": "Offboarding: Delete account",
+        "web": "patterns|Offboarding",
+        "swiftui": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "uikit": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "appkit": "Deletion requires the exact account name. Exports and final actions are separate; errors retain values and duplicate requests are prevented.",
+        "use": "Let people preserve their data before a clearly confirmed account or subscription change."
+      }
+    ],
+    "anatomy": [
+      "Resource access explanation",
+      "Optional request message",
+      "Pending, approved or denied icon Badge",
+      "Request or Open action",
+      "Trial Banner",
+      "ComparisonView of plan features",
+      "Plan selector",
+      "Upgrade confirmation and failure Notice",
+      "Backup step with ExportDialog",
+      "Optional reason",
+      "Exact account-name confirmation for deletion",
+      "Final explicit action"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane C region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "AccessRequest pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "AccessRequest failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "TrialUpgrade pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "TrialUpgrade failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      },
+      {
+        "name": "Offboarding pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "Offboarding failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Use native forms, sheets and accessibility with application-owned state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind a UIStackView of native named controls to the screen model.",
+        "statusLabel.text = model.statusTitle",
+        "// Preserve values after persistence errors; restore focus after modal tasks."
+      ],
+      "appkit": [
+        "// Use a macOS token adapter for DM Sans, spacing and semantic colors.",
+        "statusLabel.stringValue = model.statusTitle"
+      ]
+    }
+  },
+  "ios-interaction|Keyboards": {
+    "summary": "Lane C additions: Find enabled keyboard shortcuts from the live Platform registry.",
+    "variants": [
+      {
+        "name": "ShortcutsDialog: Grouped",
+        "web": "interaction|Keyboard shortcuts",
+        "swiftui": "Registry changes update the list while open. Search matches labels, groups and native key names; disabled bindings are excluded.",
+        "uikit": "Registry changes update the list while open. Search matches labels, groups and native key names; disabled bindings are excluded.",
+        "appkit": "Registry changes update the list while open. Search matches labels, groups and native key names; disabled bindings are excluded.",
+        "use": "Find enabled keyboard shortcuts from the live Platform registry."
+      },
+      {
+        "name": "ShortcutsDialog: Searchable",
+        "web": "interaction|Keyboard shortcuts",
+        "swiftui": "Registry changes update the list while open. Search matches labels, groups and native key names; disabled bindings are excluded.",
+        "uikit": "Registry changes update the list while open. Search matches labels, groups and native key names; disabled bindings are excluded.",
+        "appkit": "Registry changes update the list while open. Search matches labels, groups and native key names; disabled bindings are excluded.",
+        "use": "Find enabled keyboard shortcuts from the live Platform registry."
+      }
+    ],
+    "anatomy": [
+      "Search field",
+      "Named command groups",
+      "Action labels and Kbd bindings",
+      "Close action"
+    ],
+    "attributes": [
+      {
+        "attribute": "Lane C region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "Read plx-sys-space-stack-md from the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "ShortcutsDialog pending",
+        "behavior": "Keep the current state while persistence is pending; prevent duplicate actions."
+      },
+      {
+        "name": "ShortcutsDialog failed",
+        "behavior": "Retain values and explain recovery without dismissing the task."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// Use native forms, sheets and accessibility with application-owned state.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Text(model.title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "    Button(model.actionLabel) { model.performAction() }",
+        "}"
+      ],
+      "uikit": [
+        "// Bind a UIStackView of native named controls to the screen model.",
+        "statusLabel.text = model.statusTitle",
+        "// Preserve values after persistence errors; restore focus after modal tasks."
+      ],
+      "appkit": [
+        "// Use a macOS token adapter for DM Sans, spacing and semantic colors.",
+        "statusLabel.stringValue = model.statusTitle"
+      ]
+    }
+  }
+}

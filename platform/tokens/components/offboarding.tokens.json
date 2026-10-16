@@ -1,0 +1,10 @@
+{
+  "$description": "Offboarding: component spacing roles.",
+  "plx-comp": {
+    "offboarding-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Offboarding: space between composed regions."
+    }
+  }
+}

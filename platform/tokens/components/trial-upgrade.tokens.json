@@ -1,0 +1,10 @@
+{
+  "$description": "TrialUpgrade: component spacing roles.",
+  "plx-comp": {
+    "trial-upgrade-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "TrialUpgrade: space between composed regions."
+    }
+  }
+}

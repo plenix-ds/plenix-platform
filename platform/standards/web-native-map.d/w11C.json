@@ -1,0 +1,85 @@
+{
+  "$description": "Import, export, account lifecycle and keyboard shortcut counterparts.",
+  "map": {
+    "actions|Import": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "patterns|Import workflow": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "actions|Export": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "patterns|Access request": {
+      "ios": [
+        "ios-patterns|Managing accounts"
+      ],
+      "android": [
+        "android-patterns|Sign-in and account"
+      ]
+    },
+    "patterns|Trial and upgrade": {
+      "ios": [
+        "ios-patterns|Managing accounts"
+      ],
+      "android": [
+        "android-patterns|Sign-in and account"
+      ]
+    },
+    "patterns|Offboarding": {
+      "ios": [
+        "ios-patterns|Managing accounts"
+      ],
+      "android": [
+        "android-patterns|Sign-in and account"
+      ]
+    },
+    "interaction|Keyboard shortcuts": {
+      "ios": [
+        "ios-interaction|Keyboards"
+      ],
+      "android": [
+        "android-interaction|Keyboard"
+      ]
+    },
+    "patterns|Import": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "patterns|Export": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "patterns|Export workflow": {
+      "ios": [
+        "ios-specialized|File management"
+      ],
+      "android": [
+        "android-specialized|File and photo pickers"
+      ]
+    }
+  }
+}
