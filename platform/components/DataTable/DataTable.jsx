@@ -14,6 +14,7 @@
        options={{ dataTree: true, dataTreeElementColumn: 'name', movableColumns: true }}
        on={{ rowClick: (e, row) => open(row.getData()) }} />
    Props:
+     engine: "next" opts into the independent TanStack renderer; omitted keeps the existing engine.
      label: names the grid for screen readers (required)
      data: the rows: plain objects, Tabulator's data format (children in _children with options.dataTree)
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
@@ -208,6 +209,7 @@
      Every DataTable handles many rows by its mode (owner, 2026-10-14): "fill" by default, "pages" or "load-more" where the
      application needs them; no DataTable draws all of a long list at once.
 */
+import { DataTableNext } from '../DataTableNext/DataTableNext.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { cellValue, byteMatches, compareCells } from './cells.js';
@@ -1643,7 +1645,7 @@ export function TableEngine(props) {
 }
 
 // the interactive table: records to sort, filter, select, open, edit, group or nest
-function ActionTable(props){const rowMenu=useDataTableActions(props.rowMenu,undefined,props.strings);return <MultiTable {...props} rowMenu={rowMenu}/>;}
+function ActionTable(props){const rowMenu=useDataTableActions(props.rowMenu,undefined,props.strings);return props.engine==='next'?<DataTableNext {...props} rowMenu={rowMenu}/>:<MultiTable {...props} rowMenu={rowMenu}/>;}
 export function DataTable(props) { const toast=useOptionalToast();return toast?<ActionTable {...props}/>:<ToastProvider><ActionTable {...props}/></ToastProvider>; }
 DataTable.useActions=useDataTableActions;
 // starts loading the engine before the first grid mounts (a page whose first screen has a table calls it as it starts)

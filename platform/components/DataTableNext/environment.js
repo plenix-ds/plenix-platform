@@ -1,17 +1,9 @@
 /* Plenix · DataTableNext environment
-   Summary: Engine-independent CSS token resolution and structural stylesheet location.
+   Summary: Engine-independent CSS token resolution.
    Usage: Internal to DataTableNext; no legacy grid modules are imported.
-   Props: A token/length and optional element, or the configured vendor asset base.
-   Behavior: Reads dimensions from CSS and locates the existing structural stylesheet only.
-   Notes: Contains no script loader, prefetch, Tabulator constructor or prototype patches. */
-const SCRIPT=typeof document!=='undefined'&&document.currentScript?document.currentScript.src:'';
-export function structuralStylesheet(){
-  if(typeof window!=='undefined'&&window.PlenixVendorBase)return String(window.PlenixVendorBase).replace(/\/?$/,'/')+'tabulator/tabulator.min.css';
-  const src=SCRIPT||(typeof document!=='undefined'?[...document.scripts].map(s=>s.src).find(s=>/\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(s)):'');
-  if(src)return new URL('tabulator/tabulator.min.css',new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src)?'../vendor/':'./vendor/',src)).href;
-  if(typeof __PLENIX_VENDOR__!=='undefined')return __PLENIX_VENDOR__+'tabulator/tabulator.min.css';
-  return 'platform/vendor/tabulator/tabulator.min.css';
-}
+   Props: A token/length and optional element.
+   Behavior: Reads dimensions from inherited CSS tokens.
+   Notes: Contains no engine loader or runtime stylesheet requests. */
 export function tokenPixels(token, el) {
   if (!token || typeof document === 'undefined') return 0;
   const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());

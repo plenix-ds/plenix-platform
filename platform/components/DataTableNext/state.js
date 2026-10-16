@@ -18,5 +18,5 @@ export function opening(props) {
   return { sorting: normalizeSort(props.sort?.length ? props.sort : saved.sort || options.initialSort),
     order: fields(props.columnOrder) || fields(saved.order) || props.columns.map(c => c.field),
     visibility: visibilityOf(fields(props.hiddenColumns) || fields(saved.hidden)), widths,
-    rowHeight: step, wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false };
+    groupBy:props.groupBy??saved.groupBy??options.groupBy??false, collapsed:Array.isArray(saved.collapsed)?saved.collapsed:[], rowHeight: step, wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false };
 }
