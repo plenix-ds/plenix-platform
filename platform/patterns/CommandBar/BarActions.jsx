@@ -7,7 +7,7 @@
      only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
      from the end, the danger commands last. More shows only when something has folded.
    Props:
-     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange }]
+     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange, loading, tooltip, panel }]
      actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
        onSelect(next) runs with the new state; folded into More it is a checked menu item
      actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
@@ -15,6 +15,9 @@
      actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
      actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
        only disabled, with a why-tooltip)
+     actions[].loading: uses the existing Button spinner and busy state; folded commands are busy and cannot be chosen
+     actions[].tooltip: additional help on hover and keyboard focus, with labels or icons; disabled why takes precedence
+     actions[].panel({ close }): returns a small form in the existing Popover; Escape returns focus to the action
      iconOnly: draw the commands as icons with tooltips
      fold: how many commands are in More (from the end: the others first, the danger commands last)
      off(action): whether a command (or a menu item) is disabled now; default action.disabled
@@ -30,6 +33,74 @@ import { cx } from '../../utils/cx.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../../components/Menu/Menu.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Popover } from '../../components/Popover/Popover.jsx';
+import { Spinner } from '../../components/Loading/Loading.jsx';
+import { focusables } from '../../utils/layer.js';
+
+
+// Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
+function HintTarget({ children, 'aria-describedby': description }) {
+  const wrap = React.useRef(null);
+  React.useLayoutEffect(() => {
+    const button = wrap.current && wrap.current.querySelector('button,a[href]');
+    if (!button || !description) return undefined;
+    const before = button.getAttribute('aria-describedby');
+    const ids = [...new Set((before || '').split(' ').concat(description.split(' ')).filter(Boolean))];
+    button.setAttribute('aria-describedby', ids.join(' '));
+    return () => { if (before) button.setAttribute('aria-describedby', before); else button.removeAttribute('aria-describedby'); };
+  });
+  return <span ref={wrap} className="plx-bar-actions__hint-target">{children}</span>;
+}
+function ActionHint({ content, children, className }) {
+  return <Tooltip content={content} className={className}><HintTarget>{children}</HintTarget></Tooltip>;
+}
+
+// MenuItem intentionally has no public ref. This adapter exposes its real button to Popover's focus/anchor handling.
+const PanelMenuTrigger = React.forwardRef(function PanelMenuTrigger(props, ref) {
+  const wrap = React.useRef(null);
+  React.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector('[data-plx-menu-item]'));
+  return <span ref={wrap} className="plx-bar-actions__panel-item"><MenuItem {...props} keepOpen /></span>;
+});
+function ActionPanel({ action, trigger }) {
+  const [open, setOpen] = React.useState(false);
+  const holder = React.useRef(null);
+  const unavailable = !!action.disabled || !!action.loading;
+  const show = open && !unavailable;
+  const close = () => setOpen(false);
+  // If dismissing a narrow sheet also closes More, its item is gone: return to the surviving More trigger.
+  React.useEffect(() => {
+    if (!show) return undefined;
+    const menu = holder.current && holder.current.closest('[role="menu"]');
+    const more = menu && menu.parentElement.querySelector(':scope > button');
+    return () => { requestAnimationFrame(() => { if (more && more.isConnected && document.activeElement === document.body) more.focus({ preventScroll: true }); }); };
+  }, [show]);
+  React.useEffect(() => { if (unavailable) setOpen(false); }, [unavailable]);
+  const contain = (e) => {
+    const dialog = e.target.closest('[role="dialog"]');
+    if (!dialog) return;
+    // The non-modal form is outside the toolbar's roving order. Tab past its last control leaves the whole bar.
+    if (e.type === 'keydown' && e.key === 'Tab' && !e.shiftKey && dialog.getAttribute('aria-modal') !== 'true') {
+      const controls = focusables(dialog).filter((el) => el.tabIndex >= 0);
+      const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
+      if (toolbar && e.target === controls[controls.length - 1]) {
+        const next = focusables(document.body).find((el) => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && (toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING));
+        if (next) { e.preventDefault(); next.focus(); }
+      }
+    }
+    e.stopPropagation();
+  };
+  const leave = (e) => {
+    const next = e.relatedTarget, menu = e.currentTarget.closest('[role="menu"]');
+    if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
+    const more = menu.parentElement.querySelector(':scope > button');
+    if (more) more.click();
+  };
+  return <span ref={holder} className="plx-bar-actions__panel" onKeyDown={contain} onFocus={contain} onMouseDown={contain} onBlur={leave}><Popover trigger={trigger} title={action.label} closeButton open={show}
+    onOpenChange={(next) => { if (!next || !unavailable) setOpen(next); }}
+    >
+    {show ? action.panel({ close }) : null}
+  </Popover></span>;
+}
 
 // a menu's items: Menu children, or descriptors drawn as MenuItems
 const itemsOf = (a, off) => {
@@ -57,21 +128,23 @@ export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a)
   );
   const current = (a) => { const c = (a.choices || []).find((x) => x.value === a.value); return c ? c.label : ''; };
   const one = (a) => {
-    const disabled = off(a);
+    const disabled = off(a), loading = !!a.loading;
     const filled = !!a.primary;
     const only = iconOnly && !filled && !!a.icon;
+    const panel = typeof a.panel === 'function';
     const menu = !!a.items || !!a.choices;
     // a choices command shows its current choice and is named by both ("Profile: Raphael")
     const name = a.choices ? a.label + ': ' + current(a) : a.label;
     const text = a.choices ? current(a) || a.label : a.label;
-    const click = a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
+    const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
     const button = (
       <Button size={size} variant={filled ? 'primary' : 'ghost'} icon={a.icon} iconOnly={only} label={only || a.choices ? name : undefined} caret={menu && !only}
-        pressed={a.toggle ? !!a.pressed : undefined} disabled={disabled} className={a.danger && !filled ? dangerClass : undefined} onClick={click}>{text}</Button>
+        aria-haspopup={panel ? 'dialog' : menu ? 'menu' : undefined} expanded={loading && (panel || menu) ? false : undefined}
+        pressed={a.toggle ? !!a.pressed : undefined} disabled={disabled} loading={loading} className={a.danger && !filled ? dangerClass : undefined} onClick={click}>{text}</Button>
     );
-    const el = a.choices ? <Menu label={a.label} trigger={button}>{radios(a)}</Menu> : a.items ? <Menu label={a.label} trigger={button}>{itemsOf(a, off)}</Menu> : button;
-    const tip = disabled ? why(a) : only ? name : null;
-    return <React.Fragment key={a.id || a.label}>{tip ? <Tooltip content={tip}>{el}</Tooltip> : el}</React.Fragment>;
+    const el = loading ? button : panel ? <ActionPanel action={Object.assign({}, a, { disabled })} trigger={button} /> : a.choices ? <Menu label={a.label} trigger={button}>{radios(a)}</Menu> : a.items ? <Menu label={a.label} trigger={button}>{itemsOf(a, off)}</Menu> : button;
+    const tip = (disabled && why(a)) || a.tooltip || (only ? name : null);
+    return <React.Fragment key={a.id || a.label}>{tip ? <ActionHint content={tip}>{el}</ActionHint> : el}</React.Fragment>;
   };
   const plain = kept.filter((a) => !a.danger), danger = kept.filter((a) => a.danger);
   const allOff = away.length > 0 && !extra.length && away.every((a) => off(a));
@@ -81,11 +154,17 @@ export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a)
         {away.map((a, i) => {
           const sep = a.danger && i > 0 && !away[i - 1].danger ? <MenuDivider key={(a.id || a.label) + '-sep'} /> : null;
           // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
-          const item = a.choices ? <MenuSub key={a.id || a.label} label={a.label + ': ' + current(a)} icon={a.icon} disabled={off(a)}>{radios(a)}</MenuSub>
+          const busy = !!a.loading, disabled = off(a) || busy;
+          const item = busy ? <MenuItem key={a.id || a.label} icon={<Spinner size="sm" label={a.label} />} danger={a.danger} checked={a.toggle ? !!a.pressed : undefined} aria-label={a.choices ? a.label + ': ' + current(a) : a.label} aria-busy disabled>{a.choices ? a.label + ': ' + current(a) : a.label}</MenuItem>
+            : typeof a.panel === 'function' ? <ActionPanel key={a.id || a.label} action={Object.assign({}, a, { disabled })}
+                trigger={<PanelMenuTrigger icon={a.icon} danger={a.danger} disabled={disabled}>{a.label}</PanelMenuTrigger>} />
+            : a.choices ? <MenuSub key={a.id || a.label} label={a.label + ': ' + current(a)} icon={a.icon} disabled={off(a)}>{radios(a)}</MenuSub>
             : a.toggle ? <MenuItem key={a.id || a.label} icon={a.icon} checked={!!a.pressed} disabled={off(a)} onSelect={() => a.onSelect && a.onSelect(!a.pressed)}>{a.label}</MenuItem>
             : a.items ? <MenuGroup key={a.id || a.label} label={a.label}>{itemsOf(a, off)}</MenuGroup>
             : <MenuItem key={a.id || a.label} icon={a.icon} danger={a.danger} disabled={off(a)} onSelect={a.onSelect}>{a.label}</MenuItem>;
-          return sep ? [sep, item] : item;
+          const tip = (off(a) && why(a)) || a.tooltip;
+          const described = tip ? <ActionHint key={a.id || a.label} content={tip} className="plx-bar-actions__tooltip">{item}</ActionHint> : item;
+          return sep ? [sep, described] : described;
         })}
         {away.length && extra.length ? <MenuDivider key="plx-extra-sep" /> : null}
         {extra}

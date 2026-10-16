@@ -17,7 +17,7 @@
    Props:
      label: the bar's accessible name (the collection: "Assets")
      actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
-       pressed, choices, value, onChange }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
+       pressed, choices, value, onChange, loading, tooltip, panel }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
        setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
        (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
        submenu of radio items. No other controls go in the bar.
@@ -25,6 +25,10 @@
      actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
      actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
      actions[].why: the tooltip of a disabled command, saying why
+     actions[].loading: spinner, busy and inert, including folded commands
+     actions[].tooltip: help shown on hover and focus with labels or icons (disabled why takes precedence)
+     actions[].panel({ close }): a small form in a Popover anchored to the action, including selection and More items;
+       focus enters the form and returns on Escape or close. Use close() after the form succeeds.
      actions[].primary: the page's one primary command (filled; it keeps its label); default none
      find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
      quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
@@ -43,7 +47,8 @@
        with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
-     sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
+     sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
+       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow.
      narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
        decides)
      strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
@@ -121,7 +126,7 @@ export const CommandBarSearch = React.forwardRef(function CommandBarSearch(props
   return <SearchField ref={ref} width="bar" collapsed={collapsed} open={collapsed ? searchOpen : undefined} onOpenChange={collapsed ? setSearchOpen : undefined} {...props} />;
 });
 
-export function CommandBar({ label, actions = [], find, quickFilters = [], view, count, status, end, selection, layout = 'auto', sticky = true, narrow = false, strings, className }) {
+export function CommandBar({ label, actions = [], find, quickFilters = [], view, count, status, end, selection, layout = 'auto', sticky = 'auto', narrow = false, strings, className }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = React.useRef(null);
   // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
@@ -137,7 +142,7 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const folds = foldOrder(shown).length + quick.length;
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map((a) => a.label + (a.disabled ? '0' : '')).join('|'), quickFilters.map((q) => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map((a) => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map((q) => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
   const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
   const ctx = React.useMemo(() => ({ iconOnly: step >= ICONS, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
   // the commands fold first (from the end, Delete last); then the quick filters, from the end
@@ -203,7 +208,7 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const name = selecting ? (sel.label || fill(t.actions, { label: label || '' }).trim()) : label;
   return (
     <BarContext.Provider value={ctx}>
-      <div ref={root} className={cx('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className)} data-plx-layout={shape} data-plx-position={sticky ? undefined : 'static'} onKeyDown={onKeyDown}>
+      <div ref={root} className={cx('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className)} data-plx-layout={shape} data-plx-position={sticky === true ? 'sticky' : sticky === false ? 'static' : 'auto'} onKeyDown={onKeyDown}>
         <div className="plx-command-bar__bar">
           <Toolbar label={name} className="plx-command-bar__row" data-plx-bar-row="">{parts}</Toolbar>
         </div>

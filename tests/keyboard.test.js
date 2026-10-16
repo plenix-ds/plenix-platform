@@ -158,6 +158,16 @@ changed.report(WANTED.join(', '));
   } else check('Command bar: an example with rows selected is shown', false, 'none found');
   }
 
+  // Task #107: action forms use real keys, including Escape without clearing the selection.
+  if (want('cmdbar')) {
+    at('command action forms'); await open('#/patterns/command-bar');
+    const contextual = require('./command-actions.test.js');
+    const behavior = await contextual(page);
+    check('Command actions: pending, help, contextual sticking and folded forms', behavior >= 18, String(behavior));
+    const formKeys = await contextual.keyboard(page);
+    check('Command actions: form focus, text keys, Tab, Escape and selection boundary', formKeys === 5, String(formKeys));
+  }
+
   // a panel row moves with Alt + Arrow Down; the move is announced
   if (want('panels')) {
   at('filter panel'); await open('#/navigation/filter-panel');
