@@ -32,3 +32,7 @@
 .plx-input--underline{background-color:var(--plx-comp-input-underline-background);border-bottom-left-radius:var(--plx-comp-input-underline-radius);border-bottom-right-radius:var(--plx-comp-input-underline-radius);border-top-left-radius:var(--plx-comp-input-underline-radius);border-top-right-radius:var(--plx-comp-input-underline-radius);}
 /* the autogrowing text area (autoGrow): sized to its content up to the maximum, then it scrolls; no resize handle */
 .plx-textarea.plx-textarea--auto-grow{field-sizing:content;max-block-size:var(--plx-comp-textarea-auto-grow-max-height);overflow-y:auto;resize:none;}
+
+/* Optional small fields follow the existing small Button role; default sizes are unchanged. */
+.plx-input--size-sm{--plx-comp-input-min-height:var(--plx-comp-input-small-min-height);--plx-comp-input-color-height:var(--plx-comp-input-small-min-height);--plx-comp-input-color-width:var(--plx-comp-input-small-min-height);}
+.plx-select--size-sm .plx-select__control{--plx-comp-input-min-height:var(--plx-comp-select-small-min-height);}

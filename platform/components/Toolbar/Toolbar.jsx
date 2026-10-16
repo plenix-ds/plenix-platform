@@ -10,7 +10,8 @@
      Toolbar.label: its accessible name
      Toolbar.onKeyDown(event): runs first; preventDefault stops the toolbar's own key handling
      Toolbar.className: more classes on the toolbar
-     Toolbar.children: the controls, groups and spacers
+     Toolbar.children: controls, groups and spacers. Stack and Inline layout wrappers (also nested inside Group) are transparent: toolbar spacing applies to their controls.
+       Keep semantic composites together; do not wrap popup internals in a layout wrapper intended to be flattened.
      Toolbar.Group.className: more classes on the group
      Toolbar.Group.children: the controls in the group
      Toolbar.Spacer: pushes what follows to the end of the row; no props
@@ -19,7 +20,8 @@
      Arrow keys move between its controls in reading order (wrapping; reversed in right to left); Home and End jump to the
      first and last.
      Tab leaves the toolbar.
-     In a text field, Left and Right move the caret instead.
+     Text fields, text areas, selects and editable regions keep their own arrow and Home/End behavior.
+     Descendant controls are discovered through wrappers; nested toolbars retain their own focus scope.
      In a radio group, only the checked option is a stop.
    Notes:
      Every control in it takes the toolbar control height.
@@ -30,17 +32,44 @@ import { useRovingFocus, roveTo } from '../../utils/roving.js';
 import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 
-const FOCUSABLE = 'button:not([disabled]),input:not([disabled]),select:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])';
+const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
+const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
 
 export function Toolbar({ label, className, children, onKeyDown, onFocus, ...rest }) {
   const ref = React.useRef(null);
-  const itemsOf = () => (ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) => el.offsetParent !== null && !el.closest('[inert]') && !el.closest('[role="radiogroup"] [aria-checked="false"]')) : []);
+  const itemsOf = () => (ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) =>
+    el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === 'visible'
+    && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]')
+    && !el.closest('[role="radiogroup"] [aria-checked="false"]')
+    && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute('data-plx-roving'))) : []);
+  React.useEffect(() => {
+    const root = ref.current; if (!root) return;
+    const refresh = () => {
+      root.querySelectorAll('[data-plx-toolbar-layout]').forEach((el) => { if (el.closest('[role="toolbar"]') === root) el.removeAttribute('data-plx-toolbar-layout'); });
+      const visit = (parent) => Array.from(parent.children).forEach((el) => {
+        if (el.matches('.plx-stack,.plx-inline') && getComputedStyle(el).display !== 'none') { el.setAttribute('data-plx-toolbar-layout', ''); visit(el); }
+        else if (el.classList.contains('plx-toolbar__group')) visit(el);
+      });
+      visit(root);
+      const items = itemsOf();
+      roveTo(ref, items, items.find((el) => el.getAttribute('data-plx-roving') === 'current') || items[0]);
+    };
+    refresh();
+    const observer = new MutationObserver(refresh);
+    observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled', 'hidden', 'inert', 'aria-hidden', 'aria-disabled', 'class'] });
+    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(refresh) : null;
+    if (resize) resize.observe(root);
+    window.addEventListener('resize', refresh);
+    return () => { observer.disconnect(); if (resize) resize.disconnect(); window.removeEventListener('resize', refresh); };
+  }, []);
   // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
   useRovingFocus(ref, itemsOf);
   const onKey = (e) => {
     if (onKeyDown) onKeyDown(e);
     if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
-    if (e.target.tagName === 'INPUT' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return;   // the caret moves inside a field
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;   // preserve the control's editing keys
+    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return;   // popup/composite controls keep their own keys
+    if (e.target.closest('[role="toolbar"]') !== ref.current) return;   // a nested toolbar owns its arrows
     const items = itemsOf();
     const i = items.indexOf(document.activeElement);
     if (i < 0) return;

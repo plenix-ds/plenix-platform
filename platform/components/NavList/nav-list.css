@@ -41,9 +41,8 @@
 .plx-nav-list__pin .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
 /* a row's actions are as high as the row, with its grid icon */
 .plx-nav-list__actions .plx-button{--plx-comp-button-height:var(--plx-sys-control-height-standard);--plx-comp-button-icon:var(--plx-sys-control-icon-standard);}
-/* a muted row: an incomplete place, one that exists but has nothing in it yet (the spec’s entries not in Plenix yet); its
-   text is red, the danger content color (owner, 2026-10-09: "all items that are incomplete... give the node text a red color") */
-.plx-nav-list__item--muted:not(.is-current){color:var(--plx-comp-nav-list-item-muted-text);}
+/* A muted destination remains available; RedSave #62 uses the muted role rather than feedback color. */
+.plx-nav-list__item--muted:not(.is-current){--plx-comp-nav-list-item-muted-text:var(--plx-sys-content-muted);--plx-comp-nav-list-item-muted-icon-text:var(--plx-sys-content-muted);color:var(--plx-comp-nav-list-item-muted-text);}
 .plx-nav-list__item--muted:not(.is-current) .plx-nav-list__icon{color:var(--plx-comp-nav-list-item-muted-icon-text);}
 /* a subgroup: a row with a chevron (in the icon slot) that folds its rows; its rows start under its name */
 .plx-nav-list__item--group{font-weight:var(--plx-comp-nav-list-item-group-font-weight);}

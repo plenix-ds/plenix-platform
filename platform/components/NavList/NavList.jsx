@@ -16,8 +16,7 @@
      items[].href: makes the item a link; otherwise it is a button
      items[].icon: an icon name or element before the label; the current item's "folder" shows as "folder-open" (batch 242)
      items[].count: shown right after the name, small, italic and in parentheses ("Branding (326)")
-     items[].muted: an incomplete place (it exists but has nothing in it yet): its text in the danger content color (red); it
-       still opens
+     items[].muted: an incomplete place (it exists but has nothing in it yet): its text and icon in the muted content role; it still opens
      items[].disabled: disables a button item
      items[].onPin(id): makes the row pinnable; runs from its pin button
      items[].pinned: the row is pinned; its pin button stays shown, filled

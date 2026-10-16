@@ -6,6 +6,8 @@
      <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
      <Input appearance="underline" … />            <Textarea autoGrow … />
    Props:
+     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
+     Select.size: as Input.size; numeric values retain the native select size attribute.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*)
      Input.data: the data font, for codes, hex values, links to copy (default false)
@@ -55,8 +57,8 @@ const TYPE_HINTS = {
 // the appearance class (outline is the base look: no class)
 const look = (appearance) => (appearance === 'filled' || appearance === 'underline') && 'plx-input--' + appearance;
 
-export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, className, type = 'text', ...rest }, ref) {
-  return <input ref={ref} type={type} className={cx('plx-input', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className)} aria-invalid={invalid || undefined} {...TYPE_HINTS[type]} {...rest} />;
+export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, size, className, type = 'text', ...rest }, ref) {
+  return <input ref={ref} type={type} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className)} aria-invalid={invalid || undefined} {...TYPE_HINTS[type]} {...rest} />;
 });
 
 // can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
@@ -79,10 +81,10 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
 });
 
 /* options: [{ value, label }] or children <option>s */
-export const Select = React.forwardRef(function Select({ invalid, options, appearance, className, children, ...rest }, ref) {
+export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, className, children, ...rest }, ref) {
   return (
-    <span className={cx('plx-select', className)}>
-      <select ref={ref} className={cx('plx-input', 'plx-select__control', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
+    <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', className)}>
+      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
     </span>

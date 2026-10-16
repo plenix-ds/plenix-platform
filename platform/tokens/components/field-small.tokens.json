@@ -1,0 +1,25 @@
+{
+  "$description": "RedSave #60: optional small fields, using existing semantic roles only.",
+  "plx-comp": {
+    "input-small-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "Opt-in small input minimum height, matching Button size sm and following density and touch/mobile roles."
+    },
+    "select-small-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "Opt-in small select minimum height, matching Button size sm and following density and touch/mobile roles."
+    },
+    "combobox-small-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "Opt-in small combobox minimum height, matching Button size sm and following density and touch/mobile roles."
+    },
+    "search-small-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "Opt-in small search minimum height, matching Button size sm and following density and touch/mobile roles."
+    }
+  }
+}

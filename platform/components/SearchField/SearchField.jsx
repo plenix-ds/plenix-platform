@@ -8,6 +8,7 @@
        suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
        onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
    Props:
+     size: "sm" explicitly selects the existing toolbar control height; omitted or "md" preserves today’s search height.
      value: the search text
      onChange(event): runs when the text changes
      onClear(): runs from the clear button; without it there is no clear button
@@ -81,7 +82,7 @@ function marked(label, text) {
 
 // the field itself (width "auto", "bar" or "fill")
 const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onClear, placeholder = 'Search', label = 'Search', shortcut, loading = false,
-  onAccent = false, suggestions, recent, onSelect, onSubmitSearch, onRemoveRecent, onClearRecent, strings, className, onKeyDown, onFocus, width = 'auto', ...rest }, ref) {
+  onAccent = false, suggestions, recent, onSelect, onSubmitSearch, onRemoveRecent, onClearRecent, strings, className, onKeyDown, onFocus, width = 'auto', size, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
   const auto = 'plx-sf' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -151,9 +152,9 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
     'aria-haspopup': grid ? 'grid' : undefined,
     'aria-activedescendant': shown && active >= 0 ? (grid ? cellId(active, cell) : optId(active)) : undefined } : {};
   return (
-    <div ref={wrap} className={cx('plx-search', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
+    <div ref={wrap} className={cx('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
       <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label="Searching" /> : <Icon name="search" />}</span>
-      <input ref={input} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
+      <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
         onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}
         onFocus={(e) => { if (hasList) setOpen(true); if (onFocus) onFocus(e); }} {...comboProps} {...rest} />
       {onClear && value ? <button type="button" className="plx-search__clear" aria-label={t.clear} onClick={onClear}><Icon name="close" /></button> : null}
