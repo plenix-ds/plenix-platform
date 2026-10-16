@@ -10,10 +10,12 @@
 // (owner: one size in tables, batch 247; typefaces by kind, 2026-10-11; badges, tags, chips, buttons and keys keep their
 // component sizes, and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-table.test.js            (TEST_PORT: another port)
+//   DT_ENGINE=next: the independent phase-one renderer; DT_ONLY selects supported views.
 //   TEST_SCOPE=full: every view; by default (tests/changed.js) the views of the apps and design-system pages that changed,
 //   and every view when the DataTable or Table changed
 const { serve, launch, sleep, at } = require('./lib.js');
 const changed = require('./changed.js');
+const NEXT = process.env.DT_ENGINE === 'next';
 const PORT = +process.env.TEST_PORT || 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 // [page, the steps first (a control's visible text to press, or #section to go to without reloading), the grids expected]
 const ONLY = process.env.DT_ONLY ? new RegExp(process.env.DT_ONLY) : null;
@@ -71,7 +73,9 @@ const inScope = (url) => {
   if (ds) return changed.wants({ ids: [ds[1]], units: ['components/' + ds[1].replace(/(^|-)(\w)/g, (m, a, c) => c.toUpperCase())] });
   return APP_URLS.includes(url);
 };
-const VIEWS = STATES.filter((s) => inScope(s[0]));
+const PHASE_TWO = /\/data-display\/data-table$|\/(?:grouped-table|nested-grouped-table|grouped-table-with-summaries|load-more-infinite-scroll)$/;
+const VIEWS = STATES.filter((s) => inScope(s[0]) && (!NEXT || !PHASE_TWO.test(s[0])));
+if (NEXT) console.log('NEXT_PHASE1: overview (mixed phase-two demos), grouped and load-more variants are reserved for phase two');
 if (!VIEWS.length) changed.none('DATA_TABLES_OK 0/0 table views');
 changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
 
@@ -79,10 +83,11 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
   const server = await serve(PORT);
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
+  if (NEXT) await require('./next-engine')(page);
   const res = [];
   // the design system is a submodule (plenix-design-system): without it (CI without DS_TOKEN), its views are skipped
   const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
-  if (HAS_DS) {
+  if (HAS_DS && !NEXT) {
     // Each focused source bundle gets its own page; Tabulator patches stay isolated from the app-view checks.
     for (const [label, file] of [['Faceted quick-filter counts', './collection-facets.test.js'], ['Canonical multi-value groups', './multi-groups.test.js'], ['Remaining DataTable contracts', './data-table-rest.test.js']]) {
       const focused = await browser.newPage();
@@ -317,7 +322,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
   // the keyboard (owner, 2026-10-14): a group row opens and closes with Enter and the arrow keys (aria-expanded follows,
   // the change is announced), the table has no view button and its header chevron opens the column menu, the column menu opens with
   // Shift + F10 on a focused header, its items take the arrow keys, Escape gives the focus back to the header
-  if (HAS_DS && (!ONLY || ONLY.test('grouped-table')) && changed.wants({ units: GRIDS })) {
+  if (HAS_DS && !NEXT && (!ONLY || ONLY.test('grouped-table')) && changed.wants({ units: GRIDS })) {
     const name = 'keyboard: group rows, the header chevron, the column menu';
     at(name);
     const bad = [];

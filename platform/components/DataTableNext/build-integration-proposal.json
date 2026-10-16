@@ -1,0 +1,24 @@
+{
+  "build-exports.js": [
+    [
+      "const NAME = /^w\\d{2}[A-Z]\\.(js|css)$/;",
+      "const NAME = /^w(?:\\d{2}[A-Z]|DTN)\\.(js|css)$/;"
+    ]
+  ],
+  "build-spec-parts.js": [
+    [
+      "const NAME = /^w\\d{2}[A-Z]\\.(records|labs|docs)\\.js$|^w\\d{2}[A-Z]\\.css$/;",
+      "const NAME = /^w(?:\\d{2}[A-Z]|DTN)\\.(records|labs|docs)\\.js$|^w(?:\\d{2}[A-Z]|DTN)\\.css$/;"
+    ]
+  ],
+  "build-app.js": [
+    [
+      "code = Babel.transform(source, {",
+      "code = Babel.transform(file.includes(path.sep + 'node_modules' + path.sep) ? source.replace(/\\bprocess\\.env\\.NODE_ENV\\b/g, \"'production'\") : source, {"
+    ],
+    [
+      "      if (!spec.startsWith('.')) throw new BuildError(`${target.name}: unknown package \"${spec}\" in ${rel(file)} (only react, react-dom and plenix-platform are available)`);",
+      "      if (!spec.startsWith('.')) {\n        if (!/^@tanstack\\/(react-table|table-core|react-virtual|virtual-core)$/.test(spec)) throw new BuildError('Unapproved browser package ' + spec + ' in ' + rel(file));\n        const dep = require.resolve(spec, { paths: [path.dirname(file)] });\n        entry.deps[spec] = { id: rel(dep) }; visit(dep); continue;\n      }"
+    ]
+  ]
+}
