@@ -8,6 +8,7 @@
      {view.layout === 'list' ? <DataTable … rowHeight={view.height} /> : <ContentGrid size={…}>…</ContentGrid>}
    Props:
      value: { layout: "list" | "gallery", size: "s" | "m" | "l", height: "short" | "medium" | "tall" | "extra-tall" }
+     onReset(): optional Reset view action (useCollectionView supplies it)
      onChange(value): runs on every change
      gallery: the collection has a gallery layout; without it Gallery and the card sizes are disabled; default true
      strings: { label: "View", layout: "Layout", list: "List", gallery: "Gallery", size: "Card size (gallery)",
@@ -22,12 +23,12 @@ import { Menu, MenuItem, MenuDivider, MenuGroup, MenuRadioGroup } from '../../co
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { CommandBarButton, useCommandBar } from '../CommandBar/CommandBar.jsx';
 
-const STRINGS = { label: 'View', layout: 'Layout', list: 'List', gallery: 'Gallery', size: 'Card size (gallery)', s: 'Small', m: 'Medium', l: 'Large',
+const STRINGS = { reset: 'Reset view', label: 'View', layout: 'Layout', list: 'List', gallery: 'Gallery', size: 'Card size (gallery)', s: 'Small', m: 'Medium', l: 'Large',
   height: 'Row height (list)', short: 'Short', medium: 'Medium', tall: 'Tall', 'extra-tall': 'Extra tall' };
 const SIZES = [['s', 'cards-small'], ['m', 'cards-medium'], ['l', 'cards-large']];
 const HEIGHTS = ['short', 'medium', 'tall', 'extra-tall'];
 
-export function ViewMenu({ value, onChange, gallery = true, strings }) {
+export function ViewMenu({ value, onChange, gallery = true, strings, onReset }) {
   const t = Object.assign({}, STRINGS, strings);
   const ctx = useCommandBar();
   const v = Object.assign({ layout: 'list', size: 'm', height: 'short' }, value);
@@ -46,6 +47,7 @@ export function ViewMenu({ value, onChange, gallery = true, strings }) {
       <MenuGroup label={t.height}>
         {HEIGHTS.map((k) => <MenuItem key={k} type="radio" checked={v.height === k} disabled={v.layout !== 'list'} keepOpen onSelect={() => set('height')(k)}>{t[k]}</MenuItem>)}
       </MenuGroup>
+      {onReset ? <><MenuDivider /><MenuItem icon="refresh" onSelect={onReset}>{t.reset}</MenuItem></> : null}
     </Menu>
   );
   return ctx.iconOnly ? <Tooltip content={t.label}>{menu}</Tooltip> : menu;

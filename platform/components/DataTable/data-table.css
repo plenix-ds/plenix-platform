@@ -472,3 +472,8 @@
 .plx-data-table__scroll--x[data-plx-thumb="90"] .plx-data-table__thumb{inline-size:90%;}
 .plx-data-table__scroll--x[data-plx-thumb="95"] .plx-data-table__thumb{inline-size:95%;}
 }
+
+/* Row menu: the same target width as the lead checkbox, including touch. */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--row-menu{position:sticky;inset-inline-end:0;padding:0;justify-content:center;}
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-menu > .plx-data-table__row-menu{opacity:1;}
+.plx-data-table__row-menu { inline-size: var(--plx-comp-data-table-row-menu-width); min-block-size: var(--plx-sys-control-target-min); padding: 0; }
