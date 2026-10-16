@@ -1,0 +1,102 @@
+{
+  "ios-feedback|Feedback": {
+    "summary": "Record workflows communicate saving, saved, offline, failed, draft and archived states through text and a symbol. Private edits can autosave; a failed write retains the latest value and a Retry action. Draft deletion requires confirmation; archiving stays reversible.",
+    "variants": [
+      {
+        "name": "Autosave",
+        "web": "patterns|Autosave",
+        "swiftui": "Label(saveState.title, systemImage: saveState.symbol)",
+        "uikit": "UILabel and UIImageView expose a combined accessibilityLabel.",
+        "appkit": "NSTextField and NSImageView expose the state together.",
+        "use": "Private edits that are safe to persist automatically."
+      },
+      {
+        "name": "Draft state",
+        "web": "patterns|Draft state",
+        "swiftui": "Label(\"Draft\", systemImage: \"pencil\") with resume and discard actions",
+        "uikit": "UIButton actions resume or confirm discarding the draft.",
+        "appkit": "NSButton actions retain the draft on failure.",
+        "use": "Unfinished work that can be resumed."
+      },
+      {
+        "name": "Archive and restore",
+        "web": "patterns|Archive",
+        "swiftui": "An archived status Label and Restore button remain above record content.",
+        "uikit": "UIStackView keeps the archived message and restore action visible.",
+        "appkit": "NSStackView presents the persistent status and restore action.",
+        "use": "A reversible transition out of active use."
+      }
+    ],
+    "anatomy": [
+      "Status label and symbol",
+      "Retry or resume action",
+      "Destructive discard confirmation",
+      "Persistent archived message with restore"
+    ],
+    "attributes": [
+      {
+        "attribute": "Region spacing",
+        "value": "plx-sys-space-stack-md",
+        "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+        "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+        "appkit": "NSStackView.spacing reads plx-sys-space-stack-md from the macOS token adapter."
+      },
+      {
+        "attribute": "Interface text",
+        "value": "DM Sans, native body role",
+        "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "uikit": "UIFontMetrics scales DM Sans for the body role.",
+        "appkit": "NSFont uses DM Sans through the macOS token adapter."
+      }
+    ],
+    "states": [
+      {
+        "name": "Saving",
+        "behavior": "Serialize writes; queue the latest edit without changing focus."
+      },
+      {
+        "name": "Saved",
+        "behavior": "Announce completion politely."
+      },
+      {
+        "name": "Offline",
+        "behavior": "Keep pending data and retry on reconnect."
+      },
+      {
+        "name": "Failed",
+        "behavior": "Announce the failure and expose Retry; never clear the editor."
+      },
+      {
+        "name": "Draft",
+        "behavior": "Confirm before discarding."
+      },
+      {
+        "name": "Archived",
+        "behavior": "Keep Restore available until it succeeds."
+      }
+    ],
+    "code": {
+      "swiftui": [
+        "// The view model owns serialized persistence, connectivity and durable draft storage.",
+        "VStack(spacing: Plenix.Space.spaceStackMd) {",
+        "    Label(model.statusTitle, systemImage: model.statusSymbol)",
+        "    if model.failed { Button(\"Retry\") { Task { await model.retry() } } }",
+        "    if model.isDraft { Button(\"Resume draft\") { model.resume() } }",
+        "    if model.archived { Button(\"Restore\") { Task { await model.restore() } } }",
+        "}.font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))"
+      ],
+      "uikit": [
+        "// Use a UIStackView with a combined state label and named action buttons.",
+        "statusLabel.text = model.statusTitle",
+        "statusLabel.accessibilityLabel = model.statusTitle",
+        "UIAccessibility.post(notification: .announcement, argument: model.statusTitle)",
+        "// Update the status after persistence; keep values on failure."
+      ],
+      "appkit": [
+        "// A macOS token adapter supplies colors, DM Sans and spacing from the same token roles.",
+        "statusLabel.stringValue = model.statusTitle",
+        "// Keep the state text and Restore button in the record view; do not move keyboard focus."
+      ]
+    }
+  }
+}

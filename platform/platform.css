@@ -212,6 +212,13 @@
 @import url("patterns/DuplicateAction/duplicate-action.css");
 @import url("patterns/Publish/publish.css");
 @import url("patterns/AssignControl/assign-control.css");
+@import url("patterns/Wizard/wizard.css");
+@import url("patterns/WizardDialog/wizard-dialog.css");
+@import url("patterns/FormFlow/form-flow.css");
+@import url("patterns/Autosave/autosave.css");
+@import url("patterns/DraftState/draft-state.css");
+@import url("patterns/SaveAs/save-as.css");
+@import url("patterns/ArchiveRestore/archive-restore.css");
 @import url("components/File/file.css");
 @import url("components/FileRow/file-row.css");
 @import url("patterns/Auth/auth.css");

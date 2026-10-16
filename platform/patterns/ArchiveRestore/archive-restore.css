@@ -1,0 +1,2 @@
+/* Plenix · ArchiveRestore: spacing between composed Platform regions. */
+.plx-archive-restore{row-gap:var(--plx-comp-archive-restore-gap);}

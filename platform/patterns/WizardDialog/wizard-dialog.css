@@ -1,0 +1,2 @@
+/* Plenix · WizardDialog: spacing between composed Platform regions. */
+.plx-wizard-dialog{row-gap:var(--plx-comp-wizard-dialog-gap);}

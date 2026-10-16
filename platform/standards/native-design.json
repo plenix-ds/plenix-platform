@@ -3797,6 +3797,84 @@
     ]
    }
   },
+  "android-feedback|App state": {
+   "summary": "Pair each state with a text label and icon. Serialize saves, retain edits offline and offer Retry after failure. A draft can be resumed or discarded after confirmation.",
+   "variants": [
+    {
+     "name": "Autosave",
+     "web": "patterns|Autosave",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Pair each state with a text label and icon. Serialize saves, retain edits offline and offer Retry after failure. A draft can be resumed or discarded after confirmation."
+    },
+    {
+     "name": "Draft state",
+     "web": "patterns|Draft state",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Pair each state with a text label and icon. Serialize saves, retain edits offline and offer Retry after failure. A draft can be resumed or discarded after confirmation."
+    }
+   ],
+   "anatomy": [
+    "Task heading",
+    "Fields or status content",
+    "Inline failure message",
+    "Primary and secondary actions"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read plx-sys-space-stack-md from generated Android dimensions."
+    },
+    {
+     "attribute": "Interface text",
+     "value": "DM Sans in the native body role",
+     "compose": "MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS)",
+     "views": "TextAppearance uses the generated DM Sans body role."
+    }
+   ],
+   "states": [
+    {
+     "name": "Editing",
+     "behavior": "Retain immutable values in the screen model."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Disable duplicate actions and expose progress."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep values and show a named retry action."
+    },
+    {
+     "name": "Complete",
+     "behavior": "Update the record only after persistence succeeds."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// Status text is derived from the retained draft model, never from color alone.",
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "    Text(model.statusTitle, modifier = Modifier.semantics { liveRegion = if (model.failed) LiveRegionMode.Assertive else LiveRegionMode.Polite })",
+     "    if (model.failed) { TextButton(onClick = model::retry, enabled = !model.busy) { Text(\"Retry\") } }",
+     "    if (model.isDraft) {",
+     "        TextButton(onClick = model::resume) { Text(\"Resume draft\") }",
+     "        TextButton(onClick = model::requestDiscard) { Text(\"Discard draft\") }",
+     "    }",
+     "}",
+     "// requestDiscard opens AlertDialog; only its affirmative action removes the draft after persistence."
+    ],
+    "views": [
+     "// Bind Material 3 fields to a ViewModel backed by SavedStateHandle.",
+     "primaryButton.isEnabled = !model.busy",
+     "primaryButton.text = model.actionLabel",
+     "primaryButton.setOnClickListener { model.submit() }",
+     "// Keep errors attached to their fields and restore focus after a modal task."
+    ]
+   }
+  },
   "android-feedback|Progress indicators": {
    "summary": "Plenix progress on Android uses the Material 3 LinearProgressIndicator and CircularProgressIndicator, kept native in behavior (progress semantics for TalkBack, Material’s motion) and styled with the Plenix tokens: an 8 dp pill track in the neutral fill with the fill in the tone’s solid color, no gap and no stop dot, a DM Sans label, and a small primary-colored spinner for short waits. Material’s default is a 4 dp track with a gap and a stop indicator, and a 40 dp circle; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
@@ -10182,6 +10260,20 @@
      "compose": "snackbarHostState.showSnackbar(\"2 categories deleted\", actionLabel = \"Undo\")",
      "views": "Snackbar.make(view, message, LENGTH_LONG).setAction(\"Undo\") { restore() }",
      "use": "Reversible deletes and moves: no question, Undo while it shows."
+    },
+    {
+     "name": "Archive",
+     "web": "patterns|Archive",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Archive is reversible. Keep an archived message with Restore available. Persist before updating the status; a failed action preserves the current record."
+    },
+    {
+     "name": "Restore",
+     "web": "patterns|Restore",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Archive is reversible. Keep an archived message with Restore available. Persist before updating the status; a failed action preserves the current record."
     }
    ],
    "anatomy": [
@@ -10209,7 +10301,11 @@
      "part": "E",
      "name": "Snackbar",
      "about": "The result with Undo, for actions that can be reversed."
-    }
+    },
+    "Task heading",
+    "Fields or status content",
+    "Inline failure message",
+    "Primary and secondary actions"
    ],
    "attributes": [
     {
@@ -10266,6 +10362,18 @@
      "views": "snackbar.setBackgroundTint(PlenixColors.toastBackground.light.toArgb())",
      "follows": "Material 3: Snackbar",
      "followsUrl": "https://m3.material.io/components/snackbar/guidelines"
+    },
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read plx-sys-space-stack-md from generated Android dimensions."
+    },
+    {
+     "attribute": "Interface text",
+     "value": "DM Sans in the native body role",
+     "compose": "MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS)",
+     "views": "TextAppearance uses the generated DM Sans body role."
     }
    ],
    "states": [
@@ -10292,6 +10400,22 @@
      "token": "plx-comp-dialog-background",
      "compose": "PlenixColors pairs follow isSystemInDarkTheme()",
      "views": "the night resources"
+    },
+    {
+     "name": "Editing",
+     "behavior": "Retain immutable values in the screen model."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Disable duplicate actions and expose progress."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep values and show a named retry action."
+    },
+    {
+     "name": "Complete",
+     "behavior": "Update the record only after persistence succeeds."
     }
    ],
    "code": {
@@ -10332,6 +10456,95 @@
      "    .setPositiveButton(\"Delete\") { _, _ -> delete(items) }",
      "    .show()",
      "    .getButton(DialogInterface.BUTTON_NEGATIVE).requestFocus()"
+    ]
+   }
+  },
+  "android-patterns|Form": {
+   "summary": "Use a Form on a page, or a ModalBottomSheet for a short edit. Retain values after errors; confirm leaving dirty edits. Save as requires a name and a selected destination and writes a separate copy.",
+   "variants": [
+    {
+     "name": "Create flow",
+     "web": "patterns|Create flow",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Use a Form on a page, or a ModalBottomSheet for a short edit. Retain values after errors; confirm leaving dirty edits. Save as requires a name and a selected destination and writes a separate copy."
+    },
+    {
+     "name": "Edit flow",
+     "web": "patterns|Edit flow",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Use a Form on a page, or a ModalBottomSheet for a short edit. Retain values after errors; confirm leaving dirty edits. Save as requires a name and a selected destination and writes a separate copy."
+    },
+    {
+     "name": "Save as",
+     "web": "patterns|Save as",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Use a Form on a page, or a ModalBottomSheet for a short edit. Retain values after errors; confirm leaving dirty edits. Save as requires a name and a selected destination and writes a separate copy."
+    }
+   ],
+   "anatomy": [
+    "Task heading",
+    "Fields or status content",
+    "Inline failure message",
+    "Primary and secondary actions"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read plx-sys-space-stack-md from generated Android dimensions."
+    },
+    {
+     "attribute": "Interface text",
+     "value": "DM Sans in the native body role",
+     "compose": "MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS)",
+     "views": "TextAppearance uses the generated DM Sans body role."
+    }
+   ],
+   "states": [
+    {
+     "name": "Editing",
+     "behavior": "Retain immutable values in the screen model."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Disable duplicate actions and expose progress."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep values and show a named retry action."
+    },
+    {
+     "name": "Complete",
+     "behavior": "Update the record only after persistence succeeds."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// The screen model owns dirty state, validation, copy destinations and pending submission.",
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "    OutlinedTextField(value = model.name, onValueChange = model::setName, label = { Text(\"Name\") }, enabled = !model.busy)",
+     "    if (model.copyMode) {",
+     "        TextButton(onClick = model::chooseLocation) { Text(model.locationLabel) }",
+     "        TextButton(onClick = model::chooseFormat) { Text(model.formatLabel) }",
+     "    }",
+     "    if (model.error != null) { Text(model.error.orEmpty(), modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive }) }",
+     "    Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "        TextButton(onClick = model::requestCancel, enabled = !model.busy) { Text(\"Cancel\") }",
+     "        Button(onClick = model::submit, enabled = !model.busy) { Text(model.actionLabel) }",
+     "    }",
+     "}",
+     "// requestCancel asks before losing dirty edits. System Back and sheet dismissal use the same guard."
+    ],
+    "views": [
+     "// Bind Material 3 fields to a ViewModel backed by SavedStateHandle.",
+     "primaryButton.isEnabled = !model.busy",
+     "primaryButton.text = model.actionLabel",
+     "primaryButton.setOnClickListener { model.submit() }",
+     "// Keep errors attached to their fields and restore focus after a modal task."
     ]
    }
   },
@@ -10563,6 +10776,91 @@
      "passwordLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE",
      "passwordLayout.editText?.setAutofillHints(View.AUTOFILL_HINT_PASSWORD)",
      "signIn.backgroundTintList = ColorStateList.valueOf(PlenixColors.actionPrimaryBackground.light.toArgb())"
+    ]
+   }
+  },
+  "android-patterns|Step flow": {
+   "summary": "Keep field values by stable step id. Validate before moving forward, then validate all steps before Finish. Use a full screen for long flows; a dialog is for short flows.",
+   "variants": [
+    {
+     "name": "Wizard",
+     "web": "patterns|Wizard",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Keep field values by stable step id. Validate before moving forward, then validate all steps before Finish. Use a full screen for long flows; a dialog is for short flows."
+    },
+    {
+     "name": "Wizard dialog",
+     "web": "overlays|Wizard dialog",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Keep field values by stable step id. Validate before moving forward, then validate all steps before Finish. Use a full screen for long flows; a dialog is for short flows."
+    },
+    {
+     "name": "Multi-step form",
+     "web": "patterns|Multi-step form",
+     "compose": "Compose state belongs to the screen model; Material 3 controls call explicit model actions.",
+     "views": "ViewModel and SavedStateHandle retain field values; native controls expose named actions.",
+     "use": "Keep field values by stable step id. Validate before moving forward, then validate all steps before Finish. Use a full screen for long flows; a dialog is for short flows."
+    }
+   ],
+   "anatomy": [
+    "Task heading",
+    "Fields or status content",
+    "Inline failure message",
+    "Primary and secondary actions"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
+     "views": "Read plx-sys-space-stack-md from generated Android dimensions."
+    },
+    {
+     "attribute": "Interface text",
+     "value": "DM Sans in the native body role",
+     "compose": "MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS)",
+     "views": "TextAppearance uses the generated DM Sans body role."
+    }
+   ],
+   "states": [
+    {
+     "name": "Editing",
+     "behavior": "Retain immutable values in the screen model."
+    },
+    {
+     "name": "Pending",
+     "behavior": "Disable duplicate actions and expose progress."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Keep values and show a named retry action."
+    },
+    {
+     "name": "Complete",
+     "behavior": "Update the record only after persistence succeeds."
+    }
+   ],
+   "code": {
+    "compose": [
+     "// The screen model validates and retains values across steps and process recreation.",
+     "Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "    Text(model.stepTitle, style = MaterialTheme.typography.bodyLarge.copy(fontFamily = PlenixFonts.SANS))",
+     "    OutlinedTextField(value = model.name, onValueChange = model::setName, label = { Text(\"Name\") }, isError = model.nameError != null)",
+     "    Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackMd)) {",
+     "        TextButton(onClick = model::back, enabled = model.canGoBack && !model.busy) { Text(\"Back\") }",
+     "        Button(onClick = model::nextOrFinish, enabled = !model.busy) { Text(model.actionLabel) }",
+     "    }",
+     "}",
+     "// Free navigation selects named steps; never mark an unvisited step complete."
+    ],
+    "views": [
+     "// Bind Material 3 fields to a ViewModel backed by SavedStateHandle.",
+     "primaryButton.isEnabled = !model.busy",
+     "primaryButton.text = model.actionLabel",
+     "primaryButton.setOnClickListener { model.submit() }",
+     "// Keep errors attached to their fields and restore focus after a modal task."
     ]
    }
   },
@@ -14212,6 +14510,106 @@
      "        bounds.fill()",
      "    }",
      "}"
+    ]
+   }
+  },
+  "ios-feedback|Feedback": {
+   "summary": "Record workflows communicate saving, saved, offline, failed, draft and archived states through text and a symbol. Private edits can autosave; a failed write retains the latest value and a Retry action. Draft deletion requires confirmation; archiving stays reversible.",
+   "variants": [
+    {
+     "name": "Autosave",
+     "web": "patterns|Autosave",
+     "swiftui": "Label(saveState.title, systemImage: saveState.symbol)",
+     "uikit": "UILabel and UIImageView expose a combined accessibilityLabel.",
+     "appkit": "NSTextField and NSImageView expose the state together.",
+     "use": "Private edits that are safe to persist automatically."
+    },
+    {
+     "name": "Draft state",
+     "web": "patterns|Draft state",
+     "swiftui": "Label(\"Draft\", systemImage: \"pencil\") with resume and discard actions",
+     "uikit": "UIButton actions resume or confirm discarding the draft.",
+     "appkit": "NSButton actions retain the draft on failure.",
+     "use": "Unfinished work that can be resumed."
+    },
+    {
+     "name": "Archive and restore",
+     "web": "patterns|Archive",
+     "swiftui": "An archived status Label and Restore button remain above record content.",
+     "uikit": "UIStackView keeps the archived message and restore action visible.",
+     "appkit": "NSStackView presents the persistent status and restore action.",
+     "use": "A reversible transition out of active use."
+    }
+   ],
+   "anatomy": [
+    "Status label and symbol",
+    "Retry or resume action",
+    "Destructive discard confirmation",
+    "Persistent archived message with restore"
+   ],
+   "attributes": [
+    {
+     "attribute": "Region spacing",
+     "value": "plx-sys-space-stack-md",
+     "swiftui": "VStack(spacing: Plenix.Space.spaceStackMd)",
+     "uikit": "UIStackView.spacing = Plenix.Space.spaceStackMd",
+     "appkit": "NSStackView.spacing reads plx-sys-space-stack-md from the macOS token adapter."
+    },
+    {
+     "attribute": "Interface text",
+     "value": "DM Sans, native body role",
+     "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+     "uikit": "UIFontMetrics scales DM Sans for the body role.",
+     "appkit": "NSFont uses DM Sans through the macOS token adapter."
+    }
+   ],
+   "states": [
+    {
+     "name": "Saving",
+     "behavior": "Serialize writes; queue the latest edit without changing focus."
+    },
+    {
+     "name": "Saved",
+     "behavior": "Announce completion politely."
+    },
+    {
+     "name": "Offline",
+     "behavior": "Keep pending data and retry on reconnect."
+    },
+    {
+     "name": "Failed",
+     "behavior": "Announce the failure and expose Retry; never clear the editor."
+    },
+    {
+     "name": "Draft",
+     "behavior": "Confirm before discarding."
+    },
+    {
+     "name": "Archived",
+     "behavior": "Keep Restore available until it succeeds."
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "// The view model owns serialized persistence, connectivity and durable draft storage.",
+     "VStack(spacing: Plenix.Space.spaceStackMd) {",
+     "    Label(model.statusTitle, systemImage: model.statusSymbol)",
+     "    if model.failed { Button(\"Retry\") { Task { await model.retry() } } }",
+     "    if model.isDraft { Button(\"Resume draft\") { model.resume() } }",
+     "    if model.archived { Button(\"Restore\") { Task { await model.restore() } } }",
+     "}.font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))"
+    ],
+    "uikit": [
+     "// Use a UIStackView with a combined state label and named action buttons.",
+     "statusLabel.text = model.statusTitle",
+     "statusLabel.accessibilityLabel = model.statusTitle",
+     "UIAccessibility.post(notification: .announcement, argument: model.statusTitle)",
+     "// Update the status after persistence; keep values on failure."
+    ],
+    "appkit": [
+     "// A macOS token adapter supplies colors, DM Sans and spacing from the same token roles.",
+     "statusLabel.stringValue = model.statusTitle",
+     "// Keep the state text and Restore button in the record view; do not move keyboard focus."
     ]
    }
   },

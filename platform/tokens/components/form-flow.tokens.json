@@ -1,0 +1,10 @@
+{
+  "$description": "FormFlow: space between existing Platform regions.",
+  "plx-comp": {
+    "form-flow-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "FormFlow: spacing between regions."
+    }
+  }
+}

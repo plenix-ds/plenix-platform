@@ -70,6 +70,8 @@ changes inside `platform/design-system/` at `lanes/<task>/design-system/<the sam
 - DM Mono for code and technical values (numbers, dates); DM Sans for UI text. American English, sentence case.
 - A pattern is built only from Platform components. Mobile widths follow the HIG (iOS) or Material 3 (Android).
 - Keep the style of the file you edit: comments, naming, density.
+- Native designs (`tools/agent/native/*.json`): when the page already exists in `platform/standards/native-design.json`,
+  your fragment adds variants to it; it never replaces another task's designs (the merge adds them by name).
 - Never stop processes by name (`pkill`, `taskkill /IM`): only a process you started, by its PID.
 
 The full briefs: `tools/agent/web/BRIEF-web.md` (house rules and checks), `tools/agent/library/BRIEF-lane.md` and

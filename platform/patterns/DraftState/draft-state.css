@@ -1,0 +1,2 @@
+/* Plenix · DraftState: spacing between composed Platform regions. */
+.plx-draft-state{row-gap:var(--plx-comp-draft-state-gap);}

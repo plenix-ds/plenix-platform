@@ -2425,6 +2425,9 @@
   --plx-comp-dialog-padding: var(--plx-ref-space-16px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-archive-restore-gap: var(--plx-sys-space-stack-md);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-assign-control-gap: var(--plx-sys-space-inline-md);
   --plx-comp-assign-control-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-assign-control-min-height: var(--plx-sys-control-height-standard);
@@ -2466,6 +2469,9 @@
   --plx-comp-auth-data-font-family: var(--plx-sys-font-data);
   --plx-comp-auth-strong-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-auth-error-text: var(--plx-sys-feedback-danger-content);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-autosave-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-avatar-presence-ring-color: var(--plx-sys-surface-default);
@@ -3286,6 +3292,9 @@
   --plx-comp-download-button-percent-gap: var(--plx-sys-space-inline-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-draft-state-gap: var(--plx-sys-space-stack-md);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-drag-handle-size: var(--plx-sys-control-height-inline);
   --plx-comp-drag-handle-icon-size: var(--plx-sys-control-icon-inline);
   --plx-comp-drag-handle-radius: var(--plx-sys-radius-compact-4px);
@@ -3565,6 +3574,9 @@
   --plx-comp-form-section-gap: var(--plx-sys-space-stack-md);
   --plx-comp-form-section-header-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-form-two-column-grid-template-columns: var(--plx-ref-size-160px) minmax(var(--plx-sys-field-width-md),var(--plx-sys-field-width-lg));
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-form-flow-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-funnel-stage-width: var(--plx-ref-size-120px);
@@ -4536,6 +4548,9 @@
   --plx-comp-sankey-diagram-value-font-weight: var(--plx-sys-font-weight-regular);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-save-as-gap: var(--plx-sys-space-stack-md);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-scatter-default-color: var(--plx-sys-dataviz-categorical-1);
   --plx-comp-scatter-margin-block-start: var(--plx-ref-size-8px);
   --plx-comp-scatter-margin-inline-end: var(--plx-ref-size-16px);
@@ -5076,6 +5091,12 @@
   --plx-comp-waterfall-chart-connector-color: var(--plx-sys-border-strong);
   --plx-comp-waterfall-chart-connector-width: var(--plx-sys-border-width-thin);
   --plx-comp-waterfall-chart-connector-dash: var(--plx-ref-size-4px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-wizard-gap: var(--plx-sys-space-stack-md);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-wizard-dialog-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-word-cloud-text: var(--plx-sys-content-default);

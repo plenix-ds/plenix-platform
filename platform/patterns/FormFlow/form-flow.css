@@ -1,0 +1,2 @@
+/* Plenix · FormFlow: spacing between composed Platform regions. */
+.plx-form-flow{row-gap:var(--plx-comp-form-flow-gap);}

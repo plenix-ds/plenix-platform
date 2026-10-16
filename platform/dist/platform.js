@@ -50002,6 +50002,936 @@ function AssignControl({
   }, t.unassign) : null));
 }
   } },
+  "platform/patterns/Wizard/Wizard.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Wizard = Wizard;
+var _react = _interopRequireDefault(require("react"));
+var _Form = require("../Form/Form.jsx");
+var _Tabs = require("../../components/Tabs/Tabs.jsx");
+var _ProgressSteps = require("../../components/ProgressSteps/ProgressSteps.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Wizard
+   Summary: Named form steps with validation, Back and Next, and an optional final summary.
+   Usage: <Wizard label="Create record" steps={steps} onComplete={save} />
+   Props:
+     steps: [{ id, label, content, validate }]; validate resolves an error string, false, or nothing when valid.
+     label: form name; defaultStep: initial index; navigation: "linear" (default) or "free".
+     summary: optional review content; onComplete(): persistence promise; onCancel(): exit.
+     strings: { back, next, complete, cancel, summary, invalid, failed, steps }; className: extra classes.
+   Behavior:
+     Forward navigation validates the current step; completion validates all steps and awaits persistence.
+     Inactive steps stay mounted, hidden and disabled. Moving steps focuses the new heading.
+     Free navigation uses Tabs so unvisited steps are never announced as complete.
+     Failed validation or persistence keeps values. Pending actions cannot repeat.
+   Notes:
+     Callers own immutable values and per-step validation. Compose fields from Platform components.
+*/
+
+function Wizard({
+  steps = [],
+  label,
+  defaultStep = 0,
+  navigation = 'linear',
+  summary,
+  onComplete,
+  onCancel,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    back: 'Back',
+    next: 'Next',
+    complete: 'Finish',
+    cancel: 'Cancel',
+    summary: 'Review',
+    invalid: 'Check this step before continuing.',
+    failed: 'Could not save. Try again.',
+    steps: 'Steps'
+  }, strings);
+  const all = summary == null ? steps : steps.concat([{
+    id: 'summary',
+    label: t.summary,
+    content: summary
+  }]);
+  const [index, setIndex] = _react.default.useState(defaultStep),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    alive = _react.default.useRef(false),
+    moved = _react.default.useRef(false);
+  const base = 'plx-wizard-' + _react.default.useId().replace(/:/g, '');
+  const at = Math.max(0, Math.min(index, all.length - 1));
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  _react.default.useEffect(() => {
+    if (moved.current) document.getElementById(base + '-' + at)?.focus();
+  }, [at, base]);
+  const move = n => {
+    moved.current = true;
+    setError('');
+    setIndex(n);
+  };
+  const valid = async i => {
+    const section = document.getElementById(base + '-' + i)?.closest('fieldset');
+    if (section) {
+      const disabled = section.disabled;
+      section.disabled = false;
+      const nativeValid = Array.from(section.querySelectorAll("input, select, textarea")).every(field => field.checkValidity());
+      section.disabled = disabled;
+      if (!nativeValid) {
+        if (alive.current) {
+          move(i);
+          setError(t.invalid);
+        }
+        return false;
+      }
+    }
+    const result = all[i].validate ? await all[i].validate() : '';
+    if (result === false || typeof result === 'string' && result) {
+      if (alive.current) {
+        move(i);
+        setError(typeof result === 'string' ? result : t.invalid);
+      }
+      return false;
+    }
+    return alive.current;
+  };
+  const go = async (n, finish = false) => {
+    if (lock.current || !all.length) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      if (finish) {
+        for (let i = 0; i < all.length; i++) if (!(await valid(i))) return;
+        if (onComplete) await onComplete();
+      } else if (n <= at || navigation === 'free' || (await valid(at))) {
+        if (alive.current) move(n);
+      }
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  if (!all.length) return null;
+  return /*#__PURE__*/_react.default.createElement(_Form.Form, {
+    id: base,
+    label: label,
+    className: (0, _cx.cx)('plx-wizard', className),
+    "aria-busy": busy,
+    onSubmit: e => {
+      e.preventDefault();
+      go(at + 1, at === all.length - 1);
+    }
+  }, navigation === 'free' ? /*#__PURE__*/_react.default.createElement(_Tabs.Tabs, {
+    label: t.steps,
+    variant: "folder",
+    idBase: base,
+    value: String(at),
+    items: all.map((s, i) => ({
+      value: String(i),
+      label: s.label,
+      disabled: busy
+    })),
+    onChange: n => go(Number(n))
+  }) : /*#__PURE__*/_react.default.createElement(_ProgressSteps.ProgressSteps, {
+    label: t.steps,
+    current: at,
+    steps: all.map(s => ({
+      label: s.label,
+      disabled: busy
+    })),
+    onStepClick: n => go(n)
+  }), all.map((s, i) => /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    key: s.id || i,
+    className: "plx-wizard__step",
+    as: "fieldset",
+    hidden: i !== at,
+    disabled: i !== at || busy,
+    id: base + "-panel-" + i,
+    role: navigation === "free" ? "tabpanel" : undefined,
+    "aria-labelledby": navigation === "free" ? base + "-tab-" + i : undefined
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "legend",
+    variant: "heading",
+    id: base + '-' + i,
+    tabIndex: -1
+  }, s.label), s.content)), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, /*#__PURE__*/_react.default.createElement(_Form.FormActions, {
+    sticky: false
+  }, onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: onCancel,
+    disabled: busy
+  }, t.cancel) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: () => go(at - 1),
+    disabled: busy || at === 0
+  }, t.back), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    variant: "primary",
+    disabled: busy
+  }, at === all.length - 1 ? t.complete : t.next)));
+}
+  } },
+  "platform/patterns/WizardDialog/WizardDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WizardDialog = WizardDialog;
+var _react = _interopRequireDefault(require("react"));
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Wizard = require("../Wizard/Wizard.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · WizardDialog
+   Summary: A Wizard in a medium, large or full-screen Platform Dialog.
+   Usage: <WizardDialog open title="Create record" steps={steps} onClose={close} />
+   Props:
+     open, title, size: Dialog props; size is "md", "lg" or "full".
+     dirty: unsaved work; onClose(): dismiss; strings: Wizard strings plus close and unsaved.
+     Other props reach Wizard, including steps, summary and onComplete.
+   Behavior:
+     Close, Escape, the veil and Cancel pass through the unsaved-change guard.
+     Pending persistence cannot be dismissed. Closing resets the Wizard for the next opening.
+   Notes:
+     Dialog owns focus trapping and restoration. The caller closes after successful persistence.
+*/
+function WizardDialog({
+  open,
+  title,
+  size = 'md',
+  dirty = false,
+  onClose,
+  strings,
+  ...props
+}) {
+  const t = Object.assign({
+    close: 'Close',
+    unsaved: 'Your changes will be lost.'
+  }, strings);
+  const [busy, setBusy] = _react.default.useState(false);
+  const guard = (0, _UnsavedGuard.useUnsavedGuard)(open && dirty, t.unsaved);
+  const close = guard(() => {
+    if (!busy && onClose) onClose();
+  });
+  return /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    title: title,
+    size: ['md', 'lg', 'full'].includes(size) ? size : 'md',
+    onClose: close,
+    dismissible: !busy,
+    closeLabel: t.close
+  }, open ? /*#__PURE__*/_react.default.createElement(_Wizard.Wizard, _extends({}, props, {
+    className: ["plx-wizard-dialog", props.className].filter(Boolean).join(" "),
+    label: title,
+    strings: strings,
+    onCancel: close,
+    onComplete: async () => {
+      setBusy(true);
+      try {
+        if (props.onComplete) await props.onComplete();
+      } finally {
+        setBusy(false);
+      }
+    }
+  })) : null);
+}
+  } },
+  "platform/patterns/FormFlow/FormFlow.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FormFlow = FormFlow;
+var _react = _interopRequireDefault(require("react"));
+var _Form = require("../Form/Form.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Fieldset = require("../../components/Fieldset/Fieldset.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Toast = require("../../components/Toast/Toast.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · FormFlow
+   Summary: Create or edit on a page, in place, in a dialog or drawer with unsaved-change protection.
+   Usage: <FormFlow title="Create record" initialValue={{name: ''}} onSubmit={save}>{({value, setValue}) => fields}</FormFlow>
+   Props:
+     mode: "create" (default) or "edit"; surface: "page", "inline", "dialog" or "drawer".
+     open: active (default true); title: form name; initialValue: immutable record; sessionKey: record identity.
+     validate(value): error string or false; onSubmit(value): promise; onSuccess(result): after persistence.
+     onCancel(): exit after confirmation; children({ value, setValue, busy }): Platform fields.
+     strings: { create, save, cancel, failed, invalid, saved, unsaved, close }; className: extra classes.
+   Behavior:
+     Values reset on reopen or sessionKey change. Failed saves retain values and show an error.
+     Cancel, close, Escape and navigation protect dirty values. Pending submissions cannot repeat.
+     Success clears dirty state and shows a Toast; wrap the application in ToastProvider.
+   Notes:
+     Use immutable updates and a stable sessionKey per record. Never nest another Form in children.
+*/
+
+function FormFlow({
+  mode = 'create',
+  surface = 'page',
+  open = true,
+  title,
+  initialValue,
+  sessionKey,
+  validate,
+  onSubmit,
+  onSuccess,
+  onCancel,
+  children,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    create: 'Create',
+    save: 'Save changes',
+    cancel: 'Cancel',
+    failed: 'Could not save. Try again.',
+    invalid: 'Check the fields before saving.',
+    saved: 'Saved',
+    unsaved: 'Your changes will be lost.',
+    close: 'Close'
+  }, strings);
+  const [value, setValue] = _react.default.useState(initialValue),
+    [saved, setSaved] = _react.default.useState(initialValue);
+  const [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    generation = _react.default.useRef(0),
+    alive = _react.default.useRef(false);
+  const initial = _react.default.useRef(initialValue);
+  initial.current = initialValue;
+  const toast = (0, _Toast.useToast)();
+  _react.default.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      generation.current++;
+    };
+  }, []);
+  _react.default.useEffect(() => {
+    generation.current++;
+    lock.current = false;
+    setBusy(false);
+    setValue(initial.current);
+    setSaved(initial.current);
+    setError('');
+  }, [open, sessionKey]);
+  const guard = (0, _UnsavedGuard.useUnsavedGuard)(open && !Object.is(value, saved), t.unsaved);
+  const cancel = guard(() => {
+    if (!lock.current && onCancel) onCancel();
+  });
+  const submit = async e => {
+    e.preventDefault();
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    const run = generation.current;
+    try {
+      const problem = validate ? await validate(value) : '';
+      if (!alive.current || run !== generation.current) return;
+      if (problem === false || typeof problem === 'string' && problem) {
+        setError(typeof problem === 'string' ? problem : t.invalid);
+        return;
+      }
+      const result = await onSubmit(value);
+      if (!alive.current || run !== generation.current) return;
+      setSaved(value);
+      toast.show(t.saved, {
+        tone: 'success'
+      });
+      if (onSuccess) onSuccess(result);
+    } catch (e) {
+      if (alive.current && run === generation.current) setError(t.failed);
+    } finally {
+      if (alive.current && run === generation.current) {
+        lock.current = false;
+        setBusy(false);
+      }
+    }
+  };
+  const overlay = surface === 'dialog' || surface === 'drawer';
+  const body = /*#__PURE__*/_react.default.createElement(_Form.Form, {
+    label: title,
+    className: (0, _cx.cx)('plx-form-flow', className),
+    "aria-busy": busy,
+    onSubmit: submit
+  }, !overlay && title ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "h2",
+    variant: "heading"
+  }, title) : null, /*#__PURE__*/_react.default.createElement(_Fieldset.Fieldset, {
+    legend: title,
+    hideLegend: true,
+    gap: "md",
+    disabled: busy
+  }, children({
+    value,
+    setValue,
+    busy
+  })), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, /*#__PURE__*/_react.default.createElement(_Form.FormActions, {
+    sticky: false
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: cancel,
+    disabled: busy
+  }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    variant: "primary",
+    disabled: busy
+  }, mode === 'edit' ? t.save : t.create)));
+  if (!overlay) return open ? body : null;
+  const Shell = surface === 'drawer' ? _Dialog.Drawer : _Dialog.Dialog;
+  return /*#__PURE__*/_react.default.createElement(Shell, {
+    open: open,
+    title: title,
+    onClose: cancel,
+    dismissible: !busy,
+    closeLabel: t.close
+  }, open ? body : null);
+}
+  } },
+  "platform/patterns/Autosave/Autosave.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Autosave = Autosave;
+exports.SaveStatus = SaveStatus;
+exports.useAutosave = useAutosave;
+var _react = _interopRequireDefault(require("react"));
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Autosave, SaveStatus, useAutosave
+   Summary: Debounced serialized persistence and icon Badges for saving, saved, offline and failed work.
+   Usage: const save = useAutosave(value, persist); <Autosave state={save.state} onRetry={save.retry} />
+   Props:
+     useAutosave(value, onSave, options): immutable value; onSave(value): promise; options.delay: ms (default 600).
+     options.enabled: pause saving (default true); options.unsavedMessage: localized leaving warning.
+     Initial value is saved; changes trigger persistence. Pending edits protect navigation.
+     Returns { state, error, dirty, retry, flush }; flush persists immediately and resolves success.
+     Autosave.state: "saving", "saved", "offline" or "failed"; onRetry(): retry; strings: state names plus retry.
+     SaveStatus: the icon Badge only; className: extra classes.
+   Behavior:
+     One write at a time prevents old requests overwriting new work. Edits during a write queue the latest value.
+     Offline edits retry after reconnect. Failures retain work for Retry or a subsequent edit.
+     Timers and connection listeners stop on unmount; in-flight persistence belongs to the caller.
+   Notes:
+     No backend is assumed. Use immutable values. Public or costly changes need explicit submission.
+*/
+
+const STATES = {
+  saving: ['active', 'refresh'],
+  saved: ['success', 'check'],
+  offline: ['waiting', 'cloud-off'],
+  failed: ['negative', 'alert']
+};
+const WORDS = {
+  saving: 'Saving',
+  saved: 'Saved',
+  offline: 'Offline',
+  failed: 'Save failed',
+  retry: 'Retry'
+};
+function SaveStatus({
+  state = 'saved',
+  strings,
+  className
+}) {
+  const t = Object.assign({}, WORDS, strings),
+    key = STATES[state] ? state : 'saved',
+    s = STATES[key];
+  return /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: s[0],
+    icon: s[1],
+    role: key === 'failed' ? 'alert' : 'status',
+    className: (0, _cx.cx)('plx-autosave__status', className)
+  }, t[key]);
+}
+function Autosave({
+  state = 'saved',
+  onRetry,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, WORDS, strings);
+  return /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    className: (0, _cx.cx)('plx-autosave', className),
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(SaveStatus, {
+    state: state,
+    strings: strings
+  }), state === 'failed' && onRetry ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    onClick: onRetry
+  }, t.retry) : null);
+}
+function useAutosave(value, onSave, {
+  delay = 600,
+  enabled = true,
+  unsavedMessage = 'Your changes have not been saved.'
+} = {}) {
+  const [snapshot, setSnapshot] = _react.default.useState({
+    state: 'saved',
+    error: null,
+    dirty: false
+  });
+  (0, _UnsavedGuard.useUnsavedGuard)(snapshot.dirty, unsavedMessage);
+  const ref = _react.default.useRef({
+    value,
+    saved: value,
+    onSave,
+    enabled,
+    alive: false,
+    timer: null,
+    running: null,
+    online: typeof navigator === 'undefined' || navigator.onLine !== false
+  });
+  const r = ref.current;
+  r.onSave = onSave;
+  r.enabled = enabled;
+  const publish = (state, error = null) => {
+    if (r.alive) setSnapshot({
+      state,
+      error,
+      dirty: !Object.is(r.value, r.saved)
+    });
+  };
+  const flush = _react.default.useCallback(async () => {
+    clearTimeout(r.timer);
+    if (r.running) {
+      try {
+        await r.running;
+      } catch (e) {
+        return false;
+      }
+      if (!r.alive) return false;
+      return flush();
+    }
+    if (!r.enabled || !r.alive) return false;
+    if (Object.is(r.value, r.saved)) {
+      publish('saved');
+      return true;
+    }
+    if (!r.online) {
+      publish('offline');
+      return false;
+    }
+    const writing = r.value;
+    publish('saving');
+    const task = Promise.resolve().then(() => r.onSave(writing));
+    r.running = task;
+    let ok = true;
+    try {
+      await task;
+      r.saved = writing;
+    } catch (e) {
+      ok = false;
+      publish(r.online ? 'failed' : 'offline', e);
+    } finally {
+      r.running = null;
+    }
+    if (!r.alive) return false;
+    if (ok && !Object.is(r.value, r.saved)) return flush();
+    if (ok) publish('saved');
+    return ok;
+  }, []);
+  _react.default.useEffect(() => {
+    r.alive = true;
+    const online = () => {
+      r.online = true;
+      if (!Object.is(r.value, r.saved)) flush();
+    };
+    const offline = () => {
+      r.online = false;
+      if (!Object.is(r.value, r.saved)) publish('offline');
+    };
+    window.addEventListener('online', online);
+    window.addEventListener('offline', offline);
+    return () => {
+      r.alive = false;
+      clearTimeout(r.timer);
+      window.removeEventListener('online', online);
+      window.removeEventListener('offline', offline);
+    };
+  }, [flush]);
+  _react.default.useEffect(() => {
+    r.value = value;
+    clearTimeout(r.timer);
+    if (Object.is(value, r.saved)) {
+      if (!r.running) publish('saved');
+      return;
+    }
+    publish(r.online ? 'saving' : 'offline');
+    if (enabled && r.online) r.timer = setTimeout(flush, Math.max(0, delay));
+    return () => clearTimeout(r.timer);
+  }, [value, enabled, delay, flush]);
+  return {
+    ...snapshot,
+    retry: flush,
+    flush
+  };
+}
+  } },
+  "platform/patterns/DraftState/DraftState.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DraftState = DraftState;
+var _react = _interopRequireDefault(require("react"));
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _VersionLabel = require("../../components/VersionLabel/VersionLabel.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Autosave = require("../Autosave/Autosave.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DraftState
+   Summary: Draft Badge, version and actions to resume or confirm discarding work.
+   Usage: <DraftState version="3" onResume={resume} onDiscard={discard} />
+   Props:
+     version: optional version; saveState: optional Autosave state; onResume(), onDiscard(): promises.
+     strings: { draft, resume, discard, confirm, message, cancel, failed }; className: extra classes.
+   Behavior:
+     Discard requires confirmation. Failures retain the draft and show an error. Pending actions cannot repeat.
+   Notes:
+     The caller owns storage and content. Draft is always an icon Badge.
+*/
+
+function DraftState({
+  version,
+  saveState,
+  onResume,
+  onDiscard,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    draft: 'Draft',
+    resume: 'Resume draft',
+    discard: 'Discard draft',
+    confirm: 'Discard this draft?',
+    message: 'This draft will be permanently removed.',
+    cancel: 'Keep draft',
+    failed: 'Could not update the draft. Try again.'
+  }, strings);
+  const [confirm, setConfirm] = _react.default.useState(false),
+    [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false),
+    cancel = _react.default.useRef(null);
+  const run = async fn => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await fn();
+      setConfirm(false);
+    } catch (e) {
+      setError(t.failed);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-draft-state', className)
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "pencil"
+  }, t.draft), version != null ? /*#__PURE__*/_react.default.createElement(_VersionLabel.VersionLabel, {
+    version: version
+  }) : null, saveState ? /*#__PURE__*/_react.default.createElement(_Autosave.SaveStatus, {
+    state: saveState,
+    strings: strings
+  }) : null, onResume ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: busy,
+    onClick: () => run(onResume)
+  }, t.resume) : null, onDiscard ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "danger-secondary",
+    disabled: busy,
+    onClick: () => setConfirm(true)
+  }, t.discard) : null), !confirm && error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: confirm,
+    role: "alertdialog",
+    size: "sm",
+    title: t.confirm,
+    description: t.message,
+    className: "plx-dialog--destructive",
+    initialFocus: cancel,
+    dismissible: !busy,
+    onClose: () => {
+      if (!lock.current) setConfirm(false);
+    },
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      ref: cancel,
+      disabled: busy,
+      onClick: () => setConfirm(false)
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "danger",
+      disabled: busy,
+      onClick: () => run(onDiscard)
+    }, t.discard))
+  }, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null));
+}
+  } },
+  "platform/patterns/SaveAs/SaveAs.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SaveAs = SaveAs;
+var _react = _interopRequireDefault(require("react"));
+var _Form = require("../Form/Form.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _TreeSelect = require("../../components/TreeSelect/TreeSelect.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SaveAs
+   Summary: Save a copy with a name, a tree location and an optional file format.
+   Usage: <SaveAs locations={folders} initialLocation="root" onSave={saveCopy} />
+   Props:
+     locations: TreeSelect nodes; initialName, initialLocation, initialFormat: starting values; formats: Select options.
+     onSave({ name, location, format }): persistence promise; onCancel(): guarded exit.
+     strings: { title, name, location, format, save, cancel, required, failed, unsaved }; className: extra classes.
+   Behavior:
+     Blank names and locations fail validation. Values survive failed saves. Duplicate submissions are blocked.
+   Notes:
+     The caller resolves naming conflicts and unmounts after success. Never overwrite the original record.
+*/
+
+function SaveAs({
+  locations = [],
+  initialName = '',
+  initialLocation = '',
+  initialFormat = '',
+  formats = [],
+  onSave,
+  onCancel,
+  strings,
+  className
+}) {
+  const t = Object.assign({
+    title: 'Save as',
+    name: 'Name',
+    location: 'Location',
+    format: 'Format',
+    save: 'Save copy',
+    cancel: 'Cancel',
+    required: 'Enter a name and choose a location.',
+    failed: 'Could not save the copy. Try again.',
+    unsaved: 'Your changes will be lost.'
+  }, strings);
+  const [name, setName] = _react.default.useState(initialName),
+    [location, setLocation] = _react.default.useState(initialLocation);
+  const [format, setFormat] = _react.default.useState(initialFormat || formats[0]?.value || '');
+  const [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState(''),
+    [saved, setSaved] = _react.default.useState(false);
+  const lock = _react.default.useRef(false);
+  const guard = (0, _UnsavedGuard.useUnsavedGuard)(!saved && (name !== initialName || location !== initialLocation || format !== (initialFormat || formats[0]?.value || '')), t.unsaved);
+  const submit = async e => {
+    e.preventDefault();
+    if (lock.current) return;
+    if (!name.trim() || location === '' || location == null) {
+      setError(t.required);
+      return;
+    }
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onSave({
+        name: name.trim(),
+        location,
+        format
+      });
+      setSaved(true);
+    } catch (e) {
+      setError(t.failed);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Form.Form, {
+    label: t.title,
+    className: (0, _cx.cx)('plx-save-as', className),
+    "aria-busy": busy,
+    onSubmit: submit
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.name,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    value: name,
+    onChange: e => {
+      setName(e.target.value);
+      setSaved(false);
+    },
+    disabled: busy
+  })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.location,
+    required: true
+  }, /*#__PURE__*/_react.default.createElement(_TreeSelect.TreeSelect, {
+    nodes: locations,
+    value: location,
+    onChange: v => {
+      setLocation(v);
+      setSaved(false);
+    },
+    disabled: busy,
+    label: t.location
+  })), formats.length ? /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.format
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    options: formats,
+    value: format,
+    onChange: e => {
+      setFormat(e.target.value);
+      setSaved(false);
+    },
+    disabled: busy
+  })) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, /*#__PURE__*/_react.default.createElement(_Form.FormActions, {
+    sticky: false
+  }, onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: guard(onCancel),
+    disabled: busy
+  }, t.cancel) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    variant: "primary",
+    disabled: busy
+  }, t.save)));
+}
+  } },
+  "platform/patterns/ArchiveRestore/ArchiveRestore.jsx": { deps: {"react":null,"../../components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ArchiveRestore = ArchiveRestore;
+var _react = _interopRequireDefault(require("react"));
+var _Banner = require("../../components/Banner/Banner.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ArchiveRestore
+   Summary: Reversible archiving with an archived Banner, icon Badge and restore action.
+   Usage: <ArchiveRestore archived={archived} onArchive={archive} onRestore={restore} />
+   Props:
+     archived: controlled status; onArchive(), onRestore(): persistence promises.
+     strings: { archive, restore, archived, message, failed }; children: record content; className: extra classes.
+   Behavior:
+     Status changes only after the caller persists and updates archived. Failure keeps the current state.
+     Pending actions cannot repeat. The archived banner stays visible until restoration succeeds.
+   Notes:
+     Archive is not deletion. The caller controls data access and read-only enforcement.
+*/
+
+function ArchiveRestore({
+  archived = false,
+  onArchive,
+  onRestore,
+  strings,
+  children,
+  className
+}) {
+  const t = Object.assign({
+    archive: 'Archive',
+    restore: 'Restore',
+    archived: 'Archived',
+    message: 'Restore this record to make it active again.',
+    failed: 'Could not update the record. Try again.'
+  }, strings);
+  const [busy, setBusy] = _react.default.useState(false),
+    [error, setError] = _react.default.useState('');
+  const lock = _react.default.useRef(false);
+  const run = async fn => {
+    if (lock.current || !fn) return;
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await fn();
+    } catch (e) {
+      setError(t.failed);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    className: (0, _cx.cx)('plx-archive-restore', className),
+    "aria-busy": busy
+  }, archived ? /*#__PURE__*/_react.default.createElement(_Banner.Banner, {
+    tone: "neutral",
+    icon: "archive",
+    title: /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+      tone: "neutral",
+      icon: "archive"
+    }, t.archived),
+    actions: onRestore ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      disabled: busy,
+      onClick: () => run(onRestore)
+    }, t.restore) : null
+  }, t.message) : onArchive ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    disabled: busy,
+    onClick: () => run(onArchive)
+  }, t.archive) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null, children);
+}
+  } },
   "platform/components/File/File.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -52647,7 +53577,7 @@ function ConnectedAccounts({
   })));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52683,6 +53613,12 @@ Object.defineProperty(exports, "AppShell", {
     return _AppShell.AppShell;
   }
 });
+Object.defineProperty(exports, "ArchiveRestore", {
+  enumerable: true,
+  get: function () {
+    return _ArchiveRestore.ArchiveRestore;
+  }
+});
 Object.defineProperty(exports, "AreaChart", {
   enumerable: true,
   get: function () {
@@ -52699,6 +53635,12 @@ Object.defineProperty(exports, "Auth", {
   enumerable: true,
   get: function () {
     return _Auth.Auth;
+  }
+});
+Object.defineProperty(exports, "Autosave", {
+  enumerable: true,
+  get: function () {
+    return _Autosave.Autosave;
   }
 });
 Object.defineProperty(exports, "Avatar", {
@@ -53217,6 +54159,12 @@ Object.defineProperty(exports, "DownloadButton", {
     return _DownloadButton.DownloadButton;
   }
 });
+Object.defineProperty(exports, "DraftState", {
+  enumerable: true,
+  get: function () {
+    return _DraftState.DraftState;
+  }
+});
 Object.defineProperty(exports, "DragHandle", {
   enumerable: true,
   get: function () {
@@ -53365,6 +54313,12 @@ Object.defineProperty(exports, "FormActions", {
   enumerable: true,
   get: function () {
     return _Form.FormActions;
+  }
+});
+Object.defineProperty(exports, "FormFlow", {
+  enumerable: true,
+  get: function () {
+    return _FormFlow.FormFlow;
   }
 });
 Object.defineProperty(exports, "FormSection", {
@@ -53967,6 +54921,18 @@ Object.defineProperty(exports, "SankeyDiagram", {
     return _SankeyDiagram.SankeyDiagram;
   }
 });
+Object.defineProperty(exports, "SaveAs", {
+  enumerable: true,
+  get: function () {
+    return _SaveAs.SaveAs;
+  }
+});
+Object.defineProperty(exports, "SaveStatus", {
+  enumerable: true,
+  get: function () {
+    return _Autosave.SaveStatus;
+  }
+});
 Object.defineProperty(exports, "ScatterChart", {
   enumerable: true,
   get: function () {
@@ -54415,6 +55381,18 @@ Object.defineProperty(exports, "WidgetGrid", {
   enumerable: true,
   get: function () {
     return _WidgetGrid.WidgetGrid;
+  }
+});
+Object.defineProperty(exports, "Wizard", {
+  enumerable: true,
+  get: function () {
+    return _Wizard.Wizard;
+  }
+});
+Object.defineProperty(exports, "WizardDialog", {
+  enumerable: true,
+  get: function () {
+    return _WizardDialog.WizardDialog;
   }
 });
 Object.defineProperty(exports, "WordCloud", {
@@ -55131,6 +56109,12 @@ Object.defineProperty(exports, "useAppLayout", {
     return _AppShell.useAppLayout;
   }
 });
+Object.defineProperty(exports, "useAutosave", {
+  enumerable: true,
+  get: function () {
+    return _Autosave.useAutosave;
+  }
+});
 Object.defineProperty(exports, "useChartInteraction", {
   enumerable: true,
   get: function () {
@@ -55618,6 +56602,13 @@ var _DeleteFlow = require("./patterns/DeleteFlow/DeleteFlow.jsx");
 var _DuplicateAction = require("./patterns/DuplicateAction/DuplicateAction.jsx");
 var _Publish = require("./patterns/Publish/Publish.jsx");
 var _AssignControl = require("./patterns/AssignControl/AssignControl.jsx");
+var _Wizard = require("./patterns/Wizard/Wizard.jsx");
+var _WizardDialog = require("./patterns/WizardDialog/WizardDialog.jsx");
+var _FormFlow = require("./patterns/FormFlow/FormFlow.jsx");
+var _Autosave = require("./patterns/Autosave/Autosave.jsx");
+var _DraftState = require("./patterns/DraftState/DraftState.jsx");
+var _SaveAs = require("./patterns/SaveAs/SaveAs.jsx");
+var _ArchiveRestore = require("./patterns/ArchiveRestore/ArchiveRestore.jsx");
 var _File = require("./components/File/File.jsx");
 var _FileRow = require("./components/FileRow/FileRow.jsx");
 var _Auth = require("./patterns/Auth/Auth.jsx");

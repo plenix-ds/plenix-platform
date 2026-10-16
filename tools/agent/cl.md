@@ -1,10 +1,8 @@
 ### Added
-- Library wave 11, lane A (accounts and files): File (file or folder, as a line or a chip, by type icon, with size; a long
-  name is cut before its extension), FileRow and FileRowList (selected, progress, actions; rename and delete through
-  RenameAction and DeleteFlow), Auth (SignInForm, SignUpForm, PasswordResetForm, MfaChallenge, SsoButtons,
-  AccountRecovery), SessionTimeout and useSessionTimeout (an alert dialog; the time left said at 60, 30 and 10 seconds),
-  RoleManager (roles list and detail; the owner role keeps its last member), ConnectedAccounts (connect lists the scopes
-  first; disconnect asks).
-- Native designs: iOS Managing accounts and File management; Android Sign-in and account.
-### Fixed
-- Design system: "All roleses" — a title already in the plural (Roles) keeps its plural.
+- Library wave 10, lane C (built by Codex, the pilot's first pull request, #4): Wizard and WizardDialog (linear or free
+  steps, a summary step), FormFlow (create and edit in a dialog, a page, in place or a drawer, with the unsaved-changes
+  guard), Autosave, SaveStatus and useAutosave (one write at a time; offline retry), DraftState, SaveAs, ArchiveRestore.
+- Native designs: iOS Feedback; Android Step flow, Form, App state; Archive and Restore added to Android Confirmation.
+### Changed
+- Native designs merge by adding variants to a page that exists, never replacing another task's (tools/agent/native/merge.js).
+- Codex's next tasks: tools/agent/tasks/31-w11b.md and 32-w11c.md.
