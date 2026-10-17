@@ -17,6 +17,9 @@ the Platform is listed below. This task moves it, so that only `LegacyDataTable`
 1. **The static `Table`** (`platform/components/Table/Table.jsx`): today `TableEngine` with `isStatic`. Build it on the
    TanStack renderer: every row drawn (no virtual rows, no paging), no sorting, filters, menus or selection, narrow
    "table" by default, the same look and tokens (the Table page of the design system). No `.tabulator*` class.
+   **It never scrolls** (owner, 2026-10-16): no scroll container inside it, vertical or horizontal; the table is as
+   tall as its rows, a "wrap" cell grows its row to show all its text, and the columns share the width they are given
+   (long values wrap instead of widening the table). Prove it on the spec's Overview and Purpose tables (Name / Value).
 2. **The patterns and templates that import the Tabulator table directly**: AuditLog, ComparisonView, FileList,
    ImportWizard, PermissionsEditor, RenditionList, ReviewFlow, templates/Commerce/Account and Storefront,
    templates/templates/Templates. Point them at the TanStack `DataTable` (`../../components/DataTableNext/DataTablePublic.jsx`)
