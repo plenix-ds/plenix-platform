@@ -1,10 +1,10 @@
 {
-  "$description": "Input, Textarea, Select (platform/components/Input), library wave 6, lane B: the tokens of the appearances (filled, underline) and of the autogrowing text area. The outline appearance and the states are the shared input tokens.",
+  "$description": "Input, Textarea, Select (platform/components/Input), library wave 6, lane B: the filled appearance, the invalid state and the autogrowing text area. The outline appearance and the other states are the shared input tokens.",
   "plx-comp": {
     "input-filled-background": { "$value": "{plx-sys.fill-neutral}", "$type": "color", "$description": "Filled field: the neutral fill behind the value (the search field's fill)." },
-    "input-filled-end-radius": { "$value": "{plx-sys.shape-none}", "$type": "dimension", "$description": "Filled field: square corners at the line under it." },
-    "input-underline-background": { "$value": "transparent", "$type": "color", "$description": "Underline field: no fill; the surface shows through." },
-    "input-underline-radius": { "$value": "{plx-sys.shape-none}", "$type": "dimension", "$description": "Underline field: no corners, only the line under it." },
+    "input-filled-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Filled field: the value in dark gray on the gray fill (owner, 2026-10-16); the border is the outline field's." },
+    "input-invalid-background": { "$value": "{plx-sys.feedback-danger-soft}", "$type": "color", "$description": "An invalid field: the lightest red fill (owner, 2026-10-16)." },
+    "input-invalid-inner-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "An invalid field: a line inside its border in the danger color, so the border reads 2px without moving the value (owner, 2026-10-16)." },
     "textarea-auto-grow-max-height": { "$value": "calc(10lh + {plx-sys.space-inset-sm} * 2 + {plx-sys.border-width-thin} * 2)", "$type": "dimension", "$description": "Autogrowing text area: the tallest it grows (ten lines, its padding and border); past it, it scrolls inside." }
   }
 }

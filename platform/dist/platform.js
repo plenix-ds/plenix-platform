@@ -8238,7 +8238,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Input value={name} onChange={(e) => …} width="md" />
      <Textarea rows={5} value={notes} onChange={(e) => …} />
      <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
-     <Input appearance="underline" … />            <Textarea autoGrow … />
+     <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
      Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
      Select.size: as Input.size; numeric values retain the native select size attribute.
@@ -8250,8 +8250,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (owner, batch 275); the system sizes it, so it takes no width or utility
      Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
        (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
-     Input.appearance: "outline" (default; a border on every side) | "filled" (the neutral fill with a line under it, square
-       bottom corners) | "underline" (only the line under it, no fill, no corners); one appearance per form
+     Input.appearance: "outline" (default; a border on every side) | "filled" (the same border and corners, a gray fill and
+       the value in dark gray); one appearance per form. There is no underline field (owner, 2026-10-16)
      Input.className: more classes on the <input>
      Textarea.invalid: marks the field (aria-invalid)
      Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
@@ -8266,8 +8266,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Select.className: more classes on the wrapper
    Behavior:
      Inside a Field, the label, description and error are connected for you.
-     Every appearance keeps the same states: hover, focus and invalid change only the color of its border (the line
-     under a filled or underline field), never a ring outside it; read-only and disabled keep their fills.
+     Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
+     it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
+     red fill; read-only and disabled keep their fills.
      autoGrow: the browser sizes the text area to its content (field-sizing: content); where it cannot, the text area
      measures its content on each change and sets its height on the 4px grid (gridPx), the one inline style it writes.
      Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
@@ -8298,7 +8299,7 @@ const TYPE_HINTS = {
 };
 
 // the appearance class (outline is the base look: no class)
-const look = appearance => (appearance === 'filled' || appearance === 'underline') && 'plx-input--' + appearance;
+const look = appearance => appearance === 'filled' && 'plx-input--filled';
 const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
   invalid,
   width,

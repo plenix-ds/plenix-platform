@@ -252,13 +252,13 @@
   --plx-comp-switch-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-switch-track-background: var(--plx-sys-border-default);
   --plx-comp-switch-track-height: var(--plx-ref-size-20px);
-  --plx-comp-switch-track-radius: var(--plx-sys-shape-pill);
+  --plx-comp-switch-track-radius: var(--plx-sys-radius-control);
   --plx-comp-switch-track-width: var(--plx-ref-size-36px);
   --plx-comp-switch-track-duration: var(--plx-sys-motion-duration-base);
   --plx-comp-switch-track-easing: var(--plx-sys-motion-ease-standard);
   --plx-comp-switch-track-after-background: var(--plx-sys-control-background);
   --plx-comp-switch-track-after-height: var(--plx-ref-size-16px);
-  --plx-comp-switch-track-after-radius: var(--plx-sys-shape-pill);
+  --plx-comp-switch-track-after-radius: var(--plx-sys-shape-xs);
   --plx-comp-switch-track-after-shadow: var(--plx-sys-shadow-md);
   --plx-comp-switch-track-after-width: var(--plx-ref-size-16px);
   --plx-comp-switch-track-after-inset-block-start: calc((var(--plx-ref-size-20px) - var(--plx-ref-size-16px)) / 2);
@@ -3984,9 +3984,9 @@
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-input-filled-background: var(--plx-sys-fill-neutral);
-  --plx-comp-input-filled-end-radius: var(--plx-sys-shape-none);
-  --plx-comp-input-underline-background: transparent;
-  --plx-comp-input-underline-radius: var(--plx-sys-shape-none);
+  --plx-comp-input-filled-text: var(--plx-sys-content-muted);
+  --plx-comp-input-invalid-background: var(--plx-sys-feedback-danger-soft);
+  --plx-comp-input-invalid-inner-width: var(--plx-sys-border-width-thin);
   --plx-comp-textarea-auto-grow-max-height: calc(10lh + var(--plx-sys-space-inset-sm) * 2 + var(--plx-sys-border-width-thin) * 2);
 }
 :root,[data-plx-density],[data-plx-interaction] {

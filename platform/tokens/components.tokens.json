@@ -1029,7 +1029,7 @@
       "$type": "dimension"
     },
     "switch-track-radius": {
-      "$value": "{plx-sys.shape-pill}",
+      "$value": "{plx-sys.radius-control}",
       "$type": "dimension"
     },
     "switch-track-width": {
@@ -1053,7 +1053,7 @@
       "$type": "dimension"
     },
     "switch-track-after-radius": {
-      "$value": "{plx-sys.shape-pill}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
     "switch-track-after-shadow": {

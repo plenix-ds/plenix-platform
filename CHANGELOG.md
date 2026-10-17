@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.52.0] - 2026-10-17
+
+### Changed
+- Filled fields (`appearance="filled"`) have the outline field's border and corners on a gray fill, the value in dark
+  gray (`--plx-comp-input-filled-text`); before, only a line under the value.
+- An invalid field has a 2px danger border (its border and a line inside it, so the value does not move) on the
+  lightest red fill (`--plx-comp-input-invalid-background`, `--plx-comp-input-invalid-inner-width`).
+- Switches have the text field's corners (`--plx-comp-switch-track-radius` → `--plx-sys-radius-control`, the knob
+  `--plx-sys-shape-xs`); before, pill-shaped.
+### Removed
+- The underline field appearance (`appearance="underline"`, `.plx-input--underline`, the `input-underline-*` and
+  `input-filled-end-radius` tokens). Apps to check: a field with `appearance="underline"` now draws as an outline field.
+
 ## [0.51.3] - 2026-10-17
 
 ### Fixed

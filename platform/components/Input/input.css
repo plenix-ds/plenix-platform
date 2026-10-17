@@ -1,4 +1,4 @@
-/* Plenix · Input, Textarea, Select (platform/components/Input). Focus: the border turns the focus color (no ring outside it); an invalid field keeps its danger border. */
+/* Plenix · Input, Textarea, Select (platform/components/Input). Focus: the border turns the focus color (no ring outside it); an invalid field has a 2px danger border (its border and a line inside it) on the lightest red fill (owner, 2026-10-16). */
 /* Fields are layout-neutral (owner, 2026-10-15/16, the composition standard, GitHub #55): an input or a select takes its
    natural width; the pattern it sits in sizes it (platform/standards/layout.json › fields: a Form, Field, dialog or
    settings row fills its column; the CommandBar or a Toolbar keeps its natural width). */
@@ -8,7 +8,7 @@
 .plx-input.is-hover{border-bottom-color:var(--plx-comp-input-hover-border-color);border-left-color:var(--plx-comp-input-hover-border-color);border-right-color:var(--plx-comp-input-hover-border-color);border-top-color:var(--plx-comp-input-hover-border-color);}
 .plx-input:focus-visible,.plx-input:focus,.plx-input.is-focused,.plx-select.is-focused .plx-select__control,
 .plx-input.is-focus-visible{border-bottom-color:var(--plx-comp-input-focus-border-color);border-left-color:var(--plx-comp-input-focus-border-color);border-right-color:var(--plx-comp-input-focus-border-color);border-top-color:var(--plx-comp-input-focus-border-color);}
-.plx-input[aria-invalid="true"]{border-bottom-color:var(--plx-comp-input-invalid-border-color);border-left-color:var(--plx-comp-input-invalid-border-color);border-right-color:var(--plx-comp-input-invalid-border-color);border-top-color:var(--plx-comp-input-invalid-border-color);}
+.plx-input[aria-invalid="true"]{background-color:var(--plx-comp-input-invalid-background);box-shadow:inset 0 0 0 var(--plx-comp-input-invalid-inner-width) var(--plx-comp-input-invalid-border-color);border-bottom-color:var(--plx-comp-input-invalid-border-color);border-left-color:var(--plx-comp-input-invalid-border-color);border-right-color:var(--plx-comp-input-invalid-border-color);border-top-color:var(--plx-comp-input-invalid-border-color);}
 .plx-input:disabled{background-color:var(--plx-comp-input-disabled-background);color:var(--plx-comp-input-disabled-text);cursor:not-allowed;}
 .plx-input[readonly]{background-color:var(--plx-comp-input-readonly-background);}
 .plx-textarea{font-size:var(--plx-comp-textarea-font-size);line-height:var(--plx-comp-textarea-line-height);min-block-size:var(--plx-comp-textarea-min-height);padding-block-end:var(--plx-comp-textarea-padding-block);padding-block-start:var(--plx-comp-textarea-padding-block);resize:vertical;}
@@ -28,14 +28,14 @@
 .plx-input[type="color"]::-moz-color-swatch{border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:inherit;border-top-right-radius:inherit;border-top-style:none;}
 .plx-input[type="color"]:focus-visible,
 .plx-input[type="color"].is-focus-visible{outline-color:var(--plx-comp-input-color-focus-outline-color);outline-offset:var(--plx-comp-input-color-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-input-color-focus-outline-width);}
-/* the appearances (appearance, library wave 6): filled is the neutral fill with only the line under it, square at the line;
-   underline is only the line. The line is the field's border, so hover, focus and invalid recolor it as on an outline field. */
-.plx-input--filled,.plx-input--underline{border-left-style:none;border-right-style:none;border-top-style:none;}
-.plx-input--filled{background-color:var(--plx-comp-input-filled-background);border-bottom-left-radius:var(--plx-comp-input-filled-end-radius);border-bottom-right-radius:var(--plx-comp-input-filled-end-radius);}
-.plx-input--underline{background-color:var(--plx-comp-input-underline-background);border-bottom-left-radius:var(--plx-comp-input-underline-radius);border-bottom-right-radius:var(--plx-comp-input-underline-radius);border-top-left-radius:var(--plx-comp-input-underline-radius);border-top-right-radius:var(--plx-comp-input-underline-radius);}
+/* the filled appearance (owner, 2026-10-16): the outline field's border and corners, a gray fill and the value in dark gray;
+   hover, focus and invalid recolor its border as on an outline field. There is no underline appearance. */
+.plx-input--filled{background-color:var(--plx-comp-input-filled-background);color:var(--plx-comp-input-filled-text);}
 /* the autogrowing text area (autoGrow): sized to its content up to the maximum, then it scrolls; no resize handle */
 .plx-textarea.plx-textarea--auto-grow{field-sizing:content;max-block-size:var(--plx-comp-textarea-auto-grow-max-height);overflow-y:auto;resize:none;}
 
 /* Optional small fields follow the existing small Button role; default sizes are unchanged. */
 .plx-input--size-sm{--plx-comp-input-min-height:var(--plx-comp-input-small-min-height);--plx-comp-input-color-height:var(--plx-comp-input-small-min-height);--plx-comp-input-color-width:var(--plx-comp-input-small-min-height);}
 .plx-select--size-sm .plx-select__control{--plx-comp-input-min-height:var(--plx-comp-select-small-min-height);}
+/* an invalid filled field shows the invalid fill */
+.plx-input--filled[aria-invalid="true"]{background-color:var(--plx-comp-input-invalid-background);}
