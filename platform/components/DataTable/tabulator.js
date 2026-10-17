@@ -1,5 +1,5 @@
 /* Plenix · DataTable engine (tabulator.js)
-   Summary: Loads the engine every DataTable runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
+   Summary: Loads the engine retained for LegacyDataTable: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
    Usage:
      loadTabulator().then((Tabulator) => new Tabulator(element, options));
      const width = tablePx('--plx-ref-size-36px');
@@ -12,11 +12,8 @@
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
-     Early load (batch 237): a page whose first screen has a table calls DataTable.preload() (or Table.preload()) as
-     its script starts, so Tabulator arrives while React draws the page instead of after the grid mounts. Every other
-     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache;
-     only from the page's own site (an app that bundles the npm package, or loads the Platform from another site, fetches
-     the engine when its first grid asks for it).
+     A legacy application may call LegacyDataTable.preload() before its first grid. Other pages do not automatically
+     fetch the legacy engine; its first grid loads it on demand.
      The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
      build's plenix.js -> ./vendor/; the npm package's dist/plenix.global.js -> dist/vendor/); in the npm package
@@ -93,12 +90,6 @@ export function prefetchTabulator() {
     link.rel = 'prefetch'; link.href = base + f; link.setAttribute('data-plx-vendor-prefetch', 'tabulator');
     document.head.appendChild(link);
   });
-}
-
-// every page: prefetch once the page has loaded and the browser is idle (a table page has already started the real load)
-if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof window.addEventListener === 'function') {
-  const idle = () => (window.requestIdleCallback ? window.requestIdleCallback(prefetchTabulator, { timeout: 3000 }) : setTimeout(prefetchTabulator, 1000));
-  if (document.readyState === 'complete') idle(); else window.addEventListener('load', idle, { once: true });
 }
 
 // a token's value on the page, as pixels: '--plx-ref-size-36px' -> 36; the token written inside var() is accepted too

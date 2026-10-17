@@ -27,6 +27,8 @@
          "person" | "long-text" | "bytes" (file sizes; filters take "> 2 MB") | "multi" (several values: a grouped table
          puts the record in each of its groups): the header icon and the sort words
        render(record): the cell as a React element; sorter: "string" | "number" | "date" | a compare function
+         sorter(valueA, valueB, recordA, recordB, field, direction) returns ascending order; direction lets a fixed
+         category order (such as folders first) compensate for the descending inversion
        filter: true (contains text) | "list" (one of the column's values); summary: "sum" | "count" | "average" | "min" |
          "max" in each group header; empty: the text for a missing value (zero and false are values)
        width: a CSS length or a size token ("--plx-ref-size-240px"; numbers snap to a size token); without it the column

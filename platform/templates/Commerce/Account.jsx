@@ -28,7 +28,7 @@ import { EntityHeader } from '../../patterns/EntityHeader/EntityHeader.jsx';
 import { PropertyList } from '../../patterns/PropertyList/PropertyList.jsx';
 import { Wizard } from '../../patterns/Wizard/Wizard.jsx';
 import { SettingsSection } from '../../patterns/SettingsLayout/SettingsLayout.jsx';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
@@ -118,7 +118,7 @@ export function OrderManagement({ orders = [], currency = 'USD', onOpen, onFulfi
           { label: t.refund, icon: 'ed-undo', disabled: !canRefund(o), onSelect: () => onRefund && onRefund(o) },
           { separator: true },
           { label: t.cancel, icon: 'do-not-disturb', danger: true, disabled: !canCancel(o), onSelect: () => setAsking([o]) }]}
-        on={onOpen ? { rowDblClick: (e, row) => onOpen(orders.find((o) => o.id === row.getData().id)) } : undefined} />
+        onRowDoubleClick={onOpen ? (order) => onOpen(orders.find((o) => o.id === order.id)) : undefined} />
       <ConfirmDialog open={!!asking} destructive title={asking ? fill(t.cancelTitle, { what: what(asking) }) : ''} message={t.cancelText}
         confirmLabel={asking && asking.length > 1 ? t.cancelMany : t.cancel} cancelLabel={t.keep}
         onConfirm={() => { if (onCancel) onCancel(asking); announce(fill(t.canceled, { what: what(asking) })); setSelected([]); setAsking(null); }} onCancel={() => setAsking(null)} />

@@ -10,7 +10,7 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Time } from '../../components/Time/Time.jsx';
 import { Button } from '../../components/Button/Button.jsx';

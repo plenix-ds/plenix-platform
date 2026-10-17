@@ -13,7 +13,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { cx } from '../../utils/cx.js';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { DownloadButton } from '../../components/DownloadButton/DownloadButton.jsx';
 import { Menu,MenuItem } from '../../components/Menu/Menu.jsx';
 import { formatBytes } from '../../utils/format.js';

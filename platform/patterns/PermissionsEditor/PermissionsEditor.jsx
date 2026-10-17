@@ -17,7 +17,7 @@ import { Stack } from '../../components/Stack/Stack.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { PermissionSummary } from '../PermissionSummary/PermissionSummary.jsx';

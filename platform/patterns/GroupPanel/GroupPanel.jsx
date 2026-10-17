@@ -4,14 +4,14 @@
      Collapse all and Expand all at the top.
    Usage:
      const [groups, setGroups] = React.useState([]);
-     <GroupPanel fields={fields.filter((f) => f.kind === 'select')} value={groups} onChange={setGroups} table={tableRef} />
-     <DataTable … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} onReady={(t) => { tableRef.current = t; }} />
+     <GroupPanel fields={fields.filter((f) => f.kind === 'select')} value={groups} onChange={setGroups} />
+     <DataTable … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} />
      (or useCollectionView)
    Props:
      fields: the fields rows can be grouped by (utils/fields.js); usually the select fields
      value: the levels: [{ field, dir: "asc" | "desc", hideEmpty }], the first the outer group
      onChange(value): runs on every change
-     table: the DataTable's Tabulator instance (onReady), or a ref to it: Collapse all and Expand all close and open its
+     table: the table controller, or a ref to it: Collapse all and Expand all close and open its
        groups; without it they are disabled
      inline: draws the panel alone (open, in a frame); default false
      strings: { label: "Group", title: "Group by", info, empty, add: "Add group", addSub: "Add subgroup", collapseAll:

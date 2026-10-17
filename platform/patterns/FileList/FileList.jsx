@@ -69,7 +69,7 @@ import { cx } from '../../utils/cx.js';
 import { formatBytes, formatDate, formatNumber } from '../../utils/format.js';
 import { File } from '../../components/File/File.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
@@ -175,9 +175,9 @@ export function FileList({ files = [], label, view = 'list', sortable = false, s
   let body;
   if (table) {
     const sizeText = (f) => (f.kind === 'folder' ? (typeof f.count === 'number' ? fill(f.count === 1 ? t.item : t.items, { n: formatNumber(f.count) }) : '') : typeof f.size === 'number' ? formatBytes(f.size) : (f.size || ''));
-    // folders stay first whichever way the name sorts (Tabulator turns the result around for a descending sort)
+    // folders stay first whichever way the name sorts (the comparator compensates for descending order)
     const byName = (a, b, ra, rb, col, dir) => {
-      const fa = ra.getData().kind === 'folder', fb = rb.getData().kind === 'folder';
+      const fa = ra.kind === 'folder', fb = rb.kind === 'folder';
       if (fa !== fb) return (fa ? -1 : 1) * (dir === 'desc' ? -1 : 1);
       return String(a || '').localeCompare(String(b || ''), undefined, { numeric: true, sensitivity: 'base' });
     };
