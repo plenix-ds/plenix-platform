@@ -943,7 +943,10 @@ export function TableEngine(props) {
       if (!alive || !hostRef.current || !hostRef.current.ownerDocument.defaultView) return;
       const host = hostRef.current;
       const p = latest.current;
-      const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || S.empty);
+      // made in the grid's own document: Tabulator in a frame rejects an element of the page's document as its placeholder
+      // (instanceof that frame's HTMLElement), and then draws no rows at all (every lab matrix of the design system)
+      const placeholder = host.ownerDocument.createElement('div');
+      placeholder.className = B + '__empty tabulator-placeholder-contents'; placeholder.textContent = p.empty || S.empty;
       // the row menu: the page's items, then (movable rows) the moves
       let optsRowMenu;
       const movable = !isStatic && !!(p.options || {}).movableRows;

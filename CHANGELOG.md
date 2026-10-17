@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.51.3] - 2026-10-17
+
+### Fixed
+- The design system's "All …" variant pages draw again (Illustration, Button and every component lab): the static
+  Table in a lab's frame showed its header and no rows, because Tabulator in the frame rejected an empty-state
+  placeholder made in the page's document and stopped drawing. The placeholder is now made in the grid's own document.
+
 ## [0.51.2] - 2026-10-17
 
 ### Changed
