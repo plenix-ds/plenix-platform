@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.5] - 2026-10-17
+
+### Changed
+- Font playground: word spacing (owner). A Word spacing slider, a "Space between words" row in the match, and Fit word
+  spacing (the space made exactly as wide as DM Sans's); Fit now sets size, weight and word spacing together. DM Mono
+  fitted at DM Sans 13px/400 on a 1.5× screen: 12.375px, 400, word spacing −0.319em, 96.5% (lines 90.9% as wide).
+
 ## [0.53.4] - 2026-10-17
 
 ### Fixed

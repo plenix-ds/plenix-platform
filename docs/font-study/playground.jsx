@@ -1,6 +1,6 @@
 /* Font playground (docs/font-study/playground.jsx; owner, 2026-10-17: "I just want to play with weights and px sizing …
    or use another font … a 90% match is acceptable"). DM Sans is the reference and never changes; pick a monospace font,
-   move its size and weight (and width or spacing where the font has them) and read how close it comes, measured live on
+   move its size, weight, word spacing (and width or letter spacing where the font has them) and read how close it comes, measured live on
    this screen (its pixel ratio included, so hinting shows as it really draws). The candidates load from Google Fonts and
    jsDelivr (a study page only; the Platform ships its fonts itself). Compiled to playground.js with
    tools/agent/build-study.js docs/font-study playground.jsx. */
@@ -54,10 +54,12 @@ function ink(css, text, spacing) {
 function height(css, text) { const { d, B } = ink(css, text); let h = 0; for (let y = 0; y < B; y++) { let m = 0; for (let x = 0; x < cv.width; x++) m = Math.max(m, d[(y * cv.width + x) * 4 + 3]); h += m / 255; } return h / DPR; }
 // the optical stroke: summed coverage across a row through the stems of "llll", per stem
 function stroke(css, size) { const { d, B } = ink(css, 'llll'); const y = B - Math.round(size * DPR * 0.3); let s = 0; for (let x = 0; x < cv.width; x++) s += d[(y * cv.width + x) * 4 + 3] / 255; return s / 4 / DPR; }
-function width(css, spacing) { cx.font = css; cx.letterSpacing = (spacing || 0) + 'px'; return LINES.reduce((a, t) => a + cx.measureText(t).width, 0) / DPR; }
-function metrics(family, weight, size, stretch, spacingEm) {
-  const css = fontCss(family, weight, size, stretch), sp = (spacingEm || 0) * size * DPR;
-  return { x: height(css, 'xxxx'), cap: height(css, 'HHHH'), fig: height(css, '0000'), stroke: stroke(css, size), width: width(css, sp) };
+function width(css, spacing, words) { cx.font = css; cx.letterSpacing = (spacing || 0) + 'px'; cx.wordSpacing = (words || 0) + 'px'; const w = LINES.reduce((a, t) => a + cx.measureText(t).width, 0) / DPR; cx.wordSpacing = '0px'; return w; }
+// the width a space takes between two words (the letter spacing after it and the word spacing included)
+function space(css, spacing, words) { cx.font = css; cx.letterSpacing = (spacing || 0) + 'px'; cx.wordSpacing = (words || 0) + 'px'; const w = cx.measureText('a a').width - cx.measureText('aa').width; cx.wordSpacing = '0px'; return w / DPR; }
+function metrics(family, weight, size, stretch, spacingEm, wordEm) {
+  const css = fontCss(family, weight, size, stretch), sp = (spacingEm || 0) * size * DPR, ws = (wordEm || 0) * size * DPR;
+  return { x: height(css, 'xxxx'), cap: height(css, 'HHHH'), fig: height(css, '0000'), stroke: stroke(css, size), space: space(css, sp, ws), width: width(css, sp, ws) };
 }
 
 const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : 0);
@@ -67,7 +69,7 @@ function App() {
   const saved = (() => { try { return JSON.parse(localStorage.getItem('plenix-font-playground') || 'null'); } catch (e) { return null; } })();
   const [ref, setRef] = useState(saved ? saved.ref : { size: 13, weight: 400 });
   const [font, setFont] = useState(saved ? saved.font : 'DM Mono');
-  const [cand, setCand] = useState(saved ? saved.cand : { size: 13, weight: 400, stretch: 100, spacing: 0 });
+  const [cand, setCand] = useState(saved ? saved.cand : { size: 13, weight: 400, stretch: 100, spacing: 0, words: 0 });
   const [ready, setReady] = useState(0);
   const f = FONTS.find((x) => x[1] === font) || FONTS[0];
   useEffect(() => { try { localStorage.setItem('plenix-font-playground', JSON.stringify({ ref, font, cand })); } catch (e) { /* not kept */ } }, [ref, font, cand]);
@@ -81,12 +83,12 @@ function App() {
   const sheet = useMemo(() => { const s = new CSSStyleSheet(); document.adoptedStyleSheets = document.adoptedStyleSheets.concat(s); return s; }, []);
   useEffect(() => {
     sheet.replaceSync('.pg-ref{font-family:"DM Sans";font-size:' + ref.size + 'px;font-weight:' + ref.weight + ';}'
-      + '.pg-cand{font-family:"' + f[1] + '";font-size:' + cand.size + 'px;font-weight:' + cand.weight + ';letter-spacing:' + cand.spacing + 'em;' + (f[3] ? 'font-stretch:' + cand.stretch + '%;' : '') + '}'
+      + '.pg-cand{font-family:"' + f[1] + '";font-size:' + cand.size + 'px;font-weight:' + cand.weight + ';letter-spacing:' + cand.spacing + 'em;word-spacing:' + (cand.words || 0) + 'em;' + (f[3] ? 'font-stretch:' + cand.stretch + '%;' : '') + '}'
       + '.pg-big .pg-ref{font-size:' + (ref.size * 6) + 'px;}.pg-big .pg-cand{font-size:' + (cand.size * 6) + 'px;}');
   }, [ref, cand, font]);
 
-  const m = useMemo(() => ({ r: metrics('DM Sans', ref.weight, ref.size), c: metrics(f[1], cand.weight, cand.size, f[3] ? cand.stretch : null, cand.spacing) }), [ref, cand, font, ready]);
-  const parts = [['x-height', 'x'], ['Capital height', 'cap'], ['Figure height', 'fig'], ['Stroke', 'stroke'], ['Width of the lines', 'width']];
+  const m = useMemo(() => ({ r: metrics('DM Sans', ref.weight, ref.size), c: metrics(f[1], cand.weight, cand.size, f[3] ? cand.stretch : null, cand.spacing, cand.words) }), [ref, cand, font, ready]);
+  const parts = [['x-height', 'x'], ['Capital height', 'cap'], ['Figure height', 'fig'], ['Stroke', 'stroke'], ['Space between words', 'space'], ['Width of the lines', 'width']];
   const loaded = document.fonts.check(cand.weight + ' 16px "' + f[1] + '"');
   const score = Math.round(parts.reduce((a, p) => a + close(m.c[p[1]], m.r[p[1]]), 0) / parts.length * 10) / 10;
 
@@ -94,13 +96,16 @@ function App() {
   const pickFont = (fam) => { const n = FONTS.find((x) => x[1] === fam); setFont(fam); setCand(Object.assign({}, cand, { weight: clampWeight(n, cand.weight), stretch: n[3] ? Math.min(n[3][1], Math.max(n[3][0], 100)) : 100 })); };
   // fit: the size whose x-height and capitals come closest, then the weight whose stroke comes closest
   const st = (c) => (f[3] ? c.stretch : null);
-  const bestSize = (c) => { let best = null; for (let s = ref.size - 3; s <= ref.size + 3.001; s += 0.125) { const k = metrics(f[1], c.weight, s, st(c), c.spacing); const e = Math.abs(k.x - m.r.x) + Math.abs(k.cap - m.r.cap); if (!best || e < best.e) best = { s, e }; } return Math.round(best.s * 1000) / 1000; };
-  const bestWeight = (c) => { const list = steps(f) || Array.from({ length: (f[2][1] - f[2][0]) / 10 + 1 }, (x, i) => f[2][0] + i * 10); let best = null; list.forEach((w) => { const k = metrics(f[1], w, c.size, st(c), c.spacing); const e = Math.abs(k.stroke - m.r.stroke); if (!best || e < best.e) best = { w, e }; }); return best.w; };
+  const bestSize = (c) => { let best = null; for (let s = ref.size - 3; s <= ref.size + 3.001; s += 0.125) { const k = metrics(f[1], c.weight, s, st(c), c.spacing, c.words); const e = Math.abs(k.x - m.r.x) + Math.abs(k.cap - m.r.cap); if (!best || e < best.e) best = { s, e }; } return Math.round(best.s * 1000) / 1000; };
+  const bestWeight = (c) => { const list = steps(f) || Array.from({ length: (f[2][1] - f[2][0]) / 10 + 1 }, (x, i) => f[2][0] + i * 10); let best = null; list.forEach((w) => { const k = metrics(f[1], w, c.size, st(c), c.spacing, c.words); const e = Math.abs(k.stroke - m.r.stroke); if (!best || e < best.e) best = { w, e }; }); return best.w; };
   const fitSize = () => set('size', bestSize(cand));
   const fitWeight = () => set('weight', bestWeight(cand));
-  const fitWidth = () => { if (!f[3]) return; let best = null; for (const s of STRETCH.map((x) => x[0]).filter((x) => x >= f[3][0] && x <= f[3][1])) { const k = metrics(f[1], cand.weight, cand.size, s, cand.spacing); const e = Math.abs(k.width - m.r.width); if (!best || e < best.e) best = { s, e }; } set('stretch', best.s); };
+  const fitWidth = () => { if (!f[3]) return; let best = null; for (const s of STRETCH.map((x) => x[0]).filter((x) => x >= f[3][0] && x <= f[3][1])) { const k = metrics(f[1], cand.weight, cand.size, s, cand.spacing, cand.words); const e = Math.abs(k.width - m.r.width); if (!best || e < best.e) best = { s, e }; } set('stretch', best.s); };
+  // word spacing: the em value that makes a space exactly as wide as DM Sans's (its width moves one to one with it)
+  const bestWords = (c) => { const now = metrics(f[1], c.weight, c.size, st(c), c.spacing, 0).space; return Math.round(((m.r.space - now) / c.size) * 1000) / 1000; };
+  const fitWords = () => set('words', bestWords(cand));
   // both at once: the size first (at the current weight), then the weight at that size
-  const fitAll = () => { const c = Object.assign({}, cand); c.size = bestSize(c); c.weight = bestWeight(c); setCand(c); };
+  const fitAll = () => { const c = Object.assign({}, cand); c.size = bestSize(c); c.weight = bestWeight(c); c.words = bestWords(c); setCand(c); };
 
   const wl = steps(f);
   return (
@@ -113,14 +118,14 @@ function App() {
             <List variant="bullets" items={[
               { children: 'DM Sans is the reference and never changes; set the size and weight it has where the two fonts meet.' },
               { children: 'Pick a monospace font and move its size, weight, width and spacing; every number is measured live on this screen.' },
-              { children: 'Fit finds the size and the weight that come closest; 90% or more is the target.' },
+              { children: 'Fit finds the size, the weight and the word spacing that come closest; 90% or more is the target.' },
             ]} />
           </Stack>
           <Panel title={loaded ? 'Match: ' + score + '%' : 'Loading ' + f[0] + '…'} icon="list-lines">
             <Stack gap="md">
               <Table label="The match, part by part" columns={[{ title: 'Measure', field: 'n', kind: 'name' }, { title: 'DM Sans', field: 'r', kind: 'data' }, { title: f[0], field: 'c', kind: 'data' }, { title: 'Match', field: 'p', kind: 'data' }]}
                 data={parts.map((p, i) => ({ id: i, n: p[0], r: m.r[p[1]].toFixed(2) + ' px', c: m.c[p[1]].toFixed(2) + ' px', p: close(m.c[p[1]], m.r[p[1]]).toFixed(1) + '%' }))} />
-              <Text variant="secondary">CSS for the candidate: font-family "{f[1]}"; font-size {cand.size}px; font-weight {cand.weight}{f[3] ? '; font-stretch ' + cand.stretch + '%' : ''}{cand.spacing ? '; letter-spacing ' + cand.spacing + 'em' : ''} (beside DM Sans {ref.size}px {ref.weight})</Text>
+              <Text variant="secondary">CSS for the candidate: font-family "{f[1]}"; font-size {cand.size}px; font-weight {cand.weight}{f[3] ? '; font-stretch ' + cand.stretch + '%' : ''}{cand.spacing ? '; letter-spacing ' + cand.spacing + 'em' : ''}{cand.words ? '; word-spacing ' + cand.words + 'em' : ''} (beside DM Sans {ref.size}px {ref.weight})</Text>
             </Stack>
           </Panel>
           <Panel title="Settings" icon="text-card">
@@ -135,12 +140,14 @@ function App() {
                 : <Slider label="Weight" value={cand.weight} min={f[2][0]} max={f[2][1]} step={10} onChange={(v) => set('weight', v)} />}
               {f[3] ? <Field label="Width"><Select value={String(cand.stretch)} onChange={(e) => set('stretch', +e.target.value)} options={STRETCH.filter((x) => x[0] >= f[3][0] && x[0] <= f[3][1]).map((x) => ({ value: String(x[0]), label: x[0] + '%' }))} /></Field> : null}
               <Slider label="Letter spacing" value={cand.spacing} min={-0.1} max={0.05} step={0.005} unit="em" onChange={(v) => set('spacing', v)} />
+              <Slider label="Word spacing" value={cand.words || 0} min={-0.5} max={0.1} step={0.005} unit="em" onChange={(v) => set('words', v)} />
               <Inline gap="sm" wrap>
-                <Button variant="primary" onClick={fitAll}>Fit size and weight</Button>
+                <Button variant="primary" onClick={fitAll}>Fit size, weight and word spacing</Button>
                 <Button onClick={fitSize}>Fit size</Button>
                 <Button onClick={fitWeight}>Fit weight</Button>
+                <Button onClick={fitWords}>Fit word spacing</Button>
                 {f[3] ? <Button onClick={fitWidth}>Fit width</Button> : null}
-                <Button variant="ghost" onClick={() => setCand({ size: ref.size, weight: clampWeight(f, ref.weight), stretch: 100, spacing: 0 })}>Reset</Button>
+                <Button variant="ghost" onClick={() => setCand({ size: ref.size, weight: clampWeight(f, ref.weight), stretch: 100, spacing: 0, words: 0 })}>Reset</Button>
               </Inline>
             </Stack>
           </Panel>
