@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.51.2] - 2026-10-17
+
+### Changed
+- The design spec reads in bullet points (owner, 2026-10-16): any text of two or more sentences is a bulleted list, one
+  sentence each, whatever its length (notes included); in a Name / Value table, once one value is a list every value is
+  (Behavior: Mouse and touch, Density, Motion, Loading, Error now match Responsive); lists of parts and rules have bullet
+  markers. A sentence may start with a file or token name (build-tokens.js, platform/tokens/…).
+
 ## [0.51.1] - 2026-10-17
 
 ### Fixed
