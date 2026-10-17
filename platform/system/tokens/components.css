@@ -754,7 +754,7 @@
   --plx-comp-app-header-search-view-scope-padding-block-start: var(--plx-sys-space-inset-sm);
   --plx-comp-app-header-search-view-content-padding-block: var(--plx-sys-space-inset-md);
   --plx-comp-app-header-search-view-content-gap: var(--plx-sys-space-stack-md);
-  --plx-comp-app-header-z-index: var(--plx-sys-layer-sticky);
+  --plx-comp-app-header-z-index: var(--plx-sys-layer-menu);
   --plx-comp-app-header-start-gap: var(--plx-sys-space-cluster-xs);
   --plx-comp-app-header-brand-font-size: var(--plx-ref-font-size-15);
   --plx-comp-app-header-brand-font-weight: var(--plx-sys-font-weight-bold);

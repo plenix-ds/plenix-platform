@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.51.1] - 2026-10-17
+
+### Fixed
+- The header's menus (the app menu, the account menu) always draw above the page: the header sits on the menu layer
+  (`--plx-comp-app-header-z-index` → `--plx-sys-layer-menu`), above every sticky bar of the page (the command bar, a
+  toolbar), still below overlays, dialogs and toasts. Before, a sticky command bar later in the page covered the open
+  app menu (Files).
+
 ## [0.51.0] - 2026-10-16
 
 ### Changed

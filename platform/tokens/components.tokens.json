@@ -3116,8 +3116,9 @@
       "$type": "dimension"
     },
     "app-header-z-index": {
-      "$value": "{plx-sys.layer-sticky}",
-      "$type": "number"
+      "$value": "{plx-sys.layer-menu}",
+      "$type": "number",
+      "$description": "The header and its menus (the app menu, the account menu) above every sticky bar of the page (a command bar, a toolbar); below overlays, dialogs and toasts."
     },
     "app-header-start-gap": {
       "$value": "{plx-sys.space-cluster-xs}",
