@@ -206,38 +206,35 @@ function App() {
   }, /*#__PURE__*/React.createElement("span", {
     className: o[1]
   }, v)))))), /*#__PURE__*/React.createElement(Panel, {
-    title: "The adjustment (built, not released)",
+    title: "Next: the playground",
     icon: "text-card"
   }, /*#__PURE__*/React.createElement(Stack, {
     gap: "md"
   }, /*#__PURE__*/React.createElement(List, {
     variant: "bullets",
     items: [{
-      children: 'Only DM Mono changes; DM Sans never does (owner, 2026-10-16).'
+      children: 'Only the monospace font changes; DM Sans never does (owner, 2026-10-16).'
     }, {
-      children: 'Height: no change; at the same size the letters are already the same height.'
+      children: 'Letter spacing is not the issue (owner, 2026-10-17): the height and the weight are. No spacing change was applied to the Platform.'
     }, {
-      children: 'Stroke: no change at Regular, where the stems are identical (0.084). DM Mono Medium is 7% heavier than DM Sans Medium (0.106 against 0.099); DM Mono has no weight between Regular and Medium, so that gap stays.'
-    }, {
-      children: 'Width: every DM Mono text has letter spacing −0.07em (--plx-sys-font-data-letter-spacing). DM Mono figures are then exactly as wide as DM Sans figures; tighter, and letters such as m and w touch.'
-    }, {
-      children: 'check-system (rule mono-spacing) fails any rule that sets DM Mono without it.'
+      children: 'The playground measures any monospace font against DM Sans on your own screen and fits its size and weight.'
     }]
-  }), /*#__PURE__*/React.createElement(Stack, {
+  }), /*#__PURE__*/React.createElement(Text, {
+    as: "p"
+  }, /*#__PURE__*/React.createElement("a", {
+    className: "plx-link",
+    href: "playground.html"
+  }, "Open the font playground")), /*#__PURE__*/React.createElement(Stack, {
     gap: "xs"
   }, /*#__PURE__*/React.createElement(Text, {
     variant: "label"
-  }, "Before: DM Mono with its own spacing"), /*#__PURE__*/React.createElement(Line, null)), /*#__PURE__*/React.createElement(Stack, {
-    gap: "xs"
-  }, /*#__PURE__*/React.createElement(Text, {
-    variant: "label"
-  }, "After: DM Mono with \u22120.07em"), /*#__PURE__*/React.createElement(Line, {
+  }, "For reference: DM Mono with \u22120.07em spacing (not applied)"), /*#__PURE__*/React.createElement(Line, {
     mono: "plx-font-study__fitted"
   })), /*#__PURE__*/React.createElement(Stack, {
     gap: "xs"
   }, /*#__PURE__*/React.createElement(Text, {
     variant: "label"
-  }, "Figures, DM Sans then DM Mono fitted: the same width"), /*#__PURE__*/React.createElement("div", {
+  }, "Figures, DM Sans then DM Mono with \u22120.07em (not applied)"), /*#__PURE__*/React.createElement("div", {
     className: "plx-font-study__pair plx-font-study__s20"
   }, /*#__PURE__*/React.createElement("span", {
     className: "plx-font-study__sans"

@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.3] - 2026-10-17
+
+### Added
+- docs/font-study/playground.html: the font playground (owner). DM Sans is the reference (choose its size and weight);
+  pick one of 18 monospace fonts and move its size (1/8px steps), weight, width and spacing; heights, stroke and width
+  are measured live on the viewer's own screen (its pixel ratio, so hinting shows as it draws), with a match percentage
+  and Fit buttons. On a 1.5× screen at DM Sans 13px/400: Iosevka 12.375px/500 matches 98.7%, Reddit Mono 95.4%,
+  Geist Mono 95.0%, DM Mono 93.7%.
+### Fixed
+- The design system's lab and spec stylesheets referenced a letter-spacing token that was never released (swept into
+  0.53.1 by mistake); the references are gone and the files are as they were in 0.53.0. No visible change.
+
 ## [0.53.2] - 2026-10-17
 
 ### Changed

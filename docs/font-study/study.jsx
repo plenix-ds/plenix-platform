@@ -104,18 +104,16 @@ function App() {
               {['www', 'WW wm', '%% 2.4'].map((v, r) => OPTIONS.map((o, i) => <div key={r + '-' + i} className="plx-font-study__cell"><span className={o[1]}>{v}</span></div>))}
             </div>
           </Panel>
-          <Panel title="The adjustment (built, not released)" icon="text-card">
+          <Panel title="Next: the playground" icon="text-card">
             <Stack gap="md">
               <List variant="bullets" items={[
-                { children: 'Only DM Mono changes; DM Sans never does (owner, 2026-10-16).' },
-                { children: 'Height: no change; at the same size the letters are already the same height.' },
-                { children: 'Stroke: no change at Regular, where the stems are identical (0.084). DM Mono Medium is 7% heavier than DM Sans Medium (0.106 against 0.099); DM Mono has no weight between Regular and Medium, so that gap stays.' },
-                { children: 'Width: every DM Mono text has letter spacing −0.07em (--plx-sys-font-data-letter-spacing). DM Mono figures are then exactly as wide as DM Sans figures; tighter, and letters such as m and w touch.' },
-                { children: 'check-system (rule mono-spacing) fails any rule that sets DM Mono without it.' },
+                { children: 'Only the monospace font changes; DM Sans never does (owner, 2026-10-16).' },
+                { children: 'Letter spacing is not the issue (owner, 2026-10-17): the height and the weight are. No spacing change was applied to the Platform.' },
+                { children: 'The playground measures any monospace font against DM Sans on your own screen and fits its size and weight.' },
               ]} />
-              <Stack gap="xs"><Text variant="label">Before: DM Mono with its own spacing</Text><Line /></Stack>
-              <Stack gap="xs"><Text variant="label">After: DM Mono with −0.07em</Text><Line mono="plx-font-study__fitted" /></Stack>
-              <Stack gap="xs"><Text variant="label">Figures, DM Sans then DM Mono fitted: the same width</Text><div className="plx-font-study__pair plx-font-study__s20"><span className="plx-font-study__sans">2026-10-12 · 2.4 MB · 1,240</span><span className="plx-font-study__mono plx-font-study__fitted">2026-10-12 · 2.4 MB · 1,240</span></div></Stack>
+              <Text as="p"><a className="plx-link" href="playground.html">Open the font playground</a></Text>
+              <Stack gap="xs"><Text variant="label">For reference: DM Mono with −0.07em spacing (not applied)</Text><Line mono="plx-font-study__fitted" /></Stack>
+              <Stack gap="xs"><Text variant="label">Figures, DM Sans then DM Mono with −0.07em (not applied)</Text><div className="plx-font-study__pair plx-font-study__s20"><span className="plx-font-study__sans">2026-10-12 · 2.4 MB · 1,240</span><span className="plx-font-study__mono plx-font-study__fitted">2026-10-12 · 2.4 MB · 1,240</span></div></Stack>
             </Stack>
           </Panel>
         </Stack>
