@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.1] - 2026-10-17
+
+### Added
+- docs/font-study: DM Sans and DM Mono measured at the same size (owner). The letters already match (x-height 0.496,
+  capitals 0.700, figures 0.711, stems 0.084 of the size); DM Mono is wider (0.60 em per character: 13% wider than
+  DM Sans figures, 26% wider than its words). Four options on one line, for the owner to choose.
+
 ## [0.53.0] - 2026-10-17
 
 ### Changed
