@@ -4,17 +4,17 @@
    Props:
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
        minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
-     empty: no-record message; height: optional token-sized scroll area; narrow: "table" by default; className.
+     empty: no-record message; narrow: "table" by default; className.
      Table.preload(): compatibility no-op; the renderer is already bundled.
    Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
-     Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row.
+     Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row. The table grows with its rows and never scrolls internally.
    Notes: Existing Table tokens preserve the static-table look; use DataTable for records people work with. */
 import React from 'react';
 import { DataTableNext } from '../DataTableNext/DataTableNext.jsx';
 
-export function Table({ label, data, columns = [], index, empty, height, narrow = 'table', headerVisible = true, className }) {
+export function Table({ label, data, columns = [], index, empty, narrow = 'table', headerVisible = true, className }) {
   const staticColumns = React.useMemo(() => columns.map(({ title, field, kind, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty }) =>
     ({ title, field, kind, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty, headerSort: false, resizable: false })), [columns]);
-  return <DataTableNext isStatic label={label} data={data} columns={staticColumns} index={index} empty={empty} height={height} narrow={narrow} headerVisible={headerVisible} className={className} headerMenu={false} />;
+  return <DataTableNext isStatic label={label} data={data} columns={staticColumns} index={index} empty={empty} narrow={narrow} headerVisible={headerVisible} className={className} headerMenu={false} />;
 }
 Table.preload = () => {};

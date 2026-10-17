@@ -6,7 +6,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 160.1875,
+        "height": 163.375,
         "rows": 3,
         "engine": "next"
       },
@@ -69,7 +69,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 279.78125,
+        "height": 316.5,
         "rows": 9,
         "engine": "next"
       },
@@ -83,21 +83,21 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 263,
+        "height": 279.78125,
         "rows": 9,
         "engine": "next"
       },
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 163.78125,
+        "height": 187.75,
         "rows": 5,
         "engine": "next"
       },
       {
         "label": "Props",
         "width": 898,
-        "height": 252.359375,
+        "height": 218.765625,
         "rows": 4,
         "engine": "next"
       },
@@ -111,7 +111,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 150.1875,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -131,14 +131,14 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 156.96875,
+        "height": 163.375,
         "rows": 3,
         "engine": "next"
       },
       {
         "label": "Base attributes",
         "width": 898,
-        "height": 1162,
+        "height": 1246,
         "rows": 40,
         "engine": "next"
       },
@@ -187,7 +187,7 @@
       {
         "label": "Primary button in Figma",
         "width": 898,
-        "height": 353.109375,
+        "height": 336.3125,
         "rows": 4,
         "engine": "next"
       },
@@ -208,7 +208,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 313.34375,
+        "height": 396.5,
         "rows": 9,
         "engine": "next"
       },
@@ -222,14 +222,14 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 337.34375,
+        "height": 373.3125,
         "rows": 9,
         "engine": "next"
       },
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 194.96875,
+        "height": 243.75,
         "rows": 5,
         "engine": "next"
       },
@@ -250,7 +250,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 150.1875,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -333,14 +333,14 @@
       {
         "label": "Labels across platforms",
         "width": 898,
-        "height": 255.34375,
+        "height": 272.140625,
         "rows": 7,
         "engine": "next"
       },
       {
         "label": "Parts (required, optional, slots) and more",
         "width": 898,
-        "height": 345.75,
+        "height": 365.75,
         "rows": 7,
         "engine": "next"
       },
@@ -354,14 +354,14 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 390.1875,
+        "height": 437.3125,
         "rows": 9,
         "engine": "next"
       },
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 234.1875,
+        "height": 271.75,
         "rows": 5,
         "engine": "next"
       },
@@ -382,7 +382,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 150.1875,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -486,7 +486,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 263,
+        "height": 400.5,
         "rows": 9,
         "engine": "next"
       },
@@ -528,7 +528,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -548,7 +548,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 228.1875,
+        "height": 231.375,
         "rows": 3,
         "engine": "next"
       },
@@ -597,7 +597,7 @@
       {
         "label": "Split views across platforms",
         "width": 898,
-        "height": 310.3125,
+        "height": 343.90625,
         "rows": 6,
         "engine": "next"
       },
@@ -618,7 +618,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 330.96875,
+        "height": 356.5,
         "rows": 9,
         "engine": "next"
       },
@@ -653,7 +653,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -673,7 +673,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 200.1875,
+        "height": 203.375,
         "rows": 3,
         "engine": "next"
       },
@@ -764,7 +764,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 330.96875,
+        "height": 364.5,
         "rows": 9,
         "engine": "next"
       },
@@ -778,7 +778,7 @@
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 147,
+        "height": 187.75,
         "rows": 5,
         "engine": "next"
       },
@@ -799,7 +799,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -896,7 +896,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 296.5625,
+        "height": 344.5,
         "rows": 9,
         "engine": "next"
       },
@@ -910,7 +910,7 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 266.1875,
+        "height": 316.5,
         "rows": 9,
         "engine": "next"
       },
@@ -938,7 +938,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       }
@@ -993,7 +993,7 @@
       {
         "label": "The Plenix native designs",
         "width": 898,
-        "height": 189.75,
+        "height": 223.34375,
         "rows": 3,
         "engine": "next"
       },
@@ -1007,7 +1007,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 279.78125,
+        "height": 344.5,
         "rows": 9,
         "engine": "next"
       },
@@ -1021,7 +1021,7 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 263,
+        "height": 313.3125,
         "rows": 9,
         "engine": "next"
       },
@@ -1035,7 +1035,7 @@
       {
         "label": "Props",
         "width": 898,
-        "height": 100.1875,
+        "height": 116.984375,
         "rows": 3,
         "engine": "next"
       },
@@ -1049,7 +1049,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       }
@@ -1062,7 +1062,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 196.1875,
+        "height": 199.375,
         "rows": 3,
         "engine": "next"
       },
@@ -1076,7 +1076,7 @@
       {
         "label": "Shared props",
         "width": 898,
-        "height": 631.359375,
+        "height": 676.171875,
         "rows": 19,
         "engine": "next"
       },
@@ -1104,7 +1104,7 @@
       {
         "label": "Sheets across platforms",
         "width": 898,
-        "height": 401.859375,
+        "height": 418.65625,
         "rows": 8,
         "engine": "next"
       },
@@ -1139,7 +1139,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 296.5625,
+        "height": 344.5,
         "rows": 9,
         "engine": "next"
       },
@@ -1153,7 +1153,7 @@
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 147,
+        "height": 187.75,
         "rows": 5,
         "engine": "next"
       },
@@ -1174,7 +1174,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -1194,7 +1194,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 160.1875,
+        "height": 163.375,
         "rows": 3,
         "engine": "next"
       },
@@ -1257,7 +1257,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 279.78125,
+        "height": 316.5,
         "rows": 9,
         "engine": "next"
       },
@@ -1271,21 +1271,21 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 263,
+        "height": 279.78125,
         "rows": 9,
         "engine": "next"
       },
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 163.78125,
+        "height": 187.75,
         "rows": 5,
         "engine": "next"
       },
       {
         "label": "Props",
         "width": 898,
-        "height": 252.359375,
+        "height": 218.765625,
         "rows": 4,
         "engine": "next"
       },
@@ -1299,7 +1299,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 150.1875,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -1319,14 +1319,14 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 156.96875,
+        "height": 163.375,
         "rows": 3,
         "engine": "next"
       },
       {
         "label": "Base attributes",
         "width": 898,
-        "height": 1162,
+        "height": 1246,
         "rows": 40,
         "engine": "next"
       },
@@ -1375,7 +1375,7 @@
       {
         "label": "Primary button in Figma",
         "width": 898,
-        "height": 353.109375,
+        "height": 336.3125,
         "rows": 4,
         "engine": "next"
       },
@@ -1396,7 +1396,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 313.34375,
+        "height": 396.5,
         "rows": 9,
         "engine": "next"
       },
@@ -1410,14 +1410,14 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 337.34375,
+        "height": 373.3125,
         "rows": 9,
         "engine": "next"
       },
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 194.96875,
+        "height": 243.75,
         "rows": 5,
         "engine": "next"
       },
@@ -1438,7 +1438,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 150.1875,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -1521,14 +1521,14 @@
       {
         "label": "Labels across platforms",
         "width": 898,
-        "height": 255.34375,
+        "height": 272.140625,
         "rows": 7,
         "engine": "next"
       },
       {
         "label": "Parts (required, optional, slots) and more",
         "width": 898,
-        "height": 345.75,
+        "height": 365.75,
         "rows": 7,
         "engine": "next"
       },
@@ -1542,14 +1542,14 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 390.1875,
+        "height": 437.3125,
         "rows": 9,
         "engine": "next"
       },
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 234.1875,
+        "height": 271.75,
         "rows": 5,
         "engine": "next"
       },
@@ -1570,7 +1570,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 150.1875,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -1674,7 +1674,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 263,
+        "height": 400.5,
         "rows": 9,
         "engine": "next"
       },
@@ -1716,7 +1716,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -1736,7 +1736,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 228.1875,
+        "height": 231.375,
         "rows": 3,
         "engine": "next"
       },
@@ -1785,7 +1785,7 @@
       {
         "label": "Split views across platforms",
         "width": 898,
-        "height": 310.3125,
+        "height": 343.90625,
         "rows": 6,
         "engine": "next"
       },
@@ -1806,7 +1806,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 330.96875,
+        "height": 356.5,
         "rows": 9,
         "engine": "next"
       },
@@ -1841,7 +1841,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -1861,7 +1861,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 200.1875,
+        "height": 203.375,
         "rows": 3,
         "engine": "next"
       },
@@ -1952,7 +1952,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 330.96875,
+        "height": 364.5,
         "rows": 9,
         "engine": "next"
       },
@@ -1966,7 +1966,7 @@
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 147,
+        "height": 187.75,
         "rows": 5,
         "engine": "next"
       },
@@ -1987,7 +1987,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },
@@ -2084,7 +2084,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 296.5625,
+        "height": 344.5,
         "rows": 9,
         "engine": "next"
       },
@@ -2098,7 +2098,7 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 266.1875,
+        "height": 316.5,
         "rows": 9,
         "engine": "next"
       },
@@ -2126,7 +2126,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       }
@@ -2181,7 +2181,7 @@
       {
         "label": "The Plenix native designs",
         "width": 898,
-        "height": 189.75,
+        "height": 223.34375,
         "rows": 3,
         "engine": "next"
       },
@@ -2195,7 +2195,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 279.78125,
+        "height": 344.5,
         "rows": 9,
         "engine": "next"
       },
@@ -2209,7 +2209,7 @@
       {
         "label": "Semantic role and more",
         "width": 898,
-        "height": 263,
+        "height": 313.3125,
         "rows": 9,
         "engine": "next"
       },
@@ -2223,7 +2223,7 @@
       {
         "label": "Props",
         "width": 898,
-        "height": 100.1875,
+        "height": 116.984375,
         "rows": 3,
         "engine": "next"
       },
@@ -2237,7 +2237,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       }
@@ -2250,7 +2250,7 @@
       {
         "label": "Overview and more",
         "width": 898,
-        "height": 196.1875,
+        "height": 199.375,
         "rows": 3,
         "engine": "next"
       },
@@ -2264,7 +2264,7 @@
       {
         "label": "Shared props",
         "width": 898,
-        "height": 631.359375,
+        "height": 676.171875,
         "rows": 19,
         "engine": "next"
       },
@@ -2292,7 +2292,7 @@
       {
         "label": "Sheets across platforms",
         "width": 898,
-        "height": 401.859375,
+        "height": 418.65625,
         "rows": 8,
         "engine": "next"
       },
@@ -2327,7 +2327,7 @@
       {
         "label": "Mouse and touch and more",
         "width": 898,
-        "height": 296.5625,
+        "height": 344.5,
         "rows": 9,
         "engine": "next"
       },
@@ -2341,7 +2341,7 @@
       {
         "label": "Labels and more",
         "width": 898,
-        "height": 147,
+        "height": 187.75,
         "rows": 5,
         "engine": "next"
       },
@@ -2362,7 +2362,7 @@
       {
         "label": "Figma library / component and more",
         "width": 898,
-        "height": 147,
+        "height": 184.5625,
         "rows": 5,
         "engine": "next"
       },

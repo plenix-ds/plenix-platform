@@ -259,7 +259,7 @@ function NextEngine(props) {
         {!model.length?<div className="plx-data-table__grid-placeholder"><div className="plx-data-table__grid-placeholder-contents"><span className={B+'__empty'}>{remoteMode&&remoteBusy?S.loading:empty||S.empty}</span></div></div>:null}
       </div>
     </div>
-    <Scrollbars holder={holder} viewportId={viewportId}/>
+    {!isStatic?<Scrollbars holder={holder} viewportId={viewportId}/>:null}
     {mode==='pages'&&!failed?<div className={B+'__footer'}><Text variant="data" className={B+'__range'}>{words(S.range,{first:displayedTotal?Math.min(page*pageSize+1,displayedTotal):0,last:Math.min((page+1)*pageSize,displayedTotal),total:displayedTotal})}</Text><label className={B+'__page-size'}><span>{S.perPage}</span><Select value={String(pageSize)} options={(props.pageSizes||[25,50,100]).map(n=>({value:String(n),label:String(n)}))} onChange={e=>{setPage(0);setPageSize(+e.target.value);}}/></label><Pagination className={B+'__pages'} label={words(S.pages,{label})} page={page+1} pageCount={Math.max(1,Math.ceil(displayedTotal/pageSize))} onPageChange={n=>setPage(n-1)}/></div>:null}
     {mode==='load-more'&&!failed?<div className={B+'__footer'}><Text variant="data" className={B+'__range'}>{words(S.count,{shown:Math.min(loadedRows.length,displayedTotal),total:displayedTotal})}</Text>{loadedRows.length<displayedTotal?<Button size="sm" loading={remoteMode&&remoteBusy} className={B+'__more'} onClick={()=>{if(remoteMode){if(!fetching.current){fetching.current=true;setPage(n=>n+1);}}else setLoaded(n=>Math.min(allRows.length,n+pageSize));}}>{S.loadMore}</Button>:null}</div>:null}
     <span className="plx-sr-only" role="status" aria-live="polite">{message}</span>
