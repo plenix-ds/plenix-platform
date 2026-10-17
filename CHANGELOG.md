@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.4] - 2026-10-17
+
+### Fixed
+- The study pages are published: docs/font-study (the font study and the playground), docs/composition and
+  docs/reading-pane-study, at /Plenix/docs/<study>/ (deploy.sh did not include docs/).
+
 ## [0.53.3] - 2026-10-17
 
 ### Added
