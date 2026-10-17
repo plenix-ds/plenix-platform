@@ -1,0 +1,2378 @@
+[
+  {
+    "mode": "light",
+    "route": "data-display/table",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Tokens",
+        "width": 560,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Fields",
+        "width": 560,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Lists and tables across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Table in Figma",
+        "width": 898,
+        "height": 335,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 428,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 280,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 359,
+        "rows": 10,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 150,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "actions/button",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 1162,
+        "rows": 40,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 524,
+        "rows": 18,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Buttons across platforms",
+        "width": 898,
+        "height": 292,
+        "rows": 10,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Primary button in Figma",
+        "width": 898,
+        "height": 286,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "States",
+        "width": 898,
+        "height": 1080,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 380,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 313,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "6.1 Button",
+        "width": 898,
+        "height": 419,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 337,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 854,
+        "rows": 23,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 150,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "data-display/badge",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 408,
+        "rows": 14,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 181,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "What each color means",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Pill variants",
+        "width": 898,
+        "height": 205,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Pill types",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels across platforms",
+        "width": 898,
+        "height": 205,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 312,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 339,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 150,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "patterns/audit-log",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Workspace audit history",
+        "width": 722,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Workspace audit history",
+        "width": 722,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Lists and tables across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Audit history in Figma",
+        "width": 898,
+        "height": 335,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 292,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 152,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "patterns/comparison-view",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 468,
+        "rows": 12,
+        "engine": "legacy"
+      },
+      {
+        "label": "Compare versions of Hero banner: Table",
+        "width": 720,
+        "height": 205,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Split views across platforms",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "States",
+        "width": 898,
+        "height": 110,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 376,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 294,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 269,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 597,
+        "rows": 13,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "patterns/file-list",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 878,
+        "rows": 25,
+        "engine": "legacy"
+      },
+      {
+        "label": "Files in Brand kit",
+        "width": 720,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Lists and tables across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Outline views across platforms",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "File list in Figma",
+        "width": 898,
+        "height": 335,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "States",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 332,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 331,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 1008,
+        "rows": 26,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "patterns/permissions-editor",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Permissions",
+        "width": 410,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Permissions",
+        "width": 446,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Privacy across platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Managing notifications across platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 292,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 266,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 152,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "patterns/rendition-list",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Renditions",
+        "width": 722,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 264,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 280,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "light",
+    "route": "patterns/review-flow",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 687,
+        "rows": 19,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Sheets across platforms",
+        "width": 898,
+        "height": 234,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Text fields across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Review flow in Figma",
+        "width": 898,
+        "height": 210,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 376,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 297,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 269,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 754,
+        "rows": 19,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "data-display/table",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Tokens",
+        "width": 560,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Fields",
+        "width": 560,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Lists and tables across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Table in Figma",
+        "width": 898,
+        "height": 335,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 428,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 280,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 359,
+        "rows": 10,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 150,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "actions/button",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 1162,
+        "rows": 40,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 524,
+        "rows": 18,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Buttons across platforms",
+        "width": 898,
+        "height": 292,
+        "rows": 10,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Primary button in Figma",
+        "width": 898,
+        "height": 286,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "States",
+        "width": 898,
+        "height": 1080,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 380,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 313,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "6.1 Button",
+        "width": 898,
+        "height": 419,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 337,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 854,
+        "rows": 23,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 150,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "data-display/badge",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 408,
+        "rows": 14,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 181,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "What each color means",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Pill variants",
+        "width": 898,
+        "height": 205,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Pill types",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels across platforms",
+        "width": 898,
+        "height": 205,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 312,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 339,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 150,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "patterns/audit-log",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Workspace audit history",
+        "width": 722,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Workspace audit history",
+        "width": 722,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Lists and tables across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Audit history in Figma",
+        "width": 898,
+        "height": 335,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 292,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 152,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "patterns/comparison-view",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 468,
+        "rows": 12,
+        "engine": "legacy"
+      },
+      {
+        "label": "Compare versions of Hero banner: Table",
+        "width": 720,
+        "height": 205,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Split views across platforms",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "States",
+        "width": 898,
+        "height": 110,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 376,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 294,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 269,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 597,
+        "rows": 13,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "patterns/file-list",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 878,
+        "rows": 25,
+        "engine": "legacy"
+      },
+      {
+        "label": "Files in Brand kit",
+        "width": 720,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Lists and tables across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Outline views across platforms",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "File list in Figma",
+        "width": 898,
+        "height": 335,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "States",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 332,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 331,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 1008,
+        "rows": 26,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 176,
+        "rows": 6,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "patterns/permissions-editor",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Permissions",
+        "width": 410,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Permissions",
+        "width": 446,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Privacy across platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Managing notifications across platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 292,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 266,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 152,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "patterns/rendition-list",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Renditions",
+        "width": 722,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 264,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 280,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Functional equivalent",
+        "width": 898,
+        "height": 60,
+        "rows": 2,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      }
+    ]
+  },
+  {
+    "mode": "dark",
+    "route": "patterns/review-flow",
+    "tables": [
+      {
+        "label": "Overview and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Base attributes",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Shared props",
+        "width": 898,
+        "height": 687,
+        "rows": 19,
+        "engine": "legacy"
+      },
+      {
+        "label": "Every variant in every state and more",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "Counterparts on the other platforms",
+        "width": 898,
+        "height": 89,
+        "rows": 3,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Plenix native designs",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Sheets across platforms",
+        "width": 898,
+        "height": 234,
+        "rows": 8,
+        "engine": "legacy"
+      },
+      {
+        "label": "Text fields across platforms",
+        "width": 898,
+        "height": 263,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "The Figma kit",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Review flow in Figma",
+        "width": 898,
+        "height": 210,
+        "rows": 6,
+        "engine": "legacy"
+      },
+      {
+        "label": "Parts (required, optional, slots) and more",
+        "width": 898,
+        "height": 376,
+        "rows": 7,
+        "engine": "legacy"
+      },
+      {
+        "label": "Mouse and touch and more",
+        "width": 898,
+        "height": 297,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Semantic role and more",
+        "width": 898,
+        "height": 269,
+        "rows": 9,
+        "engine": "legacy"
+      },
+      {
+        "label": "Labels and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Props",
+        "width": 898,
+        "height": 754,
+        "rows": 19,
+        "engine": "legacy"
+      },
+      {
+        "label": "React and more",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      },
+      {
+        "label": "Figma library / component and more",
+        "width": 898,
+        "height": 147,
+        "rows": 5,
+        "engine": "legacy"
+      },
+      {
+        "label": "Source-system mappings",
+        "width": 898,
+        "height": 118,
+        "rows": 4,
+        "engine": "legacy"
+      }
+    ]
+  }
+]

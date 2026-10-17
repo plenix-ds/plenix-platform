@@ -65,7 +65,7 @@ import { Persona } from '../../components/Persona/Persona.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { PromptDialog } from '../../components/Dialog/Dialog.jsx';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';

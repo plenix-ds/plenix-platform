@@ -20399,6 +20399,7 @@ function NextEngine(props) {
     narrowAt = '--plx-ref-size-600px',
     keyColumns,
     storageKey,
+    isStatic = false,
     headerMenu = true,
     rowMenu,
     rowMenuButton = true,
@@ -20590,12 +20591,12 @@ function NextEngine(props) {
     header: c.title || c.field,
     enableSorting: c.headerSort !== false,
     filterFn: c.type === 'bytes' ? _cells.byteFilter : c.filter === 'list' ? _cells.listFilter : _cells.textFilter,
-    sortingFn: c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
+    sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sorting.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
     size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, (0, _environment.tokenPixels)(c.width, frame.current) || autoSizing[c.field] || metrics.min),
     minSize: kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min,
     maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
     meta: c
-  })), [columns, metrics.min, autoSizing]);
+  })), [columns, metrics.min, autoSizing, sorting]);
   const table = (0, _reactTable.useReactTable)({
     data: source,
     columns: leafDefs,
@@ -20649,7 +20650,7 @@ function NextEngine(props) {
   const loadedRows = _react.default.useMemo(() => mode === 'load-more' && !remoteMode ? allRows.slice(0, loaded) : allRows, [allRows, mode, remoteMode, loaded]);
   const groups = _react.default.useMemo(() => (0, _records.groupedRows)(loadedRows, groupBy, columns), [loadedRows, groupBy, columns]);
   const model = _react.default.useMemo(() => groups.length ? (0, _records.groupDisplay)(groups, printing ? new Set() : collapsed, !!props.onAddToGroup) : loadedRows, [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]),
-    virtualized = mode !== 'pages' && !isNarrow && !printing;
+    virtualized = !isStatic && mode !== 'pages' && !isNarrow && !printing;
   const estimate = row => row?.__group ? metrics.group + metrics.line * (row.__group.separated ? 2 : 1) : row?.__gap ? metrics.groupGap : row?.__add ? metrics.add + metrics.line : metrics.row + metrics.line;
   const virtual = (0, _reactVirtual.useVirtualizer)({
     count: model.length,
@@ -20760,6 +20761,11 @@ function NextEngine(props) {
         widths[c.field] = explicit;
         return;
       }
+      if (isStatic) {
+        widths[c.field] = Math.max(metrics.min, (0, _environment.tokenPixels)(c.minWidth, at));
+        free.push(c.field);
+        return;
+      }
       const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-table-data-font-family' : '--plx-comp-data-table-font-family').trim() || cs.fontFamily;
       ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size').trim() + ' ' + family;
       let width = ctx.measureText(c.title || c.field).width;
@@ -20780,7 +20786,7 @@ function NextEngine(props) {
       share = free.length ? Math.floor(units / free.length) : 0;
     free.forEach((field, i) => widths[field] += (share + (i < units - share * free.length ? 1 : 0)) * step);
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
-  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable]);
+  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic]);
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -20804,7 +20810,7 @@ function NextEngine(props) {
       const threshold = narrow === 'auto' ? keys.reduce((sum, field) => sum + (live.current.table?.getColumn(field)?.getSize() || next.min), selectable ? next.lead : 0) : (0, _environment.tokenPixels)(narrowAt, at),
         want = listed && at.clientWidth > 0 && at.clientWidth < threshold;
       setNarrow(want);
-      if (!height && mode !== 'pages' && holder.current) {
+      if (!isStatic && !height && mode !== 'pages' && holder.current) {
         const top = holder.current.getBoundingClientRect().top;
         holder.current.style.maxBlockSize = (0, _grid.gridPx)(Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
           round: 'down',
@@ -21095,7 +21101,7 @@ function NextEngine(props) {
       width: widths[c.field],
       frozenOffset: pinned ? offset : undefined,
       role: "columnheader",
-      tabIndex: 0,
+      tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
       className: (0, _cx.cx)('plx-data-table__grid-col', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && 'plx-data-table__grid-frozen', [].concat(groupBy || []).includes(c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
@@ -21431,8 +21437,8 @@ function NextEngine(props) {
         key: c.field,
         width: isNarrow ? null : widths[c.field],
         frozenOffset: pinned && !isNarrow ? sticky : undefined,
-        role: "gridcell",
-        tabIndex: -1,
+        role: isStatic ? c.rowLabel ? 'rowheader' : 'cell' : 'gridcell',
+        tabIndex: isStatic ? undefined : -1,
         "data-plx-field": c.field,
         dir: "auto",
         onDoubleClick: () => {
@@ -21443,7 +21449,7 @@ function NextEngine(props) {
           });
         },
         onKeyDown: event => {
-          if (event.target !== event.currentTarget) return;
+          if (isStatic || event.target !== event.currentTarget) return;
           if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
             if (document.getSelection()?.toString()) return;
             event.preventDefault();
@@ -21544,13 +21550,13 @@ function NextEngine(props) {
   const failed = error || remoteError;
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: frame,
-    className: (0, _cx.cx)(B, pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
+    className: (0, _cx.cx)(B, pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', isStatic && 'plx-table', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
     "data-plx-render": virtualized ? 'virtual' : undefined,
-    "data-plx-row-height": !isNarrow ? effectiveStep : undefined,
+    "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : undefined,
     "data-plx-wrap-headers": effectiveWrap ? '' : undefined,
     "data-plx-height": lengthName(height),
-    "data-plx-fit": !height && mode !== 'pages' ? '' : undefined
+    "data-plx-fit": !isStatic && !height && mode !== 'pages' ? '' : undefined
   }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     className: B + '__error',
     tone: "error",
@@ -21564,7 +21570,7 @@ function NextEngine(props) {
     }, S.retry) : null
   }, String(failed === true ? '' : failed.message || failed)) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: B + '__table plx-data-table__grid',
-    role: groups.length || childField ? 'treegrid' : 'grid',
+    role: isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid',
     "aria-label": label,
     "aria-busy": remoteMode && remoteBusy ? true : undefined,
     "aria-rowcount": groups.length || childField ? semanticRows.length + 1 : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
@@ -21572,7 +21578,8 @@ function NextEngine(props) {
     hidden: !!failed
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-data-table__grid-header",
-    ref: header
+    ref: header,
+    hidden: isStatic && props.headerVisible === false
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-data-table__grid-header-contents"
   }, /*#__PURE__*/_react.default.createElement("div", _extends({}, columnDnd.listProps, {
@@ -21617,7 +21624,7 @@ function NextEngine(props) {
     ref: holder,
     className: "plx-data-table__grid-tableholder",
     role: "rowgroup",
-    tabIndex: 0,
+    tabIndex: isStatic ? undefined : 0,
     onKeyDown: event => {
       if (event.target === event.currentTarget && event.key === 'ArrowDown') {
         event.preventDefault();
@@ -21659,10 +21666,10 @@ function NextEngine(props) {
     className: "plx-data-table__grid-placeholder-contents"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__empty'
-  }, remoteMode && remoteBusy ? S.loading : empty || S.empty))) : null)), /*#__PURE__*/_react.default.createElement(_scrollbars.Scrollbars, {
+  }, remoteMode && remoteBusy ? S.loading : empty || S.empty))) : null)), !isStatic ? /*#__PURE__*/_react.default.createElement(_scrollbars.Scrollbars, {
     holder: holder,
     viewportId: viewportId
-  }), mode === 'pages' && !failed ? /*#__PURE__*/_react.default.createElement("div", {
+  }) : null, mode === 'pages' && !failed ? /*#__PURE__*/_react.default.createElement("div", {
     className: B + '__footer'
   }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "data",
@@ -21998,6 +22005,2262 @@ function Persona({
     title: typeof secondary === 'string' ? secondary : undefined
   }, secondary) : null));
 }
+  } },
+  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ActivityList = ActivityList;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ActivityList
+   Summary: A list of things that happened or arrived (messages, versions, notifications, notes).
+   Usage:
+     <ActivityList label="Recent emails">
+       <ActivityList.Item leading={<Avatar…/>} title="Maya Chen" meta="Round 3 concepts"
+         time="10:24 AM" dateTime="2026-10-05T10:24" unread onOpen={() => …} actions={<…/>} />
+     </ActivityList>
+   Props:
+     label: the list's accessible name
+     stacked: the meta on its own line under the title, in the smallest type (--plx-ref-font-size-09): for narrow panes
+       such as an inspector (batch 260); default false: title and meta on one line
+     className: more classes on the list
+     children: the ActivityList.Item rows
+     ActivityList.Item.leading: content before the text (an avatar, an icon)
+     ActivityList.Item.title: the row's title; it opens the item when onOpen or href is given
+     ActivityList.Item.meta: a line under the title
+     ActivityList.Item.time: the time shown at the row's end
+     ActivityList.Item.dateTime: the machine-readable time of the time element
+     ActivityList.Item.unread: a dot and a bold title (and "Unread" for screen readers); default false
+     ActivityList.Item.selected: the row whose details are shown (aria-current); default false
+     ActivityList.Item.onOpen(): runs when the title is activated (the title is a button)
+     ActivityList.Item.href: the title is a link that opens the item (instead of onOpen)
+     ActivityList.Item.actions: controls at the row's end
+     ActivityList.Item.className: more classes on the row
+   Behavior:
+     Alignment (owner, batch 271): a row's content starts and ends at the list's edges, in line with a section heading and
+       its line; a row that opens keeps a small inset for its hover fill, pulled back by the same token.
+     With onOpen or href the title opens the item and covers the row: one Tab stop, and the actions stay reachable.
+     Row padding follows the density.
+*/
+
+function ActivityList({
+  label,
+  stacked = false,
+  className,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement("ul", {
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-activity-list', stacked && 'plx-activity-list--stacked', className)
+  }, children);
+}
+ActivityList.Item = function ActivityListItem({
+  leading,
+  title,
+  meta,
+  time,
+  dateTime,
+  unread = false,
+  selected = false,
+  onOpen,
+  href,
+  actions,
+  className
+}) {
+  const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
+    href: href,
+    className: "plx-activity-list__opener"
+  }, title) : onOpen ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-activity-list__opener",
+    onClick: onOpen
+  }, title) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-activity-list__opener"
+  }, title);
+  return /*#__PURE__*/_react.default.createElement("li", {
+    className: (0, _cx.cx)('plx-activity-list__item', (href || onOpen) && 'is-interactive', unread && 'is-unread', selected && 'is-selected', className),
+    "aria-current": selected ? 'true' : undefined
+  }, unread ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-activity-list__unread"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-visually-hidden"
+  }, "Unread")) : null, leading ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-activity-list__leading"
+  }, leading) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-activity-list__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-activity-list__title"
+  }, opener), meta ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-activity-list__meta"
+  }, meta) : null), time ? /*#__PURE__*/_react.default.createElement("time", {
+    className: "plx-activity-list__time",
+    dateTime: dateTime
+  }, time) : null, actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-activity-list__actions"
+  }, actions) : null);
+};
+  } },
+  "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useBarFit = useBarFit;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · barFit (platform/utils/barFit.js). Internal; not part of the public API.
+   The button rule of a command bar, measured (owner, 2026-10-14): useBarFit(ref, key, max, min, rows, hold) returns the bar's step.
+   Step 0 draws every control with its icon and label; each later step makes the bar narrower (icons only with tooltips,
+   the search as its icon, then one more action into More per step, from the end, Delete last: the bar decides what a
+   step means). The rows measured are the elements in ref that match rows (default [data-plx-bar-row]): a row fits while every visible child of
+   it lies inside it on one line. The step starts again from `min` whenever the bar's width or `key` (anything that changes
+   the controls' widths: labels, a selection) changes, unless hold (the bar's search is open across it), and goes up one step at a time, before the browser paints,
+   until every row fits or `max` is reached. Nothing is written to the page: the bar draws each step from its classes. */
+
+// a row is too narrow when a child of it ends past its edge (either edge: right to left mirrors it) or starts on a
+// second line. Children are read, not scrollWidth: a tooltip's hidden bubble at the end may reach past the edge
+const over = row => {
+  const kids = Array.prototype.filter.call(row.children, k => k.offsetParent !== null && k.offsetWidth > 0);
+  if (!kids.length) return false;
+  const box = row.getBoundingClientRect();
+  const top = Math.min.apply(null, kids.map(k => k.offsetTop));
+  const tall = Math.max.apply(null, kids.map(k => k.offsetHeight));
+  return kids.some(k => {
+    const r = k.getBoundingClientRect();
+    return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
+  });
+};
+function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = false) {
+  const [step, setStep] = _react.default.useState(min);
+  const [width, setWidth] = _react.default.useState(0);
+  _react.default.useLayoutEffect(() => {
+    if (!hold) setStep(min);
+  }, [width, key, min]); // eslint-disable-line react-hooks/exhaustive-deps
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => setWidth(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || step >= max || hold) return;
+    if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
+  });
+  return Math.max(min, Math.min(step, max));
+}
+  } },
+  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BarActions = BarActions;
+exports.foldOrder = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+var _Loading = require("../../components/Loading/Loading.jsx");
+var _layer = require("../../utils/layer.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarActions
+   (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
+   page's actions, and BulkActions, the selection's actions.)
+   Usage:
+     <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 2)} moreLabel="More actions" dangerClass="plx-command-bar__danger" />
+   Summary: A row of commands drawn by the button rule (owner, 2026-10-14): ghost buttons with their icon and label; icons
+     only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
+     from the end, the danger commands last. More shows only when something has folded.
+   Props:
+     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange, loading, tooltip, panel }]
+     actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
+       onSelect(next) runs with the new state; folded into More it is a checked menu item
+     actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
+       (named "label: choice"), onChange(value) runs on a pick; folded into More it is a submenu of radio items
+     actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
+     actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
+       only disabled, with a why-tooltip)
+     actions[].loading: uses the existing Button spinner and busy state; folded commands are busy and cannot be chosen
+     actions[].tooltip: additional help on hover and keyboard focus, with labels or icons; disabled why takes precedence
+     actions[].panel({ close }): returns a small form in the existing Popover; Escape returns focus to the action
+     iconOnly: draw the commands as icons with tooltips
+     fold: how many commands are in More (from the end: the others first, the danger commands last)
+     off(action): whether a command (or a menu item) is disabled now; default action.disabled
+     why(action): the tooltip of a disabled command; default action.why
+     moreLabel: the More button's name ("More actions")
+     dangerClass: the class that draws a ghost button in the danger color
+     extra: more menu nodes for More, after the folded commands (the bar's folded quick filters); More shows for them too
+   Notes:
+     The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
+     and keeps its label. */
+// Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
+function HintTarget({
+  children,
+  'aria-describedby': description
+}) {
+  const wrap = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    const button = wrap.current && wrap.current.querySelector('button,a[href]');
+    if (!button || !description) return undefined;
+    const before = button.getAttribute('aria-describedby');
+    const ids = [...new Set((before || '').split(' ').concat(description.split(' ')).filter(Boolean))];
+    button.setAttribute('aria-describedby', ids.join(' '));
+    return () => {
+      if (before) button.setAttribute('aria-describedby', before);else button.removeAttribute('aria-describedby');
+    };
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: "plx-bar-actions__hint-target"
+  }, children);
+}
+function ActionHint({
+  content,
+  children,
+  className
+}) {
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: content,
+    className: className
+  }, /*#__PURE__*/_react.default.createElement(HintTarget, null, children));
+}
+
+// MenuItem intentionally has no public ref. This adapter exposes its real button to Popover's focus/anchor handling.
+const PanelMenuTrigger = /*#__PURE__*/_react.default.forwardRef(function PanelMenuTrigger(props, ref) {
+  const wrap = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector('[data-plx-menu-item]'));
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: "plx-bar-actions__panel-item"
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, _extends({}, props, {
+    keepOpen: true
+  })));
+});
+function ActionPanel({
+  action,
+  trigger
+}) {
+  const [open, setOpen] = _react.default.useState(false);
+  const holder = _react.default.useRef(null);
+  const unavailable = !!action.disabled || !!action.loading;
+  const show = open && !unavailable;
+  const close = () => setOpen(false);
+  // If dismissing a narrow sheet also closes More, its item is gone: return to the surviving More trigger.
+  _react.default.useEffect(() => {
+    if (!show) return undefined;
+    const menu = holder.current && holder.current.closest('[role="menu"]');
+    const more = menu && menu.parentElement.querySelector(':scope > button');
+    return () => {
+      requestAnimationFrame(() => {
+        if (more && more.isConnected && document.activeElement === document.body) more.focus({
+          preventScroll: true
+        });
+      });
+    };
+  }, [show]);
+  _react.default.useEffect(() => {
+    if (unavailable) setOpen(false);
+  }, [unavailable]);
+  const contain = e => {
+    const dialog = e.target.closest('[role="dialog"]');
+    if (!dialog) return;
+    // The non-modal form is outside the toolbar's roving order. Tab past its last control leaves the whole bar.
+    if (e.type === 'keydown' && e.key === 'Tab' && !e.shiftKey && dialog.getAttribute('aria-modal') !== 'true') {
+      const controls = (0, _layer.focusables)(dialog).filter(el => el.tabIndex >= 0);
+      const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
+      if (toolbar && e.target === controls[controls.length - 1]) {
+        const next = (0, _layer.focusables)(document.body).find(el => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+        if (next) {
+          e.preventDefault();
+          next.focus();
+        }
+      }
+    }
+    e.stopPropagation();
+  };
+  const leave = e => {
+    const next = e.relatedTarget,
+      menu = e.currentTarget.closest('[role="menu"]');
+    if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
+    const more = menu.parentElement.querySelector(':scope > button');
+    if (more) more.click();
+  };
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: holder,
+    className: "plx-bar-actions__panel",
+    onKeyDown: contain,
+    onFocus: contain,
+    onMouseDown: contain,
+    onBlur: leave
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: trigger,
+    title: action.label,
+    closeButton: true,
+    open: show,
+    onOpenChange: next => {
+      if (!next || !unavailable) setOpen(next);
+    }
+  }, show ? action.panel({
+    close
+  }) : null));
+}
+
+// a menu's items: Menu children, or descriptors drawn as MenuItems
+const itemsOf = (a, off) => {
+  const list = a.items;
+  if (!Array.isArray(list) || !list.length || /*#__PURE__*/_react.default.isValidElement(list[0])) return list;
+  return list.map(it => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: it.id || it.label,
+    icon: it.icon,
+    danger: it.danger,
+    disabled: off(it),
+    onSelect: it.onSelect
+  }, it.label));
+};
+
+// the commands that fold, in their folding order: the others from the end, then the danger ones from the end
+const foldOrder = actions => {
+  const plain = actions.filter(a => !a.danger && !a.primary),
+    danger = actions.filter(a => a.danger && !a.primary);
+  return plain.slice().reverse().concat(danger.slice().reverse());
+};
+exports.foldOrder = foldOrder;
+function BarActions({
+  actions = [],
+  iconOnly = false,
+  fold = 0,
+  off = a => !!a.disabled,
+  why = a => a.why,
+  moreLabel = 'More actions',
+  dangerClass,
+  size = 'sm',
+  extra = []
+}) {
+  const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
+  const kept = actions.filter(a => !folded.has(a.id || a.label));
+  const away = actions.filter(a => folded.has(a.id || a.label));
+  // a choices command: its options as radio items, and the current one's label
+  const radios = a => /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: a.label,
+    value: a.value,
+    onChange: v => a.onChange && a.onChange(v)
+  }, (a.choices || []).map(c => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: c.value,
+    value: c.value,
+    icon: c.icon
+  }, c.label)));
+  const current = a => {
+    const c = (a.choices || []).find(x => x.value === a.value);
+    return c ? c.label : '';
+  };
+  const one = a => {
+    const disabled = off(a),
+      loading = !!a.loading;
+    const filled = !!a.primary;
+    const only = iconOnly && !filled && !!a.icon;
+    const panel = typeof a.panel === 'function';
+    const menu = !!a.items || !!a.choices;
+    // a choices command shows its current choice and is named by both ("Profile: Raphael")
+    const name = a.choices ? a.label + ': ' + current(a) : a.label;
+    const text = a.choices ? current(a) || a.label : a.label;
+    const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
+    const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: size,
+      variant: filled ? 'primary' : 'ghost',
+      icon: a.icon,
+      iconOnly: only,
+      label: only || a.choices ? name : undefined,
+      caret: menu && !only,
+      "aria-haspopup": panel ? 'dialog' : menu ? 'menu' : undefined,
+      expanded: loading && (panel || menu) ? false : undefined,
+      pressed: a.toggle ? !!a.pressed : undefined,
+      disabled: disabled,
+      loading: loading,
+      className: a.danger && !filled ? dangerClass : undefined,
+      onClick: click
+    }, text);
+    const el = loading ? button : panel ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
+      action: Object.assign({}, a, {
+        disabled
+      }),
+      trigger: button
+    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: a.label,
+      trigger: button
+    }, radios(a)) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: a.label,
+      trigger: button
+    }, itemsOf(a, off)) : button;
+    const tip = disabled && why(a) || a.tooltip || (only ? name : null);
+    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+      key: a.id || a.label
+    }, tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
+      content: tip
+    }, el) : el);
+  };
+  const plain = kept.filter(a => !a.danger),
+    danger = kept.filter(a => a.danger);
+  const allOff = away.length > 0 && !extra.length && away.every(a => off(a));
+  const more = away.length || extra.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    key: "plx-more",
+    content: allOff ? why(away[0]) : moreLabel
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: moreLabel,
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: size,
+      variant: "ghost",
+      icon: "more",
+      iconOnly: true,
+      label: moreLabel,
+      disabled: allOff
+    })
+  }, away.map((a, i) => {
+    const sep = a.danger && i > 0 && !away[i - 1].danger ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+      key: (a.id || a.label) + '-sep'
+    }) : null;
+    // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
+    const busy = !!a.loading,
+      disabled = off(a) || busy;
+    const item = busy ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+        size: "sm",
+        label: a.label
+      }),
+      danger: a.danger,
+      checked: a.toggle ? !!a.pressed : undefined,
+      "aria-label": a.choices ? a.label + ': ' + current(a) : a.label,
+      "aria-busy": true,
+      disabled: true
+    }, a.choices ? a.label + ': ' + current(a) : a.label) : typeof a.panel === 'function' ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
+      key: a.id || a.label,
+      action: Object.assign({}, a, {
+        disabled
+      }),
+      trigger: /*#__PURE__*/_react.default.createElement(PanelMenuTrigger, {
+        icon: a.icon,
+        danger: a.danger,
+        disabled: disabled
+      }, a.label)
+    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: a.id || a.label,
+      label: a.label + ': ' + current(a),
+      icon: a.icon,
+      disabled: off(a)
+    }, radios(a)) : a.toggle ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: a.icon,
+      checked: !!a.pressed,
+      disabled: off(a),
+      onSelect: () => a.onSelect && a.onSelect(!a.pressed)
+    }, a.label) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
+      key: a.id || a.label,
+      label: a.label
+    }, itemsOf(a, off)) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: a.icon,
+      danger: a.danger,
+      disabled: off(a),
+      onSelect: a.onSelect
+    }, a.label);
+    const tip = off(a) && why(a) || a.tooltip;
+    const described = tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
+      key: a.id || a.label,
+      content: tip,
+      className: "plx-bar-actions__tooltip"
+    }, item) : item;
+    return sep ? [sep, described] : described;
+  }), away.length && extra.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+    key: "plx-extra-sep"
+  }) : null, extra)) : null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /*#__PURE__*/_react.default.createElement("span", {
+    key: "plx-danger-divider",
+    className: (0, _cx.cx)('plx-bar-actions__divider'),
+    "aria-hidden": "true"
+  }) : null, danger.map(one));
+}
+  } },
+  "platform/patterns/QuickFilter/single-choice.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.singleChoice = singleChoice;
+/* Plenix · singleChoice
+   Summary: Normalize a single quick choice, preserving the collection's array value shape.
+   Usage: singleChoice(options, value, required)
+   Props: options are strings or value descriptors; value is the current selection; required chooses the first fallback.
+   Behavior: Keep at most one valid value; a required empty choice falls back to the first option.
+   Notes: Shared by the hook, panel and folded radio group. */
+function singleChoice(options, value, required) {
+  const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
+  const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
+  return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
+}
+  } },
+  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MultiPick = MultiPick;
+exports.PanelHead = PanelHead;
+exports.PanelTrigger = PanelTrigger;
+exports.Pick = Pick;
+exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
+exports.useReorder = useReorder;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _CommandBar = require("./CommandBar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
+   (platform/patterns/CommandBar; internal, not part of the public API)
+   Summary: The find-and-view panels' shared parts. FilterPanel, SortPanel, GroupPanel, ColumnsMenu and QuickFilter are built
+     from these, so the panels share one row (owner, 2026-10-14: "Group, Sort and Filter panels share row geometry"): the
+     same control height, the same spacing.
+   Usage:
+     <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
+     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
+   Props:
+     PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
+     PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
+     Pick: a select drawn as a menu button (the field with its type icon, the direction, the operator)
+     MultiPick: a multi-select whose chosen values show as pills in their colors
+     Pill: a value in its category color
+     useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
+       row; each move is announced (WCAG 2.5.7: a way without dragging) */
+
+const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
+exports.toggle = toggle;
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+
+// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
+exports.fill = fill;
+function PanelTrigger({
+  icon,
+  label,
+  count = 0,
+  active,
+  caret = false,
+  size = 'auto',
+  title,
+  footer,
+  inline = false,
+  placement,
+  className,
+  children
+}) {
+  const ctx = (0, _CommandBar.useCommandBar)();
+  const box = _react.default.useRef(null);
+  // the focus goes to the panel's first row control, else its Add button: not the info button of its head
+  const first = {
+    get current() {
+      const el = box.current;
+      return el ? el.querySelector('[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input') : null;
+    }
+  };
+  const body = /*#__PURE__*/_react.default.createElement("div", {
+    ref: box,
+    className: (0, _cx.cx)('plx-find-panel-body', className)
+  }, children);
+  if (inline) return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel-frame"
+  }, children);
+  const trigger = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
+    icon: icon,
+    label: label,
+    count: count,
+    active: active,
+    caret: caret
+  });
+  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    label: title ? undefined : label,
+    title: title,
+    size: size,
+    trigger: trigger,
+    footer: footer,
+    placement: placement,
+    initialFocus: first
+  }, body);
+  return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label
+  }, pop) : pop;
+}
+function PanelHead({
+  title,
+  info,
+  infoLabel,
+  sub,
+  actions
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__head"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__title-row"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-find-panel__title"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "heading",
+    as: "span"
+  }, title), info ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: info
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    icon: "circle-info",
+    iconOnly: true,
+    label: infoLabel || title
+  })) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-find-panel__actions"
+  }, actions) : null), sub ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, sub) : null);
+}
+
+// a select as a menu button: the current option's icon and words
+function Pick({
+  label,
+  value,
+  options,
+  onChange,
+  size = 'field',
+  disabled
+}) {
+  const cur = options.find(o => o.value === value) || options[0] || {
+    label: ''
+  };
+  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: cur.icon,
+      caret: true,
+      disabled: disabled,
+      className: (0, _cx.cx)('plx-find-pick', 'plx-find-pick--' + size),
+      title: cur.label,
+      "aria-label": label + ': ' + cur.label
+    }, cur.label)
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: label,
+    value: value,
+    onChange: onChange
+  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: o.value,
+    value: o.value,
+    icon: o.icon
+  }, o.label))));
+}
+const Pill = ({
+  color,
+  children
+}) => /*#__PURE__*/_react.default.createElement("span", {
+  className: "plx-find-pill",
+  "data-plx-category": color || 'grey'
+}, children);
+
+// a multi-select: the chosen values as pills, or the placeholder
+exports.Pill = Pill;
+function MultiPick({
+  label,
+  options,
+  value,
+  onChange,
+  placeholder
+}) {
+  const chosen = value.map(v => options.find(o => o.value === v) || {
+    value: v,
+    label: v
+  });
+  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      caret: true,
+      className: "plx-find-pick plx-find-pick--value",
+      "aria-label": label + ': ' + (chosen.length ? chosen.map(o => o.label).join(', ') : placeholder)
+    }, chosen.length ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-find-pick__pills"
+    }, chosen.map(o => /*#__PURE__*/_react.default.createElement(Pill, {
+      key: o.value,
+      color: o.color
+    }, o.label))) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-find-pick__placeholder"
+    }, placeholder))
+  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: o.value,
+    checked: value.indexOf(o.value) >= 0,
+    keepOpen: true,
+    onSelect: () => onChange(toggle(value, o.value))
+  }, /*#__PURE__*/_react.default.createElement(Pill, {
+    color: o.color
+  }, o.label))));
+}
+
+// rows that reorder: drag, the handle's menu, Alt + Arrow Up / Down on a focused row; announced
+function useReorder(items, setItems, nameOf, t) {
+  const [msg, setMsg] = _react.default.useState('');
+  const drag = _react.default.useRef(null);
+  const box = _react.default.useRef(null);
+  const [dragging, setDragging] = _react.default.useState(-1);
+  const move = (i, to, focus) => {
+    if (to < 0 || to >= items.length || to === i) return;
+    const next = items.slice();
+    const [x] = next.splice(i, 1);
+    next.splice(to, 0, x);
+    setItems(next);
+    setMsg(fill(t.moved, {
+      name: nameOf(x),
+      position: to + 1,
+      total: items.length
+    }));
+    if (focus) setTimeout(() => {
+      const el = box.current && box.current.querySelectorAll(':scope > [data-plx-row]')[to];
+      if (el) el.focus();
+    }, 0);
+  };
+  const rowProps = (i, name) => ({
+    'data-plx-row': '',
+    tabIndex: 0,
+    draggable: true,
+    'aria-label': fill(t.row, {
+      name,
+      position: i + 1,
+      total: items.length
+    }),
+    'aria-keyshortcuts': 'Alt+ArrowUp Alt+ArrowDown',
+    className: (0, _cx.cx)('plx-find-panel__row', dragging === i && 'is-dragging'),
+    onKeyDown: e => {
+      if (e.target !== e.currentTarget || !e.altKey) return;
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        move(i, i - 1, true);
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        move(i, i + 1, true);
+      }
+    },
+    onDragStart: e => {
+      e.stopPropagation();
+      drag.current = i;
+      setDragging(i);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(i));
+    },
+    onDragEnd: () => {
+      drag.current = null;
+      setDragging(-1);
+    },
+    onDragOver: e => e.preventDefault(),
+    onDrop: e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const from = drag.current;
+      drag.current = null;
+      setDragging(-1);
+      if (from !== null && from !== i) move(from, i);
+    }
+  });
+  const handle = (i, name) => /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: fill(t.reorder, {
+      name
+    }),
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      icon: "drag",
+      iconOnly: true,
+      label: fill(t.reorder, {
+        name
+      }),
+      className: "plx-find-panel__handle"
+    })
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "chevron-up",
+    disabled: i === 0,
+    onSelect: () => move(i, i - 1, true)
+  }, t.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "chevron-down",
+    disabled: i === items.length - 1,
+    onSelect: () => move(i, i + 1, true)
+  }, t.moveDown));
+  const status = /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status",
+    "aria-live": "polite"
+  }, msg);
+  return {
+    box,
+    rowProps,
+    handle,
+    status
+  };
+}
+// the words of a row that reorders
+const REORDER_STRINGS = exports.REORDER_STRINGS = {
+  moved: '{name} moved to position {position} of {total}',
+  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
+  reorder: 'Reorder {name}',
+  moveUp: 'Move up',
+  moveDown: 'Move down'
+};
+  } },
+  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
+exports.compareLevels = compareLevels;
+exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
+exports.matchesCondition = matchesCondition;
+exports.matchesDate = matchesDate;
+exports.matchesFilter = matchesFilter;
+exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
+/* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
+   style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
+   reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
+   server that filters the same way).
+   A field: { value (its key), label, kind: "text" | "select" | "multi" | "number" | "date", options: [{ value, label,
+   color }] (select and multi: color is a category color name; without one they take the category colors in order),
+   get(row) (the row's value; default row[value]) }.
+   A filter: { join: "and" | "or", items: [condition | { group: true, id, join, items: [condition…] }] }; a condition:
+   { id, field, op, value }. A condition left unfinished (no value) does not filter.
+   Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
+
+// the type icon of each kind (the field pickers and the column headers' type icons)
+const KIND_ICONS = exports.KIND_ICONS = {
+  text: 'ed-text',
+  select: 'field-select',
+  multi: 'tags',
+  number: 'field-number',
+  date: 'calendar'
+};
+// the directions in each kind's words (Airtable's)
+const DIRECTIONS = exports.DIRECTIONS = {
+  text: ['A → Z', 'Z → A'],
+  select: ['First → Last', 'Last → First'],
+  multi: ['First → Last', 'Last → First'],
+  number: ['1 → 9', '9 → 1'],
+  date: ['Oldest → newest', 'Newest → oldest']
+};
+// the operators by kind: [op, words]
+const OPERATORS = exports.OPERATORS = {
+  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
+};
+// "is within": the past week, month or year
+const WITHIN = exports.WITHIN = [{
+  value: 'week',
+  label: 'the past week',
+  days: 7
+}, {
+  value: 'month',
+  label: 'the past month',
+  days: 30
+}, {
+  value: 'year',
+  label: 'the past year',
+  days: 365
+}];
+// the category colors (Trubetskoy's 20), in the order options take them
+const CATEGORY_ORDER = exports.CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'magenta', 'yellow', 'navy', 'red', 'cyan', 'lavender', 'brown', 'olive', 'pink', 'apricot', 'mint', 'maroon', 'lime', 'beige', 'grey'];
+const fieldOf = (fields, key) => fields.find(f => f.value === key) || fields[0];
+exports.fieldOf = fieldOf;
+const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
+exports.valueOf = valueOf;
+const kindOf = f => OPERATORS[f && f.kind] ? f.kind : 'text';
+// a field's options, each with its color (given, or the next category color)
+exports.kindOf = kindOf;
+const optionsOf = f => (f && f.options || []).map((o, i) => typeof o === 'string' ? {
+  value: o
+} : o).map((o, i) => Object.assign({
+  label: o.value,
+  color: CATEGORY_ORDER[i % CATEGORY_ORDER.length]
+}, o));
+exports.optionsOf = optionsOf;
+const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
+const iso = d => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
+const daysBefore = (n, today) => {
+  const d = new Date((today || iso(new Date())) + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() - n);
+  return iso(d);
+};
+
+// one condition against one row (today: an ISO date, for "is within"; default the current date)
+function matchesCondition(c, row, fields, today) {
+  const f = fieldOf(fields, c.field),
+    v = valueOf(f, row),
+    val = c.value,
+    k = kindOf(f);
+  if (c.op === 'empty') return blank(v);
+  if (c.op === 'nempty') return !blank(v);
+  if (blank(val)) return true;
+  if (k === 'text') {
+    const s = String(v == null ? '' : v).toLowerCase(),
+      q = String(val).toLowerCase();
+    return c.op === 'contains' ? s.includes(q) : c.op === 'ncontains' ? !s.includes(q) : c.op === 'is' ? s === q : s !== q;
+  }
+  if (k === 'select') {
+    const list = [].concat(val);
+    return c.op === 'any' ? list.indexOf(v) >= 0 : list.indexOf(v) < 0;
+  }
+  if (k === 'multi') {
+    const list = [].concat(val),
+      hit = [].concat(v || []).some(x => list.indexOf(x) >= 0);
+    return c.op === 'any' ? hit : !hit;
+  }
+  if (k === 'number') {
+    const n = Number(v),
+      q = parseFloat(val);
+    if (isNaN(q)) return true;
+    return c.op === 'eq' ? n === q : c.op === 'ne' ? n !== q : c.op === 'lt' ? n < q : n > q;
+  }
+  const d = blank(v) ? '' : String(v).slice(0, 10);
+  if (c.op === 'within') {
+    const w = WITHIN.find(x => x.value === val) || WITHIN[0];
+    return d >= daysBefore(w.days, today);
+  }
+  return c.op === 'is' ? d === val : c.op === 'before' ? d < val : d > val;
+}
+// a filter (or a condition group) against one row
+function matchesFilter(node, row, fields, today) {
+  if (!node || !node.items || !node.items.length) return true;
+  const t = x => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
+  return node.join === 'or' ? node.items.some(t) : node.items.every(t);
+}
+// every condition of a filter, its groups' included (the count on the Filter button)
+const conditionsOf = node => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
+exports.conditionsOf = conditionsOf;
+let uid = 0;
+const nextId = () => 'c' + ++uid;
+// a new condition on a field: its kind's first operator, no value yet
+exports.nextId = nextId;
+const newCondition = f => ({
+  id: nextId(),
+  field: f.value,
+  op: OPERATORS[kindOf(f)][0][0],
+  value: kindOf(f) === 'select' || kindOf(f) === 'multi' ? [] : ''
+});
+
+// rows in the order of sort levels: a comparator
+exports.newCondition = newCondition;
+function compareLevels(fields, levels) {
+  return (a, b) => {
+    for (const l of levels || []) {
+      const f = fields.find(x => x.value === l.field);
+      if (!f) continue;
+      let x = valueOf(f, a),
+        y = valueOf(f, b);
+      if (kindOf(f) === 'select' && f.options) {
+        const o = optionsOf(f).map(p => p.value);
+        x = o.indexOf(x);
+        y = o.indexOf(y);
+      }
+      if (Array.isArray(x)) x = x.join(', ');
+      if (Array.isArray(y)) y = y.join(', ');
+      const c = x < y ? -1 : x > y ? 1 : 0;
+      if (c) return l.dir === 'desc' ? -c : c;
+    }
+    return 0;
+  };
+}
+
+// the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
+const DATE_PRESETS = exports.DATE_PRESETS = [{
+  value: 'any',
+  label: 'Any time'
+}, {
+  value: '7',
+  label: 'Last 7 days'
+}, {
+  value: '30',
+  label: 'Last 30 days'
+}, {
+  value: 'year',
+  label: 'This year'
+}];
+function matchesDate(range, value, today) {
+  if (!range || range.preset === 'any' || !range.preset) return true;
+  const d = blank(value) ? '' : String(value).slice(0, 10);
+  if (!d) return false;
+  const now = today || iso(new Date());
+  if (range.preset === '7' || range.preset === '30') return d >= daysBefore(Number(range.preset), now) && d <= now;
+  if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
+  return (!range.from || d >= range.from) && (!range.to || d <= range.to);
+}
+  } },
+  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QuickFilter = QuickFilter;
+var _react = _interopRequireDefault(require("react"));
+var _singleChoice = require("./single-choice.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _format = require("../../utils/format.js");
+var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · QuickFilter
+   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
+     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
+     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
+     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
+     This year) and a custom range (the Google Analytics style).
+   Usage:
+     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
+     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
+   Props:
+     kind: "list" (default) | "single" | "date"
+     required: (single) hides All and Clear; defaults an empty choice to the first option
+     Single choices use the same array value shape as list filters, with at most one entry.
+     label: the button's words ("Category", "Type", "Tags", "Date")
+     icon: its icon
+     noun: (list) the word for one value, for the find field ("Find a tag")
+     options: (list, single) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
+     counts: optional Map (or object) from option value to faceted count; useCollectionView.quickProps supplies it
+       An option's explicit count wins, including zero; without counts the existing labels remain unchanged
+     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
+     onChange(value): runs on every change
+     inline: draws the panel alone (open, in a frame); default false
+     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
+       custom: "Custom range", from: "From", to: "To" }
+   Behavior:
+     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
+     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
+     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
+     chosen. A required single choice omits All and Clear.
+   Notes:
+     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
+
+const STRINGS = {
+  find: 'Find a {noun}',
+  none: 'No {noun} matches',
+  clear: 'Clear',
+  all: 'All',
+  presets: _fields.DATE_PRESETS,
+  custom: 'Custom range',
+  from: 'From',
+  to: 'To'
+};
+const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
+  value: o
+} : o).map((o, i) => Object.assign({
+  label: o.value,
+  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
+}, o));
+function QuickFilter({
+  kind = 'list',
+  label,
+  icon,
+  noun = 'value',
+  options,
+  value,
+  onChange,
+  counts,
+  required = false,
+  inline = false,
+  strings
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [q, setQ] = _react.default.useState('');
+  const first = (options || [])[0],
+    firstValue = typeof first === 'string' ? first : first && first.value;
+  _react.default.useEffect(() => {
+    if (kind === 'single' && required && (!value || !value.length) && firstValue !== undefined && onChange) onChange([firstValue]);
+  }, [kind, required, value, firstValue, onChange]);
+  const countOf = o => o.count !== undefined ? o.count : counts instanceof Map ? counts.get(o.value) || 0 : counts ? Object.prototype.hasOwnProperty.call(counts, o.value) ? counts[o.value] : 0 : undefined;
+  const counted = (o, label) => {
+    const n = countOf(o);
+    return n === undefined || n === null ? label : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+      as: "span",
+      gap: "xs"
+    }, label, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _format.formatNumber)(n)));
+  };
+  if (kind === 'date') {
+    const d = Object.assign({
+      preset: 'any',
+      from: '',
+      to: ''
+    }, value);
+    const range = (k, v) => onChange(Object.assign({}, d, {
+      preset: 'custom',
+      [k]: v
+    }));
+    const on = d.preset && d.preset !== 'any';
+    const body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel plx-find-panel--date"
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: label,
+      value: d.preset,
+      onChange: v => onChange(Object.assign({}, d, {
+        preset: v
+      })),
+      options: t.presets.map(x => ({
+        value: x.value,
+        label: counted(x, x.label)
+      })).concat({
+        value: 'custom',
+        label: counted({
+          value: 'custom'
+        }, t.custom)
+      })
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel__range"
+    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.from
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.from,
+      onChange: e => range('from', e.target.value)
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.to
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.to,
+      onChange: e => range('to', e.target.value)
+    }))));
+    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "filter-off",
+      disabled: !on,
+      onClick: () => onChange({
+        preset: 'any',
+        from: '',
+        to: ''
+      })
+    }, t.clear);
+    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+      icon: icon || 'calendar',
+      label: label,
+      title: label,
+      count: on ? 1 : 0,
+      caret: true,
+      size: "sm",
+      footer: footer,
+      inline: inline
+    }, body);
+  }
+  const list = asOptions(options);
+  if (kind === 'single') {
+    const chosen = (0, _singleChoice.singleChoice)(list, value, required);
+    const choices = list.map(o => ({
+      value: o.value,
+      label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
+        color: o.color
+      }, o.label))
+    }));
+    if (!required) choices.unshift({
+      value: '',
+      label: t.all
+    });
+    const body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel"
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: label,
+      value: chosen.length ? chosen[0] : '',
+      options: choices,
+      onChange: v => onChange(v === '' ? [] : [v])
+    }));
+    const footer = required ? null : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "filter-off",
+      disabled: !chosen.length,
+      onClick: () => onChange([])
+    }, t.clear);
+    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+      icon: icon,
+      label: label,
+      title: label,
+      count: chosen.length,
+      caret: true,
+      size: "sm",
+      footer: footer,
+      inline: inline
+    }, body);
+  }
+  const chosen = value || [];
+  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
+  const body = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel plx-find-panel--checklist"
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    width: "fill",
+    value: q,
+    onChange: e => setQ(e.target.value),
+    onClear: () => setQ(''),
+    placeholder: (0, _panelParts.fill)(t.find, {
+      noun
+    }),
+    label: (0, _panelParts.fill)(t.find, {
+      noun
+    })
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__checklist"
+  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    key: o.value,
+    label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
+      color: o.color
+    }, o.label)),
+    checked: chosen.indexOf(o.value) >= 0,
+    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
+  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, (0, _panelParts.fill)(t.none, {
+    noun
+  }))));
+  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "filter-off",
+    disabled: !chosen.length,
+    onClick: () => onChange([])
+  }, t.clear);
+  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+    icon: icon,
+    label: label,
+    title: label,
+    count: chosen.length,
+    caret: true,
+    size: "sm",
+    footer: footer,
+    inline: inline
+  }, body);
+}
+  } },
+  "platform/patterns/QuickFilter/single-menu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SingleQuickFilterMenu = SingleQuickFilterMenu;
+var _react = _interopRequireDefault(require("react"));
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _singleChoice = require("./single-choice.js");
+var _Text = require("../../components/Text/Text.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SingleQuickFilterMenu
+   Summary: A quick filter's single-choice radio group inside More.
+   Usage: <SingleQuickFilterMenu {...quickFilter} />
+   Props: label, options, value, required, onChange, counts and strings are the QuickFilter descriptor.
+   Behavior: Required choices omit All; radio changes preserve the collection's array shape.
+   Notes: The CommandBar folding task 132 consumes this shared group. */
+
+function SingleQuickFilterMenu({
+  label,
+  options = [],
+  value,
+  required,
+  onChange,
+  counts,
+  strings
+}) {
+  const chosen = (0, _singleChoice.singleChoice)(options, value, required);
+  const items = options.map(option => typeof option === 'string' ? {
+    value: option,
+    label: option
+  } : option);
+  if (!required) items.unshift({
+    value: '',
+    label: strings && strings.all || 'All'
+  });
+  return /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: label,
+    value: chosen.length ? chosen[0] : '',
+    onChange: v => onChange && onChange(v === '' ? [] : [v])
+  }, items.map(option => {
+    const count = option.count !== undefined ? option.count : counts instanceof Map ? counts.get(option.value) || 0 : counts ? counts[option.value] || 0 : undefined;
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: option.value,
+      value: option.value
+    }, count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+      as: "span",
+      gap: "xs"
+    }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _format.formatNumber)(count))));
+  }));
+}
+  } },
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CommandBar = CommandBar;
+exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _barFit = require("../../utils/barFit.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
+var _Divider = require("../../components/Divider/Divider.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _BarActions = require("./BarActions.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
+var _singleMenu = require("../QuickFilter/single-menu.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
+   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
+     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
+     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
+     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
+     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
+     selected", which clears the selection. A page with no actions has a view bar (1F).
+   Usage:
+     <CommandBar label="Assets" count="24 assets"
+       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
+                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
+       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
+         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
+       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
+       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
+         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
+   Props:
+     label: the bar's accessible name (the collection: "Assets")
+     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
+       pressed, choices, value, onChange, loading, tooltip, panel }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
+       setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
+       (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
+       submenu of radio items. No other controls go in the bar.
+     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
+     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
+     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
+     actions[].why: the tooltip of a disabled command, saying why
+     actions[].loading: spinner, busy and inert, including folded commands
+     actions[].tooltip: help shown on hover and focus with labels or icons (disabled why takes precedence)
+     actions[].panel({ close }): a small form in a Popover anchored to the action, including selection and More items;
+       focus enters the form and returns on Escape or close. Use close() after the form succeeds.
+     actions[].primary: the page's one primary command (filled; it keeps its label); default none
+     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
+     quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
+       options, value, onChange, kind, required, counts }]; when the bar is short of room they fold into More after the commands, each a
+       submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
+     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
+     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
+       rows are selected ("× N selected" takes its place)
+     status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
+       is short of room, and while rows are selected
+     end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
+       fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
+       items are Menu children or MenuItem descriptors, including checked toggles.
+     selection.hidden: how many selected records are hidden by filters (DataTable onSelectionChange supplies it)
+     selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
+       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
+       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
+       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
+       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
+     sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
+       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow.
+     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
+       decides)
+     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
+       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
+       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
+       to {action}" }
+     className: more classes
+     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
+       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
+       count in a badge; other props reach the Button (ref too)
+     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
+     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
+   Behavior:
+     The button rule, measured (owner, 2026-10-14 and 2026-10-15): every control shows its icon and label while the bar
+       fits on one line; first, every labeled control becomes its icon only, each with its tooltip (the actions, Filter,
+       the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
+       bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
+       the danger commands last. More shows only
+       when something does not fit. A change of width, labels or counts starts again from icons and labels.
+     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
+     Commands are never hidden by state: they are disabled, with a tooltip saying why.
+     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
+     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
+       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
+       stay mounted through the swap, so an open panel keeps its state.
+     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
+   Notes:
+     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
+     bar: the plain table. */
+const STRINGS = {
+  more: 'More actions',
+  actions: '{label} actions',
+  find: 'Find and view',
+  selected: '{n} selected',
+  hidden: ' ({n} hidden by filters)',
+  clear: 'Clear the selection',
+  clearName: '{n} selected, clear the selection',
+  swapped: '{n} selected. Selection actions available.',
+  cleared: 'Selection cleared.',
+  why: 'Select {plural} to {action}',
+  single: 'Select one {noun} to {action}'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
+// into More
+const ICONS = 1,
+  SEARCH = 2;
+const BarContext = /*#__PURE__*/_react.default.createContext({
+  iconOnly: false,
+  collapsed: false,
+  step: 0,
+  searchOpen: false,
+  setSearchOpen: () => {}
+});
+const useCommandBar = () => _react.default.useContext(BarContext);
+exports.useCommandBar = useCommandBar;
+const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
+  icon,
+  label,
+  count = 0,
+  active = false,
+  caret = false,
+  iconOnly,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const ctx = useCommandBar();
+  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
+  const n = Number(count) || 0;
+  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    size: "sm",
+    tone: "active"
+  }, n) : null;
+  const name = n ? label + ', ' + n : label;
+  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    ref: ref,
+    size: "sm",
+    variant: "ghost",
+    icon: icon,
+    caret: caret && !only,
+    selected: active || n > 0,
+    iconOnly: only && !n,
+    label: only ? name : undefined,
+    className: (0, _cx.cx)('plx-command-bar__button', className)
+  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
+});
+const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
+  const {
+    collapsed,
+    searchOpen,
+    setSearchOpen
+  } = useCommandBar();
+  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
+    ref: ref,
+    width: "bar",
+    collapsed: collapsed,
+    open: collapsed ? searchOpen : undefined,
+    onOpenChange: collapsed ? setSearchOpen : undefined
+  }, props));
+});
+function CommandBar({
+  label,
+  actions = [],
+  find,
+  quickFilters = [],
+  view,
+  count,
+  status,
+  end,
+  selection,
+  layout = 'auto',
+  sticky = 'auto',
+  narrow = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const root = _react.default.useRef(null);
+  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
+  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
+  const selCount = sel ? Number(sel.count) || 0 : 0;
+  const selecting = selCount > 0;
+  const selActs = selecting ? sel.actions || [] : [];
+  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
+  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
+  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
+  const quick = selecting ? [] : quickFilters;
+  const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
+  const endContent = ending ? ending.content : end;
+  const endFold = !selecting && ending && ending.fold;
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0);
+  // the bar's search, opened across the bar: the bar holds its step while it is open
+  const [searchOpen, setSearchOpen] = _react.default.useState(false);
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
+  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
+  const ctx = _react.default.useMemo(() => ({
+    iconOnly: step >= ICONS,
+    collapsed: step >= SEARCH,
+    step,
+    searchOpen: searchOpen && step >= SEARCH,
+    setSearchOpen
+  }), [step, searchOpen]);
+  // Commands fold first (from the end, Delete last), then an opted-in end control, then quick filters.
+  const foldAll = Math.max(0, step - SEARCH);
+  const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
+  const endAway = !!endFold && foldAll > fold;
+  const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
+  const quickKept = quick.slice(0, quick.length - quickAway),
+    quickFolded = quick.slice(quick.length - quickAway);
+  const quickMenu = quickFolded.map(q => {
+    const id = q.id || q.label;
+    const counted = option => {
+      const count = option.count !== undefined ? option.count : q.counts instanceof Map ? q.counts.get(option.value) || 0 : q.counts ? q.counts[option.value] || 0 : undefined;
+      return count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+        as: "span",
+        gap: "xs"
+      }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+        variant: "data"
+      }, (0, _format.formatNumber)(count)));
+    };
+    if (q.kind === 'single') return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: id,
+      label: q.label,
+      icon: q.icon
+    }, /*#__PURE__*/_react.default.createElement(_singleMenu.SingleQuickFilterMenu, q));
+    if (q.kind === 'date') {
+      const d = Object.assign({
+        preset: 'any',
+        from: '',
+        to: ''
+      }, q.value);
+      return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+        key: id,
+        label: q.label,
+        icon: q.icon
+      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+        label: q.label,
+        value: d.preset,
+        onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
+          preset: v
+        }))
+      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        key: p.value,
+        value: p.value
+      }, counted(p)))));
+    }
+    const chosen = q.value || [];
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: id,
+      label: chosen.length ? q.label + ' (' + chosen.length + ')' : q.label,
+      icon: q.icon
+    }, (q.options || []).map(o => typeof o === 'string' ? {
+      value: o,
+      label: o
+    } : o).map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: o.value,
+      checked: chosen.indexOf(o.value) >= 0,
+      keepOpen: true,
+      onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
+    }, counted(o))));
+  });
+  const endMenu = endAway ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+    key: "plx-end",
+    label: endFold.label,
+    icon: endFold.icon
+  }, Array.isArray(endFold.items) && endFold.items.length && ! /*#__PURE__*/_react.default.isValidElement(endFold.items[0]) ? endFold.items.map(item => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: item.id || item.label,
+    icon: item.icon,
+    checked: item.checked,
+    disabled: item.disabled,
+    danger: item.danger,
+    onSelect: item.onSelect
+  }, item.label)) : endFold.items) : null;
+  const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
+  // the swap is announced (the focus stays where it is, on the table)
+  const was = _react.default.useRef(selecting);
+  _react.default.useEffect(() => {
+    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
+      n: (0, _format.formatNumber)(selCount)
+    }) : t.cleared);
+    was.current = selecting;
+  }, [selecting]);
+  const words = {
+    noun: sel && sel.noun || 'item',
+    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
+  };
+  const off = a => !!a.disabled || !!(a.single && selCount > 1);
+  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
+    action: String(a.label).toLowerCase()
+  }, words));
+  const acts = shown.length || extraMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__actions"
+  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
+    actions: shown,
+    iconOnly: ctx.iconOnly,
+    fold: fold,
+    moreLabel: t.more,
+    dangerClass: "plx-command-bar__danger",
+    off: selecting ? off : undefined,
+    why: selecting ? why : undefined,
+    extra: extraMenu
+  })) : null;
+  const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
+    key: q.id || q.label
+  }, q)));
+  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__find"
+  }, find, quickEls) : null;
+  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__view"
+  }, view) : null;
+  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__count"
+  }, count) : count;
+  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
+  const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, {
+    n: (0, _format.formatNumber)(sel.hidden)
+  }) : '';
+  const [hiddenBefore, hiddenAfter] = String(t.hidden).split('{n}');
+  const [before, after] = String(t.selected).split('{n}');
+  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: t.clear
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "close",
+    className: "plx-command-bar__clear",
+    "aria-label": fill(t.clearName, {
+      n: (0, _format.formatNumber)(selCount)
+    }) + hiddenText,
+    onClick: () => sel.onClear && sel.onClear()
+  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__number"
+  }, (0, _format.formatNumber)(selCount)), after, hiddenText ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, hiddenBefore, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, (0, _format.formatNumber)(sel.hidden)), hiddenAfter) : null)) : null;
+  const statusEl = selecting || !status || ctx.collapsed ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-command-bar__status"
+  }, status);
+  const keptEnd = !selecting && !endAway ? endContent : null;
+  const tail = countEl || statusEl || keptEnd || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__end"
+  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, countEl, statusEl, keptEnd, clearEl) : null;
+  // Escape in the bar clears the selection (as "× N selected" does)
+  const onKeyDown = selecting && sel.onClear ? e => {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+      e.preventDefault();
+      sel.onClear();
+    }
+  } : undefined;
+  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
+  const name = selecting ? sel.label || fill(t.actions, {
+    label: label || ''
+  }).trim() : label;
+  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
+    value: ctx
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
+    "data-plx-layout": shape,
+    "data-plx-position": sticky === true ? 'sticky' : sticky === false ? 'static' : 'auto',
+    onKeyDown: onKeyDown
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-command-bar__bar"
+  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
+    label: name,
+    className: "plx-command-bar__row",
+    "data-plx-bar-row": ""
+  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
+}
+  } },
+  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReviewFlow = ReviewFlow;
+exports.ReviewQueue = ReviewQueue;
+exports.WORKFLOW_STATUSES = void 0;
+exports.WorkflowStatus = WorkflowStatus;
+exports.localDay = void 0;
+exports.useOptionalToast = useOptionalToast;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Persona = require("../../components/Persona/Persona.jsx");
+var _Avatar = require("../../components/Avatar/Avatar.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
+var _Toast = require("../../components/Toast/Toast.jsx");
+var _ActivityList = require("../ActivityList/ActivityList.jsx");
+var _CommandBar = require("../CommandBar/CommandBar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReviewFlow, ReviewQueue, WorkflowStatus
+   Summary: The review of one item and the queue of many. ReviewFlow is a review panel: the item's status as a badge with
+     its icon, the reviewers and their decisions, a comment, and the decisions in order (Reject, Request changes, Approve
+     last); Reject and Request changes need a reason, said under the comment field. Its history lists every decision.
+     kind="human" is the human review of generated content: a notice says a person must check it first. ReviewQueue is
+     the data review workflow: a DataTable of items waiting for review under a CommandBar whose selection holds Approve,
+     Request changes and Reject; the bulk decisions that need a reason ask for it with the count ("Reject 2 items?").
+     WorkflowStatus is the status badge they share (10 Patterns › Review and approval).
+   Usage:
+     <ReviewFlow title="Easter banner" status="in-review" reviewers={reviewers} history={history}
+       onDecision={(decision, comment) => save(decision, comment)} />
+     <ReviewFlow kind="human" title="Summary of the vestry minutes" status="in-review" onDecision={decide} />
+     <ReviewQueue label="Waiting for review" items={items} noun="item" onDecision={(ids, decision, reason) => …} />
+     <WorkflowStatus status="changes-requested" />
+   Props:
+     WorkflowStatus.status: "draft" (neutral, pencil) | "in-review" (active, doc-search) | "approved" (success, circle-check)
+       | "changes-requested" (action-required, alert) | "rejected" (negative, close) | "published" (success, visibility)
+       | "scheduled" (waiting, schedule): a Badge of its meaning with its icon
+     WorkflowStatus.label: other words for the status (default strings[status])
+     WorkflowStatus.size: Badge's size: "md" (default) | "sm"
+     ReviewFlow.status: the item's status (WorkflowStatus.status)
+     ReviewFlow.title: what is reviewed (the item's name), a heading
+     ReviewFlow.headingLevel: the title's level (default 3)
+     ReviewFlow.detail: one line under the title ("Submitted by Maya Chen")
+     ReviewFlow.kind: "review" (default) | "human" (the human review of generated content: the notice first)
+     ReviewFlow.reviewers: [{ id, name, src, color, decision }]: each reviewer with their decision ("approved",
+       "changes-requested", "rejected"; none yet: waiting)
+     ReviewFlow.history: [{ id, name, src, color, decision, comment, time, dateTime }]: the decisions so far, newest first
+     ReviewFlow.onDecision(decision, comment): runs with "approved", "changes-requested" or "rejected" and the comment;
+       without it the panel is read only (no comment, no decisions)
+     ReviewFlow.decisions: the decisions offered, in order (default ["rejected", "changes-requested", "approved"])
+     ReviewFlow.reasonFor: the decisions that need a comment (default ["rejected", "changes-requested"])
+     ReviewQueue.items: [{ id, name, type, submittedBy, submitted, status }] (submitted "YYYY-MM-DD")
+     ReviewQueue.label: names the bar and the table ("Waiting for review")
+     ReviewQueue.noun, plural: the item in words ("item", "items")
+     ReviewQueue.onDecision(ids, decision, reason): runs for the selected rows
+     ReviewQueue.selected, onSelectionChange(ids): the selection, when the page keeps it (default: kept inside)
+     strings: the words, for other languages (ReviewFlow: { reviewers, history, comment, commentHint, reason, approved,
+       "changes-requested", rejected, approve, changes, reject, waiting, human, needReason }; ReviewQueue: { name, type,
+       submittedBy, submitted, status, approve, changes, reject, rejectTitle, changesTitle, reason, changesLabel,
+       needReason, done })
+     className: more classes
+   Behavior:
+     ReviewFlow: Approve runs at once with the comment if there is one. Reject and Request changes run only with a
+       comment: without one, the field shows the error and takes focus (nothing is disabled). The decision is announced.
+     The status is always a Badge with its icon (never a dot): the word says the state, the color and icon repeat it.
+     ReviewQueue: the command bar swaps to the selection's commands while rows are selected; Approve runs at once,
+       Reject and Request changes open a PromptDialog named with the count that asks for the reason, then run; the
+       selection clears after a decision and a toast says what happened.
+   Notes:
+     The review panel goes in a side panel, a card or a page section; it draws no frame of its own.
+     Decisions are final for the reviewer; to change one, decide again (the history keeps both).
+*/
+// the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
+const WORKFLOW_STATUSES = exports.WORKFLOW_STATUSES = {
+  draft: {
+    tone: 'neutral',
+    icon: 'pencil',
+    label: 'Draft'
+  },
+  'in-review': {
+    tone: 'active',
+    icon: 'doc-search',
+    label: 'In review'
+  },
+  approved: {
+    tone: 'success',
+    icon: 'circle-check',
+    label: 'Approved'
+  },
+  'changes-requested': {
+    tone: 'action-required',
+    icon: 'alert',
+    label: 'Changes requested'
+  },
+  rejected: {
+    tone: 'negative',
+    icon: 'close',
+    label: 'Rejected'
+  },
+  published: {
+    tone: 'success',
+    icon: 'visibility',
+    label: 'Published'
+  },
+  scheduled: {
+    tone: 'waiting',
+    icon: 'schedule',
+    label: 'Scheduled'
+  }
+};
+function WorkflowStatus({
+  status = 'draft',
+  label,
+  size,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('WorkflowStatus', {
+    size
+  }, {
+    size: ['md', 'sm']
+  });
+  const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
+  const words = label || strings && strings[status] || s.label;
+  return /*#__PURE__*/_react.default.createElement(_Badge.Badge, _extends({
+    tone: s.tone,
+    icon: s.icon,
+    size: size,
+    className: (0, _cx.cx)('plx-workflow-status', className)
+  }, rest), words);
+}
+
+// a toast when the page has a ToastProvider; nothing otherwise (the decision is still announced)
+function useOptionalToast() {
+  try {
+    return (0, _Toast.useToast)();
+  } catch (e) {
+    return null;
+  }
+}
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+// a day ("YYYY-MM-DD") read as local midnight: Date reads a bare day as UTC, which is a day early west of Greenwich
+const localDay = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d + 'T00:00' : d;
+exports.localDay = localDay;
+const FLOW_STRINGS = {
+  reviewers: 'Reviewers',
+  history: 'History',
+  comment: 'Comment',
+  commentHint: 'Needed to reject or request changes.',
+  approve: 'Approve',
+  changes: 'Request changes',
+  reject: 'Reject',
+  waiting: 'Waiting',
+  human: 'Generated content. A person checks it before it is used.',
+  needReason: 'Say why, so the author knows what to change.',
+  done: '{decision}: {title}',
+  decisions: 'Review decisions'
+};
+const VERB = {
+  approved: 'approve',
+  'changes-requested': 'changes',
+  rejected: 'reject'
+};
+const LOOK = {
+  approved: 'primary',
+  'changes-requested': 'secondary',
+  rejected: 'danger-secondary'
+};
+function ReviewFlow({
+  status = 'in-review',
+  title,
+  headingLevel = 3,
+  detail,
+  kind = 'review',
+  reviewers = [],
+  history = [],
+  onDecision,
+  decisions = ['rejected', 'changes-requested', 'approved'],
+  reasonFor = ['rejected', 'changes-requested'],
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, FLOW_STRINGS, strings);
+  const toast = useOptionalToast();
+  const [comment, setComment] = _react.default.useState('');
+  const [error, setError] = _react.default.useState('');
+  const field = _react.default.useRef(null);
+  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
+  const word = d => t[d] || WORKFLOW_STATUSES[d].label;
+  const decide = d => {
+    if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
+      setError(t.needReason);
+      if (field.current) field.current.focus();
+      return;
+    }
+    setError('');
+    onDecision(d, comment.trim());
+    setComment('');
+    const said = fill(t.done, {
+      decision: word(d),
+      title: title || ''
+    });
+    if (toast) toast.show(said, {
+      tone: d === 'approved' ? 'success' : 'info'
+    });else (0, _announce.announce)(said);
+  };
+  return /*#__PURE__*/_react.default.createElement("section", _extends({
+    className: (0, _cx.cx)('plx-review-flow', kind === 'human' && 'plx-review-flow--human', className),
+    "aria-label": title
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__head"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__heading"
+  }, title ? /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-review-flow__title"
+  }, title) : null, detail ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-review-flow__detail"
+  }, detail) : null), /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
+    status: status,
+    strings: strings
+  })), kind === 'human' ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "info",
+    icon: "sparkle"
+  }, t.human) : null, reviewers.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__section"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-review-flow__label"
+  }, t.reviewers), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-review-flow__reviewers"
+  }, reviewers.map(r => /*#__PURE__*/_react.default.createElement("li", {
+    key: r.id || r.name,
+    className: "plx-review-flow__reviewer"
+  }, /*#__PURE__*/_react.default.createElement(_Persona.Persona, {
+    name: r.name,
+    src: r.src,
+    color: r.color,
+    size: "xs"
+  }), r.decision ? /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
+    status: r.decision,
+    strings: strings
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-review-flow__waiting"
+  }, t.waiting))))) : null, onDecision ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__decide"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.comment,
+    description: t.commentHint,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    ref: field,
+    rows: 3,
+    value: comment,
+    onChange: e => {
+      setComment(e.target.value);
+      if (error) setError('');
+    }
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__actions",
+    role: "group",
+    "aria-label": t.decisions
+  }, decisions.map(d => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: d,
+    variant: LOOK[d],
+    onClick: () => decide(d)
+  }, t[VERB[d]])))) : null, history.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-review-flow__section"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-review-flow__label"
+  }, t.history), /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList, {
+    label: t.history,
+    stacked: true
+  }, history.map(x => /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList.Item, {
+    key: x.id || x.name + x.time,
+    leading: /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+      name: x.name,
+      src: x.src,
+      color: x.color,
+      size: "xs"
+    }),
+    title: x.name,
+    meta: word(x.decision) + (x.comment ? ': ' + x.comment : ''),
+    time: x.time,
+    dateTime: x.dateTime
+  })))) : null);
+}
+const QUEUE_STRINGS = {
+  name: 'Name',
+  type: 'Type',
+  submittedBy: 'Submitted by',
+  submitted: 'Submitted',
+  status: 'Status',
+  approve: 'Approve',
+  changes: 'Request changes',
+  reject: 'Reject',
+  rejectTitle: 'Reject {what}?',
+  changesTitle: 'Request changes on {what}?',
+  reason: 'Reason',
+  changesLabel: 'What to change',
+  reasonHint: 'The authors see it with the decision.',
+  needReason: 'Say why, so the authors know what to change.',
+  done: '{what} {decision}',
+  count: '{n} {plural}'
+};
+function ReviewQueue({
+  items = [],
+  label = 'Waiting for review',
+  noun = 'item',
+  plural,
+  onDecision,
+  selected,
+  onSelectionChange,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, QUEUE_STRINGS, strings);
+  const many = plural || noun + 's';
+  const toast = useOptionalToast();
+  const [own, setOwn] = _react.default.useState([]);
+  const sel = selected !== undefined ? selected : own;
+  const setSel = ids => {
+    if (selected === undefined) setOwn(ids);
+    if (onSelectionChange) onSelectionChange(ids);
+  };
+  const [ask, setAsk] = _react.default.useState(null); // "rejected" | "changes-requested" while its dialog is open
+  const what = n => n === 1 ? '1 ' + noun : (0, _format.formatNumber)(n) + ' ' + many;
+  const run = (decision, reason) => {
+    const ids = sel.slice();
+    if (onDecision) onDecision(ids, decision, reason || '');
+    setSel([]);
+    setAsk(null);
+    const said = fill(t.done, {
+      what: what(ids.length),
+      decision: WORKFLOW_STATUSES[decision].label.toLowerCase()
+    });
+    if (toast) toast.show(said, {
+      tone: decision === 'approved' ? 'success' : 'info'
+    });else (0, _announce.announce)(said);
+  };
+  const columns = [{
+    title: t.name,
+    field: 'name',
+    kind: 'name'
+  }, {
+    title: t.type,
+    field: 'type'
+  }, {
+    title: t.submittedBy,
+    field: 'submittedBy',
+    type: 'person'
+  }, {
+    title: t.submitted,
+    field: 'submitted',
+    kind: 'data',
+    type: 'date',
+    render: r => /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _format.formatDate)(localDay(r.submitted)))
+  }, {
+    title: t.status,
+    field: 'status',
+    kind: 'center',
+    render: r => /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
+      status: r.status,
+      strings: strings
+    })
+  }];
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-review-queue', className)
+  }, rest), /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
+    label: label,
+    count: fill(t.count, {
+      n: (0, _format.formatNumber)(items.length),
+      plural: items.length === 1 ? noun : many
+    }),
+    selection: {
+      count: sel.length,
+      noun,
+      plural: many,
+      onClear: () => setSel([]),
+      actions: [{
+        id: 'approve',
+        label: t.approve,
+        icon: 'circle-check',
+        onSelect: () => run('approved')
+      }, {
+        id: 'changes',
+        label: t.changes,
+        icon: 'alert',
+        onSelect: () => setAsk('changes-requested')
+      }, {
+        id: 'reject',
+        label: t.reject,
+        icon: 'close',
+        danger: true,
+        onSelect: () => setAsk('rejected')
+      }]
+    }
+  }), /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
+    label: label,
+    data: items,
+    index: "id",
+    selectable: true,
+    selected: sel,
+    onSelectionChange: setSel,
+    columns: columns
+  }), /*#__PURE__*/_react.default.createElement(_Dialog.PromptDialog, {
+    open: !!ask,
+    title: fill(ask === 'rejected' ? t.rejectTitle : t.changesTitle, {
+      what: what(sel.length)
+    }),
+    label: ask === 'rejected' ? t.reason : t.changesLabel,
+    description: t.reasonHint,
+    confirmLabel: ask === 'rejected' ? t.reject : t.changes,
+    validate: v => v.trim() ? '' : t.needReason,
+    onSubmit: v => run(ask, v.trim()),
+    onCancel: () => setAsk(null)
+  }));
+}
+  } },
+  "platform/components/DataTableNext/DataTablePublic.jsx": { deps: {"react":null,"./DataTableNext.jsx":"platform/components/DataTableNext/DataTableNext.jsx","../DataTable/actions.jsx":"platform/components/DataTable/actions.jsx","../Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataTable = DataTable;
+var _react = _interopRequireDefault(require("react"));
+var _DataTableNext = require("./DataTableNext.jsx");
+var _actions = require("../DataTable/actions.jsx");
+var _Toast = require("../Toast/Toast.jsx");
+var _ReviewFlow = require("../../patterns/ReviewFlow/ReviewFlow.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTable
+   Summary: Records people work with, by column: sort, filter, select, open, edit, group or nest them. A React grid on
+     TanStack Table (row models and column state) and TanStack Virtual (the rows drawn), both MIT and bundled into the
+     Platform; every element is Plenix markup (plx-data-table__*) drawn by data-table-next.css with the data-table tokens.
+   Usage:
+     <DataTable label="Assets" data={assets} index="id" selectable
+       columns={[
+         { title: 'Attachments', field: 'attach', kind: 'icon', icon: 'attachment', sorter: 'number',
+           render: (a) => (a.attach ? <Icon name="attachment" label={a.attach + ' attachments'} /> : null) },
+         { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-240px', editor: 'input' },
+         { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: (a) => <Badge tone="success">{a.status}</Badge> },
+         { title: 'Size', field: 'size', type: 'bytes' }]}
+       rowMenu={[{ label: 'Open', icon: 'open', onSelect: (a) => open(a) }, { separator: true },
+                 { label: 'Delete', icon: 'trash', danger: true, onSelect: (a) => remove(a) }]}
+       onRowClick={(asset) => open(asset)} />
+   Props:
+     label: names the grid for screen readers (required)
+     data: the rows, plain objects; index: the field that identifies a row (default "id")
+     columns: [{ title, field, … }]:
+       kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, DM Mono, on the row's
+         baseline) | "icon" (a mark column as wide as the checkbox column; its header shows icon) | "center" (centered in
+         the row's height: badges, buttons) | "actions" (row buttons, shown while the row is hovered or selected) | "wrap"
+         (long text: the lines that fit the row height step, then an ellipsis) | "deleted" (muted italic) | "avatar-name"
+         ({ name, src }) | "tags" ([{ label, category }]) | "badge" ({ label, tone, icon }); two combine as a list
+         (["name", "data"])
+       type: "text" (default) | "number" | "currency" | "date" | "select" | "checkbox" | "file" | "image" | "link" |
+         "person" | "long-text" | "bytes" (file sizes; filters take "> 2 MB") | "multi" (several values: a grouped table
+         puts the record in each of its groups): the header icon and the sort words
+       render(record): the cell as a React element; sorter: "string" | "number" | "date" | a compare function
+         sorter(valueA, valueB, recordA, recordB, field, direction) returns ascending order; direction lets a fixed
+         category order (such as folders first) compensate for the descending inversion
+       filter: true (contains text) | "list" (one of the column's values); summary: "sum" | "count" | "average" | "min" |
+         "max" in each group header; empty: the text for a missing value (zero and false are values)
+       width: a CSS length or a size token ("--plx-ref-size-240px"; numbers snap to a size token); without it the column
+         fits its content and shares the room left; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
+         the columns before it are the row header (pinned and shaded)
+       hozAlign, headerHozAlign: "left" | "center" | "right"; headerSort: false turns sorting off; resizable: false
+       editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
+         rows may edit; rowHandle: true makes the column the drag handle for moving rows
+     selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
+       { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
+     onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
+       onCellEdit(record, { field, value, previous })
+     headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
+       the application's field actions first in it ([{ label, icon, onSelect(column), danger, disabled, separator }])
+     rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the
+       row's button (rowMenuButton, default true) or right-click; DataTable.useActions(actions, selectedKeys, strings)
+       wraps selection commands with Undo for the CommandBar
+     The page's view (the command bar drives it; each applies when it changes): filter(record), sort [{ field, dir }],
+       groupBy (a field, or a list for nested groups), columnOrder, hiddenColumns; onAddToGroup(value, path): the add row
+       at the end of each group
+     tree: rows nest (children in childrenField, default "_children"; the toggle in treeColumn; treeExpanded: start open)
+     movableRows with onRowMove(record, toIndex), movableColumns: drag, with the same moves in the menus
+     rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
+       button (default false: the page's ViewMenu sets these)
+     mode: "fill" (default: fills the room left on screen, virtual rows) | "pages" (pageSize, pageSizes, a footer with
+       Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
+     fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
+       { rows, total }; search: the page's search text
+     storageKey: keeps the person's view (sort, widths, order, hidden columns, row height, wrap, groups) in this browser
+     narrow: "list" (default: under narrowAt, 600px of its own width, a list of keyColumns) | "table" | "auto"
+     empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
+     className: more classes on the frame
+   Behavior:
+     The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
+       Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
+       row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
+     Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
+       on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
+     Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the
+       top with a Short row's padding. Group rows: a chevron, the field as an eyebrow, the value and the record count,
+       one sunken band between groups; group headers stick while their rows scroll; the grouped-by column is tinted.
+     Virtual rows: only the rows in view are drawn; the rows not drawn are token-sized gaps (every row height is known,
+       nothing is measured); printing and copying use every loaded row. Narrow: the key columns as a list, with the
+       checkbox, handle and row actions kept.
+   Notes:
+     Inline styles only where the owner allows them (2026-10-13): column widths that equal a size token and the virtual
+     gaps' heights from the tokens; never a row height, line height or cell padding. Hover, selected and selected + hover
+     are three row colors; pinned and row-header cells follow the row.
+*/
+// the row menu's actions with Undo, as the CommandBar's selection commands
+function ActionTable(props) {
+  const rowMenu = (0, _actions.useDataTableActions)(props.rowMenu, undefined, props.strings);
+  return /*#__PURE__*/_react.default.createElement(_DataTableNext.DataTableNext, _extends({}, props, {
+    rowMenu: rowMenu
+  }));
+}
+function DataTable(props) {
+  const toast = (0, _ReviewFlow.useOptionalToast)();
+  return toast ? /*#__PURE__*/_react.default.createElement(ActionTable, props) : /*#__PURE__*/_react.default.createElement(_Toast.ToastProvider, null, /*#__PURE__*/_react.default.createElement(ActionTable, props));
+}
+DataTable.useActions = _actions.useDataTableActions;
+// nothing to load ahead: the engine is part of the Platform bundle (kept so pages that called it keep working)
+DataTable.preload = () => {};
   } },
   "platform/components/DataTable/cells.js": { deps: {"../../utils/format.js":"platform/utils/format.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
@@ -23087,7 +25350,7 @@ exports.tablePx = tablePx;
 exports.vendorBase = vendorBase;
 var _strict = require("./strict.js");
 /* Plenix · DataTable engine (tabulator.js)
-   Summary: Loads the engine every DataTable runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
+   Summary: Loads the engine retained for LegacyDataTable: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
    Usage:
      loadTabulator().then((Tabulator) => new Tabulator(element, options));
      const width = tablePx('--plx-ref-size-36px');
@@ -23100,11 +25363,8 @@ var _strict = require("./strict.js");
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
-     Early load (batch 237): a page whose first screen has a table calls DataTable.preload() (or Table.preload()) as
-     its script starts, so Tabulator arrives while React draws the page instead of after the grid mounts. Every other
-     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache;
-     only from the page's own site (an app that bundles the npm package, or loads the Platform from another site, fetches
-     the engine when its first grid asks for it).
+     A legacy application may call LegacyDataTable.preload() before its first grid. Other pages do not automatically
+     fetch the legacy engine; its first grid loads it on demand.
      The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
      build's plenix.js -> ./vendor/; the npm package's dist/plenix.global.js -> dist/vendor/); in the npm package
@@ -23199,16 +25459,6 @@ function prefetchTabulator() {
     link.href = base + f;
     link.setAttribute('data-plx-vendor-prefetch', 'tabulator');
     document.head.appendChild(link);
-  });
-}
-
-// every page: prefetch once the page has loaded and the browser is idle (a table page has already started the real load)
-if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof window.addEventListener === 'function') {
-  const idle = () => window.requestIdleCallback ? window.requestIdleCallback(prefetchTabulator, {
-    timeout: 3000
-  }) : setTimeout(prefetchTabulator, 1000);
-  if (document.readyState === 'complete') idle();else window.addEventListener('load', idle, {
-    once: true
   });
 }
 
@@ -26134,2261 +28384,7 @@ DataTable.preload = () => {
   (0, _tabulator.loadTabulator)().catch(() => {});
 };
   } },
-  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ActivityList = ActivityList;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ActivityList
-   Summary: A list of things that happened or arrived (messages, versions, notifications, notes).
-   Usage:
-     <ActivityList label="Recent emails">
-       <ActivityList.Item leading={<Avatar…/>} title="Maya Chen" meta="Round 3 concepts"
-         time="10:24 AM" dateTime="2026-10-05T10:24" unread onOpen={() => …} actions={<…/>} />
-     </ActivityList>
-   Props:
-     label: the list's accessible name
-     stacked: the meta on its own line under the title, in the smallest type (--plx-ref-font-size-09): for narrow panes
-       such as an inspector (batch 260); default false: title and meta on one line
-     className: more classes on the list
-     children: the ActivityList.Item rows
-     ActivityList.Item.leading: content before the text (an avatar, an icon)
-     ActivityList.Item.title: the row's title; it opens the item when onOpen or href is given
-     ActivityList.Item.meta: a line under the title
-     ActivityList.Item.time: the time shown at the row's end
-     ActivityList.Item.dateTime: the machine-readable time of the time element
-     ActivityList.Item.unread: a dot and a bold title (and "Unread" for screen readers); default false
-     ActivityList.Item.selected: the row whose details are shown (aria-current); default false
-     ActivityList.Item.onOpen(): runs when the title is activated (the title is a button)
-     ActivityList.Item.href: the title is a link that opens the item (instead of onOpen)
-     ActivityList.Item.actions: controls at the row's end
-     ActivityList.Item.className: more classes on the row
-   Behavior:
-     Alignment (owner, batch 271): a row's content starts and ends at the list's edges, in line with a section heading and
-       its line; a row that opens keeps a small inset for its hover fill, pulled back by the same token.
-     With onOpen or href the title opens the item and covers the row: one Tab stop, and the actions stay reachable.
-     Row padding follows the density.
-*/
-
-function ActivityList({
-  label,
-  stacked = false,
-  className,
-  children
-}) {
-  return /*#__PURE__*/_react.default.createElement("ul", {
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-activity-list', stacked && 'plx-activity-list--stacked', className)
-  }, children);
-}
-ActivityList.Item = function ActivityListItem({
-  leading,
-  title,
-  meta,
-  time,
-  dateTime,
-  unread = false,
-  selected = false,
-  onOpen,
-  href,
-  actions,
-  className
-}) {
-  const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
-    href: href,
-    className: "plx-activity-list__opener"
-  }, title) : onOpen ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-activity-list__opener",
-    onClick: onOpen
-  }, title) : /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__opener"
-  }, title);
-  return /*#__PURE__*/_react.default.createElement("li", {
-    className: (0, _cx.cx)('plx-activity-list__item', (href || onOpen) && 'is-interactive', unread && 'is-unread', selected && 'is-selected', className),
-    "aria-current": selected ? 'true' : undefined
-  }, unread ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__unread"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-visually-hidden"
-  }, "Unread")) : null, leading ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__leading"
-  }, leading) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__title"
-  }, opener), meta ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__meta"
-  }, meta) : null), time ? /*#__PURE__*/_react.default.createElement("time", {
-    className: "plx-activity-list__time",
-    dateTime: dateTime
-  }, time) : null, actions ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__actions"
-  }, actions) : null);
-};
-  } },
-  "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useBarFit = useBarFit;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · barFit (platform/utils/barFit.js). Internal; not part of the public API.
-   The button rule of a command bar, measured (owner, 2026-10-14): useBarFit(ref, key, max, min, rows, hold) returns the bar's step.
-   Step 0 draws every control with its icon and label; each later step makes the bar narrower (icons only with tooltips,
-   the search as its icon, then one more action into More per step, from the end, Delete last: the bar decides what a
-   step means). The rows measured are the elements in ref that match rows (default [data-plx-bar-row]): a row fits while every visible child of
-   it lies inside it on one line. The step starts again from `min` whenever the bar's width or `key` (anything that changes
-   the controls' widths: labels, a selection) changes, unless hold (the bar's search is open across it), and goes up one step at a time, before the browser paints,
-   until every row fits or `max` is reached. Nothing is written to the page: the bar draws each step from its classes. */
-
-// a row is too narrow when a child of it ends past its edge (either edge: right to left mirrors it) or starts on a
-// second line. Children are read, not scrollWidth: a tooltip's hidden bubble at the end may reach past the edge
-const over = row => {
-  const kids = Array.prototype.filter.call(row.children, k => k.offsetParent !== null && k.offsetWidth > 0);
-  if (!kids.length) return false;
-  const box = row.getBoundingClientRect();
-  const top = Math.min.apply(null, kids.map(k => k.offsetTop));
-  const tall = Math.max.apply(null, kids.map(k => k.offsetHeight));
-  return kids.some(k => {
-    const r = k.getBoundingClientRect();
-    return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
-  });
-};
-function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = false) {
-  const [step, setStep] = _react.default.useState(min);
-  const [width, setWidth] = _react.default.useState(0);
-  _react.default.useLayoutEffect(() => {
-    if (!hold) setStep(min);
-  }, [width, key, min]); // eslint-disable-line react-hooks/exhaustive-deps
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(() => setWidth(el.clientWidth));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || step >= max || hold) return;
-    if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
-  });
-  return Math.max(min, Math.min(step, max));
-}
-  } },
-  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BarActions = BarActions;
-exports.foldOrder = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _Popover = require("../../components/Popover/Popover.jsx");
-var _Loading = require("../../components/Loading/Loading.jsx");
-var _layer = require("../../utils/layer.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarActions
-   (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
-   page's actions, and BulkActions, the selection's actions.)
-   Usage:
-     <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 2)} moreLabel="More actions" dangerClass="plx-command-bar__danger" />
-   Summary: A row of commands drawn by the button rule (owner, 2026-10-14): ghost buttons with their icon and label; icons
-     only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
-     from the end, the danger commands last. More shows only when something has folded.
-   Props:
-     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange, loading, tooltip, panel }]
-     actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
-       onSelect(next) runs with the new state; folded into More it is a checked menu item
-     actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
-       (named "label: choice"), onChange(value) runs on a pick; folded into More it is a submenu of radio items
-     actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
-     actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
-       only disabled, with a why-tooltip)
-     actions[].loading: uses the existing Button spinner and busy state; folded commands are busy and cannot be chosen
-     actions[].tooltip: additional help on hover and keyboard focus, with labels or icons; disabled why takes precedence
-     actions[].panel({ close }): returns a small form in the existing Popover; Escape returns focus to the action
-     iconOnly: draw the commands as icons with tooltips
-     fold: how many commands are in More (from the end: the others first, the danger commands last)
-     off(action): whether a command (or a menu item) is disabled now; default action.disabled
-     why(action): the tooltip of a disabled command; default action.why
-     moreLabel: the More button's name ("More actions")
-     dangerClass: the class that draws a ghost button in the danger color
-     extra: more menu nodes for More, after the folded commands (the bar's folded quick filters); More shows for them too
-   Notes:
-     The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
-     and keeps its label. */
-// Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
-function HintTarget({
-  children,
-  'aria-describedby': description
-}) {
-  const wrap = _react.default.useRef(null);
-  _react.default.useLayoutEffect(() => {
-    const button = wrap.current && wrap.current.querySelector('button,a[href]');
-    if (!button || !description) return undefined;
-    const before = button.getAttribute('aria-describedby');
-    const ids = [...new Set((before || '').split(' ').concat(description.split(' ')).filter(Boolean))];
-    button.setAttribute('aria-describedby', ids.join(' '));
-    return () => {
-      if (before) button.setAttribute('aria-describedby', before);else button.removeAttribute('aria-describedby');
-    };
-  });
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: "plx-bar-actions__hint-target"
-  }, children);
-}
-function ActionHint({
-  content,
-  children,
-  className
-}) {
-  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: content,
-    className: className
-  }, /*#__PURE__*/_react.default.createElement(HintTarget, null, children));
-}
-
-// MenuItem intentionally has no public ref. This adapter exposes its real button to Popover's focus/anchor handling.
-const PanelMenuTrigger = /*#__PURE__*/_react.default.forwardRef(function PanelMenuTrigger(props, ref) {
-  const wrap = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector('[data-plx-menu-item]'));
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: "plx-bar-actions__panel-item"
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, _extends({}, props, {
-    keepOpen: true
-  })));
-});
-function ActionPanel({
-  action,
-  trigger
-}) {
-  const [open, setOpen] = _react.default.useState(false);
-  const holder = _react.default.useRef(null);
-  const unavailable = !!action.disabled || !!action.loading;
-  const show = open && !unavailable;
-  const close = () => setOpen(false);
-  // If dismissing a narrow sheet also closes More, its item is gone: return to the surviving More trigger.
-  _react.default.useEffect(() => {
-    if (!show) return undefined;
-    const menu = holder.current && holder.current.closest('[role="menu"]');
-    const more = menu && menu.parentElement.querySelector(':scope > button');
-    return () => {
-      requestAnimationFrame(() => {
-        if (more && more.isConnected && document.activeElement === document.body) more.focus({
-          preventScroll: true
-        });
-      });
-    };
-  }, [show]);
-  _react.default.useEffect(() => {
-    if (unavailable) setOpen(false);
-  }, [unavailable]);
-  const contain = e => {
-    const dialog = e.target.closest('[role="dialog"]');
-    if (!dialog) return;
-    // The non-modal form is outside the toolbar's roving order. Tab past its last control leaves the whole bar.
-    if (e.type === 'keydown' && e.key === 'Tab' && !e.shiftKey && dialog.getAttribute('aria-modal') !== 'true') {
-      const controls = (0, _layer.focusables)(dialog).filter(el => el.tabIndex >= 0);
-      const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
-      if (toolbar && e.target === controls[controls.length - 1]) {
-        const next = (0, _layer.focusables)(document.body).find(el => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
-        if (next) {
-          e.preventDefault();
-          next.focus();
-        }
-      }
-    }
-    e.stopPropagation();
-  };
-  const leave = e => {
-    const next = e.relatedTarget,
-      menu = e.currentTarget.closest('[role="menu"]');
-    if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
-    const more = menu.parentElement.querySelector(':scope > button');
-    if (more) more.click();
-  };
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: holder,
-    className: "plx-bar-actions__panel",
-    onKeyDown: contain,
-    onFocus: contain,
-    onMouseDown: contain,
-    onBlur: leave
-  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
-    trigger: trigger,
-    title: action.label,
-    closeButton: true,
-    open: show,
-    onOpenChange: next => {
-      if (!next || !unavailable) setOpen(next);
-    }
-  }, show ? action.panel({
-    close
-  }) : null));
-}
-
-// a menu's items: Menu children, or descriptors drawn as MenuItems
-const itemsOf = (a, off) => {
-  const list = a.items;
-  if (!Array.isArray(list) || !list.length || /*#__PURE__*/_react.default.isValidElement(list[0])) return list;
-  return list.map(it => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: it.id || it.label,
-    icon: it.icon,
-    danger: it.danger,
-    disabled: off(it),
-    onSelect: it.onSelect
-  }, it.label));
-};
-
-// the commands that fold, in their folding order: the others from the end, then the danger ones from the end
-const foldOrder = actions => {
-  const plain = actions.filter(a => !a.danger && !a.primary),
-    danger = actions.filter(a => a.danger && !a.primary);
-  return plain.slice().reverse().concat(danger.slice().reverse());
-};
-exports.foldOrder = foldOrder;
-function BarActions({
-  actions = [],
-  iconOnly = false,
-  fold = 0,
-  off = a => !!a.disabled,
-  why = a => a.why,
-  moreLabel = 'More actions',
-  dangerClass,
-  size = 'sm',
-  extra = []
-}) {
-  const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
-  const kept = actions.filter(a => !folded.has(a.id || a.label));
-  const away = actions.filter(a => folded.has(a.id || a.label));
-  // a choices command: its options as radio items, and the current one's label
-  const radios = a => /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: a.label,
-    value: a.value,
-    onChange: v => a.onChange && a.onChange(v)
-  }, (a.choices || []).map(c => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: c.value,
-    value: c.value,
-    icon: c.icon
-  }, c.label)));
-  const current = a => {
-    const c = (a.choices || []).find(x => x.value === a.value);
-    return c ? c.label : '';
-  };
-  const one = a => {
-    const disabled = off(a),
-      loading = !!a.loading;
-    const filled = !!a.primary;
-    const only = iconOnly && !filled && !!a.icon;
-    const panel = typeof a.panel === 'function';
-    const menu = !!a.items || !!a.choices;
-    // a choices command shows its current choice and is named by both ("Profile: Raphael")
-    const name = a.choices ? a.label + ': ' + current(a) : a.label;
-    const text = a.choices ? current(a) || a.label : a.label;
-    const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
-    const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: size,
-      variant: filled ? 'primary' : 'ghost',
-      icon: a.icon,
-      iconOnly: only,
-      label: only || a.choices ? name : undefined,
-      caret: menu && !only,
-      "aria-haspopup": panel ? 'dialog' : menu ? 'menu' : undefined,
-      expanded: loading && (panel || menu) ? false : undefined,
-      pressed: a.toggle ? !!a.pressed : undefined,
-      disabled: disabled,
-      loading: loading,
-      className: a.danger && !filled ? dangerClass : undefined,
-      onClick: click
-    }, text);
-    const el = loading ? button : panel ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
-      action: Object.assign({}, a, {
-        disabled
-      }),
-      trigger: button
-    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: a.label,
-      trigger: button
-    }, radios(a)) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: a.label,
-      trigger: button
-    }, itemsOf(a, off)) : button;
-    const tip = disabled && why(a) || a.tooltip || (only ? name : null);
-    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
-      key: a.id || a.label
-    }, tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
-      content: tip
-    }, el) : el);
-  };
-  const plain = kept.filter(a => !a.danger),
-    danger = kept.filter(a => a.danger);
-  const allOff = away.length > 0 && !extra.length && away.every(a => off(a));
-  const more = away.length || extra.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    key: "plx-more",
-    content: allOff ? why(away[0]) : moreLabel
-  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: moreLabel,
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: size,
-      variant: "ghost",
-      icon: "more",
-      iconOnly: true,
-      label: moreLabel,
-      disabled: allOff
-    })
-  }, away.map((a, i) => {
-    const sep = a.danger && i > 0 && !away[i - 1].danger ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
-      key: (a.id || a.label) + '-sep'
-    }) : null;
-    // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
-    const busy = !!a.loading,
-      disabled = off(a) || busy;
-    const item = busy ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-        size: "sm",
-        label: a.label
-      }),
-      danger: a.danger,
-      checked: a.toggle ? !!a.pressed : undefined,
-      "aria-label": a.choices ? a.label + ': ' + current(a) : a.label,
-      "aria-busy": true,
-      disabled: true
-    }, a.choices ? a.label + ': ' + current(a) : a.label) : typeof a.panel === 'function' ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
-      key: a.id || a.label,
-      action: Object.assign({}, a, {
-        disabled
-      }),
-      trigger: /*#__PURE__*/_react.default.createElement(PanelMenuTrigger, {
-        icon: a.icon,
-        danger: a.danger,
-        disabled: disabled
-      }, a.label)
-    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: a.id || a.label,
-      label: a.label + ': ' + current(a),
-      icon: a.icon,
-      disabled: off(a)
-    }, radios(a)) : a.toggle ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: a.icon,
-      checked: !!a.pressed,
-      disabled: off(a),
-      onSelect: () => a.onSelect && a.onSelect(!a.pressed)
-    }, a.label) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
-      key: a.id || a.label,
-      label: a.label
-    }, itemsOf(a, off)) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: a.icon,
-      danger: a.danger,
-      disabled: off(a),
-      onSelect: a.onSelect
-    }, a.label);
-    const tip = off(a) && why(a) || a.tooltip;
-    const described = tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
-      key: a.id || a.label,
-      content: tip,
-      className: "plx-bar-actions__tooltip"
-    }, item) : item;
-    return sep ? [sep, described] : described;
-  }), away.length && extra.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
-    key: "plx-extra-sep"
-  }) : null, extra)) : null;
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /*#__PURE__*/_react.default.createElement("span", {
-    key: "plx-danger-divider",
-    className: (0, _cx.cx)('plx-bar-actions__divider'),
-    "aria-hidden": "true"
-  }) : null, danger.map(one));
-}
-  } },
-  "platform/patterns/QuickFilter/single-choice.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.singleChoice = singleChoice;
-/* Plenix · singleChoice
-   Summary: Normalize a single quick choice, preserving the collection's array value shape.
-   Usage: singleChoice(options, value, required)
-   Props: options are strings or value descriptors; value is the current selection; required chooses the first fallback.
-   Behavior: Keep at most one valid value; a required empty choice falls back to the first option.
-   Notes: Shared by the hook, panel and folded radio group. */
-function singleChoice(options, value, required) {
-  const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
-  const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
-  return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
-}
-  } },
-  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MultiPick = MultiPick;
-exports.PanelHead = PanelHead;
-exports.PanelTrigger = PanelTrigger;
-exports.Pick = Pick;
-exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
-exports.useReorder = useReorder;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Popover = require("../../components/Popover/Popover.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
-var _CommandBar = require("./CommandBar.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
-   (platform/patterns/CommandBar; internal, not part of the public API)
-   Summary: The find-and-view panels' shared parts. FilterPanel, SortPanel, GroupPanel, ColumnsMenu and QuickFilter are built
-     from these, so the panels share one row (owner, 2026-10-14: "Group, Sort and Filter panels share row geometry"): the
-     same control height, the same spacing.
-   Usage:
-     <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
-     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
-   Props:
-     PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
-     PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
-     Pick: a select drawn as a menu button (the field with its type icon, the direction, the operator)
-     MultiPick: a multi-select whose chosen values show as pills in their colors
-     Pill: a value in its category color
-     useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
-       row; each move is announced (WCAG 2.5.7: a way without dragging) */
-
-const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
-exports.toggle = toggle;
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-
-// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
-exports.fill = fill;
-function PanelTrigger({
-  icon,
-  label,
-  count = 0,
-  active,
-  caret = false,
-  size = 'auto',
-  title,
-  footer,
-  inline = false,
-  placement,
-  className,
-  children
-}) {
-  const ctx = (0, _CommandBar.useCommandBar)();
-  const box = _react.default.useRef(null);
-  // the focus goes to the panel's first row control, else its Add button: not the info button of its head
-  const first = {
-    get current() {
-      const el = box.current;
-      return el ? el.querySelector('[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input') : null;
-    }
-  };
-  const body = /*#__PURE__*/_react.default.createElement("div", {
-    ref: box,
-    className: (0, _cx.cx)('plx-find-panel-body', className)
-  }, children);
-  if (inline) return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel-frame"
-  }, children);
-  const trigger = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
-    icon: icon,
-    label: label,
-    count: count,
-    active: active,
-    caret: caret
-  });
-  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
-    label: title ? undefined : label,
-    title: title,
-    size: size,
-    trigger: trigger,
-    footer: footer,
-    placement: placement,
-    initialFocus: first
-  }, body);
-  return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: label
-  }, pop) : pop;
-}
-function PanelHead({
-  title,
-  info,
-  infoLabel,
-  sub,
-  actions
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__head"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__title-row"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-find-panel__title"
-  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "heading",
-    as: "span"
-  }, title), info ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: info
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "xs",
-    variant: "ghost",
-    icon: "circle-info",
-    iconOnly: true,
-    label: infoLabel || title
-  })) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-find-panel__actions"
-  }, actions) : null), sub ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, sub) : null);
-}
-
-// a select as a menu button: the current option's icon and words
-function Pick({
-  label,
-  value,
-  options,
-  onChange,
-  size = 'field',
-  disabled
-}) {
-  const cur = options.find(o => o.value === value) || options[0] || {
-    label: ''
-  };
-  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: label,
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      icon: cur.icon,
-      caret: true,
-      disabled: disabled,
-      className: (0, _cx.cx)('plx-find-pick', 'plx-find-pick--' + size),
-      title: cur.label,
-      "aria-label": label + ': ' + cur.label
-    }, cur.label)
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: label,
-    value: value,
-    onChange: onChange
-  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: o.value,
-    value: o.value,
-    icon: o.icon
-  }, o.label))));
-}
-const Pill = ({
-  color,
-  children
-}) => /*#__PURE__*/_react.default.createElement("span", {
-  className: "plx-find-pill",
-  "data-plx-category": color || 'grey'
-}, children);
-
-// a multi-select: the chosen values as pills, or the placeholder
-exports.Pill = Pill;
-function MultiPick({
-  label,
-  options,
-  value,
-  onChange,
-  placeholder
-}) {
-  const chosen = value.map(v => options.find(o => o.value === v) || {
-    value: v,
-    label: v
-  });
-  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: label,
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      caret: true,
-      className: "plx-find-pick plx-find-pick--value",
-      "aria-label": label + ': ' + (chosen.length ? chosen.map(o => o.label).join(', ') : placeholder)
-    }, chosen.length ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-find-pick__pills"
-    }, chosen.map(o => /*#__PURE__*/_react.default.createElement(Pill, {
-      key: o.value,
-      color: o.color
-    }, o.label))) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-find-pick__placeholder"
-    }, placeholder))
-  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: o.value,
-    checked: value.indexOf(o.value) >= 0,
-    keepOpen: true,
-    onSelect: () => onChange(toggle(value, o.value))
-  }, /*#__PURE__*/_react.default.createElement(Pill, {
-    color: o.color
-  }, o.label))));
-}
-
-// rows that reorder: drag, the handle's menu, Alt + Arrow Up / Down on a focused row; announced
-function useReorder(items, setItems, nameOf, t) {
-  const [msg, setMsg] = _react.default.useState('');
-  const drag = _react.default.useRef(null);
-  const box = _react.default.useRef(null);
-  const [dragging, setDragging] = _react.default.useState(-1);
-  const move = (i, to, focus) => {
-    if (to < 0 || to >= items.length || to === i) return;
-    const next = items.slice();
-    const [x] = next.splice(i, 1);
-    next.splice(to, 0, x);
-    setItems(next);
-    setMsg(fill(t.moved, {
-      name: nameOf(x),
-      position: to + 1,
-      total: items.length
-    }));
-    if (focus) setTimeout(() => {
-      const el = box.current && box.current.querySelectorAll(':scope > [data-plx-row]')[to];
-      if (el) el.focus();
-    }, 0);
-  };
-  const rowProps = (i, name) => ({
-    'data-plx-row': '',
-    tabIndex: 0,
-    draggable: true,
-    'aria-label': fill(t.row, {
-      name,
-      position: i + 1,
-      total: items.length
-    }),
-    'aria-keyshortcuts': 'Alt+ArrowUp Alt+ArrowDown',
-    className: (0, _cx.cx)('plx-find-panel__row', dragging === i && 'is-dragging'),
-    onKeyDown: e => {
-      if (e.target !== e.currentTarget || !e.altKey) return;
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        move(i, i - 1, true);
-      }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        move(i, i + 1, true);
-      }
-    },
-    onDragStart: e => {
-      e.stopPropagation();
-      drag.current = i;
-      setDragging(i);
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', String(i));
-    },
-    onDragEnd: () => {
-      drag.current = null;
-      setDragging(-1);
-    },
-    onDragOver: e => e.preventDefault(),
-    onDrop: e => {
-      e.preventDefault();
-      e.stopPropagation();
-      const from = drag.current;
-      drag.current = null;
-      setDragging(-1);
-      if (from !== null && from !== i) move(from, i);
-    }
-  });
-  const handle = (i, name) => /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: fill(t.reorder, {
-      name
-    }),
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "ghost",
-      icon: "drag",
-      iconOnly: true,
-      label: fill(t.reorder, {
-        name
-      }),
-      className: "plx-find-panel__handle"
-    })
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "chevron-up",
-    disabled: i === 0,
-    onSelect: () => move(i, i - 1, true)
-  }, t.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "chevron-down",
-    disabled: i === items.length - 1,
-    onSelect: () => move(i, i + 1, true)
-  }, t.moveDown));
-  const status = /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite"
-  }, msg);
-  return {
-    box,
-    rowProps,
-    handle,
-    status
-  };
-}
-// the words of a row that reorders
-const REORDER_STRINGS = exports.REORDER_STRINGS = {
-  moved: '{name} moved to position {position} of {total}',
-  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
-  reorder: 'Reorder {name}',
-  moveUp: 'Move up',
-  moveDown: 'Move down'
-};
-  } },
-  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
-exports.compareLevels = compareLevels;
-exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
-exports.matchesCondition = matchesCondition;
-exports.matchesDate = matchesDate;
-exports.matchesFilter = matchesFilter;
-exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
-/* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
-   style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
-   reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
-   server that filters the same way).
-   A field: { value (its key), label, kind: "text" | "select" | "multi" | "number" | "date", options: [{ value, label,
-   color }] (select and multi: color is a category color name; without one they take the category colors in order),
-   get(row) (the row's value; default row[value]) }.
-   A filter: { join: "and" | "or", items: [condition | { group: true, id, join, items: [condition…] }] }; a condition:
-   { id, field, op, value }. A condition left unfinished (no value) does not filter.
-   Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
-
-// the type icon of each kind (the field pickers and the column headers' type icons)
-const KIND_ICONS = exports.KIND_ICONS = {
-  text: 'ed-text',
-  select: 'field-select',
-  multi: 'tags',
-  number: 'field-number',
-  date: 'calendar'
-};
-// the directions in each kind's words (Airtable's)
-const DIRECTIONS = exports.DIRECTIONS = {
-  text: ['A → Z', 'Z → A'],
-  select: ['First → Last', 'Last → First'],
-  multi: ['First → Last', 'Last → First'],
-  number: ['1 → 9', '9 → 1'],
-  date: ['Oldest → newest', 'Newest → oldest']
-};
-// the operators by kind: [op, words]
-const OPERATORS = exports.OPERATORS = {
-  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
-};
-// "is within": the past week, month or year
-const WITHIN = exports.WITHIN = [{
-  value: 'week',
-  label: 'the past week',
-  days: 7
-}, {
-  value: 'month',
-  label: 'the past month',
-  days: 30
-}, {
-  value: 'year',
-  label: 'the past year',
-  days: 365
-}];
-// the category colors (Trubetskoy's 20), in the order options take them
-const CATEGORY_ORDER = exports.CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'magenta', 'yellow', 'navy', 'red', 'cyan', 'lavender', 'brown', 'olive', 'pink', 'apricot', 'mint', 'maroon', 'lime', 'beige', 'grey'];
-const fieldOf = (fields, key) => fields.find(f => f.value === key) || fields[0];
-exports.fieldOf = fieldOf;
-const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
-exports.valueOf = valueOf;
-const kindOf = f => OPERATORS[f && f.kind] ? f.kind : 'text';
-// a field's options, each with its color (given, or the next category color)
-exports.kindOf = kindOf;
-const optionsOf = f => (f && f.options || []).map((o, i) => typeof o === 'string' ? {
-  value: o
-} : o).map((o, i) => Object.assign({
-  label: o.value,
-  color: CATEGORY_ORDER[i % CATEGORY_ORDER.length]
-}, o));
-exports.optionsOf = optionsOf;
-const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
-const iso = d => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
-const daysBefore = (n, today) => {
-  const d = new Date((today || iso(new Date())) + 'T00:00:00Z');
-  d.setUTCDate(d.getUTCDate() - n);
-  return iso(d);
-};
-
-// one condition against one row (today: an ISO date, for "is within"; default the current date)
-function matchesCondition(c, row, fields, today) {
-  const f = fieldOf(fields, c.field),
-    v = valueOf(f, row),
-    val = c.value,
-    k = kindOf(f);
-  if (c.op === 'empty') return blank(v);
-  if (c.op === 'nempty') return !blank(v);
-  if (blank(val)) return true;
-  if (k === 'text') {
-    const s = String(v == null ? '' : v).toLowerCase(),
-      q = String(val).toLowerCase();
-    return c.op === 'contains' ? s.includes(q) : c.op === 'ncontains' ? !s.includes(q) : c.op === 'is' ? s === q : s !== q;
-  }
-  if (k === 'select') {
-    const list = [].concat(val);
-    return c.op === 'any' ? list.indexOf(v) >= 0 : list.indexOf(v) < 0;
-  }
-  if (k === 'multi') {
-    const list = [].concat(val),
-      hit = [].concat(v || []).some(x => list.indexOf(x) >= 0);
-    return c.op === 'any' ? hit : !hit;
-  }
-  if (k === 'number') {
-    const n = Number(v),
-      q = parseFloat(val);
-    if (isNaN(q)) return true;
-    return c.op === 'eq' ? n === q : c.op === 'ne' ? n !== q : c.op === 'lt' ? n < q : n > q;
-  }
-  const d = blank(v) ? '' : String(v).slice(0, 10);
-  if (c.op === 'within') {
-    const w = WITHIN.find(x => x.value === val) || WITHIN[0];
-    return d >= daysBefore(w.days, today);
-  }
-  return c.op === 'is' ? d === val : c.op === 'before' ? d < val : d > val;
-}
-// a filter (or a condition group) against one row
-function matchesFilter(node, row, fields, today) {
-  if (!node || !node.items || !node.items.length) return true;
-  const t = x => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
-  return node.join === 'or' ? node.items.some(t) : node.items.every(t);
-}
-// every condition of a filter, its groups' included (the count on the Filter button)
-const conditionsOf = node => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
-exports.conditionsOf = conditionsOf;
-let uid = 0;
-const nextId = () => 'c' + ++uid;
-// a new condition on a field: its kind's first operator, no value yet
-exports.nextId = nextId;
-const newCondition = f => ({
-  id: nextId(),
-  field: f.value,
-  op: OPERATORS[kindOf(f)][0][0],
-  value: kindOf(f) === 'select' || kindOf(f) === 'multi' ? [] : ''
-});
-
-// rows in the order of sort levels: a comparator
-exports.newCondition = newCondition;
-function compareLevels(fields, levels) {
-  return (a, b) => {
-    for (const l of levels || []) {
-      const f = fields.find(x => x.value === l.field);
-      if (!f) continue;
-      let x = valueOf(f, a),
-        y = valueOf(f, b);
-      if (kindOf(f) === 'select' && f.options) {
-        const o = optionsOf(f).map(p => p.value);
-        x = o.indexOf(x);
-        y = o.indexOf(y);
-      }
-      if (Array.isArray(x)) x = x.join(', ');
-      if (Array.isArray(y)) y = y.join(', ');
-      const c = x < y ? -1 : x > y ? 1 : 0;
-      if (c) return l.dir === 'desc' ? -c : c;
-    }
-    return 0;
-  };
-}
-
-// the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-const DATE_PRESETS = exports.DATE_PRESETS = [{
-  value: 'any',
-  label: 'Any time'
-}, {
-  value: '7',
-  label: 'Last 7 days'
-}, {
-  value: '30',
-  label: 'Last 30 days'
-}, {
-  value: 'year',
-  label: 'This year'
-}];
-function matchesDate(range, value, today) {
-  if (!range || range.preset === 'any' || !range.preset) return true;
-  const d = blank(value) ? '' : String(value).slice(0, 10);
-  if (!d) return false;
-  const now = today || iso(new Date());
-  if (range.preset === '7' || range.preset === '30') return d >= daysBefore(Number(range.preset), now) && d <= now;
-  if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
-  return (!range.from || d >= range.from) && (!range.to || d <= range.to);
-}
-  } },
-  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.QuickFilter = QuickFilter;
-var _react = _interopRequireDefault(require("react"));
-var _singleChoice = require("./single-choice.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
-var _Field = require("../../components/Field/Field.jsx");
-var _Input = require("../../components/Input/Input.jsx");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Stack = require("../../components/Stack/Stack.jsx");
-var _format = require("../../utils/format.js");
-var _panelParts = require("../CommandBar/panel-parts.jsx");
-var _fields = require("../../utils/fields.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · QuickFilter
-   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
-     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
-     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
-     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
-     This year) and a custom range (the Google Analytics style).
-   Usage:
-     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
-     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
-   Props:
-     kind: "list" (default) | "single" | "date"
-     required: (single) hides All and Clear; defaults an empty choice to the first option
-     Single choices use the same array value shape as list filters, with at most one entry.
-     label: the button's words ("Category", "Type", "Tags", "Date")
-     icon: its icon
-     noun: (list) the word for one value, for the find field ("Find a tag")
-     options: (list, single) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
-     counts: optional Map (or object) from option value to faceted count; useCollectionView.quickProps supplies it
-       An option's explicit count wins, including zero; without counts the existing labels remain unchanged
-     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-     onChange(value): runs on every change
-     inline: draws the panel alone (open, in a frame); default false
-     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
-       custom: "Custom range", from: "From", to: "To" }
-   Behavior:
-     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
-     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
-     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
-     chosen. A required single choice omits All and Clear.
-   Notes:
-     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
-
-const STRINGS = {
-  find: 'Find a {noun}',
-  none: 'No {noun} matches',
-  clear: 'Clear',
-  all: 'All',
-  presets: _fields.DATE_PRESETS,
-  custom: 'Custom range',
-  from: 'From',
-  to: 'To'
-};
-const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
-  value: o
-} : o).map((o, i) => Object.assign({
-  label: o.value,
-  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
-}, o));
-function QuickFilter({
-  kind = 'list',
-  label,
-  icon,
-  noun = 'value',
-  options,
-  value,
-  onChange,
-  counts,
-  required = false,
-  inline = false,
-  strings
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const [q, setQ] = _react.default.useState('');
-  const first = (options || [])[0],
-    firstValue = typeof first === 'string' ? first : first && first.value;
-  _react.default.useEffect(() => {
-    if (kind === 'single' && required && (!value || !value.length) && firstValue !== undefined && onChange) onChange([firstValue]);
-  }, [kind, required, value, firstValue, onChange]);
-  const countOf = o => o.count !== undefined ? o.count : counts instanceof Map ? counts.get(o.value) || 0 : counts ? Object.prototype.hasOwnProperty.call(counts, o.value) ? counts[o.value] : 0 : undefined;
-  const counted = (o, label) => {
-    const n = countOf(o);
-    return n === undefined || n === null ? label : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-      as: "span",
-      gap: "xs"
-    }, label, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-      variant: "data"
-    }, (0, _format.formatNumber)(n)));
-  };
-  if (kind === 'date') {
-    const d = Object.assign({
-      preset: 'any',
-      from: '',
-      to: ''
-    }, value);
-    const range = (k, v) => onChange(Object.assign({}, d, {
-      preset: 'custom',
-      [k]: v
-    }));
-    const on = d.preset && d.preset !== 'any';
-    const body = /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel plx-find-panel--date"
-    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
-      label: label,
-      value: d.preset,
-      onChange: v => onChange(Object.assign({}, d, {
-        preset: v
-      })),
-      options: t.presets.map(x => ({
-        value: x.value,
-        label: counted(x, x.label)
-      })).concat({
-        value: 'custom',
-        label: counted({
-          value: 'custom'
-        }, t.custom)
-      })
-    }), /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel__range"
-    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.from
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.from,
-      onChange: e => range('from', e.target.value)
-    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.to
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.to,
-      onChange: e => range('to', e.target.value)
-    }))));
-    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      variant: "ghost",
-      icon: "filter-off",
-      disabled: !on,
-      onClick: () => onChange({
-        preset: 'any',
-        from: '',
-        to: ''
-      })
-    }, t.clear);
-    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-      icon: icon || 'calendar',
-      label: label,
-      title: label,
-      count: on ? 1 : 0,
-      caret: true,
-      size: "sm",
-      footer: footer,
-      inline: inline
-    }, body);
-  }
-  const list = asOptions(options);
-  if (kind === 'single') {
-    const chosen = (0, _singleChoice.singleChoice)(list, value, required);
-    const choices = list.map(o => ({
-      value: o.value,
-      label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
-        color: o.color
-      }, o.label))
-    }));
-    if (!required) choices.unshift({
-      value: '',
-      label: t.all
-    });
-    const body = /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel"
-    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
-      label: label,
-      value: chosen.length ? chosen[0] : '',
-      options: choices,
-      onChange: v => onChange(v === '' ? [] : [v])
-    }));
-    const footer = required ? null : /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      variant: "ghost",
-      icon: "filter-off",
-      disabled: !chosen.length,
-      onClick: () => onChange([])
-    }, t.clear);
-    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-      icon: icon,
-      label: label,
-      title: label,
-      count: chosen.length,
-      caret: true,
-      size: "sm",
-      footer: footer,
-      inline: inline
-    }, body);
-  }
-  const chosen = value || [];
-  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
-  const body = /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel plx-find-panel--checklist"
-  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
-    width: "fill",
-    value: q,
-    onChange: e => setQ(e.target.value),
-    onClear: () => setQ(''),
-    placeholder: (0, _panelParts.fill)(t.find, {
-      noun
-    }),
-    label: (0, _panelParts.fill)(t.find, {
-      noun
-    })
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__checklist"
-  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
-    key: o.value,
-    label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
-      color: o.color
-    }, o.label)),
-    checked: chosen.indexOf(o.value) >= 0,
-    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
-  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, (0, _panelParts.fill)(t.none, {
-    noun
-  }))));
-  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "filter-off",
-    disabled: !chosen.length,
-    onClick: () => onChange([])
-  }, t.clear);
-  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-    icon: icon,
-    label: label,
-    title: label,
-    count: chosen.length,
-    caret: true,
-    size: "sm",
-    footer: footer,
-    inline: inline
-  }, body);
-}
-  } },
-  "platform/patterns/QuickFilter/single-menu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SingleQuickFilterMenu = SingleQuickFilterMenu;
-var _react = _interopRequireDefault(require("react"));
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _singleChoice = require("./single-choice.js");
-var _Text = require("../../components/Text/Text.jsx");
-var _Stack = require("../../components/Stack/Stack.jsx");
-var _format = require("../../utils/format.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · SingleQuickFilterMenu
-   Summary: A quick filter's single-choice radio group inside More.
-   Usage: <SingleQuickFilterMenu {...quickFilter} />
-   Props: label, options, value, required, onChange, counts and strings are the QuickFilter descriptor.
-   Behavior: Required choices omit All; radio changes preserve the collection's array shape.
-   Notes: The CommandBar folding task 132 consumes this shared group. */
-
-function SingleQuickFilterMenu({
-  label,
-  options = [],
-  value,
-  required,
-  onChange,
-  counts,
-  strings
-}) {
-  const chosen = (0, _singleChoice.singleChoice)(options, value, required);
-  const items = options.map(option => typeof option === 'string' ? {
-    value: option,
-    label: option
-  } : option);
-  if (!required) items.unshift({
-    value: '',
-    label: strings && strings.all || 'All'
-  });
-  return /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: label,
-    value: chosen.length ? chosen[0] : '',
-    onChange: v => onChange && onChange(v === '' ? [] : [v])
-  }, items.map(option => {
-    const count = option.count !== undefined ? option.count : counts instanceof Map ? counts.get(option.value) || 0 : counts ? counts[option.value] || 0 : undefined;
-    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: option.value,
-      value: option.value
-    }, count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-      as: "span",
-      gap: "xs"
-    }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-      variant: "data"
-    }, (0, _format.formatNumber)(count))));
-  }));
-}
-  } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CommandBar = CommandBar;
-exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _barFit = require("../../utils/barFit.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Badge = require("../../components/Badge/Badge.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
-var _Divider = require("../../components/Divider/Divider.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _BarActions = require("./BarActions.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
-var _singleMenu = require("../QuickFilter/single-menu.jsx");
-var _Stack = require("../../components/Stack/Stack.jsx");
-var _fields = require("../../utils/fields.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
-   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
-     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
-     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
-   Usage:
-     <CommandBar label="Assets" count="24 assets"
-       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
-                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
-       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
-         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
-       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
-       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
-         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
-   Props:
-     label: the bar's accessible name (the collection: "Assets")
-     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
-       pressed, choices, value, onChange, loading, tooltip, panel }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
-       setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
-       (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
-       submenu of radio items. No other controls go in the bar.
-     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
-     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
-     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
-     actions[].why: the tooltip of a disabled command, saying why
-     actions[].loading: spinner, busy and inert, including folded commands
-     actions[].tooltip: help shown on hover and focus with labels or icons (disabled why takes precedence)
-     actions[].panel({ close }): a small form in a Popover anchored to the action, including selection and More items;
-       focus enters the form and returns on Escape or close. Use close() after the form succeeds.
-     actions[].primary: the page's one primary command (filled; it keeps its label); default none
-     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
-     quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
-       options, value, onChange, kind, required, counts }]; when the bar is short of room they fold into More after the commands, each a
-       submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
-     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
-     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
-       rows are selected ("× N selected" takes its place)
-     status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
-       is short of room, and while rows are selected
-     end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
-       fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
-       items are Menu children or MenuItem descriptors, including checked toggles.
-     selection.hidden: how many selected records are hidden by filters (DataTable onSelectionChange supplies it)
-     selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
-       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
-     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
-       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
-     sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
-       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow.
-     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
-       decides)
-     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
-       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
-       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
-       to {action}" }
-     className: more classes
-     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
-       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
-       count in a badge; other props reach the Button (ref too)
-     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
-     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
-   Behavior:
-     The button rule, measured (owner, 2026-10-14 and 2026-10-15): every control shows its icon and label while the bar
-       fits on one line; first, every labeled control becomes its icon only, each with its tooltip (the actions, Filter,
-       the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
-       bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
-       the danger commands last. More shows only
-       when something does not fit. A change of width, labels or counts starts again from icons and labels.
-     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
-     Commands are never hidden by state: they are disabled, with a tooltip saying why.
-     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
-     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
-       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
-       stay mounted through the swap, so an open panel keeps its state.
-     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
-   Notes:
-     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
-     bar: the plain table. */
-const STRINGS = {
-  more: 'More actions',
-  actions: '{label} actions',
-  find: 'Find and view',
-  selected: '{n} selected',
-  hidden: ' ({n} hidden by filters)',
-  clear: 'Clear the selection',
-  clearName: '{n} selected, clear the selection',
-  swapped: '{n} selected. Selection actions available.',
-  cleared: 'Selection cleared.',
-  why: 'Select {plural} to {action}',
-  single: 'Select one {noun} to {action}'
-};
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
-// into More
-const ICONS = 1,
-  SEARCH = 2;
-const BarContext = /*#__PURE__*/_react.default.createContext({
-  iconOnly: false,
-  collapsed: false,
-  step: 0,
-  searchOpen: false,
-  setSearchOpen: () => {}
-});
-const useCommandBar = () => _react.default.useContext(BarContext);
-exports.useCommandBar = useCommandBar;
-const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
-  icon,
-  label,
-  count = 0,
-  active = false,
-  caret = false,
-  iconOnly,
-  className,
-  children,
-  ...rest
-}, ref) {
-  const ctx = useCommandBar();
-  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
-  const n = Number(count) || 0;
-  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    size: "sm",
-    tone: "active"
-  }, n) : null;
-  const name = n ? label + ', ' + n : label;
-  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
-  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
-    ref: ref,
-    size: "sm",
-    variant: "ghost",
-    icon: icon,
-    caret: caret && !only,
-    selected: active || n > 0,
-    iconOnly: only && !n,
-    label: only ? name : undefined,
-    className: (0, _cx.cx)('plx-command-bar__button', className)
-  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
-});
-const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
-  const {
-    collapsed,
-    searchOpen,
-    setSearchOpen
-  } = useCommandBar();
-  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
-    ref: ref,
-    width: "bar",
-    collapsed: collapsed,
-    open: collapsed ? searchOpen : undefined,
-    onOpenChange: collapsed ? setSearchOpen : undefined
-  }, props));
-});
-function CommandBar({
-  label,
-  actions = [],
-  find,
-  quickFilters = [],
-  view,
-  count,
-  status,
-  end,
-  selection,
-  layout = 'auto',
-  sticky = 'auto',
-  narrow = false,
-  strings,
-  className
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
-  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
-  const selCount = sel ? Number(sel.count) || 0 : 0;
-  const selecting = selCount > 0;
-  const selActs = selecting ? sel.actions || [] : [];
-  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
-  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
-  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
-  const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
-  const endContent = ending ? ending.content : end;
-  const endFold = !selecting && ending && ending.fold;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0);
-  // the bar's search, opened across the bar: the bar holds its step while it is open
-  const [searchOpen, setSearchOpen] = _react.default.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
-  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
-  const ctx = _react.default.useMemo(() => ({
-    iconOnly: step >= ICONS,
-    collapsed: step >= SEARCH,
-    step,
-    searchOpen: searchOpen && step >= SEARCH,
-    setSearchOpen
-  }), [step, searchOpen]);
-  // Commands fold first (from the end, Delete last), then an opted-in end control, then quick filters.
-  const foldAll = Math.max(0, step - SEARCH);
-  const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
-  const endAway = !!endFold && foldAll > fold;
-  const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
-  const quickKept = quick.slice(0, quick.length - quickAway),
-    quickFolded = quick.slice(quick.length - quickAway);
-  const quickMenu = quickFolded.map(q => {
-    const id = q.id || q.label;
-    const counted = option => {
-      const count = option.count !== undefined ? option.count : q.counts instanceof Map ? q.counts.get(option.value) || 0 : q.counts ? q.counts[option.value] || 0 : undefined;
-      return count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-        as: "span",
-        gap: "xs"
-      }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-        variant: "data"
-      }, (0, _format.formatNumber)(count)));
-    };
-    if (q.kind === 'single') return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: id,
-      label: q.label,
-      icon: q.icon
-    }, /*#__PURE__*/_react.default.createElement(_singleMenu.SingleQuickFilterMenu, q));
-    if (q.kind === 'date') {
-      const d = Object.assign({
-        preset: 'any',
-        from: '',
-        to: ''
-      }, q.value);
-      return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-        key: id,
-        label: q.label,
-        icon: q.icon
-      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-        label: q.label,
-        value: d.preset,
-        onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
-          preset: v
-        }))
-      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-        key: p.value,
-        value: p.value
-      }, counted(p)))));
-    }
-    const chosen = q.value || [];
-    return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: id,
-      label: chosen.length ? q.label + ' (' + chosen.length + ')' : q.label,
-      icon: q.icon
-    }, (q.options || []).map(o => typeof o === 'string' ? {
-      value: o,
-      label: o
-    } : o).map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: o.value,
-      checked: chosen.indexOf(o.value) >= 0,
-      keepOpen: true,
-      onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
-    }, counted(o))));
-  });
-  const endMenu = endAway ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-    key: "plx-end",
-    label: endFold.label,
-    icon: endFold.icon
-  }, Array.isArray(endFold.items) && endFold.items.length && ! /*#__PURE__*/_react.default.isValidElement(endFold.items[0]) ? endFold.items.map(item => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: item.id || item.label,
-    icon: item.icon,
-    checked: item.checked,
-    disabled: item.disabled,
-    danger: item.danger,
-    onSelect: item.onSelect
-  }, item.label)) : endFold.items) : null;
-  const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
-  // the swap is announced (the focus stays where it is, on the table)
-  const was = _react.default.useRef(selecting);
-  _react.default.useEffect(() => {
-    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
-      n: (0, _format.formatNumber)(selCount)
-    }) : t.cleared);
-    was.current = selecting;
-  }, [selecting]);
-  const words = {
-    noun: sel && sel.noun || 'item',
-    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
-  };
-  const off = a => !!a.disabled || !!(a.single && selCount > 1);
-  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
-    action: String(a.label).toLowerCase()
-  }, words));
-  const acts = shown.length || extraMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__actions"
-  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
-    actions: shown,
-    iconOnly: ctx.iconOnly,
-    fold: fold,
-    moreLabel: t.more,
-    dangerClass: "plx-command-bar__danger",
-    off: selecting ? off : undefined,
-    why: selecting ? why : undefined,
-    extra: extraMenu
-  })) : null;
-  const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
-    key: q.id || q.label
-  }, q)));
-  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__find"
-  }, find, quickEls) : null;
-  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__view"
-  }, view) : null;
-  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__count"
-  }, count) : count;
-  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
-  const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, {
-    n: (0, _format.formatNumber)(sel.hidden)
-  }) : '';
-  const [hiddenBefore, hiddenAfter] = String(t.hidden).split('{n}');
-  const [before, after] = String(t.selected).split('{n}');
-  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: t.clear
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "close",
-    className: "plx-command-bar__clear",
-    "aria-label": fill(t.clearName, {
-      n: (0, _format.formatNumber)(selCount)
-    }) + hiddenText,
-    onClick: () => sel.onClear && sel.onClear()
-  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__number"
-  }, (0, _format.formatNumber)(selCount)), after, hiddenText ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, hiddenBefore, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data"
-  }, (0, _format.formatNumber)(sel.hidden)), hiddenAfter) : null)) : null;
-  const statusEl = selecting || !status || ctx.collapsed ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary",
-    className: "plx-command-bar__status"
-  }, status);
-  const keptEnd = !selecting && !endAway ? endContent : null;
-  const tail = countEl || statusEl || keptEnd || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__end"
-  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, countEl, statusEl, keptEnd, clearEl) : null;
-  // Escape in the bar clears the selection (as "× N selected" does)
-  const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
-      e.preventDefault();
-      sel.onClear();
-    }
-  } : undefined;
-  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
-  const name = selecting ? sel.label || fill(t.actions, {
-    label: label || ''
-  }).trim() : label;
-  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
-    value: ctx
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    ref: root,
-    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
-    "data-plx-layout": shape,
-    "data-plx-position": sticky === true ? 'sticky' : sticky === false ? 'static' : 'auto',
-    onKeyDown: onKeyDown
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-command-bar__bar"
-  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
-    label: name,
-    className: "plx-command-bar__row",
-    "data-plx-bar-row": ""
-  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
-}
-  } },
-  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ReviewFlow = ReviewFlow;
-exports.ReviewQueue = ReviewQueue;
-exports.WORKFLOW_STATUSES = void 0;
-exports.WorkflowStatus = WorkflowStatus;
-exports.localDay = void 0;
-exports.useOptionalToast = useOptionalToast;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-var _Badge = require("../../components/Badge/Badge.jsx");
-var _Button = require("../../components/Button/Button.jsx");
-var _Field = require("../../components/Field/Field.jsx");
-var _Input = require("../../components/Input/Input.jsx");
-var _Notice = require("../../components/Notice/Notice.jsx");
-var _Persona = require("../../components/Persona/Persona.jsx");
-var _Avatar = require("../../components/Avatar/Avatar.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Dialog = require("../../components/Dialog/Dialog.jsx");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
-var _Toast = require("../../components/Toast/Toast.jsx");
-var _ActivityList = require("../ActivityList/ActivityList.jsx");
-var _CommandBar = require("../CommandBar/CommandBar.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReviewFlow, ReviewQueue, WorkflowStatus
-   Summary: The review of one item and the queue of many. ReviewFlow is a review panel: the item's status as a badge with
-     its icon, the reviewers and their decisions, a comment, and the decisions in order (Reject, Request changes, Approve
-     last); Reject and Request changes need a reason, said under the comment field. Its history lists every decision.
-     kind="human" is the human review of generated content: a notice says a person must check it first. ReviewQueue is
-     the data review workflow: a DataTable of items waiting for review under a CommandBar whose selection holds Approve,
-     Request changes and Reject; the bulk decisions that need a reason ask for it with the count ("Reject 2 items?").
-     WorkflowStatus is the status badge they share (10 Patterns › Review and approval).
-   Usage:
-     <ReviewFlow title="Easter banner" status="in-review" reviewers={reviewers} history={history}
-       onDecision={(decision, comment) => save(decision, comment)} />
-     <ReviewFlow kind="human" title="Summary of the vestry minutes" status="in-review" onDecision={decide} />
-     <ReviewQueue label="Waiting for review" items={items} noun="item" onDecision={(ids, decision, reason) => …} />
-     <WorkflowStatus status="changes-requested" />
-   Props:
-     WorkflowStatus.status: "draft" (neutral, pencil) | "in-review" (active, doc-search) | "approved" (success, circle-check)
-       | "changes-requested" (action-required, alert) | "rejected" (negative, close) | "published" (success, visibility)
-       | "scheduled" (waiting, schedule): a Badge of its meaning with its icon
-     WorkflowStatus.label: other words for the status (default strings[status])
-     WorkflowStatus.size: Badge's size: "md" (default) | "sm"
-     ReviewFlow.status: the item's status (WorkflowStatus.status)
-     ReviewFlow.title: what is reviewed (the item's name), a heading
-     ReviewFlow.headingLevel: the title's level (default 3)
-     ReviewFlow.detail: one line under the title ("Submitted by Maya Chen")
-     ReviewFlow.kind: "review" (default) | "human" (the human review of generated content: the notice first)
-     ReviewFlow.reviewers: [{ id, name, src, color, decision }]: each reviewer with their decision ("approved",
-       "changes-requested", "rejected"; none yet: waiting)
-     ReviewFlow.history: [{ id, name, src, color, decision, comment, time, dateTime }]: the decisions so far, newest first
-     ReviewFlow.onDecision(decision, comment): runs with "approved", "changes-requested" or "rejected" and the comment;
-       without it the panel is read only (no comment, no decisions)
-     ReviewFlow.decisions: the decisions offered, in order (default ["rejected", "changes-requested", "approved"])
-     ReviewFlow.reasonFor: the decisions that need a comment (default ["rejected", "changes-requested"])
-     ReviewQueue.items: [{ id, name, type, submittedBy, submitted, status }] (submitted "YYYY-MM-DD")
-     ReviewQueue.label: names the bar and the table ("Waiting for review")
-     ReviewQueue.noun, plural: the item in words ("item", "items")
-     ReviewQueue.onDecision(ids, decision, reason): runs for the selected rows
-     ReviewQueue.selected, onSelectionChange(ids): the selection, when the page keeps it (default: kept inside)
-     strings: the words, for other languages (ReviewFlow: { reviewers, history, comment, commentHint, reason, approved,
-       "changes-requested", rejected, approve, changes, reject, waiting, human, needReason }; ReviewQueue: { name, type,
-       submittedBy, submitted, status, approve, changes, reject, rejectTitle, changesTitle, reason, changesLabel,
-       needReason, done })
-     className: more classes
-   Behavior:
-     ReviewFlow: Approve runs at once with the comment if there is one. Reject and Request changes run only with a
-       comment: without one, the field shows the error and takes focus (nothing is disabled). The decision is announced.
-     The status is always a Badge with its icon (never a dot): the word says the state, the color and icon repeat it.
-     ReviewQueue: the command bar swaps to the selection's commands while rows are selected; Approve runs at once,
-       Reject and Request changes open a PromptDialog named with the count that asks for the reason, then run; the
-       selection clears after a decision and a toast says what happened.
-   Notes:
-     The review panel goes in a side panel, a card or a page section; it draws no frame of its own.
-     Decisions are final for the reviewer; to change one, decide again (the history keeps both).
-*/
-// the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
-const WORKFLOW_STATUSES = exports.WORKFLOW_STATUSES = {
-  draft: {
-    tone: 'neutral',
-    icon: 'pencil',
-    label: 'Draft'
-  },
-  'in-review': {
-    tone: 'active',
-    icon: 'doc-search',
-    label: 'In review'
-  },
-  approved: {
-    tone: 'success',
-    icon: 'circle-check',
-    label: 'Approved'
-  },
-  'changes-requested': {
-    tone: 'action-required',
-    icon: 'alert',
-    label: 'Changes requested'
-  },
-  rejected: {
-    tone: 'negative',
-    icon: 'close',
-    label: 'Rejected'
-  },
-  published: {
-    tone: 'success',
-    icon: 'visibility',
-    label: 'Published'
-  },
-  scheduled: {
-    tone: 'waiting',
-    icon: 'schedule',
-    label: 'Scheduled'
-  }
-};
-function WorkflowStatus({
-  status = 'draft',
-  label,
-  size,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('WorkflowStatus', {
-    size
-  }, {
-    size: ['md', 'sm']
-  });
-  const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
-  const words = label || strings && strings[status] || s.label;
-  return /*#__PURE__*/_react.default.createElement(_Badge.Badge, _extends({
-    tone: s.tone,
-    icon: s.icon,
-    size: size,
-    className: (0, _cx.cx)('plx-workflow-status', className)
-  }, rest), words);
-}
-
-// a toast when the page has a ToastProvider; nothing otherwise (the decision is still announced)
-function useOptionalToast() {
-  try {
-    return (0, _Toast.useToast)();
-  } catch (e) {
-    return null;
-  }
-}
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// a day ("YYYY-MM-DD") read as local midnight: Date reads a bare day as UTC, which is a day early west of Greenwich
-const localDay = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d + 'T00:00' : d;
-exports.localDay = localDay;
-const FLOW_STRINGS = {
-  reviewers: 'Reviewers',
-  history: 'History',
-  comment: 'Comment',
-  commentHint: 'Needed to reject or request changes.',
-  approve: 'Approve',
-  changes: 'Request changes',
-  reject: 'Reject',
-  waiting: 'Waiting',
-  human: 'Generated content. A person checks it before it is used.',
-  needReason: 'Say why, so the author knows what to change.',
-  done: '{decision}: {title}',
-  decisions: 'Review decisions'
-};
-const VERB = {
-  approved: 'approve',
-  'changes-requested': 'changes',
-  rejected: 'reject'
-};
-const LOOK = {
-  approved: 'primary',
-  'changes-requested': 'secondary',
-  rejected: 'danger-secondary'
-};
-function ReviewFlow({
-  status = 'in-review',
-  title,
-  headingLevel = 3,
-  detail,
-  kind = 'review',
-  reviewers = [],
-  history = [],
-  onDecision,
-  decisions = ['rejected', 'changes-requested', 'approved'],
-  reasonFor = ['rejected', 'changes-requested'],
-  strings,
-  className,
-  ...rest
-}) {
-  const t = Object.assign({}, FLOW_STRINGS, strings);
-  const toast = useOptionalToast();
-  const [comment, setComment] = _react.default.useState('');
-  const [error, setError] = _react.default.useState('');
-  const field = _react.default.useRef(null);
-  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
-  const word = d => t[d] || WORKFLOW_STATUSES[d].label;
-  const decide = d => {
-    if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
-      setError(t.needReason);
-      if (field.current) field.current.focus();
-      return;
-    }
-    setError('');
-    onDecision(d, comment.trim());
-    setComment('');
-    const said = fill(t.done, {
-      decision: word(d),
-      title: title || ''
-    });
-    if (toast) toast.show(said, {
-      tone: d === 'approved' ? 'success' : 'info'
-    });else (0, _announce.announce)(said);
-  };
-  return /*#__PURE__*/_react.default.createElement("section", _extends({
-    className: (0, _cx.cx)('plx-review-flow', kind === 'human' && 'plx-review-flow--human', className),
-    "aria-label": title
-  }, rest), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-review-flow__head"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-review-flow__heading"
-  }, title ? /*#__PURE__*/_react.default.createElement(H, {
-    className: "plx-review-flow__title"
-  }, title) : null, detail ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-review-flow__detail"
-  }, detail) : null), /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
-    status: status,
-    strings: strings
-  })), kind === 'human' ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
-    tone: "info",
-    icon: "sparkle"
-  }, t.human) : null, reviewers.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-review-flow__section"
-  }, /*#__PURE__*/_react.default.createElement("p", {
-    className: "plx-review-flow__label"
-  }, t.reviewers), /*#__PURE__*/_react.default.createElement("ul", {
-    className: "plx-review-flow__reviewers"
-  }, reviewers.map(r => /*#__PURE__*/_react.default.createElement("li", {
-    key: r.id || r.name,
-    className: "plx-review-flow__reviewer"
-  }, /*#__PURE__*/_react.default.createElement(_Persona.Persona, {
-    name: r.name,
-    src: r.src,
-    color: r.color,
-    size: "xs"
-  }), r.decision ? /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
-    status: r.decision,
-    strings: strings
-  }) : /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-review-flow__waiting"
-  }, t.waiting))))) : null, onDecision ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-review-flow__decide"
-  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-    label: t.comment,
-    description: t.commentHint,
-    error: error || undefined
-  }, /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
-    ref: field,
-    rows: 3,
-    value: comment,
-    onChange: e => {
-      setComment(e.target.value);
-      if (error) setError('');
-    }
-  })), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-review-flow__actions",
-    role: "group",
-    "aria-label": t.decisions
-  }, decisions.map(d => /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    key: d,
-    variant: LOOK[d],
-    onClick: () => decide(d)
-  }, t[VERB[d]])))) : null, history.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-review-flow__section"
-  }, /*#__PURE__*/_react.default.createElement("p", {
-    className: "plx-review-flow__label"
-  }, t.history), /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList, {
-    label: t.history,
-    stacked: true
-  }, history.map(x => /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList.Item, {
-    key: x.id || x.name + x.time,
-    leading: /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
-      name: x.name,
-      src: x.src,
-      color: x.color,
-      size: "xs"
-    }),
-    title: x.name,
-    meta: word(x.decision) + (x.comment ? ': ' + x.comment : ''),
-    time: x.time,
-    dateTime: x.dateTime
-  })))) : null);
-}
-const QUEUE_STRINGS = {
-  name: 'Name',
-  type: 'Type',
-  submittedBy: 'Submitted by',
-  submitted: 'Submitted',
-  status: 'Status',
-  approve: 'Approve',
-  changes: 'Request changes',
-  reject: 'Reject',
-  rejectTitle: 'Reject {what}?',
-  changesTitle: 'Request changes on {what}?',
-  reason: 'Reason',
-  changesLabel: 'What to change',
-  reasonHint: 'The authors see it with the decision.',
-  needReason: 'Say why, so the authors know what to change.',
-  done: '{what} {decision}',
-  count: '{n} {plural}'
-};
-function ReviewQueue({
-  items = [],
-  label = 'Waiting for review',
-  noun = 'item',
-  plural,
-  onDecision,
-  selected,
-  onSelectionChange,
-  strings,
-  className,
-  ...rest
-}) {
-  const t = Object.assign({}, QUEUE_STRINGS, strings);
-  const many = plural || noun + 's';
-  const toast = useOptionalToast();
-  const [own, setOwn] = _react.default.useState([]);
-  const sel = selected !== undefined ? selected : own;
-  const setSel = ids => {
-    if (selected === undefined) setOwn(ids);
-    if (onSelectionChange) onSelectionChange(ids);
-  };
-  const [ask, setAsk] = _react.default.useState(null); // "rejected" | "changes-requested" while its dialog is open
-  const what = n => n === 1 ? '1 ' + noun : (0, _format.formatNumber)(n) + ' ' + many;
-  const run = (decision, reason) => {
-    const ids = sel.slice();
-    if (onDecision) onDecision(ids, decision, reason || '');
-    setSel([]);
-    setAsk(null);
-    const said = fill(t.done, {
-      what: what(ids.length),
-      decision: WORKFLOW_STATUSES[decision].label.toLowerCase()
-    });
-    if (toast) toast.show(said, {
-      tone: decision === 'approved' ? 'success' : 'info'
-    });else (0, _announce.announce)(said);
-  };
-  const columns = [{
-    title: t.name,
-    field: 'name',
-    kind: 'name'
-  }, {
-    title: t.type,
-    field: 'type'
-  }, {
-    title: t.submittedBy,
-    field: 'submittedBy',
-    type: 'person'
-  }, {
-    title: t.submitted,
-    field: 'submitted',
-    kind: 'data',
-    type: 'date',
-    render: r => /*#__PURE__*/_react.default.createElement(_Text.Text, {
-      variant: "data"
-    }, (0, _format.formatDate)(localDay(r.submitted)))
-  }, {
-    title: t.status,
-    field: 'status',
-    kind: 'center',
-    render: r => /*#__PURE__*/_react.default.createElement(WorkflowStatus, {
-      status: r.status,
-      strings: strings
-    })
-  }];
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-review-queue', className)
-  }, rest), /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
-    label: label,
-    count: fill(t.count, {
-      n: (0, _format.formatNumber)(items.length),
-      plural: items.length === 1 ? noun : many
-    }),
-    selection: {
-      count: sel.length,
-      noun,
-      plural: many,
-      onClear: () => setSel([]),
-      actions: [{
-        id: 'approve',
-        label: t.approve,
-        icon: 'circle-check',
-        onSelect: () => run('approved')
-      }, {
-        id: 'changes',
-        label: t.changes,
-        icon: 'alert',
-        onSelect: () => setAsk('changes-requested')
-      }, {
-        id: 'reject',
-        label: t.reject,
-        icon: 'close',
-        danger: true,
-        onSelect: () => setAsk('rejected')
-      }]
-    }
-  }), /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
-    label: label,
-    data: items,
-    index: "id",
-    selectable: true,
-    selected: sel,
-    onSelectionChange: setSel,
-    columns: columns
-  }), /*#__PURE__*/_react.default.createElement(_Dialog.PromptDialog, {
-    open: !!ask,
-    title: fill(ask === 'rejected' ? t.rejectTitle : t.changesTitle, {
-      what: what(sel.length)
-    }),
-    label: ask === 'rejected' ? t.reason : t.changesLabel,
-    description: t.reasonHint,
-    confirmLabel: ask === 'rejected' ? t.reject : t.changes,
-    validate: v => v.trim() ? '' : t.needReason,
-    onSubmit: v => run(ask, v.trim()),
-    onCancel: () => setAsk(null)
-  }));
-}
-  } },
-  "platform/components/DataTableNext/DataTablePublic.jsx": { deps: {"react":null,"./DataTableNext.jsx":"platform/components/DataTableNext/DataTableNext.jsx","../DataTable/actions.jsx":"platform/components/DataTable/actions.jsx","../Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DataTable = DataTable;
-var _react = _interopRequireDefault(require("react"));
-var _DataTableNext = require("./DataTableNext.jsx");
-var _actions = require("../DataTable/actions.jsx");
-var _Toast = require("../Toast/Toast.jsx");
-var _ReviewFlow = require("../../patterns/ReviewFlow/ReviewFlow.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTable
-   Summary: Records people work with, by column: sort, filter, select, open, edit, group or nest them. A React grid on
-     TanStack Table (row models and column state) and TanStack Virtual (the rows drawn), both MIT and bundled into the
-     Platform; every element is Plenix markup (plx-data-table__*) drawn by data-table-next.css with the data-table tokens.
-   Usage:
-     <DataTable label="Assets" data={assets} index="id" selectable
-       columns={[
-         { title: 'Attachments', field: 'attach', kind: 'icon', icon: 'attachment', sorter: 'number',
-           render: (a) => (a.attach ? <Icon name="attachment" label={a.attach + ' attachments'} /> : null) },
-         { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-240px', editor: 'input' },
-         { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: (a) => <Badge tone="success">{a.status}</Badge> },
-         { title: 'Size', field: 'size', type: 'bytes' }]}
-       rowMenu={[{ label: 'Open', icon: 'open', onSelect: (a) => open(a) }, { separator: true },
-                 { label: 'Delete', icon: 'trash', danger: true, onSelect: (a) => remove(a) }]}
-       onRowClick={(asset) => open(asset)} />
-   Props:
-     label: names the grid for screen readers (required)
-     data: the rows, plain objects; index: the field that identifies a row (default "id")
-     columns: [{ title, field, … }]:
-       kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, DM Mono, on the row's
-         baseline) | "icon" (a mark column as wide as the checkbox column; its header shows icon) | "center" (centered in
-         the row's height: badges, buttons) | "actions" (row buttons, shown while the row is hovered or selected) | "wrap"
-         (long text: the lines that fit the row height step, then an ellipsis) | "deleted" (muted italic) | "avatar-name"
-         ({ name, src }) | "tags" ([{ label, category }]) | "badge" ({ label, tone, icon }); two combine as a list
-         (["name", "data"])
-       type: "text" (default) | "number" | "currency" | "date" | "select" | "checkbox" | "file" | "image" | "link" |
-         "person" | "long-text" | "bytes" (file sizes; filters take "> 2 MB") | "multi" (several values: a grouped table
-         puts the record in each of its groups): the header icon and the sort words
-       render(record): the cell as a React element; sorter: "string" | "number" | "date" | a compare function
-       filter: true (contains text) | "list" (one of the column's values); summary: "sum" | "count" | "average" | "min" |
-         "max" in each group header; empty: the text for a missing value (zero and false are values)
-       width: a CSS length or a size token ("--plx-ref-size-240px"; numbers snap to a size token); without it the column
-         fits its content and shares the room left; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
-         the columns before it are the row header (pinned and shaded)
-       hozAlign, headerHozAlign: "left" | "center" | "right"; headerSort: false turns sorting off; resizable: false
-       editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
-         rows may edit; rowHandle: true makes the column the drag handle for moving rows
-     selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
-       { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
-     onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
-       onCellEdit(record, { field, value, previous })
-     headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
-       the application's field actions first in it ([{ label, icon, onSelect(column), danger, disabled, separator }])
-     rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the
-       row's button (rowMenuButton, default true) or right-click; DataTable.useActions(actions, selectedKeys, strings)
-       wraps selection commands with Undo for the CommandBar
-     The page's view (the command bar drives it; each applies when it changes): filter(record), sort [{ field, dir }],
-       groupBy (a field, or a list for nested groups), columnOrder, hiddenColumns; onAddToGroup(value, path): the add row
-       at the end of each group
-     tree: rows nest (children in childrenField, default "_children"; the toggle in treeColumn; treeExpanded: start open)
-     movableRows with onRowMove(record, toIndex), movableColumns: drag, with the same moves in the menus
-     rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
-       button (default false: the page's ViewMenu sets these)
-     mode: "fill" (default: fills the room left on screen, virtual rows) | "pages" (pageSize, pageSizes, a footer with
-       Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
-     fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
-       { rows, total }; search: the page's search text
-     storageKey: keeps the person's view (sort, widths, order, hidden columns, row height, wrap, groups) in this browser
-     narrow: "list" (default: under narrowAt, 600px of its own width, a list of keyColumns) | "table" | "auto"
-     empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
-     className: more classes on the frame
-   Behavior:
-     The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
-       Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
-       row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
-     Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
-       on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
-     Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the
-       top with a Short row's padding. Group rows: a chevron, the field as an eyebrow, the value and the record count,
-       one sunken band between groups; group headers stick while their rows scroll; the grouped-by column is tinted.
-     Virtual rows: only the rows in view are drawn; the rows not drawn are token-sized gaps (every row height is known,
-       nothing is measured); printing and copying use every loaded row. Narrow: the key columns as a list, with the
-       checkbox, handle and row actions kept.
-   Notes:
-     Inline styles only where the owner allows them (2026-10-13): column widths that equal a size token and the virtual
-     gaps' heights from the tokens; never a row height, line height or cell padding. Hover, selected and selected + hover
-     are three row colors; pinned and row-header cells follow the row.
-*/
-// the row menu's actions with Undo, as the CommandBar's selection commands
-function ActionTable(props) {
-  const rowMenu = (0, _actions.useDataTableActions)(props.rowMenu, undefined, props.strings);
-  return /*#__PURE__*/_react.default.createElement(_DataTableNext.DataTableNext, _extends({}, props, {
-    rowMenu: rowMenu
-  }));
-}
-function DataTable(props) {
-  const toast = (0, _ReviewFlow.useOptionalToast)();
-  return toast ? /*#__PURE__*/_react.default.createElement(ActionTable, props) : /*#__PURE__*/_react.default.createElement(_Toast.ToastProvider, null, /*#__PURE__*/_react.default.createElement(ActionTable, props));
-}
-DataTable.useActions = _actions.useDataTableActions;
-// nothing to load ahead: the engine is part of the Platform bundle (kept so pages that called it keep working)
-DataTable.preload = () => {};
-  } },
-  "platform/components/Table/Table.jsx": { deps: {"react":null,"../DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../DataTable/tabulator.js":"platform/components/DataTable/tabulator.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Table/Table.jsx": { deps: {"react":null,"../DataTableNext/DataTableNext.jsx":"platform/components/DataTableNext/DataTableNext.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28396,47 +28392,73 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Table = Table;
 var _react = _interopRequireDefault(require("react"));
-var _DataTable = require("../DataTable/DataTable.jsx");
-var _tabulator = require("../DataTable/tabulator.js");
+var _DataTableNext = require("../DataTableNext/DataTableNext.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Table
-   Summary: A static table: information in rows and columns, read and nothing else. It IS a DataTable (the same classes,
-     .plx-data-table, and the same tokens, --plx-sys-data-table-* and --plx-comp-data-table-*; owner, 2026-10-09) with the
-     interaction off: no sorting, filters, menus, selection, resizing, moving, editing or row hover.
-   Usage:
-     <Table label="Fields" data={fields} columns={[
-       { title: 'Field', field: 'name', kind: 'name', rowLabel: true, width: '--plx-ref-size-240px' },
-       { title: 'Type', field: 'type', kind: 'data' },
-       { title: 'Notes', field: 'notes', kind: 'wrap' }]} />
+/* Plenix · Table
+   Summary: Static reference information in rows and columns, using the DataTable's React renderer and Table tokens.
+   Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
    Props:
-     label: names the table for screen readers (required)
-     data: the rows: plain objects with an id (or name the field with index)
-     columns: Tabulator column definitions (title, field, hozAlign, width…) with the Plenix kinds: "name", "data" (technical
-       values: the data font, DM Mono, at the table's size), "wrap", "center", "icon", or two as a list
-       (["name", "data"]); render(row) for React content; rowLabel for the row header. Interactive options are ignored.
-     index: the field that identifies a row; default "id"
-     empty: shown when there are no rows; default "Nothing to show"
-     height: a fixed height (a size token) for a long table; its rows scroll inside it, and only the rows in view are drawn
-     options: Tabulator table options that only change the layout (layout, headerVisible…)
-     className: more classes on the frame
-     Table.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
-   Behavior:
-     Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
-     in cells work as themselves. Row height, cell padding and text size follow the density; column widths are
-     measured by Tabulator (a width a column gives is kept), as in the DataTable. Vertical alignment: middle in every cell.
-   Notes:
-     For records people work with (sort, filter, select, open, edit) use DataTable. Every name/value list of reference facts
-     (the design system's details, Settings and Capture) is a Table with a header row.
-*/
-function Table(props) {
-  return /*#__PURE__*/_react.default.createElement(_DataTable.TableEngine, _extends({}, props, {
-    isStatic: true
-  }));
+     label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
+       minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
+     empty: no-record message; narrow: "table" by default; className.
+     Table.preload(): compatibility no-op; the renderer is already bundled.
+   Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
+     Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row. The table grows with its rows and never scrolls internally.
+   Notes: Existing Table tokens preserve the static-table look; use DataTable for records people work with. */
+
+function Table({
+  label,
+  data,
+  columns = [],
+  index,
+  empty,
+  narrow = 'table',
+  headerVisible = true,
+  className
+}) {
+  const staticColumns = _react.default.useMemo(() => columns.map(({
+    title,
+    field,
+    kind,
+    render,
+    width,
+    minWidth,
+    maxWidth,
+    rowLabel,
+    frozen,
+    hozAlign,
+    headerHozAlign,
+    empty
+  }) => ({
+    title,
+    field,
+    kind,
+    render,
+    width,
+    minWidth,
+    maxWidth,
+    rowLabel,
+    frozen,
+    hozAlign,
+    headerHozAlign,
+    empty,
+    headerSort: false,
+    resizable: false
+  })), [columns]);
+  return /*#__PURE__*/_react.default.createElement(_DataTableNext.DataTableNext, {
+    isStatic: true,
+    label: label,
+    data: data,
+    columns: staticColumns,
+    index: index,
+    empty: empty,
+    narrow: narrow,
+    headerVisible: headerVisible,
+    className: className,
+    headerMenu: false
+  });
 }
-// starts loading the engine before the first table mounts (see DataTable.preload)
-Table.preload = () => {
-  (0, _tabulator.loadTabulator)().catch(() => {});
-};
+Table.preload = () => {};
   } },
   "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -47992,14 +48014,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Collapse all and Expand all at the top.
    Usage:
      const [groups, setGroups] = React.useState([]);
-     <GroupPanel fields={fields.filter((f) => f.kind === 'select')} value={groups} onChange={setGroups} table={tableRef} />
-     <DataTable … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} onReady={(t) => { tableRef.current = t; }} />
+     <GroupPanel fields={fields.filter((f) => f.kind === 'select')} value={groups} onChange={setGroups} />
+     <DataTable … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} />
      (or useCollectionView)
    Props:
      fields: the fields rows can be grouped by (utils/fields.js); usually the select fields
      value: the levels: [{ field, dir: "asc" | "desc", hideEmpty }], the first the outer group
      onChange(value): runs on every change
-     table: the DataTable's Tabulator instance (onReady), or a ref to it: Collapse all and Expand all close and open its
+     table: the table controller, or a ref to it: Collapse all and Expand all close and open its
        groups; without it they are disabled
      inline: draws the panel alone (open, in a frame); default false
      strings: { label: "Group", title: "Group by", info, empty, add: "Add group", addSub: "Add subgroup", collapseAll:
@@ -64498,7 +64520,7 @@ function ShareDialog({
   }, error) : null));
 }
   } },
-  "platform/patterns/PermissionsEditor/PermissionsEditor.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PermissionsEditor/PermissionsEditor.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64510,7 +64532,7 @@ var _Stack = require("../../components/Stack/Stack.jsx");
 var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _PermissionSummary = require("../PermissionSummary/PermissionSummary.jsx");
@@ -64605,7 +64627,7 @@ function PermissionsEditor({
   return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
     className: (0, _cx.cx)('plx-permissions-editor', className),
     "aria-busy": busy
-  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     label: t.label,
     data: capabilities,
     columns: columns,
@@ -65285,7 +65307,7 @@ function ImportDialog({
   }, error) : null));
 }
   } },
-  "platform/patterns/ImportWizard/ImportWizard.jsx": { deps: {"react":null,"../ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ImportWizard/ImportWizard.jsx": { deps: {"react":null,"../ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -65299,7 +65321,7 @@ var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
 var _Badge = require("../../components/Badge/Badge.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
@@ -65467,7 +65489,7 @@ function ImportWizard({
     }, {
       id: 'review',
       label: t.review,
-      content: /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+      content: /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
         label: t.review,
         index: "_plxRow",
         data: mapped,
@@ -66078,7 +66100,7 @@ function ShortcutsDialog({
   })));
 }
   } },
-  "platform/patterns/FileList/FileList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FileList/FileList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66091,7 +66113,7 @@ var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _File = require("../../components/File/File.jsx");
 var _FileRow = require("../../components/FileRow/FileRow.jsx");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
 var _Badge = require("../../components/Badge/Badge.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
@@ -66378,10 +66400,10 @@ function FileList({
     const sizeText = f => f.kind === 'folder' ? typeof f.count === 'number' ? fill(f.count === 1 ? t.item : t.items, {
       n: (0, _format.formatNumber)(f.count)
     }) : '' : typeof f.size === 'number' ? (0, _format.formatBytes)(f.size) : f.size || '';
-    // folders stay first whichever way the name sorts (Tabulator turns the result around for a descending sort)
+    // folders stay first whichever way the name sorts (the comparator compensates for descending order)
     const byName = (a, b, ra, rb, col, dir) => {
-      const fa = ra.getData().kind === 'folder',
-        fb = rb.getData().kind === 'folder';
+      const fa = ra.kind === 'folder',
+        fb = rb.kind === 'folder';
       if (fa !== fb) return (fa ? -1 : 1) * (dir === 'desc' ? -1 : 1);
       return String(a || '').localeCompare(String(b || ''), undefined, {
         numeric: true,
@@ -66465,7 +66487,7 @@ function FileList({
         file: f
       })
     }] : []);
-    body = /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+    body = /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
       label: label,
       index: "id",
       data: rows.map(f => Object.assign({}, f, {
@@ -68833,7 +68855,7 @@ function FilePicker({
   }))) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty)));
 }
   } },
-  "platform/patterns/RenditionList/RenditionList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RenditionList/RenditionList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -68847,7 +68869,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _cx = require("../../utils/cx.js");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
 var _DownloadButton = require("../../components/DownloadButton/DownloadButton.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _format = require("../../utils/format.js");
@@ -68913,7 +68935,7 @@ function RenditionList({
     href: r.href,
     download: r.fileName || r.name,
     onSelect: r.onDownload
-  }, [r.name, r.format, typeof r.size === 'number' ? (0, _format.formatBytes)(r.size) : ''].filter(Boolean).join(' · ')))) : /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  }, [r.name, r.format, typeof r.size === 'number' ? (0, _format.formatBytes)(r.size) : ''].filter(Boolean).join(' · ')))) : /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     label: t.label,
     data: items,
     columns: [{
@@ -71570,7 +71592,7 @@ function OrderConfirmation({
   }))));
 }
   } },
-  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71595,7 +71617,7 @@ var _EntityHeader = require("../../patterns/EntityHeader/EntityHeader.jsx");
 var _PropertyList = require("../../patterns/PropertyList/PropertyList.jsx");
 var _Wizard = require("../../patterns/Wizard/Wizard.jsx");
 var _SettingsLayout = require("../../patterns/SettingsLayout/SettingsLayout.jsx");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
 var _Badge = require("../../components/Badge/Badge.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
@@ -71853,7 +71875,7 @@ function OrderManagement({
         onSelect: () => setAsking(chosen)
       }]
     }
-  }), /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  }), /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     label: t.label,
     data: rows,
     columns: columns,
@@ -71884,9 +71906,7 @@ function OrderManagement({
       disabled: !canCancel(o),
       onSelect: () => setAsking([o])
     }],
-    on: onOpen ? {
-      rowDblClick: (e, row) => onOpen(orders.find(o => o.id === row.getData().id))
-    } : undefined
+    onRowDoubleClick: onOpen ? order => onOpen(orders.find(o => o.id === order.id)) : undefined
   }), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
     open: !!asking,
     destructive: true,
@@ -72302,7 +72322,7 @@ function SubscriptionManagement({
     onClick: () => setAsking('cancel')
   }, t.cancel) : null)) : null, history.length ? /*#__PURE__*/_react.default.createElement(_SettingsLayout.SettingsSection, {
     title: t.history
-  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     label: t.history,
     data: history,
     columns: columns
@@ -73466,7 +73486,7 @@ function Announcement({
   }, content);
 }
   } },
-  "platform/patterns/AuditLog/AuditLog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AuditLog/AuditLog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -73475,7 +73495,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.AuditLog = AuditLog;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
 var _Persona = require("../../components/Persona/Persona.jsx");
 var _Time = require("../../components/Time/Time.jsx");
 var _Button = require("../../components/Button/Button.jsx");
@@ -73565,7 +73585,7 @@ function AuditLog({
   }));
   return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
     className: (0, _cx.cx)('plx-audit-log', className)
-  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     label: label,
     data: entries,
     columns: columns,
@@ -73578,7 +73598,7 @@ function AuditLog({
     footer: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       onClick: () => setActive(null)
     }, t.close)
-  }, /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     label: t.changes,
     data: changes,
     headerMenu: false,
@@ -75856,7 +75876,7 @@ function ReadingPane({
   }, children || empty || null));
 }
   } },
-  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75887,7 +75907,7 @@ var _Auth = require("../../patterns/Auth/Auth.jsx");
 var _SearchWorkspace = require("../../patterns/SearchWorkspace/SearchWorkspace.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _ContentGrid = require("../../patterns/ContentGrid/ContentGrid.jsx");
-var _DataTable = require("../../components/DataTable/DataTable.jsx");
+var _DataTablePublic = require("../../components/DataTableNext/DataTablePublic.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Link = require("../../components/Link/Link.jsx");
@@ -75987,7 +76007,7 @@ function ListingPage({
   children,
   ...rest
 }) {
-  return /*#__PURE__*/_react.default.createElement(Frame, rest, children, rows.length ? /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  return /*#__PURE__*/_react.default.createElement(Frame, rest, children, rows.length ? /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     data: rows,
     columns: columns
   }) : /*#__PURE__*/_react.default.createElement(NoRecords, {
@@ -76127,7 +76147,7 @@ function SplitWorkspace({
     },
     id = _react.default.useId(),
     list = paneTitle || t.pane;
-  const first = columns ? /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  const first = columns ? /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     label: list,
     data: rows || [],
     columns: columns
@@ -76258,7 +76278,7 @@ function SearchResultsPage({
     query: query,
     onQueryChange: onQueryChange,
     count: rows.length
-  }, children, rows.length ? /*#__PURE__*/_react.default.createElement(_DataTable.DataTable, {
+  }, children, rows.length ? /*#__PURE__*/_react.default.createElement(_DataTablePublic.DataTable, {
     data: rows,
     columns: columns
   }) : /*#__PURE__*/_react.default.createElement(NoRecords, {

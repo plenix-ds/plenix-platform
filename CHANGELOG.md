@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.0] - 2026-10-17
+
+### Changed
+- The static `Table` runs on the TanStack renderer (#142): every row drawn, nothing interactive, and it never scrolls
+  (owner): as tall as its rows, wrapped text grows its row, the columns share the width they are given.
+- AuditLog, FileList, ImportWizard, PermissionsEditor, RenditionList, ReviewFlow and the Account and page templates use
+  the TanStack `DataTable` with the Plenix callbacks; the design system's own tables (DS.grid, the labs' matrices) too.
+  No page of the design system loads Tabulator now; only `LegacyDataTable` (the existing apps) does, on demand.
+
 ## [0.52.0] - 2026-10-17
 
 ### Changed

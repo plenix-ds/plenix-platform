@@ -18,7 +18,7 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';

@@ -28,7 +28,7 @@ import { Auth } from '../../patterns/Auth/Auth.jsx';
 import { SearchWorkspace } from '../../patterns/SearchWorkspace/SearchWorkspace.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { ContentGrid } from '../../patterns/ContentGrid/ContentGrid.jsx';
-import { DataTable } from '../../components/DataTable/DataTable.jsx';
+import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Link } from '../../components/Link/Link.jsx';
