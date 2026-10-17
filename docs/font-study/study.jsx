@@ -34,6 +34,35 @@ function Line({ mono }) {
   return <p className="plx-font-study__line"><span className="plx-font-study__sans">{LINE_SANS} </span><span className={'plx-font-study__mono ' + (mono || '')}>{LINE_MONO}</span></p>;
 }
 
+// the two options side by side (owner, 2026-10-16: "what is the closest match … show me the 2 options side by side"):
+// every value in DM Sans, then in DM Mono with each option; each line's width measured live, against DM Sans
+const VALUES = ['brief_v2.pdf', 'IMG_4891.png', '2026-02-28_KitchenReno_Quote.pdf', '2.4 MB', '224 KB', '2026-10-12', '2026-10-16 09:30',
+  '12:45', 'PRJ-1042', 'v0.53.1', 'INV-2026-0088', '1,240', '98%', '3 of 24', '#765600', 'www.plenix.com', 'Wallpaper_WW2.jpg'];
+const OPTIONS = [
+  ['DM Sans (the reference)', 'plx-font-study__sans'],
+  ['1 · Closest: −0.07em, narrow spaces', 'plx-font-study__mono plx-font-study__opt1'],
+  ['2 · Nothing touches: −0.02em, narrow spaces', 'plx-font-study__mono plx-font-study__opt2'],
+];
+function Compare({ size }) {
+  const ref = React.useRef(null), [w, setW] = React.useState({});
+  React.useLayoutEffect(() => {
+    const measure = () => { const out = {}; ref.current.querySelectorAll('[data-k]').forEach((e) => { out[e.dataset.k] = e.getBoundingClientRect().width; }); setW(out); };
+    document.fonts.ready.then(measure);
+  }, [size]);
+  const pct = (r, o) => { const a = w['0-' + r], b = w[o + '-' + r]; return a && b ? (b > a ? '+' : '') + Math.round((b / a - 1) * 100) + '%' : ''; };
+  const total = (o) => { let a = 0, b = 0; VALUES.forEach((x, r) => { a += w['0-' + r] || 0; b += w[o + '-' + r] || 0; }); return a ? (b > a ? '+' : '') + Math.round((b / a - 1) * 100) + '% overall' : ''; };
+  return (
+    <div ref={ref} className={'plx-font-study__compare ' + size}>
+      {OPTIONS.map((o, i) => <div key={'h' + i} className="plx-font-study__head"><Text variant="label">{o[0]}</Text>{i ? <Text variant="secondary">{total(i)}</Text> : null}</div>)}
+      {VALUES.map((v, r) => OPTIONS.map((o, i) => (
+        <div key={r + '-' + i} className="plx-font-study__cell">
+          <span data-k={i + '-' + r} className={o[1]}>{v}</span>
+          {i ? <Text variant="secondary">{pct(r, i)}</Text> : null}
+        </div>)))}
+    </div>
+  );
+}
+
 function App() {
   return (
     <AppShell page="detail" header={<AppHeader tone="accent" appName="Font study" brandHref="#" />}
@@ -58,12 +87,35 @@ function App() {
               {SIZES.map((s) => <Stack key={s[1]} gap="xs"><Text variant="label">{s[0]}</Text><Pair cls={s[1]} text="Hxop 0148" /></Stack>)}
             </Stack>
           </Panel>
-          <Panel title="The options, on one line" icon="text-card">
+          <Panel title="The two options, side by side (13px)" icon="text-card">
             <Stack gap="md">
-              <Stack gap="xs"><Text variant="label">A · Same size (today): heights and weight match, the values run wider</Text><Line /></Stack>
-              <Stack gap="xs"><Text variant="label">B · DM Mono one step smaller (12px beside 13px): narrower, but its letters are visibly shorter than the words beside them</Text><Line mono="plx-font-study__smaller" /></Stack>
-              <Stack gap="xs"><Text variant="label">C · Same size, tighter spacing (−0.02em, the tight token): heights match, a little narrower</Text><Line mono="plx-font-study__tight" /></Stack>
-              <Stack gap="xs"><Text variant="label">D · Same size, much tighter spacing (−0.06em, needs a new token): heights match, about as wide as DM Sans figures</Text><Line mono="plx-font-study__tighter" /></Stack>
+              <List variant="bullets" items={[
+                { children: 'Same height and the same Regular stroke in all three; only DM Mono’s spacing changes.' },
+                { children: 'Option 1 is the closest width; in it w, W and % touch their neighbor (see the close-up).' },
+                { children: 'Option 2 keeps every letter apart; it stays wider.' },
+                { children: 'Narrow spaces: a DM Mono space is 0.3em in both options (0.6em as designed; a DM Sans space is 0.2em, which reads cramped in DM Mono).' },
+              ]} />
+              <Compare size="plx-font-study__s13" />
+            </Stack>
+          </Panel>
+          <Panel title="Close-up (48px)" icon="ed-text">
+            <div className="plx-font-study__compare plx-font-study__s48">
+              {OPTIONS.map((o, i) => <div key={i} className="plx-font-study__head"><Text variant="label">{o[0]}</Text></div>)}
+              {['www', 'WW wm', '%% 2.4'].map((v, r) => OPTIONS.map((o, i) => <div key={r + '-' + i} className="plx-font-study__cell"><span className={o[1]}>{v}</span></div>))}
+            </div>
+          </Panel>
+          <Panel title="The adjustment (built, not released)" icon="text-card">
+            <Stack gap="md">
+              <List variant="bullets" items={[
+                { children: 'Only DM Mono changes; DM Sans never does (owner, 2026-10-16).' },
+                { children: 'Height: no change; at the same size the letters are already the same height.' },
+                { children: 'Stroke: no change at Regular, where the stems are identical (0.084). DM Mono Medium is 7% heavier than DM Sans Medium (0.106 against 0.099); DM Mono has no weight between Regular and Medium, so that gap stays.' },
+                { children: 'Width: every DM Mono text has letter spacing −0.07em (--plx-sys-font-data-letter-spacing). DM Mono figures are then exactly as wide as DM Sans figures; tighter, and letters such as m and w touch.' },
+                { children: 'check-system (rule mono-spacing) fails any rule that sets DM Mono without it.' },
+              ]} />
+              <Stack gap="xs"><Text variant="label">Before: DM Mono with its own spacing</Text><Line /></Stack>
+              <Stack gap="xs"><Text variant="label">After: DM Mono with −0.07em</Text><Line mono="plx-font-study__fitted" /></Stack>
+              <Stack gap="xs"><Text variant="label">Figures, DM Sans then DM Mono fitted: the same width</Text><div className="plx-font-study__pair plx-font-study__s20"><span className="plx-font-study__sans">2026-10-12 · 2.4 MB · 1,240</span><span className="plx-font-study__mono plx-font-study__fitted">2026-10-12 · 2.4 MB · 1,240</span></div></Stack>
             </Stack>
           </Panel>
         </Stack>

@@ -6,6 +6,11 @@
 .plx-font-study__s20{font-size:var(--plx-ref-font-size-20);}
 .plx-font-study__s48{font-size:calc(var(--plx-ref-font-size-12) * 4);}
 .plx-font-study__line{font-size:var(--plx-ref-font-size-13);margin-block-end:0;margin-block-start:0;}
-.plx-font-study__smaller{font-size:var(--plx-ref-font-size-12);}
-.plx-font-study__tight{letter-spacing:var(--plx-ref-letter-spacing-tight);}
-.plx-font-study__tighter{letter-spacing:calc(var(--plx-ref-letter-spacing-tight) * 3);}
+.plx-font-study__fitted{letter-spacing:var(--plx-sys-font-data-letter-spacing);}
+/* the two options side by side: DM Sans, option 1, option 2; a narrow space is 0.3em (a DM Sans space is 0.2em; narrower reads cramped in DM Mono): DM Mono
+   0.6em space less its letter spacing and this word spacing */
+.plx-font-study__compare{align-items:baseline;column-gap:var(--plx-ref-space-24px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:var(--plx-ref-space-8px);}
+.plx-font-study__head{display:flex;flex-direction:column;row-gap:var(--plx-ref-space-4px);}
+.plx-font-study__cell{align-items:baseline;column-gap:var(--plx-ref-space-8px);display:flex;flex-wrap:wrap;}
+.plx-font-study__opt1{letter-spacing:var(--plx-ref-letter-spacing-mono-fit);word-spacing:calc(var(--plx-ref-letter-spacing-tight) * 11.5);}
+.plx-font-study__opt2{letter-spacing:var(--plx-ref-letter-spacing-tight);word-spacing:calc(var(--plx-ref-letter-spacing-tight) * 14);}

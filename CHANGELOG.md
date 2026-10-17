@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.2] - 2026-10-17
+
+### Changed
+- docs/font-study: the two DM Mono options side by side with DM Sans, measured live on 17 technical values: option 1
+  (−0.07em, spaces 0.3em) is 2% narrower than DM Sans overall, w, W and % touch; option 2 (−0.02em, spaces 0.3em) is 6%
+  wider, nothing touches; a 48px close-up of the touching letters. Nothing in the Platform changes yet.
+
 ## [0.53.1] - 2026-10-17
 
 ### Added
