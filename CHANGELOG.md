@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.8] - 2026-10-18
+
+### Fixed
+- Font playground: the overlay is sharp text again (owner: no pixelation), with the owner's line "This is a nice test,
+  7373652891", four times larger. Each font is sized so its letters are four times as tall as they really draw at the
+  chosen size on the viewer's screen, so the overlay matches the side by side.
+
 ## [0.53.7] - 2026-10-18
 
 ### Fixed
