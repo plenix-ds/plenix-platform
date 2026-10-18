@@ -127,6 +127,68 @@ function metrics(family, weight, size, stretch, spacingEm, wordEm) {
 }
 const pct = (a, b) => b ? Math.round(a / b * 1000) / 10 : 0;
 const close = (a, b) => Math.max(0, 100 - Math.abs(100 - pct(a, b)));
+
+// the real pixels, magnified: both fonts drawn at their real size on this screen's pixel grid (hinting and rounding as
+// they really draw), on one baseline, then shown MAG times larger with every pixel kept square
+const MAG = 6,
+  MAG_TEXT = ['Hxo 08', 'brief_v2.pdf 2.4 MB'];
+function Magnified({
+  base: r,
+  cand,
+  family,
+  stretch,
+  sheet
+}) {
+  const box = useRef(null);
+  useEffect(() => {
+    const root = getComputedStyle(document.documentElement);
+    const ink = root.getPropertyValue('--plx-sys-content-default').trim(),
+      mark = root.getPropertyValue('--plx-sys-content-link').trim();
+    box.current.querySelectorAll('canvas').forEach((c, i) => {
+      const t = MAG_TEXT[i],
+        g = c.getContext('2d');
+      const css = (fam, w, size, st) => {
+        g.fontStretch = (STRETCH.find(x => x[0] === st) || [0, 'normal'])[1];
+        return w + ' ' + size * DPR + 'px "' + fam + '"';
+      };
+      g.font = css('DM Sans', r.weight, r.size);
+      const w1 = g.measureText(t).width;
+      g.font = css(family, cand.weight, cand.size, stretch);
+      g.letterSpacing = cand.spacing * cand.size * DPR + 'px';
+      g.wordSpacing = (cand.words || 0) * cand.size * DPR + 'px';
+      const w2 = g.measureText(t).width;
+      const pad = Math.round(4 * DPR),
+        H = Math.ceil(Math.max(r.size, cand.size) * 1.5 * DPR),
+        base = Math.round(H * 0.78);
+      c.width = Math.ceil(Math.max(w1, w2)) + pad * 2;
+      c.height = H;
+      g.clearRect(0, 0, c.width, c.height);
+      g.font = css('DM Sans', r.weight, r.size);
+      g.letterSpacing = '0px';
+      g.wordSpacing = '0px';
+      g.globalAlpha = 1;
+      g.fillStyle = ink;
+      g.fillText(t, pad, base);
+      g.font = css(family, cand.weight, cand.size, stretch);
+      g.letterSpacing = cand.spacing * cand.size * DPR + 'px';
+      g.wordSpacing = (cand.words || 0) * cand.size * DPR + 'px';
+      g.globalAlpha = 0.7;
+      g.fillStyle = mark;
+      g.fillText(t, pad, base);
+    });
+    // each canvas shown at MAG times its real size: one canvas pixel is MAG device pixels, square
+    sheet.mag.replaceSync(Array.from(box.current.querySelectorAll('canvas')).map((c, i) => '.pg-mag-' + i + '{block-size:' + c.height / DPR * MAG + 'px;inline-size:' + c.width / DPR * MAG + 'px;}').join(''));
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    ref: box,
+    className: "pg-mag"
+  }, MAG_TEXT.map((t, i) => /*#__PURE__*/React.createElement("canvas", {
+    key: i,
+    className: 'pg-mag-' + i,
+    "aria-label": 'DM Sans and the candidate overlaid: ' + t,
+    role: "img"
+  })));
+}
 function App() {
   const saved = (() => {
     try {
@@ -174,12 +236,14 @@ function App() {
   }, [font]);
   // the specimens' sizes and weights: a constructed stylesheet (no style attribute, no style element)
   const sheet = useMemo(() => {
-    const s = new CSSStyleSheet();
-    document.adoptedStyleSheets = document.adoptedStyleSheets.concat(s);
+    const s = new CSSStyleSheet(),
+      m = new CSSStyleSheet();
+    document.adoptedStyleSheets = document.adoptedStyleSheets.concat(s, m);
+    s.mag = m;
     return s;
   }, []);
   useEffect(() => {
-    sheet.replaceSync('.pg-ref{font-family:"DM Sans";font-size:' + ref.size + 'px;font-weight:' + ref.weight + ';}' + '.pg-cand{font-family:"' + f[1] + '";font-size:' + cand.size + 'px;font-weight:' + cand.weight + ';letter-spacing:' + cand.spacing + 'em;word-spacing:' + (cand.words || 0) + 'em;' + (f[3] ? 'font-stretch:' + cand.stretch + '%;' : '') + '}' + '.pg-big .pg-ref{font-size:' + ref.size * 6 + 'px;}.pg-big .pg-cand{font-size:' + cand.size * 6 + 'px;}');
+    sheet.replaceSync('.pg-ref{font-family:"DM Sans";font-size:' + ref.size + 'px;font-weight:' + ref.weight + ';}' + '.pg-cand{font-family:"' + f[1] + '";font-size:' + cand.size + 'px;font-weight:' + cand.weight + ';letter-spacing:' + cand.spacing + 'em;word-spacing:' + (cand.words || 0) + 'em;' + (f[3] ? 'font-stretch:' + cand.stretch + '%;' : '') + '}');
   }, [ref, cand, font]);
   const m = useMemo(() => ({
     r: metrics('DM Sans', ref.weight, ref.size),
@@ -458,15 +522,19 @@ function App() {
   }, "2026-10-12"), /*#__PURE__*/React.createElement("span", {
     className: "pg-ref"
   }, ".")))), /*#__PURE__*/React.createElement(Panel, {
-    title: "Overlaid, six times larger",
+    title: "Overlaid: the real pixels, six times larger",
     icon: "ed-text"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "pg-big pg-overlay"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "pg-ref"
-  }, "Hxo 08"), /*#__PURE__*/React.createElement("span", {
-    className: "pg-cand"
-  }, "Hxo 08"))))));
+  }, /*#__PURE__*/React.createElement(Stack, {
+    gap: "sm"
+  }, /*#__PURE__*/React.createElement(Text, {
+    variant: "secondary"
+  }, "Both fonts drawn at their real size on this screen, on one baseline (DM Sans in the text color, the candidate in blue on top), then enlarged pixel for pixel: what you see is what the side by side shows, only bigger."), /*#__PURE__*/React.createElement(Magnified, {
+    base: ref,
+    cand: cand,
+    family: f[1],
+    stretch: f[3] ? cand.stretch : null,
+    sheet: sheet
+  }))))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(SessionProvider, null, /*#__PURE__*/React.createElement(App, null)));
 })();

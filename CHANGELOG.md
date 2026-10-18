@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.7] - 2026-10-18
+
+### Fixed
+- Font playground: the overlay now shows the real pixels (owner: it did not reflect the side by side). Both fonts are
+  drawn at their real size on the viewer's screen, on one baseline, and enlarged six times pixel for pixel; before, they
+  were drawn at six times the size, where the fonts' small-size pixel snapping no longer applies.
+
 ## [0.53.6] - 2026-10-18
 
 ### Fixed

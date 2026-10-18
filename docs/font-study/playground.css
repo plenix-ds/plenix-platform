@@ -2,7 +2,6 @@
    by the page (a constructed stylesheet); this sheet places them. Tokens only. */
 .pg-pair{align-items:baseline;column-gap:var(--plx-ref-space-24px);display:grid;grid-template-columns:repeat(2,minmax(0,max-content));row-gap:var(--plx-ref-space-4px);white-space:pre;}
 .pg-line{margin-block-end:0;margin-block-start:0;}
-/* the overlay: DM Sans in the text color, the candidate on top in the accent color, half see-through */
-.pg-overlay{display:grid;line-height:var(--plx-ref-line-height-tight);}
-.pg-overlay>span{grid-area:1/1;white-space:pre;}
-.pg-overlay>.pg-cand{color:var(--plx-sys-content-link);opacity:var(--plx-ref-opacity-70);}
+/* the real pixels, magnified: each canvas keeps its pixels square (its size is set by the page) */
+.pg-mag{display:flex;flex-direction:column;overflow-x:auto;row-gap:var(--plx-ref-space-16px);}
+.pg-mag>canvas{image-rendering:pixelated;}
