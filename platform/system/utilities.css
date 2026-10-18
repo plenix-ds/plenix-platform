@@ -67,11 +67,6 @@
 .plx-u-flex-column{flex-direction:column !important;}
 .plx-u-flex-wrap{flex-wrap:wrap !important;}
 .plx-u-flex{display:flex !important;}
-.plx-u-font-body{font-family:var(--plx-sys-font-body);word-spacing:normal;}
-.plx-u-font-code{font-family:var(--plx-sys-font-code);word-spacing:var(--plx-sys-font-data-word-spacing);}
-.plx-u-font-data{font-family:var(--plx-sys-font-data);word-spacing:var(--plx-sys-font-data-word-spacing);}
-.plx-u-font-mono{font-family:var(--plx-sys-typeface-mono);word-spacing:var(--plx-sys-font-data-word-spacing);}
-.plx-u-font-sans{font-family:var(--plx-sys-typeface-sans);word-spacing:normal;}
 .plx-u-fs-09{font-size:var(--plx-ref-font-size-09) !important;}
 .plx-u-fs-10{font-size:var(--plx-ref-font-size-10) !important;}
 .plx-u-fs-11{font-size:var(--plx-ref-font-size-11) !important;}

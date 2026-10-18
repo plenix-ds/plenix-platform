@@ -47,7 +47,7 @@ async function inspect() {
   const fam = (el) => getComputedStyle(el).fontFamily;
   const isMono = (el) => MONO.test(fam(el));
   // marked as code or data: the elements and classes of the code and data roles
-  const ROLE = 'code, kbd, pre, samp, .plx-text--data, .plx-font-data, .plx-font-code, .plx-u-font-data, [class*="__cell--data"], .plx-property-list__value--data';
+  const ROLE = 'code, kbd, pre, samp, .plx-text--data, .plx-font-data, .plx-font-code, [class*="__cell--data"], .plx-property-list__value--data';
   // components that keep their own typography (a label inside a control or a pill), and specimens
   const OWN = '.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-count, .plx-avatar, .plx-status-dot, input, textarea, select, option, button, [role="menuitem"], [role="option"], [role="tab"], .tabulator-header, .ds-vis, .ds-specimens, .ds-type, svg';
   // titles and headings

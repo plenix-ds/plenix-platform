@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.54.2] - 2026-10-18
+
+### Removed
+- The font utility classes `plx-u-font-body`, `-code`, `-data`, `-mono`, `-sans` (owner: inconsistent; fonts come by
+  role from components and text styles, never from a class added on the spot). No app or component used them. Apps to
+  check: a page that used one should use the component or role it means (Text variant="data", code, the role classes
+  plx-font-data / plx-font-code).
+
 ## [0.54.1] - 2026-10-18
 
 ### Fixed
