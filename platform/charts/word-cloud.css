@@ -1,7 +1,7 @@
 /* Plenix · WordCloud (platform/charts/word-cloud.css; the code is WordCloud.jsx): the words, centered on their places,
    in five sizes of the type scale; a group's words in its categorical data-viz color, the rest in the content color;
    the word in focus underlined. Every value is a --plx-comp-word-cloud-* token. */
-.plx-word-cloud__word{--plx-comp-word-cloud-word-color:var(--plx-comp-word-cloud-text);dominant-baseline:central;fill:var(--plx-comp-word-cloud-word-color);font-family:var(--plx-comp-word-cloud-font-family);font-weight:var(--plx-comp-word-cloud-font-weight);text-anchor:middle;}
+.plx-word-cloud__word{--plx-comp-word-cloud-word-color:var(--plx-comp-word-cloud-text);dominant-baseline:central;fill:var(--plx-comp-word-cloud-word-color);font-family:var(--plx-comp-word-cloud-font-family);font-weight:var(--plx-comp-word-cloud-font-weight);text-anchor:middle;word-spacing:normal;}
 .plx-word-cloud__word[data-plx-dataviz]{--plx-comp-word-cloud-word-color:var(--plx-comp-data-color);}
 .plx-word-cloud__word--measure{visibility:hidden;}
 .plx-word-cloud__word--1{font-size:var(--plx-comp-word-cloud-size-1);}

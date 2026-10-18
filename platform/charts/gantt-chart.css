@@ -3,7 +3,7 @@
    (UI text) end before the plot in the room of the task column (the frame's start margin token, set here); dependency
    arrows are in the subtle content color. Every value is a --plx-comp-gantt-* token. */
 .plx-gantt{--plx-comp-chart-margin-inline-start:var(--plx-comp-gantt-task-width);--plx-comp-chart-margin-inline-end:var(--plx-comp-gantt-label-room);--plx-comp-chart-margin-block-start:var(--plx-comp-gantt-margin-block-start);}
-.plx-gantt__task{dominant-baseline:central;fill:var(--plx-comp-gantt-task-text);font-family:var(--plx-comp-gantt-task-font-family);font-size:var(--plx-comp-gantt-task-font-size);text-anchor:end;}
+.plx-gantt__task{dominant-baseline:central;fill:var(--plx-comp-gantt-task-text);font-family:var(--plx-comp-gantt-task-font-family);font-size:var(--plx-comp-gantt-task-font-size);text-anchor:end;word-spacing:normal;}
 .plx-gantt__link{fill:none;stroke:var(--plx-comp-gantt-link-color);stroke-width:var(--plx-comp-gantt-link-width);}
 .plx-gantt__arrow{fill:var(--plx-comp-gantt-link-color);stroke:none;}
 .plx-gantt__milestone{--plx-comp-gantt-milestone-color:var(--plx-comp-gantt-default-color);fill:var(--plx-comp-gantt-milestone-color);stroke:var(--plx-comp-gantt-milestone-outline);stroke-width:var(--plx-comp-gantt-milestone-outline-width);}

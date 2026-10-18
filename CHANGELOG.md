@@ -6,6 +6,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.54.1] - 2026-10-18
+
+### Fixed
+- Fonts are consistent everywhere (audited on all 11 apps and the design system's token and type pages): only DM Sans
+  and Reddit Mono render; every Reddit Mono text has the fitted word spacing and no DM Sans text inherits it.
+  - Every rule that sets DM Sans now also sets `word-spacing: normal` (126 rules): a DM Sans tag inside a Reddit Mono
+    cell had inherited the monospace spacing. check-system rule `mono-spacing` now covers both fonts.
+  - The `plx-u-font-mono` utility lacked the monospace word spacing (its token is a typeface token).
+  - The design system's font samples (the typography page) take their font's word spacing, also at each line's own size.
+  - The TanStack table measures data columns with the data font and its word spacing (auto widths and Fit to content;
+    the fit had measured every column in DM Sans).
+### Removed
+- DM Mono: its font files, license, @font-face rules, the old DM Mono study page (docs/font-study opens the playground).
+### Changed
+- The font utilities (`plx-u-font-*`) no longer use `!important`.
+
 ## [0.54.0] - 2026-10-18
 
 ### Changed

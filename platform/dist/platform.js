@@ -20768,6 +20768,8 @@ function NextEngine(props) {
       }
       const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-table-data-font-family' : '--plx-comp-data-table-font-family').trim() || cs.fontFamily;
       ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size').trim() + ' ' + family;
+      // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
+      ctx.wordSpacing = kinds(c).includes('data') ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
       let width = ctx.measureText(c.title || c.field).width;
       source.forEach(record => {
         const value = (0, _state.valueAt)(record, c.field);
@@ -21012,7 +21014,9 @@ function NextEngine(props) {
     const c = columns.find(c => c.field === field),
       ctx = document.createElement('canvas').getContext('2d'),
       cs = getComputedStyle(frame.current);
-    ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size') + ' ' + cs.getPropertyValue('--plx-comp-data-table-font-family');
+    const data = kinds(c).includes('data');
+    ctx.font = cs.getPropertyValue('--plx-comp-data-table-font-size') + ' ' + cs.getPropertyValue(data ? '--plx-comp-data-table-data-font-family' : '--plx-comp-data-table-font-family');
+    ctx.wordSpacing = data ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
     const values = [c.title || field, ...source.map(r => (0, _cells.valueText)((0, _state.valueAt)(r, field)))];
     resize(field, Math.max(...values.map(v => ctx.measureText(v).width)) + metrics.space * 2);
   };

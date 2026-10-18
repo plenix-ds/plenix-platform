@@ -3,5 +3,5 @@
    above its mark: from a period's start, centered on an event. Every value is a --plx-comp-timeline-chart-* token on an
    existing role. */
 .plx-timeline-chart__event{r:var(--plx-comp-timeline-chart-event-radius);}
-.plx-timeline-chart__label{dominant-baseline:text-after-edge;fill:var(--plx-comp-timeline-chart-label-text);font-family:var(--plx-comp-timeline-chart-label-font-family);font-size:var(--plx-comp-timeline-chart-label-font-size);paint-order:stroke;stroke:var(--plx-comp-timeline-chart-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-timeline-chart-label-halo-width);text-anchor:start;transform:translateY(calc(-1 * var(--plx-comp-timeline-chart-label-offset)));}
+.plx-timeline-chart__label{dominant-baseline:text-after-edge;fill:var(--plx-comp-timeline-chart-label-text);font-family:var(--plx-comp-timeline-chart-label-font-family);font-size:var(--plx-comp-timeline-chart-label-font-size);paint-order:stroke;stroke:var(--plx-comp-timeline-chart-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-timeline-chart-label-halo-width);text-anchor:start;transform:translateY(calc(-1 * var(--plx-comp-timeline-chart-label-offset)));word-spacing:normal;}
 .plx-timeline-chart__label--event{text-anchor:middle;}

@@ -10,7 +10,6 @@ const { useState, useEffect, useMemo, useRef } = React;
 // [label, family, weights: [min, max] for a variable font or a list of the static ones, width axis [min, max] or null]
 const FONTS = [
   ['Reddit Mono (the Platform, size-adjust 97.1%)', 'Reddit Mono', [200, 900], null],
-  ['DM Mono (before 0.54.0)', 'DM Mono', [300, 400, 500], null],
   ['Roboto Mono', 'Roboto Mono', [100, 700], null],
   ['Iosevka', 'Iosevka', [300, 400, 500, 600, 700], null],
   ['Iosevka Charon Mono', 'Iosevka Charon Mono', [300, 400, 500, 700], null],

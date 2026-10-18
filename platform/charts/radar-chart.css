@@ -6,7 +6,7 @@
 .plx-radar-chart__area.plx-chart__line{fill:var(--plx-comp-chart-mark-color);fill-opacity:var(--plx-comp-radar-chart-area-opacity);}
 .plx-radar-chart__point{r:var(--plx-comp-radar-chart-point-radius);}
 .plx-radar-chart__ring-label{dominant-baseline:central;text-anchor:start;transform:translateX(var(--plx-comp-radar-chart-label-offset));}
-.plx-radar-chart__axis-label{fill:var(--plx-comp-radar-chart-axis-label-text);font-family:var(--plx-comp-radar-chart-axis-label-font-family);font-size:var(--plx-comp-radar-chart-axis-label-font-size);font-weight:var(--plx-comp-radar-chart-axis-label-font-weight);}
+.plx-radar-chart__axis-label{fill:var(--plx-comp-radar-chart-axis-label-text);font-family:var(--plx-comp-radar-chart-axis-label-font-family);font-size:var(--plx-comp-radar-chart-axis-label-font-size);font-weight:var(--plx-comp-radar-chart-axis-label-font-weight);word-spacing:normal;}
 .plx-radar-chart__axis-label--start{text-anchor:start;}
 .plx-radar-chart__axis-label--middle{text-anchor:middle;}
 .plx-radar-chart__axis-label--end{text-anchor:end;}

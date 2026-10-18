@@ -4,7 +4,7 @@
    categorical color. Lines and labels never carry a color of their own in the markup. */
 .plx-chart{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;row-gap:var(--plx-comp-chart-gap);}
 .plx-chart__caption{display:flex;flex-direction:column;row-gap:var(--plx-comp-chart-caption-gap);}
-.plx-chart__title{color:var(--plx-comp-chart-title-text);font-family:var(--plx-comp-chart-title-font-family);font-size:var(--plx-comp-chart-title-font-size);font-weight:var(--plx-comp-chart-title-font-weight);line-height:var(--plx-comp-chart-title-line-height);}
+.plx-chart__title{color:var(--plx-comp-chart-title-text);font-family:var(--plx-comp-chart-title-font-family);font-size:var(--plx-comp-chart-title-font-size);font-weight:var(--plx-comp-chart-title-font-weight);line-height:var(--plx-comp-chart-title-line-height);word-spacing:normal;}
 .plx-chart__description{color:var(--plx-comp-chart-description-text);font-size:var(--plx-comp-chart-description-font-size);line-height:var(--plx-comp-chart-description-line-height);}
 /* the plot: the container's width, a height by size; the SVG is drawn at the measured size */
 .plx-chart__plot{block-size:var(--plx-comp-chart-plot-height-md);min-inline-size:0;position:relative;}

@@ -2,7 +2,7 @@
    (end-pointing when closed, down when open) and the label; the content follows. Default: the body text, the content
    indented under the label. Bordered: in a box with the border color and the card corner, the summary and content padded.
    Inline: small and muted, the content not indented. The summary's focus is the focus ring. Anatomy and API: Details.jsx. */
-.plx-details{box-sizing:border-box;color:var(--plx-comp-details-text);font-family:var(--plx-comp-details-font-family);font-size:var(--plx-comp-details-font-size);line-height:var(--plx-comp-details-line-height);min-inline-size:0;}
+.plx-details{box-sizing:border-box;color:var(--plx-comp-details-text);font-family:var(--plx-comp-details-font-family);font-size:var(--plx-comp-details-font-size);line-height:var(--plx-comp-details-line-height);min-inline-size:0;word-spacing:normal;}
 .plx-details__summary{align-items:center;color:var(--plx-comp-details-summary-text);column-gap:var(--plx-comp-details-summary-gap);cursor:pointer;display:flex;font-weight:var(--plx-comp-details-summary-font-weight);list-style-type:none;border-end-end-radius:var(--plx-comp-details-summary-radius);border-end-start-radius:var(--plx-comp-details-summary-radius);border-start-end-radius:var(--plx-comp-details-summary-radius);border-start-start-radius:var(--plx-comp-details-summary-radius);min-block-size:var(--plx-comp-details-summary-min-height);outline-style:none;}
 .plx-details__summary::-webkit-details-marker{display:none;}
 .plx-details__summary:hover{background-color:var(--plx-comp-details-summary-hover-background);}

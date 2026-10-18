@@ -147,6 +147,8 @@ function NextEngine(props) {
       if(isStatic){widths[c.field]=Math.max(metrics.min,tokenPixels(c.minWidth,at));free.push(c.field);return;}
       const family=cs.getPropertyValue(kinds(c).includes('data')?'--plx-comp-data-table-data-font-family':'--plx-comp-data-table-font-family').trim()||cs.fontFamily;
       ctx.font=cs.getPropertyValue('--plx-comp-data-table-font-size').trim()+' '+family;
+      // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
+      ctx.wordSpacing=kinds(c).includes('data')?(cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim()||'0px'):'0px';
       let width=ctx.measureText(c.title||c.field).width;
       source.forEach(record=>{const value=valueAt(record,c.field);width=Math.max(width,ctx.measureText(valueText(value)).width);});
       widths[c.field]=snapToGrid(Math.max(metrics.min,width+metrics.space*2),{round:'up',el:at});free.push(c.field);
@@ -198,7 +200,7 @@ function NextEngine(props) {
     else pick(row.id,wanted);
     selectionAnchor.current=row.id;
   };
-  const fit=field=>{const c=columns.find(c=>c.field===field),ctx=document.createElement('canvas').getContext('2d'),cs=getComputedStyle(frame.current);ctx.font=cs.getPropertyValue('--plx-comp-data-table-font-size')+' '+cs.getPropertyValue('--plx-comp-data-table-font-family');const values=[c.title||field,...source.map(r=>valueText(valueAt(r,field)))];resize(field,Math.max(...values.map(v=>ctx.measureText(v).width))+metrics.space*2);};
+  const fit=field=>{const c=columns.find(c=>c.field===field),ctx=document.createElement('canvas').getContext('2d'),cs=getComputedStyle(frame.current);const data=kinds(c).includes('data');ctx.font=cs.getPropertyValue('--plx-comp-data-table-font-size')+' '+cs.getPropertyValue(data?'--plx-comp-data-table-data-font-family':'--plx-comp-data-table-font-family');ctx.wordSpacing=data?(cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim()||'0px'):'0px';const values=[c.title||field,...source.map(r=>valueText(valueAt(r,field)))];resize(field,Math.max(...values.map(v=>ctx.measureText(v).width))+metrics.space*2);};
   const menuItems=(items,row,extra)=>items.map((item,i)=>item.separator?<MenuDivider key={i}/>:<MenuItem key={i} icon={item.icon} danger={item.danger} disabled={typeof item.disabled==='function'?item.disabled(row):item.disabled} onSelect={()=>{(item.onSelect||item.action)?.(row,extra);}}>{item.label}</MenuItem>);
   const rowItems=row=>typeof rowMenu==='function'?rowMenu(row):rowMenu||[];
   const headerItems=column=>{const c=column.columnDef.meta,custom=typeof columnMenu==='function'?columnMenu(c):columnMenu||[];const direction=typeOf(c)==='number'||typeOf(c)==='currency'||typeOf(c)==='bytes'?S.sortNumber:typeOf(c)==='date'?S.sortDate:typeOf(c)==='checkbox'?S.sortCheck:S.sortText;return <>
