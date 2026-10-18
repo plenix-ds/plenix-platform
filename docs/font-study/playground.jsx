@@ -107,14 +107,19 @@ function App() {
   const st = (c) => (f[3] ? c.stretch : null);
   const bestSize = (c) => { let best = null; for (let s = ref.size - 3; s <= ref.size + 3.001; s += 0.125) { const k = metrics(f[1], c.weight, s, st(c), c.spacing, c.words); const e = Math.abs(k.x - m.r.x) + Math.abs(k.cap - m.r.cap); if (!best || e < best.e) best = { s, e }; } return Math.round(best.s * 1000) / 1000; };
   const bestWeight = (c) => { const list = steps(f) || Array.from({ length: (f[2][1] - f[2][0]) / 10 + 1 }, (x, i) => f[2][0] + i * 10); let best = null; list.forEach((w) => { const k = metrics(f[1], w, c.size, st(c), c.spacing, c.words); const e = Math.abs(k.stroke - m.r.stroke); if (!best || e < best.e) best = { w, e }; }); return best.w; };
-  const fitSize = () => set('size', bestSize(cand));
-  const fitWeight = () => set('weight', bestWeight(cand));
-  const fitWidth = () => { if (!f[3]) return; let best = null; for (const s of STRETCH.map((x) => x[0]).filter((x) => x >= f[3][0] && x <= f[3][1])) { const k = metrics(f[1], cand.weight, cand.size, s, cand.spacing, cand.words); const e = Math.abs(k.width - m.r.width); if (!best || e < best.e) best = { s, e }; } set('stretch', best.s); };
+  const [note, setNote] = useState('');
+  // a fit's message: what moved, or that it was already the closest
+  const told = (what, from, to, unit) => setNote(from === to ? what + ': already the closest (' + to + (unit || '') + ').' : what + ': ' + from + (unit || '') + ' → ' + to + (unit || '') + '.');
+  const fitSize = () => { const v = bestSize(cand); told('Size', cand.size, v, 'px'); set('size', v); };
+  const fitWeight = () => { const v = bestWeight(cand); told('Weight', cand.weight, v); set('weight', v); };
+  const fitWidth = () => { if (!f[3]) return; let best = null; for (const s of STRETCH.map((x) => x[0]).filter((x) => x >= f[3][0] && x <= f[3][1])) { const k = metrics(f[1], cand.weight, cand.size, s, cand.spacing, cand.words); const e = Math.abs(k.width - m.r.width); if (!best || e < best.e) best = { s, e }; } told('Width', cand.stretch, best.s, '%'); set('stretch', best.s); };
   // word spacing: the em value that makes a space exactly as wide as DM Sans's (its width moves one to one with it)
   const bestWords = (c) => { const now = metrics(f[1], c.weight, c.size, st(c), c.spacing, 0).space; return Math.round(((m.r.space - now) / c.size) * 1000) / 1000; };
-  const fitWords = () => set('words', bestWords(cand));
+  const fitWords = () => { const v = bestWords(cand); told('Word spacing', cand.words || 0, v, 'em'); set('words', v); };
   // both at once: the size first (at the current weight), then the weight at that size
-  const fitAll = () => { const c = Object.assign({}, cand); c.size = bestSize(c); c.weight = bestWeight(c); c.words = bestWords(c); setCand(c); };
+  const fitAll = () => { const c = Object.assign({}, cand); c.size = bestSize(c); c.weight = bestWeight(c); c.words = bestWords(c);
+    setNote(c.size === cand.size && c.weight === cand.weight && c.words === (cand.words || 0) ? 'Already the closest: ' + c.size + 'px, weight ' + c.weight + ', word spacing ' + c.words + 'em.'
+      : 'Fitted: size ' + cand.size + ' → ' + c.size + 'px, weight ' + cand.weight + ' → ' + c.weight + ', word spacing ' + (cand.words || 0) + ' → ' + c.words + 'em.'); setCand(c); };
 
   const wl = steps(f);
   return (
@@ -156,8 +161,9 @@ function App() {
                 <Button onClick={fitWeight}>Fit weight</Button>
                 <Button onClick={fitWords}>Fit word spacing</Button>
                 {f[3] ? <Button onClick={fitWidth}>Fit width</Button> : null}
-                <Button variant="ghost" onClick={() => setCand({ size: ref.size, weight: clampWeight(f, ref.weight), stretch: 100, spacing: 0, words: 0 })}>Reset</Button>
+                <Button variant="ghost" onClick={() => setNote('') || setCand({ size: ref.size, weight: clampWeight(f, ref.weight), stretch: 100, spacing: 0, words: 0 })}>Reset</Button>
               </Inline>
+              <Text variant="secondary" role="status">{note}</Text>
             </Stack>
           </Panel>
           <Panel title="Side by side" icon="ed-text">

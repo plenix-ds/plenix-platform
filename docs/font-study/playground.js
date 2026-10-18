@@ -239,8 +239,19 @@ function App() {
     });
     return best.w;
   };
-  const fitSize = () => set('size', bestSize(cand));
-  const fitWeight = () => set('weight', bestWeight(cand));
+  const [note, setNote] = useState('');
+  // a fit's message: what moved, or that it was already the closest
+  const told = (what, from, to, unit) => setNote(from === to ? what + ': already the closest (' + to + (unit || '') + ').' : what + ': ' + from + (unit || '') + ' → ' + to + (unit || '') + '.');
+  const fitSize = () => {
+    const v = bestSize(cand);
+    told('Size', cand.size, v, 'px');
+    set('size', v);
+  };
+  const fitWeight = () => {
+    const v = bestWeight(cand);
+    told('Weight', cand.weight, v);
+    set('weight', v);
+  };
   const fitWidth = () => {
     if (!f[3]) return;
     let best = null;
@@ -252,6 +263,7 @@ function App() {
         e
       };
     }
+    told('Width', cand.stretch, best.s, '%');
     set('stretch', best.s);
   };
   // word spacing: the em value that makes a space exactly as wide as DM Sans's (its width moves one to one with it)
@@ -259,13 +271,18 @@ function App() {
     const now = metrics(f[1], c.weight, c.size, st(c), c.spacing, 0).space;
     return Math.round((m.r.space - now) / c.size * 1000) / 1000;
   };
-  const fitWords = () => set('words', bestWords(cand));
+  const fitWords = () => {
+    const v = bestWords(cand);
+    told('Word spacing', cand.words || 0, v, 'em');
+    set('words', v);
+  };
   // both at once: the size first (at the current weight), then the weight at that size
   const fitAll = () => {
     const c = Object.assign({}, cand);
     c.size = bestSize(c);
     c.weight = bestWeight(c);
     c.words = bestWords(c);
+    setNote(c.size === cand.size && c.weight === cand.weight && c.words === (cand.words || 0) ? 'Already the closest: ' + c.size + 'px, weight ' + c.weight + ', word spacing ' + c.words + 'em.' : 'Fitted: size ' + cand.size + ' → ' + c.size + 'px, weight ' + cand.weight + ' → ' + c.weight + ', word spacing ' + (cand.words || 0) + ' → ' + c.words + 'em.');
     setCand(c);
   };
   const wl = steps(f);
@@ -433,14 +450,17 @@ function App() {
     onClick: fitWidth
   }, "Fit width") : null, /*#__PURE__*/React.createElement(Button, {
     variant: "ghost",
-    onClick: () => setCand({
+    onClick: () => setNote('') || setCand({
       size: ref.size,
       weight: clampWeight(f, ref.weight),
       stretch: 100,
       spacing: 0,
       words: 0
     })
-  }, "Reset")))), /*#__PURE__*/React.createElement(Panel, {
+  }, "Reset")), /*#__PURE__*/React.createElement(Text, {
+    variant: "secondary",
+    role: "status"
+  }, note))), /*#__PURE__*/React.createElement(Panel, {
     title: "Side by side",
     icon: "ed-text"
   }, /*#__PURE__*/React.createElement(Stack, {

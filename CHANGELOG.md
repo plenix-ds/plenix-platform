@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.9] - 2026-10-18
+
+### Changed
+- Font playground: each Fit button says what it changed ("Size: 13px → 12.625px", or "already the closest"), announced
+  politely; before, a fit that changed nothing looked like it did nothing.
+
 ## [0.53.8] - 2026-10-18
 
 ### Fixed
