@@ -69,6 +69,11 @@ ssh "$HOST" "set -e
   B=\$(sha256sum /srv/plenix/www.new/Plenix/platform/dist/platform.bundle.css | cut -c1-8)
   sudo sed -i \"s|href=\\\"../platform.css?v=[0-9]*\\\"|href=\\\"../dist/platform.bundle.css?v=\$B\\\"|\" /srv/plenix/www.new/Plenix/platform/design-system/index.html
   grep -q platform.bundle.css /srv/plenix/www.new/Plenix/platform/design-system/index.html && echo 'Design system on one stylesheet'
+  # the study pages too: platform.css's two hundred imports trip the server's request limit (429) and the page shows unstyled
+  for f in /srv/plenix/www.new/Plenix/docs/*/*.html; do
+    sudo sed -i \"s|href=\\\"../../platform/platform.css\\\"|href=\\\"../../platform/dist/platform.bundle.css?v=\$B\\\"|\" \"\$f\"
+  done
+  grep -l platform.bundle.css /srv/plenix/www.new/Plenix/docs/*/*.html | wc -l | xargs -I{} echo 'Study pages on one stylesheet: {}'
   pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | wc -l)
   echo \"Apps on release $VERSION: \$pinned pages\"
   ls /srv/plenix/cdn | grep -E '^[0-9]+[.][0-9]+[.][0-9]+' | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null

@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.53.6] - 2026-10-18
+
+### Fixed
+- The published study pages (the font playground and study, composition, reading pane) showed unstyled: platform.css's
+  two hundred imports tripped the server's request limit (429). On the server they now load the one bundled stylesheet,
+  as the design system does.
+
 ## [0.53.5] - 2026-10-17
 
 ### Changed
