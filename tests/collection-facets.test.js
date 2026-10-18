@@ -42,7 +42,7 @@ module.exports = async function facets(page) {
       await mount({ options, supplied: [{ value: 'red', count: 0 }, { value: 'blue', count: 99 }, { value: 'green', count: null }] });
       const values = [...host.querySelectorAll('.plx-find-panel__checklist label')].map(e => e.querySelector('.plx-text--data')?.textContent);
       check(values[0] === '0' && values[1] === '99' && values[2] === undefined, 'application counts win including explicit zero and intentional null');
-      check([...host.querySelectorAll('.plx-text--data')].every(e => getComputedStyle(e).fontFamily.includes('DM Mono')), 'count values use the existing technical-value font');
+      check([...host.querySelectorAll('.plx-text--data')].every(e => getComputedStyle(e).fontFamily.includes('Reddit Mono')), 'count values use the existing technical-value font');
       D.flushSync(() => root.unmount()); root = D.createRoot(host);
       await mount({ options: { quick: { color: 'list' } } });
       check(v.quickProps('color').counts === undefined && !host.querySelector('.plx-text--data'), 'no source preserves existing labels without fabricated zero counts');

@@ -21,7 +21,7 @@
 .plx-chart__axis-line{fill:none;stroke:var(--plx-comp-chart-axis-line-color);stroke-width:var(--plx-comp-chart-axis-line-width);}
 .plx-chart__grid-line{fill:none;stroke:var(--plx-comp-chart-grid-line-color);stroke-width:var(--plx-comp-chart-grid-line-width);}
 /* tick labels: technical values, the data font */
-.plx-chart__tick-label{fill:var(--plx-comp-chart-tick-label-text);font-family:var(--plx-comp-chart-tick-label-font-family);font-size:var(--plx-comp-chart-tick-label-font-size);}
+.plx-chart__tick-label{fill:var(--plx-comp-chart-tick-label-text);font-family:var(--plx-comp-chart-tick-label-font-family);font-size:var(--plx-comp-chart-tick-label-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* tick labels placed by the axis they belong to: the value axis's at its tick, ending before the plot; the category
    axis's centered under it */
 .plx-chart__tick-label--y{dominant-baseline:central;text-anchor:end;}

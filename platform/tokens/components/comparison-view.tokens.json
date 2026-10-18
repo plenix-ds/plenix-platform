@@ -22,7 +22,7 @@
     "comparison-view-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Comparison view: a pane's name's weight." },
     "comparison-view-title-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "Comparison view: a pane's name's line height." },
     "comparison-view-meta-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Comparison view: a pane's version or date under its name." },
-    "comparison-view-meta-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Comparison view: versions and dates are technical values: the data font (DM Mono)." },
+    "comparison-view-meta-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Comparison view: versions and dates are technical values: the data font (Reddit Mono)." },
     "comparison-view-meta-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "Comparison view: the version or date's size." },
     "comparison-view-meta-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "Comparison view: the version or date's line height." },
     "comparison-view-body-gap": { "$value": "{plx-sys.space-stack-md}", "$type": "dimension", "$description": "Comparison view: the space between a pane's preview, content and attributes; and around the slider's stage." },

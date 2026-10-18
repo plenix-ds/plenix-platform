@@ -36,7 +36,7 @@
     "calendar-range-text": { "$value": "{plx-sys.selected-content}", "$type": "color", "$description": "Calendar range: the numbers between the start and the end." },
     "calendar-range-half": { "$value": "50%", "$type": "dimension", "$description": "Calendar range: at the start and the end the fill covers the cell's inner half only." },
     "calendar-week-number-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Calendar week numbers: the number before each week." },
-    "calendar-week-number-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Calendar week numbers: the data font (DM Mono)." },
+    "calendar-week-number-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Calendar week numbers: the data font (Reddit Mono)." },
     "calendar-week-number-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Calendar week numbers: their size (the weekday names')." }
   }
 }

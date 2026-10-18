@@ -11,7 +11,7 @@
      PropertyList.Item.label: the label
      PropertyList.Item.htmlFor: the id of a control in the item, so the label names it
      PropertyList.Item.description: a line under the label
-     PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, DM Mono,
+     PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, Reddit Mono,
        at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value

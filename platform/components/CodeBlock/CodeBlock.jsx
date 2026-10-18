@@ -1,5 +1,5 @@
 /* Plenix · CodeBlock
-   Summary: Code or a file's source, in the code font (DM Mono) on the page surface, with a Copy button.
+   Summary: Code or a file's source, in the code font (Reddit Mono) on the page surface, with a Copy button.
    Usage:
      <CodeBlock title="platform/components/Button/Button.jsx" maxHeight="tall">{text}</CodeBlock>
    Props:

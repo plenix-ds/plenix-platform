@@ -19,7 +19,7 @@
     "timeline-content-row-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "Timeline: the space between the time, the title, the description and the content." },
     "timeline-heading-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "Timeline: the space between the title and its badge." },
     "timeline-time-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Timeline: the date or time." },
-    "timeline-time-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Timeline: the date or time is a technical value (DM Mono)." },
+    "timeline-time-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Timeline: the date or time is a technical value (Reddit Mono)." },
     "timeline-time-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "Timeline: the date or time's size." },
     "timeline-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Timeline: what happened." },
     "timeline-title-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "Timeline: the title's size." },

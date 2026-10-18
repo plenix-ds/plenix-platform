@@ -3,7 +3,7 @@
   "plx-comp": {
     "search-result-group-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "SearchResultGroup: the space between the heading, the results and the link to all." },
     "search-result-group-count-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "SearchResultGroup: the count after the heading." },
-    "search-result-group-count-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "SearchResultGroup: the count's font (a technical value: DM Mono)." },
+    "search-result-group-count-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "SearchResultGroup: the count's font (a technical value: Reddit Mono)." },
     "search-result-group-count-margin-inline-start": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "SearchResultGroup: the space between the heading and its count." },
     "search-result-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "SearchResult: the space between the thumbnail or avatar, the text and the actions." },
     "search-result-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "SearchResult: the space above and under a result." },

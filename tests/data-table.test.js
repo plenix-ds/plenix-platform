@@ -2,7 +2,7 @@
 // awaited (Tabulator loads the first time a table renders), and for each table: it is built, it has its rows or its empty
 // message, axe finds no WCAG 2.2 A/AA problem in it, the style audit finds nothing written inline by Plenix, and its rows
 // and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own size and
-// the typeface of its kind: DM Mono in a column of kind "data" and for code and the data role, DM Sans elsewhere
+// the typeface of its kind: Reddit Mono in a column of kind "data" and for code and the data role, DM Sans elsewhere
 // (a grid in its error state counts as built: it shows what failed and Retry instead of its rows)
 // The three modes (owner, 2026-10-14; the DataTable record's variant pages): "fill" draws only the rows in view, "pages"
 // and "load-more" have a footer whose controls (the rows-per-page Select, the page buttons, Load more) follow the grid
@@ -204,8 +204,8 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
           font: getComputedStyle(g.querySelector(':is(.tabulator,.plx-data-table__grid)')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-table-font-size').trim() };
       });
       // typefaces by kind, one size (owner, 2026-10-11): each text in the body rows at the table's own size; in a column of
-      // kind "data" in DM Mono, elsewhere in DM Sans, except code and the data role (code, Text "data", token and class
-      // links), which are DM Mono wherever they are (component labels excepted)
+      // kind "data" in Reddit Mono, elsewhere in DM Sans, except code and the data role (code, Text "data", token and class
+      // links), which are Reddit Mono wherever they are (component labels excepted)
       const type = [];
       const MARKED = 'code, samp, .plx-text--data, .plx-font-data, .plx-font-code, .ds-code-link, .ds-mono, .ds-value, .ds-name';
       grids.forEach((g) => {
@@ -216,7 +216,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
           // (a group header's eyebrow and a summary's name are labels in the eyebrow style: the owner's group header, 2026-10-14)
           const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, :is(.tabulator-placeholder,.plx-data-table__grid-placeholder), .ds-vis, .plx-data-table__group-eyebrow, .plx-data-table__group-summary-name')) continue;
           const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
-          const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'DM Mono' : 'DM Sans';
+          const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'Reddit Mono' : 'DM Sans';
           if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));
         }
       });

@@ -2,7 +2,7 @@
    Summary: A field for a number: typed freely in the reader's locale, checked and formatted when the field is left,
      stepped with the arrow keys, and shown with what it measures: a currency, a percent sign or a unit inside the field.
      Stepper buttons (minus and plus at its end) or the quantity form (minus, the count, plus) change it one step at a time.
-     The value is in the data font (DM Mono).
+     The value is in the data font (Reddit Mono).
    Usage:
      <Field label="Copies"><NumberInput value={n} onChange={setN} min={1} max={99} stepper="buttons" width="sm" /></Field>
      <Field label="Price"><NumberInput value={price} onChange={setPrice} format="currency" currency="USD" min={0} /></Field>

@@ -20,7 +20,7 @@
   --plx-ref-font-size-20: 1.25rem;
   /* ── TYPOGRAPHY: families ── */
   --plx-ref-font-sans: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  --plx-ref-font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --plx-ref-font-mono: "Reddit Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   /* ── TYPOGRAPHY: weights ── */
   --plx-ref-font-weight-regular-400: 400;
   --plx-ref-font-weight-medium-500: 500;
@@ -32,6 +32,7 @@
   --plx-ref-line-height-snug: 1.4;
   --plx-ref-line-height-normal: 1.5;
   --plx-ref-line-height-relaxed: 1.7;
+  --plx-ref-word-spacing-mono-fit: -0.279em;
   /* ── TYPOGRAPHY: letter spacing ── */
   --plx-ref-letter-spacing-tight: -0.02em;
   --plx-ref-letter-spacing-snug: -0.01em;

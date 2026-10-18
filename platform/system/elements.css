@@ -1,9 +1,9 @@
 /* Element defaults: controls take the page font; code and headings use their
    font roles; buttons and labels use the label font. */
 button,input,textarea,select{font-family:inherit;}
-code,pre,kbd,samp{font-family:var(--plx-sys-font-code);}
+code,pre,kbd,samp{font-family:var(--plx-sys-font-code);word-spacing:var(--plx-sys-font-data-word-spacing);}
 h1,h2,h3,h4,h5,h6{font-family:var(--plx-sys-font-heading);}
 label{font-family:var(--plx-sys-font-label);}
-/* technical values (IDs, file names and paths, dates, sizes, counts) in DM Mono; code in DM Mono */
-.plx-font-data{font-family:var(--plx-sys-font-data);}
-.plx-font-code{font-family:var(--plx-sys-font-code);}
+/* technical values (IDs, file names and paths, dates, sizes, counts) in Reddit Mono; code in Reddit Mono */
+.plx-font-data{font-family:var(--plx-sys-font-data);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-font-code{font-family:var(--plx-sys-font-code);word-spacing:var(--plx-sys-font-data-word-spacing);}

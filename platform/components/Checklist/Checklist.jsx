@@ -10,7 +10,7 @@
      Native checkboxes support pointer, Space and labels. Disabled tasks cannot change.
      Completion is derived from unique known ids; empty lists report zero. Collapsing preserves state.
    Notes:
-     Completion and dismissal persistence belong to the caller. Technical counts use DM Mono.
+     Completion and dismissal persistence belong to the caller. Technical counts use Reddit Mono.
 */
 import React from 'react';
 import { Stack, Inline } from '../Stack/Stack.jsx';

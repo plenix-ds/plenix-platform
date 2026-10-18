@@ -30,7 +30,7 @@
 .plx-commerce-line__media{display:block;min-inline-size:0;}
 .plx-commerce-line__placeholder{align-items:center;background-color:var(--plx-comp-commerce-placeholder-background);color:var(--plx-comp-commerce-placeholder-text);display:flex;justify-content:center;}
 .plx-commerce-line__text{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-line-text-gap);}
-.plx-commerce-line__total{font-family:var(--plx-comp-commerce-line-total-font-family);font-weight:var(--plx-comp-commerce-line-total-font-weight);min-inline-size:var(--plx-comp-commerce-line-total-width);text-align:end;}
+.plx-commerce-line__total{font-family:var(--plx-comp-commerce-line-total-font-family);font-weight:var(--plx-comp-commerce-line-total-font-weight);min-inline-size:var(--plx-comp-commerce-line-total-width);text-align:end;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-commerce-line__warning{grid-column:2 / -1;}
 /* the order summary's totals: the name at the start, the amount at the end, on one baseline */
 .plx-commerce-summary__items{display:flex;flex-direction:column;padding-block-end:var(--plx-comp-commerce-summary-gap);row-gap:var(--plx-comp-commerce-summary-gap);}
@@ -38,7 +38,7 @@
 .plx-commerce-summary__name{min-inline-size:0;}
 .plx-commerce-summary__totals{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;row-gap:var(--plx-comp-commerce-summary-gap);}
 .plx-commerce-summary__label{color:var(--plx-comp-commerce-summary-label-text);}
-.plx-commerce-summary__value{font-family:var(--plx-comp-commerce-summary-value-font-family);margin-inline-start:0;}
+.plx-commerce-summary__value{font-family:var(--plx-comp-commerce-summary-value-font-family);margin-inline-start:0;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-commerce-summary__row--total{border-block-start-color:var(--plx-comp-commerce-line-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-commerce-line-border-width);font-weight:var(--plx-comp-commerce-total-font-weight);padding-block-start:var(--plx-comp-commerce-summary-gap);}
 .plx-commerce-summary__row--total .plx-commerce-summary__label{color:var(--plx-comp-commerce-title-text);}
 .plx-commerce-summary__actions{display:flex;flex-direction:column;padding-block-start:var(--plx-comp-commerce-section-gap);row-gap:var(--plx-comp-commerce-section-gap);}

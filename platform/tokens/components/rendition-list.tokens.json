@@ -9,7 +9,7 @@
     "rendition-list-data-font": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
-      "$description": "Rendition menu file names, formats and sizes use DM Mono."
+      "$description": "Rendition menu file names, formats and sizes use Reddit Mono."
     }
   }
 }

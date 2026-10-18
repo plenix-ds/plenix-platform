@@ -31,6 +31,7 @@
   --plx-sys-font-label: var(--plx-sys-typeface-sans);
   --plx-sys-font-code: var(--plx-sys-typeface-mono);
   --plx-sys-font-data: var(--plx-sys-typeface-mono);
+  --plx-sys-font-data-word-spacing: var(--plx-ref-word-spacing-mono-fit);
   /* ── LAYERS: one level per stacking purpose, lowest to highest ── */
   --plx-sys-layer-behind: -1;
   --plx-sys-layer-base: 0;

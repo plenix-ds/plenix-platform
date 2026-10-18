@@ -33,7 +33,7 @@
      Closed, the field shows the chosen city with its offset after it.
      A value the browser lists under another IANA name (Asia/Kolkata, listed as Asia/Calcutta) takes that zone’s place.
    Notes:
-     Offsets are technical values: the data font (DM Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
+     Offsets are technical values: the data font (Reddit Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
 import React from 'react';

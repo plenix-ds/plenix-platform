@@ -2,7 +2,7 @@
    Summary: A field for a date that people type in their locale's numeric form or choose from a Calendar in a popover:
      one date, a range of two (a start and an end, with two months side by side), or a date with a time (the time field
      beside it, with the time zone). Optional presets (Today, Last 7 days) choose common values in one press. The value is
-     in the data font (DM Mono).
+     in the data font (Reddit Mono).
    Usage:
      <Field label="Due date" description="MM/DD/YYYY"><DatePicker value={due} onChange={setDue} /></Field>
      <Field label="Period"><DatePicker mode="range" value={period} onChange={setPeriod} presets /></Field>

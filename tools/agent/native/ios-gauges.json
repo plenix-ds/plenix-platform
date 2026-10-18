@@ -1,6 +1,6 @@
 {
  "ios-data-display|Gauges": {
-  "summary": "The Plenix gauge on iOS is SwiftUI’s Gauge in the accessoryCircular style or a semicircle drawn the Plenix way: the track in the subtle border color, the fill in the first data-viz color, the value in DM Mono in the middle, the ends under the arc, and, with thresholds, the warning and critical ranges and a status label. Gauge keeps its own accessibility (its value and range read by VoiceOver).",
+  "summary": "The Plenix gauge on iOS is SwiftUI’s Gauge in the accessoryCircular style or a semicircle drawn the Plenix way: the track in the subtle border color, the fill in the first data-viz color, the value in Reddit Mono in the middle, the ends under the arc, and, with thresholds, the warning and critical ranges and a status label. Gauge keeps its own accessibility (its value and range read by VoiceOver).",
   "variants": [
    {
     "name": "Semicircle",
@@ -53,12 +53,12 @@
    {
     "part": "C",
     "name": "Value",
-    "about": "The value in DM Mono in the middle of the arc, with a few words under it."
+    "about": "The value in Reddit Mono in the middle of the arc, with a few words under it."
    },
    {
     "part": "D",
     "name": "Ends",
-    "about": "The minimum and the maximum under the ends of the arc, in DM Mono."
+    "about": "The minimum and the maximum under the ends of the arc, in Reddit Mono."
    },
    {
     "part": "E",
@@ -96,17 +96,17 @@
     "part": "C",
     "attribute": "Value font",
     "token": "plx-comp-gauge-value-font-family",
-    "value": "DM Mono semibold: a technical value (the data role)",
+    "value": "Reddit Mono semibold: a technical value (the data role)",
     "apple": "currentValueLabel",
     "swiftui": "Text(percent).font(Plenix.Font.mono(Plenix.Platform.textHeadingSize, relativeTo: .title3))",
-    "uikit": "UILabel with DM Mono scaled by UIFontMetrics (Plenix.Font.mono)",
-    "appkit": "NSTextField with DM Mono (Plenix.Font.mono; a macOS build of the tokens is needed)"
+    "uikit": "UILabel with Reddit Mono scaled by UIFontMetrics (Plenix.Font.mono)",
+    "appkit": "NSTextField with Reddit Mono (Plenix.Font.mono; a macOS build of the tokens is needed)"
    },
    {
     "part": "D",
     "attribute": "Ends font",
     "token": "plx-comp-gauge-end-font-family",
-    "value": "DM Mono at the data size (the data role)",
+    "value": "Reddit Mono at the data size (the data role)",
     "apple": "minimumValueLabel and maximumValueLabel",
     "swiftui": "Text(minText).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption))",
     "uikit": "UILabel with Plenix.Font.mono at the data size",

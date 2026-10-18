@@ -11,7 +11,7 @@
     "sankey-diagram-label-halo-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Sankey diagram: the halo under a name and total, in the surface color, so they read over the bands." },
     "sankey-diagram-label-halo-width": { "$value": "{plx-sys.border-width-thick}", "$type": "dimension", "$description": "Sankey diagram: the halo's width." },
     "sankey-diagram-value-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Sankey diagram: a node's total after its name." },
-    "sankey-diagram-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Sankey diagram: totals are technical values: the data font (DM Mono)." },
+    "sankey-diagram-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Sankey diagram: totals are technical values: the data font (Reddit Mono)." },
     "sankey-diagram-value-font-weight": { "$value": "{plx-sys.font-weight-regular}", "$type": "fontWeight", "$description": "Sankey diagram: a total's weight." }
   }
 }

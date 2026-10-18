@@ -68,8 +68,8 @@
 .plx-u-flex-wrap{flex-wrap:wrap !important;}
 .plx-u-flex{display:flex !important;}
 .plx-u-font-body{font-family:var(--plx-sys-font-body) !important;}
-.plx-u-font-code{font-family:var(--plx-sys-font-code) !important;}
-.plx-u-font-data{font-family:var(--plx-sys-font-data) !important;}
+.plx-u-font-code{font-family:var(--plx-sys-font-code) !important;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-u-font-data{font-family:var(--plx-sys-font-data) !important;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-u-font-mono{font-family:var(--plx-sys-typeface-mono) !important;}
 .plx-u-font-sans{font-family:var(--plx-sys-typeface-sans) !important;}
 .plx-u-fs-09{font-size:var(--plx-ref-font-size-09) !important;}

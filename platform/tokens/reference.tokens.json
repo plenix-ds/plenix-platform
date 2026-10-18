@@ -81,7 +81,7 @@
       }
     },
     "font-mono": {
-      "$value": "\"DM Mono\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
+      "$value": "\"Reddit Mono\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
       "$type": "fontFamily"
     },
     "font-weight-regular-400": {
@@ -133,6 +133,11 @@
     "line-height-relaxed": {
       "$value": "1.7",
       "$type": "number"
+    },
+    "word-spacing-mono-fit": {
+      "$value": "-0.279em",
+      "$type": "dimension",
+      "$description": "Reddit Mono fitted to DM Sans (owner, 2026-10-18, docs/font-study/playground): a space between words as wide as DM Sans's at the same font-size."
     },
     "letter-spacing-tight": {
       "$value": "-0.02em",

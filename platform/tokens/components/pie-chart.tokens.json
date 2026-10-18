@@ -4,7 +4,7 @@
     "pie-chart-slice-outline-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Pie chart: the line between two slices, in the chart's surface color (the small gap between slices)." },
     "pie-chart-slice-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Pie chart: the width of the line between two slices." },
     "pie-chart-center-value-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Pie chart (donut, half): the center value." },
-    "pie-chart-center-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Pie chart (donut, half): the center value is a technical value: the data font (DM Mono)." },
+    "pie-chart-center-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Pie chart (donut, half): the center value is a technical value: the data font (Reddit Mono)." },
     "pie-chart-center-value-font-size": { "$value": "{plx-ref.font-size-20}", "$type": "dimension", "$description": "Pie chart (donut, half): the center value's size." },
     "pie-chart-center-value-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Pie chart (donut, half): the center value's weight." },
     "pie-chart-center-label-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Pie chart (donut, half): the words under the center value." },

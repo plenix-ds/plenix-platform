@@ -1,16 +1,16 @@
 // Plenix tests · typography (owner, 2026-10-04, restored 2026-10-11; Platforms Standard 3.4): DM Sans for all interface
-// text; DM Mono only for code (--plx-sys-font-code) and technical values (--plx-sys-font-data: IDs, file names and paths,
+// text; Reddit Mono only for code (--plx-sys-font-code) and technical values (--plx-sys-font-data: IDs, file names and paths,
 // versions, dates and times, sizes, counts, durations, measured percentages, coordinates), chosen by the value's kind, and
 // always at its neighbors' size and line height so Mono and Sans share a baseline. On every app page and a sample of the
 // design system's pages (the first of each group and the pages of tokens, tables and values), in light and dark, with the
 // fonts loaded:
 //   role      an element marked as code or data (code, kbd, pre, samp, Text "data", .plx-font-data/-code, a DataTable or
-//             Table column of kind "data", a PropertyList value marked data) computes to DM Mono
-//   prose     text in DM Mono is a code or data value, never a sentence (four or more plain words, no code characters)
+//             Table column of kind "data", a PropertyList value marked data) computes to Reddit Mono
+//   prose     text in Reddit Mono is a code or data value, never a sentence (four or more plain words, no code characters)
 //   pattern   visible text that is wholly a technical value (2026-10-11, Oct 11, 2026, 10:42 AM, 12 MB, 1.2 GB, 640×480,
-//             v1.2.3, report.pdf, #1234, a UUID) is in DM Mono (badges, tags, chips, buttons, inputs, menus and navigation
+//             v1.2.3, report.pdf, #1234, a UUID) is in Reddit Mono (badges, tags, chips, buttons, inputs, menus and navigation
 //             keep their component's typography; a title or heading keeps the heading typography)
-//   baseline  DM Mono and DM Sans text on the same line of the same row (a table row, a PropertyList item, a flex row,
+//   baseline  Reddit Mono and DM Sans text on the same line of the same row (a table row, a PropertyList item, a flex row,
 //             a line of running text) sit on one baseline, within 0.5px
 // Known findings are kept in tests/baselines/typography.json (page -> mode -> check -> number); the test fails only when
 // a page and mode has more findings than recorded, so they can only go down (aim: none).
@@ -43,7 +43,7 @@ const CHECKS = ['role', 'prose', 'pattern', 'baseline'];
 // runs in the page: the findings of each check
 async function inspect() {
   await document.fonts.ready;
-  const MONO = /^"?DM Mono/i;
+  const MONO = /^"?Reddit Mono/i;
   const fam = (el) => getComputedStyle(el).fontFamily;
   const isMono = (el) => MONO.test(fam(el));
   // marked as code or data: the elements and classes of the code and data roles
@@ -82,11 +82,11 @@ async function inspect() {
   for (const x of texts) {
     const own = x.el.closest(OWN);
     const role = x.el.closest(ROLE);
-    // role: marked as code or data, set in DM Mono
+    // role: marked as code or data, set in Reddit Mono
     if (role && !own && !x.mono) out.role.push(say(x.el, x.t));
-    // prose: DM Mono is never used for a sentence (a code block is code, comments and all)
+    // prose: Reddit Mono is never used for a sentence (a code block is code, comments and all)
     if (x.mono && !x.el.closest('pre, .ds-type, .ds-vis, .ds-specimens') && prose(x.t)) out.prose.push(say(x.el, x.t));
-    // pattern: a technical value on its own is in DM Mono (a title or heading that names a thing by its date
+    // pattern: a technical value on its own is in Reddit Mono (a title or heading that names a thing by its date
     // or file name is a title: it keeps the heading typography)
     if (!x.mono && !own && !x.el.closest('[role="menu"], [role="listbox"], nav, .plx-tooltip, [role="tooltip"], ' + TITLE) && TECH.test(x.t)) out.pattern.push(say(x.el, x.t));
   }

@@ -1,16 +1,16 @@
 {
   "ios-forms|Steppers": {
-    "summary": "Plenix on iOS sets how many of a product to buy with the system Stepper, as the web’s product options do with the quantity stepper: the count beside it in DM Mono, the stepper’s range from one to the stock or the limit per order, and its accessibility label naming the product. Apple’s default is a Stepper with its value in the label; Plenix keeps the Stepper’s taps, repeat and adjustable value and sets the count in the data font.",
+    "summary": "Plenix on iOS sets how many of a product to buy with the system Stepper, as the web’s product options do with the quantity stepper: the count beside it in Reddit Mono, the stepper’s range from one to the stock or the limit per order, and its accessibility label naming the product. Apple’s default is a Stepper with its value in the label; Plenix keeps the Stepper’s taps, repeat and adjustable value and sets the count in the data font.",
     "variants": [
-      { "name": "Product quantity", "apple": "Stepper", "web": "specialized|Product options", "background": "plx-sys-fill-neutral", "content": "plx-sys-content-default", "border": null, "swiftui": "Stepper(value: $quantity, in: 1...stock) with the count in DM Mono in its label", "uikit": "UIStepper with minimumValue 1 and maximumValue the stock, beside a UILabel in DM Mono", "appkit": "NSStepper bound to an NSTextField with a NumberFormatter (a macOS build of the tokens is needed)", "use": "How many of a product go in the cart, beside Add to cart." }
+      { "name": "Product quantity", "apple": "Stepper", "web": "specialized|Product options", "background": "plx-sys-fill-neutral", "content": "plx-sys-content-default", "border": null, "swiftui": "Stepper(value: $quantity, in: 1...stock) with the count in Reddit Mono in its label", "uikit": "UIStepper with minimumValue 1 and maximumValue the stock, beside a UILabel in Reddit Mono", "appkit": "NSStepper bound to an NSTextField with a NumberFormatter (a macOS build of the tokens is needed)", "use": "How many of a product go in the cart, beside Add to cart." }
     ],
     "anatomy": [
       { "part": "A", "name": "Label", "about": "Quantity, in DM Sans, the product named for VoiceOver." },
-      { "part": "B", "name": "Count", "about": "The number in DM Mono, beside the stepper." },
+      { "part": "B", "name": "Count", "about": "The number in Reddit Mono, beside the stepper." },
       { "part": "C", "name": "Stepper", "about": "Minus and plus; minus dims at one, plus at the stock." }
     ],
     "attributes": [
-      { "part": "B", "attribute": "Count in the data font", "token": "plx-comp-input-data-font-family", "value": "The quantity is a technical value: DM Mono at the data size (the data role)", "apple": "The label’s text", "swiftui": "Text(quantity, format: .number).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .body))", "uikit": "countLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)", "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)" },
+      { "part": "B", "attribute": "Count in the data font", "token": "plx-comp-input-data-font-family", "value": "The quantity is a technical value: Reddit Mono at the data size (the data role)", "apple": "The label’s text", "swiftui": "Text(quantity, format: .number).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .body))", "uikit": "countLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)", "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)" },
       { "part": "A", "attribute": "Accessible name", "token": null, "value": "“Quantity, Choir robe”: the product named with the control, as the web’s aria-label", "apple": "accessibilityLabel", "swiftui": ".accessibilityLabel(Text(\"Quantity, \\(product.title)\"))", "uikit": "stepper.accessibilityLabel = \"Quantity, \" + product.title", "appkit": "setAccessibilityLabel(_:)" }
     ],
     "states": [
@@ -21,7 +21,7 @@
       "swiftui": [
         "import SwiftUI",
         "",
-        "/// How many of a product to buy: the system Stepper with the count in DM Mono.",
+        "/// How many of a product to buy: the system Stepper with the count in Reddit Mono.",
         "struct PlenixQuantity: View {",
         "    let product: String",
         "    let stock: Int",
@@ -89,17 +89,17 @@
     }
   },
   "ios-navigation|Searching": {
-    "summary": "Plenix on iOS starts product discovery with the system search: a searchable navigation stack with suggestions from the catalog, the categories to browse while the field is empty, and the results as a grid of product cards with their prices in DM Mono. Apple’s default is a searchable list; Plenix keeps .searchable, its suggestions and its scope bar for the categories, and draws the results as Plenix product cards.",
+    "summary": "Plenix on iOS starts product discovery with the system search: a searchable navigation stack with suggestions from the catalog, the categories to browse while the field is empty, and the results as a grid of product cards with their prices in Reddit Mono. Apple’s default is a searchable list; Plenix keeps .searchable, its suggestions and its scope bar for the categories, and draws the results as Plenix product cards.",
     "variants": [
       { "name": "Product discovery", "apple": "Searchable navigation stack with suggestions and scopes", "web": "specialized|Product discovery", "background": "plx-sys-surface-default", "content": "plx-sys-content-default", "border": null, "swiftui": ".searchable(text: $query) with .searchSuggestions { … } and .searchScopes($category) { … }", "uikit": "UISearchController with a suggestions table and scopeButtonTitles for the categories", "appkit": "NSSearchField with a menu of recent searches (a macOS build of the tokens is needed)", "use": "The shop’s entry: search, browse by category, then the products." }
     ],
     "anatomy": [
       { "part": "A", "name": "Search field", "about": "In the navigation bar; suggestions come from product names." },
       { "part": "B", "name": "Categories", "about": "The scope bar, or a grid of category cards while the field is empty." },
-      { "part": "C", "name": "Results", "about": "Product cards with their prices in DM Mono; the count is announced." }
+      { "part": "C", "name": "Results", "about": "Product cards with their prices in Reddit Mono; the count is announced." }
     ],
     "attributes": [
-      { "part": "C", "attribute": "Price in the data font", "token": "plx-comp-product-card-price-font-family", "value": "A price is a technical value: DM Mono (the data role)", "apple": "The secondary text", "swiftui": "Text(price, format: .currency(code: currency)).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .headline))", "uikit": "priceLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)", "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)" },
+      { "part": "C", "attribute": "Price in the data font", "token": "plx-comp-product-card-price-font-family", "value": "A price is a technical value: Reddit Mono (the data role)", "apple": "The secondary text", "swiftui": "Text(price, format: .currency(code: currency)).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .headline))", "uikit": "priceLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)", "appkit": "NSFont(name: Plenix.Font.mono, …) (a macOS build of the tokens is needed)" },
       { "part": "C", "attribute": "Card surface", "token": "plx-comp-product-card-background", "value": "The raised surface with the default border and the card corners", "apple": "The grouped background", "swiftui": ".background(Plenix.Colors.surfaceRaised, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusCard12px))", "uikit": "cell.contentView.backgroundColor = Plenix.Colors.surfaceRaised; layer.cornerRadius = Plenix.Radius.radiusCard12px", "appkit": "the item’s layer (a macOS build of the tokens is needed)" }
     ],
     "states": [

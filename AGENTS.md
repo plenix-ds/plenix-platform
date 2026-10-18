@@ -67,7 +67,7 @@ changes inside `platform/design-system/` at `lanes/<task>/design-system/<the sam
 - Focused or invalid fields change only the border color (no outer ring). Menus 8px radius. Containers nest 2 deep at most.
 - Every table is the DataTable. Statuses are Badges with an icon, never a dot. Links are not buttons.
 - Icons only from `platform/icons/map.json` (Material Symbols Sharp, unedited).
-- DM Mono for code and technical values (numbers, dates); DM Sans for UI text. American English, sentence case.
+- Reddit Mono for code and technical values (numbers, dates); DM Sans for UI text. American English, sentence case.
 - A pattern is built only from Platform components. Mobile widths follow the HIG (iOS) or Material 3 (Android).
 - Keep the style of the file you edit: comments, naming, density.
 - Native designs (`tools/agent/native/*.json`): when the page already exists in `platform/standards/native-design.json`,

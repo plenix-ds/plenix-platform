@@ -2,7 +2,7 @@
    A result is a row: the thumbnail or avatar, then the path, the title (its link covers the row), the snippet and the
    meta, one under the other, then the actions. A group is a SectionHeading with the count, the list, and a link to all. */
 .plx-search-result-group{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-search-result-group-gap);}
-.plx-search-result-group__count{color:var(--plx-comp-search-result-group-count-text);font-family:var(--plx-comp-search-result-group-count-font-family);margin-inline-start:var(--plx-comp-search-result-group-count-margin-inline-start);text-transform:none;}
+.plx-search-result-group__count{color:var(--plx-comp-search-result-group-count-text);font-family:var(--plx-comp-search-result-group-count-font-family);margin-inline-start:var(--plx-comp-search-result-group-count-margin-inline-start);text-transform:none;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-search-result-group__list{list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-search-result-group__more{display:flex;}
 .plx-search-result{align-items:flex-start;border-bottom-color:var(--plx-comp-search-result-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-search-result-border-bottom-width);column-gap:var(--plx-comp-search-result-gap);display:flex;padding-block-end:var(--plx-comp-search-result-padding-block);padding-block-start:var(--plx-comp-search-result-padding-block);padding-inline-end:0;padding-inline-start:0;position:relative;}

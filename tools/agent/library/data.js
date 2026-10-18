@@ -92,7 +92,7 @@ t('Text', 'extend', 'M', 2, 'A', ['format'], ['display', 'body-lg (lead)', 'body
   'Text: add variant "display" and "lead", prop lines (line clamp), prop tabular, prop expandable (uses ShowMore); each typography leaf a variant page', EX.Text);
 t('SectionHeading', 'extend', 'S', 2, 'A', [], ['level 1', 'level 2', 'level 3', 'level 4'], 'already covered by the heading record; its own record with a page per level', EX.SectionHeading);
 t('Link', 'component', 'S', 2, 'A', ['Icon'], ['inline', 'standalone', 'external (icon + rel)', 'back (chevron)', 'subtle', 'on accent', 'visited'], 'one Link component; four leaves');
-t('Code', 'component', 'S', 2, 'A', [], ['default', 'on accent', 'truncated'], 'inline code (DM Mono, sunken fill)');
+t('Code', 'component', 'S', 2, 'A', [], ['default', 'on accent', 'truncated'], 'inline code (Reddit Mono, sunken fill)');
 t('Blockquote', 'component', 'S', 2, 'A', [], ['default', 'with citation', 'pull quote'], '');
 t('List', 'extend', 'S', 2, 'A', [], ['ordered (decimal)', 'ordered (alpha)', 'nested', 'steps'], 'List: add ordered and nested', EX.List);
 t('RichText', 'component', 'M', 2, 'A', ['Link', 'Code', 'Blockquote'], ['article', 'compact', 'in a panel'], 'a prose container (.plx-rich-text) styling headings, lists, tables, quotes and code from HTML or markdown output; sanitizes nothing itself (documented)');

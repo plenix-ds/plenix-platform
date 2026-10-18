@@ -7,4 +7,4 @@
 .plx-relative-date-input--custom .plx-relative-date-input__preset{inline-size:var(--plx-comp-relative-date-input-custom-preset-width);}
 .plx-relative-date-input__direction{inline-size:var(--plx-comp-relative-date-input-direction-width);}
 .plx-relative-date-input__unit{inline-size:var(--plx-comp-relative-date-input-unit-width);}
-.plx-relative-date-input__range{color:var(--plx-comp-relative-date-input-range-text);font-family:var(--plx-comp-relative-date-input-range-font-family);font-size:var(--plx-comp-relative-date-input-range-font-size);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+.plx-relative-date-input__range{color:var(--plx-comp-relative-date-input-range-text);font-family:var(--plx-comp-relative-date-input-range-font-family);font-size:var(--plx-comp-relative-date-input-range-font-size);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;word-spacing:var(--plx-sys-font-data-word-spacing);}

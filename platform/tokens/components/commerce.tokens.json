@@ -27,13 +27,13 @@
     "commerce-line-media-width": { "$value": "{plx-ref.size-64px}", "$type": "dimension", "$description": "Commerce: a line's picture column (64px)." },
     "commerce-line-text-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "Commerce: the space between a line's name, options and price (space-stack-xs)." },
     "commerce-line-total-width": { "$value": "{plx-ref.size-80px}", "$type": "dimension", "$description": "Commerce: a line total's least width, so the totals line up (80px)." },
-    "commerce-line-total-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Commerce: a line total in the data font (DM Mono), at the line's size." },
+    "commerce-line-total-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Commerce: a line total in the data font (Reddit Mono), at the line's size." },
     "commerce-line-total-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Commerce: a line total's weight (semibold), the figure people check." },
     "commerce-placeholder-background": { "$value": "{plx-sys.surface-sunken}", "$type": "color", "$description": "Commerce: a line's picture fill when there is none (surface-sunken)." },
     "commerce-placeholder-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Commerce: the picture icon of a line without one (content-subtle)." },
     "commerce-summary-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "Commerce: the space between the summary's rows (space-stack-xs)." },
     "commerce-summary-label-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Commerce: a summary row's name (content-muted); the total's is the title color." },
-    "commerce-summary-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Commerce: the summary's amounts in the data font (DM Mono)." },
+    "commerce-summary-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Commerce: the summary's amounts in the data font (Reddit Mono)." },
     "commerce-total-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Commerce: the total row's weight (semibold)." }
   }
 }

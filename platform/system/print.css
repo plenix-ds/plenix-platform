@@ -24,5 +24,5 @@
   .plx-notice,
   .plx-figure{break-inside:avoid;}
   h1,h2,h3,h4{break-after:avoid;}
-  .plx-print-urls a[href^="http"]::after{content:" (" attr(href) ")";color:var(--plx-sys-print-url-text);font-family:var(--plx-sys-font-data);}
+  .plx-print-urls a[href^="http"]::after{content:" (" attr(href) ")";color:var(--plx-sys-print-url-text);font-family:var(--plx-sys-font-data);word-spacing:var(--plx-sys-font-data-word-spacing);}
 }

@@ -26,14 +26,14 @@ for (const file of process.argv.slice(2)) {
       const cols = ios ? ['swiftui', 'uikit', 'appkit'] : ['compose', 'views']; cols.forEach((c) => { if (!a[c]) fail(key + ': ' + a.attribute + ' has no ' + c); });
     });
     // the data role (owner, 2026-10-11; Platforms Standard 3.4): an attribute described as the data role or the data font, or
-    // sized by a textData… token, is set in DM Mono in every code column (Plenix.Font.mono, PlenixFonts.MONO, R.font.dm_mono…);
-    // a code line sized by a textData… token names DM Mono on that line or the two around it
-    const MONO = /Plenix\.Font\.mono|PlenixFonts\.MONO|dm_mono|"DM Mono"/;
+    // sized by a textData… token, is set in Reddit Mono in every code column (Plenix.Font.mono, PlenixFonts.MONO, R.font.dm_mono…);
+    // a code line sized by a textData… token names Reddit Mono on that line or the two around it
+    const MONO = /Plenix\.Font\.mono|PlenixFonts\.MONO|dm_mono|"Reddit Mono"/;
     (d.attributes || []).forEach((a) => {
       if (!/data role|data font|textData/.test([a.attribute, a.value, a.swiftui, a.uikit, a.appkit, a.compose, a.views].join(' '))) return;
-      (ios ? ['swiftui', 'uikit', 'appkit'] : ['compose', 'views']).forEach((c) => { if (a[c] && !/^(Not applicable|None|—)/i.test(a[c]) && !MONO.test(a[c])) fail(key + ': ' + a.attribute + ' is the data role but its ' + c + ' code does not use DM Mono (Plenix.Font.mono / PlenixFonts.MONO / dm_mono): ' + a[c].slice(0, 90)); });
+      (ios ? ['swiftui', 'uikit', 'appkit'] : ['compose', 'views']).forEach((c) => { if (a[c] && !/^(Not applicable|None|—)/i.test(a[c]) && !MONO.test(a[c])) fail(key + ': ' + a.attribute + ' is the data role but its ' + c + ' code does not use Reddit Mono (Plenix.Font.mono / PlenixFonts.MONO / dm_mono): ' + a[c].slice(0, 90)); });
     });
-    Object.values(d.code || {}).forEach((lines) => { const L = [].concat(lines); L.forEach((line, i) => { if (/textData/.test(line) && !MONO.test(L.slice(Math.max(0, i - 2), i + 3).join('\n'))) fail(key + ': a code line sized by the data role does not use DM Mono: ' + line.trim().slice(0, 90)); }); });
+    Object.values(d.code || {}).forEach((lines) => { const L = [].concat(lines); L.forEach((line, i) => { if (/textData/.test(line) && !MONO.test(L.slice(Math.max(0, i - 2), i + 3).join('\n'))) fail(key + ': a code line sized by the data role does not use Reddit Mono: ' + line.trim().slice(0, 90)); }); });
     (d.variants || []).forEach((v) => { if (v.web && !leaves.has(v.web)) fail(key + ': ' + v.name + ' web ' + v.web + ' is not a page'); });
     (JSON.stringify([d.variants, d.attributes, d.states]).match(/plx-(?:sys|comp)-[a-z0-9-]*[a-z0-9]/g) || []).forEach((t) => { if (!toks.has(t)) fail(key + ': ' + t + ' is not a token'); });
     // the generated token names the code uses

@@ -356,7 +356,7 @@ object PlenixColors {
     val listBullet = Pair(Color(0xFFA3A6AD), Color(0xFFA3A6AD))
 }
 
-object PlenixFonts { const val SANS = "DM Sans"; const val MONO = "DM Mono" } // web --plx-sys-typeface-sans, --plx-sys-typeface-mono
+object PlenixFonts { const val SANS = "DM Sans"; const val MONO = "Reddit Mono" } // web --plx-sys-typeface-sans, --plx-sys-typeface-mono
 
 object PlenixRadius {
     val radiusDetail4px = 4.dp

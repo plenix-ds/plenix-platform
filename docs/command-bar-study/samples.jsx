@@ -1418,7 +1418,7 @@ const DECISIONS = [
   'Bars fixed at the top: the main bar and the selection bar stay put while the table scrolls under them.',
   'The main bar never changes on selection.',
   'Commands are never hidden, only grayed until they apply, each with a tooltip saying why.',
-  'Selection: 2B, a second bar under the main bar, always visible: the actions, then Select all and Clear on the left (grayed with a tooltip saying why until they apply; Clear is grayed at 0); at the far right the count, "N selected", the number in DM Mono, no noun.',
+  'Selection: 2B, a second bar under the main bar, always visible: the actions, then Select all and Clear on the left (grayed with a tooltip saying why until they apply; Clear is grayed at 0); at the far right the count, "N selected", the number in Reddit Mono, no noun.',
   'Look: 3A, the bar is white and framed, never tinted while rows are selected.',
   'Button rule: icon and label while the bar fits; icons with tooltips when it does not; then only the actions that still do not fit go into More, from the end, Delete last. No primary by default; a page may mark one.',
   'More (⋮) only when the actions don\'t fit; otherwise every action is shown.',
@@ -1446,7 +1446,7 @@ const STILL_OPEN = [
 const PLATFORM_LATER = [
   'DataTable: the viewMenu default goes off (or the header view button is removed); row height lives in the page\'s View menu only.',
   'SearchField: the fixed bar width (240px) and the collapse-to-icon behavior at narrow widths.',
-  'BulkActions / SelectionSummary: the count becomes "N selected" at the end of the bar (the number in DM Mono, no noun); the actions come first, then Select all and Clear.',
+  'BulkActions / SelectionSummary: the count becomes "N selected" at the end of the bar (the number in Reddit Mono, no noun); the actions come first, then Select all and Clear.',
 ];
 
 // one decided screen: its label row (title, badge, the selection toggle, Note), its note, and the screen in a frame

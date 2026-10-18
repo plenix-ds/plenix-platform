@@ -9,13 +9,13 @@
     "anatomy": [
       { "part": "A", "name": "Choose control", "about": "A Plenix secondary button that opens the system picker." },
       { "part": "B", "name": "Preview", "about": "The chosen picture in a frame of the ratio, with the media radius and the thin border." },
-      { "part": "C", "name": "File name", "about": "The name and size in DM Mono, the data role." },
+      { "part": "C", "name": "File name", "about": "The name and size in Reddit Mono, the data role." },
       { "part": "D", "name": "Actions", "about": "Replace and Remove, or Change photo and Remove photo." }
     ],
     "attributes": [
       { "part": "B", "attribute": "Preview corners", "token": "plx-comp-image-upload-preview-radius", "value": "The media radius (Plenix.Radius.radiusMedia4px)", "apple": "None", "swiftui": ".clipShape(RoundedRectangle(cornerRadius: Plenix.Radius.radiusMedia4px))", "uikit": "layer.cornerRadius = Plenix.Radius.radiusMedia4px", "appkit": "layer?.cornerRadius from the media radius (a macOS build of the tokens is needed)", "follows": "Best practices" },
       { "part": "B", "attribute": "Preview border", "token": "plx-comp-image-upload-preview-border-color", "value": "The default border, thin (Plenix.Colors.borderDefault)", "apple": "The well’s bezel", "swiftui": ".overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusMedia4px).stroke(Plenix.Colors.borderDefault, lineWidth: Plenix.Border.borderWidthThin))", "uikit": "layer.borderColor = Plenix.Colors.borderDefault.cgColor; layer.borderWidth = Plenix.Border.borderWidthThin", "appkit": "imageFrameStyle .none with a Plenix border layer (a macOS build of the tokens is needed)", "follows": "Platform considerations" },
-      { "part": "C", "attribute": "File name", "token": "plx-comp-image-upload-name-font-family", "value": "DM Mono at the data role (Plenix.Font.mono, Plenix.Platform.textDataSize)", "apple": "None", "swiftui": "Text(name).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))", "uikit": "label.font = Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)", "appkit": "NSTextField with Plenix.Font.mono at the data size (a macOS build of the tokens is needed)", "follows": "Best practices" }
+      { "part": "C", "attribute": "File name", "token": "plx-comp-image-upload-name-font-family", "value": "Reddit Mono at the data role (Plenix.Font.mono, Plenix.Platform.textDataSize)", "apple": "None", "swiftui": "Text(name).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))", "uikit": "label.font = Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)", "appkit": "NSTextField with Plenix.Font.mono at the data size (a macOS build of the tokens is needed)", "follows": "Best practices" }
     ],
     "states": [
       { "state": "Empty", "token": "plx-comp-image-upload-zone-icon-text", "swiftui": "no item: the Choose button", "uikit": "no result", "appkit": "image == nil" },

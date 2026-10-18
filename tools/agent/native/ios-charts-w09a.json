@@ -1,6 +1,6 @@
 {
  "ios-data-display|Charts": {
-  "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web. The charts of wave 9 follow it: lines, steps and areas are LineMark and AreaMark, a heat map RectangleMark, a waterfall BarMark with a start and an end; a word cloud, a network graph and a diagram are custom layouts or a Canvas with an accessibility element per item.",
+  "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in Reddit Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web. The charts of wave 9 follow it: lines, steps and areas are LineMark and AreaMark, a heat map RectangleMark, a waterfall BarMark with a start and an end; a word cloud, a network graph and a diagram are custom layouts or a Canvas with an accessibility element per item.",
   "variants": [
    {
     "name": "Column chart (band scale)",
@@ -272,7 +272,7 @@
    {
     "part": "F",
     "name": "Tick labels",
-    "about": "Values, dates and categories in DM Mono, in the reader’s locale."
+    "about": "Values, dates and categories in Reddit Mono, in the reader’s locale."
    },
    {
     "part": "G",
@@ -287,12 +287,12 @@
    {
     "part": "I",
     "name": "Selection tooltip",
-    "about": "The exact values where people scrub: a rule at the position and a card on the overlay surface, values in DM Mono."
+    "about": "The exact values where people scrub: a rule at the position and a card on the overlay surface, values in Reddit Mono."
    },
    {
     "part": "J",
     "name": "Data labels",
-    "about": "Values written by their marks in DM Mono, for the marks people compare."
+    "about": "Values written by their marks in Reddit Mono, for the marks people compare."
    },
    {
     "part": "K",
@@ -392,7 +392,7 @@
     "part": "F",
     "attribute": "Tick label font",
     "token": "plx-comp-chart-tick-label-font-family",
-    "value": "DM Mono (the data role) at the caption size, secondary text",
+    "value": "Reddit Mono (the data role) at the caption size, secondary text",
     "apple": "SF Pro caption",
     "swiftui": "AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption))",
     "uikit": "The same labels on the hosted SwiftUI Chart (Plenix.Font.mono)",
@@ -436,7 +436,7 @@
     "part": "I",
     "attribute": "Tooltip value font",
     "token": "plx-comp-chart-tooltip-value-font-family",
-    "value": "DM Mono (the data role) at the data size",
+    "value": "Reddit Mono (the data role) at the data size",
     "apple": "SF Pro",
     "swiftui": "Text(value).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
     "uikit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",
@@ -447,7 +447,7 @@
     "part": "J",
     "attribute": "Data label font",
     "token": "plx-comp-chart-data-label-font-family",
-    "value": "DM Mono (the data role) at the caption size, the default content color",
+    "value": "Reddit Mono (the data role) at the caption size, the default content color",
     "apple": "SF Pro caption",
     "swiftui": "Text(value, format: .number).font(Plenix.Font.mono(Plenix.Platform.textCaptionSize, relativeTo: .caption))",
     "uikit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",

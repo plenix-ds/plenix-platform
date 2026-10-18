@@ -6,7 +6,7 @@
      strings: { title, search, general, empty, close }; className.
    Behavior:
      Registry updates are reflected while open. Search matches names, groups and platform-formatted bindings.
-     Disabled bindings are omitted. Kbd renders technical key names in DM Mono.
+     Disabled bindings are omitted. Kbd renders technical key names in Reddit Mono.
    Notes:
      This dialog only documents shortcuts; it never registers or changes them.
 */

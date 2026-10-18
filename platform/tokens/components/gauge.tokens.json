@@ -9,7 +9,7 @@
     "gauge-track-width": { "$value": "{plx-ref.size-12px}", "$type": "dimension", "$description": "Gauge: the thickness of the track and the fill, in the dial's units (it scales with the size)." },
     "gauge-band-width": { "$value": "{plx-ref.size-4px}", "$type": "dimension", "$description": "Gauge: the thickness of a threshold's range outside the track." },
     "gauge-value-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Gauge: the value in the middle of the dial." },
-    "gauge-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Gauge: the value is a technical value: the data font (DM Mono)." },
+    "gauge-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Gauge: the value is a technical value: the data font (Reddit Mono)." },
     "gauge-value-font-size": { "$value": "{plx-ref.font-size-20}", "$type": "dimension", "$description": "Gauge: the value's size (the metric's large value)." },
     "gauge-value-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Gauge: the value's weight." },
     "gauge-value-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "Gauge: the value's line height." },

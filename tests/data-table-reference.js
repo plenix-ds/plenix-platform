@@ -67,7 +67,7 @@ const PARTS = [
   ['column line', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', ['background-color', 'top', 'bottom', 'width'], '::before'],
   ['name cell', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="name"] .name', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="name"]', ['font-weight', 'color']],
   // the owner's rule (batches 245-247) departs from the reference on purpose: every piece of text in a table is the row's DM Sans,
-  // size and color, so a technical value is compared with the reference's ordinary cell, not its DM Mono value
+  // size and color, so a technical value is compared with the reference's ordinary cell, not its Reddit Mono value
   ['technical value', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="type"]', ['font-size', 'color', 'font-family']],
   ['checkbox', '#grid .tabulator-row:nth-child(7) .tabulator-row-header input', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-row-header input', ['width', 'height', 'accent-color']],
   ['checkbox column', '#grid .tabulator-row:nth-child(7) .tabulator-row-header', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-row-header', ['width', 'padding-left']],
@@ -160,7 +160,7 @@ async function read(page, sel, props, pseudo) {
       await sleep(500);
       await compare(tag + 'group row', '#grid .tabulator-group', '.plx-data-table .tabulator-group', ['background-color', 'color', 'font-weight', 'height', 'padding-left', 'border-bottom-color']);
       await compare(tag + 'group count', '#grid .tabulator-group span', '.plx-data-table .tabulator-group .plx-data-table__group-count', ['color', 'margin-left', 'font-weight']);
-      // its type: the row's DM Sans and size (the owner's rule, as for technical values), not the reference's DM Mono
+      // its type: the row's DM Sans and size (the owner's rule, as for technical values), not the reference's Reddit Mono
       await compare(tag + 'group count type', '#grid .tabulator-row .tabulator-cell[tabulator-field="owner"]', '.plx-data-table .tabulator-group .plx-data-table__group-count', ['font-size', 'font-family']);
     }
   }

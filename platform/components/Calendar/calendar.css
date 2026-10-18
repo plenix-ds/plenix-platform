@@ -11,7 +11,7 @@
 .plx-calendar__grid{display:flex;flex-direction:column;}
 .plx-calendar__row{display:flex;}
 .plx-calendar__weekday{align-items:center;block-size:var(--plx-comp-calendar-weekday-height);color:var(--plx-comp-calendar-weekday-text);display:inline-flex;font-size:var(--plx-comp-calendar-weekday-font-size);font-weight:var(--plx-comp-calendar-weekday-font-weight);inline-size:var(--plx-comp-calendar-cell-size);justify-content:center;}
-.plx-calendar__week-number{align-items:center;block-size:var(--plx-comp-calendar-cell-size);color:var(--plx-comp-calendar-week-number-text);display:inline-flex;font-family:var(--plx-comp-calendar-week-number-font-family);font-size:var(--plx-comp-calendar-week-number-font-size);inline-size:var(--plx-comp-calendar-cell-size);justify-content:center;}
+.plx-calendar__week-number{align-items:center;block-size:var(--plx-comp-calendar-cell-size);color:var(--plx-comp-calendar-week-number-text);display:inline-flex;font-family:var(--plx-comp-calendar-week-number-font-family);font-size:var(--plx-comp-calendar-week-number-font-size);inline-size:var(--plx-comp-calendar-cell-size);justify-content:center;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-calendar__cell{block-size:var(--plx-comp-calendar-cell-size);display:inline-flex;inline-size:var(--plx-comp-calendar-cell-size);position:relative;}
 /* the range: the fill between the ends, and on the inner half of each end, behind the round end */
 .plx-calendar__cell.is-in-range{background-color:var(--plx-comp-calendar-range-background);}

@@ -6,7 +6,7 @@
 .plx-query-builder{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-query-builder-gap);}
 .plx-query-builder__bar{align-items:center;column-gap:var(--plx-comp-query-builder-bar-gap);display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:var(--plx-comp-query-builder-bar-gap);}
 .plx-query-builder__matches{color:var(--plx-comp-query-builder-matches-text);font-size:var(--plx-comp-query-builder-matches-font-size);}
-.plx-query-builder__number{font-family:var(--plx-comp-query-builder-number-font-family);}
+.plx-query-builder__number{font-family:var(--plx-comp-query-builder-number-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* a group: its head, its rules and its add buttons */
 .plx-query-builder__group{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-query-builder-group-gap);}
 .plx-query-builder__group[data-plx-depth="1"],

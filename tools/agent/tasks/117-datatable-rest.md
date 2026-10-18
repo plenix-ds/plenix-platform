@@ -17,7 +17,7 @@ high-impact fixes (#101, released in 0.38.0). Each keeps today's behavior when t
 | #77 (DT-6) | Quick filters don't count their matches | `useCollectionView` works out each QuickFilter option's count from the rows it filters, within the other active filters (faceted); an app's own `count` still wins |
 | #79 (DT-8) | The list layout switch is fixed at 600px of the table's width | `narrowAt` (a size token or px) and `narrow="auto"` (switch only when the key columns no longer fit) |
 | #83 (DT-12) | No convention for deleted or missing values | `empty` per column (the text for a missing value) and a standard "deleted" look (muted, italic) through a cell kind `deleted` |
-| #84 (DT-13) | No file-size column type | `type: "bytes"`: formatBytes in DM Mono, right-aligned, sorted and filtered on bytes; the filter accepts "> 2 MB" |
+| #84 (DT-13) | No file-size column type | `type: "bytes"`: formatBytes in Reddit Mono, right-aligned, sorted and filtered on bytes; the filter accepts "> 2 MB" |
 | #85 (DT-14) | No undo for destructive row and selection actions | an `undo` handler on row-menu and selection actions: the action runs, a toast says what happened with Undo (useUndo and the toast, as DeleteFlow does) |
 | #86 (DT-15) | Rich cells are one React portal per cell | portals only for rows in view (the virtual rows), plus built-in cell kinds that need no portal: avatar + name, tag chips, badge |
 | #89 (DT-18) | Column `width` only takes numbers | a CSS length string or a size token name (`"--plx-ref-size-120px"`, `"12ch"`), converted for Tabulator |

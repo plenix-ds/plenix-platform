@@ -8,7 +8,7 @@
     "resource-list-count-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "ResourceList: the count in the header and after a group's heading." },
     "resource-list-count-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "ResourceList: the header count's size." },
     "resource-list-group-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "ResourceList: the space between a group's heading and its rows." },
-    "resource-list-group-count-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "ResourceList: a group's count (a technical value: DM Mono)." },
+    "resource-list-group-count-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "ResourceList: a group's count (a technical value: Reddit Mono)." },
     "resource-list-group-count-margin-inline-start": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "ResourceList: the space between a group's heading and its count." },
     "resource-list-item-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "ResourceList: the space between the checkbox, the picture, the text, the details and the actions." },
     "resource-list-item-min-height": { "$value": "{plx-sys.data-table-row-height}", "$type": "dimension", "$description": "ResourceList: a row's least height (a data row's: it follows the density)." },

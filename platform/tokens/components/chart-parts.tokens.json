@@ -79,7 +79,7 @@
     "chart-legend-value-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
-      "$description": "Chart legend: values are technical: the data font (DM Mono)."
+      "$description": "Chart legend: values are technical: the data font (Reddit Mono)."
     },
     "chart-legend-swatch-size": {
       "$value": "{plx-ref.size-12px}",
@@ -244,7 +244,7 @@
     "chart-tooltip-value-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
-      "$description": "Chart tooltip: values and data titles (dates, numbers) are technical: the data font (DM Mono)."
+      "$description": "Chart tooltip: values and data titles (dates, numbers) are technical: the data font (Reddit Mono)."
     },
     "chart-tooltip-value-margin-inline-start": {
       "$value": "{plx-sys.space-inline-md}",
@@ -279,7 +279,7 @@
     "chart-data-label-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
-      "$description": "Data label: values are technical: the data font (DM Mono)."
+      "$description": "Data label: values are technical: the data font (Reddit Mono)."
     },
     "chart-data-label-font-size": {
       "$value": "{plx-ref.font-size-11}",
@@ -369,7 +369,7 @@
     "chart-reference-value-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
-      "$description": "Reference line: the value is technical: the data font (DM Mono)."
+      "$description": "Reference line: the value is technical: the data font (Reddit Mono)."
     },
     "chart-reference-value-font-weight": {
       "$value": "{plx-sys.font-weight-regular}",

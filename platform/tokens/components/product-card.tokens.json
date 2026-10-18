@@ -23,7 +23,7 @@
     "product-card-title-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "ProductCard: the name's line height; it is cut after two lines (20px)." },
     "product-card-prices-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "ProductCard: the gap between the price and the old price (space-inline-sm)." },
     "product-card-price-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "ProductCard: the price (content-default)." },
-    "product-card-price-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "ProductCard: the price and the old price in the data font (DM Mono: a technical value)." },
+    "product-card-price-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "ProductCard: the price and the old price in the data font (Reddit Mono: a technical value)." },
     "product-card-price-font-size": { "$value": "{plx-ref.font-size-15}", "$type": "dimension", "$description": "ProductCard: the price's size (15px)." },
     "product-card-price-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "ProductCard: the price's weight (semibold)." },
     "product-card-price-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "ProductCard: the price line's height (20px)." },

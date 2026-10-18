@@ -3,9 +3,9 @@
 .plx-text--body{color:var(--plx-comp-text-body-text);font-family:var(--plx-comp-text-body-font-family);font-size:var(--plx-comp-text-body-font-size);}
 .plx-text--secondary{color:var(--plx-comp-text-secondary-text);font-family:var(--plx-comp-text-secondary-font-family);font-size:var(--plx-comp-text-secondary-font-size);}
 .plx-text--caption{color:var(--plx-comp-text-caption-text);font-family:var(--plx-comp-text-caption-font-family);font-size:var(--plx-comp-text-caption-font-size);}
-/* data: the data font (DM Mono) for technical values; on its own at the secondary size, inside other text (a sentence, a
+/* data: the data font (Reddit Mono) for technical values; on its own at the secondary size, inside other text (a sentence, a
    caption) at that text's size, so the two share a baseline (owner, 2026-10-11) */
-.plx-text--data{font-family:var(--plx-comp-text-data-font-family);font-size:var(--plx-comp-text-data-font-size);}
+.plx-text--data{font-family:var(--plx-comp-text-data-font-family);font-size:var(--plx-comp-text-data-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-text .plx-text--data,p .plx-text--data{font-size:inherit;}
 .plx-text--label{color:var(--plx-comp-text-label-text);font-family:var(--plx-comp-text-label-font-family);font-size:var(--plx-comp-text-label-font-size);font-weight:var(--plx-comp-text-label-font-weight);}
 .plx-text--strong{font-weight:var(--plx-comp-text-strong-font-weight);}

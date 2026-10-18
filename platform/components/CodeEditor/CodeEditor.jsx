@@ -1,5 +1,5 @@
 /* Plenix · CodeEditor
-   Summary: A multi-line field for code people write: the code font (DM Mono), the CodeBlock's colors as they type,
+   Summary: A multi-line field for code people write: the code font (Reddit Mono), the CodeBlock's colors as they type,
      optional line numbers, indentation with Tab, and a read-only form. It is a native <textarea> laid over the colored
      copy of its text, so typing, selection, undo, spell check off and assistive technology are the browser's own; no
      editor engine is loaded.

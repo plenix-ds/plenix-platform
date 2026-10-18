@@ -9,9 +9,9 @@ const { useState, useEffect, useMemo, useRef } = React;
 
 // [label, family, weights: [min, max] for a variable font or a list of the static ones, width axis [min, max] or null]
 const FONTS = [
-  ['DM Mono (today)', 'DM Mono', [300, 400, 500], null],
+  ['Reddit Mono (the Platform, size-adjust 97.1%)', 'Reddit Mono', [200, 900], null],
+  ['DM Mono (before 0.54.0)', 'DM Mono', [300, 400, 500], null],
   ['Roboto Mono', 'Roboto Mono', [100, 700], null],
-  ['Reddit Mono', 'Reddit Mono', [200, 900], null],
   ['Iosevka', 'Iosevka', [300, 400, 500, 600, 700], null],
   ['Iosevka Charon Mono', 'Iosevka Charon Mono', [300, 400, 500, 700], null],
   ['JetBrains Mono', 'JetBrains Mono', [100, 800], null],
@@ -28,7 +28,7 @@ const FONTS = [
   ['Ubuntu Mono', 'Ubuntu Mono', [400, 700], null],
   ['Space Mono', 'Space Mono', [400, 700], null],
 ];
-const GOOGLE = 'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100..700&family=Reddit+Mono:wght@200..900&family=Iosevka+Charon+Mono:wght@300;400;500;700'
+const GOOGLE = 'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100..700&family=Iosevka+Charon+Mono:wght@300;400;500;700'
   + '&family=JetBrains+Mono:wght@100..800&family=IBM+Plex+Mono:wght@100;200;300;400;500;600;700&family=Geist+Mono:wght@100..900&family=Source+Code+Pro:wght@200..900'
   + '&family=Fira+Code:wght@300..700&family=Red+Hat+Mono:wght@300..700&family=Azeret+Mono:wght@100..900&family=Spline+Sans+Mono:wght@300..700&family=Google+Sans+Code:wght@300..800'
   + '&family=Inconsolata:wdth,wght@50..200,200..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&family=Ubuntu+Mono:wght@400;700&family=Space+Mono:wght@400;700&display=swap';
@@ -76,7 +76,7 @@ function xOf(family, weight, stretch) {
 function App() {
   const saved = (() => { try { return JSON.parse(localStorage.getItem('plenix-font-playground') || 'null'); } catch (e) { return null; } })();
   const [ref, setRef] = useState(saved ? saved.ref : { size: 13, weight: 400 });
-  const [font, setFont] = useState(saved ? saved.font : 'DM Mono');
+  const [font, setFont] = useState(saved ? saved.font : 'Reddit Mono');
   const [cand, setCand] = useState(saved ? saved.cand : { size: 13, weight: 400, stretch: 100, spacing: 0, words: 0 });
   const [ready, setReady] = useState(0);
   const f = FONTS.find((x) => x[1] === font) || FONTS[0];

@@ -1,6 +1,6 @@
 {
  "android-data-display|Charts": {
-  "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values. The charts of wave 9 are drawn on the same Canvas: lines, steps, areas, heat map cells and waterfall bars; a word cloud is a custom Layout and a network graph or diagram a transformable Canvas with semantics per item.",
+  "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in Reddit Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values. The charts of wave 9 are drawn on the same Canvas: lines, steps, areas, heat map cells and waterfall bars; a word cloud is a custom Layout and a network graph or diagram a transformable Canvas with semantics per item.",
   "variants": [
    {
     "name": "Column chart (band scale)",
@@ -263,7 +263,7 @@
    {
     "part": "F",
     "name": "Tick labels",
-    "about": "Values, dates and categories in DM Mono, in the reader’s locale."
+    "about": "Values, dates and categories in Reddit Mono, in the reader’s locale."
    },
    {
     "part": "G",
@@ -278,12 +278,12 @@
    {
     "part": "I",
     "name": "Selection tooltip",
-    "about": "The exact values where people drag: a rule at the position and a card on the overlay surface, values in DM Mono."
+    "about": "The exact values where people drag: a rule at the position and a card on the overlay surface, values in Reddit Mono."
    },
    {
     "part": "J",
     "name": "Data labels",
-    "about": "Values written by their marks in DM Mono."
+    "about": "Values written by their marks in Reddit Mono."
    },
    {
     "part": "K",
@@ -372,7 +372,7 @@
     "part": "F",
     "attribute": "Tick label font",
     "token": "plx-comp-chart-tick-label-font-family",
-    "value": "DM Mono (the data role) at the data size, secondary text",
+    "value": "Reddit Mono (the data role) at the data size, secondary text",
     "material": "Body small",
     "compose": "TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize) // Mono: FontFamily(Font(GoogleFont(PlenixFonts.MONO), fontProvider))",
     "views": "labelPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -416,7 +416,7 @@
     "part": "I",
     "attribute": "Tooltip value font",
     "token": "plx-comp-chart-tooltip-value-font-family",
-    "value": "DM Mono (the data role) at the data size",
+    "value": "Reddit Mono (the data role) at the data size",
     "material": "Body small",
     "compose": "Text(value, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
     "views": "value.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -427,7 +427,7 @@
     "part": "J",
     "attribute": "Data label font",
     "token": "plx-comp-chart-data-label-font-family",
-    "value": "DM Mono (the data role) at the caption size",
+    "value": "Reddit Mono (the data role) at the caption size",
     "material": "Label small",
     "compose": "drawText(measurer, value, topLeft, style = TextStyle(fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textCaptionSize))",
     "views": "monoPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -507,7 +507,7 @@
     "import androidx.compose.ui.unit.Dp",
     "import plenix.tokens.*",
     "",
-    "// Mono: the DM Mono family (PlenixFonts.MONO), set once next to Sans in the app theme",
+    "// Mono: the Reddit Mono family (PlenixFonts.MONO), set once next to Sans in the app theme",
     "// plotHeight: the web token --plx-comp-chart-plot-height-md; the library tokens are not generated for Android yet",
     "@Composable",
     "fun PlenixChart(title: String, takeaway: String, plotHeight: Dp, values: List<Float>, labels: List<String>) {",

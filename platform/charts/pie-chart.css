@@ -2,7 +2,7 @@
    color: system/charts.css), parted by a thin line in the surface color; the donut's and the half ring's center value
    (the data font) and its label. Every value is a --plx-comp-pie-chart-* token on an existing role. */
 .plx-pie-chart__slice{stroke:var(--plx-comp-pie-chart-slice-outline-color);stroke-linejoin:round;stroke-width:var(--plx-comp-pie-chart-slice-outline-width);}
-.plx-pie-chart__center-value{dominant-baseline:text-after-edge;fill:var(--plx-comp-pie-chart-center-value-text);font-family:var(--plx-comp-pie-chart-center-value-font-family);font-size:var(--plx-comp-pie-chart-center-value-font-size);font-weight:var(--plx-comp-pie-chart-center-value-font-weight);text-anchor:middle;}
+.plx-pie-chart__center-value{dominant-baseline:text-after-edge;fill:var(--plx-comp-pie-chart-center-value-text);font-family:var(--plx-comp-pie-chart-center-value-font-family);font-size:var(--plx-comp-pie-chart-center-value-font-size);font-weight:var(--plx-comp-pie-chart-center-value-font-weight);text-anchor:middle;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-pie-chart__center-label{dominant-baseline:hanging;fill:var(--plx-comp-pie-chart-center-label-text);font-family:var(--plx-comp-pie-chart-center-label-font-family);font-size:var(--plx-comp-pie-chart-center-label-font-size);text-anchor:middle;}
 /* the half ring: the label sits on the ring's baseline and the value above it */
 .plx-pie-chart--half .plx-pie-chart__center-label{dominant-baseline:text-after-edge;}

@@ -34,7 +34,7 @@ before 1.0, the next MAJOR after), *Archived*. See `VERSIONING.md`.
   styles, no 1px or 2px nudges, no window units. When something needed is not defined, ask.
 - **No new colors.** New roles point to existing palette colors.
 - **Components, not utilities.** Edits happen in the component, using token values.
-- **Type and layout.** DM Sans for all interface text, DM Mono only for code and technical values. Sizes sit on the
+- **Type and layout.** DM Sans for all interface text, Reddit Mono only for code and technical values. Sizes sit on the
   4px grid and the defined control roles. Focused and invalid fields change only the border color.
 - **One canonical home.** Its record in `inventory.js` (section, aliases, use and avoid, related items, mappings,
   status, owner), and its header comment (Summary, Usage, Props) kept accurate: the API tables and the TypeScript

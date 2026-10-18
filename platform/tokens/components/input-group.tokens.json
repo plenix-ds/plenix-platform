@@ -99,7 +99,7 @@
     "input-group-data-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
-      "$description": "InputGroup data: the prefix and suffix in the data font (DM Mono), for technical values."
+      "$description": "InputGroup data: the prefix and suffix in the data font (Reddit Mono), for technical values."
     },
     "input-group-affix-font-size": {
       "$value": "{plx-comp.input-font-size}",

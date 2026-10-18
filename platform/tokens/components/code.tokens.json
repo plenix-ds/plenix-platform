@@ -14,7 +14,7 @@
     "code-font-family": {
       "$value": "{plx-sys.font-code}",
       "$type": "fontFamily",
-      "$description": "Code: the code font (DM Mono); its size and line height are those of the text around it."
+      "$description": "Code: the code font (Reddit Mono); its size and line height are those of the text around it."
     },
     "code-radius": {
       "$value": "{plx-sys.radius-compact-4px}",

@@ -21,8 +21,8 @@
 .plx-product-card__opener:hover{text-decoration-line:underline;}
 /* the price: the data font; on sale the old price struck through after it */
 .plx-product-card__prices{align-items:baseline;column-gap:var(--plx-comp-product-card-prices-gap);display:flex;flex-wrap:wrap;}
-.plx-product-card__price{color:var(--plx-comp-product-card-price-text);font-family:var(--plx-comp-product-card-price-font-family);font-size:var(--plx-comp-product-card-price-font-size);font-weight:var(--plx-comp-product-card-price-font-weight);line-height:var(--plx-comp-product-card-price-line-height);}
-.plx-product-card__compare{color:var(--plx-comp-product-card-compare-text);font-family:var(--plx-comp-product-card-price-font-family);font-size:var(--plx-comp-product-card-compare-font-size);line-height:var(--plx-comp-product-card-price-line-height);text-decoration-line:line-through;}
+.plx-product-card__price{color:var(--plx-comp-product-card-price-text);font-family:var(--plx-comp-product-card-price-font-family);font-size:var(--plx-comp-product-card-price-font-size);font-weight:var(--plx-comp-product-card-price-font-weight);line-height:var(--plx-comp-product-card-price-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-product-card__compare{color:var(--plx-comp-product-card-compare-text);font-family:var(--plx-comp-product-card-price-font-family);font-size:var(--plx-comp-product-card-compare-font-size);line-height:var(--plx-comp-product-card-price-line-height);text-decoration-line:line-through;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-product-card__prices--sm .plx-product-card__price{font-size:var(--plx-comp-product-card-price-sm-font-size);font-weight:var(--plx-comp-product-card-price-sm-font-weight);}
 .plx-product-card__prices--sm .plx-product-card__compare{font-size:var(--plx-comp-product-card-price-sm-font-size);}
 .plx-product-card__rating{align-items:center;column-gap:var(--plx-comp-product-card-rating-gap);display:flex;}

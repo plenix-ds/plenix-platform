@@ -1,5 +1,5 @@
-/* Plenix · Time (platform/components/Time): a date or a time in the data font (DM Mono) at the size and line height of the
+/* Plenix · Time (platform/components/Time): a date or a time in the data font (Reddit Mono) at the size and line height of the
    text around it, so it shares their baseline. With its tooltip it is a Tab stop and shows the focus ring. */
-.plx-time{font-family:var(--plx-comp-time-font-family);font-size:inherit;line-height:inherit;white-space:nowrap;}
+.plx-time{font-family:var(--plx-comp-time-font-family);font-size:inherit;line-height:inherit;white-space:nowrap;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-time[tabindex]:focus-visible,
 .plx-time[tabindex].is-focus-visible{border-bottom-left-radius:var(--plx-comp-time-focus-radius);border-bottom-right-radius:var(--plx-comp-time-focus-radius);border-top-left-radius:var(--plx-comp-time-focus-radius);border-top-right-radius:var(--plx-comp-time-focus-radius);outline-color:var(--plx-comp-time-focus-outline-color);outline-offset:var(--plx-comp-time-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-time-focus-outline-width);}

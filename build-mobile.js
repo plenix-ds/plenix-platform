@@ -1,6 +1,6 @@
 // Plenix · build-mobile.js (batch 297; Plenix Platforms Standard 7.2): the token outputs native apps use, GENERATED from
 // the tokens (never edit the outputs by hand):
-//   platform/mobile/ios/PlenixTokens.swift        SwiftUI: theme colors (light and dark), DM Sans / DM Mono, radius,
+//   platform/mobile/ios/PlenixTokens.swift        SwiftUI: theme colors (light and dark), DM Sans / Reddit Mono, radius,
 //                                                 spacing, and the iOS size and behavior set (platform-ios.tokens.json)
 //   platform/mobile/android/PlenixTokens.kt       Jetpack Compose: the same theme values and the Android set
 //                                                 (platform-android.tokens.json)
@@ -72,7 +72,7 @@ public enum Plenix {
     public static func color(light: UInt32, dark: UInt32) -> Color {
         Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(argb: dark) : UIColor(argb: light) })
     }
-    /// DM Sans and DM Mono, scaled with Dynamic Type through the text style they are relative to (3.4).
+    /// DM Sans and Reddit Mono, scaled with Dynamic Type through the text style they are relative to (3.4).
     public enum Font {
         public static let sans = "${SANS}" // web --plx-sys-typeface-sans
         public static let mono = "${MONO}" // web --plx-sys-typeface-mono

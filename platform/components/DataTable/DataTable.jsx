@@ -20,7 +20,7 @@
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
        own terms, with these Plenix additions:
      columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: IDs, file names, paths, versions,
-       dates and times, sizes, counts, durations: the data font, DM Mono, at the row's own size and line height, so it shares
+       dates and times, sizes, counts, durations: the data font, Reddit Mono, at the row's own size and line height, so it shares
        the row's baseline; owner, 2026-10-11) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
@@ -35,7 +35,7 @@
        tables; off by default), its value in the data font
      columns[].icon: the Plenix icon name a "kind: icon" column shows in its header (its title is the accessible name)
      columns[].empty: text for a null, undefined or empty-string value; zero and false remain values.
-     columns[].type: bytes formats file sizes in DM Mono and sorts/filters the raw bytes; filter accepts "> 2 MB".
+     columns[].type: bytes formats file sizes in Reddit Mono and sorts/filters the raw bytes; filter accepts "> 2 MB".
      columns[].kind: deleted (muted italic), avatar-name ({name,src}), tags ([{label,category}]) and badge ({label,tone,icon}) use inert native cells without portals.
      columns[].render(data, cell): the cell's content as a React element (badges, buttons, links); state and context work
        In a virtual grid only visible cells (and one parked focused cell) mount React. Keep durable edits in row or app state.

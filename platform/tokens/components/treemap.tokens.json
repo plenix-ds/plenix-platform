@@ -6,7 +6,7 @@
     "treemap-label-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Treemap: a tile's name and value." },
     "treemap-label-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "Treemap: a tile's name (UI text)." },
     "treemap-label-font-weight": { "$value": "{plx-sys.font-weight-medium}", "$type": "fontWeight", "$description": "Treemap: a tile's name, a step above its value." },
-    "treemap-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Treemap: a tile's value: the data font (DM Mono)." },
+    "treemap-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Treemap: a tile's value: the data font (Reddit Mono)." },
     "treemap-label-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Treemap: the size of a tile's name and value (the chart labels' size)." },
     "treemap-label-halo-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Treemap: the halo around a tile's name and value, in the surface color, so they read on the tile's color." },
     "treemap-label-halo-width": { "$value": "{plx-sys.border-width-thick}", "$type": "dimension", "$description": "Treemap: the halo's width." },

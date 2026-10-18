@@ -135,7 +135,7 @@ fragments, test results, anything left with the reason. Short.
 
 ## Lessons from wave 1 (the integrator, 2026-10-12)
 - Run tests/typography.test.js and tests/a11y.test.js before you report: in wave 1 they caught format output in DM Sans
-  (technical values are kind 'data': DM Mono at the table's size) and a scroll area without keyboard access.
+  (technical values are kind 'data': Reddit Mono at the table's size) and a scroll area without keyboard access.
 - Any scrolling region you create must be keyboard reachable (tabIndex 0 plus a name), or use useVirtualizer, which
   does that already.
 - New tests you add must skip cleanly when platform/design-system is not checked out (CI), like the other tests.

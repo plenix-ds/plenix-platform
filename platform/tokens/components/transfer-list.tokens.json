@@ -17,7 +17,7 @@
     "transfer-list-title-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "TransferList: the title's size." },
     "transfer-list-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "TransferList: the title's weight." },
     "transfer-list-meta-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "TransferList: the header's count (2/12) and an item's meta value." },
-    "transfer-list-meta-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "TransferList: counts and meta values are technical values: the data font (DM Mono)." },
+    "transfer-list-meta-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "TransferList: counts and meta values are technical values: the data font (Reddit Mono)." },
     "transfer-list-meta-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "TransferList: the size of the count and the meta values." },
     "transfer-list-tools-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "TransferList: the space between Move up and Move down." },
     "transfer-list-search-padding": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "TransferList: the inset around a list's search field." },

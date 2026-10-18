@@ -45,5 +45,5 @@
 .plx-field__foot{align-items:baseline;column-gap:var(--plx-comp-field-foot-gap);display:flex;min-inline-size:0;}
 .plx-field__foot>.plx-field__description{flex-grow:1;min-inline-size:0;}
 .plx-field__counter{color:var(--plx-comp-field-counter-text);flex-shrink:0;font-size:var(--plx-comp-field-counter-font-size);margin-inline-start:auto;}
-.plx-field__count{font-family:var(--plx-comp-field-counter-font-family);}
+.plx-field__count{font-family:var(--plx-comp-field-counter-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-field__counter.is-over{color:var(--plx-comp-field-counter-over-text);}

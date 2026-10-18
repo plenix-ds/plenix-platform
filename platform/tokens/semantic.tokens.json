@@ -197,6 +197,11 @@
       "$value": "{plx-sys.typeface-mono}",
       "$type": "fontFamily"
     },
+    "font-data-word-spacing": {
+      "$value": "{plx-ref.word-spacing-mono-fit}",
+      "$type": "dimension",
+      "$description": "Every Reddit Mono text (data, code, numbers): its word spacing, so a space is as wide as DM Sans's beside it (check-system rule mono-spacing)."
+    },
     "layer-behind": {
       "$value": "-1",
       "$type": "number",

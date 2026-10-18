@@ -19,7 +19,7 @@
 .plx-input.plx-input--width-sm{flex-shrink:0;inline-size:var(--plx-comp-input-width-sm-width);}
 .plx-input.plx-input--width-md{flex-shrink:0;inline-size:var(--plx-comp-input-width-md-width);}
 .plx-input.plx-input--width-lg{flex-shrink:0;inline-size:var(--plx-comp-input-width-lg-width);}
-.plx-input.plx-input--data{font-family:var(--plx-comp-input-data-font-family);}
+.plx-input.plx-input--data{font-family:var(--plx-comp-input-data-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-input.plx-input--emphasis{font-weight:var(--plx-comp-input-emphasis-font-weight);}
 /* the color well (owner, batch 275: "just a square swatch, no outline container around it"): a square of the field height, the swatch's compact corners, no border or padding */
 .plx-input[type="color"]{appearance:none;background-color:transparent;block-size:var(--plx-comp-input-color-height);border-bottom-left-radius:var(--plx-comp-input-color-radius);border-bottom-right-radius:var(--plx-comp-input-color-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-input-color-radius);border-top-right-radius:var(--plx-comp-input-color-radius);border-top-style:none;cursor:pointer;flex-shrink:0;inline-size:var(--plx-comp-input-color-width);padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}

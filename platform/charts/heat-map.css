@@ -10,7 +10,7 @@
 
 /* the color scale: the lowest value, the seven steps, the highest value (the data font), and the missing value's key */
 .plx-heat-map-scale{align-items:center;column-gap:var(--plx-comp-heat-map-scale-gap);color:var(--plx-comp-heat-map-scale-text);display:flex;flex-wrap:wrap;font-family:var(--plx-comp-heat-map-scale-font-family);font-size:var(--plx-comp-heat-map-scale-font-size);line-height:var(--plx-comp-heat-map-scale-line-height);row-gap:var(--plx-comp-heat-map-scale-gap);}
-.plx-heat-map-scale__end{font-family:var(--plx-comp-heat-map-scale-value-font-family);}
+.plx-heat-map-scale__end{font-family:var(--plx-comp-heat-map-scale-value-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-heat-map-scale__steps{display:flex;}
 .plx-heat-map-scale__swatch{background-color:var(--plx-comp-data-color);block-size:var(--plx-comp-heat-map-scale-swatch-height);display:block;inline-size:var(--plx-comp-heat-map-scale-swatch-width);}
 .plx-heat-map-scale__swatch--missing{background-color:var(--plx-comp-heat-map-empty-background);border-bottom-color:var(--plx-comp-heat-map-empty-border-color);border-bottom-style:dashed;border-bottom-width:var(--plx-comp-heat-map-cell-border-width);border-left-color:var(--plx-comp-heat-map-empty-border-color);border-left-style:dashed;border-left-width:var(--plx-comp-heat-map-cell-border-width);border-right-color:var(--plx-comp-heat-map-empty-border-color);border-right-style:dashed;border-right-width:var(--plx-comp-heat-map-cell-border-width);border-top-color:var(--plx-comp-heat-map-empty-border-color);border-top-style:dashed;border-top-width:var(--plx-comp-heat-map-cell-border-width);box-sizing:border-box;inline-size:var(--plx-comp-heat-map-scale-swatch-height);}

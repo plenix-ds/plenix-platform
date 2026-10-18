@@ -7,10 +7,10 @@ public enum Plenix {
     public static func color(light: UInt32, dark: UInt32) -> Color {
         Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(argb: dark) : UIColor(argb: light) })
     }
-    /// DM Sans and DM Mono, scaled with Dynamic Type through the text style they are relative to (3.4).
+    /// DM Sans and Reddit Mono, scaled with Dynamic Type through the text style they are relative to (3.4).
     public enum Font {
         public static let sans = "DM Sans" // web --plx-sys-typeface-sans
-        public static let mono = "DM Mono" // web --plx-sys-typeface-mono
+        public static let mono = "Reddit Mono" // web --plx-sys-typeface-mono
         public static func sans(_ size: CGFloat, relativeTo style: SwiftUI.Font.TextStyle) -> SwiftUI.Font { .custom(sans, size: size, relativeTo: style) }
         public static func mono(_ size: CGFloat, relativeTo style: SwiftUI.Font.TextStyle) -> SwiftUI.Font { .custom(mono, size: size, relativeTo: style) }
     }

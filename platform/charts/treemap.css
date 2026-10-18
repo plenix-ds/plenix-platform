@@ -5,6 +5,6 @@
 .plx-treemap__tile{stroke:var(--plx-comp-treemap-gap-color);stroke-width:var(--plx-comp-treemap-gap-width);}
 .plx-treemap__label,.plx-treemap__value{dominant-baseline:hanging;fill:var(--plx-comp-treemap-label-text);font-size:var(--plx-comp-treemap-label-font-size);paint-order:stroke;pointer-events:none;stroke:var(--plx-comp-treemap-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-treemap-label-halo-width);}
 .plx-treemap__label{font-family:var(--plx-comp-treemap-label-font-family);font-weight:var(--plx-comp-treemap-label-font-weight);}
-.plx-treemap__value{font-family:var(--plx-comp-treemap-value-font-family);}
+.plx-treemap__value{font-family:var(--plx-comp-treemap-value-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-treemap__group-frame{fill:none;stroke:var(--plx-comp-treemap-group-border-color);stroke-width:var(--plx-comp-treemap-group-border-width);}
 .plx-treemap__group-label{dominant-baseline:central;fill:var(--plx-comp-treemap-group-label-text);font-family:var(--plx-comp-treemap-group-label-font-family);font-size:var(--plx-comp-treemap-group-label-font-size);font-weight:var(--plx-comp-treemap-group-label-font-weight);}

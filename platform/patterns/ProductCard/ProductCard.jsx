@@ -52,7 +52,7 @@
      The name is cut after two lines; the picture keeps its space before it loads (Image's ratio and placeholder).
    Notes:
      One primary thing per card: the name opens the product, the action adds it; more actions belong on the product's
-     page. Do not mix product cards with other cards in one grid. Prices, counts and ratings are technical values: DM Mono.
+     page. Do not mix product cards with other cards in one grid. Prices, counts and ratings are technical values: Reddit Mono.
      Other props go on the <article>.
 */
 import React from 'react';

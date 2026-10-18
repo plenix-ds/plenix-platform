@@ -181,7 +181,7 @@ module.exports = async function rest(page) {
     let row = t.getRow(1);
     ok(row.getCell('size').getElement().textContent.includes('2.5'), 'Byte cell formats numeric bytes');
     ok(['right','end'].includes(getComputedStyle(row.getCell('size').getElement()).textAlign), 'Bytes right aligned');
-    ok(getComputedStyle(row.getCell('size').getElement()).fontFamily.includes('DM Mono'), 'Bytes use data font');
+    ok(getComputedStyle(row.getCell('size').getElement()).fontFamily.includes('Reddit Mono'), 'Bytes use data font');
     ok(row.getCell('missing').getElement().textContent === 'Unavailable', 'Column missing copy used');
     ok(row.getCell('zero').getElement().textContent === '0' && row.getCell('no').getElement().textContent === 'false', 'Zero and false are retained');
     ok(host.querySelectorAll('.plx-data-table__deleted').length === 3, 'Missing deleted cells use deleted look');

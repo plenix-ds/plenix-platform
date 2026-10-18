@@ -4,7 +4,7 @@
 .plx-metric__value{color:var(--plx-comp-metric-value-text);font-family:var(--plx-comp-metric-value-font-family);font-size:var(--plx-comp-metric-value-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-metric-value-font-weight);line-height:var(--plx-comp-metric-value-line-height);}
 .plx-metric--lg .plx-metric__value{font-size:var(--plx-comp-metric-lg-value-font-size);}
 .plx-metric__unit{color:var(--plx-comp-metric-unit-text);font-size:var(--plx-comp-metric-unit-font-size);}
-.plx-metric__change{font-family:var(--plx-comp-metric-change-font-family);font-size:var(--plx-comp-metric-change-font-size);font-variant-numeric:tabular-nums;}
+.plx-metric__change{font-family:var(--plx-comp-metric-change-font-family);font-size:var(--plx-comp-metric-change-font-size);font-variant-numeric:tabular-nums;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-metric__change--neutral{color:var(--plx-comp-metric-change-neutral-text);}
 .plx-metric__change--success{color:var(--plx-comp-metric-change-success-text);}
 .plx-metric__change--danger{color:var(--plx-comp-metric-change-danger-text);}

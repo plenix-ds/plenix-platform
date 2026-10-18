@@ -1,13 +1,19 @@
 # Plenix fonts
 
-The Platform's two typefaces, hosted with it so no page calls Google (batch 227). `platform/system/fonts.css` holds the
+The Platform's two typefaces, DM Sans and Reddit Mono, hosted with it so no page calls Google (batch 227). `platform/system/fonts.css` holds the
 `@font-face` rules; every page links it (and preloads `dm-sans-variable-latin.woff2`, the face almost every page draws
 first).
 
 | Family | Files | Weights | License |
 |---|---|---|---|
 | DM Sans | `dm-sans-variable-latin.woff2`, `-latin-ext`, `dm-sans-variable-italic-latin.woff2`, `-latin-ext` | 300–700 (variable), normal and italic | SIL Open Font License 1.1 (`OFL-DMSans.txt`) |
+| Reddit Mono | `reddit-mono-variable-latin.woff2`, `-latin-ext` | 200–900 (variable), normal only | SIL Open Font License 1.1 (`OFL-RedditMono.txt`) |
 | DM Mono | `dm-mono-300-…`, `dm-mono-400-…`, `dm-mono-500-…`, `dm-mono-400-italic-…` (latin, latin-ext) | 300, 400, 500, italic 400 | SIL Open Font License 1.1 (`OFL-DMMono.txt`) |
+
+Reddit Mono is the code and data font since 0.54.0 (owner, 2026-10-18; docs/font-study/playground): its @font-face has
+size-adjust 97.1%, so at the same font-size its letters are as tall as DM Sans's; DM Mono stays only for the font study.
+Reddit Mono was downloaded 2026-10-18 from Google Fonts (`family=Reddit+Mono:wght@200..900`), unedited; its license is
+github.com/google/fonts ofl/redditmono.
 
 Downloaded 2026-10-08 from Google Fonts (the woff2 files and unicode ranges it serves for
 `family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400`), unedited.

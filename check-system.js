@@ -37,7 +37,7 @@
 //   tables      every table is a DataTable (Tabulator in the Plenix table style): no <table>, no table element made in code, no
 //               PropertyList table variant: every table is a Table (static) or a DataTable, both on Tabulator (batches
 //               226, 229, 234)
-//   fonts       no call to Google Fonts: DM Sans and DM Mono are hosted with the Platform (platform/fonts, batch 227)
+//   fonts       no call to Google Fonts: DM Sans and Reddit Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
 //   icon-names  (check-system.rules/icon-names.js) every icon named in source (<Icon name=…>, icon=…, icon: …, plx-icon--…)

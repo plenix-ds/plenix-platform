@@ -50,7 +50,7 @@ its anatomy, every attribute from token to code) and the web meets the Plenix Pl
 - [ ] The Figma drawings of the 24 iOS components after Buttons: the Figma Starter plan's MCP tool-call limit stopped them.
   The scripts are ready (scratchpad native/*figma*.js, build-*.js); run them when the limit resets or on a higher plan,
   then add figma and images to each entry.
-- [x] (0.31.39) Data values outside tables (slider and progress values) are DM Mono, the data role, on every platform: the
+- [x] (0.31.39) Data values outside tables (slider and progress values) are Reddit Mono, the data role, on every platform: the
   Platforms Standard 3.4 and the font-roles rule agree (tables and property lists are DM Sans).
 - [x] (0.31.39) Owner: on mobile, a conflict follows the platform's own guidelines: the iOS alert keeps Apple's width.
 - [x] (0.31.36) Web wave A: drag alternatives, error states, the narrow DataTable, its kept view, focus not obscured, touch

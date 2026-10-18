@@ -116,9 +116,9 @@
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon:hover{background-color:var(--plx-comp-data-table-cell-icon-hover-background);}
 
 /* the cell kinds: the row's name; technical values (IDs, file names, paths, versions, dates, sizes, counts) in the data
-   font, DM Mono, at the table's own size and line height (owner, 2026-10-11) */
+   font, Reddit Mono, at the table's own size and line height (owner, 2026-10-11) */
 .plx-data-table .plx-data-table__cell--name{font-weight:var(--plx-comp-data-table-name-font-weight);}
-.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--data{font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);}
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--data{font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 
 /* long text: it wraps and the row grows; the first line sits where a one-line cell's text does (half the row height
    around one line) */
@@ -275,7 +275,7 @@
   .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > .plx-data-table__portal > *{transition-property:none;}
 }
 /* one size in a table (owner, batch 247; typefaces by kind, owner 2026-10-11): text placed in a cell (Text in any variant,
-   code) takes the cell's size, so every text in a row shares one baseline; it takes the cell's typeface too (DM Mono in a
+   code) takes the cell's size, so every text in a row shares one baseline; it takes the cell's typeface too (Reddit Mono in a
    column of kind "data", DM Sans elsewhere), except code and Text "data", which are technical values and keep the data
    font wherever they are. Its color and weight stay (a link stays a link, strong stays strong) */
 .plx-data-table .tabulator-cell .plx-text,.plx-data-table .tabulator-cell code,.plx-data-table .tabulator-cell .plx-list,.plx-data-table .tabulator-cell .plx-list__text,.plx-data-table .tabulator-cell .plx-list__item{font-size:inherit;}

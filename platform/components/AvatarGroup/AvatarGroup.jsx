@@ -21,7 +21,7 @@
        focus color.
      People keep the order they are given (put the owner first).
    Notes:
-     The count is a number: DM Mono (the data font), like other technical values.
+     The count is a number: Reddit Mono (the data font), like other technical values.
      Other props pass through to the wrapper.
 */
 import React from 'react';

@@ -7,9 +7,9 @@
 .plx-file-input__button{cursor:pointer;}
 .plx-file-input.is-disabled .plx-file-input__button{cursor:not-allowed;}
 .plx-file-input__summary{color:var(--plx-comp-file-input-summary-text);font-size:var(--plx-comp-file-input-summary-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-file-input__summary--file{color:var(--plx-comp-file-input-name-text);font-family:var(--plx-comp-file-input-data-font-family);}
+.plx-file-input__summary--file{color:var(--plx-comp-file-input-name-text);font-family:var(--plx-comp-file-input-data-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-file-input__list{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-file-input-list-gap);}
 .plx-file-input__item{align-items:center;column-gap:var(--plx-comp-file-input-item-gap);display:flex;min-block-size:var(--plx-comp-file-input-item-min-height);min-inline-size:0;}
 .plx-file-input__item>.plx-icon{block-size:var(--plx-comp-file-input-icon-size);color:var(--plx-comp-file-input-icon-color);inline-size:var(--plx-comp-file-input-icon-size);}
-.plx-file-input__name{color:var(--plx-comp-file-input-name-text);flex-grow:1;font-family:var(--plx-comp-file-input-data-font-family);font-size:var(--plx-comp-file-input-name-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-file-input__size{color:var(--plx-comp-file-input-summary-text);flex-shrink:0;font-family:var(--plx-comp-file-input-data-font-family);font-size:var(--plx-comp-file-input-name-font-size);}
+.plx-file-input__name{color:var(--plx-comp-file-input-name-text);flex-grow:1;font-family:var(--plx-comp-file-input-data-font-family);font-size:var(--plx-comp-file-input-name-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-file-input__size{color:var(--plx-comp-file-input-summary-text);flex-shrink:0;font-family:var(--plx-comp-file-input-data-font-family);font-size:var(--plx-comp-file-input-name-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}

@@ -20,4 +20,4 @@
 /* indeterminate: a quarter arc turns; still for people who ask for less motion (motion.css) */
 .plx-progress-circle.is-indeterminate .plx-progress-circle__svg{animation-duration:var(--plx-comp-progress-circle-animation-duration);animation-iteration-count:infinite;animation-name:motion-spin;animation-timing-function:linear;}
 /* the value in the center (size lg): placed by the ring's own centering */
-.plx-progress-circle__value{color:var(--plx-comp-progress-circle-value-color);font-family:var(--plx-comp-progress-circle-value-font-family);font-size:var(--plx-comp-progress-circle-value-font-size);font-variant-numeric:tabular-nums;line-height:var(--plx-comp-progress-circle-value-line-height);position:absolute;}
+.plx-progress-circle__value{color:var(--plx-comp-progress-circle-value-color);font-family:var(--plx-comp-progress-circle-value-font-family);font-size:var(--plx-comp-progress-circle-value-font-size);font-variant-numeric:tabular-nums;line-height:var(--plx-comp-progress-circle-value-line-height);position:absolute;word-spacing:var(--plx-sys-font-data-word-spacing);}

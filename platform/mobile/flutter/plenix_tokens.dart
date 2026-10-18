@@ -1386,7 +1386,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     listBullet: Color(0xFFA3A6AD),
   );
   static const String fontSans = 'DM Sans'; // web --plx-sys-typeface-sans
-  static const String fontMono = 'DM Mono'; // web --plx-sys-typeface-mono
+  static const String fontMono = 'Reddit Mono'; // web --plx-sys-typeface-mono
   @override
   PlenixTheme copyWith() => this;
   @override

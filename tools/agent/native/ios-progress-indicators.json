@@ -72,7 +72,7 @@
    {
     "part": "B",
     "name": "Value",
-    "about": "The optional amount done, muted, in DM Mono at the data text role."
+    "about": "The optional amount done, muted, in Reddit Mono at the data text role."
    },
    {
     "part": "C",
@@ -161,7 +161,7 @@
     "part": "B",
     "attribute": "Value",
     "token": "plx-comp-progress-bar-value-text",
-    "value": "DM Mono, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize): the data role, plx-sys-content-muted",
+    "value": "Reddit Mono, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize): the data role, plx-sys-content-muted",
     "apple": "None",
     "swiftui": "currentValueLabel with .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
     "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",

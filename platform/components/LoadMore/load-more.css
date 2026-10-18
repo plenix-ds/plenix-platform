@@ -5,5 +5,5 @@
 .plx-load-more__sentinel{block-size:var(--plx-comp-load-more-sentinel-height);inline-size:100%;inset-block-start:0;inset-inline-start:0;pointer-events:none;position:absolute;}
 .plx-load-more__loading{align-items:center;color:var(--plx-comp-load-more-loading-text);column-gap:var(--plx-comp-load-more-loading-gap);display:flex;font-size:var(--plx-comp-load-more-loading-font-size);}
 .plx-load-more--infinite .plx-load-more__button{min-inline-size:var(--plx-comp-load-more-infinite-button-min-width);}
-.plx-load-more__count{color:var(--plx-comp-load-more-count-text);font-family:var(--plx-comp-load-more-count-font-family);font-size:var(--plx-comp-load-more-count-font-size);}
+.plx-load-more__count{color:var(--plx-comp-load-more-count-text);font-family:var(--plx-comp-load-more-count-font-family);font-size:var(--plx-comp-load-more-count-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-load-more__end{color:var(--plx-comp-load-more-end-text);font-size:var(--plx-comp-load-more-end-font-size);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}

@@ -5,7 +5,7 @@
 .plx-file-list--list,.plx-file-list--table{row-gap:var(--plx-comp-file-list-gap);}
 .plx-file-list--sortable{row-gap:var(--plx-comp-file-list-sortable-gap);}
 .plx-file-list__bar{align-items:center;column-gap:var(--plx-comp-file-list-bar-gap);display:flex;justify-content:space-between;min-block-size:var(--plx-comp-file-list-bar-min-height);}
-.plx-file-list__count{color:var(--plx-comp-file-list-count-text);font-family:var(--plx-comp-file-list-count-font-family);font-size:var(--plx-comp-file-list-count-font-size);line-height:var(--plx-comp-file-list-count-line-height);}
+.plx-file-list__count{color:var(--plx-comp-file-list-count-text);font-family:var(--plx-comp-file-list-count-font-family);font-size:var(--plx-comp-file-list-count-font-size);line-height:var(--plx-comp-file-list-count-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* each row sits in its own item (the drag-and-drop engine's props go on it); the row inside is FileRow's */
 .plx-file-list__item{display:block;list-style-type:none;min-inline-size:0;}
 /* the list's own width decides which facts its rows keep (a list beside a tree is narrower than the window): the owner

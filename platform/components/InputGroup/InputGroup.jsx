@@ -15,7 +15,7 @@
      start: a Button or a Select (or an array of them) joined to the field's start edge
      end: a Button or a Select (or an array of them) joined to the field's end edge
      width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
-     data: the prefix and suffix in the data font (DM Mono), for technical values: units, currency codes, addresses
+     data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too
      invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
      disabled: handed to the Input; the box takes the disabled fill

@@ -34,7 +34,7 @@
        lower case)
    Behavior:
      The order (owner, 2026-10-14): the commands first, then Select all and Clear, then at the far end "N selected" (the
-       number in the data font, DM Mono; no noun), announced politely.
+       number in the data font, Reddit Mono; no noun), announced politely.
      Everything shows at every count: a command that does not apply yet is disabled with a tooltip saying why (Select
        all once everything is selected, Clear and every command at 0, a single command while several are selected).
      The button rule of the command bar: ghost buttons with icon and label; icons only with tooltips when the bar does not

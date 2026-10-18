@@ -17,7 +17,7 @@
      label: names the grid for screen readers (required)
      data: the rows, plain objects; index: the field that identifies a row (default "id")
      columns: [{ title, field, … }]:
-       kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, DM Mono, on the row's
+       kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, Reddit Mono, on the row's
          baseline) | "icon" (a mark column as wide as the checkbox column; its header shows icon) | "center" (centered in
          the row's height: badges, buttons) | "actions" (row buttons, shown while the row is hovered or selected) | "wrap"
          (long text: the lines that fit the row height step, then an ellipsis) | "deleted" (muted italic) | "avatar-name"

@@ -2309,7 +2309,7 @@
    }
   },
   "android-data-display|Activity feed": {
-   "summary": "A Plenix timeline on Android is a column of events in order, each a neutral marker on one line with its date in DM Mono, a title and a line or two about it; down the screen on a phone, across it for a few milestones on a large screen. Material 3 has no timeline component: Plenix draws the markers and the line in Compose (or a RecyclerView item decoration) with its own roles, and an event’s state is a Plenix badge after its title, never the marker’s color. TalkBack reads each event as one node: its time, title and description.",
+   "summary": "A Plenix timeline on Android is a column of events in order, each a neutral marker on one line with its date in Reddit Mono, a title and a line or two about it; down the screen on a phone, across it for a few milestones on a large screen. Material 3 has no timeline component: Plenix draws the markers and the line in Compose (or a RecyclerView item decoration) with its own roles, and an event’s state is a Plenix badge after its title, never the marker’s color. TalkBack reads each event as one node: its time, title and description.",
    "variants": [
     {
      "name": "Vertical (default)",
@@ -2359,7 +2359,7 @@
     {
      "part": "C",
      "name": "Time",
-     "about": "The date or time in DM Mono, in the muted color, as tall as the marker so the two share a middle."
+     "about": "The date or time in Reddit Mono, in the muted color, as tall as the marker so the two share a middle."
     },
     {
      "part": "D",
@@ -2399,7 +2399,7 @@
      "part": "C",
      "attribute": "Time",
      "token": "plx-comp-timeline-time-font-family",
-     "value": "The data font (DM Mono) in the muted color",
+     "value": "The data font (Reddit Mono) in the muted color",
      "material": "Label small",
      "compose": "Text(event.time, fontFamily = FontFamily(Font(R.font.dm_mono)), color = PlenixColors.contentMuted.current()) // PlenixFonts.MONO",
      "views": "timeView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -2673,7 +2673,7 @@
     {
      "part": "C",
      "name": "Price",
-     "about": "The price in DM Mono; on sale the old price after it, struck through and muted."
+     "about": "The price in Reddit Mono; on sale the old price after it, struck through and muted."
     },
     {
      "part": "D",
@@ -2824,7 +2824,7 @@
      "part": "C",
      "attribute": "Price in the data font",
      "token": "plx-comp-product-card-price-font-family",
-     "value": "A price is a technical value: DM Mono (the data role)",
+     "value": "A price is a technical value: Reddit Mono (the data role)",
      "material": "Body large",
      "compose": "Text(price, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
      "views": "priceView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)"
@@ -3347,7 +3347,7 @@
    }
   },
   "android-data-display|Charts": {
-   "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values. The charts of wave 9 are drawn on the same Canvas: lines, steps, areas, heat map cells and waterfall bars; a word cloud is a custom Layout and a network graph or diagram a transformable Canvas with semantics per item.",
+   "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in Reddit Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values. The charts of wave 9 are drawn on the same Canvas: lines, steps, areas, heat map cells and waterfall bars; a word cloud is a custom Layout and a network graph or diagram a transformable Canvas with semantics per item.",
    "variants": [
     {
      "name": "Column chart (band scale)",
@@ -3698,7 +3698,7 @@
     {
      "part": "F",
      "name": "Tick labels",
-     "about": "Values, dates and categories in DM Mono, in the reader’s locale."
+     "about": "Values, dates and categories in Reddit Mono, in the reader’s locale."
     },
     {
      "part": "G",
@@ -3713,12 +3713,12 @@
     {
      "part": "I",
      "name": "Selection tooltip",
-     "about": "The exact values where people drag: a rule at the position and a card on the overlay surface, values in DM Mono."
+     "about": "The exact values where people drag: a rule at the position and a card on the overlay surface, values in Reddit Mono."
     },
     {
      "part": "J",
      "name": "Data labels",
-     "about": "Values written by their marks in DM Mono."
+     "about": "Values written by their marks in Reddit Mono."
     },
     {
      "part": "K",
@@ -3807,7 +3807,7 @@
      "part": "F",
      "attribute": "Tick label font",
      "token": "plx-comp-chart-tick-label-font-family",
-     "value": "DM Mono (the data role) at the data size, secondary text",
+     "value": "Reddit Mono (the data role) at the data size, secondary text",
      "material": "Body small",
      "compose": "TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize) // Mono: FontFamily(Font(GoogleFont(PlenixFonts.MONO), fontProvider))",
      "views": "labelPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -3851,7 +3851,7 @@
      "part": "I",
      "attribute": "Tooltip value font",
      "token": "plx-comp-chart-tooltip-value-font-family",
-     "value": "DM Mono (the data role) at the data size",
+     "value": "Reddit Mono (the data role) at the data size",
      "material": "Body small",
      "compose": "Text(value, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
      "views": "value.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -3862,7 +3862,7 @@
      "part": "J",
      "attribute": "Data label font",
      "token": "plx-comp-chart-data-label-font-family",
-     "value": "DM Mono (the data role) at the caption size",
+     "value": "Reddit Mono (the data role) at the caption size",
      "material": "Label small",
      "compose": "drawText(measurer, value, topLeft, style = TextStyle(fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textCaptionSize))",
      "views": "monoPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -3942,7 +3942,7 @@
      "import androidx.compose.ui.unit.Dp",
      "import plenix.tokens.*",
      "",
-     "// Mono: the DM Mono family (PlenixFonts.MONO), set once next to Sans in the app theme",
+     "// Mono: the Reddit Mono family (PlenixFonts.MONO), set once next to Sans in the app theme",
      "// plotHeight: the web token --plx-comp-chart-plot-height-md; the library tokens are not generated for Android yet",
      "@Composable",
      "fun PlenixChart(title: String, takeaway: String, plotHeight: Dp, values: List<Float>, labels: List<String>) {",
@@ -4065,7 +4065,7 @@
    }
   },
   "android-data-display|Data table": {
-   "summary": "Plenix on Android shows files people compare by column the way the web’s file table does: a header row of column names that sort, then a row per file with its name and its facts in DM Mono, the owner, and the status as a badge with its icon. Material 3 has no data table component; Plenix builds it from a lazy list of rows with fixed columns on wide windows, and on a phone it becomes the list of each file’s name, size and date (the web’s narrow table). It keeps Android’s touch targets, its selection with a long press and TalkBack’s row and column reading, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the lines between rows.",
+   "summary": "Plenix on Android shows files people compare by column the way the web’s file table does: a header row of column names that sort, then a row per file with its name and its facts in Reddit Mono, the owner, and the status as a badge with its icon. Material 3 has no data table component; Plenix builds it from a lazy list of rows with fixed columns on wide windows, and on a phone it becomes the list of each file’s name, size and date (the web’s narrow table). It keeps Android’s touch targets, its selection with a long press and TalkBack’s row and column reading, and changes the look: Plenix colors, DM Sans and Reddit Mono, the Plenix row height and the lines between rows.",
    "variants": [
     {
      "name": "File table",
@@ -4124,12 +4124,12 @@
     {
      "part": "B",
      "name": "Name",
-     "about": "The file’s type icon and its name in DM Mono, cut in the middle so the extension stays."
+     "about": "The file’s type icon and its name in Reddit Mono, cut in the middle so the extension stays."
     },
     {
      "part": "C",
      "name": "Facts",
-     "about": "The size and the date in DM Mono at the data size, the size at the end of its column."
+     "about": "The size and the date in Reddit Mono at the data size, the size at the end of its column."
     },
     {
      "part": "D",
@@ -4151,7 +4151,7 @@
      "part": "B",
      "attribute": "File names in the data font",
      "token": "plx-comp-file-name-data-font-family",
-     "value": "DM Mono at the body size (the data role)",
+     "value": "Reddit Mono at the body size (the data role)",
      "material": "Roboto, body medium",
      "compose": "Text(file.name, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textBodySize, maxLines = 1, overflow = TextOverflow.MiddleEllipsis)",
      "views": "typeface from R.font.dm_mono (PlenixFonts.MONO) and ellipsize middle",
@@ -4162,7 +4162,7 @@
      "part": "C",
      "attribute": "Facts in the data font",
      "token": "plx-comp-file-row-data-font-family",
-     "value": "The size and date in DM Mono at the data size, muted (the data role)",
+     "value": "The size and date in Reddit Mono at the data size, muted (the data role)",
      "material": "Body small",
      "compose": "Text(facts, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize, color = PlenixColors.contentMuted)",
      "views": "typeface from R.font.dm_mono (PlenixFonts.MONO), textSize from PlenixPlatform.textDataSize",
@@ -4243,7 +4243,7 @@
     "compose": [
      "@Composable",
      "fun PlenixFileTableRow(file: FileItem, selected: Boolean, onSelect: (Boolean) -> Unit) {",
-     "    val mono = FontFamily(Font(R.font.dm_mono)) // DM Mono, PlenixFonts.MONO",
+     "    val mono = FontFamily(Font(R.font.dm_mono)) // Reddit Mono, PlenixFonts.MONO",
      "    Row(",
      "        modifier = Modifier",
      "            .fillMaxWidth()",
@@ -4261,7 +4261,7 @@
      "}"
     ],
     "views": [
-     "name.typeface = ResourcesCompat.getFont(context, R.font.dm_mono) // DM Mono, PlenixFonts.MONO",
+     "name.typeface = ResourcesCompat.getFont(context, R.font.dm_mono) // Reddit Mono, PlenixFonts.MONO",
      "size.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
      "row.minimumHeight = PlenixPlatform.controlTargetMin.roundToPx()",
      "row.isActivated = selection.isSelected(file.id)"
@@ -4658,7 +4658,7 @@
    }
   },
   "android-data-display|Tree": {
-   "summary": "Plenix on Android shows a library’s folders the way the web’s file browser does: a tree of folders in a list, each row an expand control, the folder icon and its name in DM Sans, the open folder in the selected fill, and its contents beside it on a large screen (a list-detail layout) or as the next screen on a phone, where the path above the list leads back. Material 3 has no tree component; Plenix builds it from list items with Material’s expand and collapse, its touch targets and TalkBack’s expanded state, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the line between rows. Files move by dragging them onto a folder (a long press) or with Move to in the row’s menu.",
+   "summary": "Plenix on Android shows a library’s folders the way the web’s file browser does: a tree of folders in a list, each row an expand control, the folder icon and its name in DM Sans, the open folder in the selected fill, and its contents beside it on a large screen (a list-detail layout) or as the next screen on a phone, where the path above the list leads back. Material 3 has no tree component; Plenix builds it from list items with Material’s expand and collapse, its touch targets and TalkBack’s expanded state, and changes the look: Plenix colors, DM Sans and Reddit Mono, the Plenix row height and the line between rows. Files move by dragging them onto a folder (a long press) or with Move to in the row’s menu.",
    "variants": [
     {
      "name": "Folder tree",
@@ -10001,7 +10001,7 @@
    }
   },
   "android-navigation|Search screen": {
-   "summary": "Plenix search results on Android keep Material 3’s search (the SearchBar expanding into the search view, the keyboard and Back) and draw each result as a Plenix list item: a leading thumbnail or avatar, the path as the overline, the name with the words searched for in bold, a two-line snippet and the details, technical values in DM Mono. Results of several kinds sit under a header per kind with its count, each with a Show all item.",
+   "summary": "Plenix search results on Android keep Material 3’s search (the SearchBar expanding into the search view, the keyboard and Back) and draw each result as a Plenix list item: a leading thumbnail or avatar, the path as the overline, the name with the words searched for in bold, a two-line snippet and the details, technical values in Reddit Mono. Results of several kinds sit under a header per kind with its count, each with a Show all item.",
    "variants": [
     {
      "name": "Page (default)",
@@ -10021,7 +10021,7 @@
      "background": "plx-sys-surface-default",
      "content": "plx-comp-search-result-meta-text",
      "border": "plx-comp-search-result-border-bottom-color",
-     "compose": "The same item with the file’s thumbnail and its size and date in DM Mono",
+     "compose": "The same item with the file’s thumbnail and its size and date in Reddit Mono",
      "views": "The row’s ImageView loaded with the file’s thumbnail",
      "use": "Documents, images, uploads."
     },
@@ -10081,7 +10081,7 @@
     {
      "part": "D",
      "name": "Snippet and details",
-     "about": "Two lines at most around the match, then the type, size and date (technical values in DM Mono)."
+     "about": "Two lines at most around the match, then the type, size and date (technical values in Reddit Mono)."
     },
     {
      "part": "E",
@@ -10131,7 +10131,7 @@
      "part": "D",
      "attribute": "Details",
      "token": "plx-comp-search-result-meta-text",
-     "value": "Subtle content color; sizes and dates in the data font (DM Mono)",
+     "value": "Subtle content color; sizes and dates in the data font (Reddit Mono)",
      "material": "Supporting text",
      "compose": "Text(meta, color = PlenixColors.contentSubtle.current(), fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textSecondarySize) // PlenixFonts.MONO",
      "views": "metaView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
@@ -12814,7 +12814,7 @@
     {
      "part": "C",
      "name": "Total",
-     "about": "In DM Mono in the bottom bar; it opens the order summary sheet."
+     "about": "In Reddit Mono in the bottom bar; it opens the order summary sheet."
     },
     {
      "part": "D",
@@ -12839,7 +12839,7 @@
      "part": "C",
      "attribute": "Total in the data font",
      "token": "plx-comp-commerce-summary-value-font-family",
-     "value": "Amounts are technical values: DM Mono (the data role)",
+     "value": "Amounts are technical values: Reddit Mono (the data role)",
      "material": "Title medium",
      "compose": "Text(total, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
      "views": "totalView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)"
@@ -13085,7 +13085,7 @@
    }
   },
   "android-specialized|File and photo pickers": {
-   "summary": "A Plenix image upload on Android opens the system photo picker (PickVisualMedia) or the document picker (OpenDocument) from a Plenix outlined button and shows the chosen picture in a frame of a fixed ratio with the media radius and the thin default border, its name in DM Mono, and Replace and Remove beside it; a profile picture is the Plenix avatar (a rounded square, never a circle) with Change photo and Remove photo. The system picker stays as Android draws it; Plenix styles the control that opens it and what shows after.",
+   "summary": "A Plenix image upload on Android opens the system photo picker (PickVisualMedia) or the document picker (OpenDocument) from a Plenix outlined button and shows the chosen picture in a frame of a fixed ratio with the media radius and the thin default border, its name in Reddit Mono, and Replace and Remove beside it; a profile picture is the Plenix avatar (a rounded square, never a circle) with Change photo and Remove photo. The system picker stays as Android draws it; Plenix styles the control that opens it and what shows after.",
    "variants": [
     {
      "name": "Single (default)",
@@ -13240,7 +13240,7 @@
     {
      "part": "C",
      "name": "File name",
-     "about": "The name and size in DM Mono, the data role."
+     "about": "The name and size in Reddit Mono, the data role."
     },
     {
      "part": "D",
@@ -13295,7 +13295,7 @@
      "part": "C",
      "attribute": "File name",
      "token": "plx-comp-image-upload-name-font-family",
-     "value": "DM Mono at the data role (PlenixFonts.MONO)",
+     "value": "Reddit Mono at the data role (PlenixFonts.MONO)",
      "material": "Body small",
      "compose": "Text(name, fontFamily = FontFamily(Font(R.font.dm_mono)), color = PlenixColors.contentDefault.current())",
      "views": "TextView with the R.font.dm_mono typeface",
@@ -15917,7 +15917,7 @@
    }
   },
   "ios-data-display|Charts": {
-   "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web. The charts of wave 9 follow it: lines, steps and areas are LineMark and AreaMark, a heat map RectangleMark, a waterfall BarMark with a start and an end; a word cloud, a network graph and a diagram are custom layouts or a Canvas with an accessibility element per item.",
+   "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in Reddit Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web. The charts of wave 9 follow it: lines, steps and areas are LineMark and AreaMark, a heat map RectangleMark, a waterfall BarMark with a start and an end; a word cloud, a network graph and a diagram are custom layouts or a Canvas with an accessibility element per item.",
    "variants": [
     {
      "name": "Column chart (band scale)",
@@ -16285,7 +16285,7 @@
     {
      "part": "F",
      "name": "Tick labels",
-     "about": "Values, dates and categories in DM Mono, in the reader’s locale."
+     "about": "Values, dates and categories in Reddit Mono, in the reader’s locale."
     },
     {
      "part": "G",
@@ -16300,12 +16300,12 @@
     {
      "part": "I",
      "name": "Selection tooltip",
-     "about": "The exact values where people scrub: a rule at the position and a card on the overlay surface, values in DM Mono."
+     "about": "The exact values where people scrub: a rule at the position and a card on the overlay surface, values in Reddit Mono."
     },
     {
      "part": "J",
      "name": "Data labels",
-     "about": "Values written by their marks in DM Mono, for the marks people compare."
+     "about": "Values written by their marks in Reddit Mono, for the marks people compare."
     },
     {
      "part": "K",
@@ -16405,7 +16405,7 @@
      "part": "F",
      "attribute": "Tick label font",
      "token": "plx-comp-chart-tick-label-font-family",
-     "value": "DM Mono (the data role) at the caption size, secondary text",
+     "value": "Reddit Mono (the data role) at the caption size, secondary text",
      "apple": "SF Pro caption",
      "swiftui": "AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption))",
      "uikit": "The same labels on the hosted SwiftUI Chart (Plenix.Font.mono)",
@@ -16449,7 +16449,7 @@
      "part": "I",
      "attribute": "Tooltip value font",
      "token": "plx-comp-chart-tooltip-value-font-family",
-     "value": "DM Mono (the data role) at the data size",
+     "value": "Reddit Mono (the data role) at the data size",
      "apple": "SF Pro",
      "swiftui": "Text(value).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
      "uikit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",
@@ -16460,7 +16460,7 @@
      "part": "J",
      "attribute": "Data label font",
      "token": "plx-comp-chart-data-label-font-family",
-     "value": "DM Mono (the data role) at the caption size, the default content color",
+     "value": "Reddit Mono (the data role) at the caption size, the default content color",
      "apple": "SF Pro caption",
      "swiftui": "Text(value, format: .number).font(Plenix.Font.mono(Plenix.Platform.textCaptionSize, relativeTo: .caption))",
      "uikit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",
@@ -16700,7 +16700,7 @@
    }
   },
   "ios-data-display|Gauges": {
-   "summary": "The Plenix gauge on iOS is SwiftUI’s Gauge in the accessoryCircular style or a semicircle drawn the Plenix way: the track in the subtle border color, the fill in the first data-viz color, the value in DM Mono in the middle, the ends under the arc, and, with thresholds, the warning and critical ranges and a status label. Gauge keeps its own accessibility (its value and range read by VoiceOver).",
+   "summary": "The Plenix gauge on iOS is SwiftUI’s Gauge in the accessoryCircular style or a semicircle drawn the Plenix way: the track in the subtle border color, the fill in the first data-viz color, the value in Reddit Mono in the middle, the ends under the arc, and, with thresholds, the warning and critical ranges and a status label. Gauge keeps its own accessibility (its value and range read by VoiceOver).",
    "variants": [
     {
      "name": "Semicircle",
@@ -16753,12 +16753,12 @@
     {
      "part": "C",
      "name": "Value",
-     "about": "The value in DM Mono in the middle of the arc, with a few words under it."
+     "about": "The value in Reddit Mono in the middle of the arc, with a few words under it."
     },
     {
      "part": "D",
      "name": "Ends",
-     "about": "The minimum and the maximum under the ends of the arc, in DM Mono."
+     "about": "The minimum and the maximum under the ends of the arc, in Reddit Mono."
     },
     {
      "part": "E",
@@ -16796,17 +16796,17 @@
      "part": "C",
      "attribute": "Value font",
      "token": "plx-comp-gauge-value-font-family",
-     "value": "DM Mono semibold: a technical value (the data role)",
+     "value": "Reddit Mono semibold: a technical value (the data role)",
      "apple": "currentValueLabel",
      "swiftui": "Text(percent).font(Plenix.Font.mono(Plenix.Platform.textHeadingSize, relativeTo: .title3))",
-     "uikit": "UILabel with DM Mono scaled by UIFontMetrics (Plenix.Font.mono)",
-     "appkit": "NSTextField with DM Mono (Plenix.Font.mono; a macOS build of the tokens is needed)"
+     "uikit": "UILabel with Reddit Mono scaled by UIFontMetrics (Plenix.Font.mono)",
+     "appkit": "NSTextField with Reddit Mono (Plenix.Font.mono; a macOS build of the tokens is needed)"
     },
     {
      "part": "D",
      "attribute": "Ends font",
      "token": "plx-comp-gauge-end-font-family",
-     "value": "DM Mono at the data size (the data role)",
+     "value": "Reddit Mono at the data size (the data role)",
      "apple": "minimumValueLabel and maximumValueLabel",
      "swiftui": "Text(minText).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption))",
      "uikit": "UILabel with Plenix.Font.mono at the data size",
@@ -17309,7 +17309,7 @@
    }
   },
   "ios-data-display|Outline views": {
-   "summary": "Plenix on iOS shows a library’s folders the way the web’s file browser does: an outline of folders in the sidebar or the primary column, each row a folder symbol and its name in DM Sans, the open folder in the selected fill, and its contents in a list beside or after it, files with their names and facts in DM Mono. Apple’s default is the system’s hierarchical list with its disclosure indicators; Plenix keeps the outline’s structure, its disclosure, its keyboard and VoiceOver behavior, and changes the look: Plenix colors, DM Sans and DM Mono, the Plenix row height and the line between rows. Files move by dragging them onto a folder or with Move to in the row’s menu.",
+   "summary": "Plenix on iOS shows a library’s folders the way the web’s file browser does: an outline of folders in the sidebar or the primary column, each row a folder symbol and its name in DM Sans, the open folder in the selected fill, and its contents in a list beside or after it, files with their names and facts in Reddit Mono. Apple’s default is the system’s hierarchical list with its disclosure indicators; Plenix keeps the outline’s structure, its disclosure, its keyboard and VoiceOver behavior, and changes the look: Plenix colors, DM Sans and Reddit Mono, the Plenix row height and the line between rows. Files move by dragging them onto a folder or with Move to in the row’s menu.",
    "variants": [
     {
      "name": "Folder outline",
@@ -17372,7 +17372,7 @@
     {
      "part": "E",
      "name": "Contents",
-     "about": "The open folder’s files, each a file row with its name and facts in DM Mono."
+     "about": "The open folder’s files, each a file row with its name and facts in Reddit Mono."
     }
    ],
    "attributes": [
@@ -17424,7 +17424,7 @@
      "part": "E",
      "attribute": "File names in the data font",
      "token": "plx-comp-file-name-data-font-family",
-     "value": "The data font: DM Mono at the body size for file names, the data size for facts",
+     "value": "The data font: Reddit Mono at the body size for file names, the data size for facts",
      "apple": "SF Pro",
      "swiftui": "Text(file.name).font(Plenix.Font.mono(Plenix.Platform.textBodySize, relativeTo: .body)).truncationMode(.middle)",
      "uikit": "textProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textBodySize)",
@@ -18061,7 +18061,7 @@
     {
      "part": "B",
      "name": "Value",
-     "about": "The optional amount done, muted, in DM Mono at the data text role."
+     "about": "The optional amount done, muted, in Reddit Mono at the data text role."
     },
     {
      "part": "C",
@@ -18154,7 +18154,7 @@
      "part": "B",
      "attribute": "Value",
      "token": "plx-comp-progress-bar-value-text",
-     "value": "DM Mono, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize): the data role, plx-sys-content-muted",
+     "value": "Reddit Mono, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize): the data role, plx-sys-content-muted",
      "apple": "None",
      "swiftui": "currentValueLabel with .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
      "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",
@@ -18805,7 +18805,7 @@
     {
      "part": "C",
      "name": "File name",
-     "about": "The name and size in DM Mono, the data role."
+     "about": "The name and size in Reddit Mono, the data role."
     },
     {
      "part": "D",
@@ -18840,7 +18840,7 @@
      "part": "C",
      "attribute": "File name",
      "token": "plx-comp-image-upload-name-font-family",
-     "value": "DM Mono at the data role (Plenix.Font.mono, Plenix.Platform.textDataSize)",
+     "value": "Reddit Mono at the data role (Plenix.Font.mono, Plenix.Platform.textDataSize)",
      "apple": "None",
      "swiftui": "Text(name).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
      "uikit": "label.font = Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)",
@@ -19678,7 +19678,7 @@
      "part": "D",
      "attribute": "Value text",
      "token": "plx-comp-slider-value-text, plx-text--secondary (iOS secondary role)",
-     "value": "plx-sys-content-muted, DM Mono, 13 pt on 18 pt, the data role (Plenix.Platform.textDataSize)",
+     "value": "plx-sys-content-muted, Reddit Mono, 13 pt on 18 pt, the data role (Plenix.Platform.textDataSize)",
      "apple": "None",
      "swiftui": "Text(value, format:).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
      "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",
@@ -19858,8 +19858,8 @@
      "background": "plx-sys-fill-neutral",
      "content": "plx-sys-content-default",
      "border": null,
-     "swiftui": "Stepper(value: $quantity, in: 1...stock) with the count in DM Mono in its label",
-     "uikit": "UIStepper with minimumValue 1 and maximumValue the stock, beside a UILabel in DM Mono",
+     "swiftui": "Stepper(value: $quantity, in: 1...stock) with the count in Reddit Mono in its label",
+     "uikit": "UIStepper with minimumValue 1 and maximumValue the stock, beside a UILabel in Reddit Mono",
      "appkit": "NSStepper bound to an NSTextField with a NumberFormatter (a macOS build of the tokens is needed)",
      "use": "How many of a product go in the cart, beside Add to cart."
     }
@@ -19898,7 +19898,7 @@
     {
      "part": "B",
      "name": "Count",
-     "about": "The number in DM Mono, beside the stepper."
+     "about": "The number in Reddit Mono, beside the stepper."
     },
     {
      "part": "C",
@@ -20010,7 +20010,7 @@
      "part": "B",
      "attribute": "Count in the data font",
      "token": "plx-comp-input-data-font-family",
-     "value": "The quantity is a technical value: DM Mono at the data size (the data role)",
+     "value": "The quantity is a technical value: Reddit Mono at the data size (the data role)",
      "apple": "The label’s text",
      "swiftui": "Text(quantity, format: .number).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .body))",
      "uikit": "countLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
@@ -20741,7 +20741,7 @@
    }
   },
   "ios-forms|Token fields": {
-   "summary": "A Plenix people or entity picker on iOS is a search field that suggests records as people type and keeps the chosen ones as tokens: the field in the Plenix control roles (6-point corners, at least 44 points tall, the border turning the focus color), suggestions in a list with the person’s avatar (a rounded square) or the record’s icon tile, the name in DM Sans over a detail line, an ID in DM Mono, and each token a soft Plenix tag with its remove button. iOS has no token field of its own (UISearchTextField has search tokens; the Mac has NSTokenField); Plenix keeps the system field and keyboard and draws the suggestions and tokens with its roles.",
+   "summary": "A Plenix people or entity picker on iOS is a search field that suggests records as people type and keeps the chosen ones as tokens: the field in the Plenix control roles (6-point corners, at least 44 points tall, the border turning the focus color), suggestions in a list with the person’s avatar (a rounded square) or the record’s icon tile, the name in DM Sans over a detail line, an ID in Reddit Mono, and each token a soft Plenix tag with its remove button. iOS has no token field of its own (UISearchTextField has search tokens; the Mac has NSTokenField); Plenix keeps the system field and keyboard and draws the suggestions and tokens with its roles.",
    "variants": [
     {
      "name": "People",
@@ -20824,7 +20824,7 @@
      "part": "B",
      "attribute": "Record ID",
      "token": "plx-comp-entity-picker-meta-font-family",
-     "value": "DM Mono at the data role (Plenix.Font.mono)",
+     "value": "Reddit Mono at the data role (Plenix.Font.mono)",
      "apple": "None",
      "swiftui": "Text(id).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
      "uikit": "label.font = Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)",
@@ -21557,7 +21557,7 @@
    }
   },
   "ios-layout|Split views": {
-   "summary": "Plenix on iOS compares two versions of one item the way the web’s version comparison does: on iPad and in landscape the two versions side by side in the columns of a split view, each headed by its version and date in DM Mono, the changed values marked with a Changed badge; on iPhone one version after the other with a segmented control to switch, a slider over two pictures, or the text’s lines with the added and removed ones marked by a sign and a word. Apple’s default is the split view’s plain columns; Plenix keeps the split view, its column widths and its gestures, and changes the look: Plenix surfaces, DM Sans and DM Mono, and the success and danger soft surfaces for added and removed lines.",
+   "summary": "Plenix on iOS compares two versions of one item the way the web’s version comparison does: on iPad and in landscape the two versions side by side in the columns of a split view, each headed by its version and date in Reddit Mono, the changed values marked with a Changed badge; on iPhone one version after the other with a segmented control to switch, a slider over two pictures, or the text’s lines with the added and removed ones marked by a sign and a word. Apple’s default is the split view’s plain columns; Plenix keeps the split view, its column widths and its gestures, and changes the look: Plenix surfaces, DM Sans and Reddit Mono, and the success and danger soft surfaces for added and removed lines.",
    "variants": [
     {
      "name": "Side by side",
@@ -21608,7 +21608,7 @@
     {
      "part": "A",
      "name": "Version header",
-     "about": "The version’s name in DM Sans and its date and author in DM Mono, always shown."
+     "about": "The version’s name in DM Sans and its date and author in Reddit Mono, always shown."
     },
     {
      "part": "B",
@@ -21623,7 +21623,7 @@
     {
      "part": "D",
      "name": "Diff line",
-     "about": "A text line in DM Mono with both line numbers, a sign, and Added or Removed for VoiceOver."
+     "about": "A text line in Reddit Mono with both line numbers, a sign, and Added or Removed for VoiceOver."
     },
     {
      "part": "E",
@@ -21638,7 +21638,7 @@
      "part": "A",
      "attribute": "Version date in the data font",
      "token": "plx-comp-comparison-view-meta-font-family",
-     "value": "Dates and versions are technical values: DM Mono at the data size, muted (the data role)",
+     "value": "Dates and versions are technical values: Reddit Mono at the data size, muted (the data role)",
      "apple": "The secondary text",
      "swiftui": "Text(version.date, style: .date).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentMuted)",
      "uikit": "secondaryTextProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
@@ -21682,7 +21682,7 @@
      "part": "D",
      "attribute": "Line text in the data font",
      "token": "plx-comp-version-compare-line-font-family",
-     "value": "The compared text in DM Mono at the data size (the data role)",
+     "value": "The compared text in Reddit Mono at the data size (the data role)",
      "apple": "SF Mono",
      "swiftui": "Text(line.text).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .body))",
      "uikit": "label.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
@@ -21743,7 +21743,7 @@
     "swiftui": [
      "import SwiftUI",
      "",
-     "/// One line of the Plenix text diff on iOS: the numbers, the sign, the text in DM Mono, a word for VoiceOver.",
+     "/// One line of the Plenix text diff on iOS: the numbers, the sign, the text in Reddit Mono, a word for VoiceOver.",
      "struct PlenixDiffLine: View {",
      "    let line: DiffLine",
      "",
@@ -22474,7 +22474,7 @@
    }
   },
   "ios-navigation|Searching": {
-   "summary": "Plenix search results on iOS keep the system’s search (the searchable modifier or UISearchController, its scope bar and keyboard) and draw each result as a Plenix row: what it is (a page’s icon in a thumbnail, a file’s picture, a person’s avatar), the name with the words searched for in bold, the path above it, a line around the match and its details, the technical values in DM Mono. Results of several kinds sit in sections headed by the kind and its count, each with a row that shows all of that kind.",
+   "summary": "Plenix search results on iOS keep the system’s search (the searchable modifier or UISearchController, its scope bar and keyboard) and draw each result as a Plenix row: what it is (a page’s icon in a thumbnail, a file’s picture, a person’s avatar), the name with the words searched for in bold, the path above it, a line around the match and its details, the technical values in Reddit Mono. Results of several kinds sit in sections headed by the kind and its count, each with a row that shows all of that kind.",
    "variants": [
     {
      "name": "Page (default)",
@@ -22495,7 +22495,7 @@
      "background": "plx-sys-surface-default",
      "content": "plx-comp-search-result-meta-text",
      "border": "plx-comp-search-result-border-bottom-color",
-     "swiftui": "The same row with the file’s QuickLook thumbnail and its size and date in DM Mono",
+     "swiftui": "The same row with the file’s QuickLook thumbnail and its size and date in Reddit Mono",
      "uikit": "The cell’s image from QLThumbnailGenerator",
      "appkit": "QLThumbnailGenerator in the cell (a macOS build of the tokens is needed)",
      "use": "Documents, images, uploads."
@@ -22556,7 +22556,7 @@
     {
      "part": "D",
      "name": "Snippet and details",
-     "about": "Two lines at most around the match, then the type, size and date (technical values in DM Mono)."
+     "about": "Two lines at most around the match, then the type, size and date (technical values in Reddit Mono)."
     },
     {
      "part": "E",
@@ -22576,7 +22576,7 @@
     {
      "part": "C",
      "name": "Results",
-     "about": "Product cards with their prices in DM Mono; the count is announced."
+     "about": "Product cards with their prices in Reddit Mono; the count is announced."
     }
    ],
    "attributes": [
@@ -22617,11 +22617,11 @@
      "part": "D",
      "attribute": "Details",
      "token": "plx-comp-search-result-meta-text",
-     "value": "Subtle content color; sizes and dates in the data font (DM Mono)",
+     "value": "Subtle content color; sizes and dates in the data font (Reddit Mono)",
      "apple": "Tertiary text",
      "swiftui": "Text(meta).font(Plenix.Font.mono(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentSubtle)",
      "uikit": "label.font = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textSecondarySize)!)",
-     "appkit": "NSFont named DM Mono at the secondary size, Plenix.Font.mono (a macOS build of the tokens is needed)",
+     "appkit": "NSFont named Reddit Mono at the secondary size, Plenix.Font.mono (a macOS build of the tokens is needed)",
      "follows": "Best practices"
     },
     {
@@ -22639,7 +22639,7 @@
      "part": "C",
      "attribute": "Price in the data font",
      "token": "plx-comp-product-card-price-font-family",
-     "value": "A price is a technical value: DM Mono (the data role)",
+     "value": "A price is a technical value: Reddit Mono (the data role)",
      "apple": "The secondary text",
      "swiftui": "Text(price, format: .currency(code: currency)).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .headline))",
      "uikit": "priceLabel.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize)",
@@ -25821,7 +25821,7 @@
    }
   },
   "ios-specialized|File management": {
-   "summary": "Plenix on iOS shows files and folders the way the web does and leaves choosing, opening and saving to the system: the document picker and the document browser, Quick Look for previews, the share sheet for sending. A file is its type’s symbol (or a thumbnail from QuickLookThumbnailing), its name with the extension kept in view when a long name is cut, and its size and date in DM Mono; a folder is the folder symbol, its name in DM Sans and its count. In a list each file is a row with its facts and a trailing menu of Rename, Download and Delete; during a transfer the row shows a linear progress view and Cancel. Apple’s default is the system list row; Plenix keeps the row, its swipe actions and its context menu and changes the look.",
+   "summary": "Plenix on iOS shows files and folders the way the web does and leaves choosing, opening and saving to the system: the document picker and the document browser, Quick Look for previews, the share sheet for sending. A file is its type’s symbol (or a thumbnail from QuickLookThumbnailing), its name with the extension kept in view when a long name is cut, and its size and date in Reddit Mono; a folder is the folder symbol, its name in DM Sans and its count. In a list each file is a row with its facts and a trailing menu of Rename, Download and Delete; during a transfer the row shows a linear progress view and Cancel. Apple’s default is the system list row; Plenix keeps the row, its swipe actions and its context menu and changes the look.",
    "variants": [
     {
      "name": "File",
@@ -25830,7 +25830,7 @@
      "background": null,
      "content": "plx-comp-file-name-text",
      "border": null,
-     "swiftui": "PlenixFile(name: \"Letterhead 2026.pdf\", size: 1_240_000): the type symbol, the name in DM Mono with its extension kept, the facts muted",
+     "swiftui": "PlenixFile(name: \"Letterhead 2026.pdf\", size: 1_240_000): the type symbol, the name in Reddit Mono with its extension kept, the facts muted",
      "uikit": "UIListContentConfiguration.cell() with image from the type and secondaryText for the facts",
      "appkit": "NSTableCellView with the file’s icon (a macOS build of the tokens is needed)",
      "use": "A stored file in a list, a picker or an attachment."
@@ -26001,12 +26001,12 @@
     {
      "part": "B",
      "name": "Name",
-     "about": "The stored name in DM Mono; a long name is cut in the middle so the extension stays."
+     "about": "The stored name in Reddit Mono; a long name is cut in the middle so the extension stays."
     },
     {
      "part": "C",
      "name": "Facts",
-     "about": "The size (ByteCountFormatter) and the date, muted, in DM Mono; a folder’s count."
+     "about": "The size (ByteCountFormatter) and the date, muted, in Reddit Mono; a folder’s count."
     },
     {
      "part": "D",
@@ -26055,7 +26055,7 @@
      "part": "B",
      "attribute": "Name in the data font",
      "token": "plx-comp-file-name-data-font-family",
-     "value": "A file name with its extension is a technical value: DM Mono at the body size (the data font)",
+     "value": "A file name with its extension is a technical value: Reddit Mono at the body size (the data font)",
      "apple": "SF Pro",
      "swiftui": "Text(file.name).font(Plenix.Font.mono(Plenix.Platform.textBodySize, relativeTo: .body)).truncationMode(.middle).lineLimit(1)",
      "uikit": "textProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textBodySize); lineBreakMode = .byTruncatingMiddle",
@@ -26066,11 +26066,11 @@
      "part": "C",
      "attribute": "Facts in the data font",
      "token": "plx-comp-file-meta-font-family",
-     "value": "The size and date, muted, in DM Mono at the data size (the data role)",
+     "value": "The size and date, muted, in Reddit Mono at the data size (the data role)",
      "apple": "The secondary text",
      "swiftui": "Text(facts).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentMuted)",
      "uikit": "secondaryTextProperties.font = UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize); color = Plenix.Colors.contentMuted",
-     "appkit": "the secondary field in DM Mono, Plenix.Font.mono (a macOS build of the tokens is needed)",
+     "appkit": "the secondary field in Reddit Mono, Plenix.Font.mono (a macOS build of the tokens is needed)",
      "follows": "Creating and opening files"
     },
     {
@@ -26188,7 +26188,7 @@
     "swiftui": [
      "import SwiftUI",
      "",
-     "/// A Plenix file row on iOS: the type symbol, the name in DM Mono (cut in the middle), the facts, and its actions.",
+     "/// A Plenix file row on iOS: the type symbol, the name in Reddit Mono (cut in the middle), the facts, and its actions.",
      "struct PlenixFileRow: View {",
      "    let name: String",
      "    let facts: String",

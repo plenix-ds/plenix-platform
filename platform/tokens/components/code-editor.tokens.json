@@ -69,7 +69,7 @@
     "code-editor-font-family": {
       "$value": "{plx-comp.code-block-pre-font-family}",
       "$type": "fontFamily",
-      "$description": "CodeEditor: the code font (DM Mono), as CodeBlock."
+      "$description": "CodeEditor: the code font (Reddit Mono), as CodeBlock."
     },
     "code-editor-font-size": {
       "$value": "{plx-comp.code-block-pre-font-size}",

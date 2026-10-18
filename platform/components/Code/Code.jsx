@@ -1,6 +1,6 @@
 /* Plenix · Code
    Summary: A short piece of code inside a sentence (inline code): a file name, a class, a command, a token name, in the
-     code font (DM Mono) on a neutral fill.
+     code font (Reddit Mono) on a neutral fill.
    Usage:
      <Text as="p">Add <Code>plx-link--standalone</Code> to the anchor.</Text>
      <Code onAccent>Ctrl K</Code>

@@ -8,7 +8,7 @@
 .plx-people-group__meta{align-items:baseline;color:var(--plx-comp-people-group-meta-text);column-gap:var(--plx-comp-people-group-meta-gap);display:flex;font-size:var(--plx-comp-people-group-meta-font-size);min-inline-size:0;}
 .plx-people-group__kind,
 .plx-people-group__count{flex-shrink:0;}
-.plx-people-group__number{font-family:var(--plx-comp-people-group-number-font-family);}
+.plx-people-group__number{font-family:var(--plx-comp-people-group-number-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-people-group__source{min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-people-group__description{color:var(--plx-comp-people-group-description-text);font-size:var(--plx-comp-people-group-description-font-size);overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-people-group__members,

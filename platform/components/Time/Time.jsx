@@ -1,6 +1,6 @@
 /* Plenix · Time
    Summary: A date or a time as a technical value: a timestamp, a relative time ("5 minutes ago"), a date label ("Today",
-     "Yesterday", "Oct 8"), a date or a time alone, in the reader's locale and in DM Mono, on a <time> element with the
+     "Yesterday", "Oct 8"), a date or a time alone, in the reader's locale and in Reddit Mono, on a <time> element with the
      machine-readable value (03 Content › Metadata › Timestamp, Relative time, Date label).
    Usage:
      <Time value={asset.modified} />                                  Oct 8, 2026, 2:05 PM
@@ -32,7 +32,7 @@
    Notes:
      The words and the order come from utils/format.js (Intl): never build a date by hand.
      The <time> carries dateTime: the ISO 8601 moment, or the calendar day ("2026-10-08") for date and label.
-     It is set in the data font (DM Mono) at the size and line height of the text around it.
+     It is set in the data font (Reddit Mono) at the size and line height of the text around it.
      Other props pass through to the <time>.
 */
 import React from 'react';

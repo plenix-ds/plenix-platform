@@ -26,7 +26,7 @@
 import React from 'react';
 import { seriesColor } from './scales.js';
 
-// px: about one character of the data font at the tick labels' size (DM Mono 11px is 6.6px wide)
+// px: about one character of the data font at the tick labels' size (Reddit Mono 11px is 6.6px wide)
 const CHAR = 7;
 // px: the tick offset (8px, --plx-comp-chart-axis-tick-offset) and a 4px gap before the frame's edge
 const TICK_ROOM = 12;

@@ -34,7 +34,7 @@
     "file-input-data-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
-      "$description": "FileInput: file names and sizes are technical values, in the data font (DM Mono)."
+      "$description": "FileInput: file names and sizes are technical values, in the data font (Reddit Mono)."
     },
     "file-input-list-gap": {
       "$value": "{plx-sys.space-stack-xs}",

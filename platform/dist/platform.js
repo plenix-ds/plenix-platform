@@ -4230,7 +4230,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
        | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
        body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, DM Mono, for technical values (IDs, file names and paths, versions, dates and
+       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
        times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
        label: semibold 12px. strong: semibold, the current size.
        heading: a group's title inside a page or dialog, semibold 13px.
@@ -7744,7 +7744,7 @@ var _Button = require("../Button/Button.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · CodeBlock
-   Summary: Code or a file's source, in the code font (DM Mono) on the page surface, with a Copy button.
+   Summary: Code or a file's source, in the code font (Reddit Mono) on the page surface, with a Copy button.
    Usage:
      <CodeBlock title="platform/components/Button/Button.jsx" maxHeight="tall">{text}</CodeBlock>
    Props:
@@ -24186,7 +24186,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: names the grid for screen readers (required)
      data: the rows, plain objects; index: the field that identifies a row (default "id")
      columns: [{ title, field, … }]:
-       kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, DM Mono, on the row's
+       kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, Reddit Mono, on the row's
          baseline) | "icon" (a mark column as wide as the checkbox column; its header shows icon) | "center" (centered in
          the row's height: badges, buttons) | "actions" (row buttons, shown while the row is hovered or selected) | "wrap"
          (long text: the lines that fit the row height step, then an ellipsis) | "deleted" (muted italic) | "avatar-name"
@@ -25669,7 +25669,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
        own terms, with these Plenix additions:
      columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: IDs, file names, paths, versions,
-       dates and times, sizes, counts, durations: the data font, DM Mono, at the row's own size and line height, so it shares
+       dates and times, sizes, counts, durations: the data font, Reddit Mono, at the row's own size and line height, so it shares
        the row's baseline; owner, 2026-10-11) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
@@ -25684,7 +25684,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        tables; off by default), its value in the data font
      columns[].icon: the Plenix icon name a "kind: icon" column shows in its header (its title is the accessible name)
      columns[].empty: text for a null, undefined or empty-string value; zero and false remain values.
-     columns[].type: bytes formats file sizes in DM Mono and sorts/filters the raw bytes; filter accepts "> 2 MB".
+     columns[].type: bytes formats file sizes in Reddit Mono and sorts/filters the raw bytes; filter accepts "> 2 MB".
      columns[].kind: deleted (muted italic), avatar-name ({name,src}), tags ([{label,category}]) and badge ({label,tone,icon}) use inert native cells without portals.
      columns[].render(data, cell): the cell's content as a React element (badges, buttons, links); state and context work
        In a virtual grid only visible cells (and one parked focused cell) mount React. Keep durable edits in row or app state.
@@ -30962,7 +30962,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        lower case)
    Behavior:
      The order (owner, 2026-10-14): the commands first, then Select all and Clear, then at the far end "N selected" (the
-       number in the data font, DM Mono; no noun), announced politely.
+       number in the data font, Reddit Mono; no noun), announced politely.
      Everything shows at every count: a command that does not apply yet is disabled with a tooltip saying why (Select
        all once everything is selected, Clear and every command at 0, a single command while several are selected).
      The button rule of the command bar: ghost buttons with icon and label; icons only with tooltips when the bar does not
@@ -31205,7 +31205,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PropertyList.Item.label: the label
      PropertyList.Item.htmlFor: the id of a control in the item, so the label names it
      PropertyList.Item.description: a line under the label
-     PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, DM Mono,
+     PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, Reddit Mono,
        at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
@@ -34671,7 +34671,7 @@ var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Code
    Summary: A short piece of code inside a sentence (inline code): a file name, a class, a command, a token name, in the
-     code font (DM Mono) on a neutral fill.
+     code font (Reddit Mono) on a neutral fill.
    Usage:
      <Text as="p">Add <Code>plx-link--standalone</Code> to the anchor.</Text>
      <Code onAccent>Ctrl K</Code>
@@ -36805,7 +36805,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        focus color.
      People keep the order they are given (put the owner first).
    Notes:
-     The count is a number: DM Mono (the data font), like other technical values.
+     The count is a number: Reddit Mono (the data font), like other technical values.
      Other props pass through to the wrapper.
 */
 const SIZES = ['xs', 'sm', 'md', 'lg'];
@@ -37758,7 +37758,7 @@ var _Tooltip = require("../Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Time
    Summary: A date or a time as a technical value: a timestamp, a relative time ("5 minutes ago"), a date label ("Today",
-     "Yesterday", "Oct 8"), a date or a time alone, in the reader's locale and in DM Mono, on a <time> element with the
+     "Yesterday", "Oct 8"), a date or a time alone, in the reader's locale and in Reddit Mono, on a <time> element with the
      machine-readable value (03 Content › Metadata › Timestamp, Relative time, Date label).
    Usage:
      <Time value={asset.modified} />                                  Oct 8, 2026, 2:05 PM
@@ -37790,7 +37790,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The words and the order come from utils/format.js (Intl): never build a date by hand.
      The <time> carries dateTime: the ISO 8601 moment, or the calendar day ("2026-10-08") for date and label.
-     It is set in the data font (DM Mono) at the size and line height of the text around it.
+     It is set in the data font (Reddit Mono) at the size and line height of the text around it.
      Other props pass through to the <time>.
 */
 const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
@@ -39723,7 +39723,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      start: a Button or a Select (or an array of them) joined to the field's start edge
      end: a Button or a Select (or an array of them) joined to the field's end edge
      width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
-     data: the prefix and suffix in the data font (DM Mono), for technical values: units, currency codes, addresses
+     data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too
      invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
      disabled: handed to the Input; the box takes the disabled fill
@@ -39833,7 +39833,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: A field for a number: typed freely in the reader's locale, checked and formatted when the field is left,
      stepped with the arrow keys, and shown with what it measures: a currency, a percent sign or a unit inside the field.
      Stepper buttons (minus and plus at its end) or the quantity form (minus, the count, plus) change it one step at a time.
-     The value is in the data font (DM Mono).
+     The value is in the data font (Reddit Mono).
    Usage:
      <Field label="Copies"><NumberInput value={n} onChange={setN} min={1} max={99} stepper="buttons" width="sm" /></Field>
      <Field label="Price"><NumberInput value={price} onChange={setPrice} format="currency" currency="USD" min={0} /></Field>
@@ -40356,7 +40356,7 @@ var _cx = require("../../utils/cx.js");
 var _CodeBlock = require("../CodeBlock/CodeBlock.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CodeEditor
-   Summary: A multi-line field for code people write: the code font (DM Mono), the CodeBlock's colors as they type,
+   Summary: A multi-line field for code people write: the code font (Reddit Mono), the CodeBlock's colors as they type,
      optional line numbers, indentation with Tab, and a read-only form. It is a native <textarea> laid over the colored
      copy of its text, so typing, selection, undo, spell check off and assistive technology are the browser's own; no
      editor engine is loaded.
@@ -41474,7 +41474,7 @@ const keysOf = name => typeof KEYS[name] === 'function' ? KEYS[name]() : KEYS[na
 const keysAria = binding => binding.replace('Mod', (0, _hotkey.isMac)() ? 'Meta' : 'Control');
 
 // the person's fonts and sizes to choose from (content, not interface: any family or size can be typed in too)
-const RICH_TEXT_FONTS = exports.RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['DM Mono', '"DM Mono", monospace'], ['Arial', 'Arial, sans-serif'], ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'], ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
+const RICH_TEXT_FONTS = exports.RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '"Reddit Mono", monospace'], ['Arial', 'Arial, sans-serif'], ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'], ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
 const RICH_TEXT_SIZES = exports.RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
 const ALLOWED = {
   P: 1,
@@ -43082,7 +43082,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: A field for a date that people type in their locale's numeric form or choose from a Calendar in a popover:
      one date, a range of two (a start and an end, with two months side by side), or a date with a time (the time field
      beside it, with the time zone). Optional presets (Today, Last 7 days) choose common values in one press. The value is
-     in the data font (DM Mono).
+     in the data font (Reddit Mono).
    Usage:
      <Field label="Due date" description="MM/DD/YYYY"><DatePicker value={due} onChange={setDue} /></Field>
      <Field label="Period"><DatePicker mode="range" value={period} onChange={setPeriod} presets /></Field>
@@ -46446,7 +46446,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Closed, the field shows the chosen city with its offset after it.
      A value the browser lists under another IANA name (Asia/Kolkata, listed as Asia/Calcutta) takes that zone’s place.
    Notes:
-     Offsets are technical values: the data font (DM Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
+     Offsets are technical values: the data font (Reddit Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
 const STRINGS = {
@@ -54505,7 +54505,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The label room is an estimate from the number of characters (the data font is monospaced: about 7px a character at
        the tick labels' 11px); a margin given to the chart always wins. */
 
-// px: about one character of the data font at the tick labels' size (DM Mono 11px is 6.6px wide)
+// px: about one character of the data font at the tick labels' size (Reddit Mono 11px is 6.6px wide)
 const CHAR = 7;
 // px: the tick offset (8px, --plx-comp-chart-axis-tick-offset) and a 4px gap before the frame's edge
 const TICK_ROOM = 12;
@@ -64780,7 +64780,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Native checkboxes support pointer, Space and labels. Disabled tasks cannot change.
      Completion is derived from unique known ids; empty lists report zero. Collapsing preserves state.
    Notes:
-     Completion and dismissal persistence belong to the caller. Technical counts use DM Mono.
+     Completion and dismissal persistence belong to the caller. Technical counts use Reddit Mono.
 */
 
 function Checklist({
@@ -66042,7 +66042,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      strings: { title, search, general, empty, close }; className.
    Behavior:
      Registry updates are reflected while open. Search matches names, groups and platform-formatted bindings.
-     Disabled bindings are omitted. Kbd renders technical key names in DM Mono.
+     Disabled bindings are omitted. Kbd renders technical key names in Reddit Mono.
    Notes:
      This dialog only documents shortcuts; it never registers or changes them.
 */
@@ -69469,7 +69469,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The name is cut after two lines; the picture keeps its space before it loads (Image's ratio and placeholder).
    Notes:
      One primary thing per card: the name opens the product, the action adds it; more actions belong on the product's
-     page. Do not mix product cards with other cards in one grid. Prices, counts and ratings are technical values: DM Mono.
+     page. Do not mix product cards with other cards in one grid. Prices, counts and ratings are technical values: Reddit Mono.
      Other props go on the <article>.
 */
 const STRINGS = {

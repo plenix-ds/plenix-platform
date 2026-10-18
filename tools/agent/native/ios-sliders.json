@@ -132,7 +132,7 @@
     "part": "D",
     "attribute": "Value text",
     "token": "plx-comp-slider-value-text, plx-text--secondary (iOS secondary role)",
-    "value": "plx-sys-content-muted, DM Mono, 13 pt on 18 pt, the data role (Plenix.Platform.textDataSize)",
+    "value": "plx-sys-content-muted, Reddit Mono, 13 pt on 18 pt, the data role (Plenix.Platform.textDataSize)",
     "apple": "None",
     "swiftui": "Text(value, format:).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
     "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",
