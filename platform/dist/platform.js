@@ -8258,6 +8258,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
        scrolls inside; it cannot be resized by hand (default false)
      Textarea.appearance: as Input.appearance
+     Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
      Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
@@ -8326,6 +8327,7 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   invalid,
   appearance,
   autoGrow = false,
+  data = false,
   className,
   rows = 3,
   onInput,
@@ -8353,7 +8355,7 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   return /*#__PURE__*/_react.default.createElement("textarea", _extends({
     ref: setRef,
     rows: rows,
-    className: (0, _cx.cx)('plx-input', 'plx-textarea', autoGrow && 'plx-textarea--auto-grow', look(appearance), className),
+    className: (0, _cx.cx)('plx-input', 'plx-textarea', data && 'plx-input--data', autoGrow && 'plx-textarea--auto-grow', look(appearance), className),
     "aria-invalid": invalid || undefined,
     onInput: e => {
       fit();
@@ -21286,9 +21288,10 @@ function NextEngine(props) {
     variant: "eyebrow",
     className: B + '__group-eyebrow'
   }, columns.find(c => c.field === group.field)?.title || group.field), /*#__PURE__*/_react.default.createElement("span", {
-    className: B + '__group-value'
+    className: B + '__group-value',
+    "data-plx-kind": kinds(columns.find(c => c.field === group.field) || {}).includes('data') ? 'data' : undefined
   }, (0, _cells.valueText)(group.value) || S.noValue)), /*#__PURE__*/_react.default.createElement("span", {
-    className: 'plx-font-data ' + B + '__group-count'
+    className: B + '__group-count'
   }, (0, _format.formatNumber)(group.rows.length))) : column.columnDef.meta.summary ? /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__group-summary'
   }, /*#__PURE__*/_react.default.createElement("span", {
@@ -21300,7 +21303,7 @@ function NextEngine(props) {
     min: S.min,
     max: S.max
   }[column.columnDef.meta.summary]), /*#__PURE__*/_react.default.createElement("span", {
-    className: 'plx-font-data ' + B + '__group-summary-value'
+    className: B + '__group-summary-value'
   }, (0, _records.groupSummary)(group, column.columnDef.meta) == null ? null : (0, _format.formatNumber)((0, _records.groupSummary)(group, column.columnDef.meta)))) : null))));
   const rememberRow = (row, node) => {
     const displayKey = row.displayKey || row.id,
@@ -26593,7 +26596,8 @@ function TableEngine(props) {
     chev.appendChild(iconEl('chevron-down'));
     const words2 = el('div', B + '__group-text');
     words2.appendChild(el('span', 'plx-text plx-text--eyebrow ' + B + '__group-eyebrow', c ? String(c.title || c.field) : ''));
-    const val = el('span', (0, _cx.cx)(B + '__group-value', c && [].concat(c.kind || []).indexOf('data') >= 0 && 'plx-font-data'));
+    const val = el('span', B + '__group-value');
+    if (c && [].concat(c.kind || []).indexOf('data') >= 0) val.setAttribute('data-plx-kind', 'data');
     if (c && c.render && rowsData && rowsData.length) {
       const node = el('span', B + '__portal');
       val.appendChild(node);
@@ -26607,7 +26611,7 @@ function TableEngine(props) {
     words2.appendChild(val);
     lab.appendChild(chev);
     lab.appendChild(words2);
-    lab.appendChild(el('span', 'plx-font-data ' + B + '__group-count', (0, _format.formatNumber)(count)));
+    lab.appendChild(el('span', B + '__group-count', (0, _format.formatNumber)(count)));
     g.plxText = text;
     g.plxParts = {
       add,
@@ -26645,7 +26649,7 @@ function TableEngine(props) {
         cell.classList.add(B + '__group-cell--summary');
         const s = el('span', B + '__group-summary');
         s.appendChild(el('span', B + '__group-summary-name', S[SUMMARY_WORD[kind]] || kind));
-        s.appendChild(el('span', 'plx-font-data ' + B + '__group-summary-value', (0, _format.formatNumber)(v)));
+        s.appendChild(el('span', B + '__group-summary-value', (0, _format.formatNumber)(v)));
         cell.appendChild(s);
       });
       P.ver = ver;

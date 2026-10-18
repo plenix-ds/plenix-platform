@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.54.3] - 2026-10-18
+
+### Removed
+- The role classes `plx-font-data` and `plx-font-code` (owner: no unnecessary classes). Their few uses take the data
+  font from what already exists: a grouped table's count and summary from their own elements and the table's data-font
+  token; a data column's group value from its kind (`data-plx-kind="data"`, both table engines); the Asset Manager's
+  extensions field from the field's own option. Apps to check: an app that used either class should use Text
+  variant="data", a field's `data` option, or a component's data kind.
+### Added
+- `Textarea` `data`: technical text in the data font, as `Input` `data` (the existing `plx-input--data` class).
+
 ## [0.54.2] - 2026-10-18
 
 ### Removed

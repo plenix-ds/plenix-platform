@@ -164,7 +164,7 @@ function AssetTypes({ act }) {
         {types.map((t, i) => (
           <Section key={i} title={D.ASSET_TYPES[i][0]} stateKey={'type-' + i} collapsible defaultExpanded={i === 0}>
             <Field label="Name" layout="inline"><Input name="name" autoComplete="off" width="lg" value={t.name} onChange={edit(i, 'name')} /></Field>
-            <Field label="Extensions" layout="inline"><Textarea name="extensions" autoComplete="off" autoCapitalize="off" spellCheck={false} className="plx-font-data" value={t.ext} onChange={edit(i, 'ext')} /></Field>
+            <Field label="Extensions" layout="inline"><Textarea name="extensions" autoComplete="off" autoCapitalize="off" spellCheck={false} data value={t.ext} onChange={edit(i, 'ext')} /></Field>
             <Field label="Paths" layout="inline"><Input name="paths" autoComplete="off" placeholder="Paths" value={t.paths} onChange={edit(i, 'paths')} {...PATH} /></Field>
             <Field label="Ordering" layout="inline"><Input name="ordering" inputMode="numeric" autoComplete="off" enterKeyHint="done" width="sm" data value={t.order} onChange={edit(i, 'order')} /></Field>
           </Section>

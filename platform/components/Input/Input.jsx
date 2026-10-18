@@ -24,6 +24,7 @@
      Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
        scrolls inside; it cannot be resized by hand (default false)
      Textarea.appearance: as Input.appearance
+     Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
      Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
@@ -65,7 +66,7 @@ export const Input = React.forwardRef(function Input({ invalid, width, data = fa
 // can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
 const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
 
-export const Textarea = React.forwardRef(function Textarea({ invalid, appearance, autoGrow = false, className, rows = 3, onInput, ...rest }, ref) {
+export const Textarea = React.forwardRef(function Textarea({ invalid, appearance, autoGrow = false, data = false, className, rows = 3, onInput, ...rest }, ref) {
   const own = React.useRef(null);
   const setRef = React.useCallback((el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
   // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
@@ -77,7 +78,7 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
     el.style.blockSize = gridPx(el.scrollHeight + edge, { round: 'up', el });
   }, [autoGrow]);
   React.useLayoutEffect(() => { fit(); });
-  return <textarea ref={setRef} rows={rows} className={cx('plx-input', 'plx-textarea', autoGrow && 'plx-textarea--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined}
+  return <textarea ref={setRef} rows={rows} className={cx('plx-input', 'plx-textarea', data && 'plx-input--data', autoGrow && 'plx-textarea--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined}
     onInput={(e) => { fit(); if (onInput) onInput(e); }} {...rest} />;
 });
 

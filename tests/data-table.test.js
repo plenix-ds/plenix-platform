@@ -207,7 +207,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       // kind "data" in Reddit Mono, elsewhere in DM Sans, except code and the data role (code, Text "data", token and class
       // links), which are Reddit Mono wherever they are (component labels excepted)
       const type = [];
-      const MARKED = 'code, samp, .plx-text--data, .plx-font-data, .plx-font-code, .ds-code-link, .ds-mono, .ds-value, .ds-name';
+      const MARKED = 'code, samp, .plx-text--data, .plx-data-table__group-count, .plx-data-table__group-summary-value, [data-plx-kind="data"], .ds-code-link, .ds-mono, .ds-value, .ds-name';
       grids.forEach((g) => {
         if (!g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row) :is(.tabulator-cell,.plx-data-table__grid-cell)')) return;
         const size = getComputedStyle(g.querySelector(':is(.tabulator,.plx-data-table__grid)')).fontSize;

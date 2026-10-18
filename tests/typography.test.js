@@ -4,7 +4,7 @@
 // always at its neighbors' size and line height so Mono and Sans share a baseline. On every app page and a sample of the
 // design system's pages (the first of each group and the pages of tokens, tables and values), in light and dark, with the
 // fonts loaded:
-//   role      an element marked as code or data (code, kbd, pre, samp, Text "data", .plx-font-data/-code, a DataTable or
+//   role      an element marked as code or data (code, kbd, pre, samp, Text "data", a data field (Input/Textarea data), a DataTable or
 //             Table column of kind "data", a PropertyList value marked data) computes to Reddit Mono
 //   prose     text in Reddit Mono is a code or data value, never a sentence (four or more plain words, no code characters)
 //   pattern   visible text that is wholly a technical value (2026-10-11, Oct 11, 2026, 10:42 AM, 12 MB, 1.2 GB, 640×480,
@@ -47,7 +47,7 @@ async function inspect() {
   const fam = (el) => getComputedStyle(el).fontFamily;
   const isMono = (el) => MONO.test(fam(el));
   // marked as code or data: the elements and classes of the code and data roles
-  const ROLE = 'code, kbd, pre, samp, .plx-text--data, .plx-font-data, .plx-font-code, [class*="__cell--data"], .plx-property-list__value--data';
+  const ROLE = 'code, kbd, pre, samp, .plx-text--data, .plx-input--data, .plx-data-table__group-count, .plx-data-table__group-summary-value, [data-plx-kind="data"], [class*="__cell--data"], .plx-property-list__value--data';
   // components that keep their own typography (a label inside a control or a pill), and specimens
   const OWN = '.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-count, .plx-avatar, .plx-status-dot, input, textarea, select, option, button, [role="menuitem"], [role="option"], [role="tab"], .tabulator-header, .ds-vis, .ds-specimens, .ds-type, svg';
   // titles and headings

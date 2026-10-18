@@ -205,7 +205,9 @@
 .plx-data-table[data-plx-engine="next"] .plx-data-table__group-eyebrow{display:block;line-height:var(--plx-comp-data-table-group-eyebrow-line-height);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-data-table[data-plx-engine="next"] .plx-data-table__group-value{align-items:center;display:flex;font-weight:var(--plx-comp-data-table-group-font-weight);line-height:var(--plx-comp-data-table-text-line-height);min-block-size:var(--plx-comp-data-table-text-line-height);min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-data-table[data-plx-engine="next"] .plx-data-table__group-value .plx-text{font-size:inherit;}
-.plx-data-table[data-plx-engine="next"] .plx-data-table__group-count,.plx-data-table[data-plx-engine="next"] .plx-data-table__group-summary-value{color:var(--plx-comp-data-table-group-count-text);font-size:var(--plx-comp-data-table-data-font-size);font-weight:var(--plx-comp-data-table-group-count-font-weight);}
+/* a data column's group value: the data font (the column's kind on the element, no extra class) */
+.plx-data-table[data-plx-engine="next"] .plx-data-table__group-value[data-plx-kind="data"]{font-family:var(--plx-comp-data-table-data-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-data-table[data-plx-engine="next"] .plx-data-table__group-count,.plx-data-table[data-plx-engine="next"] .plx-data-table__group-summary-value{color:var(--plx-comp-data-table-group-count-text);font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);font-weight:var(--plx-comp-data-table-group-count-font-weight);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-data-table[data-plx-engine="next"] .plx-data-table__group-count{flex-shrink:0;line-height:var(--plx-comp-data-table-text-line-height);margin-inline-start:auto;}
 
 .plx-data-table[data-plx-engine="next"] .plx-data-table__group-cell--summary{align-items:flex-end;justify-content:flex-end;padding-block-end:var(--plx-comp-data-table-cell-padding-block);}

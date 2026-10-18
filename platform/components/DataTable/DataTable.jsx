@@ -674,13 +674,13 @@ export function TableEngine(props) {
     const chev = el('span', B + '__group-chevron'); chev.setAttribute('aria-hidden', 'true'); chev.appendChild(iconEl('chevron-down'));
     const words2 = el('div', B + '__group-text');
     words2.appendChild(el('span', 'plx-text plx-text--eyebrow ' + B + '__group-eyebrow', c ? String(c.title || c.field) : ''));
-    const val = el('span', cx(B + '__group-value', c && [].concat(c.kind || []).indexOf('data') >= 0 && 'plx-font-data'));
+    const val = el('span', B + '__group-value'); if (c && [].concat(c.kind || []).indexOf('data') >= 0) val.setAttribute('data-plx-kind', 'data');
     if (c && c.render && rowsData && rowsData.length) {
       const node = el('span', B + '__portal'); val.appendChild(node);
       groupCells.current.set(pathKey(g), { node, c, row: rowsData[0] }); bump();
     } else val.textContent = text;
     words2.appendChild(val);
-    lab.appendChild(chev); lab.appendChild(words2); lab.appendChild(el('span', 'plx-font-data ' + B + '__group-count', formatNumber(count)));
+    lab.appendChild(chev); lab.appendChild(words2); lab.appendChild(el('span', B + '__group-count', formatNumber(count)));
     g.plxText = text;
     g.plxParts = { add, band, head, lab, chev, count, rows: rowsData || [], ver: -1, addFor: null, addVer: -1 };
     g.element.plxGroup = g;
@@ -700,7 +700,7 @@ export function TableEngine(props) {
         cell.classList.add(B + '__group-cell--summary');
         const s = el('span', B + '__group-summary');
         s.appendChild(el('span', B + '__group-summary-name', S[SUMMARY_WORD[kind]] || kind));
-        s.appendChild(el('span', 'plx-font-data ' + B + '__group-summary-value', formatNumber(v)));
+        s.appendChild(el('span', B + '__group-summary-value', formatNumber(v)));
         cell.appendChild(s);
       });
       P.ver = ver; P.addVer = -1;

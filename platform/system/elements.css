@@ -4,6 +4,3 @@ button,input,textarea,select{font-family:inherit;}
 code,pre,kbd,samp{font-family:var(--plx-sys-font-code);word-spacing:var(--plx-sys-font-data-word-spacing);}
 h1,h2,h3,h4,h5,h6{font-family:var(--plx-sys-font-heading);word-spacing:normal;}
 label{font-family:var(--plx-sys-font-label);word-spacing:normal;}
-/* technical values (IDs, file names and paths, dates, sizes, counts) in Reddit Mono; code in Reddit Mono */
-.plx-font-data{font-family:var(--plx-sys-font-data);word-spacing:var(--plx-sys-font-data-word-spacing);}
-.plx-font-code{font-family:var(--plx-sys-font-code);word-spacing:var(--plx-sys-font-data-word-spacing);}

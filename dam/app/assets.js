@@ -1398,7 +1398,7 @@ function AssetTypes({
     autoComplete: "off",
     autoCapitalize: "off",
     spellCheck: false,
-    className: "plx-font-data",
+    data: true,
     value: t.ext,
     onChange: edit(i, 'ext')
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
