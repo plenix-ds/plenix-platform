@@ -115,3 +115,22 @@
 .plx-resizable[data-plx-height="720px"]{--plx-comp-resizable-height:var(--plx-ref-size-720px);}
 .plx-resizable[data-plx-width="900px"]{--plx-comp-resizable-width:var(--plx-ref-size-900px);}
 .plx-resizable[data-plx-height="900px"]{--plx-comp-resizable-height:var(--plx-ref-size-900px);}
+/* fill: the content is a column whose children fill it (SplitView's first panel) */
+.plx-resizable--fill>.plx-resizable__content{display:flex;flex-direction:column;}
+.plx-resizable--fill>.plx-resizable__content>*{flex:1 1 0%;min-block-size:0;}
+/* divider: the whole edge is a gap between two panels, a thin line down its middle and a pill centered on it (SplitView).
+   Its size is a context hook: the container sets --plx-comp-resizable-divider-size on its own element (SplitView: its gap).
+   Resizable's own ::after is its hover line, offset into the edge: the pill takes none of its offsets. */
+.plx-resizable--divider>.plx-resizable__edge{align-items:center;display:flex;justify-content:center;}
+.plx-resizable--divider>.plx-resizable__edge--inline{cursor:col-resize;inline-size:var(--plx-comp-resizable-divider-size);inset-block-end:0;inset-block-start:0;inset-inline-end:calc(-1 * var(--plx-comp-resizable-divider-size));}
+.plx-resizable--divider>.plx-resizable__edge--block{block-size:var(--plx-comp-resizable-divider-size);cursor:row-resize;inset-block-end:calc(-1 * var(--plx-comp-resizable-divider-size));inset-inline-end:0;inset-inline-start:0;}
+.plx-resizable--divider>.plx-resizable__edge::before{background-color:var(--plx-comp-resizable-divider-line-color);content:"";position:absolute;}
+.plx-resizable--divider>.plx-resizable__edge--inline::before{block-size:100%;inline-size:var(--plx-comp-resizable-divider-line-width);}
+.plx-resizable--divider>.plx-resizable__edge--block::before{block-size:var(--plx-comp-resizable-divider-line-width);inline-size:100%;}
+.plx-resizable--divider>.plx-resizable__edge::after{background-color:var(--plx-comp-resizable-divider-handle-color);border-radius:var(--plx-comp-resizable-divider-handle-radius);content:"";inset:auto;position:relative;}
+.plx-resizable--divider>.plx-resizable__edge--inline::after{block-size:var(--plx-comp-resizable-divider-handle-length);inline-size:var(--plx-comp-resizable-divider-handle-thickness);}
+.plx-resizable--divider>.plx-resizable__edge--block::after{block-size:var(--plx-comp-resizable-divider-handle-thickness);inline-size:var(--plx-comp-resizable-divider-handle-length);}
+.plx-resizable--divider>.plx-resizable__edge:hover::after,.plx-resizable--divider>.plx-resizable__edge.is-hover::after{background-color:var(--plx-comp-resizable-divider-handle-hover-color);}
+.plx-resizable--divider>.plx-resizable__edge:focus-visible::before,.plx-resizable--divider>.plx-resizable__edge:active::before,
+.plx-resizable--divider>.plx-resizable__edge:focus-visible::after,.plx-resizable--divider>.plx-resizable__edge:active::after{background-color:var(--plx-comp-resizable-divider-active-color);}
+.plx-resizable--divider>.plx-resizable__edge:focus-visible{outline-style:none;}

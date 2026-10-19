@@ -54,7 +54,7 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
   return (
     <div role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>
       <div className="plx-split-view__panels">
-        <Resizable label={firstLabel} steps={steps} className="plx-split-view__first" {...box}>{first}</Resizable>
+        <Resizable label={firstLabel} steps={steps} variant="divider" fill className="plx-split-view__first" {...box}>{first}</Resizable>
         <div className="plx-split-view__second">{second}</div>
       </div>
     </div>

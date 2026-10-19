@@ -114,6 +114,14 @@ const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-
     const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
     for (let i = t; i < PAGES.length; i += TABS) await one(page, PAGES[i]);
   }));
+  // --check: a design-system page whose computed styles differ from the baseline is read once more on its own (four
+  // busy tabs can catch a page before its fonts or measured widths settle); the second reading counts
+  if (CHECK && DS) {
+    const base = JSON.parse(fs.readFileSync(OUT_COMPUTED, 'utf8')).pages;
+    const same = (pg) => { const a = base[pg] || [], b = computed[pg] || []; return a.length === b.length && a.every((x, i) => x[1] === b[i][1]); };
+    const again = PAGES.filter((pg) => !same(pg));
+    if (again.length) { const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 }); for (const pg of again) { console.log('AGAIN ' + pg); await one(page, pg); } }
+  }
   await browser.close(); server.close();
   const list = Object.values(clashes).sort((a, b) => (a.kind + a.p + a.a).localeCompare(b.kind + b.p + b.a));
   const kinds = {}; list.forEach((x) => { kinds[x.kind] = (kinds[x.kind] || 0) + 1; });

@@ -4644,6 +4644,15 @@
   --plx-comp-resizable-edge-duration: var(--plx-comp-panel-splitter-after-duration);
   --plx-comp-resizable-edge-z-index: var(--plx-comp-panel-splitter-z-index);
   --plx-comp-resizable-corner-size: var(--plx-ref-size-16px);
+  --plx-comp-resizable-divider-size: var(--plx-sys-space-layout-md);
+  --plx-comp-resizable-divider-line-color: var(--plx-sys-data-table-border);
+  --plx-comp-resizable-divider-line-width: var(--plx-sys-border-width-thin);
+  --plx-comp-resizable-divider-handle-color: var(--plx-sys-border-default);
+  --plx-comp-resizable-divider-handle-hover-color: var(--plx-sys-border-strong);
+  --plx-comp-resizable-divider-active-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-resizable-divider-handle-length: var(--plx-ref-size-32px);
+  --plx-comp-resizable-divider-handle-thickness: var(--plx-ref-size-8px);
+  --plx-comp-resizable-divider-handle-radius: var(--plx-ref-radius-pill);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-resource-list-gap: var(--plx-sys-space-stack-sm);
@@ -5021,14 +5030,6 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-split-view-gap: var(--plx-sys-space-layout-md);
   --plx-comp-split-view-second-min-width: var(--plx-ref-size-320px);
-  --plx-comp-split-view-line-color: var(--plx-sys-data-table-border);
-  --plx-comp-split-view-line-width: var(--plx-sys-border-width-thin);
-  --plx-comp-split-view-handle-color: var(--plx-sys-border-default);
-  --plx-comp-split-view-handle-hover-color: var(--plx-sys-border-strong);
-  --plx-comp-split-view-active-color: var(--plx-sys-focus-ring-color);
-  --plx-comp-split-view-handle-length: var(--plx-ref-size-32px);
-  --plx-comp-split-view-handle-thickness: var(--plx-ref-size-8px);
-  --plx-comp-split-view-handle-radius: var(--plx-ref-radius-pill);
   --plx-comp-reading-pane-background: var(--plx-sys-data-table-surface);
   --plx-comp-reading-pane-border-color: var(--plx-sys-data-table-border);
   --plx-comp-reading-pane-border-width: var(--plx-sys-border-width-thin);

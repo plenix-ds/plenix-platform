@@ -11232,6 +11232,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
    Props:
      label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") (required)
+     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel: a line down
+       its middle and a pill on it; its size is the container's --plx-comp-resizable-divider-size: SplitView)
+     fill: the content is a column whose children fill it; default false
      axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
        "both" (both edges, and a corner the pointer drags in both directions)
      width, height: the size in pixels, each a size token (--plx-ref-size-*), when the page keeps it; onResize({ width,
@@ -11351,6 +11354,8 @@ function scaleOf(steps, min, max) {
 }
 function Resizable({
   label,
+  variant = 'default',
+  fill: fillContent = false,
   axis = 'horizontal',
   width,
   height,
@@ -11454,7 +11459,7 @@ function Resizable({
     });
   };
   return /*#__PURE__*/_react.default.createElement("div", _extends({}, rest, {
-    className: (0, _cx.cx)('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', className),
+    className: (0, _cx.cx)('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', variant === 'divider' && 'plx-resizable--divider', fillContent && 'plx-resizable--fill', className),
     "data-plx-width": doW ? size.width + 'px' : undefined,
     "data-plx-height": doH ? size.height + 'px' : undefined
   }), /*#__PURE__*/_react.default.createElement("div", {
@@ -75879,6 +75884,8 @@ function SplitView({
   }, /*#__PURE__*/_react.default.createElement(_Resizable.Resizable, _extends({
     label: firstLabel,
     steps: steps,
+    variant: "divider",
+    fill: true,
     className: "plx-split-view__first"
   }, box), first), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-split-view__second"

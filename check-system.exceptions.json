@@ -269,23 +269,6 @@
       ".plx-settings__section .plx-action-bar": 1
     },
     "platform/patterns/SplitView/split-view.css": {
-      ".plx-split-view__first>.plx-resizable__content": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--inline": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--block": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge::before": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--inline::before": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--block::before": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge::after": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--inline::after": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--block::after": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:hover::after": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge.is-hover::after": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible::before": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:active::before": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible::after": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:active::after": 1,
-      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible": 1,
       ".plx-reading-pane__body>.plx-empty-state": 1
     },
     "platform/patterns/UserCard/user-card.css": {
