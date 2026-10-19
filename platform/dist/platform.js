@@ -4075,7 +4075,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
        hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
        (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
-     size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
+     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
        role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
        tint on hover) | "lg" (the prominent role: page actions)
      icon: an <Icon> (or an icon name) before the label
@@ -8274,6 +8274,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
      Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
+     Select.block: the select takes its own line, as wide as its room (InlineEdit)
+     Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
@@ -8383,12 +8385,13 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   appearance,
   size,
   joined,
+  block = false,
   className,
   children,
   ...rest
 }, ref) {
   return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
+    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
     ref: ref,
     size: size === 'sm' || size === 'md' ? undefined : size,
@@ -19425,6 +19428,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        card never does)
      strings: the words it shows and announces, for other languages: { close: "Close" }
      className: more classes on the popover
+     anchorClassName: a layout class for the anchor (the trigger's box in the page): its owner's placement of it (DatePicker, TreeSelect)
      children: the content
      Other props pass through to the popover's <div> (aria-describedby).
    Behavior:
@@ -19480,6 +19484,7 @@ function Popover({
   sheetOnNarrow = true,
   strings,
   className,
+  anchorClassName,
   children,
   ...rest
 }) {
@@ -19622,7 +19627,7 @@ function Popover({
   }) : null) : null;
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     ref: wrap,
-    className: "plx-popover-anchor"
+    className: (0, _cx.cx)('plx-popover-anchor', anchorClassName)
   }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: panel,
     id: id,
@@ -41226,6 +41231,7 @@ function InlineEdit({
     autoGrow: true,
     placeholder: hint
   })) : type === 'select' ? /*#__PURE__*/_react.default.createElement(_Input.Select, _extends({}, common, {
+    block: true,
     options: options,
     disabled: saving || undefined
   })) : /*#__PURE__*/_react.default.createElement(_Input.Input, _extends({}, common, {
@@ -43541,6 +43547,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
     className: (0, _cx.cx)('plx-date-picker', 'plx-date-picker--' + (range ? 'range' : dateTime ? 'date-time' : 'single'), className),
     onBlur: onBlur
   }, rest), /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    anchorClassName: "plx-date-picker__anchor",
     trigger: field,
     triggerOn: "manual",
     open: open,
@@ -47119,6 +47126,7 @@ function TreeSelect({
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-tree-select', multiple && 'plx-tree-select--multiple', open && 'is-open', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    anchorClassName: "plx-tree-select__anchor",
     trigger: trigger,
     open: open,
     onOpenChange: o => {
@@ -75971,7 +75979,9 @@ function ReadingPane({
     className: "plx-reading-pane__actions"
   }, actions) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-reading-pane__body"
-  }, children || empty || null));
+  }, children || (empty ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-reading-pane__empty"
+  }, empty) : null)));
 }
   } },
   "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataTableNext/DataTablePublic.jsx":"platform/components/DataTableNext/DataTablePublic.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

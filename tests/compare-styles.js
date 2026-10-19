@@ -5,6 +5,7 @@
 //   node tests/compare-styles.js <before-root> "<selector>" <route-or-page> [<route-or-page>…]
 //   e.g. node tests/compare-styles.js ../Plenix-rel ".plx-split-view" "#/page-structures/split-view"
 //   HOSTS=n compares only the first n elements the selector matches (a page whose later examples changed)
+//   Elements with display: contents (slots that only pass context to what they hold) are left out on both sides.
 //   WAIT=ms waits longer before reading (default 4000; a lab draws its cards in an iframe after the page)
 //   Elements inside same-origin iframes (the design system's labs draw their cards in one) are read too.
 // Every element matching the selector, and every element inside it, is compared property by property (custom
@@ -32,6 +33,7 @@ const read = ([sel, n]) => {
   const docs = [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean));
   for (const host of docs.flatMap((d) => [...d.querySelectorAll(sel)]).slice(0, n || Infinity)) for (const el of [host, ...host.querySelectorAll('*')]) {
     const cs = el.ownerDocument.defaultView.getComputedStyle(el), o = {};
+    if (cs.display === 'contents') continue;   // a slot with no box of its own (it only passes context on): not drawn
     for (let i = 0; i < cs.length; i++) { const p = cs[i]; if (!p.startsWith('--') && !/^(transition|animation)/.test(p)) o[p] = cs.getPropertyValue(p); }
     out.push({ label: el.tagName.toLowerCase() + [...el.classList].slice(0, 3).map((c) => '.' + c).join(''), o });
   }

@@ -15,7 +15,7 @@
 .plx-auth__sso{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-auth-flow-gap);}
 .plx-form.plx-auth__form,
 .plx-auth__form{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-auth-form-gap);}
-.plx-auth__form .plx-input{max-inline-size:none;}
+.plx-auth__form{--plx-comp-input-context-max-width:none;}
 .plx-auth__submit{inline-size:100%;justify-content:center;}
 .plx-auth__links{align-items:center;column-gap:var(--plx-comp-auth-links-gap);display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:var(--plx-comp-auth-links-gap);}
 .plx-auth__or{align-items:center;column-gap:var(--plx-comp-auth-or-gap);display:flex;}

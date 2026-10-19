@@ -35,6 +35,7 @@
        card never does)
      strings: the words it shows and announces, for other languages: { close: "Close" }
      className: more classes on the popover
+     anchorClassName: a layout class for the anchor (the trigger's box in the page): its owner's placement of it (DatePicker, TreeSelect)
      children: the content
      Other props pass through to the popover's <div> (aria-describedby).
    Behavior:
@@ -80,7 +81,7 @@ const ms = (el, name) => {
 };
 
 export function Popover({ trigger, triggerOn = 'click', open: openProp, defaultOpen = false, onOpenChange, title, label, footer, closeButton = false,
-  placement = 'bottom-start', size = 'md', arrow = false, role = 'dialog', initialFocus, focusOnOpen, sheetOnNarrow = true, strings, className, children, ...rest }) {
+  placement = 'bottom-start', size = 'md', arrow = false, role = 'dialog', initialFocus, focusOnOpen, sheetOnNarrow = true, strings, className, anchorClassName, children, ...rest }) {
   devWarn('Popover', { size }, { size: ['md','sm','lg','auto'] });
   const t = Object.assign({}, STRINGS, strings);
   const id = useUid('plx-popover');
@@ -162,7 +163,7 @@ export function Popover({ trigger, triggerOn = 'click', open: openProp, defaultO
   ) : null;
 
   return (
-    <span ref={wrap} className="plx-popover-anchor" {...hoverProps}>
+    <span ref={wrap} className={cx('plx-popover-anchor', anchorClassName)} {...hoverProps}>
       {triggerEl}
       {floating ? (
         <div ref={panel} id={id} role={role || undefined} aria-labelledby={role && title ? titleId : undefined} aria-label={role && !title ? label : undefined} tabIndex={-1}

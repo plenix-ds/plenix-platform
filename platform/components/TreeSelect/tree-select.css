@@ -3,7 +3,7 @@
    and tokens (rows, indents, the + and − boxes, icons). This adds the trigger's layout, the panel's scroll area and the
    checkbox mark of the multiple form. */
 .plx-tree-select{display:block;max-inline-size:var(--plx-comp-tree-select-max-width);min-inline-size:0;}
-.plx-tree-select .plx-popover-anchor{display:block;}
+.plx-tree-select__anchor{display:block;}
 .plx-tree-select__trigger{align-items:center;cursor:pointer;display:flex;inline-size:100%;padding-inline-end:var(--plx-comp-tree-select-trigger-padding-inline-end);position:relative;text-align:start;}
 .plx-tree-select__trigger:disabled{cursor:not-allowed;}
 .plx-tree-select__value,.plx-tree-select__placeholder{flex-basis:0%;flex-grow:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}

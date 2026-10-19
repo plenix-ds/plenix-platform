@@ -23,6 +23,5 @@
 /* the edit view: the field, its buttons beside it, the message under it */
 .plx-inline-edit__edit{align-items:flex-start;column-gap:var(--plx-comp-inline-edit-actions-gap);display:flex;}
 .plx-inline-edit__control{flex-grow:1;min-inline-size:0;}
-.plx-inline-edit__control .plx-select{display:block;}
 .plx-inline-edit__actions{align-items:center;column-gap:var(--plx-comp-inline-edit-actions-gap);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-inline-edit-read-min-height);}
 .plx-inline-edit__error{color:var(--plx-comp-inline-edit-error-text);font-size:var(--plx-comp-inline-edit-error-font-size);margin-block-start:var(--plx-comp-inline-edit-error-gap);}

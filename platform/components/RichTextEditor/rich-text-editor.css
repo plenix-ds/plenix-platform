@@ -19,7 +19,7 @@
 .plx-rich-text-editor__slot{align-items:center;block-size:var(--plx-comp-rich-text-editor-groups-height);display:flex;}
 /* the field under the toolbar while a link, an image, a color or a custom font or size is added */
 .plx-rich-text-editor__bar{align-items:center;flex-wrap:wrap;row-gap:var(--plx-comp-rich-text-editor-link-bar-gap);border-block-end-color:var(--plx-comp-rich-text-editor-toolbar-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-rich-text-editor-border-width);column-gap:var(--plx-comp-rich-text-editor-link-bar-gap);display:flex;padding-block-end:var(--plx-comp-rich-text-editor-toolbar-padding-block);padding-block-start:var(--plx-comp-rich-text-editor-toolbar-padding-block);padding-inline-end:var(--plx-comp-rich-text-editor-toolbar-padding-inline);padding-inline-start:var(--plx-comp-rich-text-editor-toolbar-padding-inline);}
-.plx-rich-text-editor__bar .plx-input{flex-grow:1;}
+.plx-rich-text-editor__bar>input{flex-grow:1;}
 .plx-rich-text-editor__bar .plx-rich-text-editor__hex{flex-grow:0;inline-size:var(--plx-comp-rich-text-editor-hex-width);}
 .plx-rich-text-editor__bar .plx-rich-text-editor__picker{flex-grow:0;inline-size:var(--plx-comp-rich-text-editor-picker-width);}
 /* the suggested colors: swatch buttons (the category colors), a row that wraps */

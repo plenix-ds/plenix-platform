@@ -163,7 +163,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
   );
   return (
     <div className={cx('plx-tree-select', multiple && 'plx-tree-select--multiple', open && 'is-open', disabled && 'is-disabled', className)}>
-      <Popover trigger={trigger} open={open} onOpenChange={(o) => { setOpen(o); if (!o) setText(''); }} label={name} size="md"
+      <Popover anchorClassName="plx-tree-select__anchor" trigger={trigger} open={open} onOpenChange={(o) => { setOpen(o); if (!o) setText(''); }} label={name} size="md"
         initialFocus={search ? searchRef : firstRef.current} className="plx-tree-select__popover">
         <div className="plx-tree-select__panel">
           {search ? <SearchField ref={searchRef} value={text} label={t.search + ': ' + name} placeholder={t.search} onChange={(e) => setText(e.target.value)} onClear={() => setText('')}

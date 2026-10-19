@@ -32,8 +32,8 @@
   inline-size: 100%;
   justify-content: center;
 }
-.plx-login__card .plx-input {
-  max-inline-size: none;
+.plx-login__card {
+  --plx-comp-input-context-max-width: none;
 }
 
 /* Narrow (under 600px, --plx-sys-shell-phone-below): one column on the canvas, no card frame, from the top */

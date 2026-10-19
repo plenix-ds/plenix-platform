@@ -28,4 +28,4 @@
 .plx-reading-pane__actions{align-items:center;display:flex;flex-shrink:0;gap:var(--plx-comp-reading-pane-actions-gap);padding-block:var(--plx-comp-reading-pane-actions-padding-block);padding-inline:var(--plx-comp-reading-pane-actions-padding-inline);position:relative;}
 .plx-reading-pane__actions::after{background-color:var(--plx-comp-reading-pane-rule-color);block-size:var(--plx-comp-reading-pane-border-width);content:"";inset-block-end:0;inset-inline-end:var(--plx-comp-reading-pane-rule-inset);inset-inline-start:var(--plx-comp-reading-pane-rule-inset);position:absolute;}
 .plx-reading-pane__body{display:flex;flex:1 1 auto;flex-direction:column;padding:var(--plx-comp-reading-pane-body-padding);}
-.plx-reading-pane__body>.plx-empty-state{margin:auto;}
+.plx-reading-pane__empty{margin:auto;}

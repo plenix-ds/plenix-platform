@@ -191,7 +191,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
   );
   return (
     <div ref={root} className={cx('plx-date-picker', 'plx-date-picker--' + (range ? 'range' : dateTime ? 'date-time' : 'single'), className)} onBlur={onBlur} {...rest}>
-      <Popover trigger={field} triggerOn="manual" open={open} onOpenChange={(v) => { if (!v) close(true); }} label={t.dialog} size="auto"
+      <Popover anchorClassName="plx-date-picker__anchor" trigger={field} triggerOn="manual" open={open} onOpenChange={(v) => { if (!v) close(true); }} label={t.dialog} size="auto"
         placement="bottom-start" focusOnOpen initialFocus={day} sheetOnNarrow={false}>
         <div className={cx('plx-date-picker__panel', presetList && 'plx-date-picker__panel--presets')}>
           {presetList ? (

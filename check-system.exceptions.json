@@ -39,9 +39,6 @@
       ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__cell--icon .plx-icon": 1,
       ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__header-icon .plx-icon": 1
     },
-    "platform/components/DatePicker/date-picker.css": {
-      ".plx-date-picker .plx-popover-anchor": 1
-    },
     "platform/components/Dialog/dialog.css": {
       ".plx-modal-layer--start .plx-drawer": 1,
       ".plx-modal-layer--start .plx-drawer:dir(rtl)": 1,
@@ -63,9 +60,6 @@
     "platform/components/FileRow/file-row.css": {
       ".plx-file-row__select>.plx-check": 1
     },
-    "platform/components/InlineEdit/inline-edit.css": {
-      ".plx-inline-edit__control .plx-select": 1
-    },
     "platform/components/Link/link.css": {
       ".plx-data-table__portal>a.plx-link:only-child": 1,
       ".plx-data-table__portal>a.plx-link:only-child::before": 1
@@ -85,9 +79,6 @@
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch": 1,
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch-label": 1
     },
-    "platform/components/RichTextEditor/rich-text-editor.css": {
-      ".plx-rich-text-editor__bar .plx-input": 1
-    },
     "platform/components/SuggestedAction/suggested-action.css": {
       ".plx-suggested-action__button--card .plx-button__label": 1
     },
@@ -105,9 +96,6 @@
       ".plx-toolbar .plx-input": 1,
       ".plx-toolbar .plx-search__input": 1
     },
-    "platform/components/TreeSelect/tree-select.css": {
-      ".plx-tree-select .plx-popover-anchor": 1
-    },
     "platform/components/Tree/tree.css": {
       ".plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
       ".plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
@@ -118,14 +106,9 @@
     },
     "platform/patterns/AppHeader/app-header.css": {
       ".plx-app-header--frost .plx-search__input": 1,
-      ".plx-app-header__search>.plx-search": 1,
       ".plx-app-header__action .plx-button": 1,
       ".plx-app-header__account-row .plx-button__label": 1,
-      ".plx-app-header__brand .plx-brand-mark": 1,
-      ".plx-search-view__field>.plx-search": 1
-    },
-    "platform/patterns/Auth/auth.css": {
-      ".plx-auth__form .plx-input": 1
+      ".plx-app-header__brand .plx-brand-mark": 1
     },
     "platform/patterns/AvatarUpload/avatar-upload.css": {
       ".plx-avatar-upload .plx-file-input__summary": 1
@@ -155,17 +138,8 @@
     "platform/patterns/ImageUpload/image-upload.css": {
       ".plx-image-upload .plx-file-input__summary": 1
     },
-    "platform/patterns/RenameAction/rename-action.css": {
-      ".plx-rename-action--inline>.plx-inline-edit": 1
-    },
-    "platform/patterns/SearchWorkspace/search-workspace.css": {
-      ".plx-search-ws__query .plx-search": 1
-    },
     "platform/patterns/SettingsLayout/settings-layout.css": {
       ".plx-settings__section .plx-action-bar": 1
-    },
-    "platform/patterns/SplitView/split-view.css": {
-      ".plx-reading-pane__body>.plx-empty-state": 1
     },
     "platform/patterns/UserCard/user-card.css": {
       ".plx-user-card > .plx-card__body": 1
@@ -185,9 +159,6 @@
     },
     "platform/templates/Commerce/commerce.css": {
       ".plx-commerce__buy .plx-product-options": 1
-    },
-    "services/login/login.css": {
-      ".plx-login__card .plx-input": 1
     }
   },
   "important": {

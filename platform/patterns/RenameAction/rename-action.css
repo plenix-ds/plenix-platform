@@ -2,5 +2,5 @@
    dialog, its button in the flow and the form in the dialog's body. */
 .plx-rename-action{display:inline-flex;max-inline-size:100%;min-inline-size:0;}
 .plx-rename-action--inline{inline-size:var(--plx-comp-rename-action-inline-width);}
-.plx-rename-action--inline>.plx-inline-edit{flex-grow:1;min-inline-size:0;}
+.plx-rename-action--inline>*{flex-grow:1;min-inline-size:0;}
 .plx-rename-action__form{display:flex;flex-direction:column;row-gap:var(--plx-comp-rename-action-form-gap);}

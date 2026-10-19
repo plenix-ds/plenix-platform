@@ -28,6 +28,8 @@
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
      Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
+     Select.block: the select takes its own line, as wide as its room (InlineEdit)
+     Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
@@ -83,9 +85,9 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
 });
 
 /* options: [{ value, label }] or children <option>s */
-export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, className, children, ...rest }, ref) {
+export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, block = false, className, children, ...rest }, ref) {
   return (
-    <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
+    <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
       <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>

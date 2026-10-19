@@ -65,7 +65,7 @@ export function ReadingPane({ label, actions, empty, className, children }) {
   return (
     <section aria-label={label} className={cx('plx-reading-pane', className)}>
       {actions ? <div className="plx-reading-pane__actions">{actions}</div> : null}
-      <div className="plx-reading-pane__body">{children || empty || null}</div>
+      <div className="plx-reading-pane__body">{children || (empty ? <div className="plx-reading-pane__empty">{empty}</div> : null)}</div>
     </section>
   );
 }

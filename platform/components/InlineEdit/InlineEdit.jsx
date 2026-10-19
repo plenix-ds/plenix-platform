@@ -100,7 +100,7 @@ export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'tex
   const common = { ref: field, 'aria-label': label, value: draft, invalid: !!error, readOnly: saving || undefined, onKeyDown: onKey,
     'aria-describedby': error ? errId : undefined, onChange: (e) => { setDraft(e.target.value); if (error) setError(null); } };
   const control = type === 'textarea' ? <Textarea {...common} autoGrow placeholder={hint} />
-    : type === 'select' ? <Select {...common} options={options} disabled={saving || undefined} />
+    : type === 'select' ? <Select {...common} block options={options} disabled={saving || undefined} />
     : <Input {...common} data={data} placeholder={hint} />;
   return (
     <div ref={root} className={cx('plx-inline-edit', 'plx-inline-edit--' + type, 'is-editing', data && 'plx-inline-edit--data', className)} onBlur={onBlur} {...rest}>

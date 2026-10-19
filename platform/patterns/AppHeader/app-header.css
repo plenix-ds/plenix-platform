@@ -28,7 +28,7 @@
 /* search: furthest left; the field opens over the space to its left, so no other icon moves */
 .plx-app-header__search-slot{display:flex;position:relative;}
 .plx-app-header__search{align-items:center;background-color:var(--plx-comp-app-header-surface);column-gap:var(--plx-comp-app-header-search-gap);display:flex;inline-size:var(--plx-comp-app-header-search-width);inset-block-end:0;inset-block-start:0;inset-inline-end:0;position:absolute;z-index:var(--plx-comp-app-header-search-z-index);}
-.plx-app-header__search>.plx-search{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+.plx-app-header__search>*{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 /* a header narrower than Wide (under 840px, --plx-sys-shell-rail-below; AppHeader measures its own width, owner 2026-10-15,
    GitHub #27): the pinned links leave the header (the switcher in the header name has them); search spans the bar */
 .plx-app-header--compact .plx-app-header__nav,.plx-app-header--compact .plx-app-header__nav+.plx-app-header__divider,.plx-app-header--compact .plx-app-header__start>.plx-app-header__divider{display:none;}
@@ -100,7 +100,7 @@
 .plx-search-view{background-color:var(--plx-comp-app-header-search-view-background);box-sizing:border-box;color:var(--plx-comp-app-header-search-view-text);display:flex;flex-direction:column;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;padding-block-end:var(--plx-comp-app-header-search-view-safe-area-bottom);padding-block-start:var(--plx-comp-app-header-search-view-safe-area-top);padding-inline-end:var(--plx-comp-app-header-search-view-safe-area-end);padding-inline-start:var(--plx-comp-app-header-search-view-safe-area-start);position:fixed;z-index:var(--plx-comp-app-header-search-view-z-index);}
 .plx-search-view__bar{align-items:center;border-bottom-color:var(--plx-comp-app-header-search-view-bar-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-app-header-search-view-bar-border-width);box-sizing:border-box;column-gap:var(--plx-comp-app-header-search-view-bar-gap);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-app-header-search-view-bar-min-height);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);}
 .plx-search-view__field{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
-.plx-search-view__field>.plx-search{inline-size:100%;}
+.plx-search-view__field>*{inline-size:100%;}
 .plx-search-view__cancel{flex-shrink:0;}
 .plx-search-view__scope{flex-shrink:0;padding-block-start:var(--plx-comp-app-header-search-view-scope-padding-block-start);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);}
 .plx-search-view__content{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-block-size:0;overflow-x:hidden;overflow-y:auto;padding-block-end:var(--plx-comp-app-header-search-view-content-padding-block);padding-block-start:var(--plx-comp-app-header-search-view-content-padding-block);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);row-gap:var(--plx-comp-app-header-search-view-content-gap);}
