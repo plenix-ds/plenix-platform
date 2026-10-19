@@ -16,6 +16,7 @@
    At Narrow the header search is a full-screen view (AppHeader): it shows this application's recent searches (kept in its
    view state, plenix.<app>.view, recentSearches; the last five) and, while a query is typed, its results; choosing one
    leaves the view (its history entry) and opens the result's screen. */
+import { SUITE_SESSION } from './session.js';
 import { ActivityList, AppHeader, AppShell, Icon, SearchField, SectionHeading, SessionProvider, StatusBar, Text, PLENIX_APPS, useScreenLocation, useViewState, leavePage } from 'plenix-platform';
 import { CaptureUI } from './capture.jsx';
 import { LeftNav } from './leftnav.jsx';
@@ -157,5 +158,5 @@ function Suite({ app, render, page = 'workspace', legacy }) {
 // opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
 // opts.legacy(hash): the screen path of an older address of this page (#t-3, #account), opened in its place
 export function mountSuite(app, render, opts) {
-  ReactDOM.createRoot(document.getElementById('root')).render(<SessionProvider><Suite app={app} render={render} page={(opts && opts.page) || 'workspace'} legacy={opts && opts.legacy} /></SessionProvider>);
+  ReactDOM.createRoot(document.getElementById('root')).render(<SessionProvider session={SUITE_SESSION}><Suite app={app} render={render} page={(opts && opts.page) || 'workspace'} legacy={opts && opts.legacy} /></SessionProvider>);
 }

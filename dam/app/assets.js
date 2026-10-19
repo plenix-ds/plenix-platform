@@ -5,6 +5,53 @@
  */
 (function () {
   var defs = {
+  "suite/session.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SUITE_SESSION = void 0;
+// The suite's session (the Plenix applications and the Asset Manager) until the back end supplies the signed-in
+// person: passed to SessionProvider by suite.jsx and dam/app/assets.jsx. The Platform itself ships no person's data
+// (RedSave P-37).
+const SUITE_SESSION = exports.SUITE_SESSION = {
+  account: {
+    name: 'Raphael Maher',
+    firstName: 'Raphael',
+    lastName: 'Maher',
+    email: 'raphael@lighthouseway.org'
+  },
+  notifications: [{
+    id: 1,
+    text: 'Fr. Daniel uploaded 12 new assets to Liturgy',
+    time: '5 min ago',
+    unread: true
+  }, {
+    id: 2,
+    text: 'Maya Chen sent a message: Round 3 concepts — confirm Thursday?',
+    time: '10:24 AM',
+    unread: true
+  }, {
+    id: 3,
+    text: 'Sarah M. approved your batch download request',
+    time: '22 min ago',
+    unread: true
+  }, {
+    id: 4,
+    text: 'Task due Mar 8: Deliver logo concepts round 3',
+    time: 'Yesterday',
+    unread: false
+  }, {
+    id: 5,
+    text: 'Version 3 of Banner Icon Set is now live',
+    time: 'Yesterday',
+    unread: false
+  }],
+  // the applications pinned to the header until the person changes them: every application
+  pinnedApps: ['home', 'projects', 'messaging', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'assets']
+};
+  } },
   "dam/app/pages/home/homeData.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -7553,11 +7600,12 @@ function ImageEditorPage() {
   }, msg)));
 }
   } },
-  "dam/app/assets.jsx": { deps: {"react":null,"react-dom/client":null,"plenix-platform":null,"./pages/MyAccountPage.jsx":"dam/app/pages/MyAccountPage.jsx","./pages/SystemSettingsPage.jsx":"dam/app/pages/SystemSettingsPage.jsx","./pages/home/HomePage.jsx":"dam/app/pages/home/HomePage.jsx","./pages/ImageEditorPage.jsx":"dam/app/pages/ImageEditorPage.jsx"}, externals: { "react": function () { return window.React; }, "react-dom/client": function () { return window.ReactDOM; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
+  "dam/app/assets.jsx": { deps: {"react":null,"react-dom/client":null,"../../suite/session.js":"suite/session.js","plenix-platform":null,"./pages/MyAccountPage.jsx":"dam/app/pages/MyAccountPage.jsx","./pages/SystemSettingsPage.jsx":"dam/app/pages/SystemSettingsPage.jsx","./pages/home/HomePage.jsx":"dam/app/pages/home/HomePage.jsx","./pages/ImageEditorPage.jsx":"dam/app/pages/ImageEditorPage.jsx"}, externals: { "react": function () { return window.React; }, "react-dom/client": function () { return window.ReactDOM; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
 var _client = require("react-dom/client");
+var _session = require("../../suite/session.js");
 var _plenixPlatform = require("plenix-platform");
 var _MyAccountPage = require("./pages/MyAccountPage.jsx");
 var _SystemSettingsPage = require("./pages/SystemSettingsPage.jsx");
@@ -7601,7 +7649,9 @@ function mount(el) {
   if (!render || el.hasAttribute('data-plx-mounted')) return;
   const tree = render(el); // read the markup before React replaces it
   el.setAttribute('data-plx-mounted', '');
-  (0, _client.createRoot)(el).render(/*#__PURE__*/_react.default.createElement(_plenixPlatform.ThemeProvider, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SessionProvider, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToastProvider, null, tree))));
+  (0, _client.createRoot)(el).render(/*#__PURE__*/_react.default.createElement(_plenixPlatform.ThemeProvider, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SessionProvider, {
+    session: _session.SUITE_SESSION
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToastProvider, null, tree))));
 }
 function mountAll(root) {
   root.querySelectorAll('[data-plx-mount]').forEach(mount);

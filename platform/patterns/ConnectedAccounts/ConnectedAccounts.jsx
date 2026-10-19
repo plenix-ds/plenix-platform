@@ -7,7 +7,7 @@
    Usage:
      <ConnectedAccounts label="Connected accounts" accounts={[
          { id: 'drive', service: 'Google Drive', icon: 'folder', description: 'Open and save files from your Drive.',
-           status: 'connected', account: 'maya@lighthouseway.org', connectedAt: '2026-10-02',
+           status: 'connected', account: 'maya@example.com', connectedAt: '2026-10-02',
            scopes: ['See and open the files you choose', 'Save new files to a Plenix folder'],
            loses: 'Files linked from Drive stop opening in Plenix.' },
          { id: 'mail', service: 'Mailchimp', icon: 'mail', status: 'error', account: 'parish-office', error: 'Access expired on Oct 12.' },

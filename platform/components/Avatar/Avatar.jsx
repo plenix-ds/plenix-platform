@@ -1,8 +1,8 @@
 /* Plenix · Avatar
    Summary: A person's picture, or their initials, in a rounded square (never a circle).
    Usage:
-     <Avatar name="Raphael Maher" size="md" />
-     <Avatar name="Raphael Maher" src="/people/rm.jpg" label="Raphael Maher" />
+     <Avatar name="Maya Chen" size="md" />
+     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
    Props:
      name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
      src: the URL of the person's picture; it replaces the initials
@@ -27,7 +27,7 @@
      A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
      (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
      The corner and the text size follow the size.
-     Initials are the first letters of the first and last name ("Raphael Maher" → RM).
+     Initials are the first letters of the first and last name ("Maya Chen" → MC).
      Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
      With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
      Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.

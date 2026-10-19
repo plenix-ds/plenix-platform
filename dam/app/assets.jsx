@@ -17,6 +17,7 @@
    with one publisher, its consumers and its removal condition listed here. */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { SUITE_SESSION } from '../../suite/session.js';
 import { ThemeProvider, ToastProvider, SessionProvider, LegacyDataTable as DataTable } from 'plenix-platform';
 import { MyAccountPage } from './pages/MyAccountPage.jsx';
 import { SystemSettingsPage } from './pages/SystemSettingsPage.jsx';
@@ -42,7 +43,7 @@ function mount(el) {
   if (!render || el.hasAttribute('data-plx-mounted')) return;
   const tree = render(el);   // read the markup before React replaces it
   el.setAttribute('data-plx-mounted', '');
-  createRoot(el).render(<ThemeProvider><SessionProvider><ToastProvider>{tree}</ToastProvider></SessionProvider></ThemeProvider>);
+  createRoot(el).render(<ThemeProvider><SessionProvider session={SUITE_SESSION}><ToastProvider>{tree}</ToastProvider></SessionProvider></ThemeProvider>);
 }
 
 function mountAll(root) {

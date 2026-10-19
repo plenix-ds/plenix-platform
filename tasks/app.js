@@ -5,6 +5,51 @@
  */
 (function () {
   var defs = {
+  "suite/session.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SUITE_SESSION = void 0;
+// The suite's session (the Plenix applications and the Asset Manager) until the back end supplies the signed-in
+// person: passed to SessionProvider by suite.jsx and dam/app/assets.jsx. The Platform itself ships no person's data
+// (RedSave P-37).
+const SUITE_SESSION = exports.SUITE_SESSION = {
+  account: {
+    name: 'Raphael Maher',
+    firstName: 'Raphael',
+    lastName: 'Maher',
+    email: 'raphael@lighthouseway.org'
+  },
+  notifications: [{
+    id: 1,
+    text: 'Fr. Daniel uploaded 12 new assets to Liturgy',
+    time: '5 min ago',
+    unread: true
+  }, {
+    id: 2,
+    text: 'Maya Chen sent a message: Round 3 concepts — confirm Thursday?',
+    time: '10:24 AM',
+    unread: true
+  }, {
+    id: 3,
+    text: 'Sarah M. approved your batch download request',
+    time: '22 min ago',
+    unread: true
+  }, {
+    id: 4,
+    text: 'Task due Mar 8: Deliver logo concepts round 3',
+    time: 'Yesterday',
+    unread: false
+  }, {
+    id: 5,
+    text: 'Version 3 of Banner Icon Set is now live',
+    time: 'Yesterday',
+    unread: false
+  }],
+  // the applications pinned to the header until the person changes them: every application
+  pinnedApps: ['home', 'projects', 'messaging', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'assets']
+};
+  } },
   "suite/shared.jsx": { deps: {"plenix-platform":null}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1858,7 +1903,7 @@ function FindWorkspace({
   })));
 }
   } },
-  "suite/suite.jsx": { deps: {"plenix-platform":null,"./capture.jsx":"suite/capture.jsx","./leftnav.jsx":"suite/leftnav.jsx","./search.jsx":"suite/search.jsx","./findSources.jsx":"suite/findSources.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
+  "suite/suite.jsx": { deps: {"./session.js":"suite/session.js","plenix-platform":null,"./capture.jsx":"suite/capture.jsx","./leftnav.jsx":"suite/leftnav.jsx","./search.jsx":"suite/search.jsx","./findSources.jsx":"suite/findSources.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -1867,6 +1912,7 @@ exports.mountSuite = mountSuite;
 exports.readPrefs = readPrefs;
 exports.settingsPage = void 0;
 exports.writePrefs = writePrefs;
+var _session = require("./session.js");
 var _plenixPlatform = require("plenix-platform");
 var _capture = require("./capture.jsx");
 var _leftnav = require("./leftnav.jsx");
@@ -2224,7 +2270,9 @@ function Suite({
 // opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
 // opts.legacy(hash): the screen path of an older address of this page (#t-3, #account), opened in its place
 function mountSuite(app, render, opts) {
-  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, null, /*#__PURE__*/React.createElement(Suite, {
+  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, {
+    session: _session.SUITE_SESSION
+  }, /*#__PURE__*/React.createElement(Suite, {
     app: app,
     render: render,
     page: opts && opts.page || 'workspace',

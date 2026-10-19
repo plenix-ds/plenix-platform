@@ -3695,8 +3695,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
    Summary: A person's picture, or their initials, in a rounded square (never a circle).
    Usage:
-     <Avatar name="Raphael Maher" size="md" />
-     <Avatar name="Raphael Maher" src="/people/rm.jpg" label="Raphael Maher" />
+     <Avatar name="Maya Chen" size="md" />
+     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
    Props:
      name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
      src: the URL of the person's picture; it replaces the initials
@@ -3721,7 +3721,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
      (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
      The corner and the text size follow the size.
-     Initials are the first letters of the first and last name ("Raphael Maher" → RM).
+     Initials are the first letters of the first and last name ("Maya Chen" → MC).
      Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
      With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
      Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
@@ -9527,7 +9527,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
    Usage:
-     <Combobox label="Owner" options={[{ value: 'rm', label: 'Raphael Maher' }]} value={owner} onChange={(value) => …} />
+     <Combobox label="Owner" options={[{ value: 'mc', label: 'Maya Chen' }]} value={owner} onChange={(value) => …} />
      <Combobox multiple creatable options={tags} values={chosen} onChange={(values) => …} onCreate={(text) => …} />
      <Combobox label="Owner" loadOptions={(text) => api.people(text)} value={owner} onChange={…} />   // async select
      <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
@@ -29480,6 +29480,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.DEMO_SESSION = void 0;
 exports.SessionProvider = SessionProvider;
 exports.choosePicture = choosePicture;
+exports.setDefaultSession = setDefaultSession;
 exports.useSession = useSession;
 var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -29489,7 +29490,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      <SessionProvider session={…}>{app}</SessionProvider>
      const { account, notifications, setNotifications, pinnedApps, setPinnedApps } = useSession();
    Props:
-     session: { account, notifications, pinnedApps } (default: the demo session below, DEMO_SESSION)
+     session: { account, notifications, pinnedApps } (default: the site's default session, setDefaultSession; empty
+       unless the site set one: the Platform ships no person's data)
+     setDefaultSession(session): the session a site's pages show when they pass none (the design system: DEMO_SESSION, a
+       fictional sample); null restores the empty one
      children: the application root or React island
      useSession(): { account: { name, firstName, lastName, email, src }, notifications: [{ id, text, time, unread }],
        setNotifications(next), pinnedApps: [application ids], setPinnedApps(next | (prev) => next),
@@ -29498,25 +29502,27 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Behavior:
      The pins are remembered in the browser (localStorage plenix.pinnedApps) until the back end stores them.
      The person's picture is too (localStorage plenix.accountPicture, batch 272): it replaces account.src everywhere.
-     Outside a provider useSession() returns the demo session, so a page that has not been wrapped still shows the same person.
+     Outside a provider useSession() returns the default session (empty unless the site set one).
    Notes:
      The header's account menu (AppHeader.Account) and the dashboard's notifications (NotificationList) read it.
      Any page that shows the person's details reads it too (useSession().account).
      Wrap the application root, or a React island, once.
-     Without a session the demo session below is used, until the back end supplies the real one; no application keeps its own copy.
+     An application passes its session (its back end's, or its own sample until then); the Platform ships none.
 */
 
 // the demo session: the sample account and notifications every application shows until the back end sends them
+// a fictional sample session, for demonstrations (the design system site sets it as its default); the Platform's own
+// default is empty: no person's name, address or messages ship in an application that does not pass its own
 const DEMO_SESSION = exports.DEMO_SESSION = {
   account: {
-    name: 'Raphael Maher',
-    firstName: 'Raphael',
-    lastName: 'Maher',
-    email: 'raphael@lighthouseway.org'
+    name: 'Alex Morgan',
+    firstName: 'Alex',
+    lastName: 'Morgan',
+    email: 'alex.morgan@example.com'
   },
   notifications: [{
     id: 1,
-    text: 'Fr. Daniel uploaded 12 new assets to Liturgy',
+    text: 'Jordan Lee uploaded 12 new assets to Brand',
     time: '5 min ago',
     unread: true
   }, {
@@ -29526,7 +29532,7 @@ const DEMO_SESSION = exports.DEMO_SESSION = {
     unread: true
   }, {
     id: 3,
-    text: 'Sarah M. approved your batch download request',
+    text: 'Sam Rivera approved your batch download request',
     time: '22 min ago',
     unread: true
   }, {
@@ -29540,9 +29546,20 @@ const DEMO_SESSION = exports.DEMO_SESSION = {
     time: 'Yesterday',
     unread: false
   }],
-  // the applications pinned to the header until the person changes them: every application
   pinnedApps: ['home', 'projects', 'messaging', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'assets']
 };
+
+// the default when no session is passed: nobody signed in, no notifications; every application pinned
+const EMPTY_SESSION = {
+  account: {},
+  notifications: [],
+  pinnedApps: DEMO_SESSION.pinnedApps
+};
+let defaultSession = EMPTY_SESSION;
+// a site sets the session its pages show when they pass none (the design system: DEMO_SESSION); null restores the empty one
+function setDefaultSession(session) {
+  defaultSession = session || EMPTY_SESSION;
+}
 const SessionContext = /*#__PURE__*/_react.default.createContext(null);
 const PINS_KEY = 'plenix.pinnedApps';
 const PICTURE_KEY = 'plenix.accountPicture';
@@ -29595,11 +29612,12 @@ const readPins = fallback => {
   }
 };
 function SessionProvider({
-  session = DEMO_SESSION,
+  session: sessionProp,
   children
 }) {
+  const session = sessionProp || defaultSession;
   const [notifications, setNotifications] = _react.default.useState(session.notifications || []);
-  const [pinnedApps, setPins] = _react.default.useState(() => readPins(session.pinnedApps || DEMO_SESSION.pinnedApps));
+  const [pinnedApps, setPins] = _react.default.useState(() => readPins(session.pinnedApps || EMPTY_SESSION.pinnedApps));
   const [picture, setPictureState] = _react.default.useState(readPicture);
   const setPicture = _react.default.useCallback(v => {
     try {
@@ -29633,18 +29651,19 @@ function SessionProvider({
   }, children);
 }
 
-// the session, or the demo session outside a provider (a page that has not been wrapped still shows the same person)
+// the session, or the default session outside a provider (setDefaultSession; empty unless the site set one)
 function useSession() {
   const ctx = _react.default.useContext(SessionContext);
   if (ctx) return ctx;
   const pic = readPicture();
+  const s = defaultSession;
   return {
-    account: pic ? Object.assign({}, DEMO_SESSION.account, {
+    account: pic ? Object.assign({}, s.account, {
       src: pic
-    }) : DEMO_SESSION.account,
-    notifications: DEMO_SESSION.notifications,
+    }) : s.account,
+    notifications: s.notifications || [],
     setNotifications: () => {},
-    pinnedApps: DEMO_SESSION.pinnedApps,
+    pinnedApps: s.pinnedApps || EMPTY_SESSION.pinnedApps,
     setPinnedApps: () => {},
     setPicture: v => {
       try {
@@ -64118,7 +64137,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      <ConnectedAccounts label="Connected accounts" accounts={[
          { id: 'drive', service: 'Google Drive', icon: 'folder', description: 'Open and save files from your Drive.',
-           status: 'connected', account: 'maya@lighthouseway.org', connectedAt: '2026-10-02',
+           status: 'connected', account: 'maya@example.com', connectedAt: '2026-10-02',
            scopes: ['See and open the files you choose', 'Save new files to a Plenix folder'],
            loses: 'Files linked from Drive stop opening in Plenix.' },
          { id: 'mail', service: 'Mailchimp', icon: 'mail', status: 'error', account: 'parish-office', error: 'Access expired on Oct 12.' },
@@ -79795,6 +79814,12 @@ Object.defineProperty(exports, "seriesColor", {
   enumerable: true,
   get: function () {
     return _scales.seriesColor;
+  }
+});
+Object.defineProperty(exports, "setDefaultSession", {
+  enumerable: true,
+  get: function () {
+    return _SessionProvider.setDefaultSession;
   }
 });
 Object.defineProperty(exports, "setDragOffset", {

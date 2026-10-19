@@ -4,7 +4,10 @@
      <SessionProvider session={…}>{app}</SessionProvider>
      const { account, notifications, setNotifications, pinnedApps, setPinnedApps } = useSession();
    Props:
-     session: { account, notifications, pinnedApps } (default: the demo session below, DEMO_SESSION)
+     session: { account, notifications, pinnedApps } (default: the site's default session, setDefaultSession; empty
+       unless the site set one: the Platform ships no person's data)
+     setDefaultSession(session): the session a site's pages show when they pass none (the design system: DEMO_SESSION, a
+       fictional sample); null restores the empty one
      children: the application root or React island
      useSession(): { account: { name, firstName, lastName, email, src }, notifications: [{ id, text, time, unread }],
        setNotifications(next), pinnedApps: [application ids], setPinnedApps(next | (prev) => next),
@@ -13,28 +16,35 @@
    Behavior:
      The pins are remembered in the browser (localStorage plenix.pinnedApps) until the back end stores them.
      The person's picture is too (localStorage plenix.accountPicture, batch 272): it replaces account.src everywhere.
-     Outside a provider useSession() returns the demo session, so a page that has not been wrapped still shows the same person.
+     Outside a provider useSession() returns the default session (empty unless the site set one).
    Notes:
      The header's account menu (AppHeader.Account) and the dashboard's notifications (NotificationList) read it.
      Any page that shows the person's details reads it too (useSession().account).
      Wrap the application root, or a React island, once.
-     Without a session the demo session below is used, until the back end supplies the real one; no application keeps its own copy.
+     An application passes its session (its back end's, or its own sample until then); the Platform ships none.
 */
 import React from 'react';
 
 // the demo session: the sample account and notifications every application shows until the back end sends them
+// a fictional sample session, for demonstrations (the design system site sets it as its default); the Platform's own
+// default is empty: no person's name, address or messages ship in an application that does not pass its own
 export const DEMO_SESSION = {
-  account: { name: 'Raphael Maher', firstName: 'Raphael', lastName: 'Maher', email: 'raphael@lighthouseway.org' },
+  account: { name: 'Alex Morgan', firstName: 'Alex', lastName: 'Morgan', email: 'alex.morgan@example.com' },
   notifications: [
-    { id: 1, text: 'Fr. Daniel uploaded 12 new assets to Liturgy', time: '5 min ago', unread: true },
+    { id: 1, text: 'Jordan Lee uploaded 12 new assets to Brand', time: '5 min ago', unread: true },
     { id: 2, text: 'Maya Chen sent a message: Round 3 concepts — confirm Thursday?', time: '10:24 AM', unread: true },
-    { id: 3, text: 'Sarah M. approved your batch download request', time: '22 min ago', unread: true },
+    { id: 3, text: 'Sam Rivera approved your batch download request', time: '22 min ago', unread: true },
     { id: 4, text: 'Task due Mar 8: Deliver logo concepts round 3', time: 'Yesterday', unread: false },
     { id: 5, text: 'Version 3 of Banner Icon Set is now live', time: 'Yesterday', unread: false },
   ],
-  // the applications pinned to the header until the person changes them: every application
   pinnedApps: ['home', 'projects', 'messaging', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'assets'],
 };
+
+// the default when no session is passed: nobody signed in, no notifications; every application pinned
+const EMPTY_SESSION = { account: {}, notifications: [], pinnedApps: DEMO_SESSION.pinnedApps };
+let defaultSession = EMPTY_SESSION;
+// a site sets the session its pages show when they pass none (the design system: DEMO_SESSION); null restores the empty one
+export function setDefaultSession(session) { defaultSession = session || EMPTY_SESSION; }
 
 const SessionContext = React.createContext(null);
 
@@ -70,9 +80,10 @@ export function choosePicture() {
 }
 const readPins = (fallback) => { try { const v = JSON.parse(localStorage.getItem(PINS_KEY)); return Array.isArray(v) ? v : fallback; } catch (e) { return fallback; } };
 
-export function SessionProvider({ session = DEMO_SESSION, children }) {
+export function SessionProvider({ session: sessionProp, children }) {
+  const session = sessionProp || defaultSession;
   const [notifications, setNotifications] = React.useState(session.notifications || []);
-  const [pinnedApps, setPins] = React.useState(() => readPins(session.pinnedApps || DEMO_SESSION.pinnedApps));
+  const [pinnedApps, setPins] = React.useState(() => readPins(session.pinnedApps || EMPTY_SESSION.pinnedApps));
   const [picture, setPictureState] = React.useState(readPicture);
   const setPicture = React.useCallback((v) => {
     try { if (v) localStorage.setItem(PICTURE_KEY, v); else localStorage.removeItem(PICTURE_KEY); } catch (e) { /* not stored: it lasts for this visit */ }
@@ -89,11 +100,12 @@ export function SessionProvider({ session = DEMO_SESSION, children }) {
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 
-// the session, or the demo session outside a provider (a page that has not been wrapped still shows the same person)
+// the session, or the default session outside a provider (setDefaultSession; empty unless the site set one)
 export function useSession() {
   const ctx = React.useContext(SessionContext);
   if (ctx) return ctx;
   const pic = readPicture();
-  return { account: pic ? Object.assign({}, DEMO_SESSION.account, { src: pic }) : DEMO_SESSION.account, notifications: DEMO_SESSION.notifications, setNotifications: () => {}, pinnedApps: DEMO_SESSION.pinnedApps, setPinnedApps: () => {},
+  const s = defaultSession;
+  return { account: pic ? Object.assign({}, s.account, { src: pic }) : s.account, notifications: s.notifications || [], setNotifications: () => {}, pinnedApps: s.pinnedApps || EMPTY_SESSION.pinnedApps, setPinnedApps: () => {},
     setPicture: (v) => { try { if (v) localStorage.setItem(PICTURE_KEY, v); else localStorage.removeItem(PICTURE_KEY); } catch (e) { /* not stored */ } location.reload(); } };
 }

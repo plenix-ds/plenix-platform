@@ -1,7 +1,7 @@
 /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
    Usage:
-     <Combobox label="Owner" options={[{ value: 'rm', label: 'Raphael Maher' }]} value={owner} onChange={(value) => …} />
+     <Combobox label="Owner" options={[{ value: 'mc', label: 'Maya Chen' }]} value={owner} onChange={(value) => …} />
      <Combobox multiple creatable options={tags} values={chosen} onChange={(values) => …} onCreate={(text) => …} />
      <Combobox label="Owner" loadOptions={(text) => api.people(text)} value={owner} onChange={…} />   // async select
      <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
