@@ -59,40 +59,14 @@
   }
  },
  "kinds": {
-  "cross-component": 240,
+  "cross-component": 84,
   "order-decided": 19,
   "redundant": 29,
-  "state-variant": 236,
-  "variant-repeat": 95,
+  "state-variant": 312,
+  "variant-repeat": 175,
   "vendor": 93
  },
  "clashes": [
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "align-items",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "va": "center",
-   "vb": "center",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "align-self",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "stretch",
-   "vb": "stretch",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
   {
    "kind": "cross-component",
    "pages": [
@@ -111,155 +85,12 @@
    "pages": [
     "dam/settings-system.html"
    ],
-   "p": "background-color",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "var(--plx-comp-data-table-background)",
-   "vb": "var(--plx-comp-table-background)",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "var(--plx-comp-data-table-background)",
-   "vb": "var(--plx-comp-table-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "var(--plx-comp-data-table-background)",
-   "vb": "var(--plx-comp-table-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "var(--plx-comp-data-table-header-background)",
-   "vb": "var(--plx-comp-table-header-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "var(--plx-comp-data-table-header-background)",
-   "vb": "var(--plx-comp-table-header-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "va": "var(--plx-comp-data-table-background)",
-   "vb": "var(--plx-comp-table-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "va": "var(--plx-comp-data-table-row-label-background)",
-   "vb": "var(--plx-comp-table-row-label-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
-   "va": "var(--plx-comp-data-table-background)",
-   "vb": "var(--plx-comp-table-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "va": "var(--plx-comp-data-table-background)",
-   "vb": "var(--plx-comp-table-background)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
    "p": "block-size",
    "a": ".plx-data-table__type-icon .plx-icon",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__type-icon .plx-icon",
    "va": "100%",
    "vb": "100%",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "block-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "va": "var(--plx-comp-data-table-height)",
-   "vb": "auto",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "block-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "auto",
-   "vb": "auto",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": true
   },
   {
@@ -319,110 +150,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-block-end-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "var(--plx-comp-data-table-border-bottom-color)",
-   "vb": "var(--plx-comp-table-border-bottom-color)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-block-end-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "va": "var(--plx-comp-data-table-row-line)",
-   "vb": "var(--plx-comp-table-row-line)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-block-end-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-block-end-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-block-end-width",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "var(--plx-comp-data-table-line-width)",
-   "vb": "var(--plx-comp-table-line-width)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-block-end-width",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "va": "var(--plx-comp-data-table-line-width)",
-   "vb": "var(--plx-comp-table-line-width)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-color",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "border-bottom-color",
@@ -432,97 +159,6 @@
    "vb": "var(--plx-comp-tag-tag-input-add-border-color)",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-left-radius",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-left-radius",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-right-radius",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-right-radius",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-style",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "none",
-   "vb": "none",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -576,32 +212,6 @@
    "vb": "none",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-width",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-bottom-width",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -659,58 +269,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-inline-end-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "none",
-   "vb": "none",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-inline-end-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "none",
-   "vb": "none",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-left-color",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-left-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "border-left-color",
@@ -720,45 +278,6 @@
    "vb": "var(--plx-comp-tag-tag-input-add-border-color)",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-left-style",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-left-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-left-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "none",
-   "vb": "none",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -798,32 +317,6 @@
    "vb": "none",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-left-width",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-left-width",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -867,32 +360,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-right-color",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-right-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "border-right-color",
@@ -902,45 +369,6 @@
    "vb": "var(--plx-comp-tag-tag-input-add-border-color)",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-right-style",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-right-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-right-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "none",
-   "vb": "none",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -980,32 +408,6 @@
    "vb": "none",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-right-width",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-right-width",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -1049,32 +451,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-color",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "border-top-color",
@@ -1084,97 +460,6 @@
    "vb": "var(--plx-comp-tag-tag-input-add-border-color)",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-left-radius",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-left-radius",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-right-radius",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-right-radius",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-style",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "solid",
-   "vb": "solid",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-style",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "none",
-   "vb": "none",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -1214,32 +499,6 @@
    "vb": "none",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-width",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "border-top-width",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "",
-   "vb": "",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -1296,58 +555,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "box-sizing",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "border-box",
-   "vb": "border-box",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "box-sizing",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "border-box",
-   "vb": "border-box",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "box-sizing",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "border-box",
-   "vb": "border-box",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "box-sizing",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "border-box",
-   "vb": "border-box",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "color",
@@ -1356,58 +563,6 @@
    "va": "inherit",
    "vb": "var(--plx-comp-media-card-title-text)",
    "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "var(--plx-comp-data-table-text)",
-   "vb": "var(--plx-comp-table-text)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "var(--plx-comp-data-table-header-text)",
-   "vb": "var(--plx-comp-table-header-text)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "va": "var(--plx-comp-data-table-text)",
-   "vb": "var(--plx-comp-table-text)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "color",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "va": "var(--plx-comp-data-table-text)",
-   "vb": "var(--plx-comp-table-text)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": false
   },
   {
@@ -1442,206 +597,11 @@
     "dam/settings-system.html"
    ],
    "p": "display",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "va": "flex",
-   "vb": "flex",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
-   "va": "flex",
-   "vb": "flex",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "va": "flex",
-   "vb": "flex",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
-   "va": "flex",
-   "vb": "flex",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "va": "block",
-   "vb": "block",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-headers",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
-   "va": "inline-flex",
-   "vb": "flex",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "va": "inline-block",
-   "vb": "block",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
    "a": ".plx-stack",
    "b": ".plx-toolbar :where([data-plx-toolbar-layout]:not([hidden]))",
    "va": "flex",
    "vb": "contents",
    "files": "components/Stack/stack.css / components/Toolbar/toolbar.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "display",
-   "a": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
-   "va": "flex",
-   "vb": "flex",
-   "files": "components/Table/table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "flex-basis",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "va": "0%",
-   "vb": "0%",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "flex-grow",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "va": "1",
-   "vb": "1",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "flex-shrink",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "0",
-   "vb": "1",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "flex-shrink",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "va": "1",
-   "vb": "1",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "flex-shrink",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "0",
-   "vb": "1",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "flex-shrink",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "0",
-   "vb": "1",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "flex-shrink",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "0",
-   "vb": "1",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": false
   },
   {
@@ -1674,32 +634,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-family",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "var(--plx-comp-data-table-font-family)",
-   "vb": "var(--plx-comp-table-font-family)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-family",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
-   "va": "var(--plx-comp-data-table-data-font-family)",
-   "vb": "var(--plx-comp-table-data-font-family)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "font-size",
@@ -1708,45 +642,6 @@
    "va": "inherit",
    "vb": "var(--plx-comp-media-card-title-font-size)",
    "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "var(--plx-comp-data-table-font-size)",
-   "vb": "var(--plx-comp-table-font-size)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "va": "var(--plx-comp-data-table-header-font-size)",
-   "vb": "var(--plx-comp-table-header-font-size)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
-   "va": "var(--plx-comp-data-table-data-font-size)",
-   "vb": "var(--plx-comp-table-data-font-size)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": false
   },
   {
@@ -1790,123 +685,6 @@
    "vb": "var(--plx-comp-media-card-title-font-weight)",
    "files": "components/Card/card.css / components/Card/card.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-data-table .plx-data-table__cell--name",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
-   "va": "var(--plx-comp-data-table-name-font-weight)",
-   "vb": "var(--plx-comp-table-name-font-weight)",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
-   "va": "var(--plx-comp-data-table-name-font-weight)",
-   "vb": "var(--plx-comp-table-name-font-weight)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "var(--plx-comp-data-table-header-font-weight)",
-   "vb": "var(--plx-comp-table-header-font-weight)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "va": "var(--plx-comp-data-table-header-font-weight)",
-   "vb": "var(--plx-comp-table-header-font-weight)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "va": "var(--plx-comp-data-table-name-font-weight)",
-   "vb": "var(--plx-comp-table-name-font-weight)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
-   "va": "var(--plx-comp-data-table-name-font-weight)",
-   "vb": "var(--plx-comp-table-name-font-weight)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "b": ".plx-data-table .plx-data-table__cell--name",
-   "va": "var(--plx-comp-table-name-font-weight)",
-   "vb": "var(--plx-comp-data-table-name-font-weight)",
-   "files": "components/Table/table.css / components/DataTable/data-table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
-   "va": "var(--plx-comp-table-name-font-weight)",
-   "vb": "var(--plx-comp-data-table-name-font-weight)",
-   "files": "components/Table/table.css / components/DataTableNext/data-table-next.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "font-weight",
-   "a": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
-   "va": "var(--plx-comp-table-name-font-weight)",
-   "vb": "var(--plx-comp-table-name-font-weight)",
-   "files": "components/Table/table.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -1964,32 +742,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "inline-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
-   "va": "max-content",
-   "vb": "100%",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "inline-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "va": "max-content",
-   "vb": "100%",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "files",
     "dam/settings-system.html"
    ],
@@ -2039,45 +791,6 @@
    "va": "100%",
    "vb": "var(--plx-comp-data-table-mark-size)",
    "files": "components/Checkbox/checkbox.css / components/DataTable/data-table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "inset-inline-start",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "inset-inline-start",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "line-height",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "var(--plx-comp-data-table-line-height)",
-   "vb": "var(--plx-comp-table-line-height)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": false
   },
   {
@@ -2174,45 +887,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-block-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "va": "var(--plx-comp-data-table-record-height)",
-   "vb": "var(--plx-comp-table-min-height)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-block-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
-   "va": "var(--plx-comp-data-table-record-height)",
-   "vb": "var(--plx-comp-table-min-height)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-block-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "var(--plx-comp-data-table-min-height)",
-   "vb": "var(--plx-comp-table-min-height)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dashboard",
     "calendar"
    ],
@@ -2257,110 +931,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-block-size",
-   "a": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
-   "va": "var(--plx-comp-table-min-height)",
-   "vb": "var(--plx-comp-table-min-height)",
-   "files": "components/Table/table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
-   "va": "100%",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
-   "va": "100%",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "min-inline-size",
@@ -2387,227 +957,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "hidden",
-   "vb": "clip",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "hidden",
-   "vb": "clip",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "hidden",
-   "vb": "clip",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "hidden",
-   "vb": "clip",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-tableholder",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
-   "va": "auto",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-x",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "hidden",
-   "vb": "clip",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table[data-plx-engine=\"next\"]",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"]",
-   "va": "hidden",
-   "vb": "clip",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-header",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
-   "va": "hidden",
-   "vb": "clip",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-tableholder",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
-   "va": "auto",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "overflow-y",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "hidden",
-   "vb": "visible",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "padding-block-end",
@@ -2617,32 +966,6 @@
    "vb": "var(--plx-comp-card-opener-target-padding-block)",
    "files": "components/Card/card.css / components/Card/card.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-block-end",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-block-end",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -2671,32 +994,6 @@
    "vb": "var(--plx-comp-card-opener-target-padding-block)",
    "files": "components/Card/card.css / components/Card/card.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-block-start",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-block-start",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -2725,45 +1022,6 @@
    "va": "var(--plx-comp-combobox-field-padding-inline-end)",
    "vb": "var(--plx-comp-input-padding-inline)",
    "files": "components/Combobox/combobox.css / components/Input/input.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-inline-end",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "va": "var(--plx-comp-data-table-cell-padding-inline)",
-   "vb": "var(--plx-comp-table-cell-padding-inline)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-inline-end",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-inline-end",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "var(--plx-comp-data-table-cell-padding-inline)",
-   "vb": "var(--plx-comp-table-cell-padding-inline)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": false
   },
   {
@@ -2806,32 +1064,6 @@
    "va": "var(--plx-comp-tag-padding-inline)",
    "vb": "0px",
    "files": "components/Tag/tag.css / components/Tag/tag.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-inline-start",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
-   "va": "var(--plx-comp-data-table-cell-padding-inline)",
-   "vb": "var(--plx-comp-table-cell-padding-inline)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "padding-inline-start",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "var(--plx-comp-data-table-cell-padding-inline)",
-   "vb": "var(--plx-comp-table-cell-padding-inline)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": false
   },
   {
@@ -2945,136 +1177,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "relative",
-   "vb": "relative",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
-   "va": "relative",
-   "vb": "sticky",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "va": "sticky",
-   "vb": "relative",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
-   "va": "sticky",
-   "vb": "sticky",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "relative",
-   "vb": "relative",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
-   "va": "relative",
-   "vb": "sticky",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "sticky",
-   "vb": "relative",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
-   "va": "sticky",
-   "vb": "sticky",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
-   "va": "relative",
-   "vb": "sticky",
-   "files": "components/Table/table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "position",
-   "a": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
-   "va": "relative",
-   "vb": "sticky",
-   "files": "components/Table/table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "position",
@@ -3097,136 +1199,6 @@
    "vb": "none",
    "files": "components/Input/input.css / components/Chat/chat.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "text-wrap-mode",
-   "a": ".plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "nowrap",
-   "vb": "wrap",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "text-wrap-mode",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "nowrap",
-   "vb": "wrap",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "text-wrap-mode",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
-   "va": "nowrap",
-   "vb": "wrap",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "text-wrap-mode",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "nowrap",
-   "vb": "wrap",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "white-space-collapse",
-   "a": ".plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "collapse",
-   "vb": "collapse",
-   "files": "components/DataTable/data-table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "white-space-collapse",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
-   "va": "collapse",
-   "vb": "collapse",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "white-space-collapse",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
-   "va": "collapse",
-   "vb": "collapse",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "white-space-collapse",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
-   "va": "collapse",
-   "vb": "collapse",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "word-spacing",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
-   "va": "normal",
-   "vb": "normal",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam/settings-system.html"
-   ],
-   "p": "word-spacing",
-   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
-   "b": ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
-   "va": "var(--plx-sys-font-data-word-spacing)",
-   "vb": "var(--plx-sys-font-data-word-spacing)",
-   "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": true
   },
   {
    "kind": "order-decided",
@@ -4234,6 +2206,123 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "var(--plx-comp-data-table-background)",
+   "vb": "var(--plx-comp-table-background)",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "var(--plx-comp-data-table-background)",
+   "vb": "var(--plx-comp-table-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "var(--plx-comp-data-table-background)",
+   "vb": "var(--plx-comp-table-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "var(--plx-comp-data-table-header-background)",
+   "vb": "var(--plx-comp-table-header-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "var(--plx-comp-data-table-header-background)",
+   "vb": "var(--plx-comp-table-header-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "va": "var(--plx-comp-data-table-background)",
+   "vb": "var(--plx-comp-table-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "va": "var(--plx-comp-data-table-row-label-background)",
+   "vb": "var(--plx-comp-table-row-label-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
+   "va": "var(--plx-comp-data-table-background)",
+   "vb": "var(--plx-comp-table-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "background-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "va": "var(--plx-comp-data-table-background)",
+   "vb": "var(--plx-comp-table-background)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "dam"
    ],
    "p": "background-color",
@@ -4346,6 +2435,19 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "block-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "va": "var(--plx-comp-data-table-height)",
+   "vb": "auto",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "dam/image-editor.html"
    ],
    "p": "block-size",
@@ -4354,6 +2456,58 @@
    "va": "var(--plx-comp-tool-rail-item-height)",
    "vb": "auto",
    "files": "patterns/ToolRail/tool-rail.css / patterns/ToolRail/tool-rail.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-block-end-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "var(--plx-comp-data-table-border-bottom-color)",
+   "vb": "var(--plx-comp-table-border-bottom-color)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-block-end-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "va": "var(--plx-comp-data-table-row-line)",
+   "vb": "var(--plx-comp-table-row-line)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-block-end-width",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "var(--plx-comp-data-table-line-width)",
+   "vb": "var(--plx-comp-table-line-width)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-block-end-width",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "va": "var(--plx-comp-data-table-line-width)",
+   "vb": "var(--plx-comp-table-line-width)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -5995,6 +4149,58 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "var(--plx-comp-data-table-text)",
+   "vb": "var(--plx-comp-table-text)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "var(--plx-comp-data-table-header-text)",
+   "vb": "var(--plx-comp-table-header-text)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "va": "var(--plx-comp-data-table-text)",
+   "vb": "var(--plx-comp-table-text)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "va": "var(--plx-comp-data-table-text)",
+   "vb": "var(--plx-comp-table-text)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "calendar"
    ],
    "p": "color",
@@ -6287,11 +4493,37 @@
     "dam/settings-system.html"
    ],
    "p": "display",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-headers",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
+   "va": "inline-flex",
+   "vb": "flex",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "display",
    "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
    "va": "inline-block",
    "vb": "block",
    "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-next.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "display",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "va": "inline-block",
+   "vb": "block",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -6336,6 +4568,58 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "flex-shrink",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "0",
+   "vb": "1",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "flex-shrink",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "0",
+   "vb": "1",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "flex-shrink",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "0",
+   "vb": "1",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "flex-shrink",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "0",
+   "vb": "1",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "projects",
     "calendar",
     "bookmarks",
@@ -6365,6 +4649,32 @@
    "va": "wrap",
    "vb": "nowrap",
    "files": "components/Toolbar/toolbar.css / components/Toolbar/toolbar.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-family",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "var(--plx-comp-data-table-font-family)",
+   "vb": "var(--plx-comp-table-font-family)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-family",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
+   "va": "var(--plx-comp-data-table-data-font-family)",
+   "vb": "var(--plx-comp-table-data-font-family)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -6489,6 +4799,45 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "var(--plx-comp-data-table-font-size)",
+   "vb": "var(--plx-comp-table-font-size)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "va": "var(--plx-comp-data-table-header-font-size)",
+   "vb": "var(--plx-comp-table-header-font-size)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
+   "va": "var(--plx-comp-data-table-data-font-size)",
+   "vb": "var(--plx-comp-table-data-font-size)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "dam"
    ],
    "p": "font-size",
@@ -6564,6 +4913,110 @@
    "va": "var(--plx-comp-activity-list-item-unread-title-font-weight)",
    "vb": "var(--plx-comp-activity-list-title-2-font-weight)",
    "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table .plx-data-table__cell--name",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
+   "va": "var(--plx-comp-data-table-name-font-weight)",
+   "vb": "var(--plx-comp-table-name-font-weight)",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "b": ".plx-data-table .plx-data-table__cell--name",
+   "va": "var(--plx-comp-table-name-font-weight)",
+   "vb": "var(--plx-comp-data-table-name-font-weight)",
+   "files": "components/DataTableNext/data-table-static.css / components/DataTable/data-table.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
+   "va": "var(--plx-comp-table-name-font-weight)",
+   "vb": "var(--plx-comp-data-table-name-font-weight)",
+   "files": "components/DataTableNext/data-table-static.css / components/DataTableNext/data-table-next.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
+   "va": "var(--plx-comp-data-table-name-font-weight)",
+   "vb": "var(--plx-comp-table-name-font-weight)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "var(--plx-comp-data-table-header-font-weight)",
+   "vb": "var(--plx-comp-table-header-font-weight)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "va": "var(--plx-comp-data-table-header-font-weight)",
+   "vb": "var(--plx-comp-table-header-font-weight)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "va": "var(--plx-comp-data-table-name-font-weight)",
+   "vb": "var(--plx-comp-table-name-font-weight)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
+   "va": "var(--plx-comp-data-table-name-font-weight)",
+   "vb": "var(--plx-comp-table-name-font-weight)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -6676,6 +5129,32 @@
     "dam/settings-system.html"
    ],
    "p": "inline-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
+   "va": "max-content",
+   "vb": "100%",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "inline-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "va": "max-content",
+   "vb": "100%",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "inline-size",
    "a": ".plx-input",
    "b": ".plx-input.plx-input--width-sm",
    "va": "auto",
@@ -6752,6 +5231,19 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "line-height",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "var(--plx-comp-data-table-line-height)",
+   "vb": "var(--plx-comp-table-line-height)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "settings",
     "dam/settings-system.html",
     "dam/settings-myaccount.html"
@@ -6775,6 +5267,45 @@
    "va": "60%",
    "vb": "none",
    "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-block-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "va": "var(--plx-comp-data-table-record-height)",
+   "vb": "var(--plx-comp-table-min-height)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-block-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
+   "va": "var(--plx-comp-data-table-record-height)",
+   "vb": "var(--plx-comp-table-min-height)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-block-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "var(--plx-comp-data-table-min-height)",
+   "vb": "var(--plx-comp-table-min-height)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -6819,6 +5350,32 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-inline-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
+   "va": "100%",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-inline-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "va": "100%",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "dam"
    ],
    "p": "opacity",
@@ -6827,6 +5384,227 @@
    "va": "0",
    "vb": "1",
    "files": "components/NavList/nav-list.css / components/NavList/nav-list.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "hidden",
+   "vb": "clip",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "hidden",
+   "vb": "clip",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "hidden",
+   "vb": "clip",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "hidden",
+   "vb": "clip",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-tableholder",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
+   "va": "auto",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-x",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "hidden",
+   "vb": "clip",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "hidden",
+   "vb": "clip",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "hidden",
+   "vb": "clip",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-tableholder",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder",
+   "va": "auto",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "overflow-y",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "hidden",
+   "vb": "visible",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -6981,6 +5759,32 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-inline-end",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "va": "var(--plx-comp-data-table-cell-padding-inline)",
+   "vb": "var(--plx-comp-table-cell-padding-inline)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-inline-end",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "var(--plx-comp-data-table-cell-padding-inline)",
+   "vb": "var(--plx-comp-table-cell-padding-inline)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "dashboard",
     "tasks"
    ],
@@ -7069,6 +5873,32 @@
    "va": "calc(var(--plx-comp-button-padding) - var(--plx-comp-button-border-width))",
    "vb": "0px",
    "files": "components/Button/button.css / components/Button/button.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-inline-start",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "va": "var(--plx-comp-data-table-cell-padding-inline)",
+   "vb": "var(--plx-comp-table-cell-padding-inline)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-inline-start",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "var(--plx-comp-data-table-cell-padding-inline)",
+   "vb": "var(--plx-comp-table-cell-padding-inline)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -7185,6 +6015,32 @@
     "dam/settings-system.html"
    ],
    "p": "position",
+   "a": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
+   "va": "relative",
+   "vb": "sticky",
+   "files": "components/DataTableNext/data-table-static.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
+   "va": "relative",
+   "vb": "sticky",
+   "files": "components/DataTableNext/data-table-static.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
    "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
    "va": "relative",
@@ -7198,11 +6054,63 @@
     "dam/settings-system.html"
    ],
    "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
+   "va": "relative",
+   "vb": "sticky",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "sticky",
+   "vb": "relative",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
    "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
    "va": "relative",
    "vb": "sticky",
    "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-next.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
+   "va": "relative",
+   "vb": "sticky",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "sticky",
+   "vb": "relative",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -7229,6 +6137,58 @@
    "va": "nowrap",
    "vb": "wrap",
    "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "text-wrap-mode",
+   "a": ".plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "nowrap",
+   "vb": "wrap",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "text-wrap-mode",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "nowrap",
+   "vb": "wrap",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "text-wrap-mode",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
+   "va": "nowrap",
+   "vb": "wrap",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "text-wrap-mode",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "nowrap",
+   "vb": "wrap",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": false
   },
   {
@@ -7293,6 +6253,32 @@
    "va": "center",
    "vb": "center",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "align-items",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "va": "center",
+   "vb": "center",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "align-self",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "stretch",
+   "vb": "stretch",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7378,6 +6364,45 @@
   {
    "kind": "variant-repeat",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "block-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "auto",
+   "vb": "auto",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-block-end-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-block-end-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
     "dam/image-editor.html"
    ],
    "p": "border-bottom-color",
@@ -7420,12 +6445,64 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-bottom-color",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-bottom-left-radius",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "",
    "vb": "",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-left-radius",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-left-radius",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7446,12 +6523,77 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-bottom-right-radius",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-right-radius",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-bottom-style",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "solid",
    "vb": "solid",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-style",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "none",
+   "vb": "none",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7483,6 +6625,32 @@
   {
    "kind": "variant-repeat",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-width",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-bottom-width",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
     "dam"
    ],
    "p": "border-bottom-width",
@@ -7491,6 +6659,32 @@
    "va": "0px",
    "vb": "0px",
    "files": "components/Tabs/tabs.css / components/Tabs/tabs.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-inline-end-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "none",
+   "vb": "none",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-inline-end-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "none",
+   "vb": "none",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7531,6 +6725,32 @@
    "va": "",
    "vb": "",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-left-color",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-left-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7551,12 +6771,77 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-left-style",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-left-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-left-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "none",
+   "vb": "none",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-left-width",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "",
    "vb": "",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-left-width",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-left-width",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7604,12 +6889,51 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-right-color",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-right-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-right-style",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "solid",
    "vb": "solid",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-right-style",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7643,12 +6967,64 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-right-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-right-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "none",
+   "vb": "none",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-right-width",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "",
    "vb": "",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-right-width",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-right-width",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7696,12 +7072,64 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-top-color",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-color",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-top-left-radius",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "",
    "vb": "",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-left-radius",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-left-radius",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7722,6 +7150,32 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-top-right-radius",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-right-radius",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-top-style",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
@@ -7735,12 +7189,77 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "border-top-style",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "solid",
+   "vb": "solid",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-style",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "none",
+   "vb": "none",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "border-top-width",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "",
    "vb": "",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-width",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "border-top-width",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "",
+   "vb": "",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7828,6 +7347,32 @@
     "dam/settings-system.html"
    ],
    "p": "box-sizing",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "border-box",
+   "vb": "border-box",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "box-sizing",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "border-box",
+   "vb": "border-box",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "box-sizing",
    "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
    "va": "border-box",
@@ -7841,11 +7386,37 @@
     "dam/settings-system.html"
    ],
    "p": "box-sizing",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "border-box",
+   "vb": "border-box",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "box-sizing",
    "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
    "va": "border-box",
    "vb": "border-box",
    "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "box-sizing",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "border-box",
+   "vb": "border-box",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7947,6 +7518,84 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "display",
+   "a": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
+   "va": "flex",
+   "vb": "flex",
+   "files": "components/DataTableNext/data-table-static.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "display",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "va": "flex",
+   "vb": "flex",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "display",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers",
+   "va": "flex",
+   "vb": "flex",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "display",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "va": "flex",
+   "vb": "flex",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "display",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
+   "va": "flex",
+   "vb": "flex",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "display",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table",
+   "va": "block",
+   "vb": "block",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "flex-basis",
    "a": ".plx-data-table__value",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
@@ -7960,12 +7609,38 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "flex-basis",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "va": "0%",
+   "vb": "0%",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "flex-grow",
    "a": ".plx-data-table__value",
    "b": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
    "va": "0",
    "vb": "0",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "flex-grow",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "va": "1",
+   "vb": "1",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -7992,6 +7667,19 @@
    "va": "1",
    "vb": "1",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "flex-shrink",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "va": "1",
+   "vb": "1",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -8069,6 +7757,19 @@
    "va": "var(--plx-comp-data-table-name-font-weight)",
    "vb": "var(--plx-comp-data-table-name-font-weight)",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "font-weight",
+   "a": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name",
+   "va": "var(--plx-comp-table-name-font-weight)",
+   "vb": "var(--plx-comp-table-name-font-weight)",
+   "files": "components/DataTableNext/data-table-static.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -8169,6 +7870,32 @@
   {
    "kind": "variant-repeat",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "inset-inline-start",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "inset-inline-start",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
     "files",
     "dam/settings-system.html"
    ],
@@ -8199,12 +7926,38 @@
    "pages": [
     "dam/settings-system.html"
    ],
+   "p": "min-block-size",
+   "a": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row",
+   "va": "var(--plx-comp-table-min-height)",
+   "vb": "var(--plx-comp-table-min-height)",
+   "files": "components/DataTableNext/data-table-static.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
    "p": "min-inline-size",
    "a": ".plx-data-table",
    "b": ".plx-data-table[data-plx-engine=\"next\"]",
    "va": "0px",
    "vb": "0px",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-inline-size",
+   "a": ".plx-data-table",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -8244,6 +7997,58 @@
    "va": "0px",
    "vb": "0px",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-inline-size",
+   "a": ".plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-inline-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"]",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"]",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-inline-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "min-inline-size",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -8366,6 +8171,71 @@
   {
    "kind": "variant-repeat",
    "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-block-end",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-block-end",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-block-start",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-block-start",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "padding-inline-end",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title",
+   "va": "0px",
+   "vb": "0px",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
     "files",
     "dam/settings-system.html"
    ],
@@ -8375,6 +8245,58 @@
    "va": "absolute",
    "vb": "absolute",
    "files": "components/DataTable/data-table.css / components/DataTable/data-table.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col",
+   "va": "relative",
+   "vb": "relative",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen",
+   "va": "sticky",
+   "vb": "sticky",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "relative",
+   "vb": "relative",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "position",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen",
+   "va": "sticky",
+   "vb": "sticky",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {
@@ -8466,6 +8388,84 @@
    "va": "collapse",
    "vb": "collapse",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "white-space-collapse",
+   "a": ".plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "collapse",
+   "vb": "collapse",
+   "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "white-space-collapse",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell",
+   "va": "collapse",
+   "vb": "collapse",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "white-space-collapse",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-col-title",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title",
+   "va": "collapse",
+   "vb": "collapse",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "white-space-collapse",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__value",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value",
+   "va": "collapse",
+   "vb": "collapse",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "word-spacing",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid",
+   "va": "normal",
+   "vb": "normal",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam/settings-system.html"
+   ],
+   "p": "word-spacing",
+   "a": ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
+   "b": ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data",
+   "va": "var(--plx-sys-font-data-word-spacing)",
+   "vb": "var(--plx-sys-font-data-word-spacing)",
+   "files": "components/DataTableNext/data-table-next.css / components/DataTableNext/data-table-static.css",
    "same": true
   },
   {

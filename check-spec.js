@@ -144,7 +144,8 @@ recs.forEach((r) => {
   const shown = new Set();
   (r.examples || []).forEach((e) => { if (Array.isArray(e[1])) e[1].forEach((v) => { if (v[2]) [].concat(v[2]).forEach((c) => shown.add(c)); }); });
   const own = r.variantClasses ? new Set(r.variantClasses) : null;
-  const missing = [...mods].filter((m) => !shown.has(m) && !NOT_VARIANTS[m] && !ICON_NAMES.has(m) && (!own || own.has(m)));
+  // a modifier another record claims as its block (Table: plx-data-table--static) is shown on that record's page
+  const missing = [...mods].filter((m) => !shown.has(m) && !claimedMods.has(m) && !NOT_VARIANTS[m] && !ICON_NAMES.has(m) && (!own || own.has(m)));
   if (missing.length) add('variants', r.id + ': no card for ' + missing.join(', '));
 });
 

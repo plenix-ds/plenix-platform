@@ -29,7 +29,7 @@ changed.noPartialUpdate();
 if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('REFLOW_OK 0 known findings on 0 pages at 320px (0 exempt two-dimensional scrollers)');
 // the two-dimensional content WCAG exempts (Understanding 1.4.10: data tables, maps, diagrams, images, editors' canvases),
 // and preformatted code (the CodeBlock's pre: code keeps its lines, Understanding 1.4.10 "Content exceptions")
-const EXEMPT = '.plx-data-table, .plx-table, .tabulator, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
+const EXEMPT = '.plx-data-table, .tabulator, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
 
 // runs in the page: the findings at the current width
 function measure(EXEMPT) {

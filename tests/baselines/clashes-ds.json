@@ -1,0 +1,55 @@
+{
+ "$description": "The clash inventory of the Plenix Styling Standard (tests/clash-audit.js): every pair of rules setting one property on one element, on the application pages, classified.",
+ "pages": {
+  "platform/design-system/index.html#/data-display/table": {
+   "elements": 2893,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/data-table": {
+   "elements": 11472,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/actions/button": {
+   "elements": 4670,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/badge": {
+   "elements": 3502,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/audit-log": {
+   "elements": 3218,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/comparison-view": {
+   "elements": 3702,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/file-list": {
+   "elements": 4395,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/patterns/permissions-editor": {
+   "elements": 2916,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/rendition-list": {
+   "elements": 2869,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/patterns/review-flow": {
+   "elements": 3777,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/implementation/css-architecture": {
+   "elements": 5580,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/foundations/color": {
+   "elements": 3813,
+   "clashed": 0
+  }
+ },
+ "kinds": {},
+ "clashes": []
+}

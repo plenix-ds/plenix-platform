@@ -24,14 +24,17 @@ const { serve, launch, sleep, ROOT } = require('./lib.js');
 const args = process.argv.slice(2);
 const CHECK = args.includes('--check');
 const only = (() => { const i = args.indexOf('--pages'); return i >= 0 ? args[i + 1].split(',') : null; })();
-const PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
+// --ds: design-system pages full of tables (computed styles only: the pages are long), baselines *-ds.json
+const DS = args.includes('--ds');
+const DS_ROUTES = ['data-display/table', 'data-display/data-table', 'actions/button', 'data-display/badge', 'specialized/audit-log', 'data-display/comparison-view', 'specialized/file-list', 'patterns/permissions-editor', 'specialized/rendition-list', 'patterns/review-flow', 'implementation/css-architecture', 'foundations/color'];
+const PAGES = DS ? DS_ROUTES.map((x) => 'platform/design-system/index.html#/' + x).filter((p) => !only || only.some((n) => p.includes(n))) : ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'])
   .filter((p) => !only || only.some((n) => p.includes(n)));
-const OUT_CLASH = path.join(ROOT, 'tests', 'baselines', 'clashes.json');
-const OUT_COMPUTED = path.join(ROOT, 'tests', 'baselines', 'computed.json');
+const OUT_CLASH = path.join(ROOT, 'tests', 'baselines', DS ? 'clashes-ds.json' : 'clashes.json');
+const OUT_COMPUTED = path.join(ROOT, 'tests', 'baselines', DS ? 'computed-ds.json' : 'computed.json');
 
 // runs in the page: the clashes and the computed styles
-function audit() {
+function audit(noClash) {
   const blockOf = (c) => c.replace(/(__|--).*$/, '');
   const splitSel = (t) => { const out = []; let d = 0, cur = ''; for (const ch of t) { if (ch === '(' || ch === '[') d++; else if (ch === ')' || ch === ']') d--; if (ch === ',' && !d) { out.push(cur.trim()); cur = ''; } else cur += ch; } if (cur.trim()) out.push(cur.trim()); return out; };
   const sels = [];
@@ -59,6 +62,7 @@ function audit() {
     const all = names.sort().map((p) => p + ':' + cs.getPropertyValue(p)).join(';');
     const label = el.tagName.toLowerCase() + [...el.classList].slice(0, 3).map((c) => '.' + c).join('');
     computed.push([label, hash(all)]);
+    if (noClash) continue;
     const own = blockOf([...el.classList].find((c) => c.startsWith('plx-')) || '');
     const cand = [...new Set([...el.classList].flatMap((c) => byKey[c] || []))].concat(noKey.filter((x) => !/^(\*|html|body|:root)/.test(x.s)));
     const props = {};
@@ -88,8 +92,8 @@ const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const clashes = {}, computed = {}, perPage = {};
   for (const pg of PAGES) {
-    await page.goto('about:blank'); await page.goto(BASE + pg, { waitUntil: 'networkidle0' }); await page.evaluate(() => document.fonts.ready); await sleep(1500);
-    const r = await page.evaluate(audit);
+    await page.goto('about:blank'); await page.goto(BASE + pg, DS ? { waitUntil: 'load', timeout: 120000 } : { waitUntil: 'networkidle0' }); await page.evaluate(() => document.fonts.ready); await sleep(DS ? 4000 : 1500);
+    const r = await page.evaluate(audit, DS);
     perPage[pg] = { elements: r.elements, clashed: r.clashed };
     computed[pg] = r.computed;
     for (const x of r.pairs) { const k = x.p + ' | ' + x.a + ' || ' + x.b; const c = clashes[k] = clashes[k] || Object.assign({ kind: kindOf(x), pages: [] }, x); c.pages.push(pg.replace('/index.html', '')); delete c.n; delete c.cross; delete c.variant; }

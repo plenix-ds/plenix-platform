@@ -6,6 +6,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.57.1] - 2026-10-19
+
+### Changed
+- **Table is the DataTable's static variant in one stylesheet** (Styling Standard, Phase 2). Table's rules moved from
+  `components/Table/table.css` into `components/DataTableNext/data-table-static.css`, under the DataTable's own
+  modifier `plx-data-table--static` (was the class `plx-table`), with the same specificity and cascade position;
+  its generated steps are `data-table-static-steps.css`. No visual change: the computed style of every element is
+  unchanged on the 14 application pages and on 12 design-system pages full of tables (52,805 elements; only the documentation text naming the renamed file and the removed class differs).
+  156 cross-component clashes are gone; 80 of them are now the static variant repeating a DataTable value, removed
+  with the redundancy pass (Phase 3). Apps to check: CSS or scripts that select `.plx-table` should use
+  `.plx-data-table--static`.
+### Removed
+- Three rules for `plx-table--fill`, a class nothing sets.
+### Added
+- `tests/clash-audit.js --ds`: the computed-style proof on design-system pages (`tests/baselines/computed-ds.json`).
+
 ## [0.57.0] - 2026-10-19
 
 ### Added

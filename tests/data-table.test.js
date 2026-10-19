@@ -185,14 +185,14 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       await sleep(400);
     }
     if (missing) { res.push([name, false, 'no control "' + missing + '"']); continue; }
-    try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent).length >= n
-      && Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent).every((g) => g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row), :is(.tabulator-placeholder,.plx-data-table__grid-placeholder), .plx-data-table__error')), { timeout: 15000 }, want); }
-    catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent && g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row), :is(.tabulator-placeholder,.plx-data-table__grid-placeholder)')).length)) + ' of ' + want]); continue; }
+    try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent).length >= n
+      && Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent).every((g) => g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row), :is(.tabulator-placeholder,.plx-data-table__grid-placeholder), .plx-data-table__error')), { timeout: 15000 }, want); }
+    catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent && g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row), :is(.tabulator-placeholder,.plx-data-table__grid-placeholder)')).length)) + ' of ' + want]); continue; }
     await sleep(600);
     if (!(await page.evaluate(() => !!window.axe))) await page.addScriptTag({ url: BASE + 'node_modules/axe-core/axe.min.js' });
     if (!(await page.evaluate(() => !!window.PlenixStyleAudit))) await page.addScriptTag({ url: BASE + 'platform/dev/style-audit.js' });
     const r = await page.evaluate(async (TAGS) => {
-      const grids = Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent);
+      const grids = Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent);
       const ax = await window.axe.run({ include: grids.map((g) => [g]) }, { runOnly: { type: 'tag', values: TAGS }, resultTypes: ['violations'] });
       const audit = (window.PlenixStyleAudit ? window.PlenixStyleAudit.audit() : []).filter((f) => f.element && grids.some((g) => g.querySelector('*') && document.querySelector(f.element) && g.contains(document.querySelector(f.element))));
       const root = getComputedStyle(document.documentElement);
