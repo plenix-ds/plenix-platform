@@ -124,6 +124,16 @@ const blocksOf = (r) => r.blocks || (r.src && /^(components|patterns)\//.test(r.
 // documented under the component's Behavior or Names)
 const NOT_VARIANTS = {
   'plx-data-table--fill': 'a sizing state the height prop sets (height="100%": the grid fills its container), not a look',
+  'plx-button--joined': 'set by a group (ButtonGroup, InputGroup, CopyButton field); shown on its page',
+  'plx-button--joined-start-square': 'set by a group',
+  'plx-button--joined-start-seam': 'set by a group',
+  'plx-button--joined-end-square': 'set by a group',
+  'plx-button--joined-end-seam': 'set by a group',
+  'plx-select--joined': 'set by InputGroup; shown on its page',
+  'plx-select--joined-start-square': 'set by InputGroup',
+  'plx-select--joined-start-seam': 'set by InputGroup',
+  'plx-select--joined-end-square': 'set by InputGroup',
+  'plx-select--joined-end-seam': 'set by InputGroup',
   'plx-button--secondary': 'the default variant: its variant page (Secondary (default)) and the base rule draw it; the class appears in the stylesheet only for buttons on a colored surface',
   'plx-nav-pane--inline': 'a responsive mode the shell sets (the pane opens over the main region on narrow windows)',
   'plx-nav-pane--overlay': 'a responsive mode the shell sets',

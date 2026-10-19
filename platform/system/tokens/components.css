@@ -136,8 +136,6 @@
   --plx-comp-button-font-family: var(--plx-sys-font-label);
   --plx-comp-button-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-button-caret-duration: var(--plx-sys-motion-duration-fast);
-  --plx-comp-button-group-joined-radius: var(--plx-sys-shape-none);
-  --plx-comp-button-group-focus-layer: var(--plx-sys-layer-raised);
   /* the left navigation pane (NavPane): one surface and width for every page */
   --plx-comp-nav-pane-background: var(--plx-sys-surface-default);
   --plx-comp-nav-pane-width: var(--plx-sys-shell-nav-width);
@@ -2296,6 +2294,14 @@
   --plx-comp-activity-list-title-2-font-weight: var(--plx-sys-font-weight-regular);
   --plx-comp-toolbar-bar-group-gap: var(--plx-sys-space-cluster-sm);
   --plx-comp-toolbar-bar-control-gap: var(--plx-sys-space-cluster-xs);
+  --plx-comp-button-joined-radius: var(--plx-sys-shape-none);
+  --plx-comp-button-joined-focus-layer: var(--plx-sys-layer-raised);
+  --plx-comp-select-joined-radius: var(--plx-sys-shape-none);
+  --plx-comp-select-joined-focus-layer: var(--plx-sys-layer-raised);
+  --plx-comp-input-group-compact-box-width: var(--plx-sys-field-width-xs);
+  --plx-comp-input-group-compact-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-input-group-joined-radius: var(--plx-sys-shape-none);
+  --plx-comp-copy-button-field-joined-radius: var(--plx-sys-shape-none);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);
@@ -3219,8 +3225,6 @@
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-copy-button-field-max-width: var(--plx-sys-field-width-lg);
-  --plx-comp-copy-button-field-joined-radius: var(--plx-sys-shape-none);
-  --plx-comp-copy-button-field-focus-layer: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-country-select-max-width: var(--plx-sys-field-width-lg);
@@ -4010,8 +4014,6 @@
   --plx-comp-input-group-affix-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-input-group-icon-color: var(--plx-sys-content-muted);
   --plx-comp-input-group-icon-size: var(--plx-sys-control-icon-standard);
-  --plx-comp-input-group-joined-radius: var(--plx-sys-shape-none);
-  --plx-comp-input-group-focus-layer: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-line-chart-point-radius: var(--plx-ref-size-4px);
@@ -4236,8 +4238,7 @@
   --plx-comp-notice-actions-margin-block-start: var(--plx-sys-space-stack-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-number-input-quantity-width: var(--plx-sys-field-width-xs);
-  --plx-comp-number-input-quantity-padding-inline: var(--plx-sys-space-inset-sm);
+
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-offboarding-gap: var(--plx-sys-space-stack-md);

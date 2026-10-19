@@ -15,6 +15,7 @@
      start: a Button or a Select (or an array of them) joined to the field's start edge
      end: a Button or a Select (or an array of them) joined to the field's end edge
      width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
+     compact: a short box (--plx-comp-input-group-compact-box-width), the value centered: a count between its buttons (NumberInput quantity)
      data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too
      invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
@@ -39,7 +40,7 @@ import { Icon } from '../Icon/Icon.jsx';
 
 const list = (x) => (x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x]);
 
-export function InputGroup({ prefix, suffix, icon, start, end, width, data = false, invalid, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }) {
+export function InputGroup({ prefix, suffix, icon, start, end, width, compact = false, data = false, invalid, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }) {
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const preId = prefix != null ? 'plx-ig' + uid + '-p' : undefined, sufId = suffix != null ? 'plx-ig' + uid + '-s' : undefined;
   const child = React.Children.only(children);
@@ -59,12 +60,14 @@ export function InputGroup({ prefix, suffix, icon, start, end, width, data = fal
   const isInvalid = pass.invalid, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
   // a press on the box outside the field (an affix, the icon) focuses the field
   const focusField = (e) => { if (e.target !== inputRef.current && inputRef.current && !isDisabled) { e.preventDefault(); inputRef.current.focus(); } };
+  // an attached Button or Select joins the box: the side facing the box is a seam (the box's edge is shared); between two
+  // attached controls the corners are square
   const attach = (el, i, all, side) => React.cloneElement(el, {
     key: side + i,
-    className: cx(el.props.className, 'plx-input-group__attached', 'plx-input-group__attached--' + side, (side === 'start' ? i > 0 : i < all.length - 1) && 'plx-input-group__attached--inner'),
+    joined: side === 'start' ? { start: i > 0 ? 'square' : undefined, end: 'seam' } : { start: 'seam', end: i < all.length - 1 ? 'square' : undefined },
   });
   return (
-    <div className={cx('plx-input-group', width && 'plx-input-group--width-' + width, data && 'plx-input-group--data', className)} {...rest}>
+    <div className={cx('plx-input-group', width && 'plx-input-group--width-' + width, compact && 'plx-input-group--compact', data && 'plx-input-group--data', className)} {...rest}>
       {starts.map((el, i) => attach(el, i, starts, 'start'))}
       <div className={cx('plx-input-group__box', starts.length && 'plx-input-group__box--joined-start', ends.length && 'plx-input-group__box--joined-end',
         isInvalid && 'is-invalid', isDisabled && 'is-disabled', isReadOnly && 'is-readonly')} onMouseDown={focusField}>

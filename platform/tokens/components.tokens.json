@@ -550,14 +550,6 @@
       "$value": "{plx-sys.motion-duration-fast}",
       "$type": "duration"
     },
-    "button-group-joined-radius": {
-      "$value": "{plx-sys.shape-none}",
-      "$type": "dimension"
-    },
-    "button-group-focus-layer": {
-      "$value": "{plx-sys.layer-raised}",
-      "$type": "number"
-    },
     "nav-pane-background": {
       "$value": "{plx-sys.surface-default}",
       "$type": "color",
@@ -9401,6 +9393,46 @@
       "$value": "{plx-sys.space-cluster-xs}",
       "$type": "dimension",
       "$description": "Toolbar, bar variant (CommandBar): the space between the controls of a group; density does not change it"
+    },
+    "button-joined-radius": {
+      "$value": "{plx-sys.shape-none}",
+      "$type": "dimension",
+      "$description": "Button joined: the corners where it meets a neighbor (a ButtonGroup, an InputGroup, a CopyButton field)."
+    },
+    "button-joined-focus-layer": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "Button joined: the layer it rises to while focused, so its focus ring shows whole."
+    },
+    "select-joined-radius": {
+      "$value": "{plx-sys.shape-none}",
+      "$type": "dimension",
+      "$description": "Select joined: the corners where its control meets the field (an InputGroup)."
+    },
+    "select-joined-focus-layer": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "Select joined: the layer it rises to while focused."
+    },
+    "input-group-compact-box-width": {
+      "$value": "{plx-sys.field-width-xs}",
+      "$type": "dimension",
+      "$description": "InputGroup compact: the short box (NumberInput quantity)."
+    },
+    "input-group-compact-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "InputGroup compact: the room at the ends of the centered value."
+    },
+    "input-group-joined-radius": {
+      "$value": "{plx-sys.shape-none}",
+      "$type": "dimension",
+      "$description": "InputGroup: the box's corners where an attached button or select meets it."
+    },
+    "copy-button-field-joined-radius": {
+      "$value": "{plx-sys.shape-none}",
+      "$type": "dimension",
+      "$description": "CopyButton field: the value's end corners where the button meets it."
     }
   }
 }

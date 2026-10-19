@@ -55,11 +55,11 @@ const STRINGS = { working: 'Working' };
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
-  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', className, children, onClick, strings, ...rest }, ref) {
+  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, className, children, onClick, strings, ...rest }, ref) {
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',
-    caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
+    caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
   const content = (
     <>
       {loading ? <span className="plx-button__icon"><Spinner size="sm" label={t.working} /></span> : (icon ? <span className="plx-button__icon">{asIcon(icon)}</span> : null)}
@@ -77,5 +77,7 @@ export const Button = React.forwardRef(function Button({ variant = 'secondary', 
 
 /* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
 export function ButtonGroup({ label, className, children, ...rest }) {
-  return <div role="group" aria-label={label} className={cx('plx-button-group', className)} {...rest}>{children}</div>;
+  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
+  const all = React.Children.toArray(children).filter(React.isValidElement);
+  return <div role="group" aria-label={label} className={cx('plx-button-group', className)} {...rest}>{all.map((el, i) => React.cloneElement(el, { joined: { start: i > 0 ? 'seam' : undefined, end: i < all.length - 1 ? 'square' : undefined } }))}</div>;
 }

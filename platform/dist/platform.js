@@ -4130,6 +4130,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
   disabled = false,
   href,
   type = 'button',
+  joined,
   className,
   children,
   onClick,
@@ -4144,7 +4145,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
   const t = Object.assign({}, STRINGS, strings);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__icon"
   }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
@@ -4198,11 +4199,18 @@ function ButtonGroup({
   children,
   ...rest
 }) {
+  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
+  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     role: "group",
     "aria-label": label,
     className: (0, _cx.cx)('plx-button-group', className)
-  }, rest), children);
+  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
+    joined: {
+      start: i > 0 ? 'seam' : undefined,
+      end: i < all.length - 1 ? 'square' : undefined
+    }
+  })));
 }
   } },
   "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -8374,12 +8382,13 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   options,
   appearance,
   size,
+  joined,
   className,
   children,
   ...rest
 }, ref) {
   return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', className)
+    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
     ref: ref,
     size: size === 'sm' || size === 'md' ? undefined : size,
@@ -32605,10 +32614,11 @@ function SettingsSection({
     onClick: toggle
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-settings__section-label"
-  }, title), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-down",
+  }, title), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-settings__section-chevron"
-  })) : /*#__PURE__*/_react.default.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down"
+  }))) : /*#__PURE__*/_react.default.createElement("span", {
     id: id
   }, title)) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
     id: descId,
@@ -38684,7 +38694,10 @@ const CopyButton = exports.CopyButton = /*#__PURE__*/_react.default.forwardRef(f
     label: !labelled || field && !showLabel ? name : undefined,
     disabled: disabled,
     onClick: press,
-    className: (0, _cx.cx)('plx-copy-button', clip.copied && 'is-copied', field ? 'plx-copy-button__button' : className)
+    joined: field ? {
+      start: 'seam'
+    } : undefined,
+    className: (0, _cx.cx)('plx-copy-button', clip.copied && 'is-copied', field ? 'plx-copy-button-field__button' : className)
   }, rest), labelled ? clip.copied ? t.copied : field && !showLabel ? t.copy : name : name);
   if (!field) return button;
   return /*#__PURE__*/_react.default.createElement("span", {
@@ -39765,6 +39778,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      start: a Button or a Select (or an array of them) joined to the field's start edge
      end: a Button or a Select (or an array of them) joined to the field's end edge
      width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
+     compact: a short box (--plx-comp-input-group-compact-box-width), the value centered: a count between its buttons (NumberInput quantity)
      data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too
      invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
@@ -39791,6 +39805,7 @@ function InputGroup({
   start,
   end,
   width,
+  compact = false,
   data = false,
   invalid,
   disabled,
@@ -39834,12 +39849,20 @@ function InputGroup({
       inputRef.current.focus();
     }
   };
+  // an attached Button or Select joins the box: the side facing the box is a seam (the box's edge is shared); between two
+  // attached controls the corners are square
   const attach = (el, i, all, side) => /*#__PURE__*/_react.default.cloneElement(el, {
     key: side + i,
-    className: (0, _cx.cx)(el.props.className, 'plx-input-group__attached', 'plx-input-group__attached--' + side, (side === 'start' ? i > 0 : i < all.length - 1) && 'plx-input-group__attached--inner')
+    joined: side === 'start' ? {
+      start: i > 0 ? 'square' : undefined,
+      end: 'seam'
+    } : {
+      start: 'seam',
+      end: i < all.length - 1 ? 'square' : undefined
+    }
   });
   return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-input-group', width && 'plx-input-group--width-' + width, data && 'plx-input-group--data', className)
+    className: (0, _cx.cx)('plx-input-group', width && 'plx-input-group--width-' + width, compact && 'plx-input-group--compact', data && 'plx-input-group--data', className)
   }, rest), starts.map((el, i) => attach(el, i, starts, 'start')), /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-input-group__box', starts.length && 'plx-input-group__box--joined-start', ends.length && 'plx-input-group__box--joined-end', isInvalid && 'is-invalid', isDisabled && 'is-disabled', isReadOnly && 'is-readonly'),
     onMouseDown: focusField
@@ -40111,6 +40134,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   return /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
     className: (0, _cx.cx)('plx-number-input', stepper !== 'none' && 'plx-number-input--' + stepper, className),
     width: quantity ? undefined : width,
+    compact: quantity,
     data: true,
     prefix: aff && aff.before ? aff.text : undefined,
     suffix: aff && !aff.before ? aff.text : unit || undefined,

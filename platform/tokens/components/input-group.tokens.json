@@ -125,16 +125,6 @@
       "$value": "{plx-sys.control-icon-standard}",
       "$type": "dimension",
       "$description": "InputGroup icon: the standard control’s grid icon."
-    },
-    "input-group-joined-radius": {
-      "$value": "{plx-sys.shape-none}",
-      "$type": "dimension",
-      "$description": "InputGroup: the square corners where the box and an attached button or select meet (as a button group’s joined corners)."
-    },
-    "input-group-focus-layer": {
-      "$value": "{plx-sys.layer-raised}",
-      "$type": "number",
-      "$description": "InputGroup: a focused attached control rises one layer so its focus is drawn over the shared edge."
     }
   }
 }

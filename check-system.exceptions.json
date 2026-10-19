@@ -14,19 +14,8 @@
     "platform/charts/network-graph.css": {
       ".plx-network-graph .plx-chart__svg": 1
     },
-    "platform/components/Button/button.css": {
-      ".plx-button-group>.plx-button:not(:first-child)": 1,
-      ".plx-button-group>.plx-button:not(:last-child)": 1,
-      ".plx-button-group>.plx-button:focus-visible": 1,
-      ".plx-button-group>.plx-button.is-focus-visible": 1
-    },
     "platform/components/ColorSwatch/color-swatch.css": {
       "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
-    },
-    "platform/components/CopyButton/copy-button.css": {
-      ".plx-copy-button-field>.plx-copy-button__button": 1,
-      ".plx-copy-button-field>.plx-copy-button__button:focus-visible": 1,
-      ".plx-copy-button-field>.plx-copy-button__button.is-focus-visible": 1
     },
     "platform/components/DataTableNext/data-table-next.css": {
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--icon .plx-icon": 1,
@@ -84,11 +73,6 @@
     "platform/components/InlineEdit/inline-edit.css": {
       ".plx-inline-edit__control .plx-select": 1
     },
-    "platform/components/InputGroup/input-group.css": {
-      ".plx-input-group>.plx-input-group__attached--start>.plx-select__control": 1,
-      ".plx-input-group>.plx-input-group__attached--end>.plx-select__control": 1,
-      ".plx-input-group>.plx-input-group__attached--inner>.plx-select__control": 1
-    },
     "platform/components/Link/link.css": {
       ".plx-data-table__portal>a.plx-link:only-child": 1,
       ".plx-data-table__portal>a.plx-link:only-child::before": 1
@@ -102,10 +86,6 @@
     },
     "platform/components/NavList/nav-list.css": {
       ".plx-nav-list__group>.plx-collapsible-section__heading": 1
-    },
-    "platform/components/NumberInput/number-input.css": {
-      ".plx-number-input--quantity>.plx-input-group__box": 1,
-      ".plx-number-input--quantity .plx-input.plx-input-group__input": 1
     },
     "platform/components/ProductOptions/product-options.css": {
       ".plx-product-options__sizes .plx-radio-tiles__legend": 1,

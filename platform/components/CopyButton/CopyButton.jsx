@@ -59,7 +59,7 @@ export const CopyButton = React.forwardRef(function CopyButton({ value, label, s
   const labelled = showLabel || field;
   const button = (
     <Button ref={ref} variant={variant || (labelled ? 'secondary' : 'ghost')} size={size} icon={clip.copied ? 'check' : 'ed-copy'} iconOnly={!labelled} label={!labelled || (field && !showLabel) ? name : undefined}
-      disabled={disabled} onClick={press} className={cx('plx-copy-button', clip.copied && 'is-copied', field ? 'plx-copy-button__button' : className)} {...rest}>
+      disabled={disabled} onClick={press} joined={field ? { start: 'seam' } : undefined} className={cx('plx-copy-button', clip.copied && 'is-copied', field ? 'plx-copy-button-field__button' : className)} {...rest}>
       {labelled ? (clip.copied ? t.copied : (field && !showLabel ? t.copy : name)) : name}
     </Button>
   );

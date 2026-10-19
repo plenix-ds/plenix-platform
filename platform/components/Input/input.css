@@ -39,3 +39,11 @@
 .plx-select--size-sm .plx-select__control{--plx-comp-input-min-height:var(--plx-comp-select-small-min-height);}
 /* an invalid filled field shows the invalid fill */
 .plx-input--filled[aria-invalid="true"]{background-color:var(--plx-comp-input-invalid-background);}
+/* Select joined (an InputGroup): its control's corners square where it meets the field; a seam drops that border; the
+   select keeps its content's width and is raised while focused */
+.plx-select--joined-start-square>.plx-select__control,.plx-select--joined-start-seam>.plx-select__control{border-end-start-radius:var(--plx-comp-select-joined-radius);border-start-start-radius:var(--plx-comp-select-joined-radius);}
+.plx-select--joined-end-square>.plx-select__control,.plx-select--joined-end-seam>.plx-select__control{border-end-end-radius:var(--plx-comp-select-joined-radius);border-start-end-radius:var(--plx-comp-select-joined-radius);}
+.plx-select--joined-start-seam>.plx-select__control{border-inline-start-width:0;}
+.plx-select--joined-end-seam>.plx-select__control{border-inline-end-width:0;}
+.plx-select--joined{flex-shrink:0;inline-size:auto;}
+.plx-select--joined:focus-within{position:relative;z-index:var(--plx-comp-select-joined-focus-layer);}

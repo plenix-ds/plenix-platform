@@ -148,7 +148,7 @@ export const NumberInput = React.forwardRef(function NumberInput({ value, defaul
   const quantity = stepper === 'quantity';
 
   return (
-    <InputGroup className={cx('plx-number-input', stepper !== 'none' && 'plx-number-input--' + stepper, className)} width={quantity ? undefined : width} data
+    <InputGroup className={cx('plx-number-input', stepper !== 'none' && 'plx-number-input--' + stepper, className)} width={quantity ? undefined : width} compact={quantity} data
       prefix={aff && aff.before ? aff.text : undefined} suffix={aff && !aff.before ? aff.text : unit || undefined}
       start={quantity ? minus : undefined} end={quantity ? plus : stepper === 'buttons' ? [minus, plus] : undefined}
       invalid={invalid} disabled={disabled} readOnly={readOnly} required={required} id={id} aria-describedby={describedBy}>

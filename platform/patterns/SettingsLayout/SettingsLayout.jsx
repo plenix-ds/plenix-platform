@@ -119,7 +119,7 @@ export function SettingsSection({ title, description, collapsible = false, defau
               {canCollapse ? (
                 <button type="button" id={id} className="plx-settings__section-toggle" aria-expanded={open} aria-controls={id + '-body'} aria-describedby={descId} onClick={toggle}>
                   <span className="plx-settings__section-label">{title}</span>
-                  <Icon name="chevron-down" className="plx-settings__section-chevron" />
+                  <span className="plx-settings__section-chevron"><Icon name="chevron-down" /></span>
                 </button>
               ) : <span id={id}>{title}</span>}
             </H>

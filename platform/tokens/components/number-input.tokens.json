@@ -1,15 +1,4 @@
 {
   "$description": "NumberInput (platform/components/NumberInput, library wave 6, lane A): its component tokens. The box, the affixes and the attached buttons are InputGroup's; the value is the Input in the data font.",
-  "plx-comp": {
-    "number-input-quantity-width": {
-      "$value": "{plx-sys.field-width-xs}",
-      "$type": "dimension",
-      "$description": "NumberInput quantity: the width of the count between its minus and plus buttons (the extra-small field width)."
-    },
-    "number-input-quantity-padding-inline": {
-      "$value": "{plx-sys.space-inset-sm}",
-      "$type": "dimension",
-      "$description": "NumberInput quantity: the space on each side of the centered count."
-    }
-  }
+  "plx-comp": {}
 }

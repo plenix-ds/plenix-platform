@@ -28,10 +28,9 @@
 .plx-input-group__icon{align-items:center;color:var(--plx-comp-input-group-icon-color);display:inline-flex;flex-shrink:0;padding-inline-start:var(--plx-comp-input-group-padding-inline);}
 .plx-input-group__icon{--plx-comp-icon-size:var(--plx-comp-input-group-icon-size);}
 .plx-input-group__box.is-disabled>.plx-input-group__affix,.plx-input-group__box.is-disabled>.plx-input-group__icon{color:var(--plx-comp-input-group-disabled-text);}
-/* attached buttons and selects: square where they meet the box, their border on that side dropped (the box’s edge is shared) */
-.plx-input-group>.plx-input-group__attached{flex-shrink:0;}
-.plx-input-group>.plx-select.plx-input-group__attached{inline-size:auto;}
-.plx-input-group>.plx-input-group__attached.plx-input-group__attached--start,.plx-input-group>.plx-input-group__attached--start>.plx-select__control{border-end-end-radius:var(--plx-comp-input-group-joined-radius);border-inline-end-width:0;border-start-end-radius:var(--plx-comp-input-group-joined-radius);}
-.plx-input-group>.plx-input-group__attached.plx-input-group__attached--end,.plx-input-group>.plx-input-group__attached--end>.plx-select__control{border-end-start-radius:var(--plx-comp-input-group-joined-radius);border-inline-start-width:0;border-start-start-radius:var(--plx-comp-input-group-joined-radius);}
-.plx-input-group>.plx-input-group__attached.plx-input-group__attached--inner,.plx-input-group>.plx-input-group__attached--inner>.plx-select__control{border-end-end-radius:var(--plx-comp-input-group-joined-radius);border-end-start-radius:var(--plx-comp-input-group-joined-radius);border-start-end-radius:var(--plx-comp-input-group-joined-radius);border-start-start-radius:var(--plx-comp-input-group-joined-radius);}
-.plx-input-group>.plx-input-group__attached:focus-visible,.plx-input-group>.plx-input-group__attached.is-focus-visible,.plx-input-group>.plx-input-group__attached:focus-within{position:relative;z-index:var(--plx-comp-input-group-focus-layer);}
+/* attached buttons and selects keep their width; their joined edges are their own (Button and Select joined) */
+.plx-input-group>:not(.plx-input-group__box){flex-shrink:0;}
+/* compact: a short box (a count between its minus and plus: NumberInput quantity), the value centered */
+.plx-input-group--compact{inline-size:auto;}
+.plx-input-group--compact>.plx-input-group__box{flex-basis:auto;flex-grow:0;inline-size:var(--plx-comp-input-group-compact-box-width);}
+.plx-input-group--compact .plx-input-group__input{padding-inline-end:var(--plx-comp-input-group-compact-padding-inline);padding-inline-start:var(--plx-comp-input-group-compact-padding-inline);text-align:center;}

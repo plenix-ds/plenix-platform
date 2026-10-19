@@ -57,10 +57,6 @@
 .plx-button[aria-expanded="true"] .plx-button__caret{transform:rotate(180deg);}
 .plx-button-group{display:inline-flex;}
 /* the joins on the inline sides (logical, so a right-to-left group joins on the mirrored side; batch 213) */
-.plx-button-group>.plx-button:not(:first-child){border-end-start-radius:var(--plx-comp-button-group-joined-radius);border-inline-start-width:0;border-start-start-radius:var(--plx-comp-button-group-joined-radius);}
-.plx-button-group>.plx-button:not(:last-child){border-end-end-radius:var(--plx-comp-button-group-joined-radius);border-start-end-radius:var(--plx-comp-button-group-joined-radius);}
-.plx-button-group>.plx-button:focus-visible,
-.plx-button-group>.plx-button.is-focus-visible{position:relative;z-index:var(--plx-comp-button-group-focus-layer);}
 .plx-button--ghost:disabled,.plx-button--ghost[aria-disabled="true"]{background-color:var(--plx-comp-button-disabled-quiet-background);border-bottom-color:var(--plx-comp-button-disabled-quiet-border);border-left-color:var(--plx-comp-button-disabled-quiet-border);border-right-color:var(--plx-comp-button-disabled-quiet-border);border-top-color:var(--plx-comp-button-disabled-quiet-border);box-shadow:none;}
 /* Buttons on a colored surface: the surface sets data-plx-surface on itself (TeachingBubble "inverse", the accent
    AppHeader "accent"); every button inside takes these looks, as a theme zone does. Pressed on accent is a step past
@@ -87,3 +83,10 @@
 [data-plx-surface="accent"] .plx-button--secondary.is-hover{background-color:var(--plx-comp-button-on-accent-secondary-hover-background);}
 [data-plx-surface="accent"] .plx-button--secondary:active:not(:disabled):not([aria-disabled="true"]),
 [data-plx-surface="accent"] .plx-button--secondary.is-pointer-down{background-color:var(--plx-comp-button-on-accent-secondary-pressed-background);}
+/* joined (a ButtonGroup, an InputGroup, a CopyButton field): square corners where it meets a neighbor; a seam also drops
+   that side's border (the neighbor's edge is shared); raised while focused so the focus ring shows whole */
+.plx-button--joined-start-square,.plx-button--joined-start-seam{border-end-start-radius:var(--plx-comp-button-joined-radius);border-start-start-radius:var(--plx-comp-button-joined-radius);}
+.plx-button--joined-end-square,.plx-button--joined-end-seam{border-end-end-radius:var(--plx-comp-button-joined-radius);border-start-end-radius:var(--plx-comp-button-joined-radius);}
+.plx-button--joined-start-seam{border-inline-start-width:0;}
+.plx-button--joined-end-seam{border-inline-end-width:0;}
+.plx-button--joined:focus-visible,.plx-button--joined.is-focus-visible,.plx-button--joined:focus-within{position:relative;z-index:var(--plx-comp-button-joined-focus-layer);}
