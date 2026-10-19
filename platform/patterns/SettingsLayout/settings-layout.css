@@ -41,17 +41,16 @@
 .plx-settings__row-text{flex-basis:auto;inline-size:100%;}
 .plx-settings__row-control{flex-shrink:1;flex-wrap:wrap;}
 }
-.plx-settings__rows>.plx-field{border-bottom-color:var(--plx-comp-settings-rows-field-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-settings-rows-field-border-bottom-width);padding-block-end:var(--plx-comp-settings-rows-field-padding-block);padding-block-start:var(--plx-comp-settings-rows-field-padding-block);}
-.plx-settings__rows>.plx-field:last-child{border-bottom-style:none;border-bottom-width:0;}
-/* a Field in a card reads as a row: its label at the row label's size, inline or row alike (owner, 2026-10-13: the fields match) */
-.plx-settings__rows>.plx-field--inline .plx-field__label{font-size:var(--plx-comp-settings-row-label-font-size);}
+/* a Field in a card reads as a row: a separator under it (not the last), its label at the row label's size (owner,
+   2026-10-13: the fields match); Field reads these hooks */
+.plx-settings__rows{--plx-comp-field-inline-label-context-font-size:var(--plx-comp-settings-row-label-font-size);--plx-comp-field-row-padding-block:var(--plx-comp-settings-rows-field-padding-block);--plx-comp-field-row-separator-color:var(--plx-comp-settings-rows-field-border-bottom-color);--plx-comp-field-row-separator-style:solid;--plx-comp-field-row-separator-width:var(--plx-comp-settings-rows-field-border-bottom-width);}
 /* a block that is not a row (a table, a toolbar, a list, a note) keeps the row rhythm: space above and below it */
 .plx-settings__rows>:not(.plx-settings__row):not(.plx-field):not(.plx-action-bar){margin-block-end:var(--plx-comp-settings-section-block-gap);margin-block-start:var(--plx-comp-settings-section-block-gap);}
 @container (max-width: 37.5rem){
 .plx-settings__frame{flex-direction:column;}
 .plx-settings__nav{border-bottom-color:var(--plx-comp-settings-nav-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-settings-nav-border-bottom-width);border-inline-end-style:none;border-inline-end-width:0;inline-size:100%;}
 .plx-settings__content{flex-basis:100%;padding-inline-end:var(--plx-comp-settings-content-narrow-padding-inline);padding-inline-start:var(--plx-comp-settings-content-narrow-padding-inline);}
-.plx-settings .plx-field--inline{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-comp-settings-field-inline-row-gap);}
+.plx-settings__content{--plx-comp-field-inline-context-columns:minmax(0,1fr);--plx-comp-field-inline-context-row-gap:var(--plx-comp-settings-field-inline-row-gap);}
 }
 /* a section's ActionBar has the card's surface behind it (batch 231) */
 .plx-settings__section .plx-action-bar{background-color:var(--plx-comp-settings-section-card-action-bar-background);}

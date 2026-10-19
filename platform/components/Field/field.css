@@ -1,11 +1,16 @@
 /* Plenix · Field (platform/components/Field). Gaps from the form spacing tokens (density); no outer margin. */
-.plx-field{display:grid;min-inline-size:0;}
+/* hooks a container sets on its own element: a settings card's rows (a separator under each field but the last;
+   --plx-comp-field-row-*), the inline label's size there, and the inline columns of a narrow page (-inline-context-*) */
+.plx-field{border-bottom-color:var(--plx-comp-field-row-separator-color,currentcolor);border-bottom-style:var(--plx-comp-field-row-separator-style,none);border-bottom-width:var(--plx-comp-field-row-separator-width,medium);display:grid;min-inline-size:0;padding-block-end:var(--plx-comp-field-row-padding-block,0);padding-block-start:var(--plx-comp-field-row-padding-block,0);}
+.plx-field:last-child{--plx-comp-field-row-separator-style:none;--plx-comp-field-row-separator-width:0;}
 .plx-field--stacked{row-gap:var(--plx-comp-field-label-control-gap);}
-.plx-field--inline{align-items:center;column-gap:var(--plx-comp-field-inline-gap);grid-template-columns:var(--plx-comp-field-inline-grid-template-columns);}
+.plx-field--inline{align-items:center;column-gap:var(--plx-comp-field-inline-gap);grid-template-columns:var(--plx-comp-field-grid-columns,var(--plx-comp-field-inline-context-columns,var(--plx-comp-field-inline-grid-template-columns)));row-gap:var(--plx-comp-field-grid-row-gap,var(--plx-comp-field-inline-context-row-gap,normal));}
 .plx-field--row{align-items:center;column-gap:var(--plx-comp-field-row-gap);grid-template-columns:minmax(0,1fr) auto;}
 .plx-field__head{align-items:center;column-gap:var(--plx-comp-field-head-gap);display:flex;flex-wrap:wrap;min-inline-size:0;}
 .plx-field--row .plx-field__head{align-items:flex-start;flex-direction:column;row-gap:var(--plx-comp-field-row-head-row-gap);}
 .plx-field__label{color:var(--plx-comp-field-label-text);font-family:var(--plx-comp-field-label-font-family);font-size:var(--plx-comp-field-label-font-size);font-weight:var(--plx-comp-field-label-font-weight);line-height:var(--plx-comp-field-label-line-height);word-spacing:normal;}
+.plx-field--inline .plx-field__label{display:var(--plx-comp-field-grid-label-display,inline);font-size:var(--plx-comp-field-inline-label-context-font-size,var(--plx-comp-field-label-font-size));overflow-x:var(--plx-comp-field-grid-label-overflow,visible);overflow-y:var(--plx-comp-field-grid-label-overflow,visible);text-overflow:var(--plx-comp-field-grid-label-text-overflow,clip);white-space:var(--plx-comp-field-grid-label-white-space,normal);}
+.plx-field--inline>.plx-field__head{flex-wrap:var(--plx-comp-field-grid-head-wrap,wrap);}
 .plx-field--row .plx-field__label{font-size:var(--plx-comp-field-row-label-font-size);line-height:var(--plx-comp-field-row-label-line-height);}
 .plx-field__required{color:var(--plx-comp-field-required-text);}
 .plx-field__control{display:grid;min-inline-size:0;row-gap:var(--plx-comp-field-control-helper-gap);}
@@ -21,7 +26,7 @@
 .plx-field__info:focus-visible,
 .plx-field__info.is-focus-visible{outline-color:var(--plx-comp-field-info-focus-outline-color);outline-offset:var(--plx-comp-field-info-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-field-info-focus-outline-width);}
 .plx-field__info-text{background-color:var(--plx-comp-field-info-text-background);border-bottom-left-radius:var(--plx-comp-field-info-text-radius);border-bottom-right-radius:var(--plx-comp-field-info-text-radius);border-top-left-radius:var(--plx-comp-field-info-text-radius);border-top-right-radius:var(--plx-comp-field-info-text-radius);color:var(--plx-comp-field-info-text-text);font-size:var(--plx-comp-field-info-text-font-size);padding-block-end:var(--plx-comp-field-info-text-padding-block);padding-block-start:var(--plx-comp-field-info-text-padding-block);padding-inline-end:var(--plx-comp-field-info-text-padding-inline);padding-inline-start:var(--plx-comp-field-info-text-padding-inline);}
-.plx-field--inline.plx-field--label-sm{grid-template-columns:var(--plx-comp-field-inline-label-sm-grid-template-columns);}
+.plx-field--inline.plx-field--label-sm{grid-template-columns:var(--plx-comp-field-grid-columns,var(--plx-comp-field-inline-context-columns,var(--plx-comp-field-inline-label-sm-grid-template-columns)));}
 /* A group of inline fields (owner, batches 269-270: side by side takes less height; "the side by side is utilizing a very
    wide width for the fields... no reason to"; "use tooltip to show the label"). In a Stack the inline fields share one
    label column as wide as the longest label (a label is at most --plx-ref-size-160px) and one control column from
@@ -29,17 +34,7 @@
    When the group is narrow the control keeps its minimum and the label column gives way: a label cut short ends in an
    ellipsis and shows in full in a Tooltip (Field). Only below 180px (the value of --plx-ref-size-180px; a container
    condition cannot read a custom property), when a panel is dragged that narrow, does each label move above its control. */
-.plx-stack:has(>.plx-field--inline){column-gap:var(--plx-comp-field-inline-gap);container-type:inline-size;display:grid;grid-template-columns:var(--plx-comp-stack-field-inline-grid-template-columns);justify-content:start;}
-.plx-stack:has(>.plx-field--inline)>*{grid-column:1 / -1;min-inline-size:0;}
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:subgrid;}
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline>.plx-field__head{flex-wrap:nowrap;}
-.plx-field__label-tip{max-inline-size:100%;min-inline-size:0;}
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label-tip{max-inline-size:var(--plx-comp-stack-field-inline-label-tip-max-width);}
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label{display:block;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
-@container (max-width: 180px){
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-comp-stack-field-inline-row-gap);}
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label{white-space:normal;}
-}
+.plx-field__label-tip{max-inline-size:var(--plx-comp-field-grid-label-tip-max-width,100%);min-inline-size:0;}
 /* the character counter (counter, library wave 6): the description and the count on one help line, the count at its end,
    in the data font; past the limit it takes the error color */
 .plx-field__foot{align-items:baseline;column-gap:var(--plx-comp-field-foot-gap);display:flex;min-inline-size:0;}
@@ -47,3 +42,10 @@
 .plx-field__counter{color:var(--plx-comp-field-counter-text);flex-shrink:0;font-size:var(--plx-comp-field-counter-font-size);margin-inline-start:auto;}
 .plx-field__count{font-family:var(--plx-comp-field-counter-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-field__counter.is-over{color:var(--plx-comp-field-counter-over-text);}
+/* in a Stack's field grid: the Stack sets --plx-comp-field-grid-* (stack.css): the label column is the grid's, the
+   head stays on one line, a long label ends in an ellipsis (its Tooltip shows it whole); below 180px each label moves
+   above its control */
+@container plx-field-grid (max-width: 180px){
+:is(.plx-field--inline.plx-field--label-sm,.plx-field--inline){--plx-comp-field-grid-columns:minmax(0,1fr);--plx-comp-field-grid-row-gap:var(--plx-comp-stack-field-inline-row-gap);}
+.plx-field--inline .plx-field__label{--plx-comp-field-grid-label-white-space:normal;}
+}

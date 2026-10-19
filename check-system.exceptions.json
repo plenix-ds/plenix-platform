@@ -60,12 +60,6 @@
       ".plx-error-summary:focus>.plx-notice": 1,
       ".plx-error-summary.is-focused>.plx-notice": 1
     },
-    "platform/components/Field/field.css": {
-      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline": 2,
-      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline>.plx-field__head": 1,
-      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label-tip": 1,
-      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label": 2
-    },
     "platform/components/FileRow/file-row.css": {
       ".plx-file-row__select>.plx-check": 1
     },
@@ -158,9 +152,6 @@
       ".plx-file-list__item .plx-file-row__owner": 1,
       ".plx-file-list__item .plx-file-row__date": 1
     },
-    "platform/patterns/Form/form.css": {
-      ".plx-form--two-column .plx-form-section__body:has(>.plx-field--inline)": 1
-    },
     "platform/patterns/ImageUpload/image-upload.css": {
       ".plx-image-upload .plx-file-input__summary": 1
     },
@@ -171,10 +162,6 @@
       ".plx-search-ws__query .plx-search": 1
     },
     "platform/patterns/SettingsLayout/settings-layout.css": {
-      ".plx-settings__rows>.plx-field": 1,
-      ".plx-settings__rows>.plx-field:last-child": 1,
-      ".plx-settings__rows>.plx-field--inline .plx-field__label": 1,
-      ".plx-settings .plx-field--inline": 1,
       ".plx-settings__section .plx-action-bar": 1
     },
     "platform/patterns/SplitView/split-view.css": {

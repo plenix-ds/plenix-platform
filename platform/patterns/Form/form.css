@@ -9,4 +9,4 @@
 /* two columns: one label column for the whole form. Each section's fields are a Stack of inline fields (a shared label
    column as wide as its longest label); in a form every section takes the same label column, the inline field's own width,
    so the sections line up. A longer label ends in an ellipsis and shows in full in its Tooltip (Field). */
-.plx-form--two-column .plx-form-section__body:has(>.plx-field--inline){grid-template-columns:var(--plx-comp-form-two-column-grid-template-columns);}
+.plx-form--two-column{--plx-comp-stack-field-inline-grid-template-columns:var(--plx-comp-form-two-column-grid-template-columns);}
