@@ -21394,7 +21394,7 @@ function NextEngine(props) {
     let offset = selectable ? metrics.lead : 0;
     const node = /*#__PURE__*/_react.default.createElement("div", _extends({
       key: row.displayKey || row.id
-    }, rowDnd.itemProps(canonical.indexOf(record)), {
+    }, canonical.indexOf(record) < 0 ? null : rowDnd.itemProps(canonical.indexOf(record)), {
       "data-plx-record": row.id,
       ref: node => rememberRow(row, node),
       role: "row",
@@ -21509,7 +21509,7 @@ function NextEngine(props) {
         value: value,
         onCommit: next => commitEdit(row.id, c.field, next),
         onCancel: () => setEditing(null)
-      }) : c.rowHandle ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      }) : c.rowHandle && canonical.indexOf(record) >= 0 ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
         label: S.moveRow,
         trigger: /*#__PURE__*/_react.default.createElement(_DragHandle.DragHandle, {
           dnd: rowDnd.handleProps(canonical.indexOf(record))

@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.57.3] - 2026-10-19
+
+### Fixed
+- DataTable: going from one design-system page to another could crash the whole page ("Cannot read properties of
+  undefined (reading 'name')", e.g. Color → Application header). For one render after its data changes, the table can
+  still draw rows of the data it replaced; those rows no longer take the row-drag props or the move handle.
+
 ## [0.57.2] - 2026-10-19
 
 ### Changed
