@@ -1,19 +1,6 @@
 {
   "$description": "The backlog of the Plenix Styling Standard (platform/standards/styling.md), recorded 2026-10-18: by file, the selectors that reach into another component (with their count) and the !important count. check-system.rules/ownership.js fails on anything new and on any entry that no longer occurs. The list only shrinks: node check-system.rules/ownership.js --shrink.",
   "cross-component": {
-    "platform/charts/chart-interaction.css": {
-      ".plx-chart__plot--dimming .plx-chart-dim--off": 1
-    },
-    "platform/charts/diagram.css": {
-      ".plx-diagram .plx-chart__svg": 1
-    },
-    "platform/charts/geo-map.css": {
-      ".plx-geo-map__view .plx-chart-pattern": 1,
-      ".plx-geo-map__view .plx-chart-keys__ring": 1
-    },
-    "platform/charts/network-graph.css": {
-      ".plx-network-graph .plx-chart__svg": 1
-    },
     "platform/components/ColorSwatch/color-swatch.css": {
       "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
     },
@@ -91,14 +78,6 @@
       ".plx-toolbar .plx-input": 1,
       ".plx-toolbar .plx-search__input": 1
     },
-    "platform/components/Tree/tree.css": {
-      ".plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
-      ".plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
-      ".plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon": 1,
-      "[data-plx-density=\"comfortable\"] .plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
-      "[data-plx-density=\"comfortable\"] .plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
-      "[data-plx-density=\"comfortable\"] .plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon": 1
-    },
     "platform/patterns/AppHeader/app-header.css": {
       ".plx-app-header--frost .plx-search__input": 1,
       ".plx-app-header__action .plx-button": 1,
@@ -138,19 +117,6 @@
     },
     "platform/patterns/UserCard/user-card.css": {
       ".plx-user-card > .plx-card__body": 1
-    },
-    "platform/system/forced-colors.css": {
-      ".plx-tree__item.is-selected>.plx-tree__row .plx-icon": 1,
-      ".plx-tag--selected .plx-icon": 1
-    },
-    "platform/system/layout-grid.css": {
-      ".plx-layout-grid-overlay>.plx-layout-grid": 1,
-      ".plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+5)": 2,
-      ".plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+9)": 2,
-      ".plx-layout-grid--narrow>.plx-layout-grid-overlay__column:nth-child(n+5)": 1,
-      ".plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+5)": 1,
-      ".plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+9)": 1,
-      ".plx-layout-grid--wide>.plx-layout-grid-overlay__column:nth-child(n+5)": 1
     },
     "platform/templates/Commerce/commerce.css": {
       ".plx-commerce__buy .plx-product-options": 1

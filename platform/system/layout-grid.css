@@ -8,7 +8,7 @@
    (media queries: they cannot read tokens, so the conditions repeat the breakpoints --plx-ref-breakpoint-600px and -840px);
    --narrow, --medium and --wide fix one class, for previews and documentation. Inside an application's main region the
    content grid (.plx-page-grid, system/grid.css) follows the region's width instead.
-   .plx-layout-grid-overlay is the dev overlay (platform/dev/grid-overlay.js, ?grid): the columns drawn over the page. */
+   .plx-layout-grid__overlay is the dev overlay (platform/dev/grid-overlay.js, ?grid): the columns drawn over the page. */
 .plx-layout-grid{box-sizing:border-box;column-gap:var(--plx-sys-layout-grid-gutter-narrow);display:grid;grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-narrow),minmax(0,1fr));inline-size:100%;min-inline-size:0;padding-inline-end:var(--plx-sys-layout-grid-margin-narrow);padding-inline-start:var(--plx-sys-layout-grid-margin-narrow);}
 @media (min-width: 600px){.plx-layout-grid{column-gap:var(--plx-sys-layout-grid-gutter-medium);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-medium),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-medium);padding-inline-start:var(--plx-sys-layout-grid-margin-medium);}}
 @media (min-width: 840px){.plx-layout-grid{column-gap:var(--plx-sys-layout-grid-gutter-wide);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-wide),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-wide);padding-inline-start:var(--plx-sys-layout-grid-margin-wide);}}
@@ -19,13 +19,13 @@
 .plx-layout-grid.plx-layout-grid--wide{column-gap:var(--plx-sys-layout-grid-gutter-wide);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-wide),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-wide);padding-inline-start:var(--plx-sys-layout-grid-margin-wide);}
 
 /* ── the overlay: twelve column cells, as many shown as the window class has columns ── */
-.plx-layout-grid-overlay{block-size:100%;inset-block-start:0;inset-inline-start:0;inline-size:100%;opacity:var(--plx-sys-layout-grid-overlay-opacity);pointer-events:none;position:fixed;z-index:var(--plx-sys-layer-critical);}
-.plx-layout-grid-overlay>.plx-layout-grid{block-size:100%;}
-.plx-layout-grid-overlay__column{background-color:var(--plx-sys-feedback-danger-solid);}
-.plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+5){display:none;}
-@media (min-width: 600px){.plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+5){display:block;}.plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+9){display:none;}}
-@media (min-width: 840px){.plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+9){display:block;}}
-.plx-layout-grid--narrow>.plx-layout-grid-overlay__column:nth-child(n+5){display:none;}
-.plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+5){display:block;}
-.plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+9){display:none;}
-.plx-layout-grid--wide>.plx-layout-grid-overlay__column:nth-child(n+5){display:block;}
+.plx-layout-grid__overlay{block-size:100%;inset-block-start:0;inset-inline-start:0;inline-size:100%;opacity:var(--plx-sys-layout-grid-overlay-opacity);pointer-events:none;position:fixed;z-index:var(--plx-sys-layer-critical);}
+.plx-layout-grid--overlay{block-size:100%;}
+.plx-layout-grid__column{background-color:var(--plx-sys-feedback-danger-solid);}
+.plx-layout-grid>.plx-layout-grid__column:nth-child(n+5){display:none;}
+@media (min-width: 600px){.plx-layout-grid>.plx-layout-grid__column:nth-child(n+5){display:block;}.plx-layout-grid>.plx-layout-grid__column:nth-child(n+9){display:none;}}
+@media (min-width: 840px){.plx-layout-grid>.plx-layout-grid__column:nth-child(n+9){display:block;}}
+.plx-layout-grid--narrow>.plx-layout-grid__column:nth-child(n+5){display:none;}
+.plx-layout-grid--medium>.plx-layout-grid__column:nth-child(n+5){display:block;}
+.plx-layout-grid--medium>.plx-layout-grid__column:nth-child(n+9){display:none;}
+.plx-layout-grid--wide>.plx-layout-grid__column:nth-child(n+5){display:block;}

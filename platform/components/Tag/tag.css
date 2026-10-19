@@ -45,3 +45,6 @@ button.plx-tag--chip:not(.plx-tag--add)::before,.plx-tag__toggle::before{content
 /* a category tag (Tag category, owner 2026-10-14, docs/pills-and-colors.md): the category's soft pill, background shade 100,
    a 1px border in shade 300, text in shade 700, from [data-plx-category] (system/steps.css); the same in every theme */
 .plx-tag:not(.plx-tag--chip)[data-plx-category]{background-color:var(--plx-comp-category-soft);border-bottom-color:var(--plx-comp-category-soft-border);border-left-color:var(--plx-comp-category-soft-border);border-right-color:var(--plx-comp-category-soft-border);border-top-color:var(--plx-comp-category-soft-border);color:var(--plx-comp-category-on-soft);}
+
+/* Selected chips publish Icon's forced-color context from their own element. */
+@media (forced-colors: active){.plx-tag--selected{--plx-comp-icon-forced-color:HighlightText;}}

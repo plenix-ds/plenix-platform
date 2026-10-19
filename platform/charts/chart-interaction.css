@@ -19,7 +19,8 @@
 
 /* dimming: while one value is active (mode "point"), the marks of the other series step back */
 .plx-chart-dim{transition-duration:var(--plx-sys-motion-duration-fast);transition-property:opacity;transition-timing-function:var(--plx-sys-motion-ease-standard);}
-.plx-chart__plot--dimming .plx-chart-dim--off{opacity:var(--plx-comp-chart-interaction-dim-opacity);}
+.plx-chart__plot--dimming{--plx-comp-chart-dim-opacity:var(--plx-comp-chart-interaction-dim-opacity);}
+.plx-chart-dim--off{opacity:var(--plx-comp-chart-dim-opacity,1);}
 
 /* the selected mark (a click or Enter): an outline in the strong content color */
 .plx-chart-selected{stroke:var(--plx-comp-chart-interaction-selected-outline);stroke-width:var(--plx-comp-chart-interaction-selected-outline-width);}

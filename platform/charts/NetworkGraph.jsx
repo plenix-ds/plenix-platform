@@ -279,7 +279,7 @@ export function NetworkGraph({ title, description, nodes = [], edges = [], direc
   };
 
   return (
-    <ChartFrame title={title} description={description} size={size} margin={Object.assign({ top: 0, end: 0, bottom: 0, start: 0 }, margin)} table={table} legend={legendNode}
+    <ChartFrame clip title={title} description={description} size={size} margin={Object.assign({ top: 0, end: 0, bottom: 0, start: 0 }, margin)} table={table} legend={legendNode}
       interaction={interactive ? iaz : undefined} actions={gv.actions} strings={frameStrings}
       className={cx('plx-network-graph', 'plx-network-graph--' + (layout === 'hierarchical' ? 'hierarchical' : 'force'), className)}>
       {draw}

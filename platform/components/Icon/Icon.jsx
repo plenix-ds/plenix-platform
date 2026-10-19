@@ -22,6 +22,8 @@
        danger: "Error", neutral: "Note" }
      StatusIcon.className: more classes on the status icon
    Behavior:
+     filled={false} explicitly keeps the outline, including inside a selected ancestor (Tree owns each item state).
+     Omitting filled keeps automatic selection behavior; filled={true} explicitly fills it.
      The filled version is also drawn automatically inside a current or selected element: aria-current, aria-pressed,
        aria-selected, .is-selected, .is-current.
      A pinned item shows the filled pin, not a filled row.
@@ -40,11 +42,11 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
-export function Icon({ name, size, filled = false, label, className, ...rest }) {
+export function Icon({ name, size, filled, label, className, ...rest }) {
   devWarn('Icon', { size }, { size: ['xs','sm','md','lg','xl'] });
   return (
     <span className={cx('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled && 'plx-icon--filled', className)}
-      role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest} />
+      data-plx-icon-fill={filled === false ? 'outline' : undefined} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest} />
   );
 }
 

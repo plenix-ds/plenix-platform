@@ -1,7 +1,7 @@
 /* Plenix · Grid overlay (platform/dev/grid-overlay.js): the layout grid drawn over the page, for checking alignment.
    Load it on any Plenix page (<script src="…/platform/dev/grid-overlay.js"></script>, next to style-audit.js) and open
    the page with ?grid in its address (?grid=contained for the contained grid). The overlay is the layout grid itself
-   (.plx-layout-grid in a .plx-layout-grid-overlay, system/layout-grid.css): the window class's columns, gutters and
+   (.plx-layout-grid in a .plx-layout-grid__overlay, system/layout-grid.css): the window class's columns, gutters and
    margins, translucent, above everything, and it never takes a click. Nothing is styled from here: classes only.
      PlenixGridOverlay.show('fluid' | 'contained')   PlenixGridOverlay.hide()   PlenixGridOverlay.toggle()
    Ctrl+Shift+G turns it on and off once the script is on the page. */
@@ -12,12 +12,12 @@
   function show(mode) {
     hide();
     node = document.createElement('div');
-    node.className = 'plx-layout-grid-overlay';
+    node.className = 'plx-layout-grid__overlay';
     node.setAttribute('aria-hidden', 'true');
     node.setAttribute('data-plx-dev', 'grid-overlay');
     var grid = document.createElement('div');
-    grid.className = 'plx-layout-grid' + (mode === 'contained' ? ' plx-layout-grid--contained' : '');
-    for (var i = 0; i < COLUMNS; i++) { var c = document.createElement('div'); c.className = 'plx-layout-grid-overlay__column'; grid.appendChild(c); }
+    grid.className = 'plx-layout-grid plx-layout-grid--overlay' + (mode === 'contained' ? ' plx-layout-grid--contained' : '');
+    for (var i = 0; i < COLUMNS; i++) { var c = document.createElement('div'); c.className = 'plx-layout-grid__column'; grid.appendChild(c); }
     node.appendChild(grid);
     document.body.appendChild(node);
   }
