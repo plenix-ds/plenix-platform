@@ -26651,6 +26651,7 @@ function TableEngine(props) {
     const words2 = el('div', B + '__group-text');
     words2.appendChild(el('span', 'plx-text plx-text--eyebrow ' + B + '__group-eyebrow', c ? String(c.title || c.field) : ''));
     const val = el('span', B + '__group-value');
+    val.setAttribute('data-plx-text-follow', 'size');
     if (c && [].concat(c.kind || []).indexOf('data') >= 0) val.setAttribute('data-plx-kind', 'data');
     if (c && c.render && rowsData && rowsData.length) {
       const node = portalEl(B + '__portal');
@@ -27272,6 +27273,8 @@ function TableEngine(props) {
           const e = row.getElement();
           e.querySelectorAll('.tabulator-cell:not([data-plx-interactive])').forEach(cell => {
             cell.setAttribute('data-plx-interactive', '');
+            // the text in a cell follows it: its size and family, and a row label's weight (Text, List and Link answer)
+            cell.setAttribute('data-plx-text-follow', cell.classList.contains(B + '__cell--row-label') ? 'size family weight' : 'size family');
             cell.addEventListener('click', ev => {
               if (ev.target.closest(INTERACTIVE)) ev.stopPropagation();
             });

@@ -17,24 +17,6 @@
     "platform/components/ColorSwatch/color-swatch.css": {
       "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
     },
-    "platform/components/DataTable/data-table.css": {
-      ".plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon": 1,
-      ".plx-data-table__group-chevron .plx-icon": 1,
-      ".plx-data-table__group-value .plx-text": 1,
-      ".plx-data-table__menu-icon .plx-icon": 1,
-      ".plx-data-table .tabulator-cell .plx-text": 1,
-      ".plx-data-table .tabulator-cell .plx-list": 2,
-      ".plx-data-table .tabulator-cell .plx-list__text": 2,
-      ".plx-data-table .tabulator-cell .plx-list__item": 2,
-      ".plx-data-table .tabulator-cell .plx-text:not(.plx-text--data)": 1,
-      ".plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-text": 1,
-      ".plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-link": 1,
-      ".plx-data-table[data-plx-row-height]:not([data-plx-row-height=\"short\"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-thumbnail": 1,
-      ".plx-data-table__type-icon .plx-icon": 1,
-      ".plx-data-table__rich .plx-avatar": 1,
-      ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__cell--icon .plx-icon": 1,
-      ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__header-icon .plx-icon": 1
-    },
     "platform/components/DocumentViewer/document-viewer.css": {
       ".plx-document-viewer__viewport[data-zoom=\"50\"] > .plx-image": 1,
       ".plx-document-viewer__viewport[data-zoom=\"75\"] > .plx-image": 1,

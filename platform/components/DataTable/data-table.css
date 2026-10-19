@@ -45,7 +45,7 @@
 .plx-data-table .tabulator .tabulator-header .tabulator-col:hover .tabulator-header-popup-button{opacity:1;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.is-filtered .tabulator-header-popup-button{color:var(--plx-comp-data-table-filtered-text);opacity:1;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button:hover{color:var(--plx-comp-data-table-hover-text);opacity:1;}
-.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon{block-size:var(--plx-comp-data-table-header-icon-size);inline-size:var(--plx-comp-data-table-header-icon-size);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button{--plx-comp-icon-size:var(--plx-comp-data-table-header-icon-size);}
 /* the column menu's chevron button (owner, 2026-10-14): the thin outline chevron, muted, in the button place at the header's
    end while the header is hovered; it opens the column menu. A filter button moves one button toward the start */
 .plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button:has(.plx-data-table__menu-chevron){color:var(--plx-comp-data-table-menu-chevron-text);}
@@ -106,8 +106,8 @@
 .plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--icon,
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-content{align-items:center;color:var(--plx-comp-data-table-cell-icon-text);display:inline-flex;justify-content:center;line-height:normal;}
 /* the legacy engine only (the TanStack engine sizes these icons through its slots: Styling Standard 4.1) */
-.plx-data-table:not([data-plx-engine="next"]) .plx-data-table__cell--icon .plx-icon,
-.plx-data-table:not([data-plx-engine="next"]) .plx-data-table__header-icon .plx-icon{block-size:var(--plx-comp-data-table-mark-size);inline-size:var(--plx-comp-data-table-mark-size);}
+.plx-data-table:not([data-plx-engine="next"]) .plx-data-table__cell--icon,
+.plx-data-table:not([data-plx-engine="next"]) .plx-data-table__header-icon{--plx-comp-icon-size:var(--plx-comp-data-table-mark-size);}
 .plx-data-table__header-icon{display:flex;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-title{display:flex;padding-right:0;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon:hover .tabulator-col-title{padding-right:0;}
@@ -193,11 +193,10 @@
 .plx-data-table__add-row .plx-data-table__group-cell--first,.plx-data-table__group-add .plx-data-table__group-cell--first{background-color:var(--plx-comp-data-table-background);color:var(--plx-comp-data-table-add-row-text);}
 .plx-data-table__group-label{align-items:last baseline;column-gap:var(--plx-comp-data-table-group-gap-inline);display:flex;flex-grow:1;min-inline-size:0;}
 .plx-data-table__group-chevron{align-items:center;align-self:center;block-size:var(--plx-ref-size-24px);color:var(--plx-comp-data-table-group-chevron-text);cursor:pointer;display:inline-flex;flex-shrink:0;inline-size:var(--plx-ref-size-24px);justify-content:center;}
-.plx-data-table__group-chevron .plx-icon{block-size:var(--plx-comp-data-table-group-chevron-size);inline-size:var(--plx-comp-data-table-group-chevron-size);}
+.plx-data-table__group-chevron{--plx-comp-icon-size:var(--plx-comp-data-table-group-chevron-size);}
 .plx-data-table__group-text{display:flex;flex-direction:column;flex-grow:1;min-inline-size:0;}
 .plx-data-table__group-eyebrow{display:block;line-height:var(--plx-comp-data-table-group-eyebrow-line-height);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-data-table__group-value{align-items:center;display:flex;font-weight:var(--plx-comp-data-table-group-font-weight);line-height:var(--plx-comp-data-table-text-line-height);min-block-size:var(--plx-comp-data-table-text-line-height);min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-data-table__group-value .plx-text{font-size:inherit;}
 /* a data column's group value: the data font (the column's kind on the element, no extra class) */
 .plx-data-table__group-value[data-plx-kind="data"]{font-family:var(--plx-comp-data-table-data-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-data-table__group-count,.plx-data-table__group-summary-value{color:var(--plx-comp-data-table-group-count-text);font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);font-weight:var(--plx-comp-data-table-group-count-font-weight);word-spacing:var(--plx-sys-font-data-word-spacing);}
@@ -262,7 +261,7 @@
 .tabulator-menu .tabulator-menu-item.tabulator-menu-item-disabled{opacity:var(--plx-comp-data-table-menu-disabled-opacity);}
 .plx-data-table__menu-item{align-items:center;column-gap:var(--plx-comp-data-table-menu-item-gap);display:flex;}
 .plx-data-table__menu-icon{color:var(--plx-comp-data-table-menu-icon-text);display:inline-flex;min-inline-size:var(--plx-comp-data-table-menu-icon-size);}
-.plx-data-table__menu-icon .plx-icon{block-size:var(--plx-comp-data-table-menu-icon-size);inline-size:var(--plx-comp-data-table-menu-icon-size);}
+.plx-data-table__menu-icon{--plx-comp-icon-size:var(--plx-comp-data-table-menu-icon-size);}
 .plx-data-table__menu-item--danger,
 .plx-data-table__menu-item--danger .plx-data-table__menu-icon{color:var(--plx-comp-data-table-menu-item-danger-text);}
 
@@ -281,11 +280,9 @@
    code) takes the cell's size, so every text in a row shares one baseline; it takes the cell's typeface too (Reddit Mono in a
    column of kind "data", DM Sans elsewhere), except code and Text "data", which are technical values and keep the data
    font wherever they are. Its color and weight stay (a link stays a link, strong stays strong) */
-.plx-data-table .tabulator-cell .plx-text,.plx-data-table .tabulator-cell code,.plx-data-table .tabulator-cell .plx-list,.plx-data-table .tabulator-cell .plx-list__text,.plx-data-table .tabulator-cell .plx-list__item{font-size:inherit;}
-.plx-data-table .tabulator-cell .plx-text:not(.plx-text--data),.plx-data-table .tabulator-cell .plx-list,.plx-data-table .tabulator-cell .plx-list__text,.plx-data-table .tabulator-cell .plx-list__item{font-family:inherit;}
+.plx-data-table .tabulator-cell code{font-size:inherit;}
 /* a row label is the row's name: the same medium weight as a name column, also for links and text inside it (owner, batch 248) */
 .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label{font-weight:var(--plx-comp-data-table-name-font-weight);}
-.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-text,.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-link{font-weight:inherit;}
 /* drag and drop (owner, batch 271: "with drag and drop the cursor needs to change"): a row handle shows grab; the row
    being moved (it follows the pointer) shows grabbing */
 .plx-data-table .tabulator-row-handle{cursor:grab;}
@@ -399,12 +396,12 @@
 .plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-data-table__value:not(.plx-data-table__rich),
 .plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell.plx-data-table__cell--wrap .plx-data-table__value:not(.plx-data-table__rich){-webkit-box-orient:vertical;-webkit-line-clamp:round(down, calc((var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2) / var(--plx-comp-data-table-text-line-height)), 1);display:-webkit-box;line-height:var(--plx-comp-data-table-text-line-height);max-block-size:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);overflow:hidden;overflow-wrap:anywhere;white-space:normal;}
 .plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell img:not(.plx-avatar__image),
-.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-thumbnail{block-size:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);inline-size:auto;max-inline-size:100%;object-fit:contain;}
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell{--plx-comp-thumbnail-context-fit:contain;--plx-comp-thumbnail-context-height:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);--plx-comp-thumbnail-context-max-width:100%;--plx-comp-thumbnail-context-width:auto;}
 /* column headers (owner, 2026-10-14): the type icon before the name (its size token is 0 in Compact: a 28px header row is
    too small for it), the name cut with "…" */
 .plx-data-table__title{align-items:center;column-gap:var(--plx-comp-data-table-header-type-icon-gap);display:flex;min-inline-size:0;}
 .plx-data-table__type-icon{block-size:var(--plx-comp-data-table-header-type-icon-size);color:var(--plx-comp-data-table-header-type-icon-text);display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-data-table-header-type-icon-size);overflow:hidden;}
-.plx-data-table__type-icon .plx-icon{block-size:100%;inline-size:100%;}
+.plx-data-table__type-icon{--plx-comp-icon-size:100%;}
 .plx-data-table__title-text{min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 /* Wrap headers (the view menu; off by default): names wrap onto two lines and the header row is two lines tall, a fixed
    token (never measured) */
@@ -486,4 +483,4 @@
 .plx-data-table__rich{display:inline-flex;align-items:center;column-gap:var(--plx-comp-data-table-cell-rich-gap);}
 .plx-data-table__deleted{color:var(--plx-comp-data-table-cell-deleted-text);font-style:italic;}
 .plx-data-table__length-probe{position:absolute;visibility:hidden;block-size:0;pointer-events:none;}
-.plx-data-table__rich .plx-avatar{font-size:var(--plx-comp-data-table-font-size);}
+.plx-data-table__rich{--plx-comp-avatar-context-font-size:var(--plx-comp-data-table-font-size);}
