@@ -22,7 +22,7 @@
 .plx-nav-list__label{align-items:baseline;column-gap:var(--plx-comp-nav-list-label-gap);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 .plx-nav-list__entry--actions{align-items:center;column-gap:var(--plx-comp-nav-list-entry-actions-gap);display:flex;}
 .plx-nav-list__entry--actions>.plx-nav-list__item{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
-.plx-nav-list__actions{align-items:center;column-gap:var(--plx-comp-nav-list-actions-gap);display:flex;flex-shrink:0;}
+.plx-nav-list__actions{--plx-comp-button-context-height:var(--plx-sys-control-height-standard);--plx-comp-button-context-icon:var(--plx-sys-control-icon-standard);align-items:center;column-gap:var(--plx-comp-nav-list-actions-gap);display:flex;flex-shrink:0;}
 /* a collapsible group: its header lines up with the rows (the legacy section header inside a navigation list) */
 .plx-nav-list__group>.plx-collapsible-section__heading{padding-inline-end:var(--plx-comp-nav-list-group-collapsible-section-heading-padding-inline);padding-inline-start:var(--plx-comp-nav-list-group-collapsible-section-heading-padding-inline);}
 /* the name truncates before the count does; the count sits right after it: small, italic, in parentheses, subtle */
@@ -39,9 +39,8 @@
 .plx-nav-list__pin.is-focus-visible{outline-color:var(--plx-comp-nav-list-pin-focus-outline-color);outline-offset:var(--plx-comp-nav-list-pin-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-nav-list-pin-focus-outline-width);}
 /* the row's icons and the pin: the grid icon of the row's control height (the pin is as high as the row) */
 .plx-nav-list__icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);display:inline-flex;flex-shrink:0;}
-.plx-nav-list__pin .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
+.plx-nav-list__pin{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
 /* a row's actions are as high as the row, with its grid icon */
-.plx-nav-list__actions .plx-button{--plx-comp-button-height:var(--plx-sys-control-height-standard);--plx-comp-button-icon:var(--plx-sys-control-icon-standard);}
 /* A muted destination remains available; RedSave #62 uses the muted role rather than feedback color. */
 .plx-nav-list__item--muted:not(.is-current){--plx-comp-nav-list-item-muted-text:var(--plx-sys-content-muted);--plx-comp-nav-list-item-muted-icon-text:var(--plx-sys-content-muted);color:var(--plx-comp-nav-list-item-muted-text);}
 .plx-nav-list__item--muted:not(.is-current) .plx-nav-list__icon{color:var(--plx-comp-nav-list-item-muted-icon-text);}

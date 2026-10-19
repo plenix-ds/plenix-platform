@@ -18,8 +18,8 @@
 .plx-search--on-accent .plx-search__input::placeholder{color:var(--plx-comp-search-on-accent-input-placeholder-text);}
 .plx-search--on-accent .plx-search__icon,.plx-search--on-accent .plx-search__clear{color:var(--plx-comp-search-on-accent-icon-text);}
 /* the icons: the grid icons of the field's (toolbar) and the clear button's (inline) control heights */
-.plx-search__icon .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-toolbar);}
-.plx-search__clear .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-inline);}
+.plx-search__icon{--plx-comp-icon-size:var(--plx-sys-control-icon-toolbar);}
+.plx-search__clear{--plx-comp-icon-size:var(--plx-sys-control-icon-inline);}
 /* the list under the field (suggestions, recent searches; library wave 6): a menu surface with the combobox list's roles,
    as wide as the field; each option an icon and its text, the matching part of a suggestion in bold */
 .plx-search__popup{background-color:var(--plx-comp-search-popup-background);border-bottom-color:var(--plx-comp-search-popup-border-color);border-bottom-left-radius:var(--plx-comp-search-popup-radius);border-bottom-right-radius:var(--plx-comp-search-popup-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-search-popup-border-width);border-left-color:var(--plx-comp-search-popup-border-color);border-left-style:solid;border-left-width:var(--plx-comp-search-popup-border-width);border-right-color:var(--plx-comp-search-popup-border-color);border-right-style:solid;border-right-width:var(--plx-comp-search-popup-border-width);border-top-color:var(--plx-comp-search-popup-border-color);border-top-left-radius:var(--plx-comp-search-popup-radius);border-top-right-radius:var(--plx-comp-search-popup-radius);border-top-style:solid;border-top-width:var(--plx-comp-search-popup-border-width);box-shadow:var(--plx-comp-search-popup-shadow);box-sizing:border-box;inset-block-start:100%;inset-inline-end:0;inset-inline-start:0;margin-block-start:var(--plx-comp-search-popup-margin-block-start);padding-block-end:var(--plx-comp-search-popup-padding-block);padding-block-start:var(--plx-comp-search-popup-padding-block);padding-inline-end:var(--plx-comp-search-popup-padding-inline);padding-inline-start:var(--plx-comp-search-popup-padding-inline);position:absolute;z-index:var(--plx-comp-search-popup-z-index);}
@@ -30,7 +30,7 @@
 .plx-search__option.is-active,
 .plx-search__option:hover{background-color:var(--plx-comp-search-option-active-background);}
 .plx-search__option-icon{color:var(--plx-comp-search-option-icon-text);display:inline-flex;flex-shrink:0;}
-.plx-search__option-icon .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-inline);}
+.plx-search__option-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-inline);}
 .plx-search__option-text{display:flex;flex-direction:column;min-inline-size:0;}
 .plx-search__option-label{overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-search__option-description{color:var(--plx-comp-search-option-description-text);font-size:var(--plx-comp-search-option-description-font-size);overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}

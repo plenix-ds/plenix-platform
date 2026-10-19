@@ -19,6 +19,8 @@
 //   --pages dashboard,dam                only the pages whose path contains one of the names
 const fs = require('fs');
 const path = require('path');
+// a full run takes longer than a test's default limit (tests/limit.js)
+process.env.TEST_TIMEOUT_MS = process.env.TEST_TIMEOUT_MS || '86400000';
 const { serve, launch, sleep, ROOT } = require('./lib.js');
 
 const args = process.argv.slice(2);
@@ -26,7 +28,7 @@ const CHECK = args.includes('--check');
 const only = (() => { const i = args.indexOf('--pages'); return i >= 0 ? args[i + 1].split(',') : null; })();
 // --ds: design-system pages full of tables (computed styles only: the pages are long), baselines *-ds.json
 const DS = args.includes('--ds');
-const DS_ROUTES = ['data-display/table', 'data-display/data-table', 'actions/button', 'data-display/badge', 'specialized/audit-log', 'data-display/comparison-view', 'specialized/file-list', 'patterns/permissions-editor', 'specialized/rendition-list', 'patterns/review-flow', 'implementation/css-architecture', 'foundations/color'];
+const DS_ROUTES = ['data-display/table', 'data-display/data-table', 'actions/button', 'data-display/badge', 'specialized/audit-log', 'data-display/comparison-view', 'specialized/file-list', 'patterns/permissions-editor', 'specialized/rendition-list', 'patterns/review-flow', 'implementation/css-architecture', 'foundations/color', 'page-structures/split-view', 'patterns/resizable', 'overlays/teaching-bubble', 'navigation/application-header', 'forms/field', 'forms/input-group', 'forms/number-input', 'actions/copy-button', 'data-display/card', 'data-display/media-card', 'data-display/feature-card', 'content/user-card', 'overlays/media-lightbox', 'specialized/document-viewer', 'data-display/tag', 'data-display/chip', 'navigation/tree-view', 'forms/search-input', 'actions/toolbar', 'overlays/dialog', 'navigation/navigation-menu', 'overlays/expandable-section', 'navigation/progress-steps', 'forms/file-input', 'specialized/product-options', 'content/property-list', 'data-display/resource-list', 'data-display/activity-stream', 'forms/error-summary', 'content/swatch', 'forms/date-picker', 'forms/tree-select', 'forms/inline-edit', 'actions/rename-action', 'data-display/metric', 'navigation/search-result', 'specialized/suggested-action', 'forms/rich-text-editor', 'specialized/file-row', 'forms/avatar-upload', 'forms/image-upload', 'actions/command-palette', 'feedback/empty-state', 'navigation/filter-bar', 'data-display/geo-map', 'data-display/diagram', 'data-display/network-graph', 'actions/button-group', 'layout/panel', 'overlays/side-drawer', 'specialized/media-player', 'content/link', 'foundations/type-styles'];
 const PAGES = DS ? DS_ROUTES.map((x) => 'platform/design-system/index.html#/' + x).filter((p) => !only || only.some((n) => p.includes(n))) : ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'])
   .filter((p) => !only || only.some((n) => p.includes(n)));
@@ -34,7 +36,7 @@ const OUT_CLASH = path.join(ROOT, 'tests', 'baselines', DS ? 'clashes-ds.json' :
 const OUT_COMPUTED = path.join(ROOT, 'tests', 'baselines', DS ? 'computed-ds.json' : 'computed.json');
 
 // runs in the page: the clashes and the computed styles
-function audit(noClash) {
+function audit(noClash, from, to) {
   const blockOf = (c) => c.replace(/(__|--).*$/, '');
   const splitSel = (t) => { const out = []; let d = 0, cur = ''; for (const ch of t) { if (ch === '(' || ch === '[') d++; else if (ch === ')' || ch === ']') d--; if (ch === ',' && !d) { out.push(cur.trim()); cur = ''; } else cur += ch; } if (cur.trim()) out.push(cur.trim()); return out; };
   const sels = [];
@@ -53,7 +55,8 @@ function audit(noClash) {
   const pairs = {}; let elements = 0, clashed = 0; const computed = [];
   const SKIP_PROPS = /^(transition|animation)/;
   const hash = (str) => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
-  for (const el of document.querySelectorAll('body *')) {
+  const all = [...document.querySelectorAll('body *')];
+  for (const el of all.slice(from || 0, to === undefined ? all.length : to)) {
     if (el.closest('svg') && el.tagName.toLowerCase() !== 'svg') continue;
     elements++;
     // every standard property, by name (the browser lists them, custom properties included, in no fixed order)
@@ -81,7 +84,7 @@ function audit(noClash) {
     }
     if (hit) clashed++;
   }
-  return { elements, clashed, pairs: Object.values(pairs), computed };
+  return { elements, clashed, pairs: Object.values(pairs), computed, total: all.length };
 }
 const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-component' : x.variant ? (x.same ? 'variant-repeat' : 'state-variant') : x.same ? 'redundant' : 'order-decided');
 
@@ -89,16 +92,28 @@ const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-
   const PORT = 8857, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
   const server = await serve(PORT);
   const browser = await launch();
-  const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const clashes = {}, computed = {}, perPage = {};
-  for (const pg of PAGES) {
-    await page.goto('about:blank'); await page.goto(BASE + pg, DS ? { waitUntil: 'load', timeout: 120000 } : { waitUntil: 'networkidle0' }); await page.evaluate(() => document.fonts.ready); await sleep(DS ? 4000 : 1500);
-    const r = await page.evaluate(audit, DS);
+  // design-system pages are read in four tabs at once; application pages one by one
+  const TABS = DS ? 4 : 1;
+  const one = async (page, pg) => {
+    // every route loads afresh: a route reached from another one keeps some of its state (measured column widths)
+    await page.goto('about:blank'); await page.goto(BASE + pg, DS ? { waitUntil: 'load', timeout: 120000 } : { waitUntil: 'networkidle0' });
+    await page.evaluate(() => document.fonts.ready); await sleep(DS ? 4000 : 1500);
+    // a route that left the site blank (a demo that threw on the way in) is loaded afresh
+    if (DS && await page.evaluate(() => document.querySelectorAll('body *').length < 200)) { console.log('RELOAD ' + pg); await page.goto('about:blank'); await page.goto(BASE + pg, { waitUntil: 'load', timeout: 120000 }); await page.evaluate(() => document.fonts.ready); await sleep(4000); }
+    // design-system pages are long: their computed styles are read in chunks, so no single call times out
+    let r;
+    if (DS) { r = { elements: 0, clashed: 0, pairs: [], computed: [] }; let from = 0, total = Infinity; while (from < total) { const c = await page.evaluate(audit, true, from, from + 1500); total = c.total; r.elements += c.elements; r.computed.push(...c.computed); from += 1500; } }
+    else r = await page.evaluate(audit, false);
     perPage[pg] = { elements: r.elements, clashed: r.clashed };
     computed[pg] = r.computed;
     for (const x of r.pairs) { const k = x.p + ' | ' + x.a + ' || ' + x.b; const c = clashes[k] = clashes[k] || Object.assign({ kind: kindOf(x), pages: [] }, x); c.pages.push(pg.replace('/index.html', '')); delete c.n; delete c.cross; delete c.variant; }
     console.log(pg + ': ' + r.elements + ' elements, ' + r.clashed + ' with a clash');
-  }
+  };
+  await Promise.all(Array.from({ length: TABS }, async (_, t) => {
+    const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
+    for (let i = t; i < PAGES.length; i += TABS) await one(page, PAGES[i]);
+  }));
   await browser.close(); server.close();
   const list = Object.values(clashes).sort((a, b) => (a.kind + a.p + a.a).localeCompare(b.kind + b.p + b.a));
   const kinds = {}; list.forEach((x) => { kinds[x.kind] = (kinds[x.kind] || 0) + 1; });
@@ -123,7 +138,16 @@ const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-
   let changed = 0;
   for (const pg of PAGES) {
     const a = bc.pages[pg] || [], b = computed[pg];
-    if (a.length !== b.length) { changed++; console.log('CHANGED ' + pg + ': ' + a.length + ' elements before, ' + b.length + ' now'); continue; }
+    if (a.length !== b.length) {
+      // elements added or removed (a documentation page lists what a stylesheet has): the elements before and after the
+      // differing stretch are compared one by one; the stretch itself is listed for review
+      let p = 0; while (p < a.length && p < b.length && a[p][0] === b[p][0]) p++;
+      let q = 0; while (q < a.length - p && q < b.length - p && a[a.length - 1 - q][0] === b[b.length - 1 - q][0]) q++;
+      console.log('DIFFERS ' + pg + ': ' + a.length + ' elements before, ' + b.length + ' now; elements ' + p + ' to ' + (b.length - q - 1) + ' differ: ' + b.slice(p, b.length - q).slice(0, 8).map((x) => x[0]).join(' ') + (b.length - q - p > 8 ? ' …' : '') + ' (was ' + a.slice(p, a.length - q).slice(0, 8).map((x) => x[0]).join(' ') + ')');
+      for (let i = 0; i < p; i++) if (a[i][1] !== b[i][1]) { changed++; if (changed <= 40) console.log('CHANGED ' + pg + ' #' + i + ' ' + a[i][0]); }
+      for (let i = 1; i <= q; i++) if (a[a.length - i][1] !== b[b.length - i][1]) { changed++; if (changed <= 40) console.log('CHANGED ' + pg + ' #-' + i + ' ' + a[a.length - i][0]); }
+      continue;
+    }
     a.forEach((x, i) => { if (x[1] !== b[i][1]) { changed++; if (changed <= 40) console.log('CHANGED ' + pg + ' #' + i + ' ' + x[0] + (x[0] !== b[i][0] ? ' -> ' + b[i][0] : '')); } });
   }
   console.log(added.length || changed ? 'CLASH_AUDIT_FAIL (' + added.length + ' new clashes, ' + changed + ' changed elements, ' + gone.length + ' gone)' : 'CLASH_AUDIT_OK (' + gone.length + ' clashes gone, no element changed)');

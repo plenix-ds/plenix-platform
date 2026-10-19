@@ -6,6 +6,24 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.57.4] - 2026-10-19
+
+### Changed
+- **Context hooks instead of selectors into children** (Styling Standard 4.1, Phase 2). A container sets a value on its
+  own element and the child reads it; no rule selects the child any more:
+  - Button reads `--plx-comp-button-context-height` and `--plx-comp-button-context-icon` before its size. Toolbar,
+    AppHeader, FilterBar, the Dialog footer and NavList actions set them (were `.plx-toolbar .plx-button` and similar).
+    Nothing declares them globally. Apps to check: CSS that set `--plx-comp-button-height` on a container should set
+    `--plx-comp-button-context-height`.
+  - Icon sizes in Button, Panel, EmptyState, InlineEdit, NavList, SearchField, TagInput and the app switcher are set on
+    the slot that holds the icon (was `<slot> .plx-icon`).
+  No visual change: the computed style of every element is unchanged on the 14 application pages and on 65
+  design-system pages (233,874 elements); on 8 documentation pages only the listed CSS (and the tables, tab counts
+  and panels holding it) differ.
+### Added
+- `tests/clash-audit.js --ds` covers 65 design-system pages, four tabs at once, each route loaded afresh; a page whose
+  element count differs is compared before and after the differing stretch.
+
 ## [0.57.3] - 2026-10-19
 
 ### Fixed

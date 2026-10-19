@@ -15,7 +15,6 @@
       ".plx-network-graph .plx-chart__svg": 1
     },
     "platform/components/Button/button.css": {
-      ".plx-button__icon .plx-icon": 1,
       ".plx-button-group>.plx-button:not(:first-child)": 1,
       ".plx-button-group>.plx-button:not(:last-child)": 1,
       ".plx-button-group>.plx-button:focus-visible": 1,
@@ -24,7 +23,6 @@
     "platform/components/Card/card.css": {
       ".plx-panel__toggle .plx-icon": 1,
       ".plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle .plx-icon": 1,
-      ".plx-panel__icon .plx-icon": 1,
       ".plx-card__toggle .plx-icon": 1,
       ".plx-card.is-collapsed .plx-card__toggle .plx-icon": 1,
       ".plx-card.is-collapsed .plx-card__toggle .plx-icon:dir(rtl)": 1
@@ -80,8 +78,6 @@
       ".plx-date-picker .plx-popover-anchor": 1
     },
     "platform/components/Dialog/dialog.css": {
-      ".plx-dialog__footer .plx-button": 1,
-      ".plx-dialog--destructive .plx-dialog__footer .plx-button": 1,
       ".plx-modal-layer--start .plx-drawer": 1,
       ".plx-modal-layer--start .plx-drawer:dir(rtl)": 1,
       ".plx-modal-layer--non-modal .plx-dialog": 1
@@ -94,9 +90,6 @@
       ".plx-document-viewer__viewport[data-zoom=\"150\"] > .plx-image": 1,
       ".plx-document-viewer__viewport[data-zoom=\"200\"] > .plx-image": 1,
       ".plx-document-viewer__zoom .plx-input": 1
-    },
-    "platform/components/EmptyState/empty-state.css": {
-      ".plx-empty-state__icon .plx-icon": 1
     },
     "platform/components/ErrorSummary/error-summary.css": {
       ".plx-error-summary:focus>.plx-notice": 1,
@@ -115,7 +108,6 @@
       ".plx-file-row__select>.plx-check": 1
     },
     "platform/components/InlineEdit/inline-edit.css": {
-      ".plx-inline-edit__hint .plx-icon": 1,
       ".plx-inline-edit__control .plx-select": 1
     },
     "platform/components/InputGroup/input-group.css": {
@@ -138,9 +130,7 @@
       ".plx-metric-card .plx-metric": 1
     },
     "platform/components/NavList/nav-list.css": {
-      ".plx-nav-list__group>.plx-collapsible-section__heading": 1,
-      ".plx-nav-list__pin .plx-icon": 1,
-      ".plx-nav-list__actions .plx-button": 1
+      ".plx-nav-list__group>.plx-collapsible-section__heading": 1
     },
     "platform/components/NumberInput/number-input.css": {
       ".plx-number-input--quantity>.plx-input-group__box": 1,
@@ -157,11 +147,6 @@
     "platform/components/RichTextEditor/rich-text-editor.css": {
       ".plx-rich-text-editor__bar .plx-input": 1
     },
-    "platform/components/SearchField/search-field.css": {
-      ".plx-search__icon .plx-icon": 1,
-      ".plx-search__clear .plx-icon": 1,
-      ".plx-search__option-icon .plx-icon": 1
-    },
     "platform/components/SearchResult/search-result.css": {
       ".plx-search-result__meta .plx-text": 1
     },
@@ -171,8 +156,7 @@
     "platform/components/Tag/tag.css": {
       ".plx-chip--selected .plx-tag__remove": 1,
       ".plx-chip--selected .plx-tag__remove:hover": 1,
-      ".plx-chip--selected .plx-tag__remove.is-hover": 1,
-      ".plx-tag-input__add .plx-icon": 1
+      ".plx-chip--selected .plx-tag__remove.is-hover": 1
     },
     "platform/components/TeachingBubble/teaching-bubble.css": {
       ".plx-teaching-bubble .plx-button--primary": 1,
@@ -199,7 +183,6 @@
       ".plx-text-expand>.plx-text": 1
     },
     "platform/components/Toolbar/toolbar.css": {
-      ".plx-toolbar .plx-button": 1,
       ".plx-toolbar .plx-input": 1,
       ".plx-toolbar .plx-search__input": 1
     },
@@ -218,7 +201,6 @@
       ".plx-activity-list--stacked .plx-activity-list__meta .plx-text": 1
     },
     "platform/patterns/AppHeader/app-header.css": {
-      ".plx-app-header .plx-button": 1,
       ".plx-app-header--accent .plx-button--secondary": 1,
       ".plx-app-header--accent .plx-button--secondary:hover": 1,
       ".plx-app-header--accent .plx-button--secondary.is-hover": 1,
@@ -226,8 +208,6 @@
       ".plx-app-header--accent .plx-button--secondary.is-pointer-down": 1,
       ".plx-app-header--frost .plx-search__input": 1,
       ".plx-app-header__search>.plx-search": 1,
-      ".plx-app-switcher__icon .plx-icon": 1,
-      ".plx-app-switcher__pin .plx-icon": 1,
       ".plx-app-header__action .plx-button": 1,
       ".plx-app-header__account-row .plx-button__label": 1,
       ".plx-app-header__brand .plx-brand-mark": 1,
@@ -260,9 +240,6 @@
     "platform/patterns/FileList/file-list.css": {
       ".plx-file-list__item .plx-file-row__owner": 1,
       ".plx-file-list__item .plx-file-row__date": 1
-    },
-    "platform/patterns/FilterBar/filter-bar.css": {
-      ".plx-filter-bar .plx-button": 1
     },
     "platform/patterns/Form/form.css": {
       ".plx-form--two-column .plx-form-section__body:has(>.plx-field--inline)": 1

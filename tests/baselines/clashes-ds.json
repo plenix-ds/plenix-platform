@@ -1,52 +1,264 @@
 {
  "$description": "The clash inventory of the Plenix Styling Standard (tests/clash-audit.js): every pair of rules setting one property on one element, on the application pages, classified.",
  "pages": {
-  "platform/design-system/index.html#/data-display/table": {
-   "elements": 2893,
-   "clashed": 0
-  },
-  "platform/design-system/index.html#/data-display/data-table": {
-   "elements": 11472,
-   "clashed": 0
-  },
-  "platform/design-system/index.html#/actions/button": {
-   "elements": 4670,
-   "clashed": 0
-  },
   "platform/design-system/index.html#/data-display/badge": {
    "elements": 3502,
    "clashed": 0
   },
-  "platform/design-system/index.html#/specialized/audit-log": {
-   "elements": 3218,
+  "platform/design-system/index.html#/data-display/table": {
+   "elements": 2891,
    "clashed": 0
   },
-  "platform/design-system/index.html#/data-display/comparison-view": {
-   "elements": 3702,
-   "clashed": 0
-  },
-  "platform/design-system/index.html#/specialized/file-list": {
-   "elements": 4395,
+  "platform/design-system/index.html#/actions/button": {
+   "elements": 4669,
    "clashed": 0
   },
   "platform/design-system/index.html#/patterns/permissions-editor": {
    "elements": 2916,
    "clashed": 0
   },
+  "platform/design-system/index.html#/specialized/audit-log": {
+   "elements": 3218,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/file-list": {
+   "elements": 4395,
+   "clashed": 0
+  },
   "platform/design-system/index.html#/specialized/rendition-list": {
    "elements": 2869,
    "clashed": 0
   },
-  "platform/design-system/index.html#/patterns/review-flow": {
-   "elements": 3777,
+  "platform/design-system/index.html#/foundations/color": {
+   "elements": 3813,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/page-structures/split-view": {
+   "elements": 3750,
    "clashed": 0
   },
   "platform/design-system/index.html#/implementation/css-architecture": {
    "elements": 5580,
    "clashed": 0
   },
-  "platform/design-system/index.html#/foundations/color": {
-   "elements": 3813,
+  "platform/design-system/index.html#/navigation/application-header": {
+   "elements": 4521,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/field": {
+   "elements": 3322,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/data-table": {
+   "elements": 11472,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/actions/copy-button": {
+   "elements": 3099,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/overlays/teaching-bubble": {
+   "elements": 3404,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/content/user-card": {
+   "elements": 3206,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/comparison-view": {
+   "elements": 3702,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/card": {
+   "elements": 4582,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/number-input": {
+   "elements": 3837,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/overlays/media-lightbox": {
+   "elements": 2465,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/chip": {
+   "elements": 3361,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/feature-card": {
+   "elements": 2884,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/patterns/review-flow": {
+   "elements": 3777,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/navigation/tree-view": {
+   "elements": 3000,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/overlays/dialog": {
+   "elements": 3615,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/patterns/resizable": {
+   "elements": 3442,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/tag": {
+   "elements": 4095,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/file-input": {
+   "elements": 3013,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/navigation/navigation-menu": {
+   "elements": 3587,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/activity-stream": {
+   "elements": 3455,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/actions/toolbar": {
+   "elements": 3117,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/input-group": {
+   "elements": 3738,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/product-options": {
+   "elements": 3757,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/tree-select": {
+   "elements": 3205,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/navigation/progress-steps": {
+   "elements": 3709,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/media-card": {
+   "elements": 4156,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/error-summary": {
+   "elements": 2852,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/navigation/search-result": {
+   "elements": 3688,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/document-viewer": {
+   "elements": 3006,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/resource-list": {
+   "elements": 4084,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/inline-edit": {
+   "elements": 3421,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/avatar-upload": {
+   "elements": 3087,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/search-input": {
+   "elements": 3731,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/suggested-action": {
+   "elements": 2947,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/date-picker": {
+   "elements": 3462,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/overlays/expandable-section": {
+   "elements": 2771,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/navigation/filter-bar": {
+   "elements": 4137,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/image-upload": {
+   "elements": 3283,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/metric": {
+   "elements": 3036,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/actions/button-group": {
+   "elements": 2968,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/content/property-list": {
+   "elements": 3014,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/geo-map": {
+   "elements": 2833,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/file-row": {
+   "elements": 4219,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/content/link": {
+   "elements": 3196,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/content/swatch": {
+   "elements": 3340,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/layout/panel": {
+   "elements": 3916,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/feedback/empty-state": {
+   "elements": 3009,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/actions/rename-action": {
+   "elements": 3353,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/foundations/type-styles": {
+   "elements": 3327,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/network-graph": {
+   "elements": 3333,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/forms/rich-text-editor": {
+   "elements": 4040,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/specialized/media-player": {
+   "elements": 3295,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/actions/command-palette": {
+   "elements": 2670,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/diagram": {
+   "elements": 3114,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/overlays/side-drawer": {
+   "elements": 3632,
    "clashed": 0
   }
  },
