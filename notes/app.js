@@ -2116,7 +2116,7 @@ function Suite({
   // the page header background (Settings › Appearance): read by EntityHeader from the page root
   React.useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'none');
     root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
   }, [prefs.headerTint, prefs.headerTintStyle]);
   // the appearance (Settings › Mode: system, light or dark; Platforms Standard 1.6): theme-boot keeps it for every page
@@ -2602,8 +2602,8 @@ function NotesScreen({
       icon: 'doc-text',
       hue: 'brown'
     },
-    context: note.folder,
-    live: dirty ? {
+    subtitle: note.folder,
+    status: dirty ? {
       tone: 'waiting',
       icon: 'pencil',
       label: 'Unsaved changes'
@@ -2612,9 +2612,11 @@ function NotesScreen({
       icon: 'check',
       label: 'Saved'
     },
-    facts: [/*#__PURE__*/React.createElement(React.Fragment, null, "Edited ", /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "data"
-    }, note.date))],
+    facts: [{
+      label: 'Edited',
+      value: note.date,
+      data: true
+    }],
     actions: dirty ? [{
       icon: 'save',
       label: 'Save',

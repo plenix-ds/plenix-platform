@@ -17,7 +17,7 @@ export function TasksScreen({ screen }) {
     <div className="plx-page-panes">
       <PageContent>
         <Stack gap="md">
-          <EntityHeader title="Tasks" media={{ icon: 'circle-check', hue: 'blue' }} facts={[ALL_TASKS.length + ' tasks', ALL_TASKS.filter((t) => !t.done).length + ' open']} actions={[{ icon: 'share', label: 'Share' }]} />
+          <EntityHeader title="Tasks" media={{ icon: 'circle-check', hue: 'blue' }} facts={[{ label: 'Tasks', value: ALL_TASKS.length }, { label: 'Open', value: ALL_TASKS.filter((t) => !t.done).length }]} actions={[{ icon: 'share', label: 'Share' }]} />
           {/* the capability's own action stays out of the header (the capability menu is still to be decided) */}
           <Inline justify="end"><Button variant="primary" icon={<Icon name="plus" />}>Add task</Button></Inline>
           <Panel icon="circle-check" title="All tasks" flush>

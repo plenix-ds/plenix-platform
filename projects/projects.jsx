@@ -109,7 +109,7 @@ export function ProjectContent({ proj, panel }) {
     return (
       <PageContent>
         <Stack gap="lg">
-          <EntityHeader title={proj.name} media={{ icon: 'briefcase', hue: proj.color }} context={proj.tags[0]} status={statusOf(proj.status)} description={proj.desc}
+          <EntityHeader title={proj.name} media={{ icon: 'briefcase', hue: proj.color }} subtitle={proj.desc} status={statusOf(proj.status)} facts={proj.tags[0] ? [{ label: 'Tag', value: proj.tags[0] }] : []}
             actions={[{ icon: 'flag', label: 'Update status', primary: true }, { icon: 'share', label: 'Share' }]} />
           <Inline gap="lg" wrap align="end">
             <Stack grow><ProgressBar value={pct} color={proj.color} label="Progress" showValue /></Stack>
@@ -142,7 +142,7 @@ export function ProjectContent({ proj, panel }) {
   if (panel === 'tasks') return (
     <PageContent>
       <Stack gap="md">
-        <EntityHeader title="Tasks" media={{ icon: 'circle-check', hue: proj.color }} context={proj.name} facts={[pTasks.length + ' tasks', doneT + ' done']} actions={[{ icon: 'share', label: 'Share' }]} />
+        <EntityHeader title="Tasks" media={{ icon: 'circle-check', hue: proj.color }} subtitle={proj.name} facts={[{ label: 'Tasks', value: pTasks.length }, { label: 'Done', value: doneT }]} actions={[{ icon: 'share', label: 'Share' }]} />
         <ProgressBar value={pct} color={proj.color} label={doneT + '/' + pTasks.length + ' tasks'} showValue />
         <Panel icon="circle-check" title="All tasks">{pTasks.length ? <Stack gap="sm">{pTasks.map(taskRow)}</Stack> : <Text variant="secondary">No tasks for this project yet.</Text>}</Panel>
       </Stack>
@@ -153,7 +153,7 @@ export function ProjectContent({ proj, panel }) {
   if (panel === 'notes') return (
     <PageContent>
       <Stack gap="md">
-        <EntityHeader title="Notes" media={{ icon: 'doc-text', hue: proj.color }} context={proj.name} facts={[pNotes.length + ' notes']} actions={[{ icon: 'share', label: 'Share' }]} />
+        <EntityHeader title="Notes" media={{ icon: 'doc-text', hue: proj.color }} subtitle={proj.name} facts={[{ label: 'Notes', value: pNotes.length }]} actions={[{ icon: 'share', label: 'Share' }]} />
         {pNotes.length ? (
           <ContentGrid size="lg" label="Notes">{pNotes.map((n, i) => (
             <Card key={i} title={n.title} meta={<Text variant="data">{n.date}</Text>} accent={proj.color} onOpen={() => {}}>
@@ -170,7 +170,7 @@ export function ProjectContent({ proj, panel }) {
   if (panel === 'files') return (
     <PageContent>
       <Stack gap="md">
-        <EntityHeader title="Files" media={{ icon: 'folder', hue: proj.color }} context={proj.name} facts={[pFiles.length + ' files']} actions={[{ icon: 'share', label: 'Share' }]} />
+        <EntityHeader title="Files" media={{ icon: 'folder', hue: proj.color }} subtitle={proj.name} facts={[{ label: 'Files', value: pFiles.length }]} actions={[{ icon: 'share', label: 'Share' }]} />
         <DataTable label="Files" data={pFiles.map((f, i) => ({ ...f, id: i }))} empty="No files attached. Connect OneDrive in Settings to link files." columns={[
           { title: 'Name', field: 'name', kind: ['name', 'data'], filter: true, width: '--plx-ref-size-320px' },
           { title: 'Type', field: 't', kind: 'data', filter: 'list' },

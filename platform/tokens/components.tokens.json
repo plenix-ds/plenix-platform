@@ -2296,9 +2296,9 @@
       "$type": "dimension"
     },
     "entity-header-tint": {
-      "$value": "{plx-sys.data-color-blue-soft}",
+      "$value": "{plx-sys.surface-default}",
       "$type": "color",
-      "$description": "The entity header background tint (the user setting; default blue). Settings set data-plx-header-tint on the page root."
+      "$description": "The entity header background tint (the user setting; default none: white, owner 2026-10-19). Settings set data-plx-header-tint on the page root."
     },
     "modal-layer-padding-block": {
       "$value": "{plx-sys.space-inset-lg}",
@@ -7920,15 +7920,11 @@
       "$type": "color"
     },
     "entity-header-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-card-12px}",
       "$type": "dimension"
     },
     "entity-header-border-width": {
       "$value": "{plx-sys.border-width-thin}",
-      "$type": "dimension"
-    },
-    "entity-header-gap": {
-      "$value": "{plx-sys.space-inline-lg}",
       "$type": "dimension"
     },
     "entity-header-padding-block": {
@@ -7936,15 +7932,11 @@
       "$type": "dimension"
     },
     "entity-header-padding-inline-end": {
-      "$value": "{plx-sys.space-inset-xl}",
+      "$value": "{plx-ref.space-20px}",
       "$type": "dimension"
     },
     "entity-header-padding-inline-start": {
-      "$value": "{plx-sys.space-inset-lg}",
-      "$type": "dimension"
-    },
-    "entity-header-row-gap": {
-      "$value": "{plx-sys.space-stack-xs}",
+      "$value": "{plx-ref.space-20px}",
       "$type": "dimension"
     },
     "entity-header-avatar-border-color": {
@@ -7956,7 +7948,7 @@
       "$type": "dimension"
     },
     "entity-header-tile-height": {
-      "$value": "{plx-sys.icon-size-xl}",
+      "$value": "{plx-ref.size-44px}",
       "$type": "dimension"
     },
     "entity-header-tile-border-color": {
@@ -7964,7 +7956,7 @@
       "$type": "color"
     },
     "entity-header-tile-radius": {
-      "$value": "{plx-sys.radius-avatar-8px}",
+      "$value": "{plx-sys.radius-avatar-4px}",
       "$type": "dimension"
     },
     "entity-header-tile-border-width": {
@@ -7972,7 +7964,7 @@
       "$type": "dimension"
     },
     "entity-header-tile-width": {
-      "$value": "{plx-sys.icon-size-xl}",
+      "$value": "{plx-ref.size-44px}",
       "$type": "dimension"
     },
     "entity-header-tile-blue-background": {
@@ -8023,22 +8015,6 @@
       "$value": "{plx-sys.data-color-gray-on-soft}",
       "$type": "color"
     },
-    "entity-header-top-gap": {
-      "$value": "{plx-sys.space-inline-md}",
-      "$type": "dimension"
-    },
-    "entity-header-top-min-height": {
-      "$value": "{plx-ref.size-20px}",
-      "$type": "dimension"
-    },
-    "entity-header-context-text": {
-      "$value": "{plx-sys.content-muted}",
-      "$type": "color"
-    },
-    "entity-header-context-font-size": {
-      "$value": "{plx-ref.font-size-12}",
-      "$type": "dimension"
-    },
     "entity-header-title-text": {
       "$value": "{plx-sys.content-default}",
       "$type": "color"
@@ -8052,7 +8028,7 @@
       "$type": "dimension"
     },
     "entity-header-title-font-weight": {
-      "$value": "{plx-sys.font-weight-bold}",
+      "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
     "entity-header-title-line-height": {
@@ -8060,59 +8036,7 @@
       "$type": "number"
     },
     "entity-header-actions-gap": {
-      "$value": "{plx-sys.space-cluster-xs}",
-      "$type": "dimension"
-    },
-    "entity-header-actions-overflow-clip-margin": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "entity-header-actions-row-gap": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
-    },
-    "entity-header-facts-border-top-color": {
-      "$value": "{plx-sys.border-subtle}",
-      "$type": "color"
-    },
-    "entity-header-facts-border-top-width": {
-      "$value": "{plx-sys.border-width-thin}",
-      "$type": "dimension"
-    },
-    "entity-header-facts-text": {
-      "$value": "{plx-sys.content-default}",
-      "$type": "color"
-    },
-    "entity-header-facts-font-family": {
-      "$value": "{plx-sys.font-body}",
-      "$type": "fontFamily"
-    },
-    "entity-header-facts-font-size": {
-      "$value": "{plx-ref.font-size-12}",
-      "$type": "dimension"
-    },
-    "entity-header-facts-font-weight": {
-      "$value": "{plx-sys.font-weight-regular}",
-      "$type": "fontWeight"
-    },
-    "entity-header-facts-line-height": {
-      "$value": "{plx-ref.line-height-normal}",
-      "$type": "number"
-    },
-    "entity-header-facts-margin-block-start": {
-      "$value": "{plx-sys.space-stack-xs}",
-      "$type": "dimension"
-    },
-    "entity-header-facts-padding-block-start": {
-      "$value": "{plx-sys.space-stack-sm}",
-      "$type": "dimension"
-    },
-    "entity-header-sep-text": {
-      "$value": "{plx-sys.content-muted}",
-      "$type": "color"
-    },
-    "entity-header-sep-margin-inline": {
-      "$value": "{plx-sys.space-inline-xs}",
+      "$value": "{plx-sys.space-cluster-sm}",
       "$type": "dimension"
     },
     "filter-bar-gap": {

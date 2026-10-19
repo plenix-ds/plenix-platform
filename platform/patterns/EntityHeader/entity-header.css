@@ -1,25 +1,35 @@
-/* Plenix · EntityHeader (platform/patterns/EntityHeader): the header of a page that shows one entity. Anatomy and API:
-   EntityHeader.jsx. Decided with the owner on 2026-10-09 (docs/page-header-study.html).
-   .plx-entity-header            a card: media | top line (context, status) / title, actions / facts
-   .plx-entity-header__media     48px, spans the three lines; an Avatar or a tinted generic icon (__tile); a 1px border
-   .plx-entity-header__top       the context line (optional placeholder) and the status area at the right
-   .plx-entity-header__title     18px bold, wraps
-   .plx-entity-header__actions   16px icon buttons (Compact), side by side; the ⋯ menu last; folds from the end
-   .plx-entity-header__facts     one line under a full-width line; every item alike, separators muted
-   The background follows the user's settings on the page root: data-plx-header-tint (default blue) and
+/* Plenix · EntityHeader (platform/patterns/EntityHeader): the header of a page that shows one entity, and of a section in
+   it. Header style 1, Structured · Top row · Small (owner, 2026-10-19). Anatomy and API: EntityHeader.jsx.
+   .plx-entity-header              a card; a container (narrow: the aside moves under the main column)
+   .plx-entity-header__layout      two columns: main 1.7 · aside 1, with a divider between them
+   .plx-entity-header__main        heading, accent rule, details
+   .plx-entity-header__lead        as wide as the wider of the heading and the details (the rule runs 10% past it)
+   .plx-entity-header__heading     1 media (44px square) beside 2 the title and subtitle
+   .plx-entity-header__rule        3 the accent rule (6px; 4px in a section)
+   .plx-entity-header__details     4 the Status tile first, then up to four fact tiles (a section: its summary)
+   .plx-entity-header__aside       5 the divider, 6 the aside: next step (eyebrow, title, detail) over the actions
+   .plx-entity-header--section     a section header: the same anatomy one step smaller (32px icon, 15px title, 4px rule)
+   The background follows the user's settings on the page root: data-plx-header-tint (default none: white) and
    data-plx-header-tint-style (default fade). */
-.plx-entity-header{align-items:center;background-color:var(--plx-comp-entity-header-background);background-image:linear-gradient(to bottom,var(--plx-comp-entity-header-tint) 0%,var(--plx-sys-surface-default) 100%);border-bottom-color:var(--plx-comp-entity-header-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-radius);border-bottom-right-radius:var(--plx-comp-entity-header-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-border-width);border-left-color:var(--plx-comp-entity-header-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-border-width);border-right-color:var(--plx-comp-entity-header-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-border-width);border-top-color:var(--plx-comp-entity-header-border-color);border-top-left-radius:var(--plx-comp-entity-header-radius);border-top-right-radius:var(--plx-comp-entity-header-radius);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-border-width);column-gap:var(--plx-comp-entity-header-gap);display:grid;grid-template-columns:auto minmax(50%,1fr) minmax(0,max-content);min-inline-size:0;padding-block-end:var(--plx-comp-entity-header-padding-block);padding-block-start:var(--plx-comp-entity-header-padding-block);padding-inline-end:var(--plx-comp-entity-header-padding-inline-end);padding-inline-start:var(--plx-comp-entity-header-padding-inline-start);row-gap:var(--plx-comp-entity-header-row-gap);}
+.plx-entity-header{background-color:var(--plx-comp-entity-header-background);background-image:linear-gradient(to bottom,var(--plx-comp-entity-header-tint) 0%,var(--plx-sys-surface-default) 100%);border-bottom-color:var(--plx-comp-entity-header-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-radius);border-bottom-right-radius:var(--plx-comp-entity-header-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-border-width);border-left-color:var(--plx-comp-entity-header-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-border-width);border-right-color:var(--plx-comp-entity-header-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-border-width);border-top-color:var(--plx-comp-entity-header-border-color);border-top-left-radius:var(--plx-comp-entity-header-radius);border-top-right-radius:var(--plx-comp-entity-header-radius);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-border-width);box-sizing:border-box;container-name:plx-entity-header;container-type:inline-size;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;padding-block-end:var(--plx-comp-entity-header-padding-block);padding-block-start:var(--plx-comp-entity-header-padding-block);padding-inline-end:var(--plx-comp-entity-header-padding-inline-end);padding-inline-start:var(--plx-comp-entity-header-padding-inline-start);}
 /* the user's header background (Settings › Appearance): a soft fill from the existing palette, faded (default) or flat */
-:root[data-plx-header-tint="none"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-surface-default);}
 :root[data-plx-header-tint="gray"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-data-color-gray-soft);}
+:root[data-plx-header-tint="blue"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-data-color-blue-soft);}
 :root[data-plx-header-tint="warm"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-header-card-tint);}
 :root[data-plx-header-tint="green"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-data-color-green-soft);}
 :root[data-plx-header-tint="purple"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-data-color-purple-soft);}
 :root[data-plx-header-tint="red"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-data-color-red-soft);}
 :root[data-plx-header-tint-style="flat"] .plx-entity-header{background-color:var(--plx-comp-entity-header-tint);background-image:none;}
 
-/* media: 48px, a 1px border (border-default) always; nothing above it */
-.plx-entity-header__media{align-self:start;grid-column:1;grid-row:1 / span 3;}
+/* the two columns; without an aside the main column takes the row */
+.plx-entity-header__layout{column-gap:var(--plx-comp-entity-header-column-gap);display:grid;grid-template-columns:var(--plx-comp-entity-header-columns);}
+.plx-entity-header--solo .plx-entity-header__layout{grid-template-columns:minmax(0,1fr);}
+.plx-entity-header__main{align-items:flex-start;display:flex;flex-direction:column;justify-content:center;min-inline-size:0;overflow-x:clip;}
+.plx-entity-header__lead{display:inline-flex;flex-direction:column;max-inline-size:100%;min-inline-size:0;}
+
+/* 1 media and 2 the heading: the media beside the title and subtitle */
+.plx-entity-header__heading{align-items:center;column-gap:var(--plx-comp-entity-header-heading-gap);display:flex;min-inline-size:0;}
+.plx-entity-header__media{--plx-comp-avatar-context-radius:var(--plx-comp-entity-header-media-radius);--plx-comp-avatar-context-size:var(--plx-comp-entity-header-media-size);display:inline-flex;flex-shrink:0;}
 .plx-entity-header__avatar{border-bottom-color:var(--plx-comp-entity-header-avatar-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-avatar-border-width);border-left-color:var(--plx-comp-entity-header-avatar-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-avatar-border-width);border-right-color:var(--plx-comp-entity-header-avatar-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-avatar-border-width);border-top-color:var(--plx-comp-entity-header-avatar-border-color);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-avatar-border-width);box-sizing:border-box;}
 .plx-entity-header__tile{align-items:center;block-size:var(--plx-comp-entity-header-tile-height);border-bottom-color:var(--plx-comp-entity-header-tile-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-tile-radius);border-bottom-right-radius:var(--plx-comp-entity-header-tile-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-tile-border-width);border-left-color:var(--plx-comp-entity-header-tile-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-tile-border-width);border-right-color:var(--plx-comp-entity-header-tile-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-tile-border-width);border-top-color:var(--plx-comp-entity-header-tile-border-color);border-top-left-radius:var(--plx-comp-entity-header-tile-radius);border-top-right-radius:var(--plx-comp-entity-header-tile-radius);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-tile-border-width);box-sizing:border-box;display:inline-flex;inline-size:var(--plx-comp-entity-header-tile-width);justify-content:center;}
 .plx-entity-header__tile[data-plx-media-hue="surface"]{background-color:var(--plx-comp-entity-header-tile-surface-background);color:var(--plx-comp-entity-header-tile-surface-text);}
@@ -29,17 +39,49 @@
 .plx-entity-header__tile[data-plx-media-hue="red"]{background-color:var(--plx-comp-entity-header-tile-red-background);color:var(--plx-comp-entity-header-tile-red-text);}
 .plx-entity-header__tile[data-plx-media-hue="brown"]{background-color:var(--plx-comp-entity-header-tile-brown-background);color:var(--plx-comp-entity-header-tile-brown-text);}
 .plx-entity-header__tile[data-plx-media-hue="gray"]{background-color:var(--plx-comp-entity-header-tile-gray-background);color:var(--plx-comp-entity-header-tile-gray-text);}
+.plx-entity-header__text{display:flex;flex-direction:column;min-inline-size:0;}
+.plx-entity-header__title{color:var(--plx-comp-entity-header-title-text);font-family:var(--plx-comp-entity-header-title-font-family);font-size:var(--plx-comp-entity-header-title-font-size);font-weight:var(--plx-comp-entity-header-title-font-weight);line-height:var(--plx-comp-entity-header-title-line-height);margin-block-end:0;margin-block-start:0;overflow-wrap:anywhere;word-spacing:normal;}
+.plx-entity-header__subtitle{color:var(--plx-comp-entity-header-subtitle-text);font-size:var(--plx-comp-entity-header-subtitle-font-size);margin-block-end:0;margin-block-start:0;}
 
-/* part 1: the context line (a placeholder, not a breadcrumb) and the status area share the top line */
-.plx-entity-header__top{align-items:center;column-gap:var(--plx-comp-entity-header-top-gap);display:flex;grid-column:2 / span 2;grid-row:1;justify-content:space-between;min-block-size:var(--plx-comp-entity-header-top-min-height);min-inline-size:0;}
-.plx-entity-header__context{color:var(--plx-comp-entity-header-context-text);font-size:var(--plx-comp-entity-header-context-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-entity-header__status{flex-shrink:0;margin-inline-start:auto;}
+/* 3 the accent rule: 10% past the wider of the heading and the details */
+.plx-entity-header__rule{background-color:var(--plx-comp-entity-header-rule-color);block-size:var(--plx-comp-entity-header-rule-height);inline-size:var(--plx-comp-entity-header-rule-extent);margin-block-end:var(--plx-comp-entity-header-rule-margin-block);margin-block-start:var(--plx-comp-entity-header-rule-margin-block);}
 
-/* part 2: the title (18px bold) and the entity's actions, 16px icons (the Compact control size) side by side */
-.plx-entity-header__title{color:var(--plx-comp-entity-header-title-text);font-family:var(--plx-comp-entity-header-title-font-family);font-size:var(--plx-comp-entity-header-title-font-size);font-weight:var(--plx-comp-entity-header-title-font-weight);grid-column:2;grid-row:2;line-height:var(--plx-comp-entity-header-title-line-height);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;overflow-wrap:anywhere;word-spacing:normal;}
-.plx-entity-header__actions{align-items:center;align-self:start;block-size:var(--plx-comp-button-size-xs-height);column-gap:var(--plx-comp-entity-header-actions-gap);display:flex;flex-wrap:wrap;grid-column:3;grid-row:2;justify-content:flex-end;min-inline-size:0;overflow-clip-margin:var(--plx-comp-entity-header-actions-overflow-clip-margin);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-comp-entity-header-actions-row-gap);}
-.plx-entity-header__action{align-items:center;block-size:var(--plx-comp-button-size-xs-height);display:inline-flex;}
+/* 4 the details: tiles as wide as their content, 12px apart; the Status tile takes its tone as a whole */
+.plx-entity-header__details{align-items:stretch;display:flex;flex-wrap:wrap;gap:var(--plx-comp-entity-header-details-gap);margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+.plx-entity-header__fact{background-color:var(--plx-comp-entity-header-fact-background);border-bottom-color:var(--plx-comp-entity-header-fact-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-fact-radius);border-bottom-right-radius:var(--plx-comp-entity-header-fact-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-fact-border-width);border-left-color:var(--plx-comp-entity-header-fact-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-fact-border-width);border-right-color:var(--plx-comp-entity-header-fact-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-fact-border-width);border-top-color:var(--plx-comp-entity-header-fact-border-color);border-top-left-radius:var(--plx-comp-entity-header-fact-radius);border-top-right-radius:var(--plx-comp-entity-header-fact-radius);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-fact-border-width);display:flex;flex-direction:column;justify-content:center;padding-block-end:var(--plx-comp-entity-header-fact-padding-block);padding-block-start:var(--plx-comp-entity-header-fact-padding-block);padding-inline-end:var(--plx-comp-entity-header-fact-padding-inline);padding-inline-start:var(--plx-comp-entity-header-fact-padding-inline);}
+.plx-entity-header__fact-label{color:var(--plx-comp-entity-header-fact-label-text);font-size:var(--plx-comp-entity-header-fact-label-font-size);margin-inline-start:0;}
+.plx-entity-header__fact-value{color:var(--plx-comp-entity-header-fact-value-text);font-size:var(--plx-comp-entity-header-fact-value-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-entity-header-fact-value-font-weight);margin-inline-start:0;white-space:nowrap;}
+.plx-entity-header__status-value{align-items:center;column-gap:var(--plx-comp-entity-header-status-icon-gap);display:inline-flex;font-weight:var(--plx-comp-entity-header-status-value-font-weight);}
+.plx-entity-header__fact--status .plx-entity-header__fact-label,.plx-entity-header__fact--status .plx-entity-header__fact-value{color:inherit;}
+.plx-entity-header__fact--status[data-plx-tone="neutral"]{background-color:var(--plx-comp-entity-header-status-neutral-background);border-color:var(--plx-comp-entity-header-status-neutral-border);color:var(--plx-comp-entity-header-status-neutral-text);}
+.plx-entity-header__fact--status[data-plx-tone="success"]{background-color:var(--plx-comp-entity-header-status-success-background);border-color:var(--plx-comp-entity-header-status-success-border);color:var(--plx-comp-entity-header-status-success-text);}
+.plx-entity-header__fact--status[data-plx-tone="active"]{background-color:var(--plx-comp-entity-header-status-active-background);border-color:var(--plx-comp-entity-header-status-active-border);color:var(--plx-comp-entity-header-status-active-text);}
+.plx-entity-header__fact--status[data-plx-tone="waiting"]{background-color:var(--plx-comp-entity-header-status-waiting-background);border-color:var(--plx-comp-entity-header-status-waiting-border);color:var(--plx-comp-entity-header-status-waiting-text);}
+.plx-entity-header__fact--status[data-plx-tone="action-required"]{background-color:var(--plx-comp-entity-header-status-action-required-background);border-color:var(--plx-comp-entity-header-status-action-required-border);color:var(--plx-comp-entity-header-status-action-required-text);}
+.plx-entity-header__fact--status[data-plx-tone="negative"]{background-color:var(--plx-comp-entity-header-status-negative-background);border-color:var(--plx-comp-entity-header-status-negative-border);color:var(--plx-comp-entity-header-status-negative-text);}
+.plx-entity-header__summary{color:var(--plx-comp-entity-header-subtitle-text);font-size:var(--plx-comp-entity-header-section-summary-font-size);margin-block-end:0;margin-block-start:0;}
 
-/* part 3: the facts, one line under a full-width line; every item in the same font, size, weight and color */
-.plx-entity-header__facts{border-top-color:var(--plx-comp-entity-header-facts-border-top-color);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-facts-border-top-width);color:var(--plx-comp-entity-header-facts-text);font-family:var(--plx-comp-entity-header-facts-font-family);font-size:var(--plx-comp-entity-header-facts-font-size);font-style:normal;font-weight:var(--plx-comp-entity-header-facts-font-weight);grid-column:2 / span 2;grid-row:3;line-height:var(--plx-comp-entity-header-facts-line-height);margin-block-end:0;margin-block-start:var(--plx-comp-entity-header-facts-margin-block-start);margin-inline-end:0;margin-inline-start:0;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;padding-block-start:var(--plx-comp-entity-header-facts-padding-block-start);text-overflow:ellipsis;white-space:nowrap;word-spacing:normal;}
-.plx-entity-header__sep{color:var(--plx-comp-entity-header-sep-text);margin-inline-end:var(--plx-comp-entity-header-sep-margin-inline);margin-inline-start:var(--plx-comp-entity-header-sep-margin-inline);}
+/* 5 the divider and 6 the aside: the next step at the top, the actions at the bottom, both at the end edge */
+.plx-entity-header__aside{border-inline-start-color:var(--plx-comp-entity-header-aside-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-entity-header-border-width);display:flex;flex-direction:column;justify-content:space-between;min-inline-size:0;padding-inline-start:var(--plx-comp-entity-header-aside-padding-inline);row-gap:var(--plx-comp-entity-header-aside-gap);text-align:end;}
+.plx-entity-header__next{display:flex;flex-direction:column;}
+.plx-entity-header__eyebrow{color:var(--plx-comp-entity-header-eyebrow-text);font-size:var(--plx-comp-entity-header-eyebrow-font-size);margin-block-end:0;margin-block-start:0;}
+.plx-entity-header__next-title{color:var(--plx-comp-entity-header-title-text);font-size:var(--plx-comp-entity-header-next-font-size);margin-block-end:0;margin-block-start:0;}
+.plx-entity-header__next-detail{color:var(--plx-comp-entity-header-subtitle-text);font-size:var(--plx-comp-entity-header-subtitle-font-size);margin-block-end:0;margin-block-start:0;}
+.plx-entity-header__actions{align-items:center;column-gap:var(--plx-comp-entity-header-actions-gap);display:flex;flex-wrap:nowrap;justify-content:flex-end;min-inline-size:0;}
+.plx-entity-header__action{align-items:center;display:inline-flex;}
+
+/* a section header: the same anatomy one step smaller */
+.plx-entity-header--section{border-bottom-left-radius:var(--plx-comp-entity-header-section-radius);border-bottom-right-radius:var(--plx-comp-entity-header-section-radius);border-top-left-radius:var(--plx-comp-entity-header-section-radius);border-top-right-radius:var(--plx-comp-entity-header-section-radius);padding-block-end:var(--plx-comp-entity-header-section-padding-block);padding-block-start:var(--plx-comp-entity-header-section-padding-block);padding-inline-end:var(--plx-comp-entity-header-section-padding-inline);padding-inline-start:var(--plx-comp-entity-header-section-padding-inline);}
+.plx-entity-header--section .plx-entity-header__layout{column-gap:var(--plx-comp-entity-header-section-column-gap);}
+.plx-entity-header--section .plx-entity-header__media{--plx-comp-avatar-context-size:var(--plx-comp-entity-header-section-media-size);}
+.plx-entity-header--section .plx-entity-header__tile{block-size:var(--plx-comp-entity-header-section-media-size);inline-size:var(--plx-comp-entity-header-section-media-size);}
+.plx-entity-header--section .plx-entity-header__title{font-size:var(--plx-comp-entity-header-section-title-font-size);}
+.plx-entity-header--section .plx-entity-header__rule{block-size:var(--plx-comp-entity-header-section-rule-height);margin-block-end:var(--plx-comp-entity-header-section-rule-margin-block);margin-block-start:var(--plx-comp-entity-header-section-rule-margin-block);}
+.plx-entity-header--section .plx-entity-header__aside{justify-content:center;padding-inline-start:var(--plx-comp-entity-header-section-aside-padding-inline);}
+
+/* narrow: the aside moves under the main column, its divider above it, at the start edge */
+@container plx-entity-header (max-width: 640px){
+  .plx-entity-header__layout{grid-template-columns:minmax(0,1fr);}
+  .plx-entity-header__aside{border-block-start-color:var(--plx-comp-entity-header-aside-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-entity-header-border-width);border-inline-start-style:none;border-inline-start-width:0;margin-block-start:var(--plx-comp-entity-header-stacked-padding-block);padding-block-start:var(--plx-comp-entity-header-stacked-padding-block);padding-inline-start:0;text-align:start;}
+  .plx-entity-header__actions{justify-content:flex-start;}
+}

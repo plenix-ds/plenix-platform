@@ -2116,7 +2116,7 @@ function Suite({
   // the page header background (Settings › Appearance): read by EntityHeader from the page root
   React.useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'none');
     root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
   }, [prefs.headerTint, prefs.headerTintStyle]);
   // the appearance (Settings › Mode: system, light or dark; Platforms Standard 1.6): theme-boot keeps it for every page
@@ -2386,10 +2386,15 @@ function MessagingScreen({
       person: thd.name,
       color: thd.avColor
     },
-    context: thd.ch,
-    facts: [mList.length + ' messages', /*#__PURE__*/React.createElement(React.Fragment, null, "Last ", /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "data"
-    }, thd.time))],
+    subtitle: thd.ch,
+    facts: [{
+      label: 'Messages',
+      value: mList.length
+    }, {
+      label: 'Last',
+      value: thd.time,
+      data: true
+    }],
     actions: [{
       icon: 'phone',
       label: 'Call'

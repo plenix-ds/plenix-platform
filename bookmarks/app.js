@@ -2116,7 +2116,7 @@ function Suite({
   // the page header background (Settings › Appearance): read by EntityHeader from the page root
   React.useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'none');
     root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
   }, [prefs.headerTint, prefs.headerTintStyle]);
   // the appearance (Settings › Mode: system, light or dark; Platforms Standard 1.6): theme-boot keeps it for every page
@@ -2557,7 +2557,13 @@ function BookmarksScreen({
       icon: 'bookmark',
       hue: 'green'
     },
-    facts: [filtered.length + ' bookmarks', col === 'all' ? 'All collections' : col],
+    facts: [{
+      label: 'Bookmarks',
+      value: filtered.length
+    }, {
+      label: 'Collection',
+      value: col === 'all' ? 'All collections' : col
+    }],
     actions: [{
       icon: 'share',
       label: 'Share'

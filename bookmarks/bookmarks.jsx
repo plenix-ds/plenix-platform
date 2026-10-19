@@ -21,7 +21,7 @@ export function BookmarksScreen({ screen }) {
     <div className="plx-page-panes">
       <PageContent className="plx-motion-enter">
         <Stack gap="md">
-          <EntityHeader title="Bookmarks" media={{ icon: 'bookmark', hue: 'green' }} facts={[filtered.length + ' bookmarks', col === 'all' ? 'All collections' : col]} actions={[{ icon: 'share', label: 'Share' }]} />
+          <EntityHeader title="Bookmarks" media={{ icon: 'bookmark', hue: 'green' }} facts={[{ label: 'Bookmarks', value: filtered.length }, { label: 'Collection', value: col === 'all' ? 'All collections' : col }]} actions={[{ icon: 'share', label: 'Share' }]} />
           <CommandBar label="Bookmarks" sticky={false} count={filtered.length + ' bookmarks'}
             actions={[{ id: 'add', label: 'Add', icon: 'plus', primary: true }]}
             view={<Menu trigger={<CommandBarButton icon="folder" label="Collections" active={col !== 'all'} caret />}>

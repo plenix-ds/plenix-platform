@@ -1,5 +1,5 @@
 {
-  "$description": "EntityHeader (platform/patterns/EntityHeader): tokens added after its base set in components.tokens.json.",
+  "$description": "EntityHeader (platform/patterns/EntityHeader): tokens added after its base set in components.tokens.json; header style 1 (Structured · Top row · Small, owner 2026-10-19).",
   "plx-comp": {
     "entity-header-tile-surface-background": {
       "$value": "{plx-sys.surface-default}",
@@ -10,6 +10,306 @@
       "$value": "{plx-sys.content-link}",
       "$type": "color",
       "$description": "EntityHeader: the icon on the surface tile: the link blue, light on dark."
+    },
+    "entity-header-columns": {
+      "$value": "minmax(0, 1.7fr) minmax(0, 1fr)",
+      "$type": "string",
+      "$description": "EntityHeader: the main column and the aside, 1.7 to 1."
+    },
+    "entity-header-column-gap": {
+      "$value": "{plx-ref.space-20px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the gap between the main column and the aside."
+    },
+    "entity-header-heading-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the media and the title."
+    },
+    "entity-header-media-size": {
+      "$value": "{plx-ref.size-44px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the media square (top row, small)."
+    },
+    "entity-header-media-radius": {
+      "$value": "{plx-sys.radius-avatar-4px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the media square's corners."
+    },
+    "entity-header-subtitle-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityHeader: the subtitle (the entity's description, where it belongs or who it involves)."
+    },
+    "entity-header-subtitle-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the subtitle's size."
+    },
+    "entity-header-rule-height": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the accent rule's thickness."
+    },
+    "entity-header-rule-color": {
+      "$value": "{plx-sys.brand-primary}",
+      "$type": "color",
+      "$description": "EntityHeader: the accent rule."
+    },
+    "entity-header-rule-margin-block": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "EntityHeader: above and below the accent rule."
+    },
+    "entity-header-rule-extent": {
+      "$value": "110%",
+      "$type": "string",
+      "$description": "EntityHeader: the accent rule runs 10% past the wider of the heading and the details."
+    },
+    "entity-header-details-gap": {
+      "$value": "{plx-sys.space-cluster-md}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the fact tiles."
+    },
+    "entity-header-fact-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a fact tile's block padding."
+    },
+    "entity-header-fact-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a fact tile's inline padding."
+    },
+    "entity-header-fact-radius": {
+      "$value": "{plx-sys.radius-detail-4px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a fact tile's corners."
+    },
+    "entity-header-fact-background": {
+      "$value": "{plx-sys.surface-canvas}",
+      "$type": "color",
+      "$description": "EntityHeader: a fact tile's fill."
+    },
+    "entity-header-fact-border-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "EntityHeader: a fact tile's border."
+    },
+    "entity-header-fact-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a fact tile's border width."
+    },
+    "entity-header-fact-label-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a fact tile's label."
+    },
+    "entity-header-fact-label-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "EntityHeader: a fact tile's label color."
+    },
+    "entity-header-fact-value-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a fact tile's value."
+    },
+    "entity-header-fact-value-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "EntityHeader: a fact tile's value weight."
+    },
+    "entity-header-fact-value-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "EntityHeader: a fact tile's value color."
+    },
+    "entity-header-status-value-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "EntityHeader: the status tile's value weight."
+    },
+    "entity-header-status-icon-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the status icon and its label."
+    },
+    "entity-header-status-neutral-background": {
+      "$value": "{plx-sys.status-pill-neutral-background}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's fill (neutral)."
+    },
+    "entity-header-status-neutral-border": {
+      "$value": "{plx-sys.status-pill-neutral-border}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's border (neutral)."
+    },
+    "entity-header-status-neutral-text": {
+      "$value": "{plx-sys.status-pill-neutral-text}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's label and value (neutral)."
+    },
+    "entity-header-status-success-background": {
+      "$value": "{plx-sys.status-pill-success-background}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's fill (success)."
+    },
+    "entity-header-status-success-border": {
+      "$value": "{plx-sys.status-pill-success-border}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's border (success)."
+    },
+    "entity-header-status-success-text": {
+      "$value": "{plx-sys.status-pill-success-text}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's label and value (success)."
+    },
+    "entity-header-status-active-background": {
+      "$value": "{plx-sys.status-pill-active-background}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's fill (active)."
+    },
+    "entity-header-status-active-border": {
+      "$value": "{plx-sys.status-pill-active-border}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's border (active)."
+    },
+    "entity-header-status-active-text": {
+      "$value": "{plx-sys.status-pill-active-text}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's label and value (active)."
+    },
+    "entity-header-status-waiting-background": {
+      "$value": "{plx-sys.status-pill-waiting-background}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's fill (waiting)."
+    },
+    "entity-header-status-waiting-border": {
+      "$value": "{plx-sys.status-pill-waiting-border}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's border (waiting)."
+    },
+    "entity-header-status-waiting-text": {
+      "$value": "{plx-sys.status-pill-waiting-text}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's label and value (waiting)."
+    },
+    "entity-header-status-action-required-background": {
+      "$value": "{plx-sys.status-pill-action-required-background}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's fill (action-required)."
+    },
+    "entity-header-status-action-required-border": {
+      "$value": "{plx-sys.status-pill-action-required-border}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's border (action-required)."
+    },
+    "entity-header-status-action-required-text": {
+      "$value": "{plx-sys.status-pill-action-required-text}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's label and value (action-required)."
+    },
+    "entity-header-status-negative-background": {
+      "$value": "{plx-sys.status-pill-negative-background}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's fill (negative)."
+    },
+    "entity-header-status-negative-border": {
+      "$value": "{plx-sys.status-pill-negative-border}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's border (negative)."
+    },
+    "entity-header-status-negative-text": {
+      "$value": "{plx-sys.status-pill-negative-text}",
+      "$type": "color",
+      "$description": "EntityHeader: the status tile's label and value (negative)."
+    },
+    "entity-header-aside-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "EntityHeader: the divider before the aside."
+    },
+    "entity-header-aside-padding-inline": {
+      "$value": "{plx-ref.space-20px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the divider and the aside."
+    },
+    "entity-header-aside-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the next step and the actions."
+    },
+    "entity-header-eyebrow-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the \"Next step\" eyebrow."
+    },
+    "entity-header-eyebrow-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "EntityHeader: the \"Next step\" eyebrow's color."
+    },
+    "entity-header-next-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the next step's title."
+    },
+    "entity-header-stacked-padding-block": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "EntityHeader: above the aside when it moves under the main column (narrow)."
+    },
+    "entity-header-section-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's block padding."
+    },
+    "entity-header-section-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's inline padding."
+    },
+    "entity-header-section-column-gap": {
+      "$value": "{plx-sys.space-inline-lg}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's column gap."
+    },
+    "entity-header-section-radius": {
+      "$value": "{plx-sys.radius-surface-8px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's corners."
+    },
+    "entity-header-section-media-size": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's icon square."
+    },
+    "entity-header-section-title-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's title."
+    },
+    "entity-header-section-rule-height": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's accent rule."
+    },
+    "entity-header-section-rule-margin-block": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "EntityHeader: above and below a section header's rule."
+    },
+    "entity-header-section-summary-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header's summary."
+    },
+    "entity-header-section-aside-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the divider and a section header's actions."
     }
   }
 }

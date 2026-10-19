@@ -30,7 +30,7 @@ export function FilesScreen({ screen }) {
     <div className="plx-page-panes">
       <PageContent>
         <Stack gap="md">
-          <EntityHeader title="Files" media={{ icon: 'folder', hue: 'gray' }} facts={[ALL_FILES.length + ' files']} actions={[{ icon: 'share', label: 'Share' }]} />
+          <EntityHeader title="Files" media={{ icon: 'folder', hue: 'gray' }} facts={[{ label: 'Files', value: ALL_FILES.length }]} actions={[{ icon: 'share', label: 'Share' }]} />
           {/* the capability's own action is the bar's (1A: the actions at the start, find and view at the end) */}
           <CommandBar label="Files" actions={[{ id: 'upload', label: 'Upload', icon: 'upload' }]} count={n + (n === 1 ? ' file' : ' files')}
             find={<><CommandBarSearch {...v.searchProps} placeholder="Search files" /><FilterPanel {...v.filterProps} /></>}

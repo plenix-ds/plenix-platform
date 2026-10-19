@@ -54,8 +54,8 @@ export function MessagingScreen({ screen }) {
         {thd ? (
           <>
             <Stack inset="md">
-              <EntityHeader title={thd.name} media={{ person: thd.name, color: thd.avColor }} context={thd.ch}
-                facts={[mList.length + ' messages', <>Last <Text variant="data">{thd.time}</Text></>]}
+              <EntityHeader title={thd.name} media={{ person: thd.name, color: thd.avColor }} subtitle={thd.ch}
+                facts={[{ label: 'Messages', value: mList.length }, { label: 'Last', value: thd.time, data: true }]}
                 actions={[{ icon: 'phone', label: 'Call' }, { icon: 'archive', label: 'Archive' }, { icon: 'mark-unread', label: 'Mark as unread' },
                   { icon: 'snooze', label: 'Snooze' }, { icon: 'trash', label: 'Delete' }]} />
             </Stack>

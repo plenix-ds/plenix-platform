@@ -31440,7 +31440,7 @@ function RecordPage({
 }
 RecordPage.Header = Header;
   } },
-  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31451,129 +31451,165 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _overflow = require("../../utils/overflow.js");
 var _Avatar = require("../../components/Avatar/Avatar.jsx");
-var _Badge = require("../../components/Badge/Badge.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
+var _Text = require("../../components/Text/Text.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · EntityHeader
-   Summary: The header of a page that shows one entity (a contact, a project, an email, a note, a task list): its picture,
-     its name, the actions that act on it, and one line of facts about it. Decided with the owner on 2026-10-09 (the page
-     header study, docs/page-header-study.html).
+   Summary: The header of a page that shows one entity (a contact, a project, an email, a note, a component page), and of a
+     section inside it. Header style 1, Structured · Top row · Small (owner, 2026-10-19, "Plenix page headers"): the media
+     beside the title and subtitle, an accent rule, a row of fact tiles with the Status tile first, and an aside with the
+     next step over the entity's actions. A section header is the same anatomy one step smaller.
    Usage:
-     <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} context="Clients" status={{ tone: 'action-required', label: 'Reconnect due' }}
-       title="Maya Chen" facts={['Creative Director', 'Apex Co', <>Last message <Text variant="data">10:24 AM</Text></>]}
+     <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} title="Maya Chen" subtitle="Creative Director · Apex Co"
+       status={{ tone: 'action-required', icon: 'alert', label: 'Reconnect due' }}
+       facts={[{ label: 'Last message', value: '10:24 AM', data: true }, { label: 'Owner', value: 'Sam Patel' }]}
+       next={{ title: 'Send the revised quote', detail: 'Due tomorrow · Sam Patel' }}
        actions={[{ icon: 'phone', label: 'Call' }, { icon: 'message', label: 'Message', primary: true }, { icon: 'share', label: 'Share' }]} />
-     <EntityHeader media={{ icon: 'briefcase', hue: 'blue' }} title="AI Writing Tools" description="Evaluating AI writing assistants" />
+     <EntityHeader kind="section" media={{ icon: 'message', hue: 'blue' }} title="Comments" summary="3 open · 5 resolved"
+       actions={[{ icon: 'plus', label: 'Add comment' }]} />
    Props:
-     title: the entity's name; 18px bold; a long name wraps, never cut off
-     media: the entity's picture, always shown: { person, src, color } draws an Avatar (48px); { icon, hue } a generic icon for
-       the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray), or on the surface (hue: surface, a white tile); or an element
-     context: the line above the title (optional; not a breadcrumb): a placeholder such as the item's category, or a control
-       that places the entity (a period navigator); what it holds is still to be defined per capability
-     status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: a Badge variant: neutral, success,
-       active, waiting, action-required, negative; the old info, warning, danger still work) or an element
-     actions: the actions that act on this entity, as 16px icon buttons side by side: [{ icon, label, onClick, primary,
-       disabled }]; label is the tooltip and the accessible name; one primary (filled). Never capability actions (New …)
-     moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
-     (with neither actions nor moreActions there is no action area, not even ⋯: a documentation page, an overview)
-     live: the live state, the first fact, as a small status badge with its icon (owner, 2026-10-14: never a dot):
-       { tone (a Badge variant), icon, label }
-     facts: key facts, one line joined by ·, at most four (live state included); what does not fit is cut with …;
-       a technical value in a fact (a date, a time, a file name) is Text variant "data", at the facts' size
-     description: a sentence instead of facts (never both)
-     headingLevel: the title's heading level (default 1)
+     kind: "page" (default) | "section": a section header (32px icon, 15px title, 4px rule, a summary instead of tiles)
+     title: the entity's name; 18px medium (15px in a section); a long name wraps, never cut off
+     subtitle: the line under the title: the entity's description, where it belongs or who it involves; wraps
+     media: the entity's picture, always shown: { person, src, color } an Avatar; { icon, hue } a generic icon for the
+       entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray) or on the surface
+       (hue: surface, a white tile); or an element. 44px square (32px in a section)
+     status: the Status tile, first in the details, in its tone as a whole: { tone, label, icon } (tone: a Badge tone:
+       neutral, success, active, waiting, action-required, negative; info, warning and danger still work)
+     facts: up to four fact tiles after the Status tile, each as wide as its content: [{ label, value, data }] (data: a
+       technical value, in the data font); a plain string or element is a tile with no label
+     summary: a section header's summary under its rule (a count, a state): text
+     next: the aside's next step: { title, detail, label } (label: the eyebrow; default strings.next, "Next step")
+     actions: the actions that act on this entity, 32px icon buttons at the end of the aside: [{ icon, label, onClick,
+       primary, disabled }]; label is the tooltip and the accessible name; at most four buttons, More last. Never
+       capability actions (New …)
+     moreActions: items only in the More menu: [{ icon, label, onSelect, danger }]
+     headingLevel: the title's heading level (default 1; 2 in a section)
      className: more classes on the header
-     strings: the words it shows and announces, for other languages: { more: "More actions" }
+     strings: the words it shows and announces, for other languages: { more: "More actions", status: "Status",
+       next: "Next step" }
+     description, context: the older names for the subtitle (description wins); live: the older name for the status
    Behavior:
-     A card on the page (the shell floats its content as cards). Its background follows the user's settings on the page root:
-       data-plx-header-tint none | gray | blue (default) | warm | green | purple | red, and data-plx-header-tint-style fade
-       (default; the tint at the top fading to the surface) | flat.
-     The media spans the three lines; nothing sits above it. The context line and the status area share the top line.
-     Actions sit at the right, level with the title; the ⋯ menu is always last. When the row is too narrow the actions at
-       the end fold into the ⋯ menu first; the title keeps at least half the width.
-     A full-width line (border-subtle) runs above the facts, across the text column.
-     Every fact is in the same font, size, weight and color; only the separators are muted.
+     A card. Its background follows the user's settings on the page root: data-plx-header-tint none (default: white) | gray
+       | blue | warm | green | purple | red, and data-plx-header-tint-style fade (default) | flat.
+     Two columns, main 1.7 to aside 1, with a divider between them; with no next step and no actions there is no aside.
+     The accent rule runs 10% past the wider of the heading and the details.
+     The tiles wrap on narrow screens; under 640px of the header's own width the aside moves under the main column (its
+       divider above it, at the start edge).
+     The actions fold from the end into More when the aside is too narrow.
    Notes:
-     Not for settings screens or section titles: use RecordPage.Header.
+     Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
+const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
+const ALIASES = {
+  info: 'active',
+  warning: 'waiting',
+  danger: 'negative'
+};
+const MAX_BUTTONS = 4; // at most four buttons in the aside: three actions, then More (always last)
+
 function Media({
-  media
+  media,
+  section
 }) {
-  if (/*#__PURE__*/_react.default.isValidElement(media)) return /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-entity-header__media"
-  }, media);
-  if (media.person || media.src) return /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
-    className: "plx-entity-header__media plx-entity-header__avatar",
+  let inner;
+  if (/*#__PURE__*/_react.default.isValidElement(media)) inner = media;else if (media.person || media.src) inner = /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    className: "plx-entity-header__avatar",
     name: media.person,
     src: media.src,
     color: media.color,
-    size: "xl"
-  });
-  const hue = HUES.indexOf(media.hue) >= 0 ? media.hue : 'gray';
+    size: section ? 'md' : 'xl'
+  });else {
+    const hue = HUES.indexOf(media.hue) >= 0 ? media.hue : 'gray';
+    inner = /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-entity-header__tile",
+      "data-plx-media-hue": hue,
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: media.icon,
+      size: section ? 'md' : 'lg'
+    }));
+  }
   return /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-entity-header__media plx-entity-header__tile",
-    "data-plx-media-hue": hue,
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: media.icon,
-    size: "lg"
-  }));
+    className: "plx-entity-header__media"
+  }, inner);
 }
-function Facts({
-  live,
+function Details({
+  status,
   facts,
-  description
+  strings
 }) {
-  const items = [];
-  if (live) items.push(/*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    key: "live",
-    size: "sm",
-    tone: live.tone,
-    icon: live.icon,
-    className: "plx-entity-header__live"
-  }, live.label));
-  if (description) items.push(/*#__PURE__*/_react.default.createElement("span", {
-    key: "d"
-  }, description));else (facts || []).filter(Boolean).forEach((f, i) => items.push(/*#__PURE__*/_react.default.createElement("span", {
-    key: 'f' + i
-  }, f)));
-  if (!items.length) return null;
-  return /*#__PURE__*/_react.default.createElement("p", {
-    className: "plx-entity-header__facts"
-  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
-    key: i
-  }, i ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-entity-header__sep",
-    "aria-hidden": "true"
-  }, "\xB7") : null, it)));
+  const tiles = [];
+  if (status && /*#__PURE__*/_react.default.isValidElement(status)) tiles.push(/*#__PURE__*/_react.default.createElement("div", {
+    key: "st",
+    className: "plx-entity-header__fact"
+  }, status));else if (status) {
+    const tone = TONES.indexOf(ALIASES[status.tone] || status.tone) >= 0 ? ALIASES[status.tone] || status.tone : 'neutral';
+    tiles.push(/*#__PURE__*/_react.default.createElement("div", {
+      key: "st",
+      className: "plx-entity-header__fact plx-entity-header__fact--status",
+      "data-plx-tone": tone
+    }, /*#__PURE__*/_react.default.createElement("dt", {
+      className: "plx-entity-header__fact-label"
+    }, strings.status), /*#__PURE__*/_react.default.createElement("dd", {
+      className: "plx-entity-header__fact-value plx-entity-header__status-value"
+    }, status.icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: status.icon,
+      size: "sm"
+    }) : null, status.label)));
+  }
+  (facts || []).filter(Boolean).slice(0, 4).forEach((f, i) => {
+    const plain = typeof f === 'string' || typeof f === 'number' || /*#__PURE__*/_react.default.isValidElement(f);
+    const value = plain ? f : f.data ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, f.value) : f.value;
+    tiles.push(/*#__PURE__*/_react.default.createElement("div", {
+      key: 'f' + i,
+      className: "plx-entity-header__fact"
+    }, !plain && f.label ? /*#__PURE__*/_react.default.createElement("dt", {
+      className: "plx-entity-header__fact-label"
+    }, f.label) : null, /*#__PURE__*/_react.default.createElement("dd", {
+      className: "plx-entity-header__fact-value"
+    }, value)));
+  });
+  return tiles.length ? /*#__PURE__*/_react.default.createElement("dl", {
+    className: "plx-entity-header__details"
+  }, tiles) : null;
 }
 function Actions({
   actions,
   moreActions,
+  size,
   strings
 }) {
   const ref = _react.default.useRef(null);
-  const list = actions || [];
+  const extra = moreActions || [];
+  let list = actions || [];
+  let folded = [];
+  if (list.length > MAX_BUTTONS - 1) {
+    folded = list.slice(MAX_BUTTONS - 1);
+    list = list.slice(0, MAX_BUTTONS - 1);
+  }
   const fit = (0, _overflow.useOverflow)(ref, list.length, list.map(a => a.label).join('|'));
   const items = list.map(a => /*#__PURE__*/_react.default.createElement("span", {
     key: a.label,
     "data-plx-overflow-item": "",
     className: "plx-entity-header__action"
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "xs",
+    size: size,
     iconOnly: true,
     icon: a.icon,
     label: a.label,
     title: a.label,
-    variant: a.primary ? 'primary' : 'ghost',
+    variant: a.primary ? 'primary' : 'secondary',
     disabled: a.disabled,
     onClick: a.onClick
   })));
-  const hidden = list.slice(fit);
-  const extra = moreActions || [];
+  const hidden = list.slice(fit).concat(folded);
   const more = /*#__PURE__*/_react.default.createElement("span", {
     key: "plx-more",
     "data-plx-overflow-more": "",
@@ -31582,12 +31618,12 @@ function Actions({
     label: strings.more,
     placement: "bottom-end",
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
+      size: size,
       iconOnly: true,
       icon: "more",
       label: strings.more,
       title: strings.more,
-      variant: "ghost"
+      variant: "secondary"
     })
   }, hidden.map(a => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: a.label,
@@ -31602,55 +31638,85 @@ function Actions({
   }, a.label))));
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: ref,
-    className: "plx-entity-header__actions",
-    "data-plx-density": "compact"
+    className: "plx-entity-header__actions"
   }, (0, _overflow.splitAt)(items, fit, more));
 }
 function EntityHeader({
+  kind = 'page',
   title,
+  subtitle,
   media,
-  context,
   status,
+  facts,
+  summary,
+  next,
   actions,
   moreActions,
-  live,
-  facts,
   description,
-  headingLevel = 1,
+  context,
+  live,
+  headingLevel,
   className,
   strings
 }) {
-  const H = 'h' + headingLevel;
+  const section = kind === 'section';
+  const H = 'h' + (headingLevel || (section ? 2 : 1));
   const s = {
     more: 'More actions',
+    status: 'Status',
+    next: 'Next step',
     ...strings
   };
-  const badge = status && ! /*#__PURE__*/_react.default.isValidElement(status) ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    tone: status.tone
-  }, status.label) : status;
+  const sub = subtitle !== undefined ? subtitle : description !== undefined ? description : context;
+  const st = status || live;
+  const hasActions = actions && actions.length || moreActions && moreActions.length;
+  const aside = !!(next && !section) || !!hasActions;
   return /*#__PURE__*/_react.default.createElement("header", {
-    className: (0, _cx.cx)('plx-entity-header', className)
+    className: (0, _cx.cx)('plx-entity-header', section && 'plx-entity-header--section', !aside && 'plx-entity-header--solo', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__layout"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__main"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__lead"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__heading"
   }, /*#__PURE__*/_react.default.createElement(Media, {
     media: media || {
       icon: 'doc-text'
-    }
+    },
+    section: section
   }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-entity-header__top"
-  }, context ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-entity-header__context"
-  }, context) : /*#__PURE__*/_react.default.createElement("span", null), badge ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-entity-header__status"
-  }, badge) : null), /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-entity-header__text"
+  }, /*#__PURE__*/_react.default.createElement(H, {
     className: "plx-entity-header__title"
-  }, title), actions && actions.length || moreActions && moreActions.length ? /*#__PURE__*/_react.default.createElement(Actions, {
+  }, title), sub && !section ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-entity-header__subtitle"
+  }, sub) : null)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__rule",
+    "aria-hidden": "true"
+  }), section ? summary || sub ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-entity-header__summary"
+  }, summary || sub) : null : /*#__PURE__*/_react.default.createElement(Details, {
+    status: st,
+    facts: facts,
+    strings: s
+  }))), aside ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__aside"
+  }, next && !section ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__next"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-entity-header__eyebrow"
+  }, next.label || s.next), /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-entity-header__next-title"
+  }, next.title), next.detail ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-entity-header__next-detail"
+  }, next.detail) : null) : null, hasActions ? /*#__PURE__*/_react.default.createElement(Actions, {
     actions: actions,
     moreActions: moreActions,
+    size: section ? 'sm' : 'md',
     strings: s
-  }) : null, /*#__PURE__*/_react.default.createElement(Facts, {
-    live: live,
-    facts: facts,
-    description: description
-  }));
+  }) : null) : null));
 }
   } },
   "platform/patterns/NotificationList/NotificationList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
