@@ -29916,7 +29916,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        screen: Back, the title, then the actions); it truncates with an ellipsis when it does not fit
      switcher: true or false overrides whether the header name is the application switcher (default: when currentApp is given)
      className: more classes on the header
-     AppHeader.Item.icon: the icon
+     AppHeader.Item.icon: the icon; an Icon without a size is drawn at size lg (24px)
      AppHeader.Item.label: its accessible name and tooltip; include the count in it when there is one
      AppHeader.Item.current: marks the open place (aria-current); default false
      AppHeader.Item.count: a count pill on the icon (up to 99)
@@ -30196,7 +30196,8 @@ function AppHeader({
     "aria-keyshortcuts": "Control+K Meta+K",
     onClick: () => setSearching(true)
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "hdr-search"
+    name: "hdr-search",
+    size: "lg"
   })), searchView, searching && !narrow ? /*#__PURE__*/_react.default.createElement("div", {
     ref: panel,
     id: searchId,
@@ -30210,7 +30211,7 @@ function AppHeader({
   }, actions, account)));
 }
 AppHeader.Item = /*#__PURE__*/_react.default.forwardRef(function AppHeaderItem({
-  icon,
+  icon: iconProp,
   label,
   current = false,
   count,
@@ -30220,6 +30221,10 @@ AppHeader.Item = /*#__PURE__*/_react.default.forwardRef(function AppHeaderItem({
   className,
   ...rest
 }, ref) {
+  // the header's icon size is the icon's own prop (lg, 24px; owner 2026-10-18), unless the icon names one
+  const icon = /*#__PURE__*/_react.default.isValidElement(iconProp) && iconProp.type === _Icon.Icon && !iconProp.props.size ? /*#__PURE__*/_react.default.cloneElement(iconProp, {
+    size: 'lg'
+  }) : iconProp;
   const props = {
     ref,
     className: (0, _cx.cx)('plx-app-header__item', current && 'is-current', className),
@@ -30286,7 +30291,8 @@ AppHeader.Account = function AppHeaderAccount({
   }), name) : /*#__PURE__*/_react.default.createElement(AppHeader.Item, {
     icon: /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
       name: name,
-      src: src
+      src: src,
+      size: "md"
     }),
     label: label,
     current: !!current,

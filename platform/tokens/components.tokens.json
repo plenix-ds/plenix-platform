@@ -3849,10 +3849,6 @@
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
-    "app-header-avatar-size": {
-      "$value": "{plx-ref.size-32px}",
-      "$type": "dimension"
-    },
     "app-header-icon-size": {
       "$value": "{plx-ref.size-24px}",
       "$type": "dimension"

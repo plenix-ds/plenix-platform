@@ -72,8 +72,6 @@
 .plx-app-header__switch-chevron{--plx-comp-icon-size:var(--plx-comp-app-header-chevron-size);color:var(--plx-comp-app-header-content);}
 .plx-app-switcher--brand .plx-app-switcher__panel{inset-inline-end:auto;inset-inline-start:0;}
 /* the 4px grid: (header height - item) / 2 and (item - icon) / 2 are multiples of 4: 56, 40, 24 (avatar 32) */
-.plx-app-header__item .plx-icon{--plx-comp-icon-size:var(--plx-comp-app-header-icon-size);}
-.plx-app-header__item .plx-avatar{block-size:var(--plx-comp-app-header-avatar-size);inline-size:var(--plx-comp-app-header-avatar-size);}
 /* the header name is a fixed width (a multiple of 4), so the pinned applications after it stay on the grid */
 .plx-app-header__brand--switch .plx-app-header__name{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;}
 .plx-app-header__brand--switch .plx-app-header__product,.plx-app-header__brand--switch .plx-app-header__app{overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}

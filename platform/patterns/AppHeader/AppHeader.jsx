@@ -34,7 +34,7 @@
        screen: Back, the title, then the actions); it truncates with an ellipsis when it does not fit
      switcher: true or false overrides whether the header name is the application switcher (default: when currentApp is given)
      className: more classes on the header
-     AppHeader.Item.icon: the icon
+     AppHeader.Item.icon: the icon; an Icon without a size is drawn at size lg (24px)
      AppHeader.Item.label: its accessible name and tooltip; include the count in it when there is one
      AppHeader.Item.current: marks the open place (aria-current); default false
      AppHeader.Item.count: a count pill on the icon (up to 99)
@@ -214,7 +214,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
         {search ? (
             <div className="plx-app-header__search-slot">
               <button ref={toggle} type="button" className="plx-app-header__item plx-app-header__search-toggle" aria-label="Search" aria-expanded={searching} aria-controls={searchId}
-                aria-keyshortcuts="Control+K Meta+K" onClick={() => setSearching(true)}><Icon name="hdr-search" /></button>
+                aria-keyshortcuts="Control+K Meta+K" onClick={() => setSearching(true)}><Icon name="hdr-search" size="lg" /></button>
               {searchView}
               {searching && !narrow ? (
                 <div ref={panel} id={searchId} className="plx-app-header__search" role="search" onBlur={onPanelBlur}>
@@ -233,7 +233,9 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
   );
 }
 
-AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon, label, current = false, count, href, onClick, tooltip = true, className, ...rest }, ref) {
+AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon: iconProp, label, current = false, count, href, onClick, tooltip = true, className, ...rest }, ref) {
+  // the header's icon size is the icon's own prop (lg, 24px; owner 2026-10-18), unless the icon names one
+  const icon = React.isValidElement(iconProp) && iconProp.type === Icon && !iconProp.props.size ? React.cloneElement(iconProp, { size: 'lg' }) : iconProp;
   const props = { ref, className: cx('plx-app-header__item', current && 'is-current', className), 'aria-label': label, 'aria-current': current ? 'page' : undefined, onClick, ...rest };
   const content = (
     <>
@@ -256,7 +258,7 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
   // no tooltip: it would cover the open menu, which names itself
   const trigger = inPane
     ? <Button size="sm" variant="ghost" caret className="plx-app-header__account-row" aria-label={label}><Avatar name={name} src={src} size="2xs" />{name}</Button>
-    : <AppHeader.Item icon={<Avatar name={name} src={src} />} label={label} current={!!current} tooltip={false} className="plx-app-header__item--account" />;
+    : <AppHeader.Item icon={<Avatar name={name} src={src} size="md" />} label={label} current={!!current} tooltip={false} className="plx-app-header__item--account" />;
   const has = (o) => !!(o.href || o.onSelect);
   const choices = typeof window !== 'undefined' && window.PlenixWorkspace ? window.PlenixWorkspace.densities() : DENSITY_CHOICES;
   return (

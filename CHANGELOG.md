@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.55.2] - 2026-10-19
+
+### Changed
+- **App Header sizes come from the components' own props** (owner, 2026-10-18; Styling Standard, Phase 1). The account
+  avatar is `Avatar size="md"` (32px, initials 12px, was 11px inside a 32px box). The header's icons are
+  `Icon size="lg"` (24px): `AppHeader.Item` gives an Icon without a size `lg`. The header no longer sizes the Avatar
+  and Icon from outside (`.plx-app-header__item .plx-avatar`, `.plx-app-header__item .plx-icon` removed).
+  Apps to check: an icon given to `AppHeader.Item` as something other than an `Icon` sizes itself.
+### Removed
+- Token `--plx-comp-app-header-avatar-size` (the avatar's own md size replaces it).
+
 ## [0.55.1] - 2026-10-19
 
 ### Changed
