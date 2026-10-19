@@ -6,6 +6,11 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.56.1] - 2026-10-19
+
+### Fixed
+- The design system shows ActivityList's `titleLines` variant ("Title lines: Two lines") on the Activity stream page.
+
 ## [0.56.0] - 2026-10-19
 
 ### Added
