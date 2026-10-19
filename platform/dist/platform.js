@@ -10552,6 +10552,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      </Toolbar>
    Props:
      Toolbar.label: its accessible name
+     Toolbar.variant: "default" (rows wrap; gaps follow the density) | "bar" (one row that never wraps, fixed gaps: CommandBar)
      Toolbar.onKeyDown(event): runs first; preventDefault stops the toolbar's own key handling
      Toolbar.className: more classes on the toolbar
      Toolbar.children: controls, groups and spacers. Stack and Inline layout wrappers (also nested inside Group) are transparent: toolbar spacing applies to their controls.
@@ -10575,6 +10576,7 @@ const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox
 const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
 function Toolbar({
   label,
+  variant = 'default',
   className,
   children,
   onKeyDown,
@@ -10643,7 +10645,7 @@ function Toolbar({
     ref: ref,
     role: "toolbar",
     "aria-label": label,
-    className: (0, _cx.cx)('plx-toolbar', className),
+    className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
     onKeyDown: onKey,
     onFocus: onFocusIn
   }, rest), children);
@@ -23729,6 +23731,7 @@ function CommandBar({
     className: "plx-command-bar__bar"
   }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
     label: name,
+    variant: "bar",
     className: "plx-command-bar__row",
     "data-plx-bar-row": ""
   }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));

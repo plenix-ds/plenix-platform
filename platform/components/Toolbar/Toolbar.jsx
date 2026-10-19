@@ -8,6 +8,7 @@
      </Toolbar>
    Props:
      Toolbar.label: its accessible name
+     Toolbar.variant: "default" (rows wrap; gaps follow the density) | "bar" (one row that never wraps, fixed gaps: CommandBar)
      Toolbar.onKeyDown(event): runs first; preventDefault stops the toolbar's own key handling
      Toolbar.className: more classes on the toolbar
      Toolbar.children: controls, groups and spacers. Stack and Inline layout wrappers (also nested inside Group) are transparent: toolbar spacing applies to their controls.
@@ -35,7 +36,7 @@ import { cx } from '../../utils/cx.js';
 const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
 const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
 
-export function Toolbar({ label, className, children, onKeyDown, onFocus, ...rest }) {
+export function Toolbar({ label, variant = 'default', className, children, onKeyDown, onFocus, ...rest }) {
   const ref = React.useRef(null);
   const itemsOf = () => (ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) =>
     el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === 'visible'
@@ -78,7 +79,7 @@ export function Toolbar({ label, className, children, onKeyDown, onFocus, ...res
     e.preventDefault(); items[n].focus();
   };
   const onFocusIn = (e) => { if (onFocus) onFocus(e); roveTo(ref, itemsOf(), e.target); };
-  return <div ref={ref} role="toolbar" aria-label={label} className={cx('plx-toolbar', className)} onKeyDown={onKey} onFocus={onFocusIn} {...rest}>{children}</div>;
+  return <div ref={ref} role="toolbar" aria-label={label} className={cx('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className)} onKeyDown={onKey} onFocus={onFocusIn} {...rest}>{children}</div>;
 }
 Toolbar.Group = function ToolbarGroup({ className, children, ...rest }) {
   return <div className={cx('plx-toolbar__group', className)} {...rest}>{children}</div>;

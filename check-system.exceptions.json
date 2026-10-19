@@ -301,9 +301,6 @@
       ".plx-bulk-actions__row>.plx-toolbar__group": 1,
       ".plx-bulk-actions--empty .plx-selection-summary__count": 1
     },
-    "platform/patterns/CommandBar/command-bar.css": {
-      ".plx-command-bar__row>.plx-toolbar__group": 1
-    },
     "platform/patterns/CommandBar/find-panel.css": {
       ".plx-find-panel__handle .plx-button__icon": 1,
       ".plx-find-pick .plx-button__label": 1

@@ -9391,6 +9391,16 @@
     "activity-list-title-2-font-weight": {
       "$value": "{plx-sys.font-weight-regular}",
       "$type": "fontWeight"
+    },
+    "toolbar-bar-group-gap": {
+      "$value": "{plx-sys.space-cluster-sm}",
+      "$type": "dimension",
+      "$description": "Toolbar, bar variant (CommandBar): the space between its groups; density does not change it"
+    },
+    "toolbar-bar-control-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension",
+      "$description": "Toolbar, bar variant (CommandBar): the space between the controls of a group; density does not change it"
     }
   }
 }

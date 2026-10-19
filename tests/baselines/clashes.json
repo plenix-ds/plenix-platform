@@ -59,10 +59,10 @@
   }
  },
  "kinds": {
-  "cross-component": 245,
+  "cross-component": 240,
   "order-decided": 19,
   "redundant": 29,
-  "state-variant": 232,
+  "state-variant": 236,
   "variant-repeat": 95,
   "vendor": 93
  },
@@ -1413,40 +1413,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "projects",
-    "calendar",
-    "bookmarks",
-    "files",
-    "dam"
-   ],
-   "p": "column-gap",
-   "a": ".plx-toolbar",
-   "b": ".plx-command-bar__row",
-   "va": "var(--plx-comp-toolbar-group-gap)",
-   "vb": "var(--plx-comp-command-bar-side-gap)",
-   "files": "components/Toolbar/toolbar.css / patterns/CommandBar/command-bar.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "projects",
-    "calendar",
-    "bookmarks",
-    "files",
-    "dam"
-   ],
-   "p": "column-gap",
-   "a": ".plx-toolbar__group",
-   "b": ".plx-command-bar__row > .plx-toolbar__group",
-   "va": "var(--plx-comp-toolbar-control-gap)",
-   "vb": "var(--plx-comp-command-bar-group-gap)",
-   "files": "components/Toolbar/toolbar.css / patterns/CommandBar/command-bar.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "cursor",
@@ -1703,40 +1669,6 @@
    "va": "wrap",
    "vb": "nowrap",
    "files": "components/Field/field.css / components/Field/field.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "projects",
-    "calendar",
-    "bookmarks",
-    "files",
-    "dam"
-   ],
-   "p": "flex-wrap",
-   "a": ".plx-toolbar",
-   "b": ".plx-command-bar__row",
-   "va": "wrap",
-   "vb": "nowrap",
-   "files": "components/Toolbar/toolbar.css / patterns/CommandBar/command-bar.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "projects",
-    "calendar",
-    "bookmarks",
-    "files",
-    "dam"
-   ],
-   "p": "flex-wrap",
-   "a": ".plx-toolbar__group",
-   "b": ".plx-command-bar__row > .plx-toolbar__group",
-   "va": "wrap",
-   "vb": "nowrap",
-   "files": "components/Toolbar/toolbar.css / patterns/CommandBar/command-bar.css",
    "same": false
   },
   {
@@ -2450,23 +2382,6 @@
    "va": "0px",
    "vb": "0px",
    "files": "components/Input/input.css / components/Chat/chat.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "projects",
-    "calendar",
-    "bookmarks",
-    "files",
-    "dam"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-toolbar",
-   "b": ".plx-command-bar__row",
-   "va": "0px",
-   "vb": "0px",
-   "files": "components/Toolbar/toolbar.css / patterns/CommandBar/command-bar.css",
    "same": true
   },
   {
@@ -6255,6 +6170,40 @@
   {
    "kind": "state-variant",
    "pages": [
+    "projects",
+    "calendar",
+    "bookmarks",
+    "files",
+    "dam"
+   ],
+   "p": "column-gap",
+   "a": ".plx-toolbar",
+   "b": ".plx-toolbar--bar",
+   "va": "var(--plx-comp-toolbar-group-gap)",
+   "vb": "var(--plx-comp-toolbar-bar-group-gap)",
+   "files": "components/Toolbar/toolbar.css / components/Toolbar/toolbar.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "projects",
+    "calendar",
+    "bookmarks",
+    "files",
+    "dam"
+   ],
+   "p": "column-gap",
+   "a": ".plx-toolbar__group",
+   "b": ".plx-toolbar--bar > .plx-toolbar__group",
+   "va": "var(--plx-comp-toolbar-control-gap)",
+   "vb": "var(--plx-comp-toolbar-bar-control-gap)",
+   "files": "components/Toolbar/toolbar.css / components/Toolbar/toolbar.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "messages",
     "dam/image-editor.html"
    ],
@@ -6382,6 +6331,40 @@
    "va": "0",
    "vb": "1",
    "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "projects",
+    "calendar",
+    "bookmarks",
+    "files",
+    "dam"
+   ],
+   "p": "flex-wrap",
+   "a": ".plx-toolbar",
+   "b": ".plx-toolbar--bar",
+   "va": "wrap",
+   "vb": "nowrap",
+   "files": "components/Toolbar/toolbar.css / components/Toolbar/toolbar.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "projects",
+    "calendar",
+    "bookmarks",
+    "files",
+    "dam"
+   ],
+   "p": "flex-wrap",
+   "a": ".plx-toolbar__group",
+   "b": ".plx-toolbar--bar > .plx-toolbar__group",
+   "va": "wrap",
+   "vb": "nowrap",
+   "files": "components/Toolbar/toolbar.css / components/Toolbar/toolbar.css",
    "same": false
   },
   {

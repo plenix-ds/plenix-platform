@@ -11,8 +11,6 @@
     "command-bar-radius": { "$value": "{plx-sys.radius-control-8px}", "$type": "dimension", "$description": "Command bar: the frame’s corners." },
     "command-bar-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "Command bar: the space above and below the controls in the bar." },
     "command-bar-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "Command bar: the space before and after the controls in the bar." },
-    "command-bar-group-gap": { "$value": "{plx-sys.space-cluster-xs}", "$type": "dimension", "$description": "Command bar: the space between the controls of one side (the ghost buttons sit close; their hover fills mark them)." },
-    "command-bar-side-gap": { "$value": "{plx-sys.space-cluster-sm}", "$type": "dimension", "$description": "Command bar: the space between its sides (the actions, the find side, the view side, the count)." },
     "command-bar-count-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Command bar: the count at the end (\"24 assets\"), in the data font." },
     "command-bar-danger-text": { "$value": "{plx-sys.feedback-danger-content}", "$type": "color", "$description": "Command bar and selection bar: a danger command (Delete), a ghost button in the danger color." },
     "command-bar-danger-hover-text": { "$value": "{plx-sys.feedback-danger-content}", "$type": "color", "$description": "Command bar and selection bar: a danger command while hovered (the ghost hover fill, the danger color kept)." },

@@ -2294,6 +2294,8 @@
   --plx-comp-avatar-background: var(--plx-sys-avatar-background);
   --plx-comp-avatar-content: var(--plx-sys-avatar-content);
   --plx-comp-activity-list-title-2-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-toolbar-bar-group-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-toolbar-bar-control-gap: var(--plx-sys-space-cluster-xs);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);
@@ -3040,8 +3042,6 @@
   --plx-comp-command-bar-radius: var(--plx-sys-radius-control-8px);
   --plx-comp-command-bar-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-command-bar-padding-inline: var(--plx-sys-space-inset-sm);
-  --plx-comp-command-bar-group-gap: var(--plx-sys-space-cluster-xs);
-  --plx-comp-command-bar-side-gap: var(--plx-sys-space-cluster-sm);
   --plx-comp-command-bar-count-text: var(--plx-sys-content-muted);
   --plx-comp-command-bar-danger-text: var(--plx-sys-feedback-danger-content);
   --plx-comp-command-bar-danger-hover-text: var(--plx-sys-feedback-danger-content);

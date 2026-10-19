@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.57.0] - 2026-10-19
+
+### Added
+- `Toolbar` `variant="bar"`: one row that never wraps, with fixed gaps that density does not change
+  (`--plx-comp-toolbar-bar-group-gap`, `--plx-comp-toolbar-bar-control-gap`).
+### Changed
+- CommandBar no longer restyles Toolbar from outside (Styling Standard, Phase 2): its rows are `Toolbar variant="bar"`,
+  and its own rule keeps only the row's flex sizing. No visual change (`tests/clash-audit.js --check`: no element
+  changed, 5 clashes gone). Tokens `--plx-comp-command-bar-side-gap` and `--plx-comp-command-bar-group-gap` are now
+  the Toolbar bar tokens above. Apps to check: CSS that set either old token.
+
 ## [0.56.1] - 2026-10-19
 
 ### Fixed
