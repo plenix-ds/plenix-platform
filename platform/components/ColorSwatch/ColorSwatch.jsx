@@ -30,6 +30,8 @@
        chosen color when it is one of them), each with its swatch and name
        ColorPicker.className: more classes on the group
    Behavior:
+     unavailable marks the swatch cursor; callers still supply aria-disabled and prevent unavailable choices.
+     Labeled swatches pass pressed state to their chip; the chip owns its selected shadow.
      With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
      With showLabel the color's name is text beside it, read as text; the swatch itself stays decorative.
      A swatch button's target is at least 24px (44px with touch) whatever its size: it extends invisibly past the swatch
@@ -49,19 +51,19 @@ import { useOverflow, splitAt } from '../../utils/overflow.js';
 
 const nameOf = (h) => h.charAt(0).toUpperCase() + h.slice(1);
 
-export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, showLabel = false, onClick, className, ...rest }) {
+export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, showLabel = false, unavailable = false, onClick, className, ...rest }) {
   if (category === 'brown') category = 'orange';
   devWarn('ColorSwatch', { tone, size }, { tone: ['accent','surface','frost'], size: ['sm','md'] });
   if (showLabel && label) {
     // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
-    const chip = <ColorSwatch color={color} category={category} tone={tone} size={size} shape={shape} />;
+    const chip = <ColorSwatch color={color} category={category} tone={tone} size={size} shape={shape} pressed={!!onClick && !!pressed} unavailable={unavailable} />;
     const text = <span className="plx-color-swatch-label__text">{label}</span>;
-    return onClick ? <button type="button" className={cx('plx-color-swatch-label', className)} aria-pressed={!!pressed} onClick={onClick} {...rest}>{chip}{text}</button>
-      : <span className={cx('plx-color-swatch-label', className)} {...rest}>{chip}{text}</span>;
+    return onClick ? <button type="button" className={cx('plx-color-swatch-label', className)} data-plx-unavailable={unavailable ? '' : undefined} aria-pressed={!!pressed} onClick={onClick} {...rest}>{chip}{text}</button>
+      : <span className={cx('plx-color-swatch-label', className)} data-plx-unavailable={unavailable ? '' : undefined} {...rest}>{chip}{text}</span>;
   }
   const cls = cx('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
-  return onClick ? <button type="button" className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} aria-pressed={!!pressed} aria-label={label} onClick={onClick} {...rest} />
-    : <span className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} aria-hidden="true" {...rest} />;
+  return onClick ? <button type="button" className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} data-plx-unavailable={unavailable ? '' : undefined} aria-pressed={!!pressed} aria-label={label} onClick={onClick} {...rest} />
+    : <span className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} data-plx-unavailable={unavailable ? '' : undefined} data-plx-selected={pressed ? '' : undefined} aria-hidden="true" {...rest} />;
 }
 
 // the data colors to choose from: each a swatch button named by its hue, the chosen one pressed

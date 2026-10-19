@@ -67,7 +67,7 @@ export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onI
       <figure className="plx-media-viewer__figure">
         <div ref={stage} className={cx('plx-media-viewer__stage', 'plx-gesture--pan-x', item.kind === 'video' && 'plx-media-viewer__stage--video')}
           onPointerDownCapture={event => { if (event.target.closest('video,audio,button,input,select,a')) event.stopPropagation(); }}>
-          {item.kind === 'video' ? <MediaPlayer key={at} src={item.src} audio={item.audio} poster={item.poster} tracks={item.tracks} label={item.title || label || t.label} />
+          {item.kind === 'video' ? <MediaPlayer fill key={at} src={item.src} audio={item.audio} poster={item.poster} tracks={item.tracks} label={item.title || label || t.label} />
             : <img draggable={false} src={item.src} alt={item.alt || ''} className="plx-media-viewer__image" />}
         </div>
         {item.title || item.meta ? (

@@ -34,6 +34,7 @@
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
    Behavior:
+     Select.data applies the same technical-value font variant as Input.data to its native control.
      Inside a Field, the label, description and error are connected for you.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
@@ -85,10 +86,10 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
 });
 
 /* options: [{ value, label }] or children <option>s */
-export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, block = false, className, children, ...rest }, ref) {
+export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, data = false, block = false, className, children, ...rest }, ref) {
   return (
     <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
-      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
+      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
     </span>

@@ -21,7 +21,7 @@
 .plx-commerce__product{align-items:start;column-gap:var(--plx-comp-commerce-columns-gap);display:grid;grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);row-gap:var(--plx-comp-commerce-gap);}
 .plx-commerce__gallery{min-inline-size:0;}
 .plx-commerce__buy{align-items:flex-start;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-section-gap);}
-.plx-commerce__buy .plx-product-options{align-self:stretch;}
+.plx-commerce__options{align-self:stretch;}
 .plx-commerce__rating,.plx-commerce__order-number,.plx-commerce__links,.plx-commerce__row-actions{align-items:center;column-gap:var(--plx-comp-commerce-inline-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-commerce-inline-gap);}
 .plx-commerce__order-number{align-items:baseline;}
 /* the lines of a cart or an order */

@@ -14,27 +14,6 @@
     "platform/charts/network-graph.css": {
       ".plx-network-graph .plx-chart__svg": 1
     },
-    "platform/components/ColorSwatch/color-swatch.css": {
-      "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
-    },
-    "platform/components/DocumentViewer/document-viewer.css": {
-      ".plx-document-viewer__viewport[data-zoom=\"50\"] > .plx-image": 1,
-      ".plx-document-viewer__viewport[data-zoom=\"75\"] > .plx-image": 1,
-      ".plx-document-viewer__viewport[data-zoom=\"100\"] > .plx-image": 1,
-      ".plx-document-viewer__viewport[data-zoom=\"125\"] > .plx-image": 1,
-      ".plx-document-viewer__viewport[data-zoom=\"150\"] > .plx-image": 1,
-      ".plx-document-viewer__viewport[data-zoom=\"200\"] > .plx-image": 1,
-      ".plx-document-viewer__zoom .plx-input": 1
-    },
-    "platform/components/MediaViewer/media-viewer.css": {
-      ".plx-media-viewer__stage--video>.plx-media-player": 2,
-      ".plx-media-viewer__stage--video .plx-media-player__media": 1
-    },
-    "platform/components/ProductOptions/product-options.css": {
-      ".plx-product-options__sizes .plx-radio-tiles__legend": 1,
-      ".plx-product-options__swatch.is-unavailable .plx-color-swatch": 1,
-      ".plx-product-options__swatch.is-unavailable .plx-color-swatch-label": 1
-    },
     "platform/components/Tree/tree.css": {
       ".plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
       ".plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
@@ -65,9 +44,6 @@
       ".plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+5)": 1,
       ".plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+9)": 1,
       ".plx-layout-grid--wide>.plx-layout-grid-overlay__column:nth-child(n+5)": 1
-    },
-    "platform/templates/Commerce/commerce.css": {
-      ".plx-commerce__buy .plx-product-options": 1
     }
   },
   "important": {

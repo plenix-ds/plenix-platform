@@ -11,6 +11,8 @@
      onTimeChange(seconds), onError(event): media events; strings: rate, transcript, hideTranscript, pip, exitPip,
        unsupported, failed, pipFailed, seek, fallback, audioFailed, volume, mute; className; ref: the HTMLMediaElement.
    Behavior:
+     fill (default false) occupies a constrained stage; the media flexes and contains its picture above the controls.
+
      Browser controls provide play, pause, seek, volume and caption selection. Nothing autoplays.
      A silent video has no native volume control: separate sound adds the existing Slider and a Mute toggle.
      Transcript buttons seek only after media metadata is available. Failed PiP requests stay recoverable.
@@ -32,7 +34,7 @@ import { cx } from '../../utils/cx.js';
 
 const clock = (seconds) => { const n = Math.max(0, Math.floor(Number(seconds) || 0)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
 export const MediaPlayer = React.forwardRef(function MediaPlayer({ src, audio, kind = 'video', label, poster, crossOrigin, tracks = [], transcript = [], showTranscript = false,
-  rates = [0.5, 1, 1.5, 2], pictureInPicture = true, onTimeChange, onError, strings, className }, ref) {
+  rates = [0.5, 1, 1.5, 2], pictureInPicture = true, onTimeChange, onError, strings, className, fill = false }, ref) {
   const t = Object.assign({ rate: 'Playback speed', transcript: 'Show transcript', hideTranscript: 'Hide transcript', pip: 'Picture in picture', exitPip: 'Exit picture in picture', unsupported: 'Picture in picture is unavailable.', failed: 'This media could not be played.', pipFailed: 'Could not change picture in picture. Try again.', seek: 'Seek to {time}', fallback: 'Open media file', volume: 'Volume', mute: 'Mute', audioFailed: 'The separate sound track could not be played. Video is playing muted.' }, strings);
   const media = React.useRef(null), id = useUid('plx-media-player'), epoch = React.useRef(0), lock = React.useRef(false);
   const sound = React.useRef(null), audioFailed = useSeparateAudio(media, sound, src, audio, kind);
@@ -49,7 +51,7 @@ export const MediaPlayer = React.forwardRef(function MediaPlayer({ src, audio, k
     finally { if (at === epoch.current) { lock.current = false; setBusy(false); } }
   };
   const Tag = kind === 'audio' ? 'audio' : 'video';
-  return <Stack className={cx('plx-media-player', className)}>
+  return <Stack className={cx('plx-media-player', className)} data-plx-fill={fill ? '' : undefined}>
     <Tag key={kind + ':' + src} ref={media} className="plx-media-player__media" src={src} poster={kind === 'audio' ? undefined : poster} controls playsInline preload="metadata" crossOrigin={crossOrigin} aria-label={label}
       onLoadedMetadata={() => { setReady(true); setError(''); }} onTimeUpdate={(e) => { if (onTimeChange) onTimeChange(e.currentTarget.currentTime); }}
       onVolumeChange={event => { setVolume(event.currentTarget.volume); setMuted(event.currentTarget.muted); }}

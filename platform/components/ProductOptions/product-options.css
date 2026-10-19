@@ -11,12 +11,12 @@
 .plx-product-options__chosen{color:var(--plx-comp-product-options-chosen-text);font-weight:var(--plx-comp-product-options-chosen-font-weight);}
 /* size buttons: RadioTiles with tiles as narrow as a size (its own tile width, set here for the product's sizes) */
 .plx-product-options .plx-product-options__sizes{--plx-comp-radio-tiles-min:var(--plx-comp-product-options-size-min);}
-.plx-product-options__sizes .plx-radio-tiles__legend{line-height:var(--plx-comp-product-options-legend-line-height);}
+.plx-product-options__sizes{--plx-comp-radio-tiles-legend-line-height:var(--plx-comp-product-options-legend-line-height);}
 /* color swatches */
 .plx-product-options__swatches{align-items:center;column-gap:var(--plx-comp-product-options-swatch-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-product-options-swatch-gap);}
 .plx-product-options__swatch{display:inline-flex;}
 .plx-product-options__swatch.is-unavailable{opacity:var(--plx-comp-product-options-unavailable-opacity);}
-.plx-product-options__swatch.is-unavailable .plx-color-swatch,.plx-product-options__swatch.is-unavailable .plx-color-swatch-label{cursor:not-allowed;}
+/* ColorSwatch owns its unavailable cursor. */
 /* the size guide link, after the sizes */
 .plx-product-options__guide{display:flex;}
 /* an option's error: the danger text with its icon, under the option */

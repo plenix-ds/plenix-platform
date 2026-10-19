@@ -37,8 +37,9 @@
      disabled: turns every control off (default false)
      strings: the words, for other languages: { chosen: "{label}:" (the option's name before its value), unavailable: "Out of stock", quantity: "Quantity", quantityOf: "Quantity,
        {product}", unavailableName: "{label}, out of stock", none: "None chosen" }
-     className: more classes on the group
+     className: layout integration on the root; placement only, not appearance
    Behavior:
+     The sizes slot publishes RadioTiles legend line height; swatches receive their own unavailable prop.
      Size buttons are RadioTiles: one radio group, Tab reaches the chosen tile, the arrow keys move and choose; an out of
        stock size is a disabled radio with its note under it, which the arrow keys skip.
      Color swatches are ColorSwatch buttons in a group named by the option (aria-pressed on the chosen one); each is named
@@ -101,7 +102,7 @@ export function ProductOptions({ options = [], value = {}, onChange, quantity, o
                   return (
                     <span key={v.value} className={cx('plx-product-options__swatch', off && 'is-unavailable')}>
                       <ColorSwatch category={v.color ? undefined : v.category} color={v.color} label={swatchLabels ? labelOf(v) : name} showLabel={swatchLabels}
-                        pressed={value[o.name] === v.value} onClick={() => { if (!off && !disabled) pick(o.name, v.value); }}
+                        unavailable={off} pressed={value[o.name] === v.value} onClick={() => { if (!off && !disabled) pick(o.name, v.value); }}
                         {...(swatchLabels && off ? { 'aria-label': name } : {})} {...(off || disabled ? { 'aria-disabled': true } : {})} />
                     </span>
                   );

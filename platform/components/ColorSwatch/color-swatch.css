@@ -3,7 +3,7 @@
 .plx-color-swatch--sm{block-size:var(--plx-comp-color-swatch-sm-height);inline-size:var(--plx-comp-color-swatch-sm-width);}
 .plx-color-swatch--md{block-size:var(--plx-comp-color-swatch-md-height);inline-size:var(--plx-comp-color-swatch-md-width);}
 button.plx-color-swatch{cursor:pointer;}
-.plx-color-swatch[aria-pressed="true"]{box-shadow:var(--plx-comp-color-swatch-pressed-shadow);}
+.plx-color-swatch[aria-pressed="true"],.plx-color-swatch[data-plx-selected]{box-shadow:var(--plx-comp-color-swatch-pressed-shadow);}
 button.plx-color-swatch:focus-visible,
 button.plx-color-swatch.is-focus-visible{outline-color:var(--plx-comp-color-swatch-focus-outline-color);outline-offset:var(--plx-comp-color-swatch-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-color-swatch-focus-outline-width);}
 /* round (shape="round"): a circle */
@@ -27,6 +27,8 @@ button.plx-color-swatch::before{content:"";inset-block-end:var(--plx-comp-color-
    target with the swatch's focus ring and its selected ring on the swatch */
 .plx-color-swatch-label{align-items:center;background-color:transparent;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;color:var(--plx-comp-color-swatch-label-text);column-gap:var(--plx-comp-color-swatch-label-gap);display:inline-flex;font-family:inherit;font-size:var(--plx-comp-color-swatch-label-font-size);line-height:var(--plx-comp-color-swatch-label-line-height);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 button.plx-color-swatch-label{cursor:pointer;min-block-size:var(--plx-comp-color-swatch-label-min-height);}
-button.plx-color-swatch-label[aria-pressed="true"] .plx-color-swatch{box-shadow:var(--plx-comp-color-swatch-pressed-shadow);}
+/* Labeled swatches pass selected state to their own chip. */
 button.plx-color-swatch-label:focus-visible,
 button.plx-color-swatch-label.is-focus-visible{outline-color:var(--plx-comp-color-swatch-focus-outline-color);outline-offset:var(--plx-comp-color-swatch-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-color-swatch-focus-outline-width);}
+
+.plx-color-swatch[data-plx-unavailable],.plx-color-swatch-label[data-plx-unavailable]{cursor:not-allowed;}

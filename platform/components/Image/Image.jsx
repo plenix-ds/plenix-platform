@@ -27,6 +27,8 @@
      onError: called when it cannot load
      className: more classes on the frame
    Behavior:
+     Public context --plx-comp-image-zoom applies to every Image in the containing element; fallback 1.
+     DocumentViewer supplies its stepped zoom without selecting Image anatomy.
      The frame keeps its space before the picture arrives (a ratio, or width and height), so nothing moves when it loads.
      While loading the frame shows its placeholder; the picture fades in over it once loaded (no fade with reduced motion).
      When the picture fails, the frame keeps its size and shows the fallback; a picture that loaded from the cache shows
