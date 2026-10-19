@@ -91,7 +91,9 @@ jobs:
           cp tests/baselines/clashes*.json tests/baselines/computed*.json ../head/tests/baselines/
 
       - name: Head (check)
+        shell: bash
         run: |
+          set -o pipefail
           cd head
           if [ "${{ matrix.kind }}" = ds ]; then node tests/clash-audit.js --ds --check --pages "${{ matrix.pages }}" | tee ../proof.txt; else node tests/clash-audit.js --check --pages "${{ matrix.pages }}" | tee ../proof.txt; fi
 
