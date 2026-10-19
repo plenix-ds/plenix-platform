@@ -4,12 +4,12 @@
    fills the live area (circle, 20); a square one is 18 so it looks as large; tall and wide shapes are 16 by 20.
      .plx-keylines                          one icon square, drawn at --plx-sys-keyline-specimen-size
      .plx-keylines__shape--live|circle|square|portrait|landscape   the live area and the four keyline shapes, centered
-     .plx-keylines > .plx-icon              an icon (Icon) over the shapes, drawn at the specimen size
+     an Icon inside .plx-keylines            drawn over the shapes at the specimen size (the specimen sets its size and color)
    Content keylines: where a row's content starts (the inset, Stack inset="md") and where its text starts after a leading icon
    (inset, a md icon, the Inline gap "sm"), so the icons and the text of a view line up in two straight lines.
      .plx-keylines-content                  a frame that draws both lines over its content
    Over a page: platform/dev/keylines.js (?keylines) sets data-plx-keylines="on" on <html>: every icon square is outlined. */
-.plx-keylines{align-items:center;background-color:var(--plx-sys-surface-sunken);block-size:var(--plx-sys-keyline-specimen-size);box-sizing:border-box;display:grid;inline-size:var(--plx-sys-keyline-specimen-size);justify-items:center;}
+.plx-keylines{--plx-comp-icon-size:100%;align-items:center;background-color:var(--plx-sys-surface-sunken);block-size:var(--plx-sys-keyline-specimen-size);box-sizing:border-box;color:var(--plx-sys-content-default);display:grid;inline-size:var(--plx-sys-keyline-specimen-size);justify-items:center;}
 .plx-keylines>*{grid-column-end:2;grid-column-start:1;grid-row-end:2;grid-row-start:1;}
 .plx-keylines__shape{border-block-end-color:var(--plx-sys-feedback-info-solid);border-block-end-style:var(--plx-sys-border-style-solid);border-block-end-width:var(--plx-sys-border-width-thin);border-block-start-color:var(--plx-sys-feedback-info-solid);border-block-start-style:var(--plx-sys-border-style-solid);border-block-start-width:var(--plx-sys-border-width-thin);border-inline-end-color:var(--plx-sys-feedback-info-solid);border-inline-end-style:var(--plx-sys-border-style-solid);border-inline-end-width:var(--plx-sys-border-width-thin);border-inline-start-color:var(--plx-sys-feedback-info-solid);border-inline-start-style:var(--plx-sys-border-style-solid);border-inline-start-width:var(--plx-sys-border-width-thin);box-sizing:border-box;}
 .plx-keylines__shape--live{block-size:calc(100% * (var(--plx-sys-keyline-icon-grid) - 2 * var(--plx-sys-keyline-icon-padding)) / var(--plx-sys-keyline-icon-grid));border-block-end-style:var(--plx-sys-border-style-dashed);border-block-start-style:var(--plx-sys-border-style-dashed);border-inline-end-style:var(--plx-sys-border-style-dashed);border-inline-start-style:var(--plx-sys-border-style-dashed);inline-size:calc(100% * (var(--plx-sys-keyline-icon-grid) - 2 * var(--plx-sys-keyline-icon-padding)) / var(--plx-sys-keyline-icon-grid));}
@@ -17,7 +17,6 @@
 .plx-keylines__shape--square{block-size:calc(100% * var(--plx-sys-keyline-icon-square) / var(--plx-sys-keyline-icon-grid));inline-size:calc(100% * var(--plx-sys-keyline-icon-square) / var(--plx-sys-keyline-icon-grid));}
 .plx-keylines__shape--portrait{block-size:calc(100% * var(--plx-sys-keyline-icon-circle) / var(--plx-sys-keyline-icon-grid));inline-size:calc(100% * var(--plx-sys-keyline-icon-short) / var(--plx-sys-keyline-icon-grid));}
 .plx-keylines__shape--landscape{block-size:calc(100% * var(--plx-sys-keyline-icon-short) / var(--plx-sys-keyline-icon-grid));inline-size:calc(100% * var(--plx-sys-keyline-icon-circle) / var(--plx-sys-keyline-icon-grid));}
-.plx-keylines>.plx-icon{block-size:100%;color:var(--plx-sys-content-default);inline-size:100%;}
 
 /* content keylines: the content start and the text start after a leading icon, as two lines over the frame */
 .plx-keylines-content{background-image:linear-gradient(var(--plx-sys-feedback-info-solid),var(--plx-sys-feedback-info-solid)),linear-gradient(var(--plx-sys-feedback-info-solid),var(--plx-sys-feedback-info-solid));background-position-x:var(--plx-sys-space-inset-md),calc(var(--plx-sys-space-inset-md) + var(--plx-sys-icon-size-md) + var(--plx-sys-space-inline-sm));background-repeat:no-repeat;background-size:var(--plx-sys-border-width-thin) 100%;}

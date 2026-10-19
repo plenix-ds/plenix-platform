@@ -5,6 +5,8 @@
 //   node tests/compare-styles.js <before-root> "<selector>" <route-or-page> [<route-or-page>…]
 //   e.g. node tests/compare-styles.js ../Plenix-rel ".plx-split-view" "#/page-structures/split-view"
 //   HOSTS=n compares only the first n elements the selector matches (a page whose later examples changed)
+//   WAIT=ms waits longer before reading (default 4000; a lab draws its cards in an iframe after the page)
+//   Elements inside same-origin iframes (the design system's labs draw their cards in one) are read too.
 // Every element matching the selector, and every element inside it, is compared property by property (custom
 // properties and transitions left out), in document order. Prints SAME or the differences; STYLES_SAME or STYLES_DIFF.
 process.env.TEST_TIMEOUT_MS = process.env.TEST_TIMEOUT_MS || '86400000';
@@ -27,8 +29,9 @@ const serveRoot = (root, port) => new Promise((resolve) => {
 });
 const read = ([sel, n]) => {
   const out = [];
-  for (const host of [...document.querySelectorAll(sel)].slice(0, n || Infinity)) for (const el of [host, ...host.querySelectorAll('*')]) {
-    const cs = getComputedStyle(el), o = {};
+  const docs = [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean));
+  for (const host of docs.flatMap((d) => [...d.querySelectorAll(sel)]).slice(0, n || Infinity)) for (const el of [host, ...host.querySelectorAll('*')]) {
+    const cs = el.ownerDocument.defaultView.getComputedStyle(el), o = {};
     for (let i = 0; i < cs.length; i++) { const p = cs[i]; if (!p.startsWith('--') && !/^(transition|animation)/.test(p)) o[p] = cs.getPropertyValue(p); }
     out.push({ label: el.tagName.toLowerCase() + [...el.classList].slice(0, 3).map((c) => '.' + c).join(''), o });
   }
@@ -40,7 +43,7 @@ const read = ([sel, n]) => {
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const at = async (port, t) => {
     const url = 'http://127.0.0.1:' + port + '/Plenix/' + (t.startsWith('#') ? 'platform/design-system/index.html' + t : t);
-    await page.goto('about:blank'); await page.goto(url, { waitUntil: 'load', timeout: 120000 }); await page.evaluate(() => document.fonts.ready); await sleep(4000);
+    await page.goto('about:blank'); await page.goto(url, { waitUntil: 'load', timeout: 120000 }); await page.evaluate(() => document.fonts.ready); await sleep(+process.env.WAIT || 4000);
     return page.evaluate(read, [selector, +process.env.HOSTS || 0]);
   };
   let diffs = 0;

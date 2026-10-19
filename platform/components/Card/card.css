@@ -44,9 +44,9 @@
 /* a collapsible panel: the toggle at the end of the header (the section headers’ chevron, pointing down when open); closed, the header loses its divider */
 .plx-panel__toggle{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-comp-panel-toggle-height);border-bottom-left-radius:var(--plx-comp-panel-toggle-radius);border-bottom-right-radius:var(--plx-comp-panel-toggle-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-panel-toggle-radius);border-top-right-radius:var(--plx-comp-panel-toggle-radius);border-top-style:none;color:var(--plx-comp-panel-toggle-text);cursor:pointer;display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-panel-toggle-width);justify-content:center;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-panel__toggle:hover,.plx-panel__toggle.is-hover{background-color:var(--plx-comp-panel-toggle-hover-background);color:var(--plx-comp-panel-toggle-hover-text);}
-.plx-panel__toggle .plx-icon{transition-duration:var(--plx-comp-panel-toggle-icon-duration);transition-property:transform;transition-timing-function:var(--plx-comp-panel-toggle-icon-easing);}
+.plx-panel__toggle{--plx-comp-icon-turn-duration:var(--plx-comp-panel-toggle-icon-duration);--plx-comp-icon-turn-easing:var(--plx-comp-panel-toggle-icon-easing);}
 .plx-panel.is-collapsed>.plx-panel__header{border-bottom-style:none;}
-.plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle .plx-icon{transform:rotate(-90deg);}
+.plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle{--plx-comp-icon-turn:rotate(-90deg);}
 /* an accent edge in the data's color (Card accent, batch 197) */
 .plx-card--accent{border-inline-start-color:var(--plx-comp-card-accent);border-inline-start-width:var(--plx-comp-card-accent-border-inline-start-width);}
 /* the collapse toggle shows the focus ring, as every control (batch 213) */
@@ -72,9 +72,9 @@
 .plx-card__toggle{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-comp-card-toggle-height);border-bottom-left-radius:var(--plx-comp-card-toggle-radius);border-bottom-right-radius:var(--plx-comp-card-toggle-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-card-toggle-radius);border-top-right-radius:var(--plx-comp-card-toggle-radius);border-top-style:none;color:var(--plx-comp-card-toggle-text);cursor:pointer;display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-card-toggle-width);justify-content:center;margin-inline-start:auto;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;z-index:var(--plx-comp-card-toggle-z-index);}
 .plx-card__toggle:hover,.plx-card__toggle.is-hover{background-color:var(--plx-comp-card-toggle-hover-background);color:var(--plx-comp-card-toggle-hover-text);}
 .plx-card__toggle:focus-visible,.plx-card__toggle.is-focus-visible{outline-color:var(--plx-comp-card-toggle-focus-outline-color);outline-offset:var(--plx-comp-card-toggle-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-card-toggle-focus-outline-width);}
-.plx-card__toggle .plx-icon{transition-duration:var(--plx-comp-card-toggle-icon-duration);transition-property:transform;transition-timing-function:var(--plx-comp-card-toggle-icon-easing);}
-.plx-card.is-collapsed .plx-card__toggle .plx-icon{transform:rotate(-90deg);}
-.plx-card.is-collapsed .plx-card__toggle .plx-icon:dir(rtl){transform:rotate(90deg);}
+.plx-card__toggle{--plx-comp-icon-turn-duration:var(--plx-comp-card-toggle-icon-duration);--plx-comp-icon-turn-easing:var(--plx-comp-card-toggle-icon-easing);}
+.plx-card.is-collapsed .plx-card__toggle{--plx-comp-icon-turn:rotate(-90deg);}
+.plx-card.is-collapsed .plx-card__toggle:dir(rtl){--plx-comp-icon-turn:rotate(90deg);}
 /* an asset (library wave 12, Asset): its format as a neutral Badge at the media's top end (the selection box holds the top
    start), its status Badge under the meta */
 .plx-media-card__type{display:inline-flex;inset-block-start:var(--plx-comp-media-card-type-inset-block-start);inset-inline-end:var(--plx-comp-media-card-type-inset-inline-end);position:absolute;}

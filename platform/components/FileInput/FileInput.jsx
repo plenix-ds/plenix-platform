@@ -75,7 +75,7 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
         <ul className="plx-file-input__list">
           {files.map((f, i) => (
             <li key={f.name + i} className="plx-file-input__item">
-              <Icon name="doc-text" />
+              <span className="plx-file-input__icon"><Icon name="doc-text" /></span>
               <span className="plx-file-input__name">{f.name}</span>
               <span className="plx-file-input__size">{formatBytes(f.size)}</span>
               <Button className="plx-file-input__remove" variant="ghost" size="xs" iconOnly icon="close" label={t.remove.replace('{name}', f.name)} onClick={remove(i)} />

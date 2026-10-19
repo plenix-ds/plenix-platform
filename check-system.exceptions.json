@@ -20,16 +20,6 @@
       ".plx-button-group>.plx-button:focus-visible": 1,
       ".plx-button-group>.plx-button.is-focus-visible": 1
     },
-    "platform/components/Card/card.css": {
-      ".plx-panel__toggle .plx-icon": 1,
-      ".plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle .plx-icon": 1,
-      ".plx-card__toggle .plx-icon": 1,
-      ".plx-card.is-collapsed .plx-card__toggle .plx-icon": 1,
-      ".plx-card.is-collapsed .plx-card__toggle .plx-icon:dir(rtl)": 1
-    },
-    "platform/components/CollapsibleSection/collapsible-section.css": {
-      ".plx-collapsible-section__chevron .plx-icon": 1
-    },
     "platform/components/ColorSwatch/color-swatch.css": {
       "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
     },
@@ -39,12 +29,8 @@
       ".plx-copy-button-field>.plx-copy-button__button.is-focus-visible": 1
     },
     "platform/components/DataTableNext/data-table-next.css": {
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-header-popup-button .plx-icon": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--icon .plx-icon": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__header-icon .plx-icon": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__group-chevron .plx-icon": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__group-value .plx-text": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__menu-icon .plx-icon": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list": 2,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__text": 2,
@@ -53,7 +39,6 @@
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-text": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-link": 1,
       ".plx-data-table[data-plx-engine=\"next\"][data-plx-row-height]:not([data-plx-row-height=\"short\"]) .plx-data-table__grid .plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs) .plx-data-table__grid-cell .plx-thumbnail": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__type-icon .plx-icon": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__rich .plx-avatar": 1
     },
     "platform/components/DataTable/data-table.css": {
@@ -101,9 +86,6 @@
       ".plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label-tip": 1,
       ".plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label": 2
     },
-    "platform/components/FileInput/file-input.css": {
-      ".plx-file-input__item>.plx-icon": 1
-    },
     "platform/components/FileRow/file-row.css": {
       ".plx-file-row__select>.plx-check": 1
     },
@@ -111,7 +93,6 @@
       ".plx-inline-edit__control .plx-select": 1
     },
     "platform/components/InputGroup/input-group.css": {
-      ".plx-input-group__icon .plx-icon": 1,
       ".plx-input-group>.plx-input-group__attached--start>.plx-select__control": 1,
       ".plx-input-group>.plx-input-group__attached--end>.plx-select__control": 1,
       ".plx-input-group>.plx-input-group__attached--inner>.plx-select__control": 1
@@ -121,8 +102,6 @@
       ".plx-data-table__portal>a.plx-link:only-child::before": 1
     },
     "platform/components/MediaViewer/media-viewer.css": {
-      ".plx-media-viewer__nav--previous .plx-icon": 1,
-      ".plx-media-viewer__nav--next .plx-icon": 1,
       ".plx-media-viewer__stage--video>.plx-media-player": 2,
       ".plx-media-viewer__stage--video .plx-media-player__media": 1
     },
@@ -140,9 +119,6 @@
       ".plx-product-options__sizes .plx-radio-tiles__legend": 1,
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch": 1,
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch-label": 1
-    },
-    "platform/components/ProgressSteps/progress-steps.css": {
-      ".plx-progress-steps__marker .plx-icon": 1
     },
     "platform/components/RichTextEditor/rich-text-editor.css": {
       ".plx-rich-text-editor__bar .plx-input": 1
@@ -254,9 +230,6 @@
       ".plx-tree__item.is-selected>.plx-tree__row .plx-icon": 1,
       ".plx-chip--selected .plx-icon": 1
     },
-    "platform/system/keylines.css": {
-      ".plx-keylines>.plx-icon": 1
-    },
     "platform/system/layout-grid.css": {
       ".plx-layout-grid-overlay>.plx-layout-grid": 1,
       ".plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+5)": 2,
@@ -273,7 +246,6 @@
       ".plx-login__card .plx-input": 1
     },
     "platform/components/DataTableNext/data-table-static.css": {
-      ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--icon .plx-icon": 1,
       ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text": 1,
       ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list": 2,
       ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__text": 2,

@@ -40359,9 +40359,11 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   }, files.map((f, i) => /*#__PURE__*/_react.default.createElement("li", {
     key: f.name + i,
     className: "plx-file-input__item"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-input__icon"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "doc-text"
-  }), /*#__PURE__*/_react.default.createElement("span", {
+  })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-file-input__name"
   }, f.name), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-file-input__size"
