@@ -110,7 +110,7 @@ export function BulkActions({ count, total, noun = 'item', plural, onSelectAll, 
   const why = (a) => a.why || fill(count && a.single && count > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words));
   return (
     <div ref={root} className={cx('plx-bulk-actions', !count && 'plx-bulk-actions--empty', className)}>
-      <Toolbar label={label || t.label} className="plx-bulk-actions__row" data-plx-bar-row="">
+      <Toolbar variant="bar" label={label || t.label} className="plx-bulk-actions__row" data-plx-bar-row="">
         <Toolbar.Group className="plx-bulk-actions__actions">
           {actions.length ? (
             <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 1)} off={(a) => off(a, count)} why={why}

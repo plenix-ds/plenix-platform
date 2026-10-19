@@ -11,8 +11,8 @@
 /* the list's own width decides which facts its rows keep (a list beside a tree is narrower than the window): the owner
    gives way first, then the date; the name, the size, the status and the actions stay */
 @container (max-width: 720px){
-  .plx-file-list__item .plx-file-row__owner{display:none;}
+  .plx-file-list__item{--plx-comp-file-row-context-owner-display:none;}
 }
 @container (max-width: 560px){
-  .plx-file-list__item .plx-file-row__date{display:none;}
+  .plx-file-list__item{--plx-comp-file-row-context-date-display:none;}
 }

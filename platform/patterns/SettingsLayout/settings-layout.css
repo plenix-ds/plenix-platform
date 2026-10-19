@@ -53,4 +53,4 @@
 .plx-settings__content{--plx-comp-field-inline-context-columns:minmax(0,1fr);--plx-comp-field-inline-context-row-gap:var(--plx-comp-settings-field-inline-row-gap);}
 }
 /* a section's ActionBar has the card's surface behind it (batch 231) */
-.plx-settings__section .plx-action-bar{background-color:var(--plx-comp-settings-section-card-action-bar-background);}
+.plx-settings__section{--plx-comp-action-bar-context-background:var(--plx-comp-settings-section-card-action-bar-background);}

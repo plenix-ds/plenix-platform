@@ -17,9 +17,6 @@
     "platform/components/ColorSwatch/color-swatch.css": {
       "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
     },
-    "platform/components/DataTableNext/data-table-next.css": {
-      ".plx-data-table[data-plx-engine=\"next\"][data-plx-row-height]:not([data-plx-row-height=\"short\"]) .plx-data-table__grid .plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs) .plx-data-table__grid-cell .plx-thumbnail": 1
-    },
     "platform/components/DataTable/data-table.css": {
       ".plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon": 1,
       ".plx-data-table__group-chevron .plx-icon": 1,
@@ -47,13 +44,6 @@
       ".plx-document-viewer__viewport[data-zoom=\"200\"] > .plx-image": 1,
       ".plx-document-viewer__zoom .plx-input": 1
     },
-    "platform/components/FileRow/file-row.css": {
-      ".plx-file-row__select>.plx-check": 1
-    },
-    "platform/components/Link/link.css": {
-      ".plx-data-table__portal>a.plx-link:only-child": 1,
-      ".plx-data-table__portal>a.plx-link:only-child::before": 1
-    },
     "platform/components/MediaViewer/media-viewer.css": {
       ".plx-media-viewer__stage--video>.plx-media-player": 2,
       ".plx-media-viewer__stage--video .plx-media-player__media": 1
@@ -63,10 +53,6 @@
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch": 1,
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch-label": 1
     },
-    "platform/components/Text/text.css": {
-      ".plx-data-table__portal>a.plx-text--link:only-child": 1,
-      ".plx-data-table__portal>a.plx-text--link:only-child::before": 1
-    },
     "platform/components/Tree/tree.css": {
       ".plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
       ".plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
@@ -75,34 +61,12 @@
       "[data-plx-density=\"comfortable\"] .plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
       "[data-plx-density=\"comfortable\"] .plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon": 1
     },
-    "platform/patterns/AppHeader/app-header.css": {
-      ".plx-app-header--frost .plx-search__input": 1,
-      ".plx-app-header__action .plx-button": 1,
-      ".plx-app-header__account-row .plx-button__label": 1,
-      ".plx-app-header__brand .plx-brand-mark": 1
-    },
-    "platform/patterns/AvatarUpload/avatar-upload.css": {
-      ".plx-avatar-upload .plx-file-input__summary": 1
-    },
-    "platform/patterns/BulkActions/bulk-actions.css": {
-      ".plx-bulk-actions__row>.plx-toolbar__group": 1
-    },
     "platform/patterns/FeatureCard/feature-card.css": {
       ".plx-feature-card > .plx-card__body": 1,
       ".plx-feature-card .plx-card__title": 1,
       ".plx-feature-card--horizontal > .plx-card__header": 1,
       ".plx-feature-card--horizontal > .plx-card__meta": 1,
       ".plx-feature-card--horizontal > .plx-card__body": 1
-    },
-    "platform/patterns/FileList/file-list.css": {
-      ".plx-file-list__item .plx-file-row__owner": 1,
-      ".plx-file-list__item .plx-file-row__date": 1
-    },
-    "platform/patterns/ImageUpload/image-upload.css": {
-      ".plx-image-upload .plx-file-input__summary": 1
-    },
-    "platform/patterns/SettingsLayout/settings-layout.css": {
-      ".plx-settings__section .plx-action-bar": 1
     },
     "platform/patterns/UserCard/user-card.css": {
       ".plx-user-card > .plx-card__body": 1

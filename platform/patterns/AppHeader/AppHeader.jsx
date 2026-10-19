@@ -257,7 +257,7 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
   const label = 'Account and settings for ' + name;
   // no tooltip: it would cover the open menu, which names itself
   const trigger = inPane
-    ? <Button size="sm" variant="ghost" caret className="plx-app-header__account-row" aria-label={label}><Avatar name={name} src={src} size="2xs" />{name}</Button>
+    ? <Button size="sm" variant="ghost" caret labelRow className="plx-app-header__account-row" aria-label={label}><Avatar name={name} src={src} size="2xs" />{name}</Button>
     : <AppHeader.Item icon={<Avatar name={name} src={src} size="md" />} label={label} current={!!current} tooltip={false} className="plx-app-header__item--account" />;
   const has = (o) => !!(o.href || o.onSelect);
   const choices = typeof window !== 'undefined' && window.PlenixWorkspace ? window.PlenixWorkspace.densities() : DENSITY_CHOICES;

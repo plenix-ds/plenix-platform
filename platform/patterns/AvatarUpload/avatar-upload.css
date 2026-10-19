@@ -6,4 +6,3 @@
 .plx-avatar-upload__actions{align-items:center;column-gap:var(--plx-comp-avatar-upload-actions-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-avatar-upload-actions-row-gap);}
 .plx-avatar-upload__hint{color:var(--plx-comp-avatar-upload-hint-text);font-size:var(--plx-comp-avatar-upload-hint-font-size);}
 /* the FileInput is the Change photo button only: the Avatar shows what is chosen */
-.plx-avatar-upload .plx-file-input__summary{display:none;}

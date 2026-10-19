@@ -4077,6 +4077,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
      truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
      stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
+     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
+       --plx-comp-button-context-label-row-gap (AppHeader’s account)
      joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
        role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
        tint on hover) | "lg" (the prominent role: page actions)
@@ -4136,6 +4138,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
   joined,
   truncate = false,
   stackedLabel = false,
+  labelRow = false,
   className,
   children,
   onClick,
@@ -4150,7 +4153,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
   const t = Object.assign({}, STRINGS, strings);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__icon"
   }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
@@ -21549,7 +21552,8 @@ function NextEngine(props) {
       }, S.moveTop), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
         onSelect: () => rowDnd.moveTo(canonical.indexOf(record), canonical.length - 1)
       }, S.moveBottom)) : c.render ? /*#__PURE__*/_react.default.createElement("span", {
-        className: B + '__portal'
+        className: B + '__portal',
+        "data-plx-link-target": "cell"
       }, /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__value'
       }, content)) : /*#__PURE__*/_react.default.createElement(_cells.CellValue, {
@@ -26075,6 +26079,12 @@ const el = (tag, className, text) => {
   if (text != null) e.textContent = text;
   return e;
 };
+// a cell's portal: a link alone in it takes the whole cell (Link and Text answer data-plx-link-target)
+const portalEl = className => {
+  const e = el('span', className);
+  e.setAttribute('data-plx-link-target', 'cell');
+  return e;
+};
 const iconEl = name => {
   const s = el('span', 'plx-icon plx-icon--' + name);
   s.setAttribute('aria-hidden', 'true');
@@ -26302,7 +26312,7 @@ function TableEngine(props) {
   const groupCells = _react.default.useRef(new Map()); // React content of group rows (a value drawn by its column's render): path key -> { node, c, row }
   const closedRef = _react.default.useRef(new Set(kept && kept.closed || [])); // the closed groups (their path keys), kept in the view
   const viewNode = _react.default.useRef(null); // the view menu's place in the header (the view column's title)
-  if (!viewNode.current && typeof document !== 'undefined') viewNode.current = el('span', B + '__portal');
+  if (!viewNode.current && typeof document !== 'undefined') viewNode.current = portalEl(B + '__portal');
   const narrowRef = _react.default.useRef(null);
   const fitRef = _react.default.useRef(null); // the room "fill" measures, once more (a header that grew)
   const stickyRef = _react.default.useRef(null); // the sticky group rows' stand-ins (a virtual grid whose group row is not drawn)
@@ -26311,7 +26321,7 @@ function TableEngine(props) {
   const container = id => {
     let e = cells.current.get(id);
     if (!e) {
-      e = el('span', B + '__portal');
+      e = portalEl(B + '__portal');
       cells.current.set(id, e);
       pending.current = true;
       bump();
@@ -26643,7 +26653,7 @@ function TableEngine(props) {
     const val = el('span', B + '__group-value');
     if (c && [].concat(c.kind || []).indexOf('data') >= 0) val.setAttribute('data-plx-kind', 'data');
     if (c && c.render && rowsData && rowsData.length) {
-      const node = el('span', B + '__portal');
+      const node = portalEl(B + '__portal');
       val.appendChild(node);
       groupCells.current.set(pathKey(g), {
         node,
@@ -30343,6 +30353,7 @@ AppHeader.Account = function AppHeaderAccount({
     size: "sm",
     variant: "ghost",
     caret: true,
+    labelRow: true,
     className: "plx-app-header__account-row",
     "aria-label": label
   }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
@@ -31162,6 +31173,7 @@ function BulkActions({
     ref: root,
     className: (0, _cx.cx)('plx-bulk-actions', !count && 'plx-bulk-actions--empty', className)
   }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
+    variant: "bar",
     label: label || t.label,
     className: "plx-bulk-actions__row",
     "data-plx-bar-row": ""
@@ -40318,6 +40330,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      accept: the file types the picker offers (".pdf,.docx", "image/*"); say them in the Field's description too
      multiple: more than one file at a time (default false)
      showList: the chosen files in a list under the button, each with its size and a Remove button (default false)
+     hideSummary: the line that says what is chosen is not shown (it still describes the
+       input); for a parent that shows the file itself (AvatarUpload, ImageUpload)
      onChange(files, event): the chosen files, as an array of File
      label: the accessible name when the field has no Field (default strings.choose or strings.chooseMany)
      name: the form field name, handed to the native <input type="file"> (as are form and capture)
@@ -40350,6 +40364,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   accept,
   multiple = false,
   showList = false,
+  hideSummary = false,
   onChange,
   label,
   disabled = false,
@@ -40390,7 +40405,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   const summary = !files.length ? t.none : files.length === 1 ? files[0].name : t.count.replace('{count}', files.length);
   const choose = multiple ? t.chooseMany : t.choose;
   return /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-file-input', disabled && 'is-disabled', className)
+    className: (0, _cx.cx)('plx-file-input', hideSummary && 'plx-file-input--hide-summary', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-file-input__row"
   }, /*#__PURE__*/_react.default.createElement("label", {
@@ -46007,6 +46022,7 @@ function ImageUpload({
     }
   };
   const picker = word => /*#__PURE__*/_react.default.createElement(_FileInput.FileInput, {
+    hideSummary: true,
     accept: accept,
     multiple: multiple,
     disabled: disabled,
@@ -46225,6 +46241,7 @@ function AvatarUpload({
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-avatar-upload__actions"
   }, /*#__PURE__*/_react.default.createElement(_FileInput.FileInput, {
+    hideSummary: true,
     accept: accept,
     disabled: disabled || !!pending,
     id: id,

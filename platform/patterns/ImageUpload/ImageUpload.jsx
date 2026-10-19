@@ -193,7 +193,7 @@ export function ImageUpload({ value = [], onChange, multiple = false, max, ratio
     onDragLeave: () => setOver(false),
     onDrop: (e) => { e.preventDefault(); setOver(false); add(Array.from((e.dataTransfer && e.dataTransfer.files) || [])); },
   };
-  const picker = (word) => <FileInput accept={accept} multiple={multiple} disabled={disabled} id={id} aria-describedby={describedBy}
+  const picker = (word) => <FileInput hideSummary accept={accept} multiple={multiple} disabled={disabled} id={id} aria-describedby={describedBy}
     label={label ? label + ', ' + word : word} strings={{ choose: word, chooseMany: word }} onChange={(files) => add(files)} />;
   const showZone = !cropping && !full && (multiple || !images.length);
   return (

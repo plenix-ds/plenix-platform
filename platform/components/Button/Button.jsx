@@ -11,6 +11,8 @@
        (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
      truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
      stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
+     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
+       --plx-comp-button-context-label-row-gap (AppHeader’s account)
      joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
        role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
        tint on hover) | "lg" (the prominent role: page actions)
@@ -57,11 +59,11 @@ const STRINGS = { working: 'Working' };
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
-  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, className, children, onClick, strings, ...rest }, ref) {
+  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, className, children, onClick, strings, ...rest }, ref) {
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',
-    caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
+    caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
   const content = (
     <>
       {loading ? <span className="plx-button__icon"><Spinner size="sm" label={t.working} /></span> : (icon ? <span className="plx-button__icon">{asIcon(icon)}</span> : null)}

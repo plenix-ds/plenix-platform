@@ -9,6 +9,8 @@
      accept: the file types the picker offers (".pdf,.docx", "image/*"); say them in the Field's description too
      multiple: more than one file at a time (default false)
      showList: the chosen files in a list under the button, each with its size and a Remove button (default false)
+     hideSummary: the line that says what is chosen is not shown (it still describes the
+       input); for a parent that shows the file itself (AvatarUpload, ImageUpload)
      onChange(files, event): the chosen files, as an array of File
      label: the accessible name when the field has no Field (default strings.choose or strings.chooseMany)
      name: the form field name, handed to the native <input type="file"> (as are form and capture)
@@ -38,7 +40,7 @@ import { Button } from '../Button/Button.jsx';
 
 const STRINGS = { choose: 'Choose file', chooseMany: 'Choose files', none: 'No file chosen', count: '{count} files', remove: 'Remove {name}' };
 
-export const FileInput = React.forwardRef(function FileInput({ accept, multiple = false, showList = false, onChange, label, disabled = false, required, invalid,
+export const FileInput = React.forwardRef(function FileInput({ accept, multiple = false, showList = false, hideSummary = false, onChange, label, disabled = false, required, invalid,
   id, 'aria-describedby': describedBy, strings, className, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
   const input = React.useRef(null);
@@ -58,7 +60,7 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
   const summary = !files.length ? t.none : files.length === 1 ? files[0].name : t.count.replace('{count}', files.length);
   const choose = multiple ? t.chooseMany : t.choose;
   return (
-    <div className={cx('plx-file-input', disabled && 'is-disabled', className)}>
+    <div className={cx('plx-file-input', hideSummary && 'plx-file-input--hide-summary', disabled && 'is-disabled', className)}>
       <div className="plx-file-input__row">
         <label className="plx-file-input__trigger">
           <input ref={setRef} type="file" className="plx-file-input__native plx-visually-hidden" accept={accept} multiple={multiple} disabled={disabled}

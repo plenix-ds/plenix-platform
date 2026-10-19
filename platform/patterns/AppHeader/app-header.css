@@ -16,7 +16,7 @@
 .plx-app-header--accent .plx-app-header__item:focus-visible,
 .plx-app-header--accent .plx-app-header__item.is-focus-visible{outline-color:var(--plx-comp-app-header-accent-item-focus-outline-color);}
 .plx-app-header__divider{background-image:linear-gradient(var(--plx-comp-app-header-divider),var(--plx-comp-app-header-divider));background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-app-header-divider-background-size);block-size:var(--plx-comp-app-header-divider-height);flex-shrink:0;inline-size:var(--plx-comp-app-header-divider-width);margin-inline-end:var(--plx-comp-app-header-divider-margin-inline);margin-inline-start:var(--plx-comp-app-header-divider-margin-inline);}
-.plx-app-header--frost .plx-search__input{background-color:var(--plx-comp-app-header-frost-search-input-background);border-bottom-color:var(--plx-comp-app-header-frost-search-input-border-color);border-left-color:var(--plx-comp-app-header-frost-search-input-border-color);border-right-color:var(--plx-comp-app-header-frost-search-input-border-color);border-top-color:var(--plx-comp-app-header-frost-search-input-border-color);}
+.plx-app-header--frost{--plx-comp-search-input-context-background:var(--plx-comp-app-header-frost-search-input-background);--plx-comp-search-input-context-border-color:var(--plx-comp-app-header-frost-search-input-border-color);}
 .plx-app-header__count{inset-block-start:var(--plx-comp-app-header-count-inset-block-start);inset-inline-end:var(--plx-comp-app-header-count-inset-inline-end);pointer-events:none;position:absolute;}
 /* header name: Plenix over the application */
 .plx-app-header__name{display:inline-flex;flex-direction:column;line-height:var(--plx-comp-app-header-name-line-height);}
@@ -72,9 +72,9 @@
 .plx-app-switcher__pin{--plx-comp-icon-size:var(--plx-sys-control-icon-inline);}
 /* the application's action: a fixed control in the header (density never changes the shell): 112 × 32px, a 16px icon; the fixed
    width keeps the search icon before it on the 4px grid whatever the label */
-.plx-app-header__action .plx-button{--plx-comp-button-height:var(--plx-comp-app-header-action-height);--plx-comp-button-icon:var(--plx-comp-app-header-action-icon-size);inline-size:var(--plx-comp-app-header-action-width);justify-content:flex-start;overflow-x:hidden;}
+.plx-app-header__action{--plx-comp-button-context-height:var(--plx-comp-app-header-action-height);--plx-comp-button-context-icon:var(--plx-comp-app-header-action-icon-size);--plx-comp-button-context-justify:flex-start;--plx-comp-button-context-overflow:hidden;--plx-comp-button-context-width:var(--plx-comp-app-header-action-width);}
 /* the account row in a pane footer: the avatar (20px) and the name side by side in a small ghost button */
-.plx-app-header__account-row .plx-button__label{align-items:center;column-gap:var(--plx-comp-app-header-account-row-button-label-gap);display:inline-flex;}
+.plx-app-header{--plx-comp-button-context-label-row-gap:var(--plx-comp-app-header-account-row-button-label-gap);}
 /* below Wide (under 840px, --plx-sys-shell-rail-below): the switcher keeps its narrow three-column panel (batch 243) */
 @media (width < 840px){
   .plx-app-switcher__panel{inline-size:var(--plx-comp-app-switcher-panel-width-narrow);}
@@ -90,7 +90,7 @@
    16px one; the mark is their sum */
 .plx-app-header__product{line-height:var(--plx-comp-app-header-product-line-height);}
 .plx-app-header__app{line-height:var(--plx-comp-app-header-app-line-height);}
-.plx-app-header__brand .plx-brand-mark{--plx-comp-icon-size:calc(var(--plx-sys-label-height-20px) + var(--plx-sys-label-height-16px));color:var(--plx-comp-app-header-brand);}
+.plx-app-header__brand{--plx-comp-brand-mark-context-size:calc(var(--plx-sys-label-height-20px) + var(--plx-sys-label-height-16px));}
 /* the targets (Platforms Standard 3.1): every item and the header name reach the minimum target (44 × 44px with touch)
    through an invisible layer past their 40px box; with a fine pointer the box already meets it and the layer adds nothing */
 .plx-app-header__brand--switch,a.plx-app-header__brand{position:relative;}

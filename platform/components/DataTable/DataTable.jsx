@@ -316,6 +316,8 @@ const listable = (c) => !!c.field && c.kind !== 'icon' && c.kind !== 'actions' &
 const keyFields = (cols, want) => (want && want.length ? want.slice() : cols.filter(listable).slice(0, 3).map((c) => c.field));
 
 const el = (tag, className, text) => { const e = document.createElement(tag); if (className) e.className = className; if (text != null) e.textContent = text; return e; };
+// a cell's portal: a link alone in it takes the whole cell (Link and Text answer data-plx-link-target)
+const portalEl = (className) => { const e = el('span', className); e.setAttribute('data-plx-link-target', 'cell'); return e; };
 const iconEl = (name) => { const s = el('span', 'plx-icon plx-icon--' + name); s.setAttribute('aria-hidden', 'true'); return s; };
 // a menu item's label: its icon box, its text; danger in the danger color
 function menuLabel(text, icon, danger) {
@@ -450,7 +452,7 @@ export function TableEngine(props) {
   const groupCells = React.useRef(new Map());   // React content of group rows (a value drawn by its column's render): path key -> { node, c, row }
   const closedRef = React.useRef(new Set((kept && kept.closed) || []));   // the closed groups (their path keys), kept in the view
   const viewNode = React.useRef(null);   // the view menu's place in the header (the view column's title)
-  if (!viewNode.current && typeof document !== 'undefined') viewNode.current = el('span', B + '__portal');
+  if (!viewNode.current && typeof document !== 'undefined') viewNode.current = portalEl(B + '__portal');
   const narrowRef = React.useRef(null);
   const fitRef = React.useRef(null);     // the room "fill" measures, once more (a header that grew)
   const stickyRef = React.useRef(null);  // the sticky group rows' stand-ins (a virtual grid whose group row is not drawn)
@@ -458,7 +460,7 @@ export function TableEngine(props) {
   // a container for a React cell, kept per cell so React keeps its state between renders
   const container = (id) => {
     let e = cells.current.get(id);
-    if (!e) { e = el('span', B + '__portal'); cells.current.set(id, e); pending.current = true; bump(); }
+    if (!e) { e = portalEl(B + '__portal'); cells.current.set(id, e); pending.current = true; bump(); }
     return e;
   };
   // once React has filled the first cells, Tabulator measures the content of the columns React draws again (it measured
@@ -676,7 +678,7 @@ export function TableEngine(props) {
     words2.appendChild(el('span', 'plx-text plx-text--eyebrow ' + B + '__group-eyebrow', c ? String(c.title || c.field) : ''));
     const val = el('span', B + '__group-value'); if (c && [].concat(c.kind || []).indexOf('data') >= 0) val.setAttribute('data-plx-kind', 'data');
     if (c && c.render && rowsData && rowsData.length) {
-      const node = el('span', B + '__portal'); val.appendChild(node);
+      const node = portalEl(B + '__portal'); val.appendChild(node);
       groupCells.current.set(pathKey(g), { node, c, row: rowsData[0] }); bump();
     } else val.textContent = text;
     words2.appendChild(val);

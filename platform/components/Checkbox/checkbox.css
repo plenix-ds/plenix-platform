@@ -1,5 +1,5 @@
 /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch (platform/components/Checkbox). */
-.plx-check{align-items:flex-start;column-gap:var(--plx-comp-check-gap);cursor:pointer;display:inline-flex;font-size:var(--plx-comp-check-font-size);min-block-size:var(--plx-comp-check-min-height);padding-block-end:var(--plx-comp-check-padding-block);padding-block-start:var(--plx-comp-check-padding-block);}
+.plx-check{align-items:var(--plx-comp-check-context-align,flex-start);column-gap:var(--plx-comp-check-gap);cursor:pointer;display:inline-flex;font-size:var(--plx-comp-check-font-size);min-block-size:var(--plx-comp-check-min-height);padding-block-end:var(--plx-comp-check-padding-block);padding-block-start:var(--plx-comp-check-padding-block);}
 .plx-check__input{accent-color:var(--plx-comp-check-input-accent-color);block-size:var(--plx-comp-check-input-height);cursor:pointer;flex-shrink:0;inline-size:var(--plx-comp-check-input-width);margin-block-end:0;margin-block-start:0;margin-block-start:var(--plx-comp-check-input-margin-block-start);margin-inline-end:0;margin-inline-start:0;}
 .plx-check__input:focus-visible,
 .plx-check__input.is-focus-visible{outline-color:var(--plx-comp-check-input-focus-outline-color);outline-offset:var(--plx-comp-check-input-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-check-input-focus-outline-width);}

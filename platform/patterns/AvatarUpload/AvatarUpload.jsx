@@ -72,7 +72,7 @@ export function AvatarUpload({ name, src, onChange, crop = true, removable = tru
         <Avatar name={name} src={pending ? undefined : src} size={size} label={t.picture.replace('{name}', name || '')} />
         <div className="plx-avatar-upload__body">
           <div className="plx-avatar-upload__actions">
-            <FileInput accept={accept} disabled={disabled || !!pending} id={id} aria-describedby={[describedBy, description ? auto + '-hint' : null].filter(Boolean).join(' ') || undefined}
+            <FileInput hideSummary accept={accept} disabled={disabled || !!pending} id={id} aria-describedby={[describedBy, description ? auto + '-hint' : null].filter(Boolean).join(' ') || undefined}
               label={word} strings={{ choose: word }} onChange={chosen} />
             {removable && src && !pending ? <Button variant="ghost" icon="trash" disabled={disabled} onClick={() => { if (onChange) onChange(null); focusChange(); }}>{t.remove}</Button> : null}
           </div>

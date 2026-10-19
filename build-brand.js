@@ -18,7 +18,7 @@ module.exports = function buildBrand(root) {
     '   The mark (brand.json files.mark) is a mask: it draws in the current text color, so the tokens color it (white on the',
     '   header\'s blue, the accent on a page). Its square includes the kit\'s clear space; the system adds none. */',
     ':root{--plx-comp-brand-mark:' + dataUri(read('mark')) + ';}',
-    '.plx-brand-mark{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);background-color:currentColor;block-size:var(--plx-comp-icon-size);display:inline-block;flex-shrink:0;inline-size:var(--plx-comp-icon-size);mask-image:var(--plx-comp-brand-mark);mask-position:center;mask-repeat:no-repeat;mask-size:contain;}',
+    '.plx-brand-mark{--plx-comp-icon-size:var(--plx-comp-brand-mark-context-size,var(--plx-sys-control-icon-standard));background-color:currentColor;block-size:var(--plx-comp-icon-size);display:inline-block;flex-shrink:0;inline-size:var(--plx-comp-icon-size);mask-image:var(--plx-comp-brand-mark);mask-position:center;mask-repeat:no-repeat;mask-size:contain;}',
     '',
   ].join('\n');
   const out = path.join(root, 'platform', 'components', 'Brand', 'brand.css');
