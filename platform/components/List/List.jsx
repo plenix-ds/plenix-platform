@@ -8,7 +8,7 @@
      <List ordered variant="steps" items={[{ children: 'Choose the files' }, { children: 'Add the details' }]} />
      <List variant="bullets" items={[{ children: 'Presence: online, away, busy, offline.' }, { children: 'Workflow: done, in progress.' }]} />
    Props:
-     List.items: the statements: [{ icon, tone, children, items, ordered }]; or pass List.Item children
+     List.items: the statements: [{ icon, tone, children, items, ordered, variant }]; or pass List.Item children
      List.ordered: an ordered list (<ol>): "decimal" (true is the same) | "alpha"; without it, the icon list (<ul>)
      List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow |
        "bullets": a plain list, each statement after a small square bullet (owner, 2026-10-15: for points of a text)
@@ -19,6 +19,7 @@
      List.Item.tone: "neutral" (default) | "success" | "danger" | "info" | "warning"
      List.Item.items: a nested list under the statement, of the same kind unless List.Item.ordered says otherwise
      List.Item.ordered: the kind of the nested list: "decimal" | "alpha" | false (an icon list)
+     List.Item.variant: the nested list's variant ("icons", the default, or "bullets" for points under a statement)
      List.Item.children: the statement
      List.Item.className: more classes on the <li>
    Behavior:
@@ -42,18 +43,18 @@ export function List({ items, label, ordered, variant = 'icons', className, chil
     <Tag aria-label={label}
       className={cx('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', !kind && variant === 'bullets' && 'plx-list--bullets', className)}>
       {items ? items.map((it, i) => <List.Item key={i} icon={it.icon} tone={it.tone} items={it.items}
-        ordered={it.ordered === undefined ? kind : it.ordered}>{it.children}</List.Item>) : children}
+        ordered={it.ordered === undefined ? kind : it.ordered} variant={it.variant}>{it.children}</List.Item>) : children}
     </Tag>
   );
 }
 
-List.Item = function ListItem({ icon, tone = 'neutral', items, ordered, className, children }) {
+List.Item = function ListItem({ icon, tone = 'neutral', items, ordered, variant, className, children }) {
   devWarn('List.Item', { tone }, { tone: ['info','success','warning','danger','neutral'] });
   const text = <span className="plx-list__text">{children}</span>;
   return (
     <li className={cx('plx-list__item', 'plx-list__item--' + tone, className)}>
       {icon ? <span className="plx-list__icon" aria-hidden="true"><Icon name={icon} /></span> : null}
-      {items && items.length ? <div className="plx-list__body">{text}<List items={items} ordered={ordered} className="plx-list--nested" /></div> : text}
+      {items && items.length ? <div className="plx-list__body">{text}<List items={items} ordered={ordered} variant={variant} className="plx-list--nested" /></div> : text}
     </li>
   );
 };

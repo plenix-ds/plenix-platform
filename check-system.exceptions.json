@@ -1,0 +1,415 @@
+{
+  "$description": "The backlog of the Plenix Styling Standard (platform/standards/styling.md), recorded 2026-10-18: by file, the selectors that reach into another component (with their count) and the !important count. check-system.rules/ownership.js fails on anything new and on any entry that no longer occurs. The list only shrinks: node check-system.rules/ownership.js --shrink.",
+  "cross-component": {
+    "platform/charts/chart-interaction.css": {
+      ".plx-chart__plot--dimming .plx-chart-dim--off": 1
+    },
+    "platform/charts/diagram.css": {
+      ".plx-diagram .plx-chart__svg": 1
+    },
+    "platform/charts/geo-map.css": {
+      ".plx-geo-map__view .plx-chart-pattern": 1,
+      ".plx-geo-map__view .plx-chart-keys__ring": 1
+    },
+    "platform/charts/network-graph.css": {
+      ".plx-network-graph .plx-chart__svg": 1
+    },
+    "platform/components/Button/button.css": {
+      ".plx-button__icon .plx-icon": 1,
+      ".plx-button-group>.plx-button:not(:first-child)": 1,
+      ".plx-button-group>.plx-button:not(:last-child)": 1,
+      ".plx-button-group>.plx-button:focus-visible": 1,
+      ".plx-button-group>.plx-button.is-focus-visible": 1
+    },
+    "platform/components/Card/card.css": {
+      ".plx-panel__toggle .plx-icon": 1,
+      ".plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle .plx-icon": 1,
+      ".plx-panel__icon .plx-icon": 1,
+      ".plx-media-card--selectable .plx-card__opener::after": 1,
+      ".plx-media-card--selectable .plx-card__opener": 1,
+      ".plx-card__toggle .plx-icon": 1,
+      ".plx-card.is-collapsed .plx-card__toggle .plx-icon": 1,
+      ".plx-card.is-collapsed .plx-card__toggle .plx-icon:dir(rtl)": 1
+    },
+    "platform/components/CollapsibleSection/collapsible-section.css": {
+      ".plx-collapsible-section__chevron .plx-icon": 1
+    },
+    "platform/components/ColorSwatch/color-swatch.css": {
+      "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
+    },
+    "platform/components/CopyButton/copy-button.css": {
+      ".plx-copy-button-field>.plx-copy-button__button": 1,
+      ".plx-copy-button-field>.plx-copy-button__button:focus-visible": 1,
+      ".plx-copy-button-field>.plx-copy-button__button.is-focus-visible": 1
+    },
+    "platform/components/DataTableNext/data-table-next.css": {
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-header-popup-button .plx-icon": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--icon .plx-icon": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__header-icon .plx-icon": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__group-chevron .plx-icon": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__group-value .plx-text": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__menu-icon .plx-icon": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list": 2,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__text": 2,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__item": 2,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text:not(.plx-text--data)": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-text": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-link": 1,
+      ".plx-data-table[data-plx-engine=\"next\"][data-plx-row-height]:not([data-plx-row-height=\"short\"]) .plx-data-table__grid .plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs) .plx-data-table__grid-cell .plx-thumbnail": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__type-icon .plx-icon": 1,
+      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__rich .plx-avatar": 1
+    },
+    "platform/components/DataTable/data-table.css": {
+      ".plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon": 1,
+      ".plx-data-table .plx-data-table__cell--icon .plx-icon": 1,
+      ".plx-data-table .plx-data-table__header-icon .plx-icon": 1,
+      ".plx-data-table__group-chevron .plx-icon": 1,
+      ".plx-data-table__group-value .plx-text": 1,
+      ".plx-data-table__menu-icon .plx-icon": 1,
+      ".plx-data-table .tabulator-cell .plx-text": 1,
+      ".plx-data-table .tabulator-cell .plx-list": 2,
+      ".plx-data-table .tabulator-cell .plx-list__text": 2,
+      ".plx-data-table .tabulator-cell .plx-list__item": 2,
+      ".plx-data-table .tabulator-cell .plx-text:not(.plx-text--data)": 1,
+      ".plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-text": 1,
+      ".plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-link": 1,
+      ".plx-data-table[data-plx-row-height]:not([data-plx-row-height=\"short\"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-thumbnail": 1,
+      ".plx-data-table__type-icon .plx-icon": 1,
+      ".plx-data-table__rich .plx-avatar": 1
+    },
+    "platform/components/DatePicker/date-picker.css": {
+      ".plx-date-picker .plx-popover-anchor": 1
+    },
+    "platform/components/Dialog/dialog.css": {
+      ".plx-dialog__footer .plx-button": 1,
+      ".plx-dialog--destructive .plx-dialog__footer .plx-button": 1,
+      ".plx-modal-layer--start .plx-drawer": 1,
+      ".plx-modal-layer--start .plx-drawer:dir(rtl)": 1,
+      ".plx-modal-layer--non-modal .plx-dialog": 1
+    },
+    "platform/components/DocumentViewer/document-viewer.css": {
+      ".plx-document-viewer__viewport[data-zoom=\"50\"] > .plx-image": 1,
+      ".plx-document-viewer__viewport[data-zoom=\"75\"] > .plx-image": 1,
+      ".plx-document-viewer__viewport[data-zoom=\"100\"] > .plx-image": 1,
+      ".plx-document-viewer__viewport[data-zoom=\"125\"] > .plx-image": 1,
+      ".plx-document-viewer__viewport[data-zoom=\"150\"] > .plx-image": 1,
+      ".plx-document-viewer__viewport[data-zoom=\"200\"] > .plx-image": 1,
+      ".plx-document-viewer__zoom .plx-input": 1
+    },
+    "platform/components/EmptyState/empty-state.css": {
+      ".plx-empty-state__icon .plx-icon": 1
+    },
+    "platform/components/ErrorSummary/error-summary.css": {
+      ".plx-error-summary:focus>.plx-notice": 1,
+      ".plx-error-summary.is-focused>.plx-notice": 1
+    },
+    "platform/components/Field/field.css": {
+      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline": 2,
+      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline>.plx-field__head": 1,
+      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label-tip": 1,
+      ".plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label": 2
+    },
+    "platform/components/FileInput/file-input.css": {
+      ".plx-file-input__item>.plx-icon": 1
+    },
+    "platform/components/FileRow/file-row.css": {
+      ".plx-file-row__select>.plx-check": 1
+    },
+    "platform/components/InlineEdit/inline-edit.css": {
+      ".plx-inline-edit__hint .plx-icon": 1,
+      ".plx-inline-edit__control .plx-select": 1
+    },
+    "platform/components/InputGroup/input-group.css": {
+      ".plx-input-group__icon .plx-icon": 1,
+      ".plx-input-group>.plx-input-group__attached--start>.plx-select__control": 1,
+      ".plx-input-group>.plx-input-group__attached--end>.plx-select__control": 1,
+      ".plx-input-group>.plx-input-group__attached--inner>.plx-select__control": 1
+    },
+    "platform/components/Link/link.css": {
+      ".plx-data-table__portal>a.plx-link:only-child": 1,
+      ".plx-data-table__portal>a.plx-link:only-child::before": 1
+    },
+    "platform/components/MediaViewer/media-viewer.css": {
+      ".plx-media-viewer__nav--previous .plx-icon": 1,
+      ".plx-media-viewer__nav--next .plx-icon": 1,
+      ".plx-media-viewer__stage--video>.plx-media-player": 2,
+      ".plx-media-viewer__stage--video .plx-media-player__media": 1
+    },
+    "platform/components/Metric/metric.css": {
+      ".plx-metric-card .plx-metric": 1
+    },
+    "platform/components/NavList/nav-list.css": {
+      ".plx-nav-list__group>.plx-collapsible-section__heading": 1,
+      ".plx-nav-list__pin .plx-icon": 1,
+      ".plx-nav-list__actions .plx-button": 1
+    },
+    "platform/components/NumberInput/number-input.css": {
+      ".plx-number-input--quantity>.plx-input-group__box": 1,
+      ".plx-number-input--quantity .plx-input.plx-input-group__input": 1
+    },
+    "platform/components/ProductOptions/product-options.css": {
+      ".plx-product-options__sizes .plx-radio-tiles__legend": 1,
+      ".plx-product-options__swatch.is-unavailable .plx-color-swatch": 1,
+      ".plx-product-options__swatch.is-unavailable .plx-color-swatch-label": 1
+    },
+    "platform/components/ProgressSteps/progress-steps.css": {
+      ".plx-progress-steps__marker .plx-icon": 1
+    },
+    "platform/components/RichTextEditor/rich-text-editor.css": {
+      ".plx-rich-text-editor__bar .plx-input": 1
+    },
+    "platform/components/SearchField/search-field.css": {
+      ".plx-search__icon .plx-icon": 1,
+      ".plx-search__clear .plx-icon": 1,
+      ".plx-search__option-icon .plx-icon": 1
+    },
+    "platform/components/SearchResult/search-result.css": {
+      ".plx-search-result__meta .plx-text": 1
+    },
+    "platform/components/SuggestedAction/suggested-action.css": {
+      ".plx-suggested-action__button--card .plx-button__label": 1
+    },
+    "platform/components/Table/table.css": {
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-tableholder .plx-data-table__grid-table": 3,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header": 3,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col": 3,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col:not(:first-child)::before": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-content .plx-data-table__grid-col-title-holder": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col .plx-data-table__grid-col-title": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row.plx-data-table__grid-row-even": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell": 3,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell:not(:first-child)::before": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--center": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__cell--icon .plx-data-table__grid-col-content": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--icon": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--icon .plx-icon": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__cell--icon .plx-data-table__grid-col-title": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--name": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--data": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--wrap": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label.plx-data-table__grid-frozen-left": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__cell--row-label.plx-data-table__grid-frozen-left": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label+.plx-data-table__grid-cell:not(.plx-data-table__cell--row-label)::before": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__cell--row-label+.plx-data-table__grid-col:not(.plx-data-table__cell--row-label)::before": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-placeholder .plx-data-table__grid-placeholder-contents": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__text": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__item": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text:not(.plx-text--data)": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-text": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-headers": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__w-fill": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__w-lead": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell.plx-data-table__cell--align-right": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell.plx-data-table__cell--align-center": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col.plx-data-table__head-align-right .plx-data-table__grid-col-title": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col.plx-data-table__head-align-center .plx-data-table__grid-col-title": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col.plx-data-table__head-align-center .plx-data-table__grid-col-content": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__grid-frozen": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__grid-frozen": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-frozen-rows-holder:empty": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"].plx-table--fill .plx-data-table__table": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"].plx-table--fill .plx-data-table__grid": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"].plx-table--fill .plx-data-table__grid .plx-data-table__grid-tableholder": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-placeholder": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-cell .plx-data-table__value": 2,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-header[hidden]": 1,
+      ".plx-table.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid .plx-data-table__grid-col-title": 1
+    },
+    "platform/components/Tag/tag.css": {
+      ".plx-chip--selected .plx-tag__remove": 1,
+      ".plx-chip--selected .plx-tag__remove:hover": 1,
+      ".plx-chip--selected .plx-tag__remove.is-hover": 1,
+      ".plx-tag-input__add .plx-icon": 1
+    },
+    "platform/components/TeachingBubble/teaching-bubble.css": {
+      ".plx-teaching-bubble .plx-button--primary": 1,
+      ".plx-teaching-bubble .plx-button--primary:hover": 1,
+      ".plx-teaching-bubble .plx-button--primary.is-hover": 1,
+      ".plx-teaching-bubble .plx-button--primary:active": 1,
+      ".plx-teaching-bubble .plx-button--primary.is-pointer-down": 1,
+      ".plx-teaching-bubble .plx-button--secondary": 1,
+      ".plx-teaching-bubble .plx-button--secondary:hover": 1,
+      ".plx-teaching-bubble .plx-button--secondary.is-hover": 1,
+      ".plx-teaching-bubble .plx-button--secondary:active": 1,
+      ".plx-teaching-bubble .plx-button--secondary.is-pointer-down": 1,
+      ".plx-teaching-bubble .plx-button--ghost": 1,
+      ".plx-teaching-bubble .plx-button--ghost:hover": 1,
+      ".plx-teaching-bubble .plx-button--ghost.is-hover": 1,
+      ".plx-teaching-bubble .plx-button--ghost:active": 1,
+      ".plx-teaching-bubble .plx-button--ghost.is-pointer-down": 1,
+      ".plx-teaching-bubble .plx-button:focus-visible": 1,
+      ".plx-teaching-bubble .plx-button.is-focus-visible": 1
+    },
+    "platform/components/Text/text.css": {
+      ".plx-data-table__portal>a.plx-text--link:only-child": 1,
+      ".plx-data-table__portal>a.plx-text--link:only-child::before": 1,
+      ".plx-text-expand>.plx-text": 1
+    },
+    "platform/components/Toolbar/toolbar.css": {
+      ".plx-toolbar .plx-button": 1,
+      ".plx-toolbar .plx-input": 1,
+      ".plx-toolbar .plx-search__input": 1
+    },
+    "platform/components/TreeSelect/tree-select.css": {
+      ".plx-tree-select .plx-popover-anchor": 1
+    },
+    "platform/components/Tree/tree.css": {
+      ".plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
+      ".plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
+      ".plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon": 1,
+      "[data-plx-density=\"comfortable\"] .plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
+      "[data-plx-density=\"comfortable\"] .plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
+      "[data-plx-density=\"comfortable\"] .plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon": 1
+    },
+    "platform/patterns/ActivityList/activity-list.css": {
+      ".plx-activity-list--stacked .plx-activity-list__meta .plx-text": 1
+    },
+    "platform/patterns/AppHeader/app-header.css": {
+      ".plx-app-header .plx-button": 1,
+      ".plx-app-header--accent .plx-button--secondary": 1,
+      ".plx-app-header--accent .plx-button--secondary:hover": 1,
+      ".plx-app-header--accent .plx-button--secondary.is-hover": 1,
+      ".plx-app-header--accent .plx-button--secondary:active:not(:disabled):not([aria-disabled=\"true\"])": 1,
+      ".plx-app-header--accent .plx-button--secondary.is-pointer-down": 1,
+      ".plx-app-header--frost .plx-search__input": 1,
+      ".plx-app-header__search>.plx-search": 1,
+      ".plx-app-header__item .plx-icon": 1,
+      ".plx-app-header__item .plx-avatar": 1,
+      ".plx-app-switcher__icon .plx-icon": 1,
+      ".plx-app-switcher__pin .plx-icon": 1,
+      ".plx-app-header__action .plx-button": 1,
+      ".plx-app-header__account-row .plx-button__label": 1,
+      ".plx-app-header__brand .plx-brand-mark": 1,
+      ".plx-search-view__field>.plx-search": 1
+    },
+    "platform/patterns/Auth/auth.css": {
+      ".plx-auth__form .plx-input": 1
+    },
+    "platform/patterns/AvatarUpload/avatar-upload.css": {
+      ".plx-avatar-upload .plx-file-input__summary": 1
+    },
+    "platform/patterns/BulkActions/bulk-actions.css": {
+      ".plx-bulk-actions__row>.plx-toolbar__group": 1,
+      ".plx-bulk-actions--empty .plx-selection-summary__count": 1
+    },
+    "platform/patterns/CommandBar/command-bar.css": {
+      ".plx-command-bar__row>.plx-toolbar__group": 1
+    },
+    "platform/patterns/CommandBar/find-panel.css": {
+      ".plx-find-panel__handle .plx-button__icon": 1,
+      ".plx-find-pick .plx-button__label": 1
+    },
+    "platform/patterns/CommandPalette/command-palette.css": {
+      ".plx-command-palette .plx-command-palette__menu .plx-command-menu__list": 1
+    },
+    "platform/patterns/FeatureCard/feature-card.css": {
+      ".plx-feature-card > .plx-card__body": 1,
+      ".plx-feature-card .plx-card__title": 1,
+      ".plx-feature-card--horizontal > .plx-card__header": 1,
+      ".plx-feature-card--horizontal > .plx-card__meta": 1,
+      ".plx-feature-card--horizontal > .plx-card__body": 1
+    },
+    "platform/patterns/FileList/file-list.css": {
+      ".plx-file-list__item .plx-file-row__owner": 1,
+      ".plx-file-list__item .plx-file-row__date": 1
+    },
+    "platform/patterns/FilterBar/filter-bar.css": {
+      ".plx-filter-bar .plx-button": 1
+    },
+    "platform/patterns/Form/form.css": {
+      ".plx-form--two-column .plx-form-section__body:has(>.plx-field--inline)": 1
+    },
+    "platform/patterns/ImageUpload/image-upload.css": {
+      ".plx-image-upload .plx-file-input__summary": 1
+    },
+    "platform/patterns/NotificationList/notification-list.css": {
+      ".plx-notification-list .plx-activity-list__title": 1,
+      ".plx-notification-list .plx-activity-list__item.is-unread .plx-activity-list__title": 1
+    },
+    "platform/patterns/PropertyList/property-list.css": {
+      ".plx-property-list__value .plx-text": 1,
+      ".plx-property-list__description .plx-text": 1
+    },
+    "platform/patterns/RenameAction/rename-action.css": {
+      ".plx-rename-action--inline>.plx-inline-edit": 1
+    },
+    "platform/patterns/ResourceList/resource-list.css": {
+      ".plx-resource-list__count .plx-text": 1,
+      ".plx-resource-list__meta .plx-text": 1
+    },
+    "platform/patterns/SearchWorkspace/search-workspace.css": {
+      ".plx-search-ws__query .plx-search": 1
+    },
+    "platform/patterns/SettingsLayout/settings-layout.css": {
+      ".plx-settings__rows>.plx-field": 1,
+      ".plx-settings__rows>.plx-field:last-child": 1,
+      ".plx-settings__rows>.plx-field--inline .plx-field__label": 1,
+      ".plx-settings .plx-field--inline": 1,
+      ".plx-settings__section .plx-action-bar": 1
+    },
+    "platform/patterns/SplitView/split-view.css": {
+      ".plx-split-view__first>.plx-resizable__content": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--inline": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--block": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge::before": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--inline::before": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--block::before": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge::after": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--inline::after": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge--block::after": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:hover::after": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge.is-hover::after": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible::before": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:active::before": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible::after": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:active::after": 1,
+      ".plx-split-view .plx-split-view__first>.plx-resizable__edge:focus-visible": 1,
+      ".plx-reading-pane__body>.plx-empty-state": 1
+    },
+    "platform/patterns/UserCard/user-card.css": {
+      ".plx-user-card > .plx-card__body": 1
+    },
+    "platform/system/forced-colors.css": {
+      ".plx-tree__item.is-selected>.plx-tree__row .plx-icon": 1,
+      ".plx-chip--selected .plx-icon": 1
+    },
+    "platform/system/keylines.css": {
+      ".plx-keylines>.plx-icon": 1
+    },
+    "platform/system/layout-grid.css": {
+      ".plx-layout-grid-overlay>.plx-layout-grid": 1,
+      ".plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+5)": 2,
+      ".plx-layout-grid>.plx-layout-grid-overlay__column:nth-child(n+9)": 2,
+      ".plx-layout-grid--narrow>.plx-layout-grid-overlay__column:nth-child(n+5)": 1,
+      ".plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+5)": 1,
+      ".plx-layout-grid--medium>.plx-layout-grid-overlay__column:nth-child(n+9)": 1,
+      ".plx-layout-grid--wide>.plx-layout-grid-overlay__column:nth-child(n+5)": 1
+    },
+    "platform/templates/Commerce/commerce.css": {
+      ".plx-commerce__buy .plx-product-options": 1
+    },
+    "services/login/login.css": {
+      ".plx-login__card .plx-input": 1
+    }
+  },
+  "important": {
+    "platform/components/DataTableNext/data-table-next.css": 1,
+    "platform/components/DataTable/data-table.css": 1,
+    "platform/system/density.css": 1,
+    "platform/system/motion.css": 4,
+    "platform/system/utilities.css": 413,
+    "services/auth/brand.css": 44
+  }
+}

@@ -7650,7 +7650,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      <List ordered variant="steps" items={[{ children: 'Choose the files' }, { children: 'Add the details' }]} />
      <List variant="bullets" items={[{ children: 'Presence: online, away, busy, offline.' }, { children: 'Workflow: done, in progress.' }]} />
    Props:
-     List.items: the statements: [{ icon, tone, children, items, ordered }]; or pass List.Item children
+     List.items: the statements: [{ icon, tone, children, items, ordered, variant }]; or pass List.Item children
      List.ordered: an ordered list (<ol>): "decimal" (true is the same) | "alpha"; without it, the icon list (<ul>)
      List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow |
        "bullets": a plain list, each statement after a small square bullet (owner, 2026-10-15: for points of a text)
@@ -7661,6 +7661,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      List.Item.tone: "neutral" (default) | "success" | "danger" | "info" | "warning"
      List.Item.items: a nested list under the statement, of the same kind unless List.Item.ordered says otherwise
      List.Item.ordered: the kind of the nested list: "decimal" | "alpha" | false (an icon list)
+     List.Item.variant: the nested list's variant ("icons", the default, or "bullets" for points under a statement)
      List.Item.children: the statement
      List.Item.className: more classes on the <li>
    Behavior:
@@ -7694,7 +7695,8 @@ function List({
     icon: it.icon,
     tone: it.tone,
     items: it.items,
-    ordered: it.ordered === undefined ? kind : it.ordered
+    ordered: it.ordered === undefined ? kind : it.ordered,
+    variant: it.variant
   }, it.children)) : children);
 }
 List.Item = function ListItem({
@@ -7702,6 +7704,7 @@ List.Item = function ListItem({
   tone = 'neutral',
   items,
   ordered,
+  variant,
   className,
   children
 }) {
@@ -7725,6 +7728,7 @@ List.Item = function ListItem({
   }, text, /*#__PURE__*/_react.default.createElement(List, {
     items: items,
     ordered: ordered,
+    variant: variant,
     className: "plx-list--nested"
   })) : text);
 };

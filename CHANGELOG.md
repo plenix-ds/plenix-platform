@@ -6,6 +6,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.55.0] - 2026-10-19
+
+### Added
+- **The Plenix Styling Standard** (`platform/standards/styling.md`, owner approved 2026-10-18): one owner per property,
+  how a parent changes a child (props, slots, published hooks), text contracts, the state matrix, cascade layers
+  without `!important`, the specificity ceiling, the `className` policy, the composition levels (pages are a template
+  filled with patterns) and the recipes for a component and a page. Shown in full on 14 › Engineering guidance ›
+  CSS architecture.
+- check-system rule `ownership`: fails on a new selector that reaches into another component and on a new
+  `!important`. Today's backlog (301 selectors in 65 files, 464 `!important` in 6 files) is listed in
+  `check-system.exceptions.json`, which only shrinks (`node check-system.rules/ownership.js --shrink`).
+- `tests/clash-audit.js`: the clash inventory and computed-style baseline of the 14 application pages
+  (`tests/baselines/clashes.json`: 7,215 elements, 728 distinct clashes, classified; `computed.json`); `--check`
+  proves a repair changed no element.
+- `List.Item` `variant`: the nested list's variant (`bullets` for points under a statement).
+
 ## [0.54.3] - 2026-10-18
 
 ### Removed
