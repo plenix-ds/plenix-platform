@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.57.2] - 2026-10-19
+
+### Changed
+- **MediaCard has its own classes** (Styling Standard, Phase 2): `plx-media-card--interactive` (was Card's
+  `plx-card--interactive`) and its title is its opener (`plx-media-card__title`, no longer also Card's
+  `plx-card__opener`). Card's motion, hover shadow and target tokens are reused, not its classes. No visual change
+  (`tests/clash-audit.js --check`: no element changed, 8 clashes gone; the media card, card and file list design-system
+  pages are pixel-identical). Apps to check: CSS or scripts that select `.plx-media-card.plx-card--interactive` or
+  `.plx-media-card .plx-card__opener`.
+- The design system's Media card page shows the "Opens (interactive)" card.
+
 ## [0.57.1] - 2026-10-19
 
 ### Changed

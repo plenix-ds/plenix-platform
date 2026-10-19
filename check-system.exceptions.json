@@ -25,8 +25,6 @@
       ".plx-panel__toggle .plx-icon": 1,
       ".plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle .plx-icon": 1,
       ".plx-panel__icon .plx-icon": 1,
-      ".plx-media-card--selectable .plx-card__opener::after": 1,
-      ".plx-media-card--selectable .plx-card__opener": 1,
       ".plx-card__toggle .plx-icon": 1,
       ".plx-card.is-collapsed .plx-card__toggle .plx-icon": 1,
       ".plx-card.is-collapsed .plx-card__toggle .plx-icon:dir(rtl)": 1

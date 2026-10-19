@@ -182,7 +182,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
   const click = (e) => { if (onClick) onClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; onSelectChange(!selected, e); };
   const dblClick = (e) => { if (onDoubleClick) onDoubleClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; if (onOpen) onOpen(); else if (href) location.href = href; };
   const card = (
-    <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className)}
+    <article className={cx('plx-media-card', (href || onOpen) && 'plx-media-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className)}
       onClick={click} onDoubleClick={dblClick} {...rest}>
       <div className="plx-media-card__media" data-plx-aspect={aspect}>
         {src ? <img src={src} alt={alt} loading="lazy" decoding="async" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? (typeof icon === 'string' ? <Icon name={icon} size="lg" /> : icon) : null}</span>}
@@ -195,7 +195,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
       ) : null}
       <div className="plx-media-card__info">
         <div className="plx-media-card__text">
-          <Opener href={href} onOpen={onOpen} className="plx-card__opener plx-media-card__title">{title}</Opener>
+          <Opener href={href} onOpen={onOpen} className="plx-media-card__title">{title}</Opener>
           {line ? <span className="plx-media-card__meta">{line}</span> : null}
           {statusEl ? <span className="plx-media-card__status">{statusEl}</span> : null}
         </div>

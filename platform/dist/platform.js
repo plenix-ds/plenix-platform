@@ -1197,7 +1197,7 @@ function MediaCard({
     if (onOpen) onOpen();else if (href) location.href = href;
   };
   const card = /*#__PURE__*/_react.default.createElement("article", _extends({
-    className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className),
+    className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-media-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className),
     onClick: click,
     onDoubleClick: dblClick
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
@@ -1235,7 +1235,7 @@ function MediaCard({
   }, /*#__PURE__*/_react.default.createElement(Opener, {
     href: href,
     onOpen: onOpen,
-    className: "plx-card__opener plx-media-card__title"
+    className: "plx-media-card__title"
   }, title), line ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-media-card__meta"
   }, line) : null, statusEl ? /*#__PURE__*/_react.default.createElement("span", {

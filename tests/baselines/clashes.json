@@ -59,11 +59,11 @@
   }
  },
  "kinds": {
-  "cross-component": 84,
+  "cross-component": 76,
   "order-decided": 19,
-  "redundant": 29,
-  "state-variant": 312,
-  "variant-repeat": 175,
+  "redundant": 30,
+  "state-variant": 316,
+  "variant-repeat": 176,
   "vendor": 93
  },
  "clashes": [
@@ -555,32 +555,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam"
-   ],
-   "p": "color",
-   "a": ".plx-card__opener",
-   "b": ".plx-media-card__title",
-   "va": "inherit",
-   "vb": "var(--plx-comp-media-card-title-text)",
-   "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam"
-   ],
-   "p": "cursor",
-   "a": ".plx-card--interactive",
-   "b": ".plx-media-card--selectable",
-   "va": "pointer",
-   "vb": "pointer",
-   "files": "components/Card/card.css / components/Card/card.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam/settings-system.html"
    ],
    "p": "cursor",
@@ -634,19 +608,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam"
-   ],
-   "p": "font-size",
-   "a": ".plx-card__opener",
-   "b": ".plx-media-card__title",
-   "va": "inherit",
-   "vb": "var(--plx-comp-media-card-title-font-size)",
-   "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam/settings-system.html",
     "dam/settings-myaccount.html"
    ],
@@ -671,19 +632,6 @@
    "va": "var(--plx-comp-input-font-size)",
    "vb": "var(--plx-comp-textarea-font-size)",
    "files": "components/Input/input.css / components/Input/input.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam"
-   ],
-   "p": "font-weight",
-   "a": ".plx-card__opener",
-   "b": ".plx-media-card__title",
-   "va": "inherit",
-   "vb": "var(--plx-comp-media-card-title-font-weight)",
-   "files": "components/Card/card.css / components/Card/card.css",
    "same": false
   },
   {
@@ -811,32 +759,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam"
-   ],
-   "p": "margin-block-end",
-   "a": ".plx-card__opener",
-   "b": ".plx-media-card--selectable .plx-card__opener",
-   "va": "0px",
-   "vb": "var(--plx-comp-card-opener-target-margin-block)",
-   "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam"
-   ],
-   "p": "margin-block-start",
-   "a": ".plx-card__opener",
-   "b": ".plx-media-card--selectable .plx-card__opener",
-   "va": "0px",
-   "vb": "var(--plx-comp-card-opener-target-margin-block)",
-   "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "projects",
     "messages",
     "contacts",
@@ -957,19 +879,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dam"
-   ],
-   "p": "padding-block-end",
-   "a": ".plx-card__opener",
-   "b": ".plx-media-card--selectable .plx-card__opener",
-   "va": "0px",
-   "vb": "var(--plx-comp-card-opener-target-padding-block)",
-   "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "messages",
     "dam",
     "dam/settings-system.html"
@@ -980,19 +889,6 @@
    "va": "0px",
    "vb": "var(--plx-comp-textarea-padding-block)",
    "files": "components/Input/input.css / components/Input/input.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dam"
-   ],
-   "p": "padding-block-start",
-   "a": ".plx-card__opener",
-   "b": ".plx-media-card--selectable .plx-card__opener",
-   "va": "0px",
-   "vb": "var(--plx-comp-card-opener-target-padding-block)",
-   "files": "components/Card/card.css / components/Card/card.css",
    "same": false
   },
   {
@@ -1561,8 +1457,7 @@
    "pages": [
     "dashboard",
     "calendar",
-    "bookmarks",
-    "dam"
+    "bookmarks"
    ],
    "p": "font-family",
    "a": ".plx-card__opener",
@@ -1597,6 +1492,19 @@
    "va": "inherit",
    "vb": "inherit",
    "files": "patterns/ImageEditor/image-editor.css / system/elements.css",
+   "same": true
+  },
+  {
+   "kind": "redundant",
+   "pages": [
+    "dam"
+   ],
+   "p": "font-family",
+   "a": ".plx-media-card__title",
+   "b": "button",
+   "va": "inherit",
+   "vb": "inherit",
+   "files": "components/Card/card.css / system/elements.css",
    "same": true
   },
   {
@@ -5244,6 +5152,19 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam"
+   ],
+   "p": "margin-block-end",
+   "a": ".plx-media-card__title",
+   "b": ".plx-media-card--selectable .plx-media-card__title",
+   "va": "0px",
+   "vb": "var(--plx-comp-card-opener-target-margin-block)",
+   "files": "components/Card/card.css / components/Card/card.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "settings",
     "dam/settings-system.html",
     "dam/settings-myaccount.html"
@@ -5254,6 +5175,19 @@
    "va": "var(--plx-comp-settings-section-margin-block-end)",
    "vb": "0px",
    "files": "patterns/SettingsLayout/settings-layout.css / patterns/SettingsLayout/settings-layout.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam"
+   ],
+   "p": "margin-block-start",
+   "a": ".plx-media-card__title",
+   "b": ".plx-media-card--selectable .plx-media-card__title",
+   "va": "0px",
+   "vb": "var(--plx-comp-card-opener-target-margin-block)",
+   "files": "components/Card/card.css / components/Card/card.css",
    "same": false
   },
   {
@@ -5610,6 +5544,19 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dam"
+   ],
+   "p": "padding-block-end",
+   "a": ".plx-media-card__title",
+   "b": ".plx-media-card--selectable .plx-media-card__title",
+   "va": "0px",
+   "vb": "var(--plx-comp-card-opener-target-padding-block)",
+   "files": "components/Card/card.css / components/Card/card.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "dashboard",
     "tasks"
    ],
@@ -5660,6 +5607,19 @@
    "va": "0px",
    "vb": "var(--plx-comp-tool-rail-labels-item-padding-block)",
    "files": "patterns/ToolRail/tool-rail.css / patterns/ToolRail/tool-rail.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dam"
+   ],
+   "p": "padding-block-start",
+   "a": ".plx-media-card__title",
+   "b": ".plx-media-card--selectable .plx-media-card__title",
+   "va": "0px",
+   "vb": "var(--plx-comp-card-opener-target-padding-block)",
+   "files": "components/Card/card.css / components/Card/card.css",
    "same": false
   },
   {
@@ -7485,6 +7445,19 @@
    "va": "col-resize",
    "vb": "col-resize",
    "files": "components/DataTable/data-table.css / components/DataTable/data-table.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
+    "dam"
+   ],
+   "p": "cursor",
+   "a": ".plx-media-card--interactive",
+   "b": ".plx-media-card--selectable",
+   "va": "pointer",
+   "vb": "pointer",
+   "files": "components/Card/card.css / components/Card/card.css",
    "same": true
   },
   {
