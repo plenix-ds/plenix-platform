@@ -18,7 +18,7 @@
 .plx-find-panel__row:focus-visible,.plx-columns-list__row:focus-visible{outline-color:var(--plx-comp-find-panel-focus-color);outline-offset:var(--plx-comp-find-panel-focus-offset);outline-style:solid;outline-width:var(--plx-comp-find-panel-focus-width);}
 .plx-find-panel__row.is-dragging,.plx-columns-list__row.is-dragging{opacity:var(--plx-comp-find-panel-row-dragging-opacity);}
 .plx-find-panel__handle{cursor:grab;}
-.plx-find-panel__handle .plx-button__icon{color:var(--plx-comp-find-panel-handle-text);}
+.plx-find-panel__handle{--plx-comp-button-context-icon-color:var(--plx-comp-find-panel-handle-text);}
 .plx-find-panel__join{flex-grow:0;flex-shrink:0;inline-size:var(--plx-comp-find-panel-join-width);}
 .plx-find-panel__group{display:flex;flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-find-panel-rows-gap);}
 .plx-find-panel__add{align-items:center;column-gap:var(--plx-comp-find-panel-add-gap);display:flex;flex-wrap:wrap;}
@@ -26,7 +26,6 @@
 .plx-find-panel__range{column-gap:var(--plx-comp-find-panel-range-gap);display:flex;}
 /* the pickers: menu buttons at fixed widths, their words at the start, cut with an ellipsis */
 .plx-find-pick{flex-grow:0;flex-shrink:0;justify-content:flex-start;}
-.plx-find-pick .plx-button__label{flex-grow:1;min-inline-size:0;overflow-x:hidden;text-align:start;text-overflow:ellipsis;white-space:nowrap;}
 .plx-find-pick--field{inline-size:var(--plx-comp-find-panel-pick-field-width);}
 .plx-find-pick--dir{inline-size:var(--plx-comp-find-panel-pick-dir-width);}
 .plx-find-pick--op{inline-size:var(--plx-comp-find-panel-pick-op-width);}

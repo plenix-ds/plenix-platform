@@ -27,9 +27,9 @@
 .plx-dialog__footer{--plx-comp-button-context-height:var(--plx-comp-dialog-action-height);align-items:center;background-color:var(--plx-comp-dialog-footer-background);border-top-color:var(--plx-comp-dialog-footer-border-top-color);border-top-style:solid;border-top-width:var(--plx-comp-dialog-footer-border-top-width);column-gap:var(--plx-comp-dialog-action-gap);display:flex;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;padding-block-end:var(--plx-comp-dialog-footer-padding-block);padding-block-start:var(--plx-comp-dialog-footer-padding-block);padding-inline-end:var(--plx-comp-dialog-footer-padding-inline);padding-inline-start:var(--plx-comp-dialog-footer-padding-inline);row-gap:var(--plx-comp-dialog-action-gap);}
 .plx-dialog--destructive .plx-dialog__footer{--plx-comp-button-context-height:var(--plx-comp-dialog-destructive-action-height);}
 /* the drawer slides in from its edge (its animation is on .plx-drawer above): the start side with side="start"; mirrored in right to left (batch 215) */
-.plx-modal-layer--start .plx-drawer,.plx-drawer:dir(rtl){animation-name:motion-slide-in-left;}
-.plx-modal-layer--start .plx-drawer:dir(rtl){animation-name:motion-slide-in-right;}
+.plx-drawer--start,.plx-drawer:dir(rtl){animation-name:motion-slide-in-left;}
+.plx-drawer--start:dir(rtl){animation-name:motion-slide-in-right;}
 /* non-modal (modal={false}): the same window in the same place, with no veil; the page behind stays usable */
 .plx-modal-layer--non-modal{pointer-events:none;}
 .plx-modal-layer--non-modal::before{content:none;}
-.plx-modal-layer--non-modal .plx-dialog{pointer-events:auto;}
+.plx-dialog--non-modal{pointer-events:auto;}

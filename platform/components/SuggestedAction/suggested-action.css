@@ -1,4 +1,4 @@
 /* Plenix · SuggestedAction: existing Platform roles, no new surfaces. */
-.plx-suggested-action{row-gap:var(--plx-comp-suggested-action-gap);}
+.plx-suggested-action{--plx-comp-button-context-label-gap:var(--plx-comp-suggested-action-gap);row-gap:var(--plx-comp-suggested-action-gap);}
 
-.plx-suggested-action__button--card .plx-button__label{display:flex;flex-direction:column;align-items:flex-start;row-gap:var(--plx-comp-suggested-action-gap);white-space:normal;}
+

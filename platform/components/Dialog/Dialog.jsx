@@ -135,7 +135,7 @@ function ModalShell({ kind, open, onClose, title, description, icon, size, side,
   return createPortal(
     <div className={cx('plx-modal-layer', 'plx-modal-layer--' + kind, side && 'plx-modal-layer--' + side, !modal && 'plx-modal-layer--non-modal')} onMouseDown={onVeil}>
       <div ref={ref} role={role} aria-modal={modal ? 'true' : undefined} aria-labelledby={id + 't'} aria-describedby={description ? id + 'd' : undefined}
-        tabIndex={-1} className={cx('plx-dialog', kind === 'drawer' && 'plx-drawer', 'plx-' + kind + '--' + size, className)} onKeyDown={onKeyDown} {...track}>
+        tabIndex={-1} className={cx('plx-dialog', kind === 'drawer' && 'plx-drawer', kind === 'drawer' && side === 'start' && 'plx-drawer--start', !modal && 'plx-dialog--non-modal', 'plx-' + kind + '--' + size, className)} onKeyDown={onKeyDown} {...track}>
         <div className="plx-dialog__header">
           {icon ? <span className="plx-dialog__icon">{asIcon(icon)}</span> : null}
           <h2 id={id + 't'} className="plx-dialog__title">{title}</h2>

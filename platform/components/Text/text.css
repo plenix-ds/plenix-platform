@@ -37,7 +37,7 @@
 .plx-text--lines-4{-webkit-line-clamp:var(--plx-comp-text-lines-4);}
 /* expandable: the clamped text and its Show more button under it, at the start */
 .plx-text-expand{align-items:flex-start;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-text-expand-gap);}
-.plx-text-expand>.plx-text{align-self:stretch;}
+.plx-text-expand>:first-child{align-self:stretch;}
 /* content that follows the surrounding text (Styling Standard 6): a container declares data-plx-text-follow="size family
    weight" (any of them) on its own element; inside it this component takes those from the text around it */
 [data-plx-text-follow~="size"] .plx-text{font-size:inherit;}

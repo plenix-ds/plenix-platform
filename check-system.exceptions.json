@@ -18,8 +18,7 @@
       "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
     },
     "platform/components/DataTableNext/data-table-next.css": {
-      ".plx-data-table[data-plx-engine=\"next\"][data-plx-row-height]:not([data-plx-row-height=\"short\"]) .plx-data-table__grid .plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs) .plx-data-table__grid-cell .plx-thumbnail": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__rich .plx-avatar": 1
+      ".plx-data-table[data-plx-engine=\"next\"][data-plx-row-height]:not([data-plx-row-height=\"short\"]) .plx-data-table__grid .plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs) .plx-data-table__grid-cell .plx-thumbnail": 1
     },
     "platform/components/DataTable/data-table.css": {
       ".plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon": 1,
@@ -39,11 +38,6 @@
       ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__cell--icon .plx-icon": 1,
       ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__header-icon .plx-icon": 1
     },
-    "platform/components/Dialog/dialog.css": {
-      ".plx-modal-layer--start .plx-drawer": 1,
-      ".plx-modal-layer--start .plx-drawer:dir(rtl)": 1,
-      ".plx-modal-layer--non-modal .plx-dialog": 1
-    },
     "platform/components/DocumentViewer/document-viewer.css": {
       ".plx-document-viewer__viewport[data-zoom=\"50\"] > .plx-image": 1,
       ".plx-document-viewer__viewport[data-zoom=\"75\"] > .plx-image": 1,
@@ -52,10 +46,6 @@
       ".plx-document-viewer__viewport[data-zoom=\"150\"] > .plx-image": 1,
       ".plx-document-viewer__viewport[data-zoom=\"200\"] > .plx-image": 1,
       ".plx-document-viewer__zoom .plx-input": 1
-    },
-    "platform/components/ErrorSummary/error-summary.css": {
-      ".plx-error-summary:focus>.plx-notice": 1,
-      ".plx-error-summary.is-focused>.plx-notice": 1
     },
     "platform/components/FileRow/file-row.css": {
       ".plx-file-row__select>.plx-check": 1
@@ -68,28 +58,14 @@
       ".plx-media-viewer__stage--video>.plx-media-player": 2,
       ".plx-media-viewer__stage--video .plx-media-player__media": 1
     },
-    "platform/components/Metric/metric.css": {
-      ".plx-metric-card .plx-metric": 1
-    },
-    "platform/components/NavList/nav-list.css": {
-      ".plx-nav-list__group>.plx-collapsible-section__heading": 1
-    },
     "platform/components/ProductOptions/product-options.css": {
       ".plx-product-options__sizes .plx-radio-tiles__legend": 1,
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch": 1,
       ".plx-product-options__swatch.is-unavailable .plx-color-swatch-label": 1
     },
-    "platform/components/SuggestedAction/suggested-action.css": {
-      ".plx-suggested-action__button--card .plx-button__label": 1
-    },
     "platform/components/Text/text.css": {
       ".plx-data-table__portal>a.plx-text--link:only-child": 1,
-      ".plx-data-table__portal>a.plx-text--link:only-child::before": 1,
-      ".plx-text-expand>.plx-text": 1
-    },
-    "platform/components/Toolbar/toolbar.css": {
-      ".plx-toolbar .plx-input": 1,
-      ".plx-toolbar .plx-search__input": 1
+      ".plx-data-table__portal>a.plx-text--link:only-child::before": 1
     },
     "platform/components/Tree/tree.css": {
       ".plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
@@ -109,15 +85,7 @@
       ".plx-avatar-upload .plx-file-input__summary": 1
     },
     "platform/patterns/BulkActions/bulk-actions.css": {
-      ".plx-bulk-actions__row>.plx-toolbar__group": 1,
-      ".plx-bulk-actions--empty .plx-selection-summary__count": 1
-    },
-    "platform/patterns/CommandBar/find-panel.css": {
-      ".plx-find-panel__handle .plx-button__icon": 1,
-      ".plx-find-pick .plx-button__label": 1
-    },
-    "platform/patterns/CommandPalette/command-palette.css": {
-      ".plx-command-palette .plx-command-palette__menu .plx-command-menu__list": 1
+      ".plx-bulk-actions__row>.plx-toolbar__group": 1
     },
     "platform/patterns/FeatureCard/feature-card.css": {
       ".plx-feature-card > .plx-card__body": 1,

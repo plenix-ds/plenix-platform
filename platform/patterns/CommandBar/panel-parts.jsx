@@ -59,7 +59,7 @@ export function PanelHead({ title, info, infoLabel, sub, actions }) {
 export function Pick({ label, value, options, onChange, size = 'field', disabled }) {
   const cur = options.find((o) => o.value === value) || options[0] || { label: '' };
   return (
-    <Menu label={label} trigger={<Button icon={cur.icon} caret disabled={disabled} className={cx('plx-find-pick', 'plx-find-pick--' + size)} title={cur.label} aria-label={label + ': ' + cur.label}>{cur.label}</Button>}>
+    <Menu label={label} trigger={<Button icon={cur.icon} caret truncate disabled={disabled} className={cx('plx-find-pick', 'plx-find-pick--' + size)} title={cur.label} aria-label={label + ': ' + cur.label}>{cur.label}</Button>}>
       <MenuRadioGroup label={label} value={value} onChange={onChange}>
         {options.map((o) => <MenuItem key={o.value} value={o.value} icon={o.icon}>{o.label}</MenuItem>)}
       </MenuRadioGroup>
@@ -73,7 +73,7 @@ export const Pill = ({ color, children }) => <span className="plx-find-pill" dat
 export function MultiPick({ label, options, value, onChange, placeholder }) {
   const chosen = value.map((v) => options.find((o) => o.value === v) || { value: v, label: v });
   return (
-    <Menu label={label} trigger={<Button caret className="plx-find-pick plx-find-pick--value" aria-label={label + ': ' + (chosen.length ? chosen.map((o) => o.label).join(', ') : placeholder)}>
+    <Menu label={label} trigger={<Button caret truncate className="plx-find-pick plx-find-pick--value" aria-label={label + ': ' + (chosen.length ? chosen.map((o) => o.label).join(', ') : placeholder)}>
       {chosen.length ? <span className="plx-find-pick__pills">{chosen.map((o) => <Pill key={o.value} color={o.color}>{o.label}</Pill>)}</span>
         : <span className="plx-find-pick__placeholder">{placeholder}</span>}</Button>}>
       {options.map((o) => <MenuItem key={o.value} checked={value.indexOf(o.value) >= 0} keepOpen onSelect={() => onChange(toggle(value, o.value))}><Pill color={o.color}>{o.label}</Pill></MenuItem>)}

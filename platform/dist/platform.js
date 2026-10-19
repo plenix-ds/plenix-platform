@@ -4075,6 +4075,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
        hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
        (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
+     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
+     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
      joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
        role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
        tint on hover) | "lg" (the prominent role: page actions)
@@ -4132,6 +4134,8 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
   href,
   type = 'button',
   joined,
+  truncate = false,
+  stackedLabel = false,
   className,
   children,
   onClick,
@@ -4146,7 +4150,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
   const t = Object.assign({}, STRINGS, strings);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__icon"
   }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
@@ -10874,7 +10878,7 @@ function ModalShell({
     "aria-labelledby": id + 't',
     "aria-describedby": description ? id + 'd' : undefined,
     tabIndex: -1,
-    className: (0, _cx.cx)('plx-dialog', kind === 'drawer' && 'plx-drawer', 'plx-' + kind + '--' + size, className),
+    className: (0, _cx.cx)('plx-dialog', kind === 'drawer' && 'plx-drawer', kind === 'drawer' && side === 'start' && 'plx-drawer--start', !modal && 'plx-dialog--non-modal', 'plx-' + kind + '--' + size, className),
     onKeyDown: onKeyDown
   }, track), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-dialog__header"
@@ -22697,6 +22701,7 @@ function Pick({
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       icon: cur.icon,
       caret: true,
+      truncate: true,
       disabled: disabled,
       className: (0, _cx.cx)('plx-find-pick', 'plx-find-pick--' + size),
       title: cur.label,
@@ -22737,6 +22742,7 @@ function MultiPick({
     label: label,
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       caret: true,
+      truncate: true,
       className: "plx-find-pick plx-find-pick--value",
       "aria-label": label + ': ' + (chosen.length ? chosen.map(o => o.label).join(', ') : placeholder)
     }, chosen.length ? /*#__PURE__*/_react.default.createElement("span", {
@@ -75182,6 +75188,7 @@ const SuggestedAction = exports.SuggestedAction = /*#__PURE__*/_react.default.fo
     ref: ref,
     variant: "secondary",
     size: variant === 'card' ? 'md' : 'sm',
+    stackedLabel: variant === 'card',
     className: (0, _cx.cx)('plx-suggested-action__button', variant === 'card' && 'plx-suggested-action__button--card'),
     icon: "sparkle",
     disabled: disabled || busy || !onAction,

@@ -1,11 +1,10 @@
 /* Plenix · Toolbar (platform/components/Toolbar). Controls in a toolbar take the toolbar role height. */
-.plx-toolbar{--plx-comp-button-context-height:var(--plx-sys-control-height-toolbar);align-items:center;column-gap:var(--plx-comp-toolbar-group-gap);display:flex;flex-wrap:wrap;min-inline-size:0;row-gap:var(--plx-comp-toolbar-control-gap);}
+.plx-toolbar{--plx-comp-input-context-min-height:var(--plx-comp-toolbar-input-min-height);--plx-comp-button-context-height:var(--plx-sys-control-height-toolbar);align-items:center;column-gap:var(--plx-comp-toolbar-group-gap);display:flex;flex-wrap:wrap;min-inline-size:0;row-gap:var(--plx-comp-toolbar-control-gap);}
 .plx-toolbar__group{align-items:center;column-gap:var(--plx-comp-toolbar-control-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-toolbar-control-gap);}
 /* bar (CommandBar): one row that never wraps, with fixed gaps that density does not change */
 .plx-toolbar--bar{column-gap:var(--plx-comp-toolbar-bar-group-gap);flex-wrap:nowrap;}
 .plx-toolbar--bar>.plx-toolbar__group{column-gap:var(--plx-comp-toolbar-bar-control-gap);flex-shrink:0;flex-wrap:nowrap;}
 .plx-toolbar__spacer{flex-grow:1;}
-.plx-toolbar .plx-input,.plx-toolbar .plx-search__input{min-block-size:var(--plx-comp-toolbar-input-min-height);}
 
 /* Layout-only wrappers do not add a second gap or change the row direction. Hidden wrappers stay hidden. */
 .plx-toolbar :where([data-plx-toolbar-layout]:not([hidden])){display:contents;}

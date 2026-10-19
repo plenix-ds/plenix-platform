@@ -1,5 +1,5 @@
 /* Plenix · Metric (platform/components/Metric). Anatomy and API: Metric.jsx. */
-.plx-metric{display:grid;min-inline-size:0;row-gap:var(--plx-comp-metric-row-gap);}
+.plx-metric{display:grid;min-inline-size:0;row-gap:var(--plx-comp-metric-context-row-gap,var(--plx-comp-metric-row-gap));}
 .plx-metric__figure{align-items:baseline;column-gap:var(--plx-comp-metric-figure-gap);display:flex;flex-wrap:wrap;}
 .plx-metric__value{color:var(--plx-comp-metric-value-text);font-family:var(--plx-comp-metric-value-font-family);font-size:var(--plx-comp-metric-value-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-metric-value-font-weight);line-height:var(--plx-comp-metric-value-line-height);word-spacing:normal;}
 .plx-metric--lg .plx-metric__value{font-size:var(--plx-comp-metric-lg-value-font-size);}
@@ -17,4 +17,4 @@
 /* the trend (library wave 9): a sparkline the width of the metric, never narrower than a word-sized one */
 .plx-metric__trend{min-inline-size:var(--plx-comp-metric-trend-min-width);}
 /* Metric card: the metric in a Card (the label is the card's title); the card keeps its own surface and padding */
-.plx-metric-card .plx-metric{row-gap:var(--plx-comp-metric-card-row-gap);}
+.plx-metric-card{--plx-comp-metric-context-row-gap:var(--plx-comp-metric-card-row-gap);}

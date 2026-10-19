@@ -3,4 +3,4 @@
    results change; the body keeps the dialog padding. Anatomy and API: CommandPalette.jsx. */
 .plx-modal-layer:has(> .plx-command-palette){align-items:flex-start;}
 .plx-command-palette .plx-command-palette__menu{row-gap:var(--plx-comp-command-palette-gap);}
-.plx-command-palette .plx-command-palette__menu .plx-command-menu__list{max-block-size:var(--plx-comp-command-palette-list-max-height);}
+.plx-command-palette .plx-command-palette__menu{--plx-comp-command-menu-context-list-max-height:var(--plx-comp-command-palette-list-max-height);}
