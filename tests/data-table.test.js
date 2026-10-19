@@ -401,7 +401,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       // no view button of its own (owner, 2026-10-14: the row height lives in the command bar's View menu); the header's
       // chevron button opens the column menu
       if (await page.evaluate(() => !!document.querySelector('main .plx-data-table .plx-data-table__cell--view'))) bad.push('the table has no view button of its own');
-      const chev = await page.evaluate(() => { const c = document.querySelector('main .plx-data-table .plx-data-table__grid-col[data-plx-field="qty"] .plx-data-table__menu-chevron'); if (!c) return false; c.parentElement.click(); return true; });
+      const chev = await page.evaluate(() => { const c = document.querySelector('main .plx-data-table .plx-data-table__grid-col[data-plx-field="qty"] .plx-data-table__menu-chevron'); if (!c) return false; c.closest('button').click(); return true; });
       await wait();
       if (!chev) bad.push('a column header has its menu chevron');
       else if (!(await page.evaluate(() => !!document.querySelector(':is(.plx-menu,.plx-data-table__grid-menu)')))) bad.push('the header chevron opens the column menu');
