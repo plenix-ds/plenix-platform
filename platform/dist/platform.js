@@ -30434,7 +30434,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
   }, brand ? /*#__PURE__*/_react.default.createElement("button", {
     ref: trigger,
     type: "button",
-    className: "plx-app-header__brand plx-app-header__switch",
+    className: "plx-app-header__brand plx-app-header__brand--switch",
     "aria-haspopup": "dialog",
     "aria-expanded": open,
     "aria-controls": id,

@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.55.1] - 2026-10-19
+
+### Changed
+- **App Header, one owner per property** (Styling Standard, Phase 1). No visual change: the computed style of all
+  7,215 elements on the 14 application pages is identical (`tests/clash-audit.js --check`).
+  - The application switcher is the brand with a modifier: `plx-app-header__brand plx-app-header__brand--switch`
+    (was `plx-app-header__switch`). The brand's rules are one rule; the modifier sets only what a button adds.
+    Apps to check: CSS that targets `.plx-app-header__switch` should target `.plx-app-header__brand--switch`.
+  - The account item's hover and current backgrounds are set by value (`--_app-header-item-hover-background`,
+    `--_app-header-item-current-background` on `plx-app-header__item--account`), not by 0,3,0 selectors.
+  - The switch chevron keeps the icon's own no-shrink; the main region's minimum sizes belong to AppShell
+    (`.plx-shell-main` keeps only its container).
+### Removed
+- Tokens `--plx-comp-app-header-brand-padding-inline-start`, `-brand-padding-inline-end` and
+  `--plx-comp-app-header-switch-gap`: always overridden, never shown.
+- `tests/baselines/clashes.json`: 11 clashes fewer (728 → 717).
+
 ## [0.55.0] - 2026-10-19
 
 ### Added

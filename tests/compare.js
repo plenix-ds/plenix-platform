@@ -35,12 +35,13 @@ const FREEZE = '*,*::before,*::after{animation:none !important;transition:none !
     const url = 'http://127.0.0.1:' + port + '/Plenix/' + (pg.startsWith('#') ? 'platform/design-system/' + pg : pg);
     await page.goto('about:blank'); await page.goto(url, { waitUntil: 'networkidle0' }); await page.evaluate(() => document.fonts.ready); await sleep(1500);
     await page.addStyleTag({ content: FREEZE }); await sleep(300);
-    return page.screenshot({ fullPage: true, captureBeyondViewport: true });
+    return Buffer.from(await page.screenshot({ fullPage: true, captureBeyondViewport: true }));
   };
   let diffs = 0;
   for (const pg of APP_PAGES.concat(ROUTES)) {
     const x = await shot(8795, pg), y = await shot(8796, pg);
-    const r = await page.evaluate(async (s1, s2) => {
+    // identical files are the same page: only pages that differ are compared pixel by pixel (slow on a long page)
+    const r = x.equals(y) ? 0 : await page.evaluate(async (s1, s2) => {
       const load = (s) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = 'data:image/png;base64,' + s; });
       const [p, q] = await Promise.all([load(s1), load(s2)]);
       if (p.width !== q.width || p.height !== q.height) return 'size ' + p.width + 'x' + p.height + ' -> ' + q.width + 'x' + q.height;

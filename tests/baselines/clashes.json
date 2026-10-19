@@ -3,67 +3,67 @@
  "pages": {
   "dashboard/index.html": {
    "elements": 487,
-   "clashed": 89
+   "clashed": 87
   },
   "projects/index.html": {
    "elements": 196,
-   "clashed": 37
+   "clashed": 35
   },
   "messages/index.html": {
    "elements": 283,
-   "clashed": 47
+   "clashed": 45
   },
   "contacts/index.html": {
    "elements": 171,
-   "clashed": 30
+   "clashed": 28
   },
   "calendar/index.html": {
    "elements": 381,
-   "clashed": 101
+   "clashed": 99
   },
   "tasks/index.html": {
    "elements": 300,
-   "clashed": 43
+   "clashed": 41
   },
   "notes/index.html": {
    "elements": 173,
-   "clashed": 32
+   "clashed": 30
   },
   "bookmarks/index.html": {
    "elements": 248,
-   "clashed": 35
+   "clashed": 33
   },
   "files/index.html": {
    "elements": 335,
-   "clashed": 110
+   "clashed": 108
   },
   "settings/index.html": {
    "elements": 889,
-   "clashed": 155
+   "clashed": 153
   },
   "dam/index.html": {
    "elements": 941,
-   "clashed": 244
+   "clashed": 242
   },
   "dam/settings-system.html": {
    "elements": 2377,
-   "clashed": 1027
+   "clashed": 1025
   },
   "dam/settings-myaccount.html": {
    "elements": 276,
-   "clashed": 61
+   "clashed": 59
   },
   "dam/image-editor.html": {
    "elements": 158,
-   "clashed": 28
+   "clashed": 27
   }
  },
  "kinds": {
-  "cross-component": 257,
-  "order-decided": 21,
-  "redundant": 31,
-  "state-variant": 229,
-  "variant-repeat": 97,
+  "cross-component": 254,
+  "order-decided": 19,
+  "redundant": 29,
+  "state-variant": 228,
+  "variant-repeat": 95,
   "vendor": 93
  },
  "clashes": [
@@ -1719,31 +1719,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "flex-shrink",
-   "a": ".plx-icon",
-   "b": ".plx-app-header__switch-chevron",
-   "va": "0",
-   "vb": "0",
-   "files": "components/Icon/icon.css / patterns/AppHeader/app-header.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam/settings-system.html",
     "dam/settings-myaccount.html"
    ],
@@ -2382,32 +2357,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html",
-    "dam/image-editor.html"
-   ],
-   "p": "min-block-size",
-   "a": ".plx-app-shell__main",
-   "b": ".plx-shell-main",
-   "va": "0px",
-   "vb": "0px",
-   "files": "patterns/AppShell/app-shell.css / system/grid.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam/settings-system.html"
    ],
    "p": "min-block-size",
@@ -2499,32 +2448,6 @@
    "va": "var(--plx-comp-table-min-height)",
    "vb": "var(--plx-comp-table-min-height)",
    "files": "components/Table/table.css / components/Table/table.css",
-   "same": true
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html",
-    "dam/image-editor.html"
-   ],
-   "p": "min-inline-size",
-   "a": ".plx-app-shell__main",
-   "b": ".plx-shell-main",
-   "va": "0px",
-   "vb": "0px",
-   "files": "patterns/AppShell/app-shell.css / system/grid.css",
    "same": true
   },
   {
@@ -3546,56 +3469,6 @@
     "settings",
     "dam",
     "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "column-gap",
-   "a": ".plx-app-header__brand",
-   "b": ".plx-app-header__switch",
-   "va": "var(--plx-comp-app-header-brand-gap)",
-   "vb": "var(--plx-comp-app-header-switch-gap)",
-   "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
-   "same": false
-  },
-  {
-   "kind": "order-decided",
-   "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "display",
-   "a": ".plx-app-header__brand",
-   "b": ".plx-app-header__switch",
-   "va": "flex",
-   "vb": "inline-flex",
-   "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
-   "same": false
-  },
-  {
-   "kind": "order-decided",
-   "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
     "dam/settings-myaccount.html",
     "dam/image-editor.html"
    ],
@@ -3875,31 +3748,6 @@
   {
    "kind": "redundant",
    "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "align-items",
-   "a": ".plx-app-header__brand",
-   "b": ".plx-app-header__switch",
-   "va": "center",
-   "vb": "center",
-   "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
-   "same": true
-  },
-  {
-   "kind": "redundant",
-   "pages": [
     "dam/settings-system.html"
    ],
    "p": "flex-grow",
@@ -3956,31 +3804,6 @@
    ],
    "p": "font-family",
    "a": ".plx-app-header__item",
-   "b": "button",
-   "va": "inherit",
-   "vb": "inherit",
-   "files": "patterns/AppHeader/app-header.css / system/elements.css",
-   "same": true
-  },
-  {
-   "kind": "redundant",
-   "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "font-family",
-   "a": ".plx-app-header__switch",
    "b": "button",
    "va": "inherit",
    "vb": "inherit",
@@ -4387,22 +4210,7 @@
    "a": ".plx-app-header__item",
    "b": ".plx-app-header__item.is-current",
    "va": "transparent",
-   "vb": "var(--plx-comp-app-header-selected)",
-   "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
-   "same": false
-  },
-  {
-   "kind": "state-variant",
-   "pages": [
-    "settings",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-app-header__item.is-current",
-   "b": ".plx-app-header__item.plx-app-header__item--account.is-current",
-   "va": "var(--plx-comp-app-header-selected)",
-   "vb": "transparent",
+   "vb": "var(--_app-header-item-current-background, var(--plx-comp-app-header-selected))",
    "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
    "same": false
   },
@@ -7596,21 +7404,6 @@
   {
    "kind": "variant-repeat",
    "pages": [
-    "settings",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "background-color",
-   "a": ".plx-app-header__item",
-   "b": ".plx-app-header__item.plx-app-header__item--account.is-current",
-   "va": "transparent",
-   "vb": "transparent",
-   "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
-   "same": true
-  },
-  {
-   "kind": "variant-repeat",
-   "pages": [
     "dam/image-editor.html"
    ],
    "p": "background-color",
@@ -8336,6 +8129,31 @@
   {
    "kind": "variant-repeat",
    "pages": [
+    "dashboard",
+    "projects",
+    "messages",
+    "contacts",
+    "calendar",
+    "tasks",
+    "notes",
+    "bookmarks",
+    "files",
+    "settings",
+    "dam",
+    "dam/settings-system.html",
+    "dam/settings-myaccount.html"
+   ],
+   "p": "font-family",
+   "a": ".plx-app-header__brand--switch",
+   "b": "button",
+   "va": "inherit",
+   "vb": "inherit",
+   "files": "patterns/AppHeader/app-header.css / system/elements.css",
+   "same": true
+  },
+  {
+   "kind": "variant-repeat",
+   "pages": [
     "dam/settings-system.html"
    ],
    "p": "font-size",
@@ -8649,56 +8467,6 @@
    "va": "hidden",
    "vb": "hidden",
    "files": "components/DataTable/data-table.css / components/DataTableNext/data-table-next.css",
-   "same": true
-  },
-  {
-   "kind": "variant-repeat",
-   "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "padding-inline-end",
-   "a": ".plx-app-header__brand",
-   "b": ".plx-app-header__brand.plx-app-header__switch",
-   "va": "0px",
-   "vb": "0px",
-   "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
-   "same": true
-  },
-  {
-   "kind": "variant-repeat",
-   "pages": [
-    "dashboard",
-    "projects",
-    "messages",
-    "contacts",
-    "calendar",
-    "tasks",
-    "notes",
-    "bookmarks",
-    "files",
-    "settings",
-    "dam",
-    "dam/settings-system.html",
-    "dam/settings-myaccount.html"
-   ],
-   "p": "padding-inline-start",
-   "a": ".plx-app-header__brand",
-   "b": ".plx-app-header__brand.plx-app-header__switch",
-   "va": "0px",
-   "vb": "0px",
-   "files": "patterns/AppHeader/app-header.css / patterns/AppHeader/app-header.css",
    "same": true
   },
   {

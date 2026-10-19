@@ -22,7 +22,7 @@
 .plx-shell-filters{inline-size:var(--plx-sys-panel-filter-width);min-inline-size:0;}
 .plx-shell-inspector{grid-area:inspector;inline-size:var(--plx-sys-panel-inspector-width);min-inline-size:0;}
 /* the main region: the container every content-grid decision is measured against */
-.plx-shell-main{container-name:main-region;container-type:inline-size;min-block-size:0;min-inline-size:0;}
+.plx-shell-main{container-name:main-region;container-type:inline-size;}
 
 /* ── the content grid: 4 / 8 / 12 / 16 columns by main-region width ── */
 .plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-4);--plx-comp-page-grid-gutter:var(--plx-ref-grid-gutter-12px);--plx-comp-page-grid-page-margin:var(--plx-ref-grid-margin-16px);box-sizing:border-box;column-gap:var(--plx-comp-page-grid-gutter);display:grid;grid-auto-rows:min-content;grid-template-columns:repeat(var(--plx-comp-page-grid-columns),minmax(0,1fr));inline-size:100%;min-inline-size:0;padding-inline-end:var(--plx-comp-page-grid-page-margin);padding-inline-start:var(--plx-comp-page-grid-page-margin);row-gap:0;}

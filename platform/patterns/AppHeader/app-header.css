@@ -5,12 +5,12 @@
 .plx-app-header{--plx-comp-app-header-edge-shadow:inset 0 calc(var(--plx-sys-border-width-thin) * -1) 0 var(--plx-comp-app-header-edge);align-items:center;background-color:var(--plx-comp-app-header-surface);block-size:var(--plx-comp-app-header-height);box-shadow:var(--plx-comp-app-header-edge-shadow);box-sizing:border-box;column-gap:var(--plx-comp-app-header-gap);display:flex;flex-shrink:0;justify-content:space-between;padding-inline-end:var(--plx-comp-app-header-padding-inline);padding-inline-start:var(--plx-comp-app-header-padding-inline);position:relative;z-index:var(--plx-comp-app-header-z-index);}
 .plx-app-header--plain,.plx-app-header--frost{box-shadow:var(--plx-comp-app-header-edge-shadow),var(--plx-sys-shadow-md);}
 .plx-app-header__start{align-items:center;column-gap:var(--plx-comp-app-header-start-gap);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
-.plx-app-header__brand{color:var(--plx-comp-app-header-brand);flex-shrink:0;font-size:var(--plx-comp-app-header-brand-font-size);font-weight:var(--plx-comp-app-header-brand-font-weight);letter-spacing:var(--plx-comp-app-header-brand-letter-spacing);padding-inline-end:var(--plx-comp-app-header-brand-padding-inline-end);padding-inline-start:var(--plx-comp-app-header-brand-padding-inline-start);text-decoration-line:none;user-select:none;}
+.plx-app-header__brand{align-items:center;color:var(--plx-comp-app-header-brand);column-gap:var(--plx-comp-app-header-brand-gap);display:flex;flex-shrink:0;font-size:var(--plx-comp-app-header-brand-font-size);font-weight:var(--plx-comp-app-header-brand-font-weight);letter-spacing:var(--plx-comp-app-header-brand-letter-spacing);padding-inline-end:0;padding-inline-start:0;text-decoration-line:none;user-select:none;}
 .plx-app-header__nav{align-items:center;column-gap:var(--plx-comp-app-header-nav-gap);display:flex;}
 .plx-app-header__item{align-items:center;background-color:transparent;block-size:var(--plx-comp-app-header-item-size);border-bottom-left-radius:var(--plx-comp-app-header-item-radius);border-bottom-right-radius:var(--plx-comp-app-header-item-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-app-header-item-radius);border-top-right-radius:var(--plx-comp-app-header-item-radius);border-top-style:none;border-top-width:0;color:var(--plx-comp-app-header-content);cursor:pointer;display:inline-flex;font-family:inherit;inline-size:var(--plx-comp-app-header-item-size);justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;}
 .plx-app-header__item:hover,
-.plx-app-header__item.is-hover{background-color:var(--plx-comp-app-header-hover);}
-.plx-app-header__item.is-current{background-color:var(--plx-comp-app-header-selected);color:var(--plx-comp-app-header-selected-content);}
+.plx-app-header__item.is-hover{background-color:var(--_app-header-item-hover-background, var(--plx-comp-app-header-hover));}
+.plx-app-header__item.is-current{background-color:var(--_app-header-item-current-background, var(--plx-comp-app-header-selected));color:var(--plx-comp-app-header-selected-content);}
 .plx-app-header__item:focus-visible,
 .plx-app-header__item.is-focus-visible{outline-color:var(--plx-comp-app-header-item-focus-outline-color);outline-offset:var(--plx-comp-app-header-item-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-app-header-item-focus-outline-width);}
 .plx-app-header--accent .plx-app-header__item:focus-visible,
@@ -65,18 +65,18 @@
 .plx-app-switcher__pin:hover,
 .plx-app-switcher__pin.is-hover{background-color:var(--plx-comp-app-switcher-pin-hover-background);}
 /* the header name is the switcher: Plenix over the application, a chevron; the panel opens under it, from the start */
-.plx-app-header__switch{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-comp-app-header-item-size);border-bottom-left-radius:var(--plx-comp-app-header-switch-radius);border-bottom-right-radius:var(--plx-comp-app-header-switch-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-app-header-switch-radius);border-top-right-radius:var(--plx-comp-app-header-switch-radius);border-top-style:none;border-top-width:0;column-gap:var(--plx-comp-app-header-switch-gap);cursor:pointer;display:inline-flex;font-family:inherit;inline-size:var(--plx-comp-app-header-name-width);justify-content:space-between;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;text-align:start;}
+.plx-app-header__brand--switch{appearance:none;background-color:transparent;block-size:var(--plx-comp-app-header-item-size);border-bottom-left-radius:var(--plx-comp-app-header-switch-radius);border-bottom-right-radius:var(--plx-comp-app-header-switch-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-app-header-switch-radius);border-top-right-radius:var(--plx-comp-app-header-switch-radius);border-top-style:none;border-top-width:0;cursor:pointer;font-family:inherit;inline-size:var(--plx-comp-app-header-name-width);justify-content:space-between;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;text-align:start;}
 /* no hover fill: the switcher opens on a click; the chevron says it is a menu (owner, batch 279) */
-.plx-app-header__switch:focus-visible,
-.plx-app-header__switch.is-focus-visible{outline-color:var(--plx-comp-app-header-switch-focus-outline-color);outline-offset:var(--plx-comp-app-header-switch-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-app-header-switch-focus-outline-width);}
-.plx-app-header__switch-chevron{--plx-comp-icon-size:var(--plx-comp-app-header-chevron-size);color:var(--plx-comp-app-header-content);flex-shrink:0;}
+.plx-app-header__brand--switch:focus-visible,
+.plx-app-header__brand--switch.is-focus-visible{outline-color:var(--plx-comp-app-header-switch-focus-outline-color);outline-offset:var(--plx-comp-app-header-switch-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-app-header-switch-focus-outline-width);}
+.plx-app-header__switch-chevron{--plx-comp-icon-size:var(--plx-comp-app-header-chevron-size);color:var(--plx-comp-app-header-content);}
 .plx-app-switcher--brand .plx-app-switcher__panel{inset-inline-end:auto;inset-inline-start:0;}
 /* the 4px grid: (header height - item) / 2 and (item - icon) / 2 are multiples of 4: 56, 40, 24 (avatar 32) */
 .plx-app-header__item .plx-icon{--plx-comp-icon-size:var(--plx-comp-app-header-icon-size);}
 .plx-app-header__item .plx-avatar{block-size:var(--plx-comp-app-header-avatar-size);inline-size:var(--plx-comp-app-header-avatar-size);}
 /* the header name is a fixed width (a multiple of 4), so the pinned applications after it stay on the grid */
-.plx-app-header__switch .plx-app-header__name{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;}
-.plx-app-header__switch .plx-app-header__product,.plx-app-header__switch .plx-app-header__app{overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-app-header__brand--switch .plx-app-header__name{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;}
+.plx-app-header__brand--switch .plx-app-header__product,.plx-app-header__brand--switch .plx-app-header__app{overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-app-switcher__icon .plx-icon{--plx-comp-icon-size:var(--plx-comp-app-header-icon-size);}
 .plx-app-switcher__pin .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-inline);}
 /* the application's action: a fixed control in the header (density never changes the shell): 112 × 32px, a 16px icon; the fixed
@@ -90,13 +90,11 @@
   .plx-app-switcher__grid{grid-template-columns:repeat(3,minmax(0,1fr));}
 }
 /* the account item is its picture alone: no fill grows around it on hover or while its menu is open (owner, batch 261) */
-.plx-app-header__item.plx-app-header__item--account:hover,.plx-app-header__item.plx-app-header__item--account.is-hover,.plx-app-header__item.plx-app-header__item--account.is-current,.plx-app-header__item.plx-app-header__item--account[aria-expanded="true"]{background-color:transparent;}
+.plx-app-header__item--account{--_app-header-item-current-background:transparent;--_app-header-item-hover-background:transparent;}
 /* the brand starts at the header's own inset, the same distance from the window's edge as the utilities at the other
    end (owner, batch 279: "the distance from the page width to the logo" is universal): no inset of its own */
-.plx-app-header__brand,.plx-app-header__brand.plx-app-header__switch{padding-inline-end:0;padding-inline-start:0;}
-/* the brand mark before the name (batch 278): the header's icon size, in the brand color, the icon-label gap */
-.plx-app-header__brand{align-items:center;column-gap:var(--plx-comp-app-header-brand-gap);display:flex;}
-.plx-app-header__switch .plx-app-header__name{flex-grow:1;}
+/* the brand mark before the name (batch 278): the header's icon size, in the brand color */
+.plx-app-header__brand--switch .plx-app-header__name{flex-grow:1;}
 /* the mark is as tall as the two rows beside it (owner, batch 279): "Plenix" on a 20px label line, the application on a
    16px one; the mark is their sum */
 .plx-app-header__product{line-height:var(--plx-comp-app-header-product-line-height);}
@@ -104,8 +102,8 @@
 .plx-app-header__brand .plx-brand-mark{--plx-comp-icon-size:calc(var(--plx-sys-label-height-20px) + var(--plx-sys-label-height-16px));color:var(--plx-comp-app-header-brand);}
 /* the targets (Platforms Standard 3.1): every item and the header name reach the minimum target (44 × 44px with touch)
    through an invisible layer past their 40px box; with a fine pointer the box already meets it and the layer adds nothing */
-.plx-app-header__switch,a.plx-app-header__brand{position:relative;}
-.plx-app-header__item::before,.plx-app-header__switch::before,a.plx-app-header__brand::before{content:"";inset-block-end:var(--plx-comp-app-header-item-target-inset);inset-block-start:var(--plx-comp-app-header-item-target-inset);inset-inline-end:var(--plx-comp-app-header-item-target-inset);inset-inline-start:var(--plx-comp-app-header-item-target-inset);position:absolute;}
+.plx-app-header__brand--switch,a.plx-app-header__brand{position:relative;}
+.plx-app-header__item::before,.plx-app-header__brand--switch::before,a.plx-app-header__brand::before{content:"";inset-block-end:var(--plx-comp-app-header-item-target-inset);inset-block-start:var(--plx-comp-app-header-item-target-inset);inset-inline-end:var(--plx-comp-app-header-item-target-inset);inset-inline-start:var(--plx-comp-app-header-item-target-inset);position:absolute;}
 /* the full-screen search view (Narrow, Platforms Standard 5.3 Search): the field and Cancel on top, the scope, then the
    suggestions and the results; it fills the window inside the safe areas */
 .plx-search-view{background-color:var(--plx-comp-app-header-search-view-background);box-sizing:border-box;color:var(--plx-comp-app-header-search-view-text);display:flex;flex-direction:column;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;padding-block-end:var(--plx-comp-app-header-search-view-safe-area-bottom);padding-block-start:var(--plx-comp-app-header-search-view-safe-area-top);padding-inline-end:var(--plx-comp-app-header-search-view-safe-area-end);padding-inline-start:var(--plx-comp-app-header-search-view-safe-area-start);position:fixed;z-index:var(--plx-comp-app-header-search-view-z-index);}

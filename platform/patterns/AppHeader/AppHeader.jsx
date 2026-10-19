@@ -321,7 +321,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
   return (
     <div ref={wrap} className={cx('plx-app-switcher', brand && 'plx-app-switcher--brand')}>
       {brand ? (
-        <button ref={trigger} type="button" className="plx-app-header__brand plx-app-header__switch" aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
+        <button ref={trigger} type="button" className="plx-app-header__brand plx-app-header__brand--switch" aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
           aria-label={(typeof brand === 'string' ? brand : 'Plenix' + (currentApp && appById(currentApp) ? ' ' + appById(currentApp).label : '')) + ', switch application'}
           onClick={() => setOpen(!open)}>
           {brand}<Icon name="chevron-down" className="plx-app-header__switch-chevron" />

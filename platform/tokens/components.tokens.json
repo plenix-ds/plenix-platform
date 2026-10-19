@@ -3136,14 +3136,6 @@
       "$value": "{plx-sys.letter-spacing-tight}",
       "$type": "dimension"
     },
-    "app-header-brand-padding-inline-end": {
-      "$value": "{plx-sys.space-inset-md}",
-      "$type": "dimension"
-    },
-    "app-header-brand-padding-inline-start": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
     "app-header-nav-gap": {
       "$value": "{plx-sys.space-cluster-xs}",
       "$type": "dimension"
@@ -3430,10 +3422,6 @@
     },
     "app-header-switch-radius": {
       "$value": "{plx-sys.radius-control}",
-      "$type": "dimension"
-    },
-    "app-header-switch-gap": {
-      "$value": "{plx-sys.space-inline-md}",
       "$type": "dimension"
     },
     "app-header-switch-focus-outline-color": {

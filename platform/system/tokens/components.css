@@ -759,8 +759,6 @@
   --plx-comp-app-header-brand-font-size: var(--plx-ref-font-size-15);
   --plx-comp-app-header-brand-font-weight: var(--plx-sys-font-weight-bold);
   --plx-comp-app-header-brand-letter-spacing: var(--plx-sys-letter-spacing-tight);
-  --plx-comp-app-header-brand-padding-inline-end: var(--plx-sys-space-inset-md);
-  --plx-comp-app-header-brand-padding-inline-start: var(--plx-sys-space-inset-xs);
   --plx-comp-app-header-nav-gap: var(--plx-sys-space-cluster-xs);
   --plx-comp-app-header-item-radius: var(--plx-sys-radius-control);
   --plx-comp-app-header-item-focus-outline-color: var(--plx-sys-focus-ring-color);
@@ -833,7 +831,6 @@
   --plx-comp-app-switcher-tile-pinned-pin-text: var(--plx-sys-content-link);
   --plx-comp-app-switcher-pin-hover-background: var(--plx-sys-state-hover);
   --plx-comp-app-header-switch-radius: var(--plx-sys-radius-control);
-  --plx-comp-app-header-switch-gap: var(--plx-sys-space-inline-md);
   --plx-comp-app-header-switch-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-app-header-switch-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-app-header-switch-focus-outline-width: var(--plx-sys-border-width-medium);
