@@ -8475,14 +8475,6 @@
       "$value": "{plx-sys.label-height-16px}",
       "$type": "number"
     },
-    "notification-list-activity-list-title-font-weight": {
-      "$value": "{plx-sys.font-weight-regular}",
-      "$type": "fontWeight"
-    },
-    "notification-list-activity-list-item-unread-title-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
-      "$type": "fontWeight"
-    },
     "notification-list-footer-shadow": {
       "$value": "inset 0 {plx-sys.border-width-thin} 0 {plx-sys.border-divider}",
       "$type": "shadow"
@@ -9395,6 +9387,10 @@
       "$value": "{plx-sys.avatar-content}",
       "$type": "color",
       "$description": "An avatar in the theme colors: its initials"
+    },
+    "activity-list-title-2-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight"
     }
   }
 }

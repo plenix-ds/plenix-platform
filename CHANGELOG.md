@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.56.0] - 2026-10-19
+
+### Added
+- `ActivityList` `titleLines`: `2` lets the title wrap onto two lines, in regular weight (unread titles stay semibold).
+### Changed
+- NotificationList no longer restyles ActivityList's title from outside (Styling Standard, Phase 2): it passes
+  `titleLines={2}`. No visual change (`tests/clash-audit.js --check`: no element changed, 7 clashes gone).
+  Token `--plx-comp-notification-list-activity-list-title-font-weight` is now
+  `--plx-comp-activity-list-title-2-font-weight`; `--plx-comp-notification-list-activity-list-item-unread-title-font-weight`
+  is removed (it repeated ActivityList's own unread weight). Apps to check: CSS that set either old token.
+- `tests/clash-audit.js --check` lists a new overlap of an owner's own variant or state over its base (approved by the
+  standard) and fails only on unapproved ones.
+
 ## [0.55.2] - 2026-10-19
 
 ### Changed

@@ -43,7 +43,7 @@ export function NotificationList({ items, onChange, onOpen, onViewAll, limit, la
   return (
     <div className={cx('plx-notification-list', className)}>
       {shown.length ? (
-        <ActivityList label={label || t.label}>
+        <ActivityList label={label || t.label} titleLines={2}>
           {shown.map((n) => (
             <ActivityList.Item key={n.id} title={n.text} time={n.time} unread={!!n.unread} onOpen={() => open(n)} />
           ))}

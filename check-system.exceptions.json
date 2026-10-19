@@ -331,10 +331,6 @@
     "platform/patterns/ImageUpload/image-upload.css": {
       ".plx-image-upload .plx-file-input__summary": 1
     },
-    "platform/patterns/NotificationList/notification-list.css": {
-      ".plx-notification-list .plx-activity-list__title": 1,
-      ".plx-notification-list .plx-activity-list__item.is-unread .plx-activity-list__title": 1
-    },
     "platform/patterns/PropertyList/property-list.css": {
       ".plx-property-list__value .plx-text": 1,
       ".plx-property-list__description .plx-text": 1

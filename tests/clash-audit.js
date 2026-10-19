@@ -12,8 +12,10 @@
 //   2. records every element's computed style (a hash per element, in document order), so a repair can prove no
 //      element changed.
 //   node tests/clash-audit.js            writes tests/baselines/clashes.json and tests/baselines/computed.json
-//   node tests/clash-audit.js --check    compares with them: CLASH_AUDIT_OK, or the new clashes and every element whose
-//                                        computed style changed (CLASH_AUDIT_FAIL); repaired clashes are listed as gone
+//   node tests/clash-audit.js --check    compares with them: CLASH_AUDIT_OK, or the new unapproved clashes and every
+//                                        element whose computed style changed (CLASH_AUDIT_FAIL); repaired clashes are
+//                                        listed as gone. A new state-variant overlap (an owner's own variant or state over
+//                                        its base, with a different value) is approved by the standard: listed, not failed
 //   --pages dashboard,dam                only the pages whose path contains one of the names
 const fs = require('fs');
 const path = require('path');
@@ -109,8 +111,10 @@ const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-
   const before = JSON.parse(fs.readFileSync(OUT_CLASH, 'utf8')), bc = JSON.parse(fs.readFileSync(OUT_COMPUTED, 'utf8'));
   const key = (x) => x.p + ' | ' + x.a + ' || ' + x.b;
   const had = new Set(before.clashes.filter((x) => x.pages.some((p) => PAGES.some((q) => q.startsWith(p)))).map(key)), now = new Set(list.map(key));
-  const added = list.filter((x) => !had.has(key(x))), gone = before.clashes.filter((x) => had.has(key(x)) && !now.has(key(x)));
+  const approved = (x) => x.kind === 'state-variant';
+  const added = list.filter((x) => !had.has(key(x)) && !approved(x)), allowed = list.filter((x) => !had.has(key(x)) && approved(x)), gone = before.clashes.filter((x) => had.has(key(x)) && !now.has(key(x)));
   gone.forEach((x) => console.log('GONE  ' + x.kind + '  ' + key(x)));
+  allowed.forEach((x) => console.log('OWN   ' + x.kind + '  ' + key(x)));
   added.forEach((x) => console.log('NEW   ' + x.kind + '  ' + key(x) + '  (' + x.va + ' / ' + x.vb + ')'));
   let changed = 0;
   for (const pg of PAGES) {

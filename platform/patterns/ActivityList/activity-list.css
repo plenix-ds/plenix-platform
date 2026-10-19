@@ -22,6 +22,8 @@
 /* stacked (batch 260): the meta on its own line under the title, in the smallest type; for narrow panes */
 .plx-activity-list--stacked .plx-activity-list__text{align-items:flex-start;flex-direction:column;row-gap:0;}
 .plx-activity-list--stacked .plx-activity-list__title{max-inline-size:100%;}
+/* titleLines 2: the title wraps onto two lines (notifications) */
+.plx-activity-list--title-2 .plx-activity-list__title{-webkit-box-orient:vertical;-webkit-line-clamp:2;display:-webkit-box;flex-shrink:1;font-weight:var(--plx-comp-activity-list-title-2-font-weight);max-inline-size:none;text-wrap-mode:wrap;}
 .plx-activity-list--stacked .plx-activity-list__meta{flex-basis:auto;font-size:var(--plx-comp-activity-list-stacked-meta-font-size);max-inline-size:100%;}
 .plx-activity-list--stacked .plx-activity-list__meta .plx-text{font-size:inherit;}
 /* alignment (owner, batch 271: "the alignment of the list should align with the alignment of the header underline"): a row's

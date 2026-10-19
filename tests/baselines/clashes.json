@@ -59,10 +59,10 @@
   }
  },
  "kinds": {
-  "cross-component": 252,
+  "cross-component": 245,
   "order-decided": 19,
   "redundant": 29,
-  "state-variant": 228,
+  "state-variant": 232,
   "variant-repeat": 95,
   "vendor": 93
  },
@@ -1616,19 +1616,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dashboard"
-   ],
-   "p": "flex-shrink",
-   "a": ".plx-activity-list__title",
-   "b": ".plx-notification-list .plx-activity-list__title",
-   "va": "0",
-   "vb": "1",
-   "files": "patterns/ActivityList/activity-list.css / patterns/NotificationList/notification-list.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam/settings-system.html"
    ],
    "p": "flex-shrink",
@@ -1862,32 +1849,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dashboard"
-   ],
-   "p": "font-weight",
-   "a": ".plx-activity-list__item.is-unread .plx-activity-list__title",
-   "b": ".plx-notification-list .plx-activity-list__title",
-   "va": "var(--plx-comp-activity-list-item-unread-title-font-weight)",
-   "vb": "var(--plx-comp-notification-list-activity-list-title-font-weight)",
-   "files": "patterns/ActivityList/activity-list.css / patterns/NotificationList/notification-list.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dashboard"
-   ],
-   "p": "font-weight",
-   "a": ".plx-activity-list__item.is-unread .plx-activity-list__title",
-   "b": ".plx-notification-list .plx-activity-list__item.is-unread .plx-activity-list__title",
-   "va": "var(--plx-comp-activity-list-item-unread-title-font-weight)",
-   "vb": "var(--plx-comp-notification-list-activity-list-item-unread-title-font-weight)",
-   "files": "patterns/ActivityList/activity-list.css / patterns/NotificationList/notification-list.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam"
    ],
    "p": "font-weight",
@@ -1974,19 +1935,6 @@
    "va": "var(--plx-comp-data-table-name-font-weight)",
    "vb": "var(--plx-comp-table-name-font-weight)",
    "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dashboard"
-   ],
-   "p": "font-weight",
-   "a": ".plx-notification-list .plx-activity-list__title",
-   "b": ".plx-notification-list .plx-activity-list__item.is-unread .plx-activity-list__title",
-   "va": "var(--plx-comp-notification-list-activity-list-title-font-weight)",
-   "vb": "var(--plx-comp-notification-list-activity-list-item-unread-title-font-weight)",
-   "files": "patterns/NotificationList/notification-list.css / patterns/NotificationList/notification-list.css",
    "same": false
   },
   {
@@ -2263,19 +2211,6 @@
    "va": "var(--plx-comp-collapsible-section-chevron-icon-mask-size)",
    "vb": "contain",
    "files": "components/CollapsibleSection/collapsible-section.css / components/Icon/icon.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dashboard"
-   ],
-   "p": "max-inline-size",
-   "a": ".plx-activity-list__title",
-   "b": ".plx-notification-list .plx-activity-list__title",
-   "va": "60%",
-   "vb": "none",
-   "files": "patterns/ActivityList/activity-list.css / patterns/NotificationList/notification-list.css",
    "same": false
   },
   {
@@ -3251,19 +3186,6 @@
   {
    "kind": "cross-component",
    "pages": [
-    "dashboard"
-   ],
-   "p": "text-wrap-mode",
-   "a": ".plx-activity-list__title",
-   "b": ".plx-notification-list .plx-activity-list__title",
-   "va": "nowrap",
-   "vb": "wrap",
-   "files": "patterns/ActivityList/activity-list.css / patterns/NotificationList/notification-list.css",
-   "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
     "dam/settings-system.html"
    ],
    "p": "text-wrap-mode",
@@ -3312,19 +3234,6 @@
    "vb": "wrap",
    "files": "components/DataTableNext/data-table-next.css / components/Table/table.css",
    "same": false
-  },
-  {
-   "kind": "cross-component",
-   "pages": [
-    "dashboard"
-   ],
-   "p": "white-space-collapse",
-   "a": ".plx-activity-list__title",
-   "b": ".plx-notification-list .plx-activity-list__title",
-   "va": "collapse",
-   "vb": "collapse",
-   "files": "patterns/ActivityList/activity-list.css / patterns/NotificationList/notification-list.css",
-   "same": true
   },
   {
    "kind": "cross-component",
@@ -6465,6 +6374,19 @@
   {
    "kind": "state-variant",
    "pages": [
+    "dashboard"
+   ],
+   "p": "flex-shrink",
+   "a": ".plx-activity-list__title",
+   "b": ".plx-activity-list--title-2 .plx-activity-list__title",
+   "va": "0",
+   "vb": "1",
+   "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
     "dam/settings-system.html",
     "dam/settings-myaccount.html"
    ],
@@ -6646,6 +6568,19 @@
    "va": "var(--plx-comp-text-data-font-size)",
    "vb": "inherit",
    "files": "components/Text/text.css / components/Text/text.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dashboard"
+   ],
+   "p": "font-weight",
+   "a": ".plx-activity-list__item.is-unread .plx-activity-list__title",
+   "b": ".plx-activity-list--title-2 .plx-activity-list__title",
+   "va": "var(--plx-comp-activity-list-item-unread-title-font-weight)",
+   "vb": "var(--plx-comp-activity-list-title-2-font-weight)",
+   "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
    "same": false
   },
   {
@@ -6844,6 +6779,19 @@
    "va": "var(--plx-comp-settings-section-margin-block-end)",
    "vb": "0px",
    "files": "patterns/SettingsLayout/settings-layout.css / patterns/SettingsLayout/settings-layout.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dashboard"
+   ],
+   "p": "max-inline-size",
+   "a": ".plx-activity-list__title",
+   "b": ".plx-activity-list--title-2 .plx-activity-list__title",
+   "va": "60%",
+   "vb": "none",
+   "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
    "same": false
   },
   {
@@ -7285,6 +7233,19 @@
    "va": "absolute",
    "vb": "static",
    "files": "patterns/WidgetGrid/widget-grid.css / patterns/WidgetGrid/widget-grid.css",
+   "same": false
+  },
+  {
+   "kind": "state-variant",
+   "pages": [
+    "dashboard"
+   ],
+   "p": "text-wrap-mode",
+   "a": ".plx-activity-list__title",
+   "b": ".plx-activity-list--title-2 .plx-activity-list__title",
+   "va": "nowrap",
+   "vb": "wrap",
+   "files": "patterns/ActivityList/activity-list.css / patterns/ActivityList/activity-list.css",
    "same": false
   },
   {
