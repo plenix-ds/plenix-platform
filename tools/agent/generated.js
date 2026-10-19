@@ -48,7 +48,9 @@ if (require.main === module) {
     const files = sh('git status --porcelain').split('\n').filter(Boolean).map((l) => ({ code: l.slice(0, 2), file: l.slice(3).replace(/^"|"$/g, '') }))
       .filter((x) => isGenerated(x.file) && x.code.trim() !== '??');
     for (const file of PARTIAL) {
-      const full = path.join(ROOT, file), current = require('fs').readFileSync(full, 'utf8'), committed = generatedBlock(sh('git show HEAD:' + file));
+      const full = path.join(ROOT, file);
+      if (!require('fs').existsSync(full)) continue; // Partial build fixtures need not contain public entry files.
+      const current = require('fs').readFileSync(full, 'utf8'), committed = generatedBlock(sh('git show HEAD:' + file));
       require('fs').writeFileSync(full, current.replace(BLOCK, () => committed));
     }
     for (const { file } of files.filter((x) => x.file !== 'platform/components/DataTable/data-table-steps.css' || require('fs').existsSync(path.join(ROOT, 'platform/components/DataTable/DataTable.jsx')) || require('fs').existsSync(path.join(ROOT, x.file)))) sh('git checkout -- "' + file + '"');
