@@ -26,12 +26,12 @@ export function changeRecord(rows, key, change, index = 'id', children = null) {
 }
 const valueKey = value => value == null || value === '' ? 'empty' : typeof value + ':' + JSON.stringify(value);
 export function groupedRows(rows, fields, columns) {
-  const levels = typeof fields === 'string' ? [fields] : Array.isArray(fields) ? fields.filter(Boolean) : [];
+  const levels = typeof fields === 'string' || typeof fields === 'function' ? [fields] : Array.isArray(fields) ? fields.filter(Boolean) : [];
   function build(input, depth, path) {
     if (depth >= levels.length) return [];
     const field = levels[depth], column = columns.find(column => column.field === field) || {}, buckets = new Map();
     for (const row of input) {
-      const raw = valueAt(row.original,field), multiple = column.multi || column.type === 'multi';
+      const raw = typeof field === 'function' ? field(row.original) : valueAt(row.original,field), multiple = column.multi || column.type === 'multi';
       const values = multiple && Array.isArray(raw) ? raw.length ? raw : [null] : [raw];
       const seen = new Set();
       for (const value of values) {

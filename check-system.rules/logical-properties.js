@@ -8,8 +8,6 @@
 //   .plx-x{border-left-color:var(--a);border-right-color:var(--a)}          ok (both sides the same: nothing to mirror)
 //   .plx-x{margin-left:var(--a)}                                            finding
 //   .plx-x{text-align:left}                                                 finding (text-align: start)
-// A rule whose selector targets a third-party library's own classes (Tabulator's .tabulator…) overrides that library's
-// physical declarations with the same physical names and is not checked.
 // The rule is a module check-system.js runs (every file of check-system.rules/):
 //   require('./check-system.rules/logical-properties.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)
 // Alone: node check-system.rules/logical-properties.js     -> LOGICAL_PROPERTIES_OK, or the findings and exit 1
@@ -19,7 +17,6 @@ const path = require('path');
 const NAME = 'logical-properties';
 const SCOPE = /[\\/]platform[\\/](components|patterns|templates)[\\/].*\.css$/;
 const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived)[\\/]/;
-const VENDOR = /\.tabulator\b/;   // third-party classes a Platform stylesheet overrides
 
 // known findings, to adopt in the component's own task (never more than listed): file under platform/ -> count
 const KNOWN = {};   // none (Tabs' contained panel corner is border-start-start-radius since batch 348)
@@ -35,7 +32,7 @@ function scan(css) {
   const text = css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));   // comments blanked, lines kept
   for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
-    if (!selector || selector.startsWith('@') || VENDOR.test(selector)) continue;
+    if (!selector || selector.startsWith('@')) continue;
     const decls = {};
     const list = [];
     for (const d of m[2].matchAll(/([a-z-]+)\s*:\s*([^;]+)/g)) { decls[d[1]] = d[2].trim(); list.push([d[1], d[2].trim(), m.index + m[1].length + 1 + d.index]); }

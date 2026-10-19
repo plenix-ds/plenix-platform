@@ -54,10 +54,7 @@ export { Sheet } from './components/Sheet/Sheet.jsx';
 export { ToastProvider, useToast } from './components/Toast/Toast.jsx';
 export { Tabs, tabsPanelId } from './components/Tabs/Tabs.jsx';
 export { Panel, Card, MediaCard } from './components/Card/Card.jsx';
-// DataTable is the TanStack table (owner, 2026-10-16: Tabulator performed badly and leaves the design spec); the
-// Tabulator table stays as LegacyDataTable only for the existing applications until they move
 export { DataTable } from './components/DataTableNext/DataTablePublic.jsx';
-export { DataTable as LegacyDataTable } from './components/DataTable/DataTable.jsx';
 export { Table } from './components/Table/Table.jsx';
 export { ActionBar } from './patterns/ActionBar/ActionBar.jsx';
 export { NavList } from './components/NavList/NavList.jsx';

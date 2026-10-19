@@ -4,7 +4,7 @@ const { serve, launch } = require('./lib.js');
 const ROOT = path.resolve(__dirname, '..');
 module.exports = async function groups(page) {
   const esbuild = require('esbuild');
-  const output = await esbuild.build({ stdin: { contents: "export {MultiTable} from './platform/components/DataTable/MultiTable.jsx'; export {useCollectionView} from './platform/hooks/useCollectionView.js';", resolveDir: ROOT, loader: 'jsx' }, bundle: true, write: false, format: 'iife', globalName: 'MultiGroupsTest',
+  const output = await esbuild.build({ stdin: { contents: "export {DataTable as MultiTable} from './platform/components/DataTableNext/DataTablePublic.jsx'; export {useCollectionView} from './platform/hooks/useCollectionView.js';", resolveDir: ROOT, loader: 'jsx' }, bundle: true, write: false, format: 'iife', globalName: 'MultiGroupsTest',
     plugins: [{ name: 'browser-peers', setup(build) { build.onResolve({ filter: /^react(-dom)?$/ }, args => ({ path: args.path, namespace: 'peers' })); build.onLoad({ filter: /.*/, namespace: 'peers' }, args => ({ contents: 'module.exports = window.' + (args.path === 'react' ? 'React' : 'ReactDOM') + ';' })); } }] });
   await page.addScriptTag({ content: output.outputFiles[0].text });
   return page.evaluate(async () => {
@@ -79,7 +79,7 @@ module.exports = async function groups(page) {
       const fetchRows = async ask => ({ rows: [remoteRows[ask.page - 1]], total: 2 });
       await mount({ key: 'remote-pages', data: [], mode: 'pages', pageSize: 1, fetchRows }); await wait(400);
       check(table.plxRows().length === 2 && table.getData().length === 1 && table.plxData()[0].id === 10, 'remote first page expands memberships but exposes one canonical record');
-      check(host.querySelector('[aria-rowcount="3"]'), 'remote pages retain canonical server total');
+      check(host.textContent.includes('of 2'), 'remote footer retains canonical server total independently of accessible group rows');
       await table.setPage(2); await wait(400);
       check(table.plxRows().length === 1 && table.getData()[0].id === 11 && table.plxData().length === 1, 'remote page changes replace canonical source');
       const observer = window.IntersectionObserver; window.IntersectionObserver = undefined;

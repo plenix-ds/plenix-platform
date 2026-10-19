@@ -2,13 +2,13 @@
    the main work area: inside an application (Notes, Files…) it searches only that application, with that application's
    filters; on the dashboard home it searches everything, with a Section filter. Each source says what its rows are, which
    text is searched, its filters and its result columns; FindWorkspace draws them with the Platform SearchWorkspace. */
-import { SearchWorkspace, LegacyDataTable as DataTable, Tag, Badge, Button, Text } from 'plenix-platform';
+import { SearchWorkspace, DataTable, Tag, Badge, Button, Text } from 'plenix-platform';
 import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, CAL_EVENTS, CONTACTS, PROJECTS, THREADS } from './shared.jsx';
 const {useState}=React;
 
 const PRI={high:"High",med:"Medium",low:"Low"};
 const cap=(s)=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
-// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (Tabulator column
+// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataTable column
 // definitions for the DataTable; a grid row is the source row's cells with its key as id, its name and its facets)
 export const FIND_SOURCES={
   projects:{label:"Projects",noun:"project",filters:[{id:"status",label:"Status"},{id:"tags",label:"Tags",multiple:true}],
@@ -84,7 +84,7 @@ export function FindWorkspace({app,query,onQuery,onOpen,onAskAI}){
         headEnd={app==="home"&&onAskAI?<Button size="sm" icon="sparkle" onClick={()=>onAskAI(query)}>Ask AI</Button>:null}>
         <DataTable label={(app==="home"?"Everything":src.label)+" search results"} columns={src.columns}
           data={found.map(r=>({...r.cells,id:r.key,name:r.name,facets:r.facets}))}
-          on={{rowClick:(e,row)=>{const r=found.find(x=>x.key===row.getData().id);if(r)onOpen(r,r.app||app);}}}/>
+          onRowClick={record=>{const r=found.find(x=>x.key===record.id);if(r)onOpen(r,r.app||app);}}/>
       </SearchWorkspace>
     </div>
   );

@@ -50,7 +50,7 @@
        groupBy (a field, or a list for nested groups), columnOrder, hiddenColumns; onAddToGroup(value, path): the add row
        at the end of each group
      tree: rows nest (children in childrenField, default "_children"; the toggle in treeColumn; treeExpanded: start open)
-     movableRows with onRowMove(record, toIndex), movableColumns: drag, with the same moves in the menus
+     movableRows with onRowMove(records), movableColumns: drag, with the same moves in the menus
      rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
        button (default false: the page's ViewMenu sets these)
      mode: "fill" (default: fills the room left on screen, virtual rows) | "pages" (pageSize, pageSizes, a footer with
@@ -80,7 +80,7 @@
 */
 import React from 'react';
 import { DataTableNext } from './DataTableNext.jsx';
-import { useDataTableActions } from '../DataTable/actions.jsx';
+import { useDataTableActions } from './actions.jsx';
 import { ToastProvider } from '../Toast/Toast.jsx';
 import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
 

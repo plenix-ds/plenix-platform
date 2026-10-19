@@ -34,8 +34,8 @@
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
-//   tables      every table is a DataTable (Tabulator in the Plenix table style): no <table>, no table element made in code, no
-//               PropertyList table variant: every table is a Table (static) or a DataTable, both on Tabulator (batches
+//   tables      every table is a DataTable (the React renderer in the Plenix table style): no <table>, no table element made in code, no
+//               PropertyList table variant: every table is a Table (static) or a DataTable, both on the React renderer (batches
 //               226, 229, 234)
 //   fonts       no call to Google Fonts: DM Sans and Reddit Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
@@ -103,7 +103,7 @@ for (const { file } of files) {
   for (const m of text.matchAll(/["'](--plx-[\w-]+)["']\s*[:,)]/g)) PLX.add(m[1]);
 }
 // tables, in stylesheets: no rule for the retired PropertyList table variant (every table is a Table or a DataTable on
-// Tabulator, batches 226, 229, 234)
+// the React renderer, batches 226, 229, 234)
 for (const { file } of files) {
   if (!/\.css$/.test(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
@@ -121,7 +121,7 @@ for (const { file } of files) {
   if (!/[\\/]platform[\\/]/.test(file) && !/(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/<AppShell\b[^>]*?\blayout\s*=|\bdata-plx-layout\s*=|['"]data-plx-layout['"]/g)) add('page-layout', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
   }
-  // tables: every table is a DataTable (Tabulator in the Plenix table style, batch 226): no <table>, no table element made
+  // tables: every table is a DataTable (the React renderer in the Plenix table style, batch 226): no <table>, no table element made
   // in code, no retired Table component or its classes. The design system's builders draw a table and hand it to DS.table
   // at once (tests/pages.test.js fails any table left on a page); generated bundles are checked through their sources.
   // a name/value table is a DataTable too: no PropertyList table variant anywhere, the design system included (batch 229)
@@ -201,8 +201,7 @@ for (const { file } of files) {
     const sel = css.replace(/\{[^{}]*\}/g, '{}');
     for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
       if (/^(plx-|is-)/.test(m[1])) continue;
-      // the DataTable's stylesheet restyles the classes its engine writes (Tabulator, platform/vendor/tabulator): there only
-      if (/^tabulator(-|$)/.test(m[1]) && /[\\/]components[\\/](DataTable[\\/]data-table|Table[\\/]table)(-steps)?\.css$/.test(file)) continue;
+      // the DataTable's stylesheet restyles the classes its engine writes (the React renderer, platform/vendor/tabulator): there only
       // the RichTextEditor's stylesheet styles the classes its engine writes (ProseMirror and prosemirror-tables, platform/vendor/tiptap):
       // the separator image, the hidden selection, a selected node and the cells of a table selection; there only
       if (/^(ProseMirror-(separator|hideselection|selectednode)|selectedCell)$/.test(m[1]) && /[\\/]components[\\/]RichTextEditor[\\/]rich-text-editor\.css$/.test(file)) continue;

@@ -26,7 +26,7 @@ module.exports = async function regressions(page) {
     table.setSort('name', 'desc'); await wait();
     await mount(h(P.DataTable, { label: 'Default sort', data: rows, columns, sort: [], onReady: ready }));
     check(table.getSorters()[0].dir === 'desc', 'DT-1: empty view preserves a later table-owned header sort');
-    check(host.querySelector('.plx-data-table__value').closest('.tabulator-cell').dir === 'auto', 'DT-9: plain table values use automatic text direction');
+    check(host.querySelector('.plx-data-table__value').closest('.plx-data-table__grid-cell').dir === 'auto', 'DT-9: plain table values use automatic text direction');
     check(getComputedStyle(table.getRow(3).getCell('name').getElement()).direction === 'rtl', 'DT-9: an Arabic text cell aligns in its own direction');
     await reset();
     let calls = 0;
@@ -34,7 +34,7 @@ module.exports = async function regressions(page) {
     await mount(h(P.DataTable, { label: 'Row commands', data: rows, columns, rowMenu: menus, onReady: ready }));
     const button = host.querySelector('button[aria-label="Row actions"]');
     check(button && button.tabIndex === 0 && button.getAttribute('aria-haspopup') === 'menu', 'DT-2: row menu button is a named Tab stop');
-    check(table.getColumns().at(-1).getDefinition().frozen, 'DT-2: last row command column is pinned');
+    check(getComputedStyle(button.closest('.plx-data-table__cell--row-menu')).position==='sticky', 'DT-2: last row command column is pinned');
     button.focus(); button.click(); await wait();
     const item = [...document.querySelectorAll('[role=menuitem]')].find((e) => e.textContent.includes('Open record'));
     check(item, 'DT-2: row action button opens the shared menu');
@@ -72,7 +72,7 @@ module.exports = async function regressions(page) {
       h(P.Button, { onClick: () => clicks++ }, 'Nested button'), h('a', { href: '#nested', onClick: (e) => e.preventDefault() }, 'Link'),
       h('input', { 'aria-label': 'Nested input' }), h('span', { 'data-plx-no-row-click': '' }, 'Custom control')) }];
     await mount(h(P.DataTable, { label: 'Interactive cells', data: rows, columns: controls, selectable: true, onReady: ready, on: { rowClick: () => opens++ } }));
-    for (const selector of ['button', 'a', 'input:not([type=checkbox])', '[data-plx-no-row-click]']) host.querySelector('.tabulator-row ' + selector).click();
+    for (const selector of ['button', 'a', 'input:not([type=checkbox])', '[data-plx-no-row-click]']) host.querySelector('.plx-data-table__grid-row ' + selector).click();
     await wait();
     check(clicks === 1 && opens === 0 && !table.getSelectedRows().length, 'DT-17: nested controls act without opening or selecting the row');
     table.getRows()[0].getElement().click(); await wait(); check(opens === 1 && table.getSelectedRows().length === 1, 'DT-17: ordinary row clicks still open and select');

@@ -73,7 +73,7 @@ let current = '';   // the design-system page being checked
     // user content (.plx-user-content: the rich-text editor's area, RichText showing saved HTML) keeps the person's own
     // formatting, as Tiptap stores it: these properties only (owner, 2026-10-14)
     const USER_FORMAT = /^(color|background-color|font-family|font-size|text-align)$/;
-    const wrong = (el) => { const table = el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell'), user = !!el.closest('.plx-user-content');
+    const wrong = (el) => { const table = el.matches('.plx-data-table .plx-data-table__grid-row, .plx-data-table .plx-data-table__grid-cell'), user = !!el.closest('.plx-user-content');
       return Array.from(el.style).filter((p) => !(user && USER_FORMAT.test(p)) && (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
         || offGrid(el, el.style.getPropertyValue(p))).map((p) => p + ': ' + el.style.getPropertyValue(p)); };
     docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { const bad = wrong(el); if (!bad.length || el.closest('[data-plx-probe]')) return; out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' ' + bad.join(', ')); }));

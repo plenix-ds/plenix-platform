@@ -30,7 +30,15 @@ export function createAdapter(current) {
     getRow: () => row(key), getColumn: () => column(field), getField: () => field, getTable: () => api,
     getElement: () => current.current.rowElements.get(key)?.querySelector('[data-plx-field="' + CSS.escape(field) + '"]') });
   const group = value => ({getKey:()=>value.value,getField:()=>value.field,getRows:()=>value.rows.map(record=>row(record.id)),getSubGroups:()=>value.groups.map(group),getVisibility:()=>!current.current.collapsed.has(value.id),show:()=>current.current.toggleGroup(value.id,true),hide:()=>current.current.toggleGroup(value.id,false)});
+  const physicalRows=()=>current.current.model.filter(record=>!record.__group&&!record.__gap&&!record.__add).map(record=>row(record.id));
   const api = {
+    get element(){return current.current.frame.current;},
+    plxRows:physicalRows,plxData:()=>api.getData(),plxSelectedRows:()=>physicalRows().filter(record=>record.isSelected()),
+    updateRow:async(id,patch)=>{await current.current.updateRecord(recordKey(id),record=>({...record,...patch}));return api.getRow(id);},
+    addData:records=>current.current.replaceData(current.current.source.concat(records)),
+    deleteRow:id=>current.current.updateRecord(recordKey(id),()=>null),
+    getRowPosition:id=>api.getData(true).findIndex(record=>recordKey(record[current.current.index])===recordKey(id))+1,
+    getRowFromPosition:at=>api.getRows(true)[at-1],
     getData: active => active ? current.current.table.getPrePaginationRowModel().flatRows.map(r => r.original) : current.current.data.slice(),
     getRows: active => api.getData(active).map(record=>row(recordKey(record[current.current.index]))),
     getDataCount:active=>api.getData(active).length,setData:records=>current.current.replaceData(records),replaceData:records=>current.current.replaceData(records),
@@ -42,9 +50,9 @@ export function createAdapter(current) {
     getSorters: () => current.current.sorting.map(s => ({ field: s.id, dir: s.desc ? 'desc' : 'asc', column: column(s.id) })),
     setSort: (field, dir) => current.current.setSorting(Array.isArray(field) ? field.map(s => ({ id: s.column || s.field, desc: s.dir === 'desc' })) : [{ id: field, desc: dir === 'desc' }]),
     addFilter:(field,type,value)=>current.current.table.getColumn(field)?.setFilterValue(value),clearFilter:()=>current.current.table.setColumnFilters([]),
-    setFilter:filters=>current.current.table.setColumnFilters(filters.map(filter=>({id:filter.field,value:filter.value}))),getFilters:()=>current.current.table.getState().columnFilters.map(filter=>({field:filter.id,type:'like',value:filter.value})),
+    setFilter:(filters,type,value)=>current.current.table.setColumnFilters((typeof filters==='string'?[{field:filters,value}]:filters).map(filter=>({id:filter.field,value:filter.value}))),getFilters:()=>current.current.table.getState().columnFilters.map(filter=>({field:filter.id,type:'like',value:filter.value})),
     clearSort: () => current.current.setSorting([]),
-    selectRow: id => current.current.pick(recordKey(id), true), deselectRow: id => current.current.pick(recordKey(id), false),
+    selectRow: id => [].concat(id).forEach(value=>current.current.pick(recordKey(value), true)), deselectRow: id => [].concat(id).forEach(value=>current.current.pick(recordKey(value), false)),
     setPage: page => current.current.setPage(page - 1), getPage: () => current.current.page + 1,
     setPageSize: size => current.current.setPageSize(size), getPageSize: () => current.current.pageSize,
     scrollToRow: async id => { const at = current.current.model.findIndex(r => r.id === recordKey(id)); if (at < 0) return; if(current.current.virtual.options.enabled)current.current.virtual.scrollToIndex(at,{align:'auto'});else current.current.rowElements.get(recordKey(id))?.scrollIntoView({block:'nearest'});await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))); },

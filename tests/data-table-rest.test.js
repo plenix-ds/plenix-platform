@@ -5,7 +5,7 @@ const fs = require('fs'),
 module.exports = async function rest(page) {
   const build = await require('esbuild').build({
     stdin: {
-      contents: (process.env.DT_ENGINE==='next'?"import React from 'react';import {DataTable as Base} from './platform/components/DataTable/DataTable.jsx';export const DataTable=Object.assign(props=>React.createElement(Base,{...props,engine:'next'}),{useActions:Base.useActions});":"export {DataTable} from './platform/components/DataTable/DataTable.jsx';")+"export {ToastProvider} from './platform/components/Toast/Toast.jsx';export {CommandBar} from './platform/patterns/CommandBar/CommandBar.jsx';export {Button} from './platform/components/Button/Button.jsx';",
+      contents: (process.env.DT_ENGINE==='next'?"import React from 'react';import {DataTable as Base} from './platform/components/DataTableNext/DataTablePublic.jsx';export const DataTable=Object.assign(props=>React.createElement(Base,{...props,engine:'next'}),{useActions:Base.useActions});":"export {DataTable} from './platform/components/DataTableNext/DataTablePublic.jsx';")+"export {ToastProvider} from './platform/components/Toast/Toast.jsx';export {CommandBar} from './platform/patterns/CommandBar/CommandBar.jsx';export {Button} from './platform/components/Button/Button.jsx';",
       resolveDir: ROOT
     },
     bundle: true,
@@ -283,7 +283,7 @@ module.exports = async function rest(page) {
     await wait(250);
     ok(mounted > 0 && mounted - unmounted < 100, 'Only virtual visible rich cells mount');
     const before = mounted,
-      holder = host.querySelector(':is(.tabulator-tableholder,.plx-data-table__grid-tableholder)');
+      holder = host.querySelector('.plx-data-table__grid-tableholder');
     holder.scrollTop = holder.scrollHeight;
     holder.dispatchEvent(new Event('scroll'));
     await wait(400);
@@ -334,7 +334,7 @@ module.exports = async function rest(page) {
     await wait(500);
     host.querySelector('button[aria-label="Row actions"]').click();
     await wait();
-    let item = [...document.querySelectorAll(':is(.tabulator-menu-item,[role="menuitem"])')].find(e => e.textContent.includes('Archive record'));
+    let item = [...document.querySelectorAll('[role="menuitem"]')].find(e => e.textContent.includes('Archive record'));
     item.click();
     await wait();
     ok(action === 1 && !button('Undo'), 'Pending row action offers no premature undo');
@@ -475,7 +475,7 @@ module.exports = async function rest(page) {
     await wait(200);
     host.hidden = false;
     await wait(300);
-    let boxes = [...host.querySelectorAll(':is(.tabulator-row,.plx-data-table__grid-row) input[type=checkbox]')];
+    let boxes = [...host.querySelectorAll('.plx-data-table__grid-row input[type=checkbox]')];
     ok(boxes.length > 0 && boxes.every(box => box.getAttribute('aria-label')?.trim()), 'Off-screen sort/group/order updates retain row checkbox names');
     await reset();
     host.remove();

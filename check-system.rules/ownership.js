@@ -100,10 +100,10 @@ function check({ add }) {
 function shrink() {
   const { found } = measure(), ex = readExceptions(), out = { $description: ex.$description, 'cross-component': {}, important: {} };
   for (const file of Object.keys(ex['cross-component'] || {})) for (const s of Object.keys(ex['cross-component'][file])) {
-    const n = !fs.existsSync(path.join(ROOT, file)) ? ex['cross-component'][file][s] : Math.min(ex['cross-component'][file][s], (found['cross-component'][file] || {})[s] || 0);
+    const n = !fs.existsSync(path.join(ROOT, file)) ? (file.startsWith('platform/components/DataTable/') || file.startsWith('platform/vendor/tabulator/') ? 0 : ex['cross-component'][file][s]) : Math.min(ex['cross-component'][file][s], (found['cross-component'][file] || {})[s] || 0);
     if (n) (out['cross-component'][file] = out['cross-component'][file] || {})[s] = n;
   }
-  for (const file of Object.keys(ex.important || {})) { const n = !fs.existsSync(path.join(ROOT, file)) ? ex.important[file] : Math.min(ex.important[file], found.important[file] || 0); if (n) out.important[file] = n; }
+  for (const file of Object.keys(ex.important || {})) { const n = !fs.existsSync(path.join(ROOT, file)) ? (file.startsWith('platform/components/DataTable/') || file.startsWith('platform/vendor/tabulator/') ? 0 : ex.important[file]) : Math.min(ex.important[file], found.important[file] || 0); if (n) out.important[file] = n; }
   fs.writeFileSync(EXCEPTIONS, JSON.stringify(out, null, 2) + '\n');
   return out;
 }

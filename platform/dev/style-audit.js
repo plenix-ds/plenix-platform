@@ -59,8 +59,6 @@
     var cls = (typeof el.className === 'string' ? el.className : '').trim().split(/\s+/).filter(Boolean).slice(0, 3);
     return cls.length ? s + '.' + cls.join('.') : s;
   }
-  // the engine's probe (DataTable strict.js): a hidden Tabulator built once, before its patches, and removed at once
-  function probe(el) { return !!(el.closest && el.closest('[data-plx-probe="tabulator"]')); }
   // the grid step: the base spacing token in pixels (utils/grid.js reads the same token)
   function gridStep(el) {
     return context(el).step;
@@ -69,7 +67,6 @@
   function offGrid(value, el, property) {
     // Native vertical extents include token-sized rows and thin separators. Only widths must land on the grid
     // (owner, 2026-10-16); source checks still forbid arbitrary literal inline styles.
-    if (/^(?:height|min-height|max-height|padding-top|padding-bottom)$/.test(property) && el.matches && el.matches('.tabulator, .tabulator-tableholder, .tabulator-table') && el.closest('.plx-data-table') && /^(?:0|\d+(?:\.\d+)?px|calc\((?:100% - )?\d+(?:\.\d+)?px\))$/.test(String(value).trim())) return null;
     var v = String(value).replace(/var\([^()]*(\([^()]*\)[^()]*)*\)/g, ' '), step = gridStep(el), m, re = /(-?\d*\.?\d+)(px|rem|em|pt|pc|vh|vw|vmin|vmax|ch|ex|cm|mm|in)(?![\w-])/gi;
     while ((m = re.exec(v))) {
       var n = parseFloat(m[1]);
@@ -85,8 +82,8 @@
   function userContent(el) { return !!(el.closest && el.closest('.plx-user-content')); }
   var DENSITY = /^(height|min-height|max-height|line-height|padding(-(top|right|bottom|left|block|inline)(-(start|end))?)?)$/;
   function inlineFinding(el) {
-    if (probe(el) || el.isConnected === false) return null;   // the probe, or an element already gone from the page
-    var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell')), user = userContent(el);
+    if (el.isConnected === false) return null;   // an element already gone from the page
+    var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-table .plx-data-table__grid-row, .plx-data-table .plx-data-table__grid-cell')), user = userContent(el);
     for (var i = 0; i < st.length; i++) {
       var p = st[i], v = st.getPropertyValue(p);
       if (user && USER_FORMAT.test(p)) continue;
