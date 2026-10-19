@@ -33,11 +33,15 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
+// stacked lists set the meta's text in the smallest type: text inside the meta follows it (data-plx-text-follow)
+const StackedContext = React.createContext(false);
+
 export function ActivityList({ label, stacked = false, titleLines = 1, className, children }) {
-  return <ul aria-label={label} className={cx('plx-activity-list', stacked && 'plx-activity-list--stacked', titleLines === 2 && 'plx-activity-list--title-2', className)}>{children}</ul>;
+  return <StackedContext.Provider value={stacked}><ul aria-label={label} className={cx('plx-activity-list', stacked && 'plx-activity-list--stacked', titleLines === 2 && 'plx-activity-list--title-2', className)}>{children}</ul></StackedContext.Provider>;
 }
 
 ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {
+  const stacked = React.useContext(StackedContext);
   const opener = href ? <a href={href} className="plx-activity-list__opener">{title}</a>
     : onOpen ? <button type="button" className="plx-activity-list__opener" onClick={onOpen}>{title}</button>
       : <span className="plx-activity-list__opener">{title}</span>;
@@ -47,7 +51,7 @@ ActivityList.Item = function ActivityListItem({ leading, title, meta, time, date
       {leading ? <span className="plx-activity-list__leading">{leading}</span> : null}
       <span className="plx-activity-list__text">
         <span className="plx-activity-list__title">{opener}</span>
-        {meta ? <span className="plx-activity-list__meta">{meta}</span> : null}
+        {meta ? <span className="plx-activity-list__meta" data-plx-text-follow={stacked ? 'size' : undefined}>{meta}</span> : null}
       </span>
       {time ? <time className="plx-activity-list__time" dateTime={dateTime}>{time}</time> : null}
       {actions ? <span className="plx-activity-list__actions">{actions}</span> : null}

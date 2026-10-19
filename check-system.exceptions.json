@@ -30,14 +30,6 @@
     },
     "platform/components/DataTableNext/data-table-next.css": {
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--icon .plx-icon": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__group-value .plx-text": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list": 2,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__text": 2,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__item": 2,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text:not(.plx-text--data)": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-text": 1,
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-link": 1,
       ".plx-data-table[data-plx-engine=\"next\"][data-plx-row-height]:not([data-plx-row-height=\"short\"]) .plx-data-table__grid .plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs) .plx-data-table__grid-cell .plx-thumbnail": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__rich .plx-avatar": 1
     },
@@ -123,9 +115,6 @@
     "platform/components/RichTextEditor/rich-text-editor.css": {
       ".plx-rich-text-editor__bar .plx-input": 1
     },
-    "platform/components/SearchResult/search-result.css": {
-      ".plx-search-result__meta .plx-text": 1
-    },
     "platform/components/SuggestedAction/suggested-action.css": {
       ".plx-suggested-action__button--card .plx-button__label": 1
     },
@@ -153,9 +142,6 @@
       "[data-plx-density=\"comfortable\"] .plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled)": 1,
       "[data-plx-density=\"comfortable\"] .plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
       "[data-plx-density=\"comfortable\"] .plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon": 1
-    },
-    "platform/patterns/ActivityList/activity-list.css": {
-      ".plx-activity-list--stacked .plx-activity-list__meta .plx-text": 1
     },
     "platform/patterns/AppHeader/app-header.css": {
       ".plx-app-header--frost .plx-search__input": 1,
@@ -199,16 +185,8 @@
     "platform/patterns/ImageUpload/image-upload.css": {
       ".plx-image-upload .plx-file-input__summary": 1
     },
-    "platform/patterns/PropertyList/property-list.css": {
-      ".plx-property-list__value .plx-text": 1,
-      ".plx-property-list__description .plx-text": 1
-    },
     "platform/patterns/RenameAction/rename-action.css": {
       ".plx-rename-action--inline>.plx-inline-edit": 1
-    },
-    "platform/patterns/ResourceList/resource-list.css": {
-      ".plx-resource-list__count .plx-text": 1,
-      ".plx-resource-list__meta .plx-text": 1
     },
     "platform/patterns/SearchWorkspace/search-workspace.css": {
       ".plx-search-ws__query .plx-search": 1
@@ -244,14 +222,6 @@
     },
     "services/login/login.css": {
       ".plx-login__card .plx-input": 1
-    },
-    "platform/components/DataTableNext/data-table-static.css": {
-      ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text": 1,
-      ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list": 2,
-      ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__text": 2,
-      ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-list__item": 2,
-      ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-cell .plx-text:not(.plx-text--data)": 1,
-      ".plx-data-table--static.plx-data-table[data-plx-engine=\"next\"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-text": 1
     }
   },
   "important": {

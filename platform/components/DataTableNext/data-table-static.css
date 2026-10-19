@@ -41,11 +41,8 @@
    code) takes the cell's size, so every text in a row shares one baseline; it takes the cell's typeface too (Reddit Mono in a
    column of kind "data", DM Sans elsewhere), except code and Text "data", which are technical values and keep the data
    font wherever they are. Its color and weight stay (a link stays a link, strong stays strong) */
-.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-text,.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell code,.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-list,.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-list__text,.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-list__item{font-size:inherit;}
-.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-text:not(.plx-text--data),.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-list,.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-list__text,.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-cell .plx-list__item{font-family:inherit;}
 /* a row label is the row's name: the same medium weight as a name column, also for links and text inside it (owner, batch 248) */
 .plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label{font-weight:var(--plx-comp-table-name-font-weight);}
-.plx-data-table--static.plx-data-table[data-plx-engine="next"] .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--row-label .plx-text{font-weight:inherit;}
 
 /* drawn by Plenix (Strict DS 6b, batch 285): React owns every element. The header and every row are flex rows
    of columns sized by their classes: __w-<size> a size token, __w-lead the checkbox and icon width, __w-fill a share of the

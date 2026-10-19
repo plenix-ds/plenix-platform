@@ -105,7 +105,7 @@ export function SearchResult({ title, href, onOpen, kind = 'page', icon, thumbna
         ) : null}
         <Title className="plx-search-result__title">{opener}</Title>
         {snippet ? <span className="plx-search-result__snippet">{highlightMatches(snippet, query)}</span> : null}
-        {meta ? <span className="plx-search-result__meta">{meta}</span> : null}
+        {meta ? <span className="plx-search-result__meta" data-plx-text-follow="size">{meta}</span> : null}
       </span>
       {actions ? <span className="plx-search-result__actions">{actions}</span> : null}
     </li>

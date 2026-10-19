@@ -85,7 +85,7 @@ function Row({ item, selectable, checked, onCheck, t }) {
         <span className="plx-resource-list__name">{opener}</span>
         {item.description ? <span className="plx-resource-list__description">{item.description}</span> : null}
       </span>
-      {item.meta ? <span className="plx-resource-list__meta">{item.meta}</span> : null}
+      {item.meta ? <span className="plx-resource-list__meta" data-plx-text-follow="size">{item.meta}</span> : null}
       {item.actions ? <span className="plx-resource-list__actions">{item.actions}</span> : null}
     </li>
   );
@@ -114,7 +114,7 @@ export function ResourceList({ items = [], label, noun, plural, selectable = fal
             aria-label={fill(t.selectAll, { n: String(total), nouns: total === 1 ? one : nouns })} />
         </span>
       ) : null}
-      <span className="plx-resource-list__count" aria-live="polite">
+      <span className="plx-resource-list__count" aria-live="polite" data-plx-text-follow="size">
         {selectable && sel.count ? phrase(t.selected, { n: String(sel.count), total: String(total) }) : phrase(t.count, { n: String(total), nouns: total === 1 ? one : nouns })}
       </span>
     </div>

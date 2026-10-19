@@ -21300,6 +21300,7 @@ function NextEngine(props) {
     className: B + '__group-eyebrow'
   }, columns.find(c => c.field === group.field)?.title || group.field), /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__group-value',
+    "data-plx-text-follow": "size",
     "data-plx-kind": kinds(columns.find(c => c.field === group.field) || {}).includes('data') ? 'data' : undefined
   }, (0, _cells.valueText)(group.value) || S.noValue)), /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__group-count'
@@ -21497,6 +21498,7 @@ function NextEngine(props) {
           }
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
+        "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
         className: (0, _cx.cx)('plx-data-table__grid-cell', editing?.key === row.id && editing.field === c.field && 'plx-data-table__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), [].concat(groupBy || []).includes(c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && 'plx-data-table__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
       }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
@@ -22067,6 +22069,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Row padding follows the density.
 */
 
+// stacked lists set the meta's text in the smallest type: text inside the meta follows it (data-plx-text-follow)
+const StackedContext = /*#__PURE__*/_react.default.createContext(false);
 function ActivityList({
   label,
   stacked = false,
@@ -22074,10 +22078,12 @@ function ActivityList({
   className,
   children
 }) {
-  return /*#__PURE__*/_react.default.createElement("ul", {
+  return /*#__PURE__*/_react.default.createElement(StackedContext.Provider, {
+    value: stacked
+  }, /*#__PURE__*/_react.default.createElement("ul", {
     "aria-label": label,
     className: (0, _cx.cx)('plx-activity-list', stacked && 'plx-activity-list--stacked', titleLines === 2 && 'plx-activity-list--title-2', className)
-  }, children);
+  }, children));
 }
 ActivityList.Item = function ActivityListItem({
   leading,
@@ -22092,6 +22098,7 @@ ActivityList.Item = function ActivityListItem({
   actions,
   className
 }) {
+  const stacked = _react.default.useContext(StackedContext);
   const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
     href: href,
     className: "plx-activity-list__opener"
@@ -22116,7 +22123,8 @@ ActivityList.Item = function ActivityListItem({
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-activity-list__title"
   }, opener), meta ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-activity-list__meta"
+    className: "plx-activity-list__meta",
+    "data-plx-text-follow": stacked ? 'size' : undefined
   }, meta) : null), time ? /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-activity-list__time",
     dateTime: dateTime
@@ -31280,9 +31288,11 @@ PropertyList.Item = function PropertyListItem({
   }, htmlFor ? /*#__PURE__*/_react.default.createElement("label", {
     htmlFor: htmlFor
   }, label) : label)), description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-property-list__description"
+    className: "plx-property-list__description",
+    "data-plx-text-follow": "size"
   }, description) : null), /*#__PURE__*/_react.default.createElement("dd", {
-    className: (0, _cx.cx)('plx-property-list__value', data && 'plx-property-list__value--data')
+    className: (0, _cx.cx)('plx-property-list__value', data && 'plx-property-list__value--data'),
+    "data-plx-text-follow": "size"
   }, children));
 };
   } },
@@ -51313,7 +51323,8 @@ function SearchResult({
   }, opener), snippet ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search-result__snippet"
   }, highlightMatches(snippet, query)) : null, meta ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search-result__meta"
+    className: "plx-search-result__meta",
+    "data-plx-text-follow": "size"
   }, meta) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search-result__actions"
   }, actions) : null);
@@ -51580,7 +51591,8 @@ function Row({
   }, opener), item.description ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-resource-list__description"
   }, item.description) : null), item.meta ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-resource-list__meta"
+    className: "plx-resource-list__meta",
+    "data-plx-text-follow": "size"
   }, item.meta) : null, item.actions ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-resource-list__actions"
   }, item.actions) : null);
@@ -51653,7 +51665,8 @@ function ResourceList({
     })
   })) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-resource-list__count",
-    "aria-live": "polite"
+    "aria-live": "polite",
+    "data-plx-text-follow": "size"
   }, selectable && sel.count ? phrase(t.selected, {
     n: String(sel.count),
     total: String(total)

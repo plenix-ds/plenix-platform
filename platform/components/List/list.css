@@ -20,3 +20,7 @@
 /* bullets: a small square before each statement, centered on its first line; the statements justified (owner, 2026-10-15) */
 .plx-list--bullets>.plx-list__item::before{background-color:var(--plx-comp-list-bullet-color);block-size:var(--plx-comp-list-bullet-size);content:"";flex-shrink:0;inline-size:var(--plx-comp-list-bullet-size);margin-block-start:var(--plx-comp-list-bullet-offset);}
 .plx-list--bullets>.plx-list__item>.plx-list__text{text-align:justify;}
+/* content that follows the surrounding text (Styling Standard 6): a container declares data-plx-text-follow="size family
+   weight" (any of them) on its own element; inside it this component takes those from the text around it */
+[data-plx-text-follow~="size"] .plx-list,[data-plx-text-follow~="size"] .plx-list__text,[data-plx-text-follow~="size"] .plx-list__item{font-size:inherit;}
+[data-plx-text-follow~="family"] .plx-list,[data-plx-text-follow~="family"] .plx-list__text,[data-plx-text-follow~="family"] .plx-list__item{font-family:inherit;}

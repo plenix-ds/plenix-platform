@@ -6,7 +6,6 @@
 .plx-resource-list{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-resource-list-gap);}
 .plx-resource-list__header{align-items:center;border-bottom-color:var(--plx-comp-resource-list-header-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-resource-list-header-border-bottom-width);column-gap:var(--plx-comp-resource-list-item-gap);display:flex;min-block-size:var(--plx-comp-resource-list-header-min-height);}
 .plx-resource-list__count{color:var(--plx-comp-resource-list-count-text);font-size:var(--plx-comp-resource-list-count-font-size);}
-.plx-resource-list__count .plx-text{font-size:inherit;}
 .plx-resource-list__group{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-resource-list-group-gap);}
 .plx-resource-list__group-count{color:var(--plx-comp-resource-list-count-text);font-family:var(--plx-comp-resource-list-group-count-font-family);margin-inline-start:var(--plx-comp-resource-list-group-count-margin-inline-start);text-transform:none;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-resource-list__list{list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
@@ -28,5 +27,4 @@
 .plx-resource-list__opener.is-focus-visible{outline-style:none;}
 .plx-resource-list__description{color:var(--plx-comp-resource-list-description-text);font-size:var(--plx-comp-resource-list-description-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-resource-list__meta{align-items:center;color:var(--plx-comp-resource-list-meta-text);column-gap:var(--plx-comp-resource-list-actions-gap);display:inline-flex;flex-shrink:0;font-size:var(--plx-comp-resource-list-meta-font-size);white-space:nowrap;}
-.plx-resource-list__meta .plx-text{font-size:inherit;}
 .plx-resource-list__actions{align-items:center;column-gap:var(--plx-comp-resource-list-actions-gap);display:flex;flex-shrink:0;position:relative;z-index:var(--plx-comp-resource-list-control-z-index);}
