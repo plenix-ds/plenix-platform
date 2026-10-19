@@ -49,7 +49,7 @@ async function inspect() {
   // marked as code or data: the elements and classes of the code and data roles
   const ROLE = 'code, kbd, pre, samp, .plx-text--data, .plx-input--data, .plx-data-table__group-count, .plx-data-table__group-summary-value, [data-plx-kind="data"], [class*="__cell--data"], .plx-property-list__value--data';
   // components that keep their own typography (a label inside a control or a pill), and specimens
-  const OWN = '.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-count, .plx-avatar, .plx-status-dot, input, textarea, select, option, button, [role="menuitem"], [role="option"], [role="tab"], .tabulator-header, .ds-vis, .ds-specimens, .ds-type, svg';
+  const OWN = '.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-count, .plx-avatar, .plx-status-dot, input, textarea, select, option, button, [role="menuitem"], [role="option"], [role="tab"], .tabulator-header, .ds-vis, .ds-specimens, .ds-type, svg';
   // titles and headings
   const TITLE = 'h1, h2, h3, h4, h5, h6, [class*="__title"], .plx-text--title, .plx-text--heading, .plx-text--eyebrow';
   const shown = (el) => { if (!el.getClientRects().length) return false; const c = getComputedStyle(el); return c.visibility !== 'hidden' && !el.closest('[hidden], [aria-hidden="true"], .plx-visually-hidden, .plx-u-sr-only'); };

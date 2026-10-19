@@ -82,13 +82,13 @@ export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, cl
 export function Chip({ selected = false, onRemove, removeLabel, className, children, ...rest }) {
   if (onRemove) {
     return (
-      <span className={cx('plx-tag', 'plx-chip', selected && 'plx-chip--selected', className)}>
-        <button type="button" className="plx-chip__toggle" aria-pressed={selected} {...rest}>{children}</button>
+      <span className={cx('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)}>
+        <button type="button" className="plx-tag__toggle" aria-pressed={selected} {...rest}>{children}</button>
         <RemoveButton label={removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'filter')} onClick={onRemove} />
       </span>
     );
   }
-  return <button type="button" className={cx('plx-tag', 'plx-chip', selected && 'plx-chip--selected', className)} aria-pressed={selected} {...rest}>{children}</button>;
+  return <button type="button" className={cx('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)} aria-pressed={selected} {...rest}>{children}</button>;
 }
 
 export function TagList({ className, children, label, ...rest }) {
@@ -125,7 +125,7 @@ export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, v
   if (!open) {
     return (
       <Tooltip content={label}>
-        <button ref={plusRef} id={id} type="button" aria-label={label} className={cx('plx-tag', 'plx-chip', 'plx-tag-input__add', className)} onClick={() => setOpen(true)}><Icon name="add" size="sm" /></button>
+        <button ref={plusRef} id={id} type="button" aria-label={label} className={cx('plx-tag', 'plx-tag--chip', 'plx-tag--add', className)} onClick={() => setOpen(true)}><Icon name="add" size="sm" /></button>
       </Tooltip>
     );
   }

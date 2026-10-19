@@ -21,7 +21,7 @@
 .plx-input:is(:focus,:focus-visible,.is-focused,.is-focus-visible),.plx-select.is-focused .plx-select__control,.plx-combobox__field:focus-within,.plx-search__input:is(:focus,.is-focused){border-bottom-color:Highlight;border-left-color:Highlight;border-right-color:Highlight;border-top-color:Highlight;}
 /* selection: items chosen in a list, a tree, tabs, a segmented control, navigation or a toggle */
 :is(button,a,[role="option"],[role="tab"],[role="treeitem"],[role="row"],[role="gridcell"],[role="menuitemradio"],[role="radio"]):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],[aria-current="true"],[aria-checked="true"],.is-selected,.is-current),
-.plx-tree__item.is-selected>.plx-tree__row,.plx-chip--selected{background-color:Highlight;color:HighlightText;}
+.plx-tree__item.is-selected>.plx-tree__row,.plx-tag--selected{background-color:Highlight;color:HighlightText;}
 /* disabled */
 :is(button,input,select,textarea,a,[role="button"],[role="option"],[role="menuitem"],[role="tab"]):is(:disabled,[aria-disabled="true"]),.is-disabled{border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText;}
 /* boundaries: what floats on a shadow gets an outline */
@@ -30,7 +30,7 @@
    it takes the system color of the text it sits in */
 .plx-icon{background-color:CanvasText;}
 :is(button,a,[role="option"],[role="tab"],[role="treeitem"],[role="row"],[role="gridcell"],[role="menuitemradio"],[role="radio"]):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],[aria-current="true"],[aria-checked="true"],.is-selected,.is-current) .plx-icon,
-.plx-tree__item.is-selected>.plx-tree__row .plx-icon,.plx-chip--selected .plx-icon{background-color:HighlightText;}
+.plx-tree__item.is-selected>.plx-tree__row .plx-icon,.plx-tag--selected .plx-icon{background-color:HighlightText;}
 :is(button,a,[role="button"],[role="option"],[role="menuitem"],[role="tab"]):is(:disabled,[aria-disabled="true"]) .plx-icon,.is-disabled .plx-icon{background-color:GrayText;}
 a:link .plx-icon,a:visited .plx-icon{background-color:LinkText;}
 /* on and off: a checked switch, a progress fill, the spinner's gap */

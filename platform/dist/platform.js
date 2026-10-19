@@ -3530,10 +3530,10 @@ function Chip({
 }) {
   if (onRemove) {
     return /*#__PURE__*/_react.default.createElement("span", {
-      className: (0, _cx.cx)('plx-tag', 'plx-chip', selected && 'plx-chip--selected', className)
+      className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)
     }, /*#__PURE__*/_react.default.createElement("button", _extends({
       type: "button",
-      className: "plx-chip__toggle",
+      className: "plx-tag__toggle",
       "aria-pressed": selected
     }, rest), children), /*#__PURE__*/_react.default.createElement(RemoveButton, {
       label: removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'filter'),
@@ -3542,7 +3542,7 @@ function Chip({
   }
   return /*#__PURE__*/_react.default.createElement("button", _extends({
     type: "button",
-    className: (0, _cx.cx)('plx-tag', 'plx-chip', selected && 'plx-chip--selected', className),
+    className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className),
     "aria-pressed": selected
   }, rest), children);
 }
@@ -3625,7 +3625,7 @@ const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(funct
       id: id,
       type: "button",
       "aria-label": label,
-      className: (0, _cx.cx)('plx-tag', 'plx-chip', 'plx-tag-input__add', className),
+      className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', 'plx-tag--add', className),
       onClick: () => setOpen(true)
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: "add",

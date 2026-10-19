@@ -82,11 +82,6 @@
     "platform/components/SuggestedAction/suggested-action.css": {
       ".plx-suggested-action__button--card .plx-button__label": 1
     },
-    "platform/components/Tag/tag.css": {
-      ".plx-chip--selected .plx-tag__remove": 1,
-      ".plx-chip--selected .plx-tag__remove:hover": 1,
-      ".plx-chip--selected .plx-tag__remove.is-hover": 1
-    },
     "platform/components/Text/text.css": {
       ".plx-data-table__portal>a.plx-text--link:only-child": 1,
       ".plx-data-table__portal>a.plx-text--link:only-child::before": 1,
@@ -146,7 +141,7 @@
     },
     "platform/system/forced-colors.css": {
       ".plx-tree__item.is-selected>.plx-tree__row .plx-icon": 1,
-      ".plx-chip--selected .plx-icon": 1
+      ".plx-tag--selected .plx-icon": 1
     },
     "platform/system/layout-grid.css": {
       ".plx-layout-grid-overlay>.plx-layout-grid": 1,

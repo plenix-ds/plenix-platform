@@ -35,7 +35,7 @@ let current = '';   // the design-system page being checked
   // app shell shown inside a panel, and the design system's illustration
   // boxes (wireframes, demo boxes, mini shells, motion cards).
   const nesting = async () => { const found = await page.evaluate(() => {
-    const CONTROL = 'button, input, select, textarea, [role="tab"], [role="checkbox"], [role="switch"], .plx-tag, .plx-chip, .plx-badge, .plx-kbd, .plx-avatar, .plx-thumbnail, img, svg, .plx-icon';
+    const CONTROL = 'button, input, select, textarea, [role="tab"], [role="checkbox"], [role="switch"], .plx-tag, .plx-tag--chip, .plx-badge, .plx-kbd, .plx-avatar, .plx-thumbnail, img, svg, .plx-icon';
     const SPECIMEN = /(^| )ds-(wire__|box( |$)|demo-box|shell-mini|mk-card|motion-card)/;
     const framed = (el) => {
       if (el.matches(CONTROL) || el.closest('.plx-button') || el.closest('.ds-sample-stage, .ds-variant-preview, .ds-state-row__sample, .ds-wire__frame, .plx-panel .plx-app-shell') || SPECIMEN.test(typeof el.className === 'string' ? el.className : '')) return false;

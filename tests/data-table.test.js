@@ -214,7 +214,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         const w = document.createTreeWalker(g.querySelector(':is(.tabulator-tableholder,.plx-data-table__grid-tableholder)') || g, NodeFilter.SHOW_TEXT); let n;
         while ((n = w.nextNode()) && type.length < 3) {
           // (a group header's eyebrow and a summary's name are labels in the eyebrow style: the owner's group header, 2026-10-14)
-          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, :is(.tabulator-placeholder,.plx-data-table__grid-placeholder), .ds-vis, .plx-data-table__group-eyebrow, .plx-data-table__group-summary-name')) continue;
+          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, :is(.tabulator-placeholder,.plx-data-table__grid-placeholder), .ds-vis, .plx-data-table__group-eyebrow, .plx-data-table__group-summary-name')) continue;
           const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
           const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'Reddit Mono' : 'DM Sans';
           if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));
@@ -225,7 +225,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         g.querySelectorAll(':is(.tabulator-header,.plx-data-table__grid-header) :is(.tabulator-col-title,.plx-data-table__grid-col-title)').forEach((t) => { const w = getComputedStyle(t).fontWeight; if (t.textContent.trim() && w !== '600' && type.length < 3) type.push('header "' + t.textContent.trim().slice(0, 16) + '" is ' + w + ', not 600'); });
         g.querySelectorAll(':is(.tabulator-row,.plx-data-table__grid-row) [class*="__cell--row-label"]').forEach((c) => {
           const w = document.createTreeWalker(c, NodeFilter.SHOW_TEXT); let n;
-          while ((n = w.nextNode())) { const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, .ds-vis')) continue; const fw = getComputedStyle(el).fontWeight; if (fw !== '500' && type.length < 3) type.push('row label "' + n.textContent.trim().slice(0, 16) + '" is ' + fw + ', not 500'); }
+          while ((n = w.nextNode())) { const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .ds-vis')) continue; const fw = getComputedStyle(el).fontWeight; if (fw !== '500' && type.length < 3) type.push('row label "' + n.textContent.trim().slice(0, 16) + '" is ' + fw + ', not 500'); }
         });
       });
       // vertical alignment: middle (owner, 2026-10-13): in every density, each cell's content (its text and
