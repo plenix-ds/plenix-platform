@@ -158,25 +158,6 @@
       ".plx-chip--selected .plx-tag__remove:hover": 1,
       ".plx-chip--selected .plx-tag__remove.is-hover": 1
     },
-    "platform/components/TeachingBubble/teaching-bubble.css": {
-      ".plx-teaching-bubble .plx-button--primary": 1,
-      ".plx-teaching-bubble .plx-button--primary:hover": 1,
-      ".plx-teaching-bubble .plx-button--primary.is-hover": 1,
-      ".plx-teaching-bubble .plx-button--primary:active": 1,
-      ".plx-teaching-bubble .plx-button--primary.is-pointer-down": 1,
-      ".plx-teaching-bubble .plx-button--secondary": 1,
-      ".plx-teaching-bubble .plx-button--secondary:hover": 1,
-      ".plx-teaching-bubble .plx-button--secondary.is-hover": 1,
-      ".plx-teaching-bubble .plx-button--secondary:active": 1,
-      ".plx-teaching-bubble .plx-button--secondary.is-pointer-down": 1,
-      ".plx-teaching-bubble .plx-button--ghost": 1,
-      ".plx-teaching-bubble .plx-button--ghost:hover": 1,
-      ".plx-teaching-bubble .plx-button--ghost.is-hover": 1,
-      ".plx-teaching-bubble .plx-button--ghost:active": 1,
-      ".plx-teaching-bubble .plx-button--ghost.is-pointer-down": 1,
-      ".plx-teaching-bubble .plx-button:focus-visible": 1,
-      ".plx-teaching-bubble .plx-button.is-focus-visible": 1
-    },
     "platform/components/Text/text.css": {
       ".plx-data-table__portal>a.plx-text--link:only-child": 1,
       ".plx-data-table__portal>a.plx-text--link:only-child::before": 1,
@@ -201,11 +182,6 @@
       ".plx-activity-list--stacked .plx-activity-list__meta .plx-text": 1
     },
     "platform/patterns/AppHeader/app-header.css": {
-      ".plx-app-header--accent .plx-button--secondary": 1,
-      ".plx-app-header--accent .plx-button--secondary:hover": 1,
-      ".plx-app-header--accent .plx-button--secondary.is-hover": 1,
-      ".plx-app-header--accent .plx-button--secondary:active:not(:disabled):not([aria-disabled=\"true\"])": 1,
-      ".plx-app-header--accent .plx-button--secondary.is-pointer-down": 1,
       ".plx-app-header--frost .plx-search__input": 1,
       ".plx-app-header__search>.plx-search": 1,
       ".plx-app-header__action .plx-button": 1,

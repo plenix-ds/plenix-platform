@@ -202,7 +202,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
     document.body,
   ) : null;
   return (
-    <header ref={root} className={cx('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)} {...rest}>
+    <header ref={root} data-plx-surface={tone === 'accent' ? 'accent' : undefined} className={cx('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)} {...rest}>
       <div className="plx-app-header__start">
         {back ? <AppHeader.Item icon={<Icon name="arrow-left" />} label={back.label || 'Back'} href={back.href} onClick={back.onClick} className="plx-app-header__back" /> : null}
         {title ? <span className="plx-app-header__brand plx-app-header__title">{title}</span>

@@ -34,7 +34,7 @@
    "clashed": 0
   },
   "platform/design-system/index.html#/page-structures/split-view": {
-   "elements": 3750,
+   "elements": 3015,
    "clashed": 0
   },
   "platform/design-system/index.html#/implementation/css-architecture": {
@@ -53,12 +53,16 @@
    "elements": 11472,
    "clashed": 0
   },
+  "platform/design-system/index.html#/overlays/teaching-bubble": {
+   "elements": 3404,
+   "clashed": 0
+  },
   "platform/design-system/index.html#/actions/copy-button": {
    "elements": 3099,
    "clashed": 0
   },
-  "platform/design-system/index.html#/overlays/teaching-bubble": {
-   "elements": 3404,
+  "platform/design-system/index.html#/data-display/card": {
+   "elements": 4582,
    "clashed": 0
   },
   "platform/design-system/index.html#/content/user-card": {
@@ -67,10 +71,6 @@
   },
   "platform/design-system/index.html#/data-display/comparison-view": {
    "elements": 3702,
-   "clashed": 0
-  },
-  "platform/design-system/index.html#/data-display/card": {
-   "elements": 4582,
    "clashed": 0
   },
   "platform/design-system/index.html#/forms/number-input": {
@@ -101,24 +101,20 @@
    "elements": 3615,
    "clashed": 0
   },
-  "platform/design-system/index.html#/patterns/resizable": {
-   "elements": 3442,
-   "clashed": 0
-  },
   "platform/design-system/index.html#/data-display/tag": {
    "elements": 4095,
    "clashed": 0
   },
-  "platform/design-system/index.html#/forms/file-input": {
-   "elements": 3013,
+  "platform/design-system/index.html#/patterns/resizable": {
+   "elements": 3541,
    "clashed": 0
   },
   "platform/design-system/index.html#/navigation/navigation-menu": {
    "elements": 3587,
    "clashed": 0
   },
-  "platform/design-system/index.html#/data-display/activity-stream": {
-   "elements": 3455,
+  "platform/design-system/index.html#/forms/file-input": {
+   "elements": 3013,
    "clashed": 0
   },
   "platform/design-system/index.html#/actions/toolbar": {
@@ -133,80 +129,84 @@
    "elements": 3757,
    "clashed": 0
   },
-  "platform/design-system/index.html#/forms/tree-select": {
-   "elements": 3205,
+  "platform/design-system/index.html#/data-display/activity-stream": {
+   "elements": 3455,
    "clashed": 0
   },
   "platform/design-system/index.html#/navigation/progress-steps": {
    "elements": 3709,
    "clashed": 0
   },
-  "platform/design-system/index.html#/data-display/media-card": {
-   "elements": 4156,
-   "clashed": 0
-  },
   "platform/design-system/index.html#/forms/error-summary": {
    "elements": 2852,
    "clashed": 0
   },
-  "platform/design-system/index.html#/navigation/search-result": {
-   "elements": 3688,
+  "platform/design-system/index.html#/data-display/media-card": {
+   "elements": 4156,
    "clashed": 0
   },
-  "platform/design-system/index.html#/specialized/document-viewer": {
-   "elements": 3006,
+  "platform/design-system/index.html#/forms/tree-select": {
+   "elements": 3205,
    "clashed": 0
   },
   "platform/design-system/index.html#/data-display/resource-list": {
    "elements": 4084,
    "clashed": 0
   },
+  "platform/design-system/index.html#/specialized/document-viewer": {
+   "elements": 3006,
+   "clashed": 0
+  },
   "platform/design-system/index.html#/forms/inline-edit": {
    "elements": 3421,
    "clashed": 0
   },
-  "platform/design-system/index.html#/forms/avatar-upload": {
-   "elements": 3087,
-   "clashed": 0
-  },
-  "platform/design-system/index.html#/forms/search-input": {
-   "elements": 3731,
+  "platform/design-system/index.html#/navigation/search-result": {
+   "elements": 3688,
    "clashed": 0
   },
   "platform/design-system/index.html#/specialized/suggested-action": {
    "elements": 2947,
    "clashed": 0
   },
+  "platform/design-system/index.html#/forms/avatar-upload": {
+   "elements": 3087,
+   "clashed": 0
+  },
   "platform/design-system/index.html#/forms/date-picker": {
    "elements": 3462,
    "clashed": 0
   },
-  "platform/design-system/index.html#/overlays/expandable-section": {
-   "elements": 2771,
-   "clashed": 0
-  },
-  "platform/design-system/index.html#/navigation/filter-bar": {
-   "elements": 4137,
+  "platform/design-system/index.html#/forms/search-input": {
+   "elements": 3731,
    "clashed": 0
   },
   "platform/design-system/index.html#/forms/image-upload": {
    "elements": 3283,
    "clashed": 0
   },
+  "platform/design-system/index.html#/overlays/expandable-section": {
+   "elements": 2771,
+   "clashed": 0
+  },
   "platform/design-system/index.html#/data-display/metric": {
    "elements": 3036,
    "clashed": 0
   },
-  "platform/design-system/index.html#/actions/button-group": {
-   "elements": 2968,
+  "platform/design-system/index.html#/navigation/filter-bar": {
+   "elements": 4137,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/data-display/geo-map": {
+   "elements": 2833,
    "clashed": 0
   },
   "platform/design-system/index.html#/content/property-list": {
    "elements": 3014,
    "clashed": 0
   },
-  "platform/design-system/index.html#/data-display/geo-map": {
-   "elements": 2833,
+  "platform/design-system/index.html#/actions/button-group": {
+   "elements": 2968,
    "clashed": 0
   },
   "platform/design-system/index.html#/specialized/file-row": {
@@ -229,12 +229,12 @@
    "elements": 3009,
    "clashed": 0
   },
-  "platform/design-system/index.html#/actions/rename-action": {
-   "elements": 3353,
-   "clashed": 0
-  },
   "platform/design-system/index.html#/foundations/type-styles": {
    "elements": 3327,
+   "clashed": 0
+  },
+  "platform/design-system/index.html#/actions/rename-action": {
+   "elements": 3353,
    "clashed": 0
   },
   "platform/design-system/index.html#/data-display/network-graph": {

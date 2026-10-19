@@ -68,7 +68,7 @@ export function TeachingBubble({ target, open = false, onDismiss, title, childre
     {spotlight ? <Spotlight target={spot} open={!!open} /> : null}
     <Popover trigger={React.Children.only(target)} triggerOn="manual" open={!!open} onOpenChange={(v) => { if (!v && onDismiss) onDismiss(); }}
       placement={placement} size={wide ? 'lg' : 'md'} arrow focusOnOpen={focusOnOpen} aria-labelledby={id + 't'}
-      className={cx('plx-teaching-bubble', wide && 'plx-teaching-bubble--wide', className)}>
+      data-plx-surface="inverse" className={cx('plx-teaching-bubble', wide && 'plx-teaching-bubble--wide', className)}>
       {media ? <div className="plx-teaching-bubble__media">{media}</div> : null}
       <div className="plx-teaching-bubble__header">
         <h2 id={id + 't'} className="plx-teaching-bubble__title">{title}</h2>

@@ -3176,23 +3176,23 @@
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
     },
-    "app-header-accent-button-secondary-background": {
+    "button-on-accent-secondary-background": {
       "$value": "{plx-sys.accent-field-background}",
       "$type": "color"
     },
-    "app-header-accent-button-secondary-border-color": {
+    "button-on-accent-secondary-border-color": {
       "$value": "{plx-sys.accent-border}",
       "$type": "color"
     },
-    "app-header-accent-button-secondary-text": {
+    "button-on-accent-secondary-text": {
       "$value": "{plx-sys.accent-content}",
       "$type": "color"
     },
-    "app-header-accent-button-secondary-hover-background": {
+    "button-on-accent-secondary-hover-background": {
       "$value": "{plx-sys.accent-state-hover}",
       "$type": "color"
     },
-    "app-header-accent-button-secondary-pressed-background": {
+    "button-on-accent-secondary-pressed-background": {
       "$value": "{plx-sys.accent-state-pressed}",
       "$type": "color"
     },

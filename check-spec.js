@@ -124,7 +124,7 @@ const blocksOf = (r) => r.blocks || (r.src && /^(components|patterns)\//.test(r.
 // documented under the component's Behavior or Names)
 const NOT_VARIANTS = {
   'plx-data-table--fill': 'a sizing state the height prop sets (height="100%": the grid fills its container), not a look',
-  'plx-table--fill': 'a sizing state the height prop sets (height="100%"), not a look',
+  'plx-button--secondary': 'the default variant: its variant page (Secondary (default)) and the base rule draw it; the class appears in the stylesheet only for buttons on a colored surface',
   'plx-nav-pane--inline': 'a responsive mode the shell sets (the pane opens over the main region on narrow windows)',
   'plx-nav-pane--overlay': 'a responsive mode the shell sets',
   'plx-nav-pane--screen': 'a responsive mode the shell sets (Narrow windows: the pane is a screen of its own; Platforms Standard 4.1)',

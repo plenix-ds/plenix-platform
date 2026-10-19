@@ -16,12 +16,6 @@
 .plx-app-header--accent .plx-app-header__item:focus-visible,
 .plx-app-header--accent .plx-app-header__item.is-focus-visible{outline-color:var(--plx-comp-app-header-accent-item-focus-outline-color);}
 .plx-app-header__divider{background-image:linear-gradient(var(--plx-comp-app-header-divider),var(--plx-comp-app-header-divider));background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-app-header-divider-background-size);block-size:var(--plx-comp-app-header-divider-height);flex-shrink:0;inline-size:var(--plx-comp-app-header-divider-width);margin-inline-end:var(--plx-comp-app-header-divider-margin-inline);margin-inline-start:var(--plx-comp-app-header-divider-margin-inline);}
-.plx-app-header--accent .plx-button--secondary{background-color:var(--plx-comp-app-header-accent-button-secondary-background);border-bottom-color:var(--plx-comp-app-header-accent-button-secondary-border-color);border-left-color:var(--plx-comp-app-header-accent-button-secondary-border-color);border-right-color:var(--plx-comp-app-header-accent-button-secondary-border-color);border-top-color:var(--plx-comp-app-header-accent-button-secondary-border-color);color:var(--plx-comp-app-header-accent-button-secondary-text);}
-.plx-app-header--accent .plx-button--secondary:hover,
-.plx-app-header--accent .plx-button--secondary.is-hover{background-color:var(--plx-comp-app-header-accent-button-secondary-hover-background);}
-/* pressed on the accent header: a step past its hover (batch 238) */
-.plx-app-header--accent .plx-button--secondary:active:not(:disabled):not([aria-disabled="true"]),
-.plx-app-header--accent .plx-button--secondary.is-pointer-down{background-color:var(--plx-comp-app-header-accent-button-secondary-pressed-background);}
 .plx-app-header--frost .plx-search__input{background-color:var(--plx-comp-app-header-frost-search-input-background);border-bottom-color:var(--plx-comp-app-header-frost-search-input-border-color);border-left-color:var(--plx-comp-app-header-frost-search-input-border-color);border-right-color:var(--plx-comp-app-header-frost-search-input-border-color);border-top-color:var(--plx-comp-app-header-frost-search-input-border-color);}
 .plx-app-header__count{inset-block-start:var(--plx-comp-app-header-count-inset-block-start);inset-inline-end:var(--plx-comp-app-header-count-inset-inline-end);pointer-events:none;position:absolute;}
 /* header name: Plenix over the application */

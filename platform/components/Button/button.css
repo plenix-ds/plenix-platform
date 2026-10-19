@@ -62,3 +62,28 @@
 .plx-button-group>.plx-button:focus-visible,
 .plx-button-group>.plx-button.is-focus-visible{position:relative;z-index:var(--plx-comp-button-group-focus-layer);}
 .plx-button--ghost:disabled,.plx-button--ghost[aria-disabled="true"]{background-color:var(--plx-comp-button-disabled-quiet-background);border-bottom-color:var(--plx-comp-button-disabled-quiet-border);border-left-color:var(--plx-comp-button-disabled-quiet-border);border-right-color:var(--plx-comp-button-disabled-quiet-border);border-top-color:var(--plx-comp-button-disabled-quiet-border);box-shadow:none;}
+/* Buttons on a colored surface: the surface sets data-plx-surface on itself (TeachingBubble "inverse", the accent
+   AppHeader "accent"); every button inside takes these looks, as a theme zone does. Pressed on accent is a step past
+   hover (batch 238). */
+[data-plx-surface="inverse"] .plx-button--primary{background-color:var(--plx-comp-button-on-inverse-action-fill);border-bottom-color:var(--plx-comp-button-on-inverse-action-fill);border-left-color:var(--plx-comp-button-on-inverse-action-fill);border-right-color:var(--plx-comp-button-on-inverse-action-fill);border-top-color:var(--plx-comp-button-on-inverse-action-fill);box-shadow:none;color:var(--plx-comp-button-on-inverse-action-text);}
+[data-plx-surface="inverse"] .plx-button--primary:hover,
+[data-plx-surface="inverse"] .plx-button--primary.is-hover,
+[data-plx-surface="inverse"] .plx-button--primary:active,
+[data-plx-surface="inverse"] .plx-button--primary.is-pointer-down,
+[data-plx-surface="inverse"] .plx-button--secondary{background-color:var(--plx-comp-button-on-inverse-action-quiet-background);border-bottom-color:var(--plx-comp-button-on-inverse-action-outline);border-left-color:var(--plx-comp-button-on-inverse-action-outline);border-right-color:var(--plx-comp-button-on-inverse-action-outline);border-top-color:var(--plx-comp-button-on-inverse-action-outline);color:var(--plx-comp-button-on-inverse-text);}
+[data-plx-surface="inverse"] .plx-button--secondary:hover,
+[data-plx-surface="inverse"] .plx-button--secondary.is-hover,
+[data-plx-surface="inverse"] .plx-button--secondary:active,
+[data-plx-surface="inverse"] .plx-button--secondary.is-pointer-down{background-color:var(--plx-comp-button-on-inverse-action-fill);color:var(--plx-comp-button-on-inverse-action-text);}
+[data-plx-surface="inverse"] .plx-button--ghost{background-color:var(--plx-comp-button-on-inverse-action-quiet-background);color:var(--plx-comp-button-on-inverse-text);}
+[data-plx-surface="inverse"] .plx-button--ghost:hover,
+[data-plx-surface="inverse"] .plx-button--ghost.is-hover,
+[data-plx-surface="inverse"] .plx-button--ghost:active,
+[data-plx-surface="inverse"] .plx-button--ghost.is-pointer-down{background-color:var(--plx-comp-button-on-inverse-action-quiet-background);border-bottom-color:var(--plx-comp-button-on-inverse-action-outline);border-left-color:var(--plx-comp-button-on-inverse-action-outline);border-right-color:var(--plx-comp-button-on-inverse-action-outline);border-top-color:var(--plx-comp-button-on-inverse-action-outline);color:var(--plx-comp-button-on-inverse-text);}
+[data-plx-surface="inverse"] .plx-button:focus-visible,
+[data-plx-surface="inverse"] .plx-button.is-focus-visible{outline-color:var(--plx-comp-button-on-inverse-focus-color);}
+[data-plx-surface="accent"] .plx-button--secondary{background-color:var(--plx-comp-button-on-accent-secondary-background);border-bottom-color:var(--plx-comp-button-on-accent-secondary-border-color);border-left-color:var(--plx-comp-button-on-accent-secondary-border-color);border-right-color:var(--plx-comp-button-on-accent-secondary-border-color);border-top-color:var(--plx-comp-button-on-accent-secondary-border-color);color:var(--plx-comp-button-on-accent-secondary-text);}
+[data-plx-surface="accent"] .plx-button--secondary:hover,
+[data-plx-surface="accent"] .plx-button--secondary.is-hover{background-color:var(--plx-comp-button-on-accent-secondary-hover-background);}
+[data-plx-surface="accent"] .plx-button--secondary:active:not(:disabled):not([aria-disabled="true"]),
+[data-plx-surface="accent"] .plx-button--secondary.is-pointer-down{background-color:var(--plx-comp-button-on-accent-secondary-pressed-background);}

@@ -15,22 +15,5 @@
 .plx-teaching-bubble{--plx-comp-popover-arrow-border-color:var(--plx-comp-teaching-bubble-border-color);--plx-comp-popover-arrow-fill:var(--plx-comp-teaching-bubble-background);--plx-comp-popover-background:var(--plx-comp-teaching-bubble-background);--plx-comp-popover-border-color:var(--plx-comp-teaching-bubble-border-color);--plx-comp-popover-focus-border-color:var(--plx-comp-teaching-bubble-focus-color);--plx-comp-popover-text:var(--plx-comp-teaching-bubble-text);}
 /* its buttons on the blue: the primary filled with the color on the brand, the secondary and Close drawn in it; hover
    and press swap fill and outline, so the pair keeps its contrast in every state; the focus ring is the color on the brand */
-.plx-teaching-bubble .plx-button--primary{background-color:var(--plx-comp-teaching-bubble-action-fill);border-bottom-color:var(--plx-comp-teaching-bubble-action-fill);border-left-color:var(--plx-comp-teaching-bubble-action-fill);border-right-color:var(--plx-comp-teaching-bubble-action-fill);border-top-color:var(--plx-comp-teaching-bubble-action-fill);box-shadow:none;color:var(--plx-comp-teaching-bubble-action-text);}
-.plx-teaching-bubble .plx-button--primary:hover,
-.plx-teaching-bubble .plx-button--primary.is-hover,
-.plx-teaching-bubble .plx-button--primary:active,
-.plx-teaching-bubble .plx-button--primary.is-pointer-down,
-.plx-teaching-bubble .plx-button--secondary{background-color:var(--plx-comp-teaching-bubble-action-quiet-background);border-bottom-color:var(--plx-comp-teaching-bubble-action-outline);border-left-color:var(--plx-comp-teaching-bubble-action-outline);border-right-color:var(--plx-comp-teaching-bubble-action-outline);border-top-color:var(--plx-comp-teaching-bubble-action-outline);color:var(--plx-comp-teaching-bubble-text);}
-.plx-teaching-bubble .plx-button--secondary:hover,
-.plx-teaching-bubble .plx-button--secondary.is-hover,
-.plx-teaching-bubble .plx-button--secondary:active,
-.plx-teaching-bubble .plx-button--secondary.is-pointer-down{background-color:var(--plx-comp-teaching-bubble-action-fill);color:var(--plx-comp-teaching-bubble-action-text);}
-.plx-teaching-bubble .plx-button--ghost{background-color:var(--plx-comp-teaching-bubble-action-quiet-background);color:var(--plx-comp-teaching-bubble-text);}
-.plx-teaching-bubble .plx-button--ghost:hover,
-.plx-teaching-bubble .plx-button--ghost.is-hover,
-.plx-teaching-bubble .plx-button--ghost:active,
-.plx-teaching-bubble .plx-button--ghost.is-pointer-down{background-color:var(--plx-comp-teaching-bubble-action-quiet-background);border-bottom-color:var(--plx-comp-teaching-bubble-action-outline);border-left-color:var(--plx-comp-teaching-bubble-action-outline);border-right-color:var(--plx-comp-teaching-bubble-action-outline);border-top-color:var(--plx-comp-teaching-bubble-action-outline);color:var(--plx-comp-teaching-bubble-text);}
-.plx-teaching-bubble .plx-button:focus-visible,
-.plx-teaching-bubble .plx-button.is-focus-visible{outline-color:var(--plx-comp-teaching-bubble-focus-color);}
 /* the target's box (the spotlight's anchor): exactly the target's */
 .plx-teaching-bubble__target{display:inline-flex;vertical-align:middle;}

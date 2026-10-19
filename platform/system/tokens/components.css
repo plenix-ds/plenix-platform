@@ -769,11 +769,11 @@
   --plx-comp-app-header-divider-height: var(--plx-ref-size-20px);
   --plx-comp-app-header-divider-width: var(--plx-ref-size-4px);
   --plx-comp-app-header-divider-margin-inline: var(--plx-sys-space-inline-xs);
-  --plx-comp-app-header-accent-button-secondary-background: var(--plx-sys-accent-field-background);
-  --plx-comp-app-header-accent-button-secondary-border-color: var(--plx-sys-accent-border);
-  --plx-comp-app-header-accent-button-secondary-text: var(--plx-sys-accent-content);
-  --plx-comp-app-header-accent-button-secondary-hover-background: var(--plx-sys-accent-state-hover);
-  --plx-comp-app-header-accent-button-secondary-pressed-background: var(--plx-sys-accent-state-pressed);
+  --plx-comp-button-on-accent-secondary-background: var(--plx-sys-accent-field-background);
+  --plx-comp-button-on-accent-secondary-border-color: var(--plx-sys-accent-border);
+  --plx-comp-button-on-accent-secondary-text: var(--plx-sys-accent-content);
+  --plx-comp-button-on-accent-secondary-hover-background: var(--plx-sys-accent-state-hover);
+  --plx-comp-button-on-accent-secondary-pressed-background: var(--plx-sys-accent-state-pressed);
   --plx-comp-app-header-frost-search-input-background: var(--plx-sys-frost-field-background);
   --plx-comp-app-header-frost-search-input-border-color: var(--plx-sys-frost-border);
   --plx-comp-app-header-count-inset-block-start: calc(var(--plx-ref-space-4px) * -1);
@@ -5149,12 +5149,14 @@
   --plx-comp-teaching-bubble-step-font-size: var(--plx-ref-font-size-12);
   --plx-comp-teaching-bubble-background: var(--plx-sys-brand-primary);
   --plx-comp-teaching-bubble-border-color: var(--plx-sys-brand-primary);
+  --plx-comp-button-on-inverse-text: var(--plx-sys-brand-on-primary);
+  --plx-comp-button-on-inverse-focus-color: var(--plx-sys-brand-on-primary);
+  --plx-comp-button-on-inverse-action-fill: var(--plx-sys-brand-on-primary);
+  --plx-comp-button-on-inverse-action-text: var(--plx-sys-brand-primary);
+  --plx-comp-button-on-inverse-action-outline: var(--plx-sys-brand-on-primary);
+  --plx-comp-button-on-inverse-action-quiet-background: transparent;
   --plx-comp-teaching-bubble-text: var(--plx-sys-brand-on-primary);
   --plx-comp-teaching-bubble-focus-color: var(--plx-sys-brand-on-primary);
-  --plx-comp-teaching-bubble-action-fill: var(--plx-sys-brand-on-primary);
-  --plx-comp-teaching-bubble-action-text: var(--plx-sys-brand-primary);
-  --plx-comp-teaching-bubble-action-outline: var(--plx-sys-brand-on-primary);
-  --plx-comp-teaching-bubble-action-quiet-background: transparent;
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-text-display-text: var(--plx-sys-content-default);

@@ -76,6 +76,36 @@
       "$type": "color",
       "$description": "TeachingBubble: the edge and the arrow's outline, the brand blue (one piece with the surface)."
     },
+    "button-on-inverse-text": {
+      "$value": "{plx-sys.brand-on-primary}",
+      "$type": "color",
+      "$description": "TeachingBubble: the text, Close and the secondary action, in the color on the brand."
+    },
+    "button-on-inverse-focus-color": {
+      "$value": "{plx-sys.brand-on-primary}",
+      "$type": "color",
+      "$description": "TeachingBubble: the focus ring of its buttons and its own focused edge, in the color on the brand (the focus color is the blue itself)."
+    },
+    "button-on-inverse-action-fill": {
+      "$value": "{plx-sys.brand-on-primary}",
+      "$type": "color",
+      "$description": "TeachingBubble: the primary action's fill (and a secondary action under the pointer), the color on the brand."
+    },
+    "button-on-inverse-action-text": {
+      "$value": "{plx-sys.brand-primary}",
+      "$type": "color",
+      "$description": "TeachingBubble: the label on that fill, the brand blue."
+    },
+    "button-on-inverse-action-outline": {
+      "$value": "{plx-sys.brand-on-primary}",
+      "$type": "color",
+      "$description": "TeachingBubble: the outline of the secondary action (and of the primary and Close under the pointer)."
+    },
+    "button-on-inverse-action-quiet-background": {
+      "$value": "transparent",
+      "$type": "color",
+      "$description": "TeachingBubble: no fill: the secondary action and Close at rest, the primary under the pointer (the blue shows through)."
+    },
     "teaching-bubble-text": {
       "$value": "{plx-sys.brand-on-primary}",
       "$type": "color",
@@ -85,26 +115,6 @@
       "$value": "{plx-sys.brand-on-primary}",
       "$type": "color",
       "$description": "TeachingBubble: the focus ring of its buttons and its own focused edge, in the color on the brand (the focus color is the blue itself)."
-    },
-    "teaching-bubble-action-fill": {
-      "$value": "{plx-sys.brand-on-primary}",
-      "$type": "color",
-      "$description": "TeachingBubble: the primary action's fill (and a secondary action under the pointer), the color on the brand."
-    },
-    "teaching-bubble-action-text": {
-      "$value": "{plx-sys.brand-primary}",
-      "$type": "color",
-      "$description": "TeachingBubble: the label on that fill, the brand blue."
-    },
-    "teaching-bubble-action-outline": {
-      "$value": "{plx-sys.brand-on-primary}",
-      "$type": "color",
-      "$description": "TeachingBubble: the outline of the secondary action (and of the primary and Close under the pointer)."
-    },
-    "teaching-bubble-action-quiet-background": {
-      "$value": "transparent",
-      "$type": "color",
-      "$description": "TeachingBubble: no fill: the secondary action and Close at rest, the primary under the pointer (the blue shows through)."
     }
   }
 }

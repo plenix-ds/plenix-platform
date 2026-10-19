@@ -30164,6 +30164,7 @@ function AppHeader({
   }, "Type what you are looking for, then press Enter.") : null)), document.body) : null;
   return /*#__PURE__*/_react.default.createElement("header", _extends({
     ref: root,
+    "data-plx-surface": tone === 'accent' ? 'accent' : undefined,
     className: (0, _cx.cx)('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-header__start"
@@ -38293,6 +38294,7 @@ function TeachingBubble({
     arrow: true,
     focusOnOpen: focusOnOpen,
     "aria-labelledby": id + 't',
+    "data-plx-surface": "inverse",
     className: (0, _cx.cx)('plx-teaching-bubble', wide && 'plx-teaching-bubble--wide', className)
   }, media ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-teaching-bubble__media"
