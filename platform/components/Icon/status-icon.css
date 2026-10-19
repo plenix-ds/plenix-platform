@@ -1,11 +1,9 @@
 /* Plenix · StatusIcon (platform/components/Icon/status-icon.css): a tone's icon in the tone's content color, at one of
-   three sizes, and an optional short label after it in the text color and size of where it sits. The size reaches the
-   icon through its own size property (the Icon's --plx-comp-icon-size); the large size draws the 24px optical files. */
+   three sizes, and an optional short label after it in the text color and size of where it sits. The size is the Icon's
+   own named size (sm, md, lg); the color reaches it through its slot. */
 .plx-status-icon{align-items:center;column-gap:var(--plx-comp-status-icon-gap);display:inline-flex;vertical-align:middle;}
-.plx-status-icon--sm .plx-status-icon__glyph{--plx-comp-icon-size:var(--plx-comp-status-icon-sm-size);}
-.plx-status-icon--md .plx-status-icon__glyph{--plx-comp-icon-size:var(--plx-comp-status-icon-md-size);}
-.plx-status-icon--lg .plx-status-icon__glyph{--plx-comp-icon-size:var(--plx-comp-status-icon-lg-size);}
-.plx-status-icon--lg .plx-status-icon__glyph{--plx-comp-icon-url:var(--plx-comp-icon-outline-24);}
+/* the glyph's slot (no box of its own): the tone's color; the icon is Icon at the status size (sm, md, lg: lg draws the 24px files) */
+.plx-status-icon__glyph{display:contents;}
 .plx-status-icon--info .plx-status-icon__glyph{color:var(--plx-comp-status-icon-info-color);}
 .plx-status-icon--success .plx-status-icon__glyph{color:var(--plx-comp-status-icon-success-color);}
 .plx-status-icon--warning .plx-status-icon__glyph{color:var(--plx-comp-status-icon-warning-color);}

@@ -38,7 +38,7 @@ export function IconTile({ icon, hue = 'gray', tone, size = 'md', filled = false
   return (
     <span className={cx('plx-icon-tile', 'plx-icon-tile--' + s, 'plx-icon-tile--' + look, className)}
       role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest}>
-      <Icon name={icon} size={s} filled={filled} className="plx-icon-tile__icon" />
+      <Icon name={icon} size={s} filled={filled} />
     </span>
   );
 }

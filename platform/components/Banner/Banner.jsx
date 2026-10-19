@@ -41,7 +41,7 @@ export function Banner({ tone = 'info', title, children, actions, onDismiss, pla
     <div className={cx('plx-banner', 'plx-banner--' + t, 'plx-banner--' + (placement === 'pane' ? 'pane' : 'page'), className)}
       role={t === 'danger' ? 'alert' : 'status'} {...rest}>
       <span className="plx-banner__icon">
-        {icon ? <span className={cx('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--md')}><Icon name={icon} className="plx-status-icon__glyph" /></span>
+        {icon ? <span className={cx('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--md')}><span className="plx-status-icon__glyph"><Icon name={icon} size="md" /></span></span>
           : <StatusIcon tone={t} strings={strings} />}
       </span>
       <div className="plx-banner__body">

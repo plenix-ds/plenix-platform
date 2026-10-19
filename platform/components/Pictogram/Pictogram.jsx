@@ -29,9 +29,9 @@ export function Pictogram({ icon, size = '64', twoTone = false, label, className
   devWarn('Pictogram', { size }, { size: ['48','64','96',48,64,96] });
   const s = SIZES.indexOf(String(size)) >= 0 ? String(size) : '64';
   return (
-    <span className={cx('plx-pictogram', 'plx-pictogram--' + s, twoTone && 'plx-pictogram--two-tone', className)}
+    <span className={cx('plx-pictogram', 'plx-pictogram--' + s, twoTone && 'plx-pictogram--two-tone', className)} data-plx-icon-optical="24"
       role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest}>
-      <Icon name={icon} size="xl" filled={twoTone} className="plx-pictogram__icon" />
+      <Icon name={icon} filled={twoTone} />
     </span>
   );
 }

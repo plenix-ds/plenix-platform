@@ -4,8 +4,8 @@
 .plx-pictogram--48{block-size:var(--plx-comp-pictogram-48-size);inline-size:var(--plx-comp-pictogram-48-size);}
 .plx-pictogram--64{block-size:var(--plx-comp-pictogram-64-size);inline-size:var(--plx-comp-pictogram-64-size);}
 .plx-pictogram--96{block-size:var(--plx-comp-pictogram-96-size);inline-size:var(--plx-comp-pictogram-96-size);}
-.plx-pictogram--48 .plx-pictogram__icon{--plx-comp-icon-size:var(--plx-comp-pictogram-48-icon-size);}
-.plx-pictogram--64 .plx-pictogram__icon{--plx-comp-icon-size:var(--plx-comp-pictogram-64-icon-size);}
-.plx-pictogram--96 .plx-pictogram__icon{--plx-comp-icon-size:var(--plx-comp-pictogram-96-icon-size);}
+.plx-pictogram--48{--plx-comp-icon-size:var(--plx-comp-pictogram-48-icon-size);}
+.plx-pictogram--64{--plx-comp-icon-size:var(--plx-comp-pictogram-64-icon-size);}
+.plx-pictogram--96{--plx-comp-icon-size:var(--plx-comp-pictogram-96-icon-size);}
 /* two-tone: the filled symbol on its tint */
 .plx-pictogram--two-tone{background-color:var(--plx-comp-pictogram-two-tone-background);color:var(--plx-comp-pictogram-two-tone-text);}

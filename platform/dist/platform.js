@@ -167,11 +167,13 @@ function StatusIcon({
   const shown = children !== undefined && children !== null && children !== false;
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
-  }, rest), /*#__PURE__*/_react.default.createElement(Icon, {
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-status-icon__glyph"
+  }, /*#__PURE__*/_react.default.createElement(Icon, {
     name: STATUS_ICONS[t],
-    className: "plx-status-icon__glyph",
+    size: size,
     label: shown ? undefined : label || words[t]
-  }), shown ? /*#__PURE__*/_react.default.createElement("span", {
+  })), shown ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-status-icon__label"
   }, children) : null);
 }
@@ -30200,6 +30202,7 @@ function AppHeader({
   return /*#__PURE__*/_react.default.createElement("header", _extends({
     ref: root,
     "data-plx-surface": tone === 'accent' ? 'accent' : undefined,
+    "data-plx-icon-optical": "24",
     className: (0, _cx.cx)('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-header__start"
@@ -35779,8 +35782,7 @@ function IconTile({
   }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: icon,
     size: s,
-    filled: filled,
-    className: "plx-icon-tile__icon"
+    filled: filled
   }));
 }
   } },
@@ -35833,14 +35835,13 @@ function Pictogram({
   const s = SIZES.indexOf(String(size)) >= 0 ? String(size) : '64';
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-pictogram', 'plx-pictogram--' + s, twoTone && 'plx-pictogram--two-tone', className),
+    "data-plx-icon-optical": "24",
     role: label ? 'img' : undefined,
     "aria-label": label,
     "aria-hidden": label ? undefined : true
   }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: icon,
-    size: "xl",
-    filled: twoTone,
-    className: "plx-pictogram__icon"
+    filled: twoTone
   }));
 }
   } },
@@ -37607,10 +37608,12 @@ function Banner({
     className: "plx-banner__icon"
   }, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--md')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-status-icon__glyph"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: icon,
-    className: "plx-status-icon__glyph"
-  })) : /*#__PURE__*/_react.default.createElement(_Icon.StatusIcon, {
+    size: "md"
+  }))) : /*#__PURE__*/_react.default.createElement(_Icon.StatusIcon, {
     tone: t,
     strings: strings
   })), /*#__PURE__*/_react.default.createElement("div", {
