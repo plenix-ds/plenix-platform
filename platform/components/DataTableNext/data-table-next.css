@@ -121,7 +121,7 @@
 
 .plx-data-table[data-plx-engine="next"] .plx-data-table__grid .plx-data-table__grid-row .plx-data-table__grid-cell.plx-data-table__cell--icon,
 .plx-data-table[data-plx-engine="next"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__cell--icon .plx-data-table__grid-col-content{align-items:center;color:var(--plx-comp-data-table-cell-icon-text);display:inline-flex;justify-content:center;line-height:normal;}
-.plx-data-table[data-plx-engine="next"] .plx-data-table__cell--icon .plx-icon,
+.plx-data-table[data-plx-engine="next"] .plx-data-table__cell--icon,
 .plx-data-table[data-plx-engine="next"] .plx-data-table__header-icon{--plx-comp-icon-size:var(--plx-comp-data-table-mark-size);}
 .plx-data-table[data-plx-engine="next"] .plx-data-table__header-icon{display:flex;}
 .plx-data-table[data-plx-engine="next"] .plx-data-table__grid .plx-data-table__grid-header .plx-data-table__grid-col.plx-data-table__cell--icon .plx-data-table__grid-col-title{display:flex;padding-inline-end:0;}

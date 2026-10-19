@@ -105,8 +105,9 @@
 /* the icon column: a mark at the start of a row (an attachment, like a mail list) */
 .plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--icon,
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-content{align-items:center;color:var(--plx-comp-data-table-cell-icon-text);display:inline-flex;justify-content:center;line-height:normal;}
-.plx-data-table .plx-data-table__cell--icon .plx-icon,
-.plx-data-table .plx-data-table__header-icon .plx-icon{block-size:var(--plx-comp-data-table-mark-size);inline-size:var(--plx-comp-data-table-mark-size);}
+/* the legacy engine only (the TanStack engine sizes these icons through its slots: Styling Standard 4.1) */
+.plx-data-table:not([data-plx-engine="next"]) .plx-data-table__cell--icon .plx-icon,
+.plx-data-table:not([data-plx-engine="next"]) .plx-data-table__header-icon .plx-icon{block-size:var(--plx-comp-data-table-mark-size);inline-size:var(--plx-comp-data-table-mark-size);}
 .plx-data-table__header-icon{display:flex;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-title{display:flex;padding-right:0;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon:hover .tabulator-col-title{padding-right:0;}
