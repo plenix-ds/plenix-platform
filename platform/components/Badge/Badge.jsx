@@ -45,5 +45,5 @@ export function Badge({ tone = 'neutral', variant, size = 'md', icon, className,
   const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
-  return <span className={classes} {...rest}>{icon ? <Icon name={icon} className="plx-badge__icon" /> : null}{children}</span>;
+  return <span className={classes} {...rest}>{icon ? <Icon name={icon} /> : null}{children}</span>;
 }

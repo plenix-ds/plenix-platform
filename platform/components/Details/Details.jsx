@@ -50,8 +50,8 @@ export function Details({ summary, children, variant = 'default', open: openProp
     <details className={cx('plx-details', 'plx-details--' + v, className)} open={open} name={name} onToggle={toggled} {...rest}>
       <summary className="plx-details__summary">
         <span className="plx-details__marker" aria-hidden="true">
-          <Icon name="chevron-right" className="plx-details__chevron plx-details__chevron--closed" />
-          <Icon name="chevron-down" className="plx-details__chevron plx-details__chevron--open" />
+          <span className="plx-details__chevron plx-details__chevron--closed"><Icon name="chevron-right" /></span>
+          <span className="plx-details__chevron plx-details__chevron--open"><Icon name="chevron-down" /></span>
         </span>
         <span className="plx-details__label">{summary}</span>
       </summary>

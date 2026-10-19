@@ -56,7 +56,7 @@ export function BrandMark({ kind = 'mark', tone, size, app, showName = true, cle
     const name = a ? a.label : s.name;
     return (
       <span className={lockup} role={showName ? undefined : 'img'} aria-label={showName ? undefined : (label || name)} {...rest}>
-        <span className="plx-brand-lockup__tile" aria-hidden="true"><Icon name={a ? a.icon : 'home'} className="plx-brand-lockup__icon" /></span>
+        <span className="plx-brand-lockup__tile" aria-hidden="true"><Icon name={a ? a.icon : 'home'} /></span>
         {showName ? <span className="plx-brand-lockup__app">{name}</span> : null}
       </span>
     );

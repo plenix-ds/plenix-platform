@@ -21,7 +21,7 @@
 .plx-file-row__bar{inline-size:var(--plx-comp-file-row-progress-width);}
 .plx-file-row__percent{color:var(--plx-comp-file-row-cell-text);font-family:var(--plx-comp-file-row-data-font-family);font-size:var(--plx-comp-file-row-cell-font-size);inline-size:var(--plx-comp-file-row-percent-width);line-height:var(--plx-comp-file-row-cell-line-height);text-align:end;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-file-row__error{align-items:center;color:var(--plx-comp-file-row-error-text);column-gap:var(--plx-comp-file-row-progress-gap);display:inline-flex;flex-shrink:1;font-size:var(--plx-comp-file-row-cell-font-size);line-height:var(--plx-comp-file-row-cell-line-height);min-inline-size:0;}
-.plx-file-row__error-icon{--plx-comp-icon-size:var(--plx-comp-file-row-error-icon-size);flex-shrink:0;}
+.plx-file-row__error-icon{--plx-comp-icon-size:var(--plx-comp-file-row-error-icon-size);display:contents;}
 .plx-file-row__error-text{overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-file-row__actions{align-items:center;column-gap:var(--plx-comp-file-row-actions-gap);display:inline-flex;flex-shrink:0;}
 /* the list of rows: no bullets, no indent, a line above the first row */

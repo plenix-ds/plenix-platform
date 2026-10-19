@@ -9,8 +9,10 @@
 .plx-details__summary:focus-visible{outline-color:var(--plx-comp-details-focus-outline-color);outline-offset:var(--plx-comp-details-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-details-focus-outline-width);}
 .plx-details__marker{--plx-comp-icon-size:var(--plx-comp-details-marker-size);display:inline-flex;flex-shrink:0;}
 .plx-details__label{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+/* each chevron in its own slot (no box of its own); the open one shows while open */
+.plx-details__chevron{display:contents;}
 .plx-details__chevron--open{display:none;}
-.plx-details[open]>.plx-details__summary .plx-details__chevron--open{display:inline-block;}
+.plx-details[open]>.plx-details__summary .plx-details__chevron--open{display:contents;}
 .plx-details[open]>.plx-details__summary .plx-details__chevron--closed{display:none;}
 .plx-details__content{margin-block-start:var(--plx-comp-details-content-margin-block-start);padding-inline-start:var(--plx-comp-details-content-indent);}
 /* bordered: one box */

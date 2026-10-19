@@ -253,8 +253,7 @@ function Badge({
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: classes
   }, rest), icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon,
-    className: "plx-badge__icon"
+    name: icon
   }) : null, children);
 }
   } },
@@ -4670,8 +4669,7 @@ function BrandMark({
       className: "plx-brand-lockup__tile",
       "aria-hidden": "true"
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: a ? a.icon : 'home',
-      className: "plx-brand-lockup__icon"
+      name: a ? a.icon : 'home'
     })), showName ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-brand-lockup__app"
     }, name) : null);
@@ -12669,8 +12667,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
     disabled: disabled || props.disabled || undefined,
     className: (0, _cx.cx)('plx-drag-handle', 'plx-drag-handle--' + (orientation === 'horizontal' ? 'horizontal' : 'vertical'), className)
   }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "drag",
-    className: "plx-drag-handle__icon"
+    name: "drag"
   }));
 });
   } },
@@ -21923,13 +21920,15 @@ const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link
     href: href
   }, newTab, rest, {
     className: (0, _cx.cx)('plx-link', 'plx-link--' + kind, back && 'plx-link--back', external && 'plx-link--external', onAccent && 'plx-link--on-accent', visited && 'is-visited', className)
-  }), back ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-left",
+  }), back ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-link__icon"
-  }) : null, children, external ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "open",
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-left"
+  })) : null, children, external ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-link__icon"
-  }) : null, external ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, " (", s.newTab, ")") : null);
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "open"
+  })) : null, external ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, " (", s.newTab, ")") : null);
 });
   } },
   "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -36279,10 +36278,11 @@ const Image = exports.Image = /*#__PURE__*/_react.default.forwardRef(function Im
     role: alt ? 'img' : undefined,
     "aria-label": alt || undefined,
     "aria-hidden": alt ? undefined : true
-  }, fallback || /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "image-a-2",
+  }, fallback || /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-image__fallback-icon"
-  }), /*#__PURE__*/_react.default.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "image-a-2"
+  })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-image__fallback-text"
   }, s.error))) : null);
 });
@@ -38810,13 +38810,15 @@ function Details({
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-details__marker",
     "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-right",
+  }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-details__chevron plx-details__chevron--closed"
-  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-down",
-    className: "plx-details__chevron plx-details__chevron--open"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-right"
   })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-details__chevron plx-details__chevron--open"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down"
+  }))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-details__label"
   }, summary)), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-details__content"
@@ -62079,10 +62081,11 @@ function FileRow({
   }))), error ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-file-row__error",
     role: "alert"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "alert",
+  }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-file-row__error-icon"
-  }), /*#__PURE__*/_react.default.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "alert"
+  })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-file-row__error-text"
   }, error)) : moving ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-file-row__progress"

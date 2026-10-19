@@ -70,7 +70,7 @@ export const Image = React.forwardRef(function Image({ src, alt, ratio = 'auto',
         : img}
       {status === 'error' ? (
         <span className="plx-image__fallback" role={alt ? 'img' : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true}>
-          {fallback || <React.Fragment><Icon name="image-a-2" className="plx-image__fallback-icon" /><span className="plx-image__fallback-text">{s.error}</span></React.Fragment>}
+          {fallback || <React.Fragment><span className="plx-image__fallback-icon"><Icon name="image-a-2" /></span><span className="plx-image__fallback-text">{s.error}</span></React.Fragment>}
         </span>
       ) : null}
     </span>

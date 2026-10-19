@@ -18,14 +18,11 @@
       "button.plx-color-swatch-label[aria-pressed=\"true\"] .plx-color-swatch": 1
     },
     "platform/components/DataTableNext/data-table-next.css": {
-      ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__cell--icon .plx-icon": 1,
       ".plx-data-table[data-plx-engine=\"next\"][data-plx-row-height]:not([data-plx-row-height=\"short\"]) .plx-data-table__grid .plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs) .plx-data-table__grid-cell .plx-thumbnail": 1,
       ".plx-data-table[data-plx-engine=\"next\"] .plx-data-table__rich .plx-avatar": 1
     },
     "platform/components/DataTable/data-table.css": {
       ".plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon": 1,
-      ".plx-data-table .plx-data-table__cell--icon .plx-icon": 1,
-      ".plx-data-table .plx-data-table__header-icon .plx-icon": 1,
       ".plx-data-table__group-chevron .plx-icon": 1,
       ".plx-data-table__group-value .plx-text": 1,
       ".plx-data-table__menu-icon .plx-icon": 1,
@@ -38,7 +35,9 @@
       ".plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-link": 1,
       ".plx-data-table[data-plx-row-height]:not([data-plx-row-height=\"short\"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-thumbnail": 1,
       ".plx-data-table__type-icon .plx-icon": 1,
-      ".plx-data-table__rich .plx-avatar": 1
+      ".plx-data-table__rich .plx-avatar": 1,
+      ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__cell--icon .plx-icon": 1,
+      ".plx-data-table:not([data-plx-engine=\"next\"]) .plx-data-table__header-icon .plx-icon": 1
     },
     "platform/components/DatePicker/date-picker.css": {
       ".plx-date-picker .plx-popover-anchor": 1

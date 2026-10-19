@@ -38,7 +38,7 @@ export const DragHandle = React.forwardRef(function DragHandle({ label, orientat
   return (
     <button ref={ref} type="button" {...props} aria-label={label || props['aria-label']} disabled={disabled || props.disabled || undefined}
       className={cx('plx-drag-handle', 'plx-drag-handle--' + (orientation === 'horizontal' ? 'horizontal' : 'vertical'), className)}>
-      <Icon name="drag" className="plx-drag-handle__icon" />
+      <Icon name="drag" />
     </button>
   );
 });

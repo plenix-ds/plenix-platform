@@ -97,7 +97,7 @@ export function FileRow({ file, as = 'div', selectable = false, selected = false
       <span className="plx-file-row__file"><File {...fileProps} href={href} onOpen={onOpen} /></span>
       {error ? (
         <span className="plx-file-row__error" role="alert">
-          <Icon name="alert" className="plx-file-row__error-icon" />
+          <span className="plx-file-row__error-icon"><Icon name="alert" /></span>
           <span className="plx-file-row__error-text">{error}</span>
         </span>
       ) : moving ? (

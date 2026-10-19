@@ -49,9 +49,9 @@ export const Link = React.forwardRef(function Link({ href, variant = 'inline', e
     <Tag ref={ref} href={href} {...newTab} {...rest}
       className={cx('plx-link', 'plx-link--' + kind, back && 'plx-link--back', external && 'plx-link--external', onAccent && 'plx-link--on-accent',
         visited && 'is-visited', className)}>
-      {back ? <Icon name="chevron-left" className="plx-link__icon" /> : null}
+      {back ? <span className="plx-link__icon"><Icon name="chevron-left" /></span> : null}
       {children}
-      {external ? <Icon name="open" className="plx-link__icon" /> : null}
+      {external ? <span className="plx-link__icon"><Icon name="open" /></span> : null}
       {external ? <VisuallyHidden> ({s.newTab})</VisuallyHidden> : null}
     </Tag>
   );
