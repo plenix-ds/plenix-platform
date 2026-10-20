@@ -2584,15 +2584,6 @@
   "platform/system/nesting.css": {
    "combinator | :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid)": 1
   },
-  "platform/system/read-only.css": {
-   "combinator | [data-plx-readonly=\"true\"] .plx-input[readonly]": 1,
-   "combinator | [data-plx-readonly=\"true\"] .plx-input[aria-readonly=\"true\"]": 1,
-   "combinator | [data-plx-readonly=\"true\"] .plx-input[readonly]:not(:focus)": 1,
-   "combinator | [data-plx-readonly=\"true\"] .plx-input[aria-readonly=\"true\"]:not(:focus)": 1,
-   "combinator | [data-plx-readonly=\"true\"] [aria-readonly=\"true\"]": 1,
-   "combinator | [data-plx-readonly=\"true\"] [data-plx-readonly-set=\"locked\"]": 1,
-   "relational | [data-plx-readonly=\"true\"] label:has(> [data-plx-readonly-set])": 1
-  },
   "platform/system/steps.css": {
    "combinator | .plx-tree__item>.plx-tree__row": 1,
    "combinator | .plx-tree__item[aria-level=\"1\"]>.plx-tree__row": 1,
