@@ -34,7 +34,7 @@
      "12 of 4,000" even though only a few are in the page.
    Notes:
      Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
-     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
+     item matters, unless the page offers its own search. DataTable keeps the table renderer's own rendering.
      The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
      A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
 */

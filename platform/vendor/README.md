@@ -2,8 +2,6 @@
 
 These files are copied into the project so both Plenix applications load React without network access and the dashboard still opens from `file://`. They are runtime files, not a package installation: nothing here is managed by npm.
 
-`tabulator/` holds the engine every Plenix table runs on (Tabulator 6.6.1, MIT, added 2026-10-08); the DataTable component loads it the first time a grid renders. Its files, checksums, load order and update steps are in `tabulator/README.md`.
-
 `tiptap/` holds the engine every Plenix rich-text editor runs on (Tiptap 3.31.3 with ProseMirror, MIT, added 2026-10-14):
 one bundled file, `tiptap.min.js` (481 KB, 153 KB gzipped; `window.PlenixTiptap`), built with esbuild from the npm packages
 @tiptap/core, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-list, @tiptap/extension-mention, @tiptap/extension-table,

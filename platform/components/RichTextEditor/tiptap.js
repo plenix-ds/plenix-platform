@@ -9,7 +9,7 @@
    Behavior:
      Only the first editor on a page loads the file; later editors reuse the same promise. Pages without an editor never
        load it (no prefetch): RichTextEditor.preload() starts the load early on a page whose first screen has an editor.
-     The file comes from the vendor folder the DataTable's engine uses (vendorBase in DataTable/tabulator.js: next to the
+     The file comes from the shared vendor folder (utils/vendorBase.js: next to the
        Platform script, the release's CDN copy in the npm package, or window.PlenixVendorBase).
      The engine has no stylesheet of its own: the few rules ProseMirror needs are in rich-text-editor.css, on tokens.
    Notes:
@@ -18,7 +18,7 @@
        @tiptap/extension-list, -mention, -table, -text-style, -text-align, -highlight, -subscript, -superscript, -image and
        -typography, and their dependencies (platform/vendor/README.md: versions, licenses, how it is built). */
 
-import { vendorBase } from '../DataTable/tabulator.js';
+import { vendorBase } from '../../utils/vendorBase.js';
 
 const loading = new WeakMap();
 export function loadTiptap(win) {

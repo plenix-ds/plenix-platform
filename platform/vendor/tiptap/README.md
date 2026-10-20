@@ -49,7 +49,7 @@ Only pages that show an editor load it. The `RichTextEditor` component calls `lo
 (`platform/components/RichTextEditor/tiptap.js`) the first time it mounts: it adds `tiptap.min.js` from this folder, once
 per page (per window: an editor in a frame loads its frame's copy), and waits for `window.PlenixTiptap`. Nothing
 prefetches it; a page whose first screen has an editor can call `RichTextEditor.preload()`. The folder is found as the
-DataTable finds Tabulator's (`vendorBase()` in `components/DataTable/tabulator.js`: next to `platform/dist/platform.js`,
+shared resolver (`vendorBase()` in `utils/vendorBase.js`: next to `platform/dist/platform.js`,
 `./vendor/` next to a CDN build's `plenix.js`, the release's CDN copy in the npm package, or `window.PlenixVendorBase`).
 `build-packages.js` copies this folder to the CDN (`/cdn/<version>/vendor/tiptap/`) and the React package
 (`dist/vendor/tiptap/`).

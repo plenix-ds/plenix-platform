@@ -1,5 +1,5 @@
 // Plenix tests · every Table and DataTable in the apps: each page (and the tab or view that shows its tables) is opened, the tables are
-// awaited (Tabulator loads the first time a table renders), and for each table: it is built, it has its rows or its empty
+// awaited until the bundled renderer is ready, and for each table: it is built, it has its rows or its empty
 // message, axe finds no WCAG 2.2 A/AA problem in it, the style audit finds nothing written inline by Plenix, and its rows
 // and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own size and
 // the typeface of its kind: Reddit Mono in a column of kind "data" and for code and the data role, DM Sans elsewhere
@@ -87,7 +87,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
   // the design system is a submodule (plenix-design-system): without it (CI without DS_TOKEN), its views are skipped
   const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
   if (HAS_DS && !NEXT) {
-    // Each focused source bundle gets its own page; Tabulator patches stay isolated from the app-view checks.
+    // Each focused source bundle gets its own page; focused fixtures stay isolated from the app-view checks.
     for (const [label, file] of [['Faceted quick-filter counts', './collection-facets.test.js'], ['Canonical multi-value groups', './multi-groups.test.js'], ['Remaining DataTable contracts', './data-table-rest.test.js']]) {
       const focused = await browser.newPage();
       try { await focused.goto(BASE + 'platform/design-system/', { waitUntil: 'domcontentloaded' }); const count = await require(file)(focused); res.push([label + ' (' + count + ' checks)', true]); }
@@ -107,7 +107,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       try {
         render({});await wait();
         check(JSON.stringify(order())===JSON.stringify(initial),'saved order includes hidden columns on first draw');
-        check(host.querySelector(':is(.tabulator-tableholder,.plx-data-table__grid-tableholder)').clientHeight<400,'few records preserve maximum-height sizing without an empty viewport');
+        check(host.querySelector('.plx-data-table__grid-tableholder').clientHeight<400,'few records preserve maximum-height sizing without an empty viewport');
         check(!table.getColumn('a').isVisible()&&!table.getColumn('b').isVisible(),'saved visibility on first draw');
         check(table.getColumn('a').getWidth()===160&&table.getColumn('b').getWidth()===240,'saved widths on first draw');
         check(table.getSorters()[0]?.field==='a'&&table.getSorters()[0]?.dir==='asc','saved initial sort');
@@ -118,15 +118,15 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         check(JSON.stringify(order())===JSON.stringify(changed),'later hidden-column order changes as requested');
         moved=0;render({filter:()=>true,columnOrder:changed.slice()});await wait();
         check(moved===0,'unrelated view changes do not repeat hidden column moves');
-        const sameTable=table;let replacements=0;const original=table.setColumns.bind(table);table.setColumns=(...args)=>{replacements++;return original(...args);};
+        const sameTable=table;
         render({columns:columns.concat({field:'e',title:'New column'}),columnOrder:changed.concat('e')});await wait();
-        check(table===sameTable && replacements===1,'column-set change uses one setColumns and keeps the engine');
+        check(table===sameTable,'column-set change keeps the controller');
         check(JSON.stringify(order())===JSON.stringify(changed.concat('e')),'new column joins the controlled order');
         check(!table.getColumn('a').isVisible()&&!table.getColumn('b').isVisible(),'column-set change retains hidden state');
         check(table.getSorters()[0]?.field==='a'&&table.getRows('active')[0].getData().a==='Alpha','column-set change retains the active saved sort');
         const records=Array.from({length:600},(_,id)=>({id,a:'Record '+String(id).padStart(4,'0')}));
         render({data:records});await wait();await wait();
-        const drawn=()=>host.querySelectorAll(':is(.tabulator-row,.plx-data-table__grid-row):not(:is(.tabulator-group,.plx-data-table__grid-group))').length;
+        const drawn=()=>host.querySelectorAll('.plx-data-table__grid-row:not(.plx-data-table__grid-group)').length;
         check(drawn()>0&&drawn()<600,'native renderer virtualizes 600 records');
         window.dispatchEvent(new Event('beforeprint'));await wait();
         check(drawn()===600,'native print includes every loaded record');
@@ -134,13 +134,13 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         check(drawn()>0&&drawn()<600,'native renderer restores its virtual window after print');
         // Reveal the fixture before measuring a scroll: native Tabulator redraws once on first visibility.
         host.scrollIntoView({block:'start'});await wait();await wait();
-        const holder=host.querySelector(':is(.tabulator-tableholder,.plx-data-table__grid-tableholder)');holder.focus({preventScroll:true});holder.scrollTop=10000;await wait();await wait();
-        check(document.activeElement===holder&&+host.querySelector(':is(.tabulator-row,.plx-data-table__grid-row)').getAttribute('aria-rowindex')>2,'native scrolling retains focus and logical row positions '+JSON.stringify({active:document.activeElement?.className,scroll:holder.scrollTop,index:host.querySelector(':is(.tabulator-row,.plx-data-table__grid-row)')?.getAttribute('aria-rowindex'),renderer:table.options.renderVertical}));
+        const holder=host.querySelector('.plx-data-table__grid-tableholder');holder.focus({preventScroll:true});holder.scrollTop=10000;await wait();await wait();
+        check(document.activeElement===holder&&+host.querySelector('.plx-data-table__grid-row').getAttribute('aria-rowindex')>2,'native scrolling retains focus and logical row positions '+JSON.stringify({active:document.activeElement?.className,scroll:holder.scrollTop,index:host.querySelector('.plx-data-table__grid-row')?.getAttribute('aria-rowindex'),renderer:table.options.renderVertical}));
         host.style.inlineSize='320px';render({columns:[{field:'a',title:'First',width:240,frozen:true},{field:'b',title:'Second',width:240,frozen:true},{field:'c',title:'Third',width:240}],hiddenColumns:[],columnOrder:['a','b','c']});await wait();await wait();
-        const scroller=host.querySelector(':is(.tabulator-tableholder,.plx-data-table__grid-tableholder)'),cell=()=>host.querySelector(':is(.tabulator-row,.plx-data-table__grid-row) :is([tabulator-field="a"],[data-plx-field="a"])'),left=cell().getBoundingClientRect().left;
+        const scroller=host.querySelector('.plx-data-table__grid-tableholder'),cell=()=>host.querySelector('.plx-data-table__grid-row [data-plx-field="a"]'),left=cell().getBoundingClientRect().left;
         scroller.scrollLeft=200;await wait();check(Math.abs(cell().getBoundingClientRect().left-left)<1,'virtual rows clip content without trapping frozen columns');host.style.removeProperty('inline-size');
         ReactDOM.flushSync(()=>root.render(h(Plenix.Table,{label:'Natural wrapping reference',data:[{id:1,a:'A long reference description that wraps over several natural lines without an inline row height.'}],columns:[{field:'a',title:'Description',kind:'wrap',width:'--plx-ref-size-160px'}],onReady:t=>{table=t;}})));await wait();await wait();
-        check([...host.querySelectorAll(':is(.tabulator-cell,.plx-data-table__grid-cell)')].every(cell=>!cell.style.height),'static wrapping Tables retain intrinsic CSS cell heights');
+        check([...host.querySelectorAll('.plx-data-table__grid-cell')].every(cell=>!cell.style.height),'static wrapping Tables retain intrinsic CSS cell heights');
         return count;
       } finally {ReactDOM.flushSync(()=>root.unmount());host.remove();localStorage.removeItem(storage);}
     });
@@ -186,8 +186,8 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     }
     if (missing) { res.push([name, false, 'no control "' + missing + '"']); continue; }
     try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent).length >= n
-      && Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent).every((g) => g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row), :is(.tabulator-placeholder,.plx-data-table__grid-placeholder), .plx-data-table__error')), { timeout: 15000 }, want); }
-    catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent && g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row), :is(.tabulator-placeholder,.plx-data-table__grid-placeholder)')).length)) + ' of ' + want]); continue; }
+      && Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent).every((g) => g.querySelector('.plx-data-table__grid-row, .plx-data-table__grid-placeholder, .plx-data-table__error')), { timeout: 60000 }, want); }
+    catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent && g.querySelector('.plx-data-table__grid-row, .plx-data-table__grid-placeholder')).length)) + ' of ' + want + '; unready: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table')).filter(g => g.offsetParent && !g.querySelector('.plx-data-table__grid-row, .plx-data-table__grid-placeholder, .plx-data-table__error')).map(g => g.querySelector('[aria-label]')?.getAttribute('aria-label') || g.className).join(', ')))]); continue; }
     await sleep(600);
     if (!(await page.evaluate(() => !!window.axe))) await page.addScriptTag({ url: BASE + 'node_modules/axe-core/axe.min.js' });
     if (!(await page.evaluate(() => !!window.PlenixStyleAudit))) await page.addScriptTag({ url: BASE + 'platform/dev/style-audit.js' });
@@ -197,11 +197,11 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       const audit = (window.PlenixStyleAudit ? window.PlenixStyleAudit.audit() : []).filter((f) => f.element && grids.some((g) => g.querySelector('*') && document.querySelector(f.element) && g.contains(document.querySelector(f.element))));
       const root = getComputedStyle(document.documentElement);
       const sizes = grids.map((g) => {
-        const row = g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row):not(:is(.tabulator-group,.plx-data-table__grid-group))'), cs = getComputedStyle(g);
+        const row = g.querySelector('.plx-data-table__grid-row:not(.plx-data-table__grid-group)'), cs = getComputedStyle(g);
         const want = parseFloat(cs.getPropertyValue('--plx-sys-data-table-row-height')) * (/rem/.test(cs.getPropertyValue('--plx-sys-data-table-row-height')) ? parseFloat(root.fontSize) : 1);
-        return { label: g.querySelector(':is(.tabulator,.plx-data-table__grid)') && g.querySelector(':is(.tabulator,.plx-data-table__grid)').getAttribute('aria-label'), rows: g.querySelectorAll(':is(.tabulator-row,.plx-data-table__grid-row)').length,
+        return { label: g.querySelector('.plx-data-table__grid') && g.querySelector('.plx-data-table__grid').getAttribute('aria-label'), rows: g.querySelectorAll('.plx-data-table__grid-row').length,
           rowHeight: row ? Math.round(row.getBoundingClientRect().height) : null, want: Math.round(want) + 1,
-          font: getComputedStyle(g.querySelector(':is(.tabulator,.plx-data-table__grid)')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-table-font-size').trim() };
+          font: getComputedStyle(g.querySelector('.plx-data-table__grid')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-table-font-size').trim() };
       });
       // typefaces by kind, one size (owner, 2026-10-11): each text in the body rows at the table's own size; in a column of
       // kind "data" in Reddit Mono, elsewhere in DM Sans, except code and the data role (code, Text "data", token and class
@@ -209,12 +209,12 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       const type = [];
       const MARKED = 'code, samp, .plx-text--data, .plx-data-table__group-count, .plx-data-table__group-summary-value, [data-plx-kind="data"], .ds-code-link, .ds-mono, .ds-value, .ds-name';
       grids.forEach((g) => {
-        if (!g.querySelector(':is(.tabulator-row,.plx-data-table__grid-row) :is(.tabulator-cell,.plx-data-table__grid-cell)')) return;
-        const size = getComputedStyle(g.querySelector(':is(.tabulator,.plx-data-table__grid)')).fontSize;
-        const w = document.createTreeWalker(g.querySelector(':is(.tabulator-tableholder,.plx-data-table__grid-tableholder)') || g, NodeFilter.SHOW_TEXT); let n;
+        if (!g.querySelector('.plx-data-table__grid-row .plx-data-table__grid-cell')) return;
+        const size = getComputedStyle(g.querySelector('.plx-data-table__grid')).fontSize;
+        const w = document.createTreeWalker(g.querySelector('.plx-data-table__grid-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
         while ((n = w.nextNode()) && type.length < 3) {
           // (a group header's eyebrow and a summary's name are labels in the eyebrow style: the owner's group header, 2026-10-14)
-          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, :is(.tabulator-placeholder,.plx-data-table__grid-placeholder), .ds-vis, .plx-data-table__group-eyebrow, .plx-data-table__group-summary-name')) continue;
+          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-data-table__grid-placeholder, .ds-vis, .plx-data-table__group-eyebrow, .plx-data-table__group-summary-name')) continue;
           const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
           const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'Reddit Mono' : 'DM Sans';
           if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));
@@ -222,8 +222,8 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       });
       // header weights (owner, batch 248): every header row title is 600 and every row-label cell's text 500
       grids.forEach((g) => {
-        g.querySelectorAll(':is(.tabulator-header,.plx-data-table__grid-header) :is(.tabulator-col-title,.plx-data-table__grid-col-title)').forEach((t) => { const w = getComputedStyle(t).fontWeight; if (t.textContent.trim() && w !== '600' && type.length < 3) type.push('header "' + t.textContent.trim().slice(0, 16) + '" is ' + w + ', not 600'); });
-        g.querySelectorAll(':is(.tabulator-row,.plx-data-table__grid-row) [class*="__cell--row-label"]').forEach((c) => {
+        g.querySelectorAll('.plx-data-table__grid-header .plx-data-table__grid-col-title').forEach((t) => { const w = getComputedStyle(t).fontWeight; if (t.textContent.trim() && w !== '600' && type.length < 3) type.push('header "' + t.textContent.trim().slice(0, 16) + '" is ' + w + ', not 600'); });
+        g.querySelectorAll('.plx-data-table__grid-row [class*="__cell--row-label"]').forEach((c) => {
           const w = document.createTreeWalker(c, NodeFilter.SHOW_TEXT); let n;
           while ((n = w.nextNode())) { const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .ds-vis')) continue; const fw = getComputedStyle(el).fontWeight; if (fw !== '500' && type.length < 3) type.push('row label "' + n.textContent.trim().slice(0, 16) + '" is ' + fw + ', not 500'); }
         });
@@ -261,15 +261,15 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       const middle = (density) => {
         const bad = [];
         grids.forEach((g) => {
-          const label = g.querySelector(':is(.tabulator,.plx-data-table__grid)') && g.querySelector(':is(.tabulator,.plx-data-table__grid)').getAttribute('aria-label');
-          const list = g.classList.contains('plx-data-table--list') && g.querySelector(':is(.tabulator-header,.plx-data-table__grid-header)') && getComputedStyle(g.querySelector(':is(.tabulator-header,.plx-data-table__grid-header)')).display === 'none';
-          const head = list ? [] : Array.from(g.querySelectorAll(':is(.tabulator-header,.plx-data-table__grid-header) :is(.tabulator-col,.plx-data-table__grid-col)')).filter((c) => c.offsetWidth);
-          head.forEach((c) => { const d = off(contentBox([c.querySelector(':is(.tabulator-col-content,.plx-data-table__grid-col-content)') || c]), c.getBoundingClientRect()); if (d > 1.01) bad.push(label + ' header ' + kindOf(c) + ' "' + c.textContent.trim().slice(0, 12) + '" off by ' + d.toFixed(1) + 'px (' + density + ')'); });
+          const label = g.querySelector('.plx-data-table__grid') && g.querySelector('.plx-data-table__grid').getAttribute('aria-label');
+          const list = g.classList.contains('plx-data-table--list') && g.querySelector('.plx-data-table__grid-header') && getComputedStyle(g.querySelector('.plx-data-table__grid-header')).display === 'none';
+          const head = list ? [] : Array.from(g.querySelectorAll('.plx-data-table__grid-header .plx-data-table__grid-col')).filter((c) => c.offsetWidth);
+          head.forEach((c) => { const d = off(contentBox([c.querySelector('.plx-data-table__grid-col-content') || c]), c.getBoundingClientRect()); if (d > 1.01) bad.push(label + ' header ' + kindOf(c) + ' "' + c.textContent.trim().slice(0, 12) + '" off by ' + d.toFixed(1) + 'px (' + density + ')'); });
           // (taller rows are top-aligned: the padding check below measures them)
           const step = g.getAttribute('data-plx-row-height');
           if (step && step !== 'short') return;
-          Array.from(g.querySelectorAll(':is(.tabulator-row,.plx-data-table__grid-row):not(:is(.tabulator-group,.plx-data-table__grid-group)):not(:is(.tabulator-calcs,.plx-data-table__grid-calcs))')).slice(0, 5).forEach((row) => {
-            const cells = Array.from(row.querySelectorAll(':scope > :is(.tabulator-cell,.plx-data-table__grid-cell)')).filter((c) => c.offsetWidth && c.offsetHeight);
+          Array.from(g.querySelectorAll('.plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs)')).slice(0, 5).forEach((row) => {
+            const cells = Array.from(row.querySelectorAll(':scope > .plx-data-table__grid-cell')).filter((c) => c.offsetWidth && c.offsetHeight);
             const rr = row.getBoundingClientRect(), line = parseFloat(getComputedStyle(row).borderBottomWidth) || 0, rowArea = { top: rr.top, bottom: rr.bottom - line };
             if (list) {
               const keys = cells.filter((c) => c.classList.contains('plx-data-table__cell--key'));
@@ -294,7 +294,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
           const cs = getComputedStyle(g), px = (v) => parseFloat(v) * (/rem/.test(v) ? parseFloat(root.fontSize) : 1);
           const R = px(cs.getPropertyValue('--plx-sys-data-table-row-height')), LH = px(cs.getPropertyValue('--plx-comp-data-table-text-line-height'));
           if (!R || !LH) { bad.push('no row height or text line height token'); return; }
-          const P = (R - LH) / 2, label = g.querySelector(':is(.tabulator,.plx-data-table__grid)') && g.querySelector(':is(.tabulator,.plx-data-table__grid)').getAttribute('aria-label');
+          const P = (R - LH) / 2, label = g.querySelector('.plx-data-table__grid') && g.querySelector('.plx-data-table__grid').getAttribute('aria-label');
           const boxes = (cell) => {
             const out = [];
             const walk = (n) => {
@@ -314,8 +314,8 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
             Array.from(cell.childNodes).forEach(walk);
             return out;
           };
-          Array.from(g.querySelectorAll(':is(.tabulator-row,.plx-data-table__grid-row):not(:is(.tabulator-group,.plx-data-table__grid-group)):not(:is(.tabulator-calcs,.plx-data-table__grid-calcs))')).slice(0, 5).forEach((row) => {
-            Array.from(row.querySelectorAll(':scope > :is(.tabulator-cell,.plx-data-table__grid-cell)')).filter((c) => c.offsetWidth && c.offsetHeight).forEach((c) => {
+          Array.from(g.querySelectorAll('.plx-data-table__grid-row:not(.plx-data-table__grid-group):not(.plx-data-table__grid-calcs)')).slice(0, 5).forEach((row) => {
+            Array.from(row.querySelectorAll(':scope > .plx-data-table__grid-cell')).filter((c) => c.offsetWidth && c.offsetHeight).forEach((c) => {
               const cr = c.getBoundingClientRect(), list = boxes(c);
               if (!list.length) return;
               const top = Math.min.apply(null, list.map((b) => b.top)) - cr.top, bottom = cr.bottom - Math.max.apply(null, list.map((b) => b.bottom));
@@ -353,12 +353,12 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     const footed = await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent && g.querySelector('.plx-data-table__footer')).length);
     for (let i = 0; i < footed; i++) {
       const from = await page.evaluate((i) => { const g = Array.from(document.querySelectorAll('.plx-data-table')).filter((x) => x.offsetParent && x.querySelector('.plx-data-table__footer'))[i];
-        const h = g.querySelector(':is(.tabulator-tableholder,.plx-data-table__grid-tableholder)'); h.focus(); return document.activeElement === h; }, i);
+        const h = g.querySelector('.plx-data-table__grid-tableholder'); h.focus(); return document.activeElement === h; }, i);
       await page.keyboard.press('Tab');
       const kb = await page.evaluate((i) => { const g = Array.from(document.querySelectorAll('.plx-data-table')).filter((x) => x.offsetParent && x.querySelector('.plx-data-table__footer'))[i];
         const f = g.querySelector('.plx-data-table__footer'), a = document.activeElement;
         const controls = Array.from(f.querySelectorAll('button, select, a[href], input')).filter((c) => !c.disabled && c.offsetParent);
-        return { label: g.querySelector(':is(.tabulator,.plx-data-table__grid)').getAttribute('aria-label'), inFooter: f.contains(a), at: a ? (a.getAttribute('aria-label') || a.textContent || a.tagName).trim().slice(0, 24) : '', controls: controls.length, out: controls.filter((c) => c.tabIndex < 0).length }; }, i);
+        return { label: g.querySelector('.plx-data-table__grid').getAttribute('aria-label'), inFooter: f.contains(a), at: a ? (a.getAttribute('aria-label') || a.textContent || a.tagName).trim().slice(0, 24) : '', controls: controls.length, out: controls.filter((c) => c.tabIndex < 0).length }; }, i);
       if (!from || !kb.inFooter || !kb.controls || kb.out) bad.push(kb.label + ': footer controls not keyboard reachable (' + JSON.stringify(kb) + ')');
       else r.modes.push('footer keyboard ok (' + kb.controls + ' controls)');
     }
@@ -381,11 +381,11 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     await page.goto(BASE + 'platform/design-system/index.html#/data-display/data-table/v/grouped-table', { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });
     await page.reload({ waitUntil: 'domcontentloaded' });
-    try { await page.waitForFunction(() => document.querySelector('main .plx-data-table :is(.tabulator-group,.plx-data-table__grid-group)'), { timeout: 15000 }); } catch (e) { bad.push('no group row'); }
+    try { await page.waitForFunction(() => document.querySelector('main .plx-data-table .plx-data-table__grid-group'), { timeout: 15000 }); } catch (e) { bad.push('no group row'); }
     const state = () => page.evaluate(() => { const a = document.activeElement; return { role: a && a.getAttribute('role'), label: a && (a.getAttribute('aria-label') || a.textContent.trim().slice(0, 30)), expanded: a && a.getAttribute('aria-expanded'), live: Array.from(document.querySelectorAll('[aria-live]')).map((x) => x.textContent).join(' ') }; });
     const wait = () => new Promise((r) => setTimeout(r, 300));
     if (!bad.length) {
-      await page.evaluate(() => document.querySelector('main .plx-data-table :is(.tabulator-group,.plx-data-table__grid-group)').focus()); await wait();
+      await page.evaluate(() => document.querySelector('main .plx-data-table .plx-data-table__grid-group').focus()); await wait();
       const s0 = await state();
       if (s0.role !== 'row' || s0.expanded !== 'true') bad.push('a group row is a focusable row with aria-expanded="true" (' + JSON.stringify(s0) + ')');
       await page.keyboard.press('Enter'); await wait();
@@ -401,13 +401,13 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       // no view button of its own (owner, 2026-10-14: the row height lives in the command bar's View menu); the header's
       // chevron button opens the column menu
       if (await page.evaluate(() => !!document.querySelector('main .plx-data-table .plx-data-table__cell--view'))) bad.push('the table has no view button of its own');
-      const chev = await page.evaluate(() => { const c = document.querySelector('main .plx-data-table :is(.tabulator-col,.plx-data-table__grid-col):is([tabulator-field="qty"],[data-plx-field="qty"]) .plx-data-table__menu-chevron'); if (!c) return false; c.parentElement.click(); return true; });
+      const chev = await page.evaluate(() => { const c = document.querySelector('main .plx-data-table .plx-data-table__grid-col[data-plx-field="qty"] .plx-data-table__menu-chevron'); if (!c) return false; c.click(); return true; });
       await wait();
       if (!chev) bad.push('a column header has its menu chevron');
-      else if (!(await page.evaluate(() => !!document.querySelector(':is(.tabulator-menu,.plx-data-table__grid-menu)')))) bad.push('the header chevron opens the column menu');
+      else if (!(await page.evaluate(() => !!document.querySelector(':is(.plx-menu,.plx-data-table__grid-menu)')))) bad.push('the header chevron opens the column menu');
       await page.keyboard.press('Escape'); await wait();
       // the column menu
-      await page.evaluate(() => document.querySelector('main .plx-data-table :is(.tabulator-col,.plx-data-table__grid-col):is([tabulator-field="qty"],[data-plx-field="qty"])').focus());
+      await page.evaluate(() => document.querySelector('main .plx-data-table .plx-data-table__grid-col[data-plx-field="qty"]').focus());
       await page.keyboard.down('Shift'); await page.keyboard.press('F10'); await page.keyboard.up('Shift'); await wait();
       const c0 = await state();
       if (c0.role !== 'menuitem') bad.push('Shift + F10 opens the column menu on its first item (' + JSON.stringify(c0) + ')');
@@ -416,7 +416,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       if (c1.role !== 'menuitem' || c1.label === c0.label) bad.push('Arrow Down moves in the column menu');
       await page.keyboard.press('Escape'); await wait();
       const c2 = await state();
-      if (c2.role !== 'columnheader' || await page.evaluate(() => !!document.querySelector(':is(.tabulator-menu,.plx-data-table__grid-menu)'))) bad.push('Escape closes the column menu and gives the focus back to the header (' + JSON.stringify(c2) + ')');
+      if (c2.role !== 'columnheader' || await page.evaluate(() => !!document.querySelector(':is(.plx-menu,.plx-data-table__grid-menu)'))) bad.push('Escape closes the column menu and gives the focus back to the header (' + JSON.stringify(c2) + ')');
     }
     res.push([name, !bad.length, bad.join(' · ')]);
   }

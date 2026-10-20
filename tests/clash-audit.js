@@ -89,7 +89,7 @@ function audit(noClash, from, to) {
 const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-component' : x.variant ? (x.same ? 'variant-repeat' : 'state-variant') : x.same ? 'redundant' : 'order-decided');
 
 (async () => {
-  const PORT = 8857, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+  const PORT = +process.env.TEST_PORT || 8857, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
   const server = await serve(PORT);
   const browser = await launch();
   const clashes = {}, computed = {}, perPage = {};

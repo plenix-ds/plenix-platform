@@ -24,7 +24,7 @@
    Returns:
      { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataTable's
-       Tabulator instance), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
+       table controller), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
        tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, onReady } }
    Notes:
      The groups' order follows their levels: tableProps.sort is the group levels, then the sort levels. "Hide empty groups"

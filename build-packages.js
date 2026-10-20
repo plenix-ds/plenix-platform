@@ -198,7 +198,7 @@ const R = path.join(PKG, 'react');
 const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel: 'silent', target: 'es2019', jsx: 'transform',
   loader: { '.js': 'jsx', '.jsx': 'jsx' }, external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
   banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' },
-  // a bundled app has no Plenix script to find the vendor folder from: the DataTable loads Tabulator from this release's
+  // a bundled app has no Plenix script to find the vendor folder from: the RichTextEditor loads its engine from this release's
   // CDN copy (versioned, never changes) unless the page sets window.PlenixVendorBase (batch 251)
   define: { __PLENIX_VENDOR__: JSON.stringify('https://design-system.lighthouseway.org/cdn/' + VERSION + '/vendor/') } };
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(R, 'dist', 'index.js') }));
@@ -241,10 +241,6 @@ copy(path.join(R, 'index.d.ts'), path.join(CDN, 'plenix.d.ts'));
 write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
-// the DataTable's engine (Tabulator, MIT): loaded by the DataTable from ./vendor/tabulator/ next to plenix.js, and shipped in the
-// React package (dist/vendor/tabulator/) for pages that set window.PlenixVendorBase or load window.Tabulator themselves
-copyDir(path.join(P, 'vendor', 'tabulator'), path.join(CDN, 'vendor', 'tabulator'));
-copyDir(path.join(P, 'vendor', 'tabulator'), path.join(R, 'dist', 'vendor', 'tabulator'));
 // the RichTextEditor's engine (Tiptap, MIT): loaded by the editor from ./vendor/tiptap/ the same way, shipped in both places too
 copyDir(path.join(P, 'vendor', 'tiptap'), path.join(CDN, 'vendor', 'tiptap'));
 copyDir(path.join(P, 'vendor', 'tiptap'), path.join(R, 'dist', 'vendor', 'tiptap'));

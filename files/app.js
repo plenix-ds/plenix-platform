@@ -881,7 +881,7 @@ var _shared = require("./shared.jsx");
 /* Plenix suite · capture (suite/capture.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the files as RadioTiles, the chosen one as a PropertyList, the proposal as a CodeBlock with its parts as Tags. */
 
-// a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
+// a name/value table as a static Table (batches 229, 234: every table runs on DataTable): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
 // name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
 const facts = (label, rows) => {
@@ -1425,7 +1425,7 @@ const PRI = {
   low: "Low"
 };
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (Tabulator column
+// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataTable column
 // definitions for the DataTable; a grid row is the source row's cells with its key as id, its name and its facets)
 const FIND_SOURCES = exports.FIND_SOURCES = {
   projects: {
@@ -1890,7 +1890,7 @@ function FindWorkspace({
       icon: "sparkle",
       onClick: () => onAskAI(query)
     }, "Ask AI") : null
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.LegacyDataTable, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
     label: (app === "home" ? "Everything" : src.label) + " search results",
     columns: src.columns,
     data: found.map(r => ({
@@ -1899,11 +1899,9 @@ function FindWorkspace({
       name: r.name,
       facets: r.facets
     })),
-    on: {
-      rowClick: (e, row) => {
-        const r = found.find(x => x.key === row.getData().id);
-        if (r) onOpen(r, r.app || app);
-      }
+    onRowClick: record => {
+      const r = found.find(x => x.key === record.id);
+      if (r) onOpen(r, r.app || app);
     }
   })));
 }
@@ -2622,7 +2620,7 @@ function FilesScreen({
     })), /*#__PURE__*/React.createElement(_plenixPlatform.ViewMenu, _extends({}, v.viewProps, {
       gallery: false
     })))
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.LegacyDataTable, _extends({
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, _extends({
     label: "Files",
     data: ROWS,
     selected: sel === null ? [] : [sel],
@@ -2630,11 +2628,9 @@ function FilesScreen({
       selectableRows: 1
     }
   }, v.tableProps, {
-    on: {
-      rowClick: (e, row) => {
-        const i = row.getData().id;
-        setSel(sel === i ? null : i);
-      }
+    onRowClick: record => {
+      const i = record.id;
+      setSel(sel === i ? null : i);
     },
     columns: [{
       title: 'Name',
@@ -2680,14 +2676,11 @@ function FilesScreen({
   }))) : null);
 }
   } },
-  "files/main.jsx": { deps: {"../suite/suite.jsx":"suite/suite.jsx","plenix-platform":null,"./files.jsx":"files/files.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
+  "files/main.jsx": { deps: {"../suite/suite.jsx":"suite/suite.jsx","./files.jsx":"files/files.jsx"}, externals: {  }, run: function (module, exports, require) {
 var _suite = require("../suite/suite.jsx");
-var _plenixPlatform = require("plenix-platform");
 var _files = require("./files.jsx");
 /* Plenix · Files (files/main.jsx): the application's page entry; build-app.js compiles it to files/app.js. */
 
-// the file list is a table: start loading its engine while the page draws (batch 237)
-_plenixPlatform.LegacyDataTable.preload();
 (0, _suite.mountSuite)('files', ({
   screen
 }) => /*#__PURE__*/React.createElement(_files.FilesScreen, {

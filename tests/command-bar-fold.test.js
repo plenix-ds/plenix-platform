@@ -6,7 +6,7 @@ const assert = require('node:assert/strict'), { serve, launch } = require('./lib
     browser = await launch(); const page = await browser.newPage(), errors = []; page.on('pageerror', error => errors.push(error.message));
     await page.setViewport({ width: 360, height: 1000 });
     await page.goto('http://127.0.0.1:' + port + '/Plenix/docs/composition/posts.html', { waitUntil: 'networkidle0' });
-    await page.waitForFunction(() => window.Tabulator && Tabulator.findTable('.tabulator')[0] && document.querySelector('[aria-label="More actions"]'));
+    await page.waitForFunction(() => document.querySelector('[data-plx-engine=next] [role=grid]') && document.querySelector('[aria-label="More actions"]'));
     const wait = () => new Promise(resolve => setTimeout(resolve, 180)); await wait();
     const more = async () => { if (!await page.$('[role=menu]')) { await page.click('[aria-label="More actions"]'); await wait(); } };
     const choose = async (name, selector) => {
@@ -17,11 +17,11 @@ const assert = require('node:assert/strict'), { serve, launch } = require('./lib
     assert.ok(!kept.some(label => /Community|Tags|Collection/.test(label)), 'all Posts quick filters should fold at 360px: ' + kept.join(','));
     for (const [name, field, value] of [['Community', 'community', 'r/design'], ['Tags', 'tags', 'buyers'], ['Collection', 'collection', 'Kitchen']]) {
       await choose(name, '[role=menuitemcheckbox]');
-      const data = await page.evaluate(() => Tabulator.findTable('.tabulator')[0].getData('active'));
-      assert.equal(data.length, 8); assert.ok(data.every(row => [].concat(row[field]).includes(value)), name + ' still filters');
+      const count = await page.$eval('[data-plx-engine=next] [role=grid]', grid => Number(grid.getAttribute('aria-rowcount')) - 1);
+      assert.equal(count, 8, name + ' still filters');
     }
     await more(); const toggle = await page.evaluateHandle(() => [...document.querySelectorAll('[role=menuitemcheckbox]')].find(item => item.textContent.includes('Offline copies only'))); assert.ok(toggle.asElement()); await toggle.asElement().click(); await wait();
-    assert.equal(await page.evaluate(() => Tabulator.findTable('.tabulator')[0].getData('active').length), 4);
+    assert.equal(await page.$eval('[data-plx-engine=next] [role=grid]', grid => Number(grid.getAttribute('aria-rowcount')) - 1), 4);
     await page.keyboard.press('Escape');
     // Reuse the public components in a narrow host; the descriptor folds but a plain end node remains visible.
     await page.addStyleTag({content: '.plx-test-fold-fixture{inline-size:var(--plx-ref-size-96px)}'});

@@ -18,14 +18,12 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { SUITE_SESSION } from '../../suite/session.js';
-import { ThemeProvider, ToastProvider, SessionProvider, LegacyDataTable as DataTable } from 'plenix-platform';
+import { ThemeProvider, ToastProvider, SessionProvider } from 'plenix-platform';
 import { MyAccountPage } from './pages/MyAccountPage.jsx';
 import { SystemSettingsPage } from './pages/SystemSettingsPage.jsx';
 import { HomePage } from './pages/home/HomePage.jsx';
 import { ImageEditorPage } from './pages/ImageEditorPage.jsx';
 
-// the Asset Manager's pages are built on tables: start loading their engine while the page draws (batch 237)
-DataTable.preload();
 
 const PAGES = {
   'my-account': MyAccountPage,

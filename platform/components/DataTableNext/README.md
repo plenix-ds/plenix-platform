@@ -12,16 +12,15 @@ canonical selection; nested and multi-value grouping with summaries; tree rows; 
 Platform drag-and-drop and move menus; local/remote pages and load-more; copy and print; floating scrollbars;
 rich cell kinds; narrow lists; row/header menus; keyboard navigation and live announcements.
 
-Choose DataTable engine="next" to opt in. Existing applications retain their current engine by default.
+DataTable is the public renderer used by every application and static Table.
 The public DataTable entry point retains its action/Undo provider. The private adapter covers existing
 application row/cell/column calls; plug-in modules and imperative DOM formatting are not a public API.
 Rows and rendered cells remain owned by React.
 
 Validation:
-- DT_ENGINE=next node tests/data-table.test.js: the common table-view assertions.
-- DT_ENGINE=next node tests/data-table-rest.test.js: existing rich-cell and action contracts.
+- node tests/data-table.test.js: the common table-view assertions.
+- node tests/data-table-rest.test.js: existing rich-cell and action contracts.
 - node tests/data-table-next-capabilities.test.js: grouping, tree, editing, movement, copy and print.
 - node tests/data-table-next-independent.test.js: standalone module graph and blocked legacy-engine access.
 - node tests/data-table-next-perf.test.js: identical rich 600-row scenarios for both engines.
-- node tests/data-table-next-look.test.js: paired light/dark geometry and captures; LOOK_GROUPED, LOOK_NESTED
-  and LOOK_TREE select additional comparisons. NEXT_SOURCE is a diagnostic option; final checks use the built export.
+- node tests/phase7-review.js: paired application review captures.

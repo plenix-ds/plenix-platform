@@ -22,6 +22,7 @@ function stage(name, edit) {
   for (const d of ['platform/tokens', 'platform/standards', 'platform/system']) copyDir(path.join(ROOT, d), path.join(T, d));
   fs.mkdirSync(path.join(T, 'platform', 'providers'), { recursive: true });
   for (const f of ['build-tokens.js', 'build-standards.js']) fs.copyFileSync(path.join(ROOT, f), path.join(T, f));
+  fs.copyFileSync(path.join(ROOT, 'platform', 'index.js'), path.join(T, 'platform', 'index.js'));
   edit(T);
   return T;
 }

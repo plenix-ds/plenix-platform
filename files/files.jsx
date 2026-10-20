@@ -3,7 +3,7 @@
    the open one in a SidePanel.
    Screens (Platforms Standard 4.3): the list (#/) and an open file (#/file/<n>), a history entry each: Back closes the
    file; closing the panel goes to the list. */
-import { EntityHeader, CommandBar, CommandBarSearch, FilterPanel, SortPanel, ColumnsMenu, ViewMenu, useCollectionView, LegacyDataTable as DataTable, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
+import { EntityHeader, CommandBar, CommandBarSearch, FilterPanel, SortPanel, ColumnsMenu, ViewMenu, useCollectionView, DataTable, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_FILES } from '../suite/shared.jsx';
 const { useState } = React;
@@ -37,7 +37,7 @@ export function FilesScreen({ screen }) {
             quickFilters={[Object.assign({ id: 't', label: 'Type', icon: 'image-b', noun: 'type', options: FIELDS[1].options }, v.quickProps('t'))]}
             view={<><SortPanel {...v.sortProps} /><ColumnsMenu {...v.columnsProps} fields={FIELDS.filter((f) => COLUMNS.indexOf(f.value) >= 0)} /><ViewMenu {...v.viewProps} gallery={false} /></>} />
           <DataTable label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }} {...v.tableProps}
-            on={{ rowClick: (e, row) => { const i = row.getData().id; setSel(sel === i ? null : i); } }} columns={[
+            onRowClick={(record) => { const i = record.id; setSel(sel === i ? null : i); }} columns={[
               { title: 'Name', field: 'name', kind: ['name', 'data'], width: '--plx-ref-size-320px' },
               { title: 'Type', field: 't', kind: 'data' },
               { title: 'Size', field: 's', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },

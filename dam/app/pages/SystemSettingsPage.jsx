@@ -9,7 +9,7 @@
    Fields are Fields (a visible label) with their control at a standard width; tables are DataTables; technical values
    (templates, paths, keys, numbers) are in the data font. */
 import React from 'react';
-import { SettingsLayout, SettingsSection, SettingsRow, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, LegacyDataTable as DataTable, Table, Badge, Icon, Menu, MenuItem, SearchField, Dialog, Toolbar, EmptyState, useToast, NavPane, Stack, Inline, Text, CodeBlock, useScreenLocation, useUnsavedGuard } from 'plenix-platform';
+import { SettingsLayout, SettingsSection, SettingsRow, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, DataTable, Table, Badge, Icon, Menu, MenuItem, SearchField, Dialog, Toolbar, EmptyState, useToast, NavPane, Stack, Inline, Text, CodeBlock, useScreenLocation, useUnsavedGuard } from 'plenix-platform';
 import { AssetPage } from '../shell/AssetShell.jsx';
 import * as D from './systemSettingsData.js';
 

@@ -256,9 +256,7 @@ The word-spacing leak happened exactly there.
   combine.
 - **Every production stylesheet is assigned to its layer, all at once.** Unlayered CSS beats layered CSS, so a partial
   move would invert precedence.
-- **Vendor CSS:** the legacy Tabulator stylesheet sits in `vendor`, isolated until the last application moves off it.
-  It is the only temporary exception to the `!important` and clash checks, listed by file, and it disappears with the
-  legacy table.
+- **Vendor CSS:** optional third-party styles belong in `vendor`. The retired table engine and its temporary exceptions have been removed.
 - **Utilities:** they win by layer order. Every `!important` is removed in verified batches; an important declaration
   reverses layer precedence, so batches are tested before release.
 - **Everything else layered too:**
