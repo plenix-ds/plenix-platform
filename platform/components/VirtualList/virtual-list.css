@@ -29,3 +29,9 @@
 /* the row at the end while more rows load, and the empty list */
 .plx-virtual-list__loading{align-items:center;block-size:var(--plx-comp-virtual-list-item-height);color:var(--plx-comp-virtual-list-loading-text);column-gap:var(--plx-comp-virtual-list-loading-gap);display:flex;padding-inline-end:var(--plx-comp-virtual-list-item-padding-inline);padding-inline-start:var(--plx-comp-virtual-list-item-padding-inline);}
 .plx-virtual-list__empty{color:var(--plx-comp-virtual-list-empty-text);margin-block-end:0;margin-block-start:0;padding-block-end:var(--plx-comp-virtual-list-empty-padding);padding-block-start:var(--plx-comp-virtual-list-empty-padding);padding-inline-end:var(--plx-comp-virtual-list-empty-padding);padding-inline-start:var(--plx-comp-virtual-list-empty-padding);}
+
+/* Unread items use the same accent border scale as Card; no ancestor selects text parts. */
+.plx-virtual-list__item[data-plx-unread]{position:relative;font-weight:var(--plx-comp-virtual-list-unread-font-weight);}
+.plx-virtual-list__item[data-plx-unread]::before{content:"";--plx-state-virtual-list-unread-bar-width:var(--plx-comp-virtual-list-unread-bar-width);position:absolute;inset-block-start:0;inset-block-end:0;inset-inline-start:0;inline-size:var(--plx-state-virtual-list-unread-bar-width);background-color:var(--plx-comp-virtual-list-unread-bar-color);pointer-events:none;}
+
+@property --plx-state-virtual-list-unread-bar-width{syntax:"*";inherits:false;}

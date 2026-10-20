@@ -3752,6 +3752,12 @@
     "font-weight"
    ]
   },
+  "plx-virtual-list__item": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
   "plx-virtual-list__meta": {
    "contract": "adjusts",
    "props": [

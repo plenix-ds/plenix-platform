@@ -41,6 +41,9 @@
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
+     unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
+     markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
+     unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:

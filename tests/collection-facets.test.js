@@ -25,7 +25,7 @@ module.exports = async function facets(page) {
       check(count('color', 'red') === 2 && count('color', 'blue') === 2, 'counts use field getters over source rows');
       check(count('tags', 'x') === 2 && count('tags', 'y') === 2, 'repeated values count a record only once');
       check(host.querySelectorAll('.plx-text--data').length === 3 && [...host.querySelectorAll('.plx-text--data')].at(-1).textContent === '0', 'unmatched options display zero');
-      check(v.groupProps.fields.some(f => f.kind === 'multi') && !v.groupProps.fields.some(f => f.kind === 'text'), 'GroupPanel offers multi fields alongside select fields');
+      check(fields.every(f => v.groupProps.fields.some(group => group.value === f.value)), 'GroupPanel offers every eligible field, including text, dates, numbers and multi fields');
       await change(() => v.setQuick('color', ['red']));
       check(count('color', 'red') === 2 && count('color', 'blue') === 2, 'a facet excludes only its own quick selection');
       check(count('status', 'open') === 2 && count('status', 'closed') === 0, 'a facet applies the other quick selections');
