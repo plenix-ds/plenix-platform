@@ -1,10 +1,12 @@
 /* Plenix · CommandBar (platform/patterns/CommandBar). The bar over a collection (owner, 2026-10-14): its bars stacked, each a
    white framed bar (3A) holding one Toolbar on one line; fixed at the top of the scrolling content with the selection bar
    under it. Each step of the button rule is drawn by the controls themselves (icons only, More): nothing is measured here. */
-.plx-command-bar{background-color:var(--plx-comp-command-bar-sticky-background);display:flex;flex-direction:column;inset-block-start:0;min-inline-size:0;padding-block-end:var(--plx-comp-command-bar-padding-block-end);position:sticky;row-gap:var(--plx-comp-command-bar-gap);z-index:var(--plx-comp-command-bar-sticky-z-index);}
+.plx-command-bar{display:flex;flex-direction:column;inset-block-start:0;min-inline-size:0;position:sticky;row-gap:var(--plx-comp-command-bar-gap);z-index:var(--plx-comp-command-bar-sticky-z-index);}
 /* Auto is sticky only when the rendered bar is a direct page-content or AppShell-main child. */
 .plx-command-bar[data-plx-position="auto"]{position:static;}
 :is(.plx-page-content,.plx-app-shell__main)>.plx-command-bar[data-plx-position="auto"]{position:sticky;}
+/* the sticky bar's surface and its bottom padding only where it sticks: a bar in a card or a panel stays clear (RedSave P-30) */
+:is(.plx-page-content,.plx-app-shell__main)>.plx-command-bar[data-plx-position="auto"],.plx-command-bar[data-plx-position="sticky"]{background-color:var(--plx-comp-command-bar-sticky-background);padding-block-end:var(--plx-comp-command-bar-padding-block-end);}
 /* sticky={false}: in the flow (a bar inside a panel or a dialog that does not scroll) */
 .plx-command-bar[data-plx-position="static"]{position:static;}
 /* the bar: white and framed; the opened search lies across it (SearchField collapsed) */
