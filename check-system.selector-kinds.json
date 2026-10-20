@@ -2093,8 +2093,7 @@
    "relational | .plx-tag--chip.plx-tag--selected:has(.plx-tag__toggle.is-hover)": 1,
    "combinator | .plx-tag--selected .plx-tag__remove": 1,
    "combinator | .plx-tag--selected .plx-tag__remove:hover": 1,
-   "combinator | .plx-tag--selected .plx-tag__remove.is-hover": 1,
-   "condition-not-token | .plx-tag--selected": 1
+   "combinator | .plx-tag--selected .plx-tag__remove.is-hover": 1
   },
   "platform/components/Text/text.css": {
    "combinator | .plx-text .plx-text--data": 1,
@@ -2137,7 +2136,7 @@
    "combinator | .plx-transfer-list.is-disabled .plx-transfer-list__option": 1
   },
   "platform/components/Tree/tree.css": {
-   "combinator | .plx-tree__item.is-selected>.plx-tree__row": 2,
+   "combinator | .plx-tree__item.is-selected>.plx-tree__row": 1,
    "combinator | .plx-tree__item:focus-visible>.plx-tree__row": 1,
    "combinator | .plx-tree__item.is-focus-visible>.plx-tree__row": 1,
    "combinator | .plx-tree__item:not(.is-selected)>.plx-tree__row:active": 1
@@ -2584,38 +2583,6 @@
    "combinator | .plx-focus-order__stop--warning>.plx-focus-order__badge": 1,
    "combinator | .plx-focus-order__stop--warning>.plx-focus-order__number": 1,
    "combinator | .plx-focus-order__stop.is-current>.plx-focus-order__outline": 1
-  },
-  "platform/system/forced-colors.css": {
-   "condition-not-token | :focus-visible": 1,
-   "condition-not-token | .is-focus-visible": 1,
-   "condition-not-token | .plx-input:is(:focus,:focus-visible,.is-focused,.is-focus-visible)": 1,
-   "combinator | .plx-select.is-focused .plx-select__control": 1,
-   "condition-not-token | .plx-combobox__field:focus-within": 1,
-   "condition-not-token | .plx-search__input:is(:focus,.is-focused)": 1,
-   "condition-not-token | :is(button,a,[role=\"option\"],[role=\"tab\"],[role=\"treeitem\"],[role=\"row\"],[role=\"gridcell\"],[role=\"menuitemradio\"],[role=\"radio\"]):is([aria-selected=\"true\"],[aria-pressed=\"true\"],[aria-current=\"page\"],[aria-current=\"true\"],[aria-checked=\"true\"],.is-selected,.is-current)": 1,
-   "combinator | .plx-tree__item.is-selected>.plx-tree__row": 1,
-   "condition-not-token | .plx-tag--selected": 1,
-   "condition-not-token | :is(button,input,select,textarea,a,[role=\"button\"],[role=\"option\"],[role=\"menuitem\"],[role=\"tab\"]):is(:disabled,[aria-disabled=\"true\"])": 1,
-   "condition-not-token | .is-disabled": 1,
-   "condition-not-token | .plx-menu": 1,
-   "condition-not-token | .plx-combobox__list": 1,
-   "condition-not-token | .plx-dialog": 1,
-   "condition-not-token | .plx-sheet": 1,
-   "condition-not-token | .plx-tooltip": 1,
-   "condition-not-token | .plx-toast": 1,
-   "condition-not-token | .plx-card": 1,
-   "condition-not-token | .plx-media-card": 1,
-   "condition-not-token | .plx-icon": 1,
-   "combinator | :is(button,a,[role=\"option\"],[role=\"tab\"],[role=\"treeitem\"],[role=\"row\"],[role=\"gridcell\"],[role=\"menuitemradio\"],[role=\"radio\"]):is([aria-selected=\"true\"],[aria-pressed=\"true\"],[aria-current=\"page\"],[aria-current=\"true\"],[aria-checked=\"true\"],.is-selected,.is-current) .plx-icon": 1,
-   "combinator | :is(button,a,[role=\"button\"],[role=\"option\"],[role=\"menuitem\"],[role=\"tab\"]):is(:disabled,[aria-disabled=\"true\"]) .plx-icon": 1,
-   "combinator | .is-disabled .plx-icon": 1,
-   "combinator | a:link .plx-icon": 1,
-   "combinator | a:visited .plx-icon": 1,
-   "combinator | .plx-switch__input:checked+.plx-switch__track": 1,
-   "condition-not-token | .plx-progress-bar__fill": 1,
-   "condition-not-token | .plx-spinner": 1,
-   "condition-not-token | .plx-color-swatch": 1,
-   "condition-not-token | [data-plx-theme][data-plx-mode]": 1
   },
   "platform/system/grid.css": {
    "combinator | .plx-page-grid>*": 1,

@@ -537,6 +537,58 @@
           "after": "   /* the label column of a narrow inline field (an inspector) */"
         }
       }
+    },
+    "boundary-outline-width": {
+      "$value": "0px",
+      "$type": "dimension",
+      "$description": "The outline of a surface that floats on a shadow (menus, dialogs, cards): none, and a thin line in forced colors, where shadows are not drawn.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "{plx-sys.border-width-thin}"
+        }
+      }
+    },
+    "boundary-outline-color": {
+      "$value": "transparent",
+      "$type": "color",
+      "$description": "The color of the boundary outline: none, and the text color in forced colors.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "CanvasText"
+        },
+        "plenix": {
+          "group": "border",
+          "purpose": "The outline of a surface that floats on a shadow, drawn only in forced colors (CanvasText there)."
+        }
+      }
+    },
+    "forced-indicator": {
+      "$value": "initial",
+      "$description": "An indicator's fill in forced colors (a progress fill): Highlight there; otherwise not set (initial), so the component keeps its own color.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "forced-gap": {
+      "$value": "initial",
+      "$description": "The gap in a ring in forced colors (the spinner's): Canvas there; otherwise not set (initial), so the component keeps its own.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Canvas"
+        }
+      }
+    },
+    "icon-forced-stroke": {
+      "$value": "0",
+      "$type": "number",
+      "$description": "How much of an icon's box its border fills (0 or 1). In forced colors a fill in currentcolor is forced to Canvas while a border in currentcolor takes the system color of where the icon sits (CanvasText, HighlightText in a selected item, GrayText when disabled, LinkText in a link): there the icon is drawn by its border.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "1"
+        }
+      }
     }
   }
 }

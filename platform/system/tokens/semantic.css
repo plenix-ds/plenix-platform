@@ -104,6 +104,25 @@
   --plx-sys-scroll-max-lg: var(--plx-ref-size-400px);
   --plx-sys-label-width-sm: var(--plx-ref-size-100px);   /* the label column of a narrow inline field (an inspector) */
 }
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root {
+    --plx-sys-boundary-outline-width: 0px;
+    --plx-sys-boundary-outline-color: transparent;
+    --plx-sys-forced-indicator: initial;
+    --plx-sys-forced-gap: initial;
+    --plx-sys-icon-forced-stroke: 0;
+  }
+}
+@media (forced-colors: active) {
+  :root {
+    --plx-sys-boundary-outline-width: var(--plx-sys-border-width-thin);
+    --plx-sys-boundary-outline-color: CanvasText;
+    --plx-sys-forced-indicator: Highlight;
+    --plx-sys-forced-gap: Canvas;
+    --plx-sys-icon-forced-stroke: 1;
+  }
+}
 [data-plx-density="standard"],[data-plx-density="comfortable"],:root[data-plx-density-policy="standard"]:not([data-plx-density]),:root[data-plx-density-policy="comfortable"]:not([data-plx-density]),:root:not([data-plx-density], [data-plx-density-policy]){
   --plx-ctx-density-plx-sys-radius-control: var(--plx-sys-radius-control-6px);
 }

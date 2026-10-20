@@ -171,12 +171,14 @@ function generate(manifest) {
       const ext = s.data.$extensions[EXT];
       // a token only this set declares keeps the set's own selector (on :root it is every density's default); a layered
       // token's variable goes under the exclusive selector, after the set's block
-      const css = cssSelectorOf(ext.selector), layer = layerOf(ext.selector), ctxLines = [];
+      const css = cssSelectorOf(ext.selector), layer = layerOf(ext.selector), ctxLines = [], cond = [];
       const lines = [], still = [];
       for (const { name, token } of tokensOf(s.data)) {
         const x = (token.$extensions && token.$extensions[EXT]) || {};
         // a token with a motion-off value ("reducedMotion": "0s") is written under exclusive conditions instead (below)
         if (x.reducedMotion !== undefined) { (x.before || []).forEach((l) => lines.push(l)); still.push({ name, token, x }); continue; }
+        // a token with a value for forced colors or more contrast is written under exclusive conditions instead (below)
+        if (x.forcedColors !== undefined || x.contrastMore !== undefined) { (x.before || []).forEach((l) => lines.push(l)); cond.push({ name, token, x }); continue; }
         (x.before || []).forEach((l) => lines.push(l));
         written.push({ name, file: o.file, set: s.tokens, selector: ext.selector, line: text.split('\n').length + lines.length + 1 });
         if (count[name] > 1) { (layered[name] = layered[name] || new Set()).add(layer); ctxLines.push('  ' + ctxName(layer, name) + ': ' + toCss(token.$value) + ';' + (x.after || '')); continue; }
@@ -189,6 +191,21 @@ function generate(manifest) {
       // Motion off (Styling Standard 3.6, condition): the motion values apply only while the person has not asked for
       // reduced motion and no density change is in progress; otherwise the same tokens are 0s. The three blocks are
       // mutually exclusive, so each token has one declaration in every condition, and every component reads the tokens.
+      // Forced colors and more contrast (Styling Standard 3.6, condition): the person's contrast settings change token
+      // values only. Forced colors wins over more contrast; each token has one declaration in every case.
+      if (cond.length) {
+        const sel = ext.opener.replace(/\s*\{\s*$/, '');
+        const FORCED = '(forced-colors: active)', MORE = '(prefers-contrast: more)';
+        const block = (media, pick, list) => (list.length ? '\n@media ' + media + ' {\n  ' + sel + ' {\n' + list.map((t) => '    ' + t.name + ': ' + toCss(pick(t)) + ';').join('\n') + '\n  }\n}' : '');
+        const both = cond.filter((t) => t.x.forcedColors !== undefined && t.x.contrastMore !== undefined);
+        const forcedOnly = cond.filter((t) => t.x.forcedColors !== undefined && t.x.contrastMore === undefined);
+        const moreOnly = cond.filter((t) => t.x.forcedColors === undefined && t.x.contrastMore !== undefined);
+        text += '\n/* the person\'s contrast settings: forced colors, then more contrast, else the values above */'
+          + block('not (' + FORCED + ' or ' + MORE + ')', (t) => t.token.$value, both) + block(FORCED, (t) => t.x.forcedColors, both) + block(MORE + ' and (not ' + FORCED + ')', (t) => t.x.contrastMore, both)
+          + block('not ' + FORCED, (t) => t.token.$value, forcedOnly) + block(FORCED, (t) => t.x.forcedColors, forcedOnly)
+          + block('not ' + MORE, (t) => t.token.$value, moreOnly) + block(MORE, (t) => t.x.contrastMore, moreOnly);
+        cond.forEach((t) => written.push({ name: t.name, file: o.file, set: s.tokens, selector: ext.selector, line: text.split('\n').length }));
+      }
       if (still.length) {
         const decl = (pick) => still.map((t) => '    ' + t.name + ': ' + pick(t) + ';').join('\n');
         text += '\n/* motion: the values while motion is wanted; 0s for reduced motion and while the density changes (a frame) */'

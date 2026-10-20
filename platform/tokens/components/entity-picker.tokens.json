@@ -59,7 +59,12 @@
     "entity-picker-disabled-field-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "EntityPicker disabled field: text color (content-disabled)."
+      "$description": "EntityPicker disabled field: text color (content-disabled).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
     },
     "entity-picker-list-background": {
       "$value": "{plx-sys.surface-overlay}",
@@ -149,12 +154,22 @@
     "entity-picker-option-selected-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "EntityPicker option selected: text color (selected-content)."
+      "$description": "EntityPicker option selected: text color (selected-content).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
     },
     "entity-picker-option-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "EntityPicker option disabled: text color (content-disabled)."
+      "$description": "EntityPicker option disabled: text color (content-disabled).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
     },
     "entity-picker-name-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",

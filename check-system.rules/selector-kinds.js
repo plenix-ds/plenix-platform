@@ -132,7 +132,9 @@ function classify(sel, ctx = {}) {
   const classes = [...required.matchAll(/\.(-?[a-zA-Z_][a-zA-Z0-9_-]*)/g)].map((m) => m[1]);
   const blocks = [...new Set(classes.filter((c) => !isState(c)).map(blockOf))];
   if (inCondition) {
-    if (/^:root\b/.test(sel) && !blocks.length && custom) return { kind: 'condition' };
+    // :root, or a mode context (a density or interaction region) that re-declares the tokens: custom properties only
+    const modesOnly = (s) => { const n = [...new Set([...s.matchAll(/\[data-plx-([a-z0-9]+)/g)].map((m) => m[1]))]; return n.every((x) => MODES.includes(x)); };
+    if ((/^:root\b/.test(sel) || /^\[data-plx-[a-z]+/.test(sel)) && modesOnly(sel) && !blocks.length && custom) return { kind: 'condition' };
     return { problem: 'condition-not-token' };
   }
   if (blocks.length > 1) return { problem: 'cross-block' };

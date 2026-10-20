@@ -121,12 +121,8 @@
   --plx-comp-button-danger-secondary-pressed-background: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-danger-secondary-pressed-border: var(--plx-sys-action-danger-background-pressed);
   /* states: selected (its border and text come from the size), disabled, focus */
-  --plx-comp-button-selected-background: var(--plx-sys-state-selected);
   --plx-comp-button-disabled-background: var(--plx-sys-fill-neutral);
-  --plx-comp-button-disabled-border: var(--plx-sys-border-strong);
-  --plx-comp-button-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-button-disabled-quiet-background: transparent;
-  --plx-comp-button-disabled-quiet-border: transparent;
   --plx-comp-button-focus-ring-color: var(--plx-sys-focus-ring-color);
   --plx-comp-button-focus-ring-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-button-focus-ring-width: var(--plx-sys-border-width-medium);
@@ -175,7 +171,6 @@
   --plx-comp-input-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-input-invalid-border-color: var(--plx-sys-feedback-danger-solid);
   --plx-comp-input-disabled-background: var(--plx-sys-fill-neutral);
-  --plx-comp-input-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-input-readonly-background: var(--plx-sys-surface-sunken);
   --plx-comp-textarea-font-size: var(--plx-ref-font-size-12);
   --plx-comp-textarea-line-height: var(--plx-ref-line-height-normal);
@@ -229,8 +224,6 @@
   --plx-comp-choice-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-choice-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-choice-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-choice-selected-background: var(--plx-sys-state-selected);
-  --plx-comp-choice-selected-border-color: var(--plx-sys-action-primary-background);
   --plx-comp-choice-input-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-choice-input-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-choice-input-focus-outline-width: var(--plx-sys-border-width-medium);
@@ -262,7 +255,6 @@
   --plx-comp-switch-track-after-inset-inline-start: calc((var(--plx-ref-size-20px) - var(--plx-ref-size-16px)) / 2);
   --plx-comp-switch-track-after-duration: var(--plx-sys-motion-duration-base);
   --plx-comp-switch-track-after-easing: var(--plx-sys-motion-ease-standard);
-  --plx-comp-switch-input-checked-track-background: var(--plx-sys-action-primary-background);
   --plx-comp-switch-input-checked-track-after-transform: translateX(calc(var(--plx-ref-size-36px) - var(--plx-ref-size-20px)));
   --plx-comp-switch-input-checked-track-rtl-after-transform: translateX(calc(var(--plx-ref-size-20px) - var(--plx-ref-size-36px)));
   --plx-comp-switch-input-focus-track-outline-color: var(--plx-sys-focus-ring-color);
@@ -515,9 +507,6 @@
   --plx-comp-chip-hover-background: var(--plx-sys-fill-neutral-hover);
   --plx-comp-chip-border-color: var(--plx-sys-fill-neutral-border);
   --plx-comp-chip-border-width: var(--plx-sys-border-width-thin);
-  --plx-comp-chip-selected-background: var(--plx-sys-action-primary-background);
-  --plx-comp-chip-selected-text: var(--plx-sys-action-primary-content);
-  --plx-comp-chip-selected-border-color: var(--plx-sys-action-primary-border);
   --plx-comp-tag-remove-height: var(--plx-ref-size-16px);
   --plx-comp-tag-remove-text: var(--plx-sys-content-subtle);
   --plx-comp-tag-remove-font-size: var(--plx-ref-font-size-12);
@@ -662,8 +651,6 @@
   --plx-comp-tabs-tab-min-height: var(--plx-sys-control-height-standard);
   --plx-comp-tabs-tab-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-tabs-tab-hover-text: var(--plx-sys-content-default);
-  --plx-comp-tabs-tab-disabled-text: var(--plx-sys-content-disabled);
-  --plx-comp-tabs-tab-selected-text: var(--plx-sys-content-default);
   --plx-comp-tabs-tab-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-tabs-segmented-list-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-tabs-segmented-tab-background: var(--plx-comp-segmented-item-background);
@@ -678,8 +665,6 @@
   --plx-comp-tabs-segmented-tab-padding-inline: var(--plx-comp-segmented-item-padding-inline);
   --plx-comp-tabs-segmented-tab-hover-background: var(--plx-comp-segmented-item-hover-background);
   --plx-comp-tabs-segmented-tab-hover-text: var(--plx-comp-segmented-item-hover-text);
-  --plx-comp-tabs-segmented-tab-selected-background: var(--plx-comp-segmented-item-selected-background);
-  --plx-comp-tabs-segmented-tab-selected-text: var(--plx-comp-segmented-item-selected-text);
   --plx-comp-tabs-segmented-panel-padding-block-start: var(--plx-sys-space-stack-md);
   --plx-comp-tabs-folder-list-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-tabs-folder-list-z-index: var(--plx-sys-layer-raised);
@@ -696,11 +681,6 @@
   --plx-comp-tabs-folder-tab-min-height: var(--plx-sys-control-height-toolbar);
   --plx-comp-tabs-folder-tab-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-tabs-folder-tab-hover-text: var(--plx-sys-content-default);
-  --plx-comp-tabs-folder-tab-selected-background: var(--plx-sys-surface-default);
-  --plx-comp-tabs-folder-tab-selected-border-left-color: var(--plx-sys-border-default);
-  --plx-comp-tabs-folder-tab-selected-border-right-color: var(--plx-sys-border-default);
-  --plx-comp-tabs-folder-tab-selected-border-top-color: var(--plx-sys-border-default);
-  --plx-comp-tabs-folder-tab-selected-text: var(--plx-sys-content-default);
   --plx-comp-tabs-folder-tab-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-tabs-folder-panel-padding-block-start: var(--plx-sys-space-stack-md);
   --plx-comp-tabs-contained-panel-background: var(--plx-sys-surface-default);
@@ -712,7 +692,6 @@
   --plx-comp-tabs-contained-panel-padding-inline: var(--plx-sys-space-inset-lg);
   --plx-comp-tabs-folder-list-margin-block-end: calc(var(--plx-sys-border-width-thin) * -1);
   --plx-comp-tabs-folder-list-padding-block-end: var(--plx-sys-border-width-thin);
-  --plx-comp-tabs-folder-tab-selected-after-background: var(--plx-sys-surface-default);
   --plx-comp-tabs-folder-tab-selected-after-height: calc(var(--plx-sys-border-width-thin) * 2);
   --plx-comp-tabs-folder-tab-selected-after-inset-block-end: calc(var(--plx-sys-border-width-thin) * -1);
   --plx-comp-app-header-height: var(--plx-sys-shell-header-height);
@@ -780,7 +759,6 @@
   --plx-comp-app-switcher-panel-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-app-switcher-panel-row-gap: var(--plx-sys-space-stack-md);
   --plx-comp-app-switcher-panel-z-index: var(--plx-sys-layer-popover);
-  --plx-comp-app-switcher-pinned-background: var(--plx-sys-surface-sunken);
   --plx-comp-app-switcher-pinned-radius: var(--plx-sys-radius-surface-8px);
   --plx-comp-app-switcher-pinned-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-app-switcher-heading-height: var(--plx-ref-size-20px);
@@ -798,7 +776,6 @@
   --plx-comp-app-switcher-open-padding-inline: var(--plx-sys-space-inset-xs);
   --plx-comp-app-switcher-open-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-app-switcher-open-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-app-switcher-tile-current-open-background: var(--plx-sys-state-selected);
   --plx-comp-app-switcher-open-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-app-switcher-open-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-app-switcher-open-focus-outline-width: var(--plx-sys-border-width-medium);
@@ -808,7 +785,6 @@
   --plx-comp-app-switcher-pin-radius: var(--plx-sys-radius-control);
   --plx-comp-app-switcher-pin-text: var(--plx-sys-content-subtle);
   --plx-comp-app-switcher-pin-width: var(--plx-sys-control-height-inline);
-  --plx-comp-app-switcher-tile-pinned-pin-text: var(--plx-sys-content-link);
   --plx-comp-app-switcher-pin-hover-background: var(--plx-sys-state-hover);
   --plx-comp-app-header-switch-radius: var(--plx-sys-radius-control);
   --plx-comp-app-header-switch-focus-outline-color: var(--plx-sys-focus-ring-color);
@@ -835,7 +811,6 @@
   --plx-comp-tool-rail-item-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-tool-rail-item-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-tool-rail-item-focus-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-tool-rail-item-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-tool-rail-divider-background-image: linear-gradient(var(--plx-sys-border-divider),var(--plx-sys-border-divider));
   --plx-comp-tool-rail-divider-background-size: 100% var(--plx-sys-border-width-thin);
   --plx-comp-tool-rail-divider-height: var(--plx-ref-size-4px);
@@ -868,7 +843,6 @@
   --plx-comp-menu-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-menu-item-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-menu-item-danger-text: var(--plx-sys-feedback-danger-solid);
-  --plx-comp-menu-item-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-menu-check-height: var(--plx-ref-size-16px);
   --plx-comp-menu-check-width: var(--plx-ref-size-16px);
   --plx-comp-menu-divider-border-top-color: var(--plx-sys-border-divider);
@@ -888,24 +862,18 @@
   --plx-comp-app-header-accent-divider: var(--plx-sys-accent-border);
   --plx-comp-app-header-accent-edge: var(--plx-sys-accent-edge);
   --plx-comp-app-header-accent-hover: var(--plx-sys-accent-state-hover);
-  --plx-comp-app-header-accent-selected: var(--plx-sys-accent-state-hover);
-  --plx-comp-app-header-accent-selected-content: var(--plx-sys-accent-content);
   --plx-comp-app-header-accent-surface: var(--plx-sys-accent-surface);
   --plx-comp-app-header-frost-brand: var(--plx-sys-brand-primary);
   --plx-comp-app-header-frost-content: var(--plx-sys-content-muted);
   --plx-comp-app-header-frost-divider: var(--plx-sys-frost-border);
   --plx-comp-app-header-frost-edge: var(--plx-sys-frost-border);
   --plx-comp-app-header-frost-hover: var(--plx-sys-frost-state-selected);
-  --plx-comp-app-header-frost-selected: var(--plx-sys-frost-state-selected);
-  --plx-comp-app-header-frost-selected-content: var(--plx-sys-selected-content);
   --plx-comp-app-header-frost-surface: var(--plx-sys-frost-surface);
   --plx-comp-app-header-plain-brand: var(--plx-sys-action-primary-background);
   --plx-comp-app-header-plain-content: var(--plx-sys-content-muted);
   --plx-comp-app-header-plain-divider: var(--plx-sys-border-default);
   --plx-comp-app-header-plain-edge: var(--plx-sys-border-default);
   --plx-comp-app-header-plain-hover: var(--plx-sys-state-hover);
-  --plx-comp-app-header-plain-selected: var(--plx-sys-action-primary-background);
-  --plx-comp-app-header-plain-selected-content: var(--plx-sys-action-primary-content);
   --plx-comp-app-header-plain-surface: var(--plx-sys-surface-default);
   --plx-comp-app-header-action-width: var(--plx-ref-size-112px);
   --plx-comp-app-header-action-height: var(--plx-ref-control-size-32px);
@@ -955,7 +923,6 @@
   --plx-comp-breadcrumbs-link-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-breadcrumbs-link-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-breadcrumbs-text-text: var(--plx-sys-content-muted);
-  --plx-comp-breadcrumbs-current-text: var(--plx-sys-content-default);
   --plx-comp-panel-background: var(--plx-sys-surface-default);
   --plx-comp-panel-border-color: var(--plx-sys-border-default);
   --plx-comp-panel-radius: var(--plx-sys-radius-surface-8px);
@@ -993,7 +960,6 @@
   --plx-comp-card-interactive-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-card-interactive-easing: var(--plx-sys-motion-ease-standard);
   --plx-comp-card-interactive-hover-shadow: var(--plx-sys-shadow-md);
-  --plx-comp-card-selected-border-color: var(--plx-sys-action-primary-background);
   --plx-comp-card-header-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-card-title-text: var(--plx-sys-content-default);
   --plx-comp-card-title-font-size: var(--plx-ref-font-size-13);
@@ -1202,7 +1168,6 @@
   --plx-comp-combobox-option-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-combobox-option-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-combobox-option-active-background: var(--plx-sys-state-selected);
-  --plx-comp-combobox-option-selected-text: var(--plx-sys-content-link);
   --plx-comp-combobox-option-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-combobox-create-text: var(--plx-sys-content-link);
   --plx-comp-combobox-create-font-weight: var(--plx-sys-font-weight-semibold);
@@ -1211,7 +1176,6 @@
   --plx-comp-combobox-empty-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-combobox-empty-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-combobox-disabled-field-background: var(--plx-sys-fill-neutral);
-  --plx-comp-combobox-disabled-field-text: var(--plx-sys-content-disabled);
   --plx-comp-combobox-group-text: var(--plx-sys-content-muted);
   --plx-comp-combobox-group-font-family: var(--plx-sys-font-label);
   --plx-comp-combobox-group-font-size: var(--plx-ref-font-size-11);
@@ -1240,7 +1204,6 @@
   --plx-comp-data-grid-row-line: var(--plx-sys-data-grid-line);
   --plx-comp-data-grid-min-height: var(--plx-sys-data-grid-row-height);
   --plx-comp-data-grid-row-hover-background: var(--plx-sys-data-grid-row-hover);
-  --plx-comp-data-grid-row-selected-background: var(--plx-sys-data-grid-row-selected);
   --plx-comp-data-grid-row-selected-hover-background: var(--plx-sys-data-grid-row-selected-hover);
   --plx-comp-data-grid-line-height: var(--plx-sys-data-grid-row-height);
   --plx-comp-data-grid-column-line: var(--plx-sys-data-grid-line);
@@ -1470,16 +1433,12 @@
   --plx-comp-nav-list-entry-radius: var(--plx-sys-radius-control);
   --plx-comp-nav-list-entry-actions-hover-background: var(--plx-sys-state-hover);
   --plx-comp-nav-list-entry-actions-hover-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-hover-border);
-  --plx-comp-nav-list-entry-actions-item-current-background: var(--plx-sys-state-selected);
   --plx-comp-nav-list-entry-actions-item-current-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);
   --plx-comp-nav-list-item-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-nav-list-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-nav-list-item-focus-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-nav-list-item-current-background: var(--plx-sys-state-selected);
   --plx-comp-nav-list-item-current-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);
-  --plx-comp-nav-list-item-current-text: var(--plx-sys-selected-content);
   --plx-comp-nav-list-item-current-font-weight: var(--plx-sys-font-weight-medium);
-  --plx-comp-nav-list-item-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-nav-list-label-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-nav-list-entry-actions-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-nav-list-actions-gap: var(--plx-sys-space-inline-xs);
@@ -1493,7 +1452,6 @@
   --plx-comp-nav-list-pin-width: var(--plx-sys-control-height-standard);
   --plx-comp-nav-list-pin-hover-background: var(--plx-sys-state-hover);
   --plx-comp-nav-list-pin-hover-text: var(--plx-sys-content-default);
-  --plx-comp-nav-list-entry-pinned-pin-text: var(--plx-sys-content-link);
   --plx-comp-nav-list-pin-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-nav-list-pin-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-nav-list-pin-focus-outline-width: var(--plx-sys-border-width-medium);
@@ -1501,7 +1459,6 @@
   --plx-comp-nav-list-item-muted-icon-text: var(--plx-sys-content-subtle);
   --plx-comp-nav-list-item-group-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-nav-list-item-group-icon-text: var(--plx-sys-content-muted);
-  --plx-comp-nav-list-item-group-current-parent-text: var(--plx-sys-selected-content);
   --plx-comp-nav-list-items-nested-padding-inline-start: calc(var(--plx-sys-control-icon-standard) + var(--plx-sys-space-inline-sm));
   --plx-comp-pagination-text: var(--plx-sys-content-muted);
   --plx-comp-pagination-gap: var(--plx-sys-space-cluster-md);
@@ -1524,9 +1481,6 @@
   --plx-comp-pagination-page-hover-background: var(--plx-sys-state-selected);
   --plx-comp-pagination-page-hover-border-color: var(--plx-sys-action-primary-background);
   --plx-comp-pagination-page-hover-text: var(--plx-sys-content-link);
-  --plx-comp-pagination-page-current-background: var(--plx-sys-action-primary-background);
-  --plx-comp-pagination-page-current-border-color: var(--plx-sys-action-primary-background);
-  --plx-comp-pagination-page-current-text: var(--plx-sys-action-primary-content);
   --plx-comp-pagination-page-disabled-opacity: var(--plx-sys-opacity-mid);
   --plx-comp-pagination-gap-text: var(--plx-sys-content-subtle);
   --plx-comp-pagination-gap-padding-inline: var(--plx-sys-space-inset-xs);
@@ -1573,8 +1527,6 @@
   --plx-comp-radio-tile-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-radio-tile-row-gap: var(--plx-sys-space-stack-sm);
   --plx-comp-radio-tile-hover-border-color: var(--plx-sys-border-strong);
-  --plx-comp-radio-tile-selected-background: var(--plx-sys-state-selected);
-  --plx-comp-radio-tile-selected-border-color: var(--plx-sys-action-primary-background);
   --plx-comp-radio-tile-input-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-radio-tile-input-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-radio-tile-input-focus-outline-width: var(--plx-sys-border-width-medium);
@@ -1601,13 +1553,11 @@
   --plx-comp-row-button-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-row-button-easing: var(--plx-sys-motion-ease-standard);
   --plx-comp-row-button-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-row-button-selected-background: var(--plx-sys-state-selected);
   --plx-comp-row-button-selected-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);
   --plx-comp-row-button-radius: var(--plx-sys-radius-control);
   --plx-comp-row-button-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-row-button-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-row-button-focus-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-row-button-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-search-input-background: var(--plx-sys-field-background);
   --plx-comp-search-input-border-color: var(--plx-sys-field-border);
   --plx-comp-search-input-radius: var(--plx-sys-radius-control);
@@ -1675,8 +1625,6 @@
   --plx-comp-segmented-item-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-segmented-item-hover-text: var(--plx-sys-content-default);
   --plx-comp-segmented-item-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-segmented-item-selected-background: var(--plx-sys-state-selected);
-  --plx-comp-segmented-item-selected-text: var(--plx-sys-selected-content);
   --plx-comp-segmented-item-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-segmented-item-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-segmented-item-focus-outline-width: var(--plx-sys-border-width-medium);
@@ -1816,9 +1764,7 @@
   --plx-comp-tree-row-padding-inline-end: var(--plx-sys-space-inset-sm);
   --plx-comp-tree-row-hover-background: var(--plx-sys-state-hover);
   --plx-comp-tree-row-hover-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-hover-border);
-  --plx-comp-tree-item-selected-row-background: var(--plx-sys-state-selected);
   --plx-comp-tree-item-selected-row-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);
-  --plx-comp-tree-item-selected-row-text: var(--plx-sys-selected-content);
   --plx-comp-tree-item-selected-row-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-tree-item-focus-row-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-tree-item-focus-row-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
@@ -1855,7 +1801,6 @@
   --plx-comp-activity-list-time-font-size: var(--plx-ref-font-size-11);
   --plx-comp-activity-list-actions-gap: var(--plx-sys-space-cluster-xs);
   --plx-comp-activity-list-actions-z-index: var(--plx-sys-layer-raised);
-  --plx-comp-activity-list-item-selected-background: var(--plx-sys-state-selected);
   --plx-comp-activity-list-stacked-meta-font-size: var(--plx-ref-font-size-09);
   --plx-comp-activity-list-item-interactive-margin-inline: calc(var(--plx-sys-space-inset-sm) * -1);
   --plx-comp-activity-list-item-interactive-padding-inline: var(--plx-sys-space-inset-sm);
@@ -2025,11 +1970,9 @@
   --plx-comp-nav-bar-item-font-family: var(--plx-sys-font-label);
   --plx-comp-nav-bar-item-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-nav-bar-item-hover-text: var(--plx-sys-content-default);
-  --plx-comp-nav-bar-item-current-text: var(--plx-sys-selected-content);
   --plx-comp-nav-bar-item-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-nav-bar-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-nav-bar-item-focus-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-nav-bar-item-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-nav-bar-label-font-size: var(--plx-ref-font-size-12);
   --plx-comp-nav-bar-label-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-notification-list-footer-shadow: inset 0 var(--plx-sys-border-width-thin) 0 var(--plx-sys-border-divider);
@@ -2285,6 +2228,135 @@
   --plx-ctx-base-plx-comp-breadcrumbs-list-row-gap: var(--plx-sys-space-stack-xs);
   --plx-ctx-base-plx-comp-color-picker-slot-min-width: 0;
   --plx-ctx-base-plx-comp-combobox-input-margin-block: 0;
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-button-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-button-disabled-border: var(--plx-sys-border-strong);
+    --plx-comp-button-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-button-disabled-quiet-border: transparent;
+    --plx-comp-input-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-choice-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-choice-selected-border-color: var(--plx-sys-action-primary-background);
+    --plx-comp-switch-input-checked-track-background: var(--plx-sys-action-primary-background);
+    --plx-comp-chip-selected-background: var(--plx-sys-action-primary-background);
+    --plx-comp-chip-selected-text: var(--plx-sys-action-primary-content);
+    --plx-comp-chip-selected-border-color: var(--plx-sys-action-primary-border);
+    --plx-comp-tabs-tab-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-tabs-tab-selected-text: var(--plx-sys-content-default);
+    --plx-comp-tabs-segmented-tab-selected-background: var(--plx-comp-segmented-item-selected-background);
+    --plx-comp-tabs-segmented-tab-selected-text: var(--plx-comp-segmented-item-selected-text);
+    --plx-comp-tabs-folder-tab-selected-background: var(--plx-sys-surface-default);
+    --plx-comp-tabs-folder-tab-selected-border-left-color: var(--plx-sys-border-default);
+    --plx-comp-tabs-folder-tab-selected-border-right-color: var(--plx-sys-border-default);
+    --plx-comp-tabs-folder-tab-selected-border-top-color: var(--plx-sys-border-default);
+    --plx-comp-tabs-folder-tab-selected-text: var(--plx-sys-content-default);
+    --plx-comp-tabs-folder-tab-selected-after-background: var(--plx-sys-surface-default);
+    --plx-comp-app-switcher-pinned-background: var(--plx-sys-surface-sunken);
+    --plx-comp-app-switcher-tile-current-open-background: var(--plx-sys-state-selected);
+    --plx-comp-app-switcher-tile-pinned-pin-text: var(--plx-sys-content-link);
+    --plx-comp-tool-rail-item-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-menu-item-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-app-header-accent-selected: var(--plx-sys-accent-state-hover);
+    --plx-comp-app-header-accent-selected-content: var(--plx-sys-accent-content);
+    --plx-comp-app-header-frost-selected: var(--plx-sys-frost-state-selected);
+    --plx-comp-app-header-frost-selected-content: var(--plx-sys-selected-content);
+    --plx-comp-app-header-plain-selected: var(--plx-sys-action-primary-background);
+    --plx-comp-app-header-plain-selected-content: var(--plx-sys-action-primary-content);
+    --plx-comp-breadcrumbs-current-text: var(--plx-sys-content-default);
+    --plx-comp-card-selected-border-color: var(--plx-sys-action-primary-background);
+    --plx-comp-combobox-option-selected-text: var(--plx-sys-content-link);
+    --plx-comp-combobox-disabled-field-text: var(--plx-sys-content-disabled);
+    --plx-comp-data-grid-row-selected-background: var(--plx-sys-data-grid-row-selected);
+    --plx-comp-data-grid-row-selected-color: currentcolor;
+    --plx-comp-nav-list-entry-actions-item-current-background: var(--plx-sys-state-selected);
+    --plx-comp-nav-list-item-current-background: var(--plx-sys-state-selected);
+    --plx-comp-nav-list-item-current-text: var(--plx-sys-selected-content);
+    --plx-comp-nav-list-item-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-nav-list-pin-pinned-background: transparent;
+    --plx-comp-nav-list-entry-pinned-pin-text: var(--plx-sys-content-link);
+    --plx-comp-nav-list-item-group-current-parent-text: var(--plx-sys-selected-content);
+    --plx-comp-pagination-page-current-background: var(--plx-sys-action-primary-background);
+    --plx-comp-pagination-page-current-border-color: var(--plx-sys-action-primary-background);
+    --plx-comp-pagination-page-current-text: var(--plx-sys-action-primary-content);
+    --plx-comp-radio-tile-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-radio-tile-selected-border-color: var(--plx-sys-action-primary-background);
+    --plx-comp-row-button-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-row-button-selected-text: currentcolor;
+    --plx-comp-row-button-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-segmented-item-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-segmented-item-selected-text: var(--plx-sys-selected-content);
+    --plx-comp-tree-item-selected-row-background: var(--plx-sys-state-selected);
+    --plx-comp-tree-item-selected-row-text: var(--plx-sys-selected-content);
+    --plx-comp-activity-list-item-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-nav-bar-item-current-text: var(--plx-sys-selected-content);
+    --plx-comp-nav-bar-item-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-button-selected-background: Highlight;
+    --plx-comp-button-disabled-border: GrayText;
+    --plx-comp-button-disabled-text: GrayText;
+    --plx-comp-button-disabled-quiet-border: GrayText;
+    --plx-comp-input-disabled-text: GrayText;
+    --plx-comp-choice-selected-background: Highlight;
+    --plx-comp-choice-selected-border-color: Highlight;
+    --plx-comp-switch-input-checked-track-background: Highlight;
+    --plx-comp-chip-selected-background: Highlight;
+    --plx-comp-chip-selected-text: HighlightText;
+    --plx-comp-chip-selected-border-color: Highlight;
+    --plx-comp-tabs-tab-disabled-text: GrayText;
+    --plx-comp-tabs-tab-selected-text: HighlightText;
+    --plx-comp-tabs-segmented-tab-selected-background: Highlight;
+    --plx-comp-tabs-segmented-tab-selected-text: HighlightText;
+    --plx-comp-tabs-folder-tab-selected-background: Highlight;
+    --plx-comp-tabs-folder-tab-selected-border-left-color: HighlightText;
+    --plx-comp-tabs-folder-tab-selected-border-right-color: HighlightText;
+    --plx-comp-tabs-folder-tab-selected-border-top-color: HighlightText;
+    --plx-comp-tabs-folder-tab-selected-text: HighlightText;
+    --plx-comp-tabs-folder-tab-selected-after-background: Highlight;
+    --plx-comp-app-switcher-pinned-background: Highlight;
+    --plx-comp-app-switcher-tile-current-open-background: Highlight;
+    --plx-comp-app-switcher-tile-pinned-pin-text: HighlightText;
+    --plx-comp-tool-rail-item-disabled-text: GrayText;
+    --plx-comp-menu-item-disabled-text: GrayText;
+    --plx-comp-app-header-accent-selected: Highlight;
+    --plx-comp-app-header-accent-selected-content: HighlightText;
+    --plx-comp-app-header-frost-selected: Highlight;
+    --plx-comp-app-header-frost-selected-content: HighlightText;
+    --plx-comp-app-header-plain-selected: Highlight;
+    --plx-comp-app-header-plain-selected-content: HighlightText;
+    --plx-comp-breadcrumbs-current-text: HighlightText;
+    --plx-comp-card-selected-border-color: Highlight;
+    --plx-comp-combobox-option-selected-text: HighlightText;
+    --plx-comp-combobox-disabled-field-text: GrayText;
+    --plx-comp-data-grid-row-selected-background: Highlight;
+    --plx-comp-data-grid-row-selected-color: HighlightText;
+    --plx-comp-nav-list-entry-actions-item-current-background: Highlight;
+    --plx-comp-nav-list-item-current-background: Highlight;
+    --plx-comp-nav-list-item-current-text: HighlightText;
+    --plx-comp-nav-list-item-disabled-text: GrayText;
+    --plx-comp-nav-list-pin-pinned-background: Highlight;
+    --plx-comp-nav-list-entry-pinned-pin-text: HighlightText;
+    --plx-comp-nav-list-item-group-current-parent-text: HighlightText;
+    --plx-comp-pagination-page-current-background: Highlight;
+    --plx-comp-pagination-page-current-border-color: Highlight;
+    --plx-comp-pagination-page-current-text: HighlightText;
+    --plx-comp-radio-tile-selected-background: Highlight;
+    --plx-comp-radio-tile-selected-border-color: Highlight;
+    --plx-comp-row-button-selected-background: Highlight;
+    --plx-comp-row-button-selected-text: HighlightText;
+    --plx-comp-row-button-disabled-text: GrayText;
+    --plx-comp-segmented-item-selected-background: Highlight;
+    --plx-comp-segmented-item-selected-text: HighlightText;
+    --plx-comp-tree-item-selected-row-background: Highlight;
+    --plx-comp-tree-item-selected-row-text: HighlightText;
+    --plx-comp-activity-list-item-selected-background: Highlight;
+    --plx-comp-nav-bar-item-current-text: HighlightText;
+    --plx-comp-nav-bar-item-disabled-text: GrayText;
+  }
 }
 [data-plx-density="standard"],:root[data-plx-density-policy="standard"]:not([data-plx-density]),:root:not([data-plx-density], [data-plx-density-policy]){
   --plx-ctx-density-plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);
@@ -2618,11 +2690,21 @@
   --plx-comp-bottom-sheet-nav-tile-gap: var(--plx-ref-size-4px);
   --plx-comp-bottom-sheet-nav-tile-icon-size: var(--plx-sys-control-icon-prominent);
   --plx-comp-bottom-sheet-nav-tile-icon-color: var(--plx-sys-content-muted);
-  --plx-comp-bottom-sheet-nav-tile-current-icon-color: var(--plx-sys-selected-content);
   --plx-comp-bottom-sheet-nav-tile-label-text: var(--plx-sys-content-default);
   --plx-comp-bottom-sheet-nav-tile-label-font-family: var(--plx-sys-font-label);
   --plx-comp-bottom-sheet-nav-tile-label-font-size: var(--plx-ref-font-size-12);
   --plx-comp-bottom-sheet-nav-tile-label-line-height: var(--plx-sys-label-height-16px);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-bottom-sheet-nav-tile-current-icon-color: var(--plx-sys-selected-content);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-bottom-sheet-nav-tile-current-icon-color: HighlightText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-box-plot-whisker-color: var(--plx-sys-content-subtle);
@@ -2711,18 +2793,31 @@
   --plx-comp-calendar-day-today-background: var(--plx-comp-date-badge-today-day-background);
   --plx-comp-calendar-day-today-text: var(--plx-comp-date-badge-today-day-text);
   --plx-comp-calendar-day-today-font-weight: var(--plx-comp-date-badge-today-day-font-weight);
-  --plx-comp-calendar-day-selected-background: var(--plx-sys-state-selected);
-  --plx-comp-calendar-day-selected-border-color: var(--plx-sys-state-selected-border);
-  --plx-comp-calendar-day-selected-text: var(--plx-sys-selected-content);
   --plx-comp-calendar-day-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-calendar-day-outside-text: var(--plx-sys-content-subtle);
-  --plx-comp-calendar-day-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-calendar-range-background: var(--plx-sys-state-selected);
   --plx-comp-calendar-range-text: var(--plx-sys-selected-content);
   --plx-comp-calendar-range-half: 50%;
   --plx-comp-calendar-week-number-text: var(--plx-sys-content-subtle);
   --plx-comp-calendar-week-number-font-family: var(--plx-sys-font-data);
   --plx-comp-calendar-week-number-font-size: var(--plx-ref-font-size-11);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-calendar-day-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-calendar-day-selected-border-color: var(--plx-sys-state-selected-border);
+    --plx-comp-calendar-day-selected-text: var(--plx-sys-selected-content);
+    --plx-comp-calendar-day-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-calendar-day-selected-background: Highlight;
+    --plx-comp-calendar-day-selected-border-color: Highlight;
+    --plx-comp-calendar-day-selected-text: HighlightText;
+    --plx-comp-calendar-day-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-card-toggle-height: var(--plx-sys-control-height-inline);
@@ -2760,11 +2855,21 @@
   --plx-comp-carousel-dot-radius: var(--plx-sys-radius-pill-4px);
   --plx-comp-carousel-dot-background: var(--plx-sys-border-strong);
   --plx-comp-carousel-dot-hover-background: var(--plx-sys-content-muted);
-  --plx-comp-carousel-dot-current-background: var(--plx-sys-content-default);
   --plx-comp-carousel-dot-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-carousel-dot-focus-outline-width: var(--plx-sys-focus-ring-width);
   --plx-comp-carousel-dot-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-carousel-autoplay-interval: 6s;
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-carousel-dot-current-background: var(--plx-sys-content-default);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-carousel-dot-current-background: Highlight;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-cascader-max-width: var(--plx-ref-size-400px);
@@ -2782,7 +2887,6 @@
   --plx-comp-cascader-chevron-height: var(--plx-ref-size-16px);
   --plx-comp-cascader-chevron-width: var(--plx-ref-size-16px);
   --plx-comp-cascader-disabled-field-background: var(--plx-sys-fill-neutral);
-  --plx-comp-cascader-disabled-field-text: var(--plx-sys-content-disabled);
   --plx-comp-cascader-popup-background: var(--plx-sys-surface-overlay);
   --plx-comp-cascader-popup-border-color: var(--plx-sys-overlay-border);
   --plx-comp-cascader-popup-radius: var(--plx-sys-radius-menu-8px);
@@ -2804,7 +2908,6 @@
   --plx-comp-cascader-match-padding-block: var(--plx-ref-space-4px);
   --plx-comp-cascader-match-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-cascader-match-active-background: var(--plx-sys-state-hover);
-  --plx-comp-cascader-match-selected-text: var(--plx-sys-selected-content);
   --plx-comp-cascader-match-selected-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-cascader-match-path-text: var(--plx-sys-content-muted);
   --plx-comp-cascader-match-path-font-size: var(--plx-ref-font-size-11);
@@ -2812,6 +2915,19 @@
   --plx-comp-cascader-empty-text: var(--plx-sys-content-muted);
   --plx-comp-cascader-empty-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-cascader-empty-padding-inline: var(--plx-sys-space-inset-sm);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-cascader-disabled-field-text: var(--plx-sys-content-disabled);
+    --plx-comp-cascader-match-selected-text: var(--plx-sys-selected-content);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-cascader-disabled-field-text: GrayText;
+    --plx-comp-cascader-match-selected-text: HighlightText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-chart-gap: var(--plx-sys-space-stack-sm);
@@ -2979,7 +3095,6 @@
   --plx-comp-code-editor-invalid-border-color: var(--plx-comp-input-invalid-border-color);
   --plx-comp-code-editor-readonly-background: var(--plx-comp-input-readonly-background);
   --plx-comp-code-editor-disabled-background: var(--plx-comp-input-disabled-background);
-  --plx-comp-code-editor-disabled-text: var(--plx-comp-input-disabled-text);
   --plx-comp-code-editor-text: var(--plx-comp-code-block-pre-text);
   --plx-comp-code-editor-caret-color: var(--plx-comp-input-text);
   --plx-comp-code-editor-placeholder-text: var(--plx-comp-input-placeholder-text);
@@ -2996,6 +3111,17 @@
   --plx-comp-code-editor-gutter-border-color: var(--plx-sys-border-divider);
   --plx-comp-code-editor-gutter-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-code-editor-gutter-layer: var(--plx-sys-layer-raised);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-code-editor-disabled-text: var(--plx-comp-input-disabled-text);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-code-editor-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-color-swatch-label-text: var(--plx-sys-content-default);
@@ -3066,13 +3192,23 @@
   --plx-comp-command-menu-item-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-command-menu-item-radius: var(--plx-sys-radius-control);
   --plx-comp-command-menu-item-active-background: var(--plx-sys-state-selected);
-  --plx-comp-command-menu-item-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-command-menu-icon-color: var(--plx-sys-content-muted);
   --plx-comp-command-menu-description-text: var(--plx-sys-content-muted);
   --plx-comp-command-menu-description-font-size: var(--plx-ref-font-size-12);
   --plx-comp-command-menu-status-text: var(--plx-sys-content-subtle);
   --plx-comp-command-menu-status-font-size: var(--plx-ref-font-size-12);
   --plx-comp-command-menu-status-padding-block: var(--plx-sys-space-inset-sm);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-command-menu-item-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-command-menu-item-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-command-palette-gap: var(--plx-sys-space-stack-sm);
@@ -3425,10 +3561,20 @@
   --plx-comp-drag-handle-pressed-background: var(--plx-sys-state-pressed);
   --plx-comp-drag-handle-picked-background: var(--plx-sys-state-selected);
   --plx-comp-drag-handle-picked-text: var(--plx-sys-selected-content);
-  --plx-comp-drag-handle-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-drag-handle-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-drag-handle-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-drag-handle-focus-outline-width: var(--plx-sys-border-width-medium);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-drag-handle-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-drag-handle-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-drop-zone-reject-border-color: var(--plx-sys-feedback-danger-solid);
@@ -3522,7 +3668,6 @@
   --plx-comp-entity-picker-input-placeholder-text: var(--plx-sys-content-subtle);
   --plx-comp-entity-picker-search-text: var(--plx-sys-content-muted);
   --plx-comp-entity-picker-disabled-field-background: var(--plx-sys-fill-neutral);
-  --plx-comp-entity-picker-disabled-field-text: var(--plx-sys-content-disabled);
   --plx-comp-entity-picker-list-background: var(--plx-sys-surface-overlay);
   --plx-comp-entity-picker-list-border-color: var(--plx-sys-overlay-border);
   --plx-comp-entity-picker-list-radius: var(--plx-sys-radius-menu-8px);
@@ -3540,8 +3685,6 @@
   --plx-comp-entity-picker-option-padding-block: var(--plx-ref-space-4px);
   --plx-comp-entity-picker-option-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-entity-picker-option-active-background: var(--plx-sys-state-hover);
-  --plx-comp-entity-picker-option-selected-text: var(--plx-sys-selected-content);
-  --plx-comp-entity-picker-option-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-entity-picker-name-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-entity-picker-description-text: var(--plx-sys-content-muted);
   --plx-comp-entity-picker-description-font-size: var(--plx-ref-font-size-12);
@@ -3557,6 +3700,21 @@
   --plx-comp-entity-picker-status-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-entity-picker-status-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-entity-picker-error-text: var(--plx-sys-feedback-danger-content);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-entity-picker-disabled-field-text: var(--plx-sys-content-disabled);
+    --plx-comp-entity-picker-option-selected-text: var(--plx-sys-selected-content);
+    --plx-comp-entity-picker-option-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-entity-picker-disabled-field-text: GrayText;
+    --plx-comp-entity-picker-option-selected-text: HighlightText;
+    --plx-comp-entity-picker-option-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-error-summary-list-gap: var(--plx-sys-space-stack-xs);
@@ -3682,7 +3840,6 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-file-row-background: var(--plx-sys-surface-default);
   --plx-comp-file-row-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-file-row-selected-background: var(--plx-sys-state-selected);
   --plx-comp-file-row-border-color: var(--plx-sys-border-divider);
   --plx-comp-file-row-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-file-row-gap: var(--plx-sys-space-inline-md);
@@ -3703,6 +3860,17 @@
   --plx-comp-file-row-error-text: var(--plx-sys-feedback-danger-content);
   --plx-comp-file-row-error-icon-size: var(--plx-sys-control-icon-inline);
   --plx-comp-file-row-actions-gap: var(--plx-sys-space-inline-xs);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-file-row-selected-background: var(--plx-sys-state-selected);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-file-row-selected-background: Highlight;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-find-panel-min-width: var(--plx-ref-size-400px);
@@ -3783,10 +3951,20 @@
   --plx-comp-floating-action-button-secondary-hover-background: var(--plx-sys-state-hover);
   --plx-comp-floating-action-button-secondary-pressed-background: var(--plx-sys-state-pressed);
   --plx-comp-floating-action-button-disabled-background: var(--plx-sys-fill-neutral);
-  --plx-comp-floating-action-button-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-floating-action-button-inset: var(--plx-sys-space-layout-md);
   --plx-comp-floating-action-button-z-index: var(--plx-sys-layer-sticky);
   --plx-comp-floating-action-button-clearance: calc(var(--plx-ref-size-56px) + var(--plx-sys-space-layout-md) * 2);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-floating-action-button-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-floating-action-button-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-form-gap: var(--plx-sys-space-stack-xl);
@@ -4065,7 +4243,6 @@
   --plx-comp-input-group-focus-border-color: var(--plx-comp-input-focus-border-color);
   --plx-comp-input-group-invalid-border-color: var(--plx-comp-input-invalid-border-color);
   --plx-comp-input-group-disabled-background: var(--plx-comp-input-disabled-background);
-  --plx-comp-input-group-disabled-text: var(--plx-comp-input-disabled-text);
   --plx-comp-input-group-readonly-background: var(--plx-comp-input-readonly-background);
   --plx-comp-input-group-affix-text: var(--plx-sys-content-muted);
   --plx-comp-input-group-affix-font-family: var(--plx-comp-input-font-family);
@@ -4075,6 +4252,17 @@
   --plx-comp-input-group-affix-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-input-group-icon-color: var(--plx-sys-content-muted);
   --plx-comp-input-group-icon-size: var(--plx-sys-control-icon-standard);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-input-group-disabled-text: var(--plx-comp-input-disabled-text);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-input-group-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-line-chart-point-radius: var(--plx-ref-size-4px);
@@ -4311,16 +4499,11 @@
   --plx-comp-miller-columns-item-padding-inline-start: var(--plx-sys-space-inset-sm);
   --plx-comp-miller-columns-item-hover-background: var(--plx-sys-state-hover);
   --plx-comp-miller-columns-item-hover-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-hover-border);
-  --plx-comp-miller-columns-item-selected-background: var(--plx-sys-state-selected);
   --plx-comp-miller-columns-item-selected-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);
-  --plx-comp-miller-columns-item-selected-text: var(--plx-sys-selected-content);
   --plx-comp-miller-columns-item-selected-font-weight: var(--plx-sys-font-weight-medium);
-  --plx-comp-miller-columns-list-focus-item-selected-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-miller-columns-list-focus-item-selected-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-miller-columns-list-focus-item-selected-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-miller-columns-item-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-miller-columns-icon-text: var(--plx-sys-content-muted);
-  --plx-comp-miller-columns-item-selected-icon-text: var(--plx-sys-selected-content);
   --plx-comp-miller-columns-description-text: var(--plx-sys-content-muted);
   --plx-comp-miller-columns-description-font-size: var(--plx-ref-font-size-11);
   --plx-comp-miller-columns-description-font-weight: var(--plx-sys-font-weight-regular);
@@ -4340,6 +4523,25 @@
   --plx-comp-miller-columns-resizer-hover-background: var(--plx-sys-border-strong);
   --plx-comp-miller-columns-resizer-focus-background: var(--plx-sys-focus-ring-color);
   --plx-comp-miller-columns-resize-step: var(--plx-ref-size-40px);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-miller-columns-item-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-miller-columns-item-selected-text: var(--plx-sys-selected-content);
+    --plx-comp-miller-columns-list-focus-item-selected-outline-color: var(--plx-sys-focus-ring-color);
+    --plx-comp-miller-columns-item-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-miller-columns-item-selected-icon-text: var(--plx-sys-selected-content);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-miller-columns-item-selected-background: Highlight;
+    --plx-comp-miller-columns-item-selected-text: HighlightText;
+    --plx-comp-miller-columns-list-focus-item-selected-outline-color: HighlightText;
+    --plx-comp-miller-columns-item-disabled-text: GrayText;
+    --plx-comp-miller-columns-item-selected-icon-text: HighlightText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-network-graph-node-radius: var(--plx-ref-size-12px);
@@ -4389,7 +4591,17 @@
   --plx-comp-otp-input-cell-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-otp-input-cell-invalid-border-color: var(--plx-sys-feedback-danger-solid);
   --plx-comp-otp-input-cell-disabled-background: var(--plx-sys-fill-neutral);
-  --plx-comp-otp-input-cell-disabled-text: var(--plx-sys-content-disabled);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-otp-input-cell-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-otp-input-cell-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-people-group-gap: var(--plx-sys-space-inline-md);
@@ -4612,9 +4824,6 @@
   --plx-comp-progress-steps-marker-background: var(--plx-sys-surface-default);
   --plx-comp-progress-steps-marker-border-color: var(--plx-sys-border-strong);
   --plx-comp-progress-steps-marker-text: var(--plx-sys-content-muted);
-  --plx-comp-progress-steps-current-marker-background: var(--plx-sys-action-primary-background);
-  --plx-comp-progress-steps-current-marker-border-color: var(--plx-sys-action-primary-border);
-  --plx-comp-progress-steps-current-marker-text: var(--plx-sys-action-primary-content);
   --plx-comp-progress-steps-complete-marker-background: var(--plx-sys-state-selected);
   --plx-comp-progress-steps-complete-marker-border-color: var(--plx-sys-state-selected-border);
   --plx-comp-progress-steps-complete-marker-text: var(--plx-sys-selected-content);
@@ -4654,6 +4863,21 @@
   --plx-comp-progress-steps-segment-background: var(--plx-comp-progress-bar-track-background);
   --plx-comp-progress-steps-segment-done-background: var(--plx-comp-progress-bar-info-fill);
   --plx-comp-progress-steps-segment-error-background: var(--plx-comp-progress-bar-danger-fill);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-progress-steps-current-marker-background: var(--plx-sys-action-primary-background);
+    --plx-comp-progress-steps-current-marker-border-color: var(--plx-sys-action-primary-border);
+    --plx-comp-progress-steps-current-marker-text: var(--plx-sys-action-primary-content);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-progress-steps-current-marker-background: Highlight;
+    --plx-comp-progress-steps-current-marker-border-color: Highlight;
+    --plx-comp-progress-steps-current-marker-text: HighlightText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-prompt-history-gap: var(--plx-sys-space-stack-md);
@@ -4801,7 +5025,6 @@
   --plx-comp-resource-list-item-interactive-margin-inline: calc(var(--plx-sys-space-inset-sm) * -1);
   --plx-comp-resource-list-item-interactive-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-resource-list-item-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-resource-list-item-selected-background: var(--plx-sys-state-selected);
   --plx-comp-resource-list-item-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-resource-list-item-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-resource-list-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
@@ -4815,6 +5038,17 @@
   --plx-comp-resource-list-meta-font-size: var(--plx-ref-font-size-12);
   --plx-comp-resource-list-actions-gap: var(--plx-sys-space-cluster-xs);
   --plx-comp-resource-list-field-share: 45%;
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-resource-list-item-selected-background: var(--plx-sys-state-selected);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-resource-list-item-selected-background: Highlight;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-retry-status-gap: var(--plx-sys-space-cluster-sm);
@@ -4903,7 +5137,6 @@
   --plx-comp-rich-text-editor-invalid-border-color: var(--plx-comp-input-invalid-border-color);
   --plx-comp-rich-text-editor-read-only-background: var(--plx-comp-input-readonly-background);
   --plx-comp-rich-text-editor-disabled-background: var(--plx-comp-input-disabled-background);
-  --plx-comp-rich-text-editor-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-rich-text-editor-toolbar-border-color: var(--plx-sys-border-divider);
   --plx-comp-rich-text-editor-toolbar-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-rich-text-editor-toolbar-padding-inline: var(--plx-sys-space-inset-xs);
@@ -4936,9 +5169,22 @@
   --plx-comp-rich-text-editor-swatches-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-rich-text-editor-hex-width: var(--plx-ref-size-120px);
   --plx-comp-rich-text-editor-picker-width: var(--plx-sys-control-height-toolbar);
-  --plx-comp-rich-text-editor-selected-cell-background: var(--plx-comp-data-grid-row-selected-background);
-  --plx-comp-rich-text-editor-selected-node-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-rich-text-editor-selected-node-outline-width: var(--plx-comp-link-focus-outline-width);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-rich-text-editor-disabled-text: var(--plx-sys-content-disabled);
+    --plx-comp-rich-text-editor-selected-cell-background: var(--plx-comp-data-grid-row-selected-background);
+    --plx-comp-rich-text-editor-selected-node-outline-color: var(--plx-sys-focus-ring-color);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-rich-text-editor-disabled-text: GrayText;
+    --plx-comp-rich-text-editor-selected-cell-background: Highlight;
+    --plx-comp-rich-text-editor-selected-node-outline-color: HighlightText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-role-label-gap: var(--plx-sys-space-inline-xs);
@@ -5062,7 +5308,6 @@
   --plx-comp-search-result-interactive-margin-inline: calc(var(--plx-sys-space-inset-sm) * -1);
   --plx-comp-search-result-interactive-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-search-result-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-search-result-selected-background: var(--plx-sys-state-selected);
   --plx-comp-search-result-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-search-result-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-search-result-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
@@ -5081,6 +5326,17 @@
   --plx-comp-search-result-meta-font-size: var(--plx-ref-font-size-12);
   --plx-comp-search-result-actions-gap: var(--plx-sys-space-cluster-xs);
   --plx-comp-search-result-actions-z-index: var(--plx-sys-layer-raised);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-search-result-selected-background: var(--plx-sys-state-selected);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-search-result-selected-background: Highlight;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-session-timeout-text: var(--plx-sys-content-default);
@@ -5258,10 +5514,21 @@
   --plx-comp-tabs-vertical-tab-hover-background: var(--plx-comp-nav-list-item-hover-background);
   --plx-comp-tabs-vertical-tab-hover-shadow: var(--plx-comp-nav-list-item-hover-shadow);
   --plx-comp-tabs-vertical-tab-hover-text: var(--plx-comp-nav-list-item-text);
-  --plx-comp-tabs-vertical-tab-selected-background: var(--plx-comp-nav-list-item-current-background);
   --plx-comp-tabs-vertical-tab-selected-shadow: var(--plx-comp-nav-list-item-current-shadow);
-  --plx-comp-tabs-vertical-tab-selected-text: var(--plx-comp-nav-list-item-current-text);
   --plx-comp-tabs-vertical-tab-selected-font-weight: var(--plx-comp-nav-list-item-current-font-weight);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-tabs-vertical-tab-selected-background: var(--plx-comp-nav-list-item-current-background);
+    --plx-comp-tabs-vertical-tab-selected-text: var(--plx-comp-nav-list-item-current-text);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-tabs-vertical-tab-selected-background: Highlight;
+    --plx-comp-tabs-vertical-tab-selected-text: HighlightText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-teaching-bubble-media-margin-block-end: var(--plx-sys-space-stack-md);
@@ -5324,7 +5591,6 @@
   --plx-comp-time-picker-icon-height: var(--plx-ref-size-16px);
   --plx-comp-time-picker-icon-width: var(--plx-ref-size-16px);
   --plx-comp-time-picker-disabled-field-background: var(--plx-sys-fill-neutral);
-  --plx-comp-time-picker-disabled-field-text: var(--plx-sys-content-disabled);
   --plx-comp-time-picker-list-background: var(--plx-sys-surface-overlay);
   --plx-comp-time-picker-list-border-color: var(--plx-sys-overlay-border);
   --plx-comp-time-picker-list-radius: var(--plx-sys-radius-menu-8px);
@@ -5342,7 +5608,6 @@
   --plx-comp-time-picker-option-min-height: var(--plx-sys-control-height-standard);
   --plx-comp-time-picker-option-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-time-picker-option-active-background: var(--plx-sys-state-hover);
-  --plx-comp-time-picker-option-selected-text: var(--plx-sys-selected-content);
   --plx-comp-time-picker-option-selected-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-time-picker-segment-radius: var(--plx-sys-radius-control-4px);
   --plx-comp-time-picker-segment-min-width: var(--plx-ref-size-24px);
@@ -5353,6 +5618,19 @@
   --plx-comp-time-picker-segment-period-margin-inline-start: var(--plx-ref-space-4px);
   --plx-comp-time-picker-separator-text: var(--plx-sys-content-muted);
   --plx-comp-time-picker-segments-icon-margin-inline-start: var(--plx-sys-space-inline-sm);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-time-picker-disabled-field-text: var(--plx-sys-content-disabled);
+    --plx-comp-time-picker-option-selected-text: var(--plx-sys-selected-content);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-time-picker-disabled-field-text: GrayText;
+    --plx-comp-time-picker-option-selected-text: HighlightText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-time-zone-select-option-gap: var(--plx-sys-space-inline-sm);
@@ -5456,11 +5734,23 @@
   --plx-comp-transfer-list-option-text: var(--plx-sys-content-default);
   --plx-comp-transfer-list-option-font-size: var(--plx-ref-font-size-12);
   --plx-comp-transfer-list-option-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-transfer-list-option-selected-background: var(--plx-sys-state-selected);
-  --plx-comp-transfer-list-option-selected-active-background: var(--plx-sys-state-selected-pressed);
-  --plx-comp-transfer-list-option-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-transfer-list-empty-text: var(--plx-sys-content-subtle);
   --plx-comp-transfer-list-empty-padding: var(--plx-sys-space-inset-sm);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-transfer-list-option-selected-background: var(--plx-sys-state-selected);
+    --plx-comp-transfer-list-option-selected-active-background: var(--plx-sys-state-selected-pressed);
+    --plx-comp-transfer-list-option-disabled-text: var(--plx-sys-content-disabled);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-transfer-list-option-selected-background: Highlight;
+    --plx-comp-transfer-list-option-selected-active-background: Highlight;
+    --plx-comp-transfer-list-option-disabled-text: GrayText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-tree-select-max-width: var(--plx-ref-size-600px);

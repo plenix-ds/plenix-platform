@@ -66,20 +66,12 @@
   --plx-sys-state-hover: var(--plx-ref-color-gray-100);
   --plx-sys-state-pressed: var(--plx-ref-color-gray-200);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-300);
-  --plx-sys-state-selected: var(--plx-ref-color-blue-100);
-  --plx-sys-state-selected-pressed: var(--plx-ref-color-blue-200);
   --plx-sys-state-hover-border: var(--plx-ref-color-gray-300);
-  --plx-sys-state-selected-border: var(--plx-ref-color-blue-250);
   --plx-sys-content-default: var(--plx-ref-color-black);
-  --plx-sys-content-muted: var(--plx-ref-color-gray-700);
-  --plx-sys-content-subtle: var(--plx-ref-color-gray-700);
-  --plx-sys-content-disabled: var(--plx-ref-color-gray-500);
   --plx-sys-content-inverse: var(--plx-ref-color-white);
   --plx-sys-content-link: var(--plx-ref-color-blue-600);
   --plx-sys-content-link-visited: var(--plx-ref-color-purple-900);
-  --plx-sys-border-default: var(--plx-ref-color-gray-300);
   --plx-sys-overlay-border: transparent;
-  --plx-sys-border-subtle: var(--plx-ref-color-gray-200);
   --plx-sys-border-strong: var(--plx-ref-color-gray-500);
   --plx-sys-action-primary-background: var(--plx-ref-color-blue-400);
   --plx-sys-action-primary-border: var(--plx-ref-color-blue-600);
@@ -88,7 +80,6 @@
   --plx-sys-action-primary-content: var(--plx-ref-color-white);
   --plx-sys-action-danger-background: var(--plx-ref-color-red-700);
   --plx-sys-action-danger-content: var(--plx-ref-color-white);
-  --plx-sys-focus-ring-color: var(--plx-ref-color-blue-400);
   --plx-sys-feedback-neutral-solid: var(--plx-ref-color-gray-600);
   --plx-sys-feedback-neutral-on-solid: var(--plx-ref-color-white);
   --plx-sys-feedback-neutral-solid-label: var(--plx-ref-color-gray-600);
@@ -178,11 +169,9 @@
   --plx-sys-fill-neutral-border: var(--plx-ref-color-gray-300);
   --plx-sys-fill-neutral-pressed: var(--plx-ref-color-gray-300);
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-700);
-  --plx-sys-border-divider: var(--plx-ref-color-gray-100);
   --plx-sys-control-background: var(--plx-ref-color-white);
   --plx-sys-field-background: var(--plx-ref-color-gray-50);
   --plx-sys-field-border: var(--plx-ref-color-gray-400);
-  --plx-sys-control-border: var(--plx-ref-color-gray-500);
   --plx-sys-avatar-background: var(--plx-ref-color-blue-600);
   --plx-sys-avatar-content: var(--plx-ref-color-white);
   /* brand: the Plenix brand color (owner, 2026-10-13) */
@@ -197,8 +186,6 @@
   --plx-sys-skeleton-highlight: var(--plx-ref-color-gray-75);
   --plx-sys-rating-active: var(--plx-ref-color-orange-500);
   --plx-sys-rating-inactive: var(--plx-ref-color-gray-600);
-  --plx-sys-selected-border: var(--plx-ref-color-blue-200);
-  --plx-sys-selected-content: var(--plx-ref-color-blue-700);
   --plx-sys-action-danger-background-hover: var(--plx-ref-color-red-800);
   --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-800);
   --plx-sys-accent-field-background: var(--plx-ref-color-blue-600);
@@ -237,7 +224,6 @@
   --plx-sys-frost-surface: var(--plx-ref-color-blue-100);
   --plx-sys-frost-border: var(--plx-ref-color-blue-250);
   --plx-sys-frost-field-background: var(--plx-ref-color-blue-50);
-  --plx-sys-frost-state-selected: var(--plx-ref-color-blue-200);
   /* status bar (batch 111) */
   --plx-sys-status-bar-background: var(--plx-ref-color-black);
   --plx-sys-status-bar-content: var(--plx-ref-color-gray-300);
@@ -258,9 +244,6 @@
   --plx-sys-table-text-muted: var(--plx-ref-color-gray-700);
   --plx-sys-data-grid-text-subtle: var(--plx-ref-color-gray-500);
   --plx-sys-data-grid-row-hover: var(--plx-ref-color-gray-200);
-  --plx-sys-data-grid-row-selected: var(--plx-ref-color-blue-200);
-  --plx-sys-data-grid-row-selected-hover: var(--plx-ref-color-gray-100);
-  --plx-sys-data-grid-row-selected-text: var(--plx-ref-color-blue-600);
   --plx-sys-data-grid-accent: var(--plx-ref-color-blue-400);
   --plx-sys-data-grid-danger: var(--plx-ref-color-red-700);
   --plx-sys-data-grid-menu-shadow: 0 var(--plx-ref-space-8px) var(--plx-ref-space-24px) var(--plx-ref-color-black-alpha-14);
@@ -384,6 +367,57 @@
   --plx-sys-category-grey-on-soft: var(--plx-ref-color-gray-700);
   --plx-sys-list-bullet: var(--plx-ref-color-gray-400);
 }
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root:not([data-plx-mode="dark"], [data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="light"] {
+    --plx-sys-state-selected: var(--plx-ref-color-blue-100);
+    --plx-sys-state-selected-pressed: var(--plx-ref-color-blue-200);
+    --plx-sys-state-selected-border: var(--plx-ref-color-blue-250);
+    --plx-sys-content-disabled: var(--plx-ref-color-gray-500);
+    --plx-sys-focus-ring-color: var(--plx-ref-color-blue-400);
+    --plx-sys-selected-border: var(--plx-ref-color-blue-200);
+    --plx-sys-selected-content: var(--plx-ref-color-blue-700);
+    --plx-sys-frost-state-selected: var(--plx-ref-color-blue-200);
+    --plx-sys-data-grid-row-selected: var(--plx-ref-color-blue-200);
+    --plx-sys-data-grid-row-selected-hover: var(--plx-ref-color-gray-100);
+    --plx-sys-data-grid-row-selected-text: var(--plx-ref-color-blue-600);
+  }
+}
+@media (forced-colors: active) {
+  :root:not([data-plx-mode="dark"], [data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="light"] {
+    --plx-sys-state-selected: Highlight;
+    --plx-sys-state-selected-pressed: Highlight;
+    --plx-sys-state-selected-border: Highlight;
+    --plx-sys-content-disabled: GrayText;
+    --plx-sys-focus-ring-color: Highlight;
+    --plx-sys-selected-border: Highlight;
+    --plx-sys-selected-content: HighlightText;
+    --plx-sys-frost-state-selected: Highlight;
+    --plx-sys-data-grid-row-selected: Highlight;
+    --plx-sys-data-grid-row-selected-hover: Highlight;
+    --plx-sys-data-grid-row-selected-text: HighlightText;
+  }
+}
+@media not (prefers-contrast: more) {
+  :root:not([data-plx-mode="dark"], [data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="light"] {
+    --plx-sys-content-muted: var(--plx-ref-color-gray-700);
+    --plx-sys-content-subtle: var(--plx-ref-color-gray-700);
+    --plx-sys-border-default: var(--plx-ref-color-gray-300);
+    --plx-sys-border-subtle: var(--plx-ref-color-gray-200);
+    --plx-sys-border-divider: var(--plx-ref-color-gray-100);
+    --plx-sys-control-border: var(--plx-ref-color-gray-500);
+  }
+}
+@media (prefers-contrast: more) {
+  :root:not([data-plx-mode="dark"], [data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="light"] {
+    --plx-sys-content-muted: var(--plx-sys-content-default);
+    --plx-sys-content-subtle: var(--plx-sys-content-default);
+    --plx-sys-border-default: var(--plx-sys-border-strong);
+    --plx-sys-border-subtle: var(--plx-sys-border-strong);
+    --plx-sys-border-divider: var(--plx-sys-border-strong);
+    --plx-sys-control-border: var(--plx-sys-border-strong);
+  }
+}
 :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"]{
   color-scheme: dark;
   /* surfaces, states, content, borders, actions, feedback, focus */
@@ -397,20 +431,12 @@
   --plx-sys-state-hover: var(--plx-ref-color-gray-700);
   --plx-sys-state-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-600);
-  --plx-sys-state-selected: var(--plx-ref-color-gray-700);
-  --plx-sys-state-selected-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-state-hover-border: var(--plx-ref-color-gray-500);
-  --plx-sys-state-selected-border: var(--plx-ref-color-gray-500);
   --plx-sys-content-default: var(--plx-ref-color-gray-200);
-  --plx-sys-content-muted: var(--plx-ref-color-gray-300);
-  --plx-sys-content-subtle: var(--plx-ref-color-gray-500);
-  --plx-sys-content-disabled: var(--plx-ref-color-gray-700);
   --plx-sys-content-inverse: var(--plx-ref-color-black);
   --plx-sys-content-link: var(--plx-ref-color-blue-200);
   --plx-sys-content-link-visited: var(--plx-ref-color-purple-300);
-  --plx-sys-border-default: var(--plx-ref-color-gray-700);
   --plx-sys-overlay-border: transparent;
-  --plx-sys-border-subtle: var(--plx-ref-color-gray-700);
   --plx-sys-border-strong: var(--plx-ref-color-gray-500);
   --plx-sys-action-primary-background: var(--plx-ref-color-blue-400);
   --plx-sys-action-primary-border: var(--plx-ref-color-blue-600);
@@ -419,7 +445,6 @@
   --plx-sys-action-primary-content: var(--plx-ref-color-white);
   --plx-sys-action-danger-background: var(--plx-ref-color-red-700);
   --plx-sys-action-danger-content: var(--plx-ref-color-white);
-  --plx-sys-focus-ring-color: var(--plx-ref-color-blue-300);
   --plx-sys-feedback-neutral-solid: var(--plx-ref-color-gray-600);
   --plx-sys-feedback-neutral-on-solid: var(--plx-ref-color-white);
   --plx-sys-feedback-neutral-solid-label: var(--plx-ref-color-gray-600);
@@ -509,11 +534,9 @@
   --plx-sys-fill-neutral-border: var(--plx-ref-color-gray-900);
   --plx-sys-fill-neutral-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-200);
-  --plx-sys-border-divider: var(--plx-ref-color-gray-700);
   --plx-sys-control-background: var(--plx-ref-color-gray-800);
   --plx-sys-field-background: var(--plx-ref-color-gray-800);
   --plx-sys-field-border: var(--plx-ref-color-gray-400);
-  --plx-sys-control-border: var(--plx-ref-color-gray-400);
   --plx-sys-avatar-background: var(--plx-ref-color-blue-300);
   --plx-sys-avatar-content: var(--plx-ref-color-black);
   /* brand: the Plenix brand color (owner, 2026-10-13) */
@@ -528,8 +551,6 @@
   --plx-sys-skeleton-highlight: var(--plx-ref-color-black);
   --plx-sys-rating-active: var(--plx-ref-color-orange-500);
   --plx-sys-rating-inactive: var(--plx-ref-color-gray-300);
-  --plx-sys-selected-border: var(--plx-ref-color-blue-400);
-  --plx-sys-selected-content: var(--plx-ref-color-blue-200);
   --plx-sys-action-danger-background-hover: var(--plx-ref-color-red-800);
   --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-800);
   --plx-sys-accent-field-background: var(--plx-ref-color-gray-800);
@@ -567,7 +588,6 @@
   --plx-sys-frost-surface: var(--plx-ref-color-gray-800);
   --plx-sys-frost-border: var(--plx-ref-color-gray-700);
   --plx-sys-frost-field-background: var(--plx-ref-color-black);
-  --plx-sys-frost-state-selected: var(--plx-ref-color-gray-700);
   /* status bar (batch 111) */
   --plx-sys-status-bar-background: var(--plx-ref-color-black);
   --plx-sys-status-bar-content: var(--plx-ref-color-gray-300);
@@ -588,9 +608,6 @@
   --plx-sys-table-text-muted: var(--plx-ref-color-gray-400);
   --plx-sys-data-grid-text-subtle: var(--plx-ref-color-gray-500);
   --plx-sys-data-grid-row-hover: var(--plx-ref-color-gray-900);
-  --plx-sys-data-grid-row-selected: var(--plx-ref-color-blue-900);
-  --plx-sys-data-grid-row-selected-hover: var(--plx-ref-color-blue-900);
-  --plx-sys-data-grid-row-selected-text: var(--plx-ref-color-blue-300);
   --plx-sys-data-grid-accent: var(--plx-ref-color-blue-300);
   --plx-sys-data-grid-danger: var(--plx-ref-color-red-500);
   --plx-sys-data-grid-menu-shadow: 0 var(--plx-ref-space-8px) var(--plx-ref-space-24px) var(--plx-ref-color-black-alpha-50);
@@ -713,4 +730,55 @@
   --plx-sys-category-grey-soft-border: var(--plx-ref-color-gray-300);
   --plx-sys-category-grey-on-soft: var(--plx-ref-color-gray-700);
   --plx-sys-list-bullet: var(--plx-ref-color-gray-400);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"] {
+    --plx-sys-state-selected: var(--plx-ref-color-gray-700);
+    --plx-sys-state-selected-pressed: var(--plx-ref-color-gray-600);
+    --plx-sys-state-selected-border: var(--plx-ref-color-gray-500);
+    --plx-sys-content-disabled: var(--plx-ref-color-gray-700);
+    --plx-sys-focus-ring-color: var(--plx-ref-color-blue-300);
+    --plx-sys-selected-border: var(--plx-ref-color-blue-400);
+    --plx-sys-selected-content: var(--plx-ref-color-blue-200);
+    --plx-sys-frost-state-selected: var(--plx-ref-color-gray-700);
+    --plx-sys-data-grid-row-selected: var(--plx-ref-color-blue-900);
+    --plx-sys-data-grid-row-selected-hover: var(--plx-ref-color-blue-900);
+    --plx-sys-data-grid-row-selected-text: var(--plx-ref-color-blue-300);
+  }
+}
+@media (forced-colors: active) {
+  :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"] {
+    --plx-sys-state-selected: Highlight;
+    --plx-sys-state-selected-pressed: Highlight;
+    --plx-sys-state-selected-border: Highlight;
+    --plx-sys-content-disabled: GrayText;
+    --plx-sys-focus-ring-color: Highlight;
+    --plx-sys-selected-border: Highlight;
+    --plx-sys-selected-content: HighlightText;
+    --plx-sys-frost-state-selected: Highlight;
+    --plx-sys-data-grid-row-selected: Highlight;
+    --plx-sys-data-grid-row-selected-hover: Highlight;
+    --plx-sys-data-grid-row-selected-text: HighlightText;
+  }
+}
+@media not (prefers-contrast: more) {
+  :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"] {
+    --plx-sys-content-muted: var(--plx-ref-color-gray-300);
+    --plx-sys-content-subtle: var(--plx-ref-color-gray-500);
+    --plx-sys-border-default: var(--plx-ref-color-gray-700);
+    --plx-sys-border-subtle: var(--plx-ref-color-gray-700);
+    --plx-sys-border-divider: var(--plx-ref-color-gray-700);
+    --plx-sys-control-border: var(--plx-ref-color-gray-400);
+  }
+}
+@media (prefers-contrast: more) {
+  :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"] {
+    --plx-sys-content-muted: var(--plx-sys-content-default);
+    --plx-sys-content-subtle: var(--plx-sys-content-default);
+    --plx-sys-border-default: var(--plx-sys-border-strong);
+    --plx-sys-border-subtle: var(--plx-sys-border-strong);
+    --plx-sys-border-divider: var(--plx-sys-border-strong);
+    --plx-sys-control-border: var(--plx-sys-border-strong);
+  }
 }

@@ -1,40 +1,185 @@
 {
   "$description": "FloatingActionButton (platform/components/FloatingActionButton, library wave 5, lane B): its component tokens. Three square sizes (Material 3's 40, 56 and 96), the action color or the raised surface, the raised shadow.",
   "plx-comp": {
-    "floating-action-button-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "FloatingActionButton: its edge (the fill's color on primary, the border on secondary)." },
-    "floating-action-button-shadow": { "$value": "{plx-sys.shadow-raised}", "$type": "shadow", "$description": "FloatingActionButton: the raised shadow that lifts it over the content." },
-    "floating-action-button-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "Extended: the gap between the icon and the label." },
-    "floating-action-button-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "Extended: the label's face." },
-    "floating-action-button-font-size": { "$value": "{plx-ref.font-size-14}", "$type": "dimension", "$description": "Extended: the label's size." },
-    "floating-action-button-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Extended: the label's weight." },
-    "floating-action-button-line-height": { "$value": "{plx-ref.line-height-tight}", "$type": "number", "$description": "Extended: the label's line height." },
-    "floating-action-button-focus-ring-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "FloatingActionButton: the focus ring." },
-    "floating-action-button-focus-ring-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "FloatingActionButton: the focus ring's width." },
-    "floating-action-button-focus-ring-offset": { "$value": "{plx-sys.focus-ring-offset}", "$type": "dimension", "$description": "FloatingActionButton: the focus ring's offset." },
-    "floating-action-button-sm-size": { "$value": "{plx-ref.size-40px}", "$type": "dimension", "$description": "Small: the 40px square (and the extended height)." },
-    "floating-action-button-sm-radius": { "$value": "{plx-sys.radius-control-8px}", "$type": "dimension", "$description": "Small: its corner." },
-    "floating-action-button-sm-icon-size": { "$value": "{plx-sys.icon-size-lg}", "$type": "dimension", "$description": "Small: the 24px icon." },
-    "floating-action-button-md-size": { "$value": "{plx-ref.size-56px}", "$type": "dimension", "$description": "Standard: the 56px square (and the extended height)." },
-    "floating-action-button-md-radius": { "$value": "{plx-sys.radius-control-12px}", "$type": "dimension", "$description": "Standard: its corner." },
-    "floating-action-button-md-icon-size": { "$value": "{plx-sys.icon-size-lg}", "$type": "dimension", "$description": "Standard: the 24px icon." },
-    "floating-action-button-lg-size": { "$value": "{plx-ref.size-96px}", "$type": "dimension", "$description": "Large: the 96px square (and the extended height)." },
-    "floating-action-button-lg-radius": { "$value": "{plx-sys.shape-xl}", "$type": "dimension", "$description": "Large: its corner." },
-    "floating-action-button-lg-icon-size": { "$value": "{plx-sys.icon-size-xl}", "$type": "dimension", "$description": "Large: the 48px icon." },
-    "floating-action-button-extended-padding-inline-start": { "$value": "{plx-sys.space-inset-lg}", "$type": "dimension", "$description": "Extended: the space before the icon." },
-    "floating-action-button-extended-padding-inline-end": { "$value": "{plx-sys.space-inset-xl}", "$type": "dimension", "$description": "Extended: the space after the label." },
-    "floating-action-button-primary-background": { "$value": "{plx-sys.action-primary-background}", "$type": "color", "$description": "Primary: the action color." },
-    "floating-action-button-primary-text": { "$value": "{plx-sys.action-primary-content}", "$type": "color", "$description": "Primary: the icon and label on the action color." },
-    "floating-action-button-primary-hover-background": { "$value": "{plx-sys.action-primary-background-hover}", "$type": "color", "$description": "Primary: under the pointer." },
-    "floating-action-button-primary-pressed-background": { "$value": "{plx-sys.action-primary-background-pressed}", "$type": "color", "$description": "Primary: while pressed." },
-    "floating-action-button-secondary-background": { "$value": "{plx-sys.surface-raised}", "$type": "color", "$description": "Secondary: the raised surface." },
-    "floating-action-button-secondary-border": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "Secondary: its border." },
-    "floating-action-button-secondary-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Secondary: the icon and label." },
-    "floating-action-button-secondary-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "Secondary: under the pointer." },
-    "floating-action-button-secondary-pressed-background": { "$value": "{plx-sys.state-pressed}", "$type": "color", "$description": "Secondary: while pressed." },
-    "floating-action-button-disabled-background": { "$value": "{plx-sys.fill-neutral}", "$type": "color", "$description": "Disabled: the neutral fill, no shadow." },
-    "floating-action-button-disabled-text": { "$value": "{plx-sys.content-disabled}", "$type": "color", "$description": "Disabled: the icon and label." },
-    "floating-action-button-inset": { "$value": "{plx-sys.space-layout-md}", "$type": "dimension", "$description": "In the corner: its distance from the window's bottom and end edges." },
-    "floating-action-button-z-index": { "$value": "{plx-sys.layer-sticky}", "$type": "number", "$description": "In the corner: over the content and sticky regions, under menus and dialogs." },
-    "floating-action-button-clearance": { "$value": "calc({plx-ref.size-56px} + {plx-sys.space-layout-md} * 2)", "$type": "dimension", "$description": "The bottom space a scrolling region gives its last line so the standard button in the corner does not cover it (for the page to use)." }
+    "floating-action-button-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "FloatingActionButton: its edge (the fill's color on primary, the border on secondary)."
+    },
+    "floating-action-button-shadow": {
+      "$value": "{plx-sys.shadow-raised}",
+      "$type": "shadow",
+      "$description": "FloatingActionButton: the raised shadow that lifts it over the content."
+    },
+    "floating-action-button-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Extended: the gap between the icon and the label."
+    },
+    "floating-action-button-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "Extended: the label's face."
+    },
+    "floating-action-button-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension",
+      "$description": "Extended: the label's size."
+    },
+    "floating-action-button-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Extended: the label's weight."
+    },
+    "floating-action-button-line-height": {
+      "$value": "{plx-ref.line-height-tight}",
+      "$type": "number",
+      "$description": "Extended: the label's line height."
+    },
+    "floating-action-button-focus-ring-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "FloatingActionButton: the focus ring."
+    },
+    "floating-action-button-focus-ring-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "FloatingActionButton: the focus ring's width."
+    },
+    "floating-action-button-focus-ring-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "FloatingActionButton: the focus ring's offset."
+    },
+    "floating-action-button-sm-size": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "Small: the 40px square (and the extended height)."
+    },
+    "floating-action-button-sm-radius": {
+      "$value": "{plx-sys.radius-control-8px}",
+      "$type": "dimension",
+      "$description": "Small: its corner."
+    },
+    "floating-action-button-sm-icon-size": {
+      "$value": "{plx-sys.icon-size-lg}",
+      "$type": "dimension",
+      "$description": "Small: the 24px icon."
+    },
+    "floating-action-button-md-size": {
+      "$value": "{plx-ref.size-56px}",
+      "$type": "dimension",
+      "$description": "Standard: the 56px square (and the extended height)."
+    },
+    "floating-action-button-md-radius": {
+      "$value": "{plx-sys.radius-control-12px}",
+      "$type": "dimension",
+      "$description": "Standard: its corner."
+    },
+    "floating-action-button-md-icon-size": {
+      "$value": "{plx-sys.icon-size-lg}",
+      "$type": "dimension",
+      "$description": "Standard: the 24px icon."
+    },
+    "floating-action-button-lg-size": {
+      "$value": "{plx-ref.size-96px}",
+      "$type": "dimension",
+      "$description": "Large: the 96px square (and the extended height)."
+    },
+    "floating-action-button-lg-radius": {
+      "$value": "{plx-sys.shape-xl}",
+      "$type": "dimension",
+      "$description": "Large: its corner."
+    },
+    "floating-action-button-lg-icon-size": {
+      "$value": "{plx-sys.icon-size-xl}",
+      "$type": "dimension",
+      "$description": "Large: the 48px icon."
+    },
+    "floating-action-button-extended-padding-inline-start": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension",
+      "$description": "Extended: the space before the icon."
+    },
+    "floating-action-button-extended-padding-inline-end": {
+      "$value": "{plx-sys.space-inset-xl}",
+      "$type": "dimension",
+      "$description": "Extended: the space after the label."
+    },
+    "floating-action-button-primary-background": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "Primary: the action color."
+    },
+    "floating-action-button-primary-text": {
+      "$value": "{plx-sys.action-primary-content}",
+      "$type": "color",
+      "$description": "Primary: the icon and label on the action color."
+    },
+    "floating-action-button-primary-hover-background": {
+      "$value": "{plx-sys.action-primary-background-hover}",
+      "$type": "color",
+      "$description": "Primary: under the pointer."
+    },
+    "floating-action-button-primary-pressed-background": {
+      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$type": "color",
+      "$description": "Primary: while pressed."
+    },
+    "floating-action-button-secondary-background": {
+      "$value": "{plx-sys.surface-raised}",
+      "$type": "color",
+      "$description": "Secondary: the raised surface."
+    },
+    "floating-action-button-secondary-border": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "Secondary: its border."
+    },
+    "floating-action-button-secondary-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Secondary: the icon and label."
+    },
+    "floating-action-button-secondary-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "Secondary: under the pointer."
+    },
+    "floating-action-button-secondary-pressed-background": {
+      "$value": "{plx-sys.state-pressed}",
+      "$type": "color",
+      "$description": "Secondary: while pressed."
+    },
+    "floating-action-button-disabled-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "Disabled: the neutral fill, no shadow."
+    },
+    "floating-action-button-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "Disabled: the icon and label.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
+    },
+    "floating-action-button-inset": {
+      "$value": "{plx-sys.space-layout-md}",
+      "$type": "dimension",
+      "$description": "In the corner: its distance from the window's bottom and end edges."
+    },
+    "floating-action-button-z-index": {
+      "$value": "{plx-sys.layer-sticky}",
+      "$type": "number",
+      "$description": "In the corner: over the content and sticky regions, under menus and dialogs."
+    },
+    "floating-action-button-clearance": {
+      "$value": "calc({plx-ref.size-56px} + {plx-sys.space-layout-md} * 2)",
+      "$type": "dimension",
+      "$description": "The bottom space a scrolling region gives its last line so the standard button in the corner does not cover it (for the page to use)."
+    }
   }
 }

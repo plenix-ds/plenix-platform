@@ -1,58 +1,285 @@
 {
   "$description": "ProgressSteps (platform/components/ProgressSteps, library wave 7, lane A): its component tokens. The current step takes the action color, a done step the selected state, a failed one the soft danger colors, an upcoming one the strong border; the compact bar is ProgressBar's track and fills. Every color an existing role.",
   "plx-comp": {
-    "progress-steps-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "ProgressSteps: the space between the lines of wrapped horizontal steps." },
-    "progress-steps-head-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "ProgressSteps step: the space between the marker and the name." },
-    "progress-steps-marker-size": { "$value": "{plx-ref.size-24px}", "$type": "dimension", "$description": "ProgressSteps marker: its width and height." },
-    "progress-steps-marker-radius": { "$value": "{plx-sys.radius-control}", "$type": "dimension", "$description": "ProgressSteps marker: its corners (the control radius)." },
-    "progress-steps-marker-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "ProgressSteps marker: its edge." },
-    "progress-steps-marker-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "ProgressSteps marker: the step number's size." },
-    "progress-steps-marker-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "ProgressSteps marker: the step number's weight." },
-    "progress-steps-marker-icon-size": { "$value": "{plx-sys.icon-size-sm}", "$type": "dimension", "$description": "ProgressSteps marker: the check or alert icon's size." },
-    "progress-steps-marker-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "ProgressSteps upcoming step: the marker's fill." },
-    "progress-steps-marker-border-color": { "$value": "{plx-sys.border-strong}", "$type": "color", "$description": "ProgressSteps upcoming step: the marker's edge." },
-    "progress-steps-marker-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "ProgressSteps upcoming step: the number." },
-    "progress-steps-current-marker-background": { "$value": "{plx-sys.action-primary-background}", "$type": "color", "$description": "ProgressSteps current step: the marker on the action color." },
-    "progress-steps-current-marker-border-color": { "$value": "{plx-sys.action-primary-border}", "$type": "color", "$description": "ProgressSteps current step: the marker's edge." },
-    "progress-steps-current-marker-text": { "$value": "{plx-sys.action-primary-content}", "$type": "color", "$description": "ProgressSteps current step: the number on the action color." },
-    "progress-steps-complete-marker-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "ProgressSteps done step: the marker in the selected fill." },
-    "progress-steps-complete-marker-border-color": { "$value": "{plx-sys.state-selected-border}", "$type": "color", "$description": "ProgressSteps done step: the marker's selected edge." },
-    "progress-steps-complete-marker-text": { "$value": "{plx-sys.selected-content}", "$type": "color", "$description": "ProgressSteps done step: the check." },
-    "progress-steps-error-marker-background": { "$value": "{plx-sys.feedback-danger-soft}", "$type": "color", "$description": "ProgressSteps step that needs attention: the marker's soft danger fill." },
-    "progress-steps-error-marker-border-color": { "$value": "{plx-sys.feedback-danger-soft-border}", "$type": "color", "$description": "ProgressSteps step that needs attention: the marker's edge." },
-    "progress-steps-error-marker-text": { "$value": "{plx-sys.feedback-danger-content}", "$type": "color", "$description": "ProgressSteps step that needs attention: the alert icon." },
-    "progress-steps-label-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "ProgressSteps: a done or current step's name." },
-    "progress-steps-label-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "ProgressSteps: the step names' size." },
-    "progress-steps-label-font-weight": { "$value": "{plx-sys.font-weight-medium}", "$type": "fontWeight", "$description": "ProgressSteps: the step names' weight." },
-    "progress-steps-current-label-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "ProgressSteps current step: its name's weight." },
-    "progress-steps-upcoming-label-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "ProgressSteps upcoming step: its name." },
-    "progress-steps-error-label-text": { "$value": "{plx-sys.feedback-danger-content}", "$type": "color", "$description": "ProgressSteps step that needs attention: its name." },
-    "progress-steps-description-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "ProgressSteps: a step's second line." },
-    "progress-steps-description-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "ProgressSteps: the second line's size." },
-    "progress-steps-description-indent": { "$value": "calc({plx-comp.progress-steps-marker-size} + {plx-comp.progress-steps-head-gap})", "$type": "dimension", "$description": "ProgressSteps: the second line starts under the name (past the marker and its gap)." },
-    "progress-steps-connector-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "ProgressSteps connector: the line after an upcoming or current step." },
-    "progress-steps-complete-connector-color": { "$value": "{plx-sys.state-selected-border}", "$type": "color", "$description": "ProgressSteps connector: the line after a done step." },
-    "progress-steps-connector-thickness": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "ProgressSteps connector: the line's thickness." },
-    "progress-steps-connector-min-length": { "$value": "{plx-ref.size-24px}", "$type": "dimension", "$description": "ProgressSteps connector: its least length (horizontal: it grows to fill the row)." },
-    "progress-steps-connector-margin": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "ProgressSteps connector: the space between the line and the steps on either side." },
-    "progress-steps-vertical-connector-indent": { "$value": "calc(({plx-comp.progress-steps-marker-size} - {plx-comp.progress-steps-connector-thickness}) / 2)", "$type": "dimension", "$description": "ProgressSteps vertical: the connector runs down the middle of the marker column." },
-    "progress-steps-vertical-connector-min-length": { "$value": "{plx-ref.size-20px}", "$type": "dimension", "$description": "ProgressSteps vertical: the connector's least height between two steps." },
-    "progress-steps-vertical-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "ProgressSteps vertical: the space above and below each connector and under each name." },
-    "progress-steps-button-radius": { "$value": "{plx-sys.radius-control}", "$type": "dimension", "$description": "ProgressSteps clickable step: the corners of its hover fill and focus outline." },
-    "progress-steps-button-padding": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "ProgressSteps clickable step: the space around the marker and name, inside the hover fill." },
-    "progress-steps-button-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "ProgressSteps clickable step with the pointer over it: the hover fill." },
-    "progress-steps-button-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "ProgressSteps clickable step with keyboard focus: the outline." },
-    "progress-steps-button-focus-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "ProgressSteps clickable step with keyboard focus: the outline's width." },
-    "progress-steps-compact-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "ProgressSteps compact: the space between the text and the bar." },
-    "progress-steps-count-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "ProgressSteps compact: the Step 2 of 5 text." },
-    "progress-steps-count-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "ProgressSteps compact: the text's size." },
-    "progress-steps-count-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "ProgressSteps compact: the Step 2 of 5 part's weight (the step's name after it is regular)." },
-    "progress-steps-count-label-font-weight": { "$value": "{plx-sys.font-weight-regular}", "$type": "fontWeight", "$description": "ProgressSteps compact: the step's name after the count." },
-    "progress-steps-segments-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "ProgressSteps compact: the space between two segments." },
-    "progress-steps-segment-height": { "$value": "{plx-comp.progress-bar-sm-track-height}", "$type": "dimension", "$description": "ProgressSteps compact: a segment's height (the small ProgressBar's track)." },
-    "progress-steps-segment-radius": { "$value": "{plx-comp.progress-bar-fill-radius}", "$type": "dimension", "$description": "ProgressSteps compact: a segment's corners (ProgressBar's)." },
-    "progress-steps-segment-background": { "$value": "{plx-comp.progress-bar-track-background}", "$type": "color", "$description": "ProgressSteps compact: an upcoming step's segment (ProgressBar's track)." },
-    "progress-steps-segment-done-background": { "$value": "{plx-comp.progress-bar-info-fill}", "$type": "color", "$description": "ProgressSteps compact: a done or current step's segment (ProgressBar's fill)." },
-    "progress-steps-segment-error-background": { "$value": "{plx-comp.progress-bar-danger-fill}", "$type": "color", "$description": "ProgressSteps compact: a failed step's segment (ProgressBar's danger fill)." }
+    "progress-steps-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ProgressSteps: the space between the lines of wrapped horizontal steps."
+    },
+    "progress-steps-head-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ProgressSteps step: the space between the marker and the name."
+    },
+    "progress-steps-marker-size": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "ProgressSteps marker: its width and height."
+    },
+    "progress-steps-marker-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "ProgressSteps marker: its corners (the control radius)."
+    },
+    "progress-steps-marker-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "ProgressSteps marker: its edge."
+    },
+    "progress-steps-marker-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ProgressSteps marker: the step number's size."
+    },
+    "progress-steps-marker-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "ProgressSteps marker: the step number's weight."
+    },
+    "progress-steps-marker-icon-size": {
+      "$value": "{plx-sys.icon-size-sm}",
+      "$type": "dimension",
+      "$description": "ProgressSteps marker: the check or alert icon's size."
+    },
+    "progress-steps-marker-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "ProgressSteps upcoming step: the marker's fill."
+    },
+    "progress-steps-marker-border-color": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color",
+      "$description": "ProgressSteps upcoming step: the marker's edge."
+    },
+    "progress-steps-marker-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ProgressSteps upcoming step: the number."
+    },
+    "progress-steps-current-marker-background": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "ProgressSteps current step: the marker on the action color.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "progress-steps-current-marker-border-color": {
+      "$value": "{plx-sys.action-primary-border}",
+      "$type": "color",
+      "$description": "ProgressSteps current step: the marker's edge.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "progress-steps-current-marker-text": {
+      "$value": "{plx-sys.action-primary-content}",
+      "$type": "color",
+      "$description": "ProgressSteps current step: the number on the action color.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
+    },
+    "progress-steps-complete-marker-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "ProgressSteps done step: the marker in the selected fill."
+    },
+    "progress-steps-complete-marker-border-color": {
+      "$value": "{plx-sys.state-selected-border}",
+      "$type": "color",
+      "$description": "ProgressSteps done step: the marker's selected edge."
+    },
+    "progress-steps-complete-marker-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "ProgressSteps done step: the check."
+    },
+    "progress-steps-error-marker-background": {
+      "$value": "{plx-sys.feedback-danger-soft}",
+      "$type": "color",
+      "$description": "ProgressSteps step that needs attention: the marker's soft danger fill."
+    },
+    "progress-steps-error-marker-border-color": {
+      "$value": "{plx-sys.feedback-danger-soft-border}",
+      "$type": "color",
+      "$description": "ProgressSteps step that needs attention: the marker's edge."
+    },
+    "progress-steps-error-marker-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "ProgressSteps step that needs attention: the alert icon."
+    },
+    "progress-steps-label-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "ProgressSteps: a done or current step's name."
+    },
+    "progress-steps-label-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "ProgressSteps: the step names' size."
+    },
+    "progress-steps-label-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "ProgressSteps: the step names' weight."
+    },
+    "progress-steps-current-label-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "ProgressSteps current step: its name's weight."
+    },
+    "progress-steps-upcoming-label-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ProgressSteps upcoming step: its name."
+    },
+    "progress-steps-error-label-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "ProgressSteps step that needs attention: its name."
+    },
+    "progress-steps-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ProgressSteps: a step's second line."
+    },
+    "progress-steps-description-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ProgressSteps: the second line's size."
+    },
+    "progress-steps-description-indent": {
+      "$value": "calc({plx-comp.progress-steps-marker-size} + {plx-comp.progress-steps-head-gap})",
+      "$type": "dimension",
+      "$description": "ProgressSteps: the second line starts under the name (past the marker and its gap)."
+    },
+    "progress-steps-connector-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "ProgressSteps connector: the line after an upcoming or current step."
+    },
+    "progress-steps-complete-connector-color": {
+      "$value": "{plx-sys.state-selected-border}",
+      "$type": "color",
+      "$description": "ProgressSteps connector: the line after a done step."
+    },
+    "progress-steps-connector-thickness": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "ProgressSteps connector: the line's thickness."
+    },
+    "progress-steps-connector-min-length": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "ProgressSteps connector: its least length (horizontal: it grows to fill the row)."
+    },
+    "progress-steps-connector-margin": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ProgressSteps connector: the space between the line and the steps on either side."
+    },
+    "progress-steps-vertical-connector-indent": {
+      "$value": "calc(({plx-comp.progress-steps-marker-size} - {plx-comp.progress-steps-connector-thickness}) / 2)",
+      "$type": "dimension",
+      "$description": "ProgressSteps vertical: the connector runs down the middle of the marker column."
+    },
+    "progress-steps-vertical-connector-min-length": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "ProgressSteps vertical: the connector's least height between two steps."
+    },
+    "progress-steps-vertical-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "ProgressSteps vertical: the space above and below each connector and under each name."
+    },
+    "progress-steps-button-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "ProgressSteps clickable step: the corners of its hover fill and focus outline."
+    },
+    "progress-steps-button-padding": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "ProgressSteps clickable step: the space around the marker and name, inside the hover fill."
+    },
+    "progress-steps-button-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "ProgressSteps clickable step with the pointer over it: the hover fill."
+    },
+    "progress-steps-button-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "ProgressSteps clickable step with keyboard focus: the outline."
+    },
+    "progress-steps-button-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "ProgressSteps clickable step with keyboard focus: the outline's width."
+    },
+    "progress-steps-compact-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "ProgressSteps compact: the space between the text and the bar."
+    },
+    "progress-steps-count-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "ProgressSteps compact: the Step 2 of 5 text."
+    },
+    "progress-steps-count-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "ProgressSteps compact: the text's size."
+    },
+    "progress-steps-count-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "ProgressSteps compact: the Step 2 of 5 part's weight (the step's name after it is regular)."
+    },
+    "progress-steps-count-label-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "ProgressSteps compact: the step's name after the count."
+    },
+    "progress-steps-segments-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "ProgressSteps compact: the space between two segments."
+    },
+    "progress-steps-segment-height": {
+      "$value": "{plx-comp.progress-bar-sm-track-height}",
+      "$type": "dimension",
+      "$description": "ProgressSteps compact: a segment's height (the small ProgressBar's track)."
+    },
+    "progress-steps-segment-radius": {
+      "$value": "{plx-comp.progress-bar-fill-radius}",
+      "$type": "dimension",
+      "$description": "ProgressSteps compact: a segment's corners (ProgressBar's)."
+    },
+    "progress-steps-segment-background": {
+      "$value": "{plx-comp.progress-bar-track-background}",
+      "$type": "color",
+      "$description": "ProgressSteps compact: an upcoming step's segment (ProgressBar's track)."
+    },
+    "progress-steps-segment-done-background": {
+      "$value": "{plx-comp.progress-bar-info-fill}",
+      "$type": "color",
+      "$description": "ProgressSteps compact: a done or current step's segment (ProgressBar's fill)."
+    },
+    "progress-steps-segment-error-background": {
+      "$value": "{plx-comp.progress-bar-danger-fill}",
+      "$type": "color",
+      "$description": "ProgressSteps compact: a failed step's segment (ProgressBar's danger fill)."
+    }
   }
 }

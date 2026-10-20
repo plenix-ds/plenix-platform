@@ -51,6 +51,7 @@
 .plx-nav-list__entry:is(:hover, .is-hover, :focus-within){--plx-comp-nav-list-context-pin-opacity:1;}
 .plx-nav-list__pin:where(:not(.plx-nav-list__pin--pinned)){opacity:var(--plx-comp-nav-list-context-pin-opacity,0);}
 .plx-nav-list__pin--pinned{--plx-state-nav-list-pin-text:var(--plx-comp-nav-list-entry-pinned-pin-text);opacity:1;}
+.plx-nav-list__pin--pinned:where(:not(:hover, .is-hover)){--plx-state-nav-list-pin-background:var(--plx-comp-nav-list-pin-pinned-background);}
 .plx-nav-list__pin:is(:hover, .is-hover){--plx-state-nav-list-pin-background:var(--plx-comp-nav-list-pin-hover-background);}
 .plx-nav-list__pin:is(:hover, .is-hover):where(:not(.plx-nav-list__pin--pinned)){--plx-state-nav-list-pin-text:var(--plx-comp-nav-list-pin-hover-text);}
 .plx-nav-list__pin:focus-visible,

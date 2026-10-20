@@ -14,7 +14,12 @@
     "file-row-selected-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "FileRow: row fill while selected (state-selected)."
+      "$description": "FileRow: row fill while selected (state-selected).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
     },
     "file-row-border-color": {
       "$value": "{plx-sys.border-divider}",

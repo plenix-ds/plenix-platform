@@ -27155,7 +27155,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the tree
    Behavior:
      Each item passes its own open/selected state to Icon.filled; child icons do not follow an ancestor item.
-     Forced-color selection publishes --plx-comp-icon-forced-color from the selected row.
      The tree is one Tab stop.
      Arrow Up and Down move through the visible items.
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.

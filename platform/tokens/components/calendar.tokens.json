@@ -1,42 +1,210 @@
 {
   "$description": "Calendar (platform/components/Calendar, library wave 7, lane A): its component tokens. Today is DateBadge's today (the action color), a chosen day the selected state, a range the selected fill between its ends; every color an existing role.",
   "plx-comp": {
-    "calendar-months-gap": { "$value": "{plx-sys.space-inline-lg}", "$type": "dimension", "$description": "Calendar with two months: the space between the months (and between their lines when they stack)." },
-    "calendar-month-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "Calendar month: the space between the month's header and its grid." },
-    "calendar-header-min-height": { "$value": "{plx-sys.control-height-toolbar}", "$type": "dimension", "$description": "Calendar header: its least height (the arrow buttons' height)." },
-    "calendar-header-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "Calendar header: the space between the arrows and the month's name." },
-    "calendar-nav-space-size": { "$value": "{plx-sys.control-height-toolbar}", "$type": "dimension", "$description": "Calendar header: the room kept where a month of two has no arrow, so both names stay centered over their grids." },
-    "calendar-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Calendar header: the month's name." },
-    "calendar-title-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "Calendar header: the month's name size." },
-    "calendar-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Calendar header: the month's name weight." },
-    "calendar-weekday-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Calendar: the weekday names over the columns." },
-    "calendar-weekday-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Calendar: the weekday names' size (DateBadge's weekday size)." },
-    "calendar-weekday-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Calendar: the weekday names' weight." },
-    "calendar-weekday-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "Calendar: the height of the weekday row." },
-    "calendar-cell-size": { "$value": "{plx-sys.control-height-standard}", "$type": "dimension", "$description": "Calendar: the width and height of a day (the standard control height of the density; 44px on touch)." },
-    "calendar-day-radius": { "$value": "{plx-comp.date-badge-day-radius}", "$type": "dimension", "$description": "Calendar day: its corners (DateBadge's day: round)." },
-    "calendar-day-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Calendar day: the number." },
-    "calendar-day-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "Calendar day: the number's size." },
-    "calendar-day-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Calendar day: its edge (clear until it is hovered or chosen)." },
-    "calendar-day-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "Calendar day with the pointer over it: the hover fill." },
-    "calendar-day-hover-border-color": { "$value": "{plx-sys.state-hover-border}", "$type": "color", "$description": "Calendar day with the pointer over it: the hover edge." },
-    "calendar-day-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "Calendar day with keyboard focus: the focus outline, drawn inside the day (the navigation list's)." },
-    "calendar-day-focus-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Calendar day with keyboard focus: the outline's width." },
-    "calendar-day-focus-outline-offset": { "$value": "calc({plx-sys.border-width-medium} * -1)", "$type": "dimension", "$description": "Calendar day with keyboard focus: the outline sits inside the day." },
-    "calendar-day-today-background": { "$value": "{plx-comp.date-badge-today-day-background}", "$type": "color", "$description": "Calendar today: DateBadge's today fill (the action color)." },
-    "calendar-day-today-text": { "$value": "{plx-comp.date-badge-today-day-text}", "$type": "color", "$description": "Calendar today: the number on the action color." },
-    "calendar-day-today-font-weight": { "$value": "{plx-comp.date-badge-today-day-font-weight}", "$type": "fontWeight", "$description": "Calendar today: the number's weight." },
-    "calendar-day-selected-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "Calendar chosen day (and a range's two ends): the selected fill." },
-    "calendar-day-selected-border-color": { "$value": "{plx-sys.state-selected-border}", "$type": "color", "$description": "Calendar chosen day: the selected edge." },
-    "calendar-day-selected-text": { "$value": "{plx-sys.selected-content}", "$type": "color", "$description": "Calendar chosen day: the number in the selected content color." },
-    "calendar-day-selected-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Calendar chosen day: the number's weight." },
-    "calendar-day-outside-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Calendar: a day of the weeks around the month (one month shown)." },
-    "calendar-day-disabled-text": { "$value": "{plx-sys.content-disabled}", "$type": "color", "$description": "Calendar: a day that cannot be chosen." },
-    "calendar-range-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "Calendar range: the fill between the start and the end (and behind the ends' inner halves)." },
-    "calendar-range-text": { "$value": "{plx-sys.selected-content}", "$type": "color", "$description": "Calendar range: the numbers between the start and the end." },
-    "calendar-range-half": { "$value": "50%", "$type": "dimension", "$description": "Calendar range: at the start and the end the fill covers the cell's inner half only." },
-    "calendar-week-number-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Calendar week numbers: the number before each week." },
-    "calendar-week-number-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Calendar week numbers: the data font (Reddit Mono)." },
-    "calendar-week-number-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Calendar week numbers: their size (the weekday names')." }
+    "calendar-months-gap": {
+      "$value": "{plx-sys.space-inline-lg}",
+      "$type": "dimension",
+      "$description": "Calendar with two months: the space between the months (and between their lines when they stack)."
+    },
+    "calendar-month-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Calendar month: the space between the month's header and its grid."
+    },
+    "calendar-header-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "Calendar header: its least height (the arrow buttons' height)."
+    },
+    "calendar-header-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Calendar header: the space between the arrows and the month's name."
+    },
+    "calendar-nav-space-size": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "Calendar header: the room kept where a month of two has no arrow, so both names stay centered over their grids."
+    },
+    "calendar-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Calendar header: the month's name."
+    },
+    "calendar-title-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Calendar header: the month's name size."
+    },
+    "calendar-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Calendar header: the month's name weight."
+    },
+    "calendar-weekday-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Calendar: the weekday names over the columns."
+    },
+    "calendar-weekday-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "Calendar: the weekday names' size (DateBadge's weekday size)."
+    },
+    "calendar-weekday-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Calendar: the weekday names' weight."
+    },
+    "calendar-weekday-height": {
+      "$value": "{plx-sys.label-height-20px}",
+      "$type": "dimension",
+      "$description": "Calendar: the height of the weekday row."
+    },
+    "calendar-cell-size": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "Calendar: the width and height of a day (the standard control height of the density; 44px on touch)."
+    },
+    "calendar-day-radius": {
+      "$value": "{plx-comp.date-badge-day-radius}",
+      "$type": "dimension",
+      "$description": "Calendar day: its corners (DateBadge's day: round)."
+    },
+    "calendar-day-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Calendar day: the number."
+    },
+    "calendar-day-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Calendar day: the number's size."
+    },
+    "calendar-day-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Calendar day: its edge (clear until it is hovered or chosen)."
+    },
+    "calendar-day-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "Calendar day with the pointer over it: the hover fill."
+    },
+    "calendar-day-hover-border-color": {
+      "$value": "{plx-sys.state-hover-border}",
+      "$type": "color",
+      "$description": "Calendar day with the pointer over it: the hover edge."
+    },
+    "calendar-day-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "Calendar day with keyboard focus: the focus outline, drawn inside the day (the navigation list's)."
+    },
+    "calendar-day-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "Calendar day with keyboard focus: the outline's width."
+    },
+    "calendar-day-focus-outline-offset": {
+      "$value": "calc({plx-sys.border-width-medium} * -1)",
+      "$type": "dimension",
+      "$description": "Calendar day with keyboard focus: the outline sits inside the day."
+    },
+    "calendar-day-today-background": {
+      "$value": "{plx-comp.date-badge-today-day-background}",
+      "$type": "color",
+      "$description": "Calendar today: DateBadge's today fill (the action color)."
+    },
+    "calendar-day-today-text": {
+      "$value": "{plx-comp.date-badge-today-day-text}",
+      "$type": "color",
+      "$description": "Calendar today: the number on the action color."
+    },
+    "calendar-day-today-font-weight": {
+      "$value": "{plx-comp.date-badge-today-day-font-weight}",
+      "$type": "fontWeight",
+      "$description": "Calendar today: the number's weight."
+    },
+    "calendar-day-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "Calendar chosen day (and a range's two ends): the selected fill.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "calendar-day-selected-border-color": {
+      "$value": "{plx-sys.state-selected-border}",
+      "$type": "color",
+      "$description": "Calendar chosen day: the selected edge.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "calendar-day-selected-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "Calendar chosen day: the number in the selected content color.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
+    },
+    "calendar-day-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Calendar chosen day: the number's weight."
+    },
+    "calendar-day-outside-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "Calendar: a day of the weeks around the month (one month shown)."
+    },
+    "calendar-day-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "Calendar: a day that cannot be chosen.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
+    },
+    "calendar-range-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "Calendar range: the fill between the start and the end (and behind the ends' inner halves)."
+    },
+    "calendar-range-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "Calendar range: the numbers between the start and the end."
+    },
+    "calendar-range-half": {
+      "$value": "50%",
+      "$type": "dimension",
+      "$description": "Calendar range: at the start and the end the fill covers the cell's inner half only."
+    },
+    "calendar-week-number-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "Calendar week numbers: the number before each week."
+    },
+    "calendar-week-number-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "Calendar week numbers: the data font (Reddit Mono)."
+    },
+    "calendar-week-number-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "Calendar week numbers: their size (the weekday names')."
+    }
   }
 }

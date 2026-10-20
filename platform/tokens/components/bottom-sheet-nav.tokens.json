@@ -1,19 +1,80 @@
 {
   "$description": "BottomSheetNav (platform/patterns/BottomSheetNav, library wave 7, lane C): its component tokens, the grid of tiles. The sheet, the list and the tiles' states are the Sheet's, NavList's and RowButton's own tokens.",
   "plx-comp": {
-    "bottom-sheet-nav-grid-gap": { "$value": "{plx-sys.space-cluster-xs}", "$type": "dimension", "$description": "BottomSheetNav: the space between tiles." },
-    "bottom-sheet-nav-tile-min-width": { "$value": "{plx-ref.size-80px}", "$type": "dimension", "$description": "BottomSheetNav: a tile's narrowest width (three or four to a row on a phone)." },
-    "bottom-sheet-nav-tile-min-height": { "$value": "{plx-ref.size-72px}", "$type": "dimension", "$description": "BottomSheetNav: a tile's least height (well over the touch target)." },
-    "bottom-sheet-nav-tile-radius": { "$value": "{plx-sys.radius-control}", "$type": "dimension", "$description": "BottomSheetNav: a tile's corners (its hover and selected fill)." },
-    "bottom-sheet-nav-tile-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "BottomSheetNav: the space above the icon and under the label." },
-    "bottom-sheet-nav-tile-padding-inline": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "BottomSheetNav: the space beside the label." },
-    "bottom-sheet-nav-tile-gap": { "$value": "{plx-ref.size-4px}", "$type": "dimension", "$description": "BottomSheetNav: the space between a tile's icon and its label." },
-    "bottom-sheet-nav-tile-icon-size": { "$value": "{plx-sys.control-icon-prominent}", "$type": "dimension", "$description": "BottomSheetNav: a tile's icon." },
-    "bottom-sheet-nav-tile-icon-color": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "BottomSheetNav: a tile's icon." },
-    "bottom-sheet-nav-tile-current-icon-color": { "$value": "{plx-sys.selected-content}", "$type": "color", "$description": "BottomSheetNav: the current place's icon (filled), as in the bottom navigation bar." },
-    "bottom-sheet-nav-tile-label-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "BottomSheetNav: a tile's label." },
-    "bottom-sheet-nav-tile-label-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "BottomSheetNav: a tile label's typeface (UI text)." },
-    "bottom-sheet-nav-tile-label-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "BottomSheetNav: a tile label's size (as the bottom navigation bar's labels)." },
-    "bottom-sheet-nav-tile-label-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "BottomSheetNav: a tile label's line height." }
+    "bottom-sheet-nav-grid-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: the space between tiles."
+    },
+    "bottom-sheet-nav-tile-min-width": {
+      "$value": "{plx-ref.size-80px}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: a tile's narrowest width (three or four to a row on a phone)."
+    },
+    "bottom-sheet-nav-tile-min-height": {
+      "$value": "{plx-ref.size-72px}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: a tile's least height (well over the touch target)."
+    },
+    "bottom-sheet-nav-tile-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: a tile's corners (its hover and selected fill)."
+    },
+    "bottom-sheet-nav-tile-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: the space above the icon and under the label."
+    },
+    "bottom-sheet-nav-tile-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: the space beside the label."
+    },
+    "bottom-sheet-nav-tile-gap": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: the space between a tile's icon and its label."
+    },
+    "bottom-sheet-nav-tile-icon-size": {
+      "$value": "{plx-sys.control-icon-prominent}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: a tile's icon."
+    },
+    "bottom-sheet-nav-tile-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "BottomSheetNav: a tile's icon."
+    },
+    "bottom-sheet-nav-tile-current-icon-color": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "BottomSheetNav: the current place's icon (filled), as in the bottom navigation bar.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
+    },
+    "bottom-sheet-nav-tile-label-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "BottomSheetNav: a tile's label."
+    },
+    "bottom-sheet-nav-tile-label-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "BottomSheetNav: a tile label's typeface (UI text)."
+    },
+    "bottom-sheet-nav-tile-label-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: a tile label's size (as the bottom navigation bar's labels)."
+    },
+    "bottom-sheet-nav-tile-label-line-height": {
+      "$value": "{plx-sys.label-height-16px}",
+      "$type": "dimension",
+      "$description": "BottomSheetNav: a tile label's line height."
+    }
   }
 }

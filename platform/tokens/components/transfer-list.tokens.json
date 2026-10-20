@@ -1,40 +1,195 @@
 {
   "$description": "TransferList (platform/components/TransferList, library wave 7, lane C): its component tokens. The move and order buttons are Buttons, the search fields SearchFields and the marks the Checkbox control, each on its own tokens.",
   "plx-comp": {
-    "transfer-list-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "TransferList: the space between the two lists and the move buttons." },
-    "transfer-list-moves-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "TransferList: the space between the move buttons." },
-    "transfer-list-panel-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "TransferList: a list's surface." },
-    "transfer-list-panel-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "TransferList: a list's frame." },
-    "transfer-list-panel-focus-border-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "TransferList: a list's frame while its listbox has keyboard focus (the border color only, no ring)." },
-    "transfer-list-panel-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "TransferList: a list's frame width." },
-    "transfer-list-panel-radius": { "$value": "{plx-sys.radius-surface-8px}", "$type": "dimension", "$description": "TransferList: a list's corners (an 8px frame)." },
-    "transfer-list-header-shadow": { "$value": "inset 0 calc({plx-sys.border-width-thin} * -1) 0 {plx-sys.border-divider}", "$type": "shadow", "$description": "TransferList: the divider under a list's header, drawn inside it." },
-    "transfer-list-header-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "TransferList: the space between the header's checkbox, title, count and buttons." },
-    "transfer-list-header-min-height": { "$value": "{plx-ref.size-40px}", "$type": "dimension", "$description": "TransferList: a list header's height (room for the xs order buttons)." },
-    "transfer-list-header-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "TransferList: the header's inset at its start and end (the checkbox lines up with the rows' checkboxes)." },
-    "transfer-list-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "TransferList: a list's title." },
-    "transfer-list-title-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "TransferList: the title's typeface (UI text)." },
-    "transfer-list-title-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "TransferList: the title's size." },
-    "transfer-list-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "TransferList: the title's weight." },
-    "transfer-list-meta-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "TransferList: the header's count (2/12) and an item's meta value." },
-    "transfer-list-meta-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "TransferList: counts and meta values are technical values: the data font (Reddit Mono)." },
-    "transfer-list-meta-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "TransferList: the size of the count and the meta values." },
-    "transfer-list-tools-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "TransferList: the space between Move up and Move down." },
-    "transfer-list-search-padding": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "TransferList: the inset around a list's search field." },
-    "transfer-list-list-height-sm": { "$value": "{plx-ref.size-200px}", "$type": "dimension", "$description": "TransferList: a list's height at size sm." },
-    "transfer-list-list-height-md": { "$value": "{plx-ref.size-280px}", "$type": "dimension", "$description": "TransferList: a list's height at size md (the default)." },
-    "transfer-list-list-height-lg": { "$value": "{plx-ref.size-400px}", "$type": "dimension", "$description": "TransferList: a list's height at size lg." },
-    "transfer-list-list-padding-block": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "TransferList: the space above the first row and under the last." },
-    "transfer-list-option-height": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "TransferList: a row's height (one line; a virtualized list counts its gaps in rows of this height)." },
-    "transfer-list-option-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "TransferList: the space between a row's checkbox, label and meta value." },
-    "transfer-list-option-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "TransferList: a row's inset at its start and end." },
-    "transfer-list-option-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "TransferList: a row's label." },
-    "transfer-list-option-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "TransferList: a row's label size." },
-    "transfer-list-option-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "TransferList: a row under the pointer, and the active row while the list has keyboard focus." },
-    "transfer-list-option-selected-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "TransferList: a checked row." },
-    "transfer-list-option-selected-active-background": { "$value": "{plx-sys.state-selected-pressed}", "$type": "color", "$description": "TransferList: a checked row that is also the active row while the list has keyboard focus." },
-    "transfer-list-option-disabled-text": { "$value": "{plx-sys.content-disabled}", "$type": "color", "$description": "TransferList: a row that cannot be moved." },
-    "transfer-list-empty-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "TransferList: No items and No matches." },
-    "transfer-list-empty-padding": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "TransferList: the inset around No items." }
+    "transfer-list-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "TransferList: the space between the two lists and the move buttons."
+    },
+    "transfer-list-moves-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "TransferList: the space between the move buttons."
+    },
+    "transfer-list-panel-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "TransferList: a list's surface."
+    },
+    "transfer-list-panel-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "TransferList: a list's frame."
+    },
+    "transfer-list-panel-focus-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "TransferList: a list's frame while its listbox has keyboard focus (the border color only, no ring)."
+    },
+    "transfer-list-panel-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "TransferList: a list's frame width."
+    },
+    "transfer-list-panel-radius": {
+      "$value": "{plx-sys.radius-surface-8px}",
+      "$type": "dimension",
+      "$description": "TransferList: a list's corners (an 8px frame)."
+    },
+    "transfer-list-header-shadow": {
+      "$value": "inset 0 calc({plx-sys.border-width-thin} * -1) 0 {plx-sys.border-divider}",
+      "$type": "shadow",
+      "$description": "TransferList: the divider under a list's header, drawn inside it."
+    },
+    "transfer-list-header-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "TransferList: the space between the header's checkbox, title, count and buttons."
+    },
+    "transfer-list-header-min-height": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "TransferList: a list header's height (room for the xs order buttons)."
+    },
+    "transfer-list-header-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "TransferList: the header's inset at its start and end (the checkbox lines up with the rows' checkboxes)."
+    },
+    "transfer-list-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "TransferList: a list's title."
+    },
+    "transfer-list-title-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "TransferList: the title's typeface (UI text)."
+    },
+    "transfer-list-title-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "TransferList: the title's size."
+    },
+    "transfer-list-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "TransferList: the title's weight."
+    },
+    "transfer-list-meta-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "TransferList: the header's count (2/12) and an item's meta value."
+    },
+    "transfer-list-meta-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "TransferList: counts and meta values are technical values: the data font (Reddit Mono)."
+    },
+    "transfer-list-meta-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "TransferList: the size of the count and the meta values."
+    },
+    "transfer-list-tools-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "TransferList: the space between Move up and Move down."
+    },
+    "transfer-list-search-padding": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "TransferList: the inset around a list's search field."
+    },
+    "transfer-list-list-height-sm": {
+      "$value": "{plx-ref.size-200px}",
+      "$type": "dimension",
+      "$description": "TransferList: a list's height at size sm."
+    },
+    "transfer-list-list-height-md": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension",
+      "$description": "TransferList: a list's height at size md (the default)."
+    },
+    "transfer-list-list-height-lg": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "TransferList: a list's height at size lg."
+    },
+    "transfer-list-list-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "TransferList: the space above the first row and under the last."
+    },
+    "transfer-list-option-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension",
+      "$description": "TransferList: a row's height (one line; a virtualized list counts its gaps in rows of this height)."
+    },
+    "transfer-list-option-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "TransferList: the space between a row's checkbox, label and meta value."
+    },
+    "transfer-list-option-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "TransferList: a row's inset at its start and end."
+    },
+    "transfer-list-option-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "TransferList: a row's label."
+    },
+    "transfer-list-option-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "TransferList: a row's label size."
+    },
+    "transfer-list-option-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "TransferList: a row under the pointer, and the active row while the list has keyboard focus."
+    },
+    "transfer-list-option-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "TransferList: a checked row.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "transfer-list-option-selected-active-background": {
+      "$value": "{plx-sys.state-selected-pressed}",
+      "$type": "color",
+      "$description": "TransferList: a checked row that is also the active row while the list has keyboard focus.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "transfer-list-option-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "TransferList: a row that cannot be moved.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
+    },
+    "transfer-list-empty-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "TransferList: No items and No matches."
+    },
+    "transfer-list-empty-padding": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "TransferList: the inset around No items."
+    }
   }
 }

@@ -34,6 +34,8 @@
 /* expect: condition */ @media (prefers-reduced-motion: reduce){:root{--plx-ref-motion-duration-fast:0s;}}
 /* expect: condition */ @media (forced-colors: active){:root{--plx-sys-focus-color:Highlight;}}
 /* expect: condition */ :root[data-plx-density-changing]{--plx-ref-motion-duration-fast:0s;}
+/* expect: condition */ @media (forced-colors: active){[data-plx-density]{--plx-comp-chip-selected-background:Highlight;}}
+/* expect: fail condition-not-token */ @media (forced-colors: active){[data-plx-floating]{--plx-x:1;}}
 /* expect: fail combinator */ .plx-card .plx-card__title{font-weight:600;}
 /* expect: fail combinator */ .plx-toolbar > .plx-button{flex-shrink:0;}
 /* expect: fail combinator */ .plx-tabs__tab + .plx-tabs__tab{margin-inline-start:0;}

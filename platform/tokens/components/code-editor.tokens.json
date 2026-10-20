@@ -49,7 +49,12 @@
     "code-editor-disabled-text": {
       "$value": "{plx-comp.input-disabled-text}",
       "$type": "color",
-      "$description": "CodeEditor disabled: the code in the disabled color (no syntax colors read as active)."
+      "$description": "CodeEditor disabled: the code in the disabled color (no syntax colors read as active).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
     },
     "code-editor-text": {
       "$value": "{plx-comp.code-block-pre-text}",

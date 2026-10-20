@@ -19,7 +19,6 @@
 .plx-tree__label{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-tree__meta{color:var(--plx-comp-tree-meta-text);flex-shrink:0;font-family:var(--plx-comp-tree-meta-font-family);font-size:var(--plx-comp-tree-meta-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 
-@media (forced-colors: active){.plx-tree__item.is-selected>.plx-tree__row{--plx-comp-icon-forced-color:HighlightText;}}
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-tree__row{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
 /* pressed (batch 238; moved from motion.css): a step darker than its hover while held. The rollout joins it to this

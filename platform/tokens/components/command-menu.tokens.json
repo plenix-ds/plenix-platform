@@ -1,34 +1,155 @@
 {
   "$description": "CommandMenu (platform/components/CommandMenu, library wave 5, lane C): its component tokens. The field is SearchField's; the rows follow the menu (height, text, group labels) with the Combobox active fill; nothing here adds a color.",
   "plx-comp": {
-    "command-menu-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "CommandMenu: the space between the page row, the field and the list." },
-    "command-menu-page-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "CommandMenu: the space between Back and the page name." },
-    "command-menu-page-min-height": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "CommandMenu: the page row height (the inline-action role of its Back button)." },
-    "command-menu-page-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "CommandMenu: the page name." },
-    "command-menu-page-title-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "CommandMenu: the page name, in the label face." },
-    "command-menu-page-title-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "CommandMenu: the page name size." },
-    "command-menu-page-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "CommandMenu: the page name weight." },
-    "command-menu-list-max-height": { "$value": "{plx-ref.size-320px}", "$type": "dimension", "$description": "CommandMenu: the list scrolls past 320px." },
-    "command-menu-group-label-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "CommandMenu: a group heading (as the menu group label)." },
-    "command-menu-group-label-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "CommandMenu: a group heading face." },
-    "command-menu-group-label-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "CommandMenu: a group heading size (as the menu group label)." },
-    "command-menu-group-label-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "CommandMenu: a group heading weight (as the menu group label)." },
-    "command-menu-group-label-padding-block-start": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "CommandMenu: the space above a group heading." },
-    "command-menu-group-label-padding-block-end": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "CommandMenu: the space under a group heading." },
-    "command-menu-item-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "CommandMenu: a command label." },
-    "command-menu-item-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "CommandMenu: a command label size (as the menu item)." },
-    "command-menu-item-min-height": { "$value": "{plx-sys.control-height-standard}", "$type": "dimension", "$description": "CommandMenu: a command row height (the standard control role, as the menu item)." },
-    "command-menu-item-padding-block": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "CommandMenu: the space above and under a row with a description." },
-    "command-menu-item-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "CommandMenu: a row inline padding (as the menu item)." },
-    "command-menu-item-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "CommandMenu: the space between a row icon, text, shortcut and chevron." },
-    "command-menu-item-radius": { "$value": "{plx-sys.radius-control}", "$type": "dimension", "$description": "CommandMenu: a row corners (as the Combobox options)." },
-    "command-menu-item-active-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "CommandMenu: the active row fill (as the Combobox active option)." },
-    "command-menu-item-disabled-text": { "$value": "{plx-sys.content-disabled}", "$type": "color", "$description": "CommandMenu: a disabled command." },
-    "command-menu-icon-color": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "CommandMenu: a row icon and chevron." },
-    "command-menu-description-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "CommandMenu: a command description line." },
-    "command-menu-description-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "CommandMenu: a command description size." },
-    "command-menu-status-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "CommandMenu: the Loading and No results rows (as the Combobox empty row)." },
-    "command-menu-status-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "CommandMenu: the Loading and No results size." },
-    "command-menu-status-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "CommandMenu: the space above and under the Loading and No results rows." }
+    "command-menu-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the space between the page row, the field and the list."
+    },
+    "command-menu-page-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the space between Back and the page name."
+    },
+    "command-menu-page-min-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the page row height (the inline-action role of its Back button)."
+    },
+    "command-menu-page-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "CommandMenu: the page name."
+    },
+    "command-menu-page-title-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "CommandMenu: the page name, in the label face."
+    },
+    "command-menu-page-title-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the page name size."
+    },
+    "command-menu-page-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "CommandMenu: the page name weight."
+    },
+    "command-menu-list-max-height": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the list scrolls past 320px."
+    },
+    "command-menu-group-label-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "CommandMenu: a group heading (as the menu group label)."
+    },
+    "command-menu-group-label-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "CommandMenu: a group heading face."
+    },
+    "command-menu-group-label-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "CommandMenu: a group heading size (as the menu group label)."
+    },
+    "command-menu-group-label-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "CommandMenu: a group heading weight (as the menu group label)."
+    },
+    "command-menu-group-label-padding-block-start": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the space above a group heading."
+    },
+    "command-menu-group-label-padding-block-end": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the space under a group heading."
+    },
+    "command-menu-item-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "CommandMenu: a command label."
+    },
+    "command-menu-item-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "CommandMenu: a command label size (as the menu item)."
+    },
+    "command-menu-item-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "CommandMenu: a command row height (the standard control role, as the menu item)."
+    },
+    "command-menu-item-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the space above and under a row with a description."
+    },
+    "command-menu-item-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "CommandMenu: a row inline padding (as the menu item)."
+    },
+    "command-menu-item-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the space between a row icon, text, shortcut and chevron."
+    },
+    "command-menu-item-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "CommandMenu: a row corners (as the Combobox options)."
+    },
+    "command-menu-item-active-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "CommandMenu: the active row fill (as the Combobox active option)."
+    },
+    "command-menu-item-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "CommandMenu: a disabled command.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
+    },
+    "command-menu-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "CommandMenu: a row icon and chevron."
+    },
+    "command-menu-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "CommandMenu: a command description line."
+    },
+    "command-menu-description-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "CommandMenu: a command description size."
+    },
+    "command-menu-status-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "CommandMenu: the Loading and No results rows (as the Combobox empty row)."
+    },
+    "command-menu-status-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the Loading and No results size."
+    },
+    "command-menu-status-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "CommandMenu: the space above and under the Loading and No results rows."
+    }
   }
 }

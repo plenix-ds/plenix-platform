@@ -121,6 +121,9 @@
         "plenix": {
           "group": "interactive",
           "purpose": "A selected item: rows, list items, tabs."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       }
     },
@@ -131,6 +134,9 @@
         "plenix": {
           "group": "interactive",
           "purpose": "A selected item being pressed."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       }
     },
@@ -151,6 +157,9 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The edge of a selected item."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       }
     },
@@ -171,6 +180,9 @@
         "plenix": {
           "group": "text",
           "purpose": "Secondary text: metadata, descriptions."
+        },
+        "com.plenix": {
+          "contrastMore": "{plx-sys.content-default}"
         }
       }
     },
@@ -181,6 +193,9 @@
         "plenix": {
           "group": "text",
           "purpose": "Tertiary text: hints, counts."
+        },
+        "com.plenix": {
+          "contrastMore": "{plx-sys.content-default}"
         }
       }
     },
@@ -191,6 +206,9 @@
         "plenix": {
           "group": "text",
           "purpose": "Text and icons of a disabled control."
+        },
+        "com.plenix": {
+          "forcedColors": "GrayText"
         }
       }
     },
@@ -232,6 +250,9 @@
         "plenix": {
           "group": "border",
           "purpose": "The default edge of cards, panels and fields."
+        },
+        "com.plenix": {
+          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -253,6 +274,9 @@
         "plenix": {
           "group": "border",
           "purpose": "Light separators inside a surface."
+        },
+        "com.plenix": {
+          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -343,6 +367,9 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The focus indicator (a focused field’s border, the focus outline)."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       }
     },
@@ -1168,6 +1195,9 @@
         "plenix": {
           "group": "border",
           "purpose": "Dividers between the items of a list."
+        },
+        "com.plenix": {
+          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -1211,6 +1241,9 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The edge of a field or control (3:1)."
+        },
+        "com.plenix": {
+          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -1358,6 +1391,9 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The edge of a selected card or tile."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       }
     },
@@ -1368,6 +1404,9 @@
         "plenix": {
           "group": "interactive",
           "purpose": "Text of a selected row or item."
+        },
+        "com.plenix": {
+          "forcedColors": "HighlightText"
         }
       }
     },
@@ -1745,6 +1784,9 @@
         "plenix": {
           "group": "accent",
           "purpose": "A selected item on the frost surface."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       }
     },
@@ -1950,6 +1992,9 @@
         "plenix": {
           "group": "component",
           "purpose": "DataGrid: a selected row."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       },
       "$description": "The selected row: blue-200 (owner, 2026-10-15)."
@@ -1961,6 +2006,9 @@
         "plenix": {
           "group": "component",
           "purpose": "DataGrid: a selected row under the pointer."
+        },
+        "com.plenix": {
+          "forcedColors": "Highlight"
         }
       },
       "$description": "A selected row under the pointer: gray-100 (owner, 2026-10-15)."
@@ -1972,6 +2020,9 @@
         "plenix": {
           "group": "component",
           "purpose": "DataGrid: text of a selected row."
+        },
+        "com.plenix": {
+          "forcedColors": "HighlightText"
         }
       }
     },

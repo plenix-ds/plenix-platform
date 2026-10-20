@@ -1,35 +1,160 @@
 {
   "$description": "SearchResult and SearchResultGroup (platform/components/SearchResult, library wave 8, lane C): their component tokens. The thumbnail, the avatar, the group's heading and its link are Thumbnail's, Avatar's, SectionHeading's and Link's own.",
   "plx-comp": {
-    "search-result-group-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "SearchResultGroup: the space between the heading, the results and the link to all." },
-    "search-result-group-count-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "SearchResultGroup: the count after the heading." },
-    "search-result-group-count-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "SearchResultGroup: the count's font (a technical value: Reddit Mono)." },
-    "search-result-group-count-margin-inline-start": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "SearchResultGroup: the space between the heading and its count." },
-    "search-result-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "SearchResult: the space between the thumbnail or avatar, the text and the actions." },
-    "search-result-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "SearchResult: the space above and under a result." },
-    "search-result-border-bottom-color": { "$value": "{plx-sys.border-divider}", "$type": "color", "$description": "SearchResult: the line between results." },
-    "search-result-border-bottom-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "SearchResult: the line's width." },
-    "search-result-interactive-margin-inline": { "$value": "calc({plx-sys.space-inset-sm} * -1)", "$type": "dimension", "$description": "SearchResult: a result that opens reaches past the list's edges by its inset, so only its fill does." },
-    "search-result-interactive-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "SearchResult: the inset of a result that opens (room for its hover fill)." },
-    "search-result-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "SearchResult: the fill of a result under the pointer." },
-    "search-result-selected-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "SearchResult: the fill of the result whose preview is shown." },
-    "search-result-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "SearchResult: the focus ring around a result whose link has keyboard focus." },
-    "search-result-focus-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "SearchResult: the focus ring's width." },
-    "search-result-focus-outline-offset": { "$value": "calc({plx-sys.border-width-medium} * -1)", "$type": "dimension", "$description": "SearchResult: the focus ring sits inside the row." },
-    "search-result-text-row-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "SearchResult: the space between the path, the title, the snippet and the meta." },
-    "search-result-path-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "SearchResult: the path above the title." },
-    "search-result-path-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "SearchResult: the path's size." },
-    "search-result-path-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "SearchResult: the space around the chevrons of the path." },
-    "search-result-separator-size": { "$value": "{plx-sys.icon-size-xs}", "$type": "dimension", "$description": "SearchResult: the chevron between the names of the path." },
-    "search-result-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "SearchResult: the title." },
-    "search-result-title-font-size": { "$value": "{plx-ref.font-size-14}", "$type": "dimension", "$description": "SearchResult: the title's size." },
-    "search-result-title-font-weight": { "$value": "{plx-sys.font-weight-medium}", "$type": "fontWeight", "$description": "SearchResult: the title's weight." },
-    "search-result-match-font-weight": { "$value": "{plx-sys.font-weight-bold}", "$type": "fontWeight", "$description": "SearchResult: the words searched for, in the title and the snippet (bold, never a color)." },
-    "search-result-snippet-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "SearchResult: the words around the match." },
-    "search-result-snippet-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "SearchResult: the snippet's size." },
-    "search-result-meta-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "SearchResult: the details under the snippet." },
-    "search-result-meta-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "SearchResult: the details' size." },
-    "search-result-actions-gap": { "$value": "{plx-sys.space-cluster-xs}", "$type": "dimension", "$description": "SearchResult: the space between the actions." },
-    "search-result-actions-z-index": { "$value": "{plx-sys.layer-raised}", "$type": "number", "$description": "SearchResult: the actions sit above the title's link, which covers the row." }
+    "search-result-group-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "SearchResultGroup: the space between the heading, the results and the link to all."
+    },
+    "search-result-group-count-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "SearchResultGroup: the count after the heading."
+    },
+    "search-result-group-count-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "SearchResultGroup: the count's font (a technical value: Reddit Mono)."
+    },
+    "search-result-group-count-margin-inline-start": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "SearchResultGroup: the space between the heading and its count."
+    },
+    "search-result-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "SearchResult: the space between the thumbnail or avatar, the text and the actions."
+    },
+    "search-result-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "SearchResult: the space above and under a result."
+    },
+    "search-result-border-bottom-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "SearchResult: the line between results."
+    },
+    "search-result-border-bottom-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "SearchResult: the line's width."
+    },
+    "search-result-interactive-margin-inline": {
+      "$value": "calc({plx-sys.space-inset-sm} * -1)",
+      "$type": "dimension",
+      "$description": "SearchResult: a result that opens reaches past the list's edges by its inset, so only its fill does."
+    },
+    "search-result-interactive-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "SearchResult: the inset of a result that opens (room for its hover fill)."
+    },
+    "search-result-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "SearchResult: the fill of a result under the pointer."
+    },
+    "search-result-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "SearchResult: the fill of the result whose preview is shown.",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
+    },
+    "search-result-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "SearchResult: the focus ring around a result whose link has keyboard focus."
+    },
+    "search-result-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "SearchResult: the focus ring's width."
+    },
+    "search-result-focus-outline-offset": {
+      "$value": "calc({plx-sys.border-width-medium} * -1)",
+      "$type": "dimension",
+      "$description": "SearchResult: the focus ring sits inside the row."
+    },
+    "search-result-text-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "SearchResult: the space between the path, the title, the snippet and the meta."
+    },
+    "search-result-path-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "SearchResult: the path above the title."
+    },
+    "search-result-path-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "SearchResult: the path's size."
+    },
+    "search-result-path-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "SearchResult: the space around the chevrons of the path."
+    },
+    "search-result-separator-size": {
+      "$value": "{plx-sys.icon-size-xs}",
+      "$type": "dimension",
+      "$description": "SearchResult: the chevron between the names of the path."
+    },
+    "search-result-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "SearchResult: the title."
+    },
+    "search-result-title-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension",
+      "$description": "SearchResult: the title's size."
+    },
+    "search-result-title-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "SearchResult: the title's weight."
+    },
+    "search-result-match-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight",
+      "$description": "SearchResult: the words searched for, in the title and the snippet (bold, never a color)."
+    },
+    "search-result-snippet-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "SearchResult: the words around the match."
+    },
+    "search-result-snippet-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "SearchResult: the snippet's size."
+    },
+    "search-result-meta-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "SearchResult: the details under the snippet."
+    },
+    "search-result-meta-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "SearchResult: the details' size."
+    },
+    "search-result-actions-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension",
+      "$description": "SearchResult: the space between the actions."
+    },
+    "search-result-actions-z-index": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "SearchResult: the actions sit above the title's link, which covers the row."
+    }
   }
 }

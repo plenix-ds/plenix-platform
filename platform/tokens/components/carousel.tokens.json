@@ -69,7 +69,12 @@
     "carousel-dot-current-background": {
       "$value": "{plx-sys.content-default}",
       "$type": "color",
-      "$description": "Carousel: current page dot color (content-default)."
+      "$description": "Carousel: current page dot color (content-default).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
     },
     "carousel-dot-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",

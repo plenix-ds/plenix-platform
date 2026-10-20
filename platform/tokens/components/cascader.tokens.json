@@ -79,7 +79,12 @@
     "cascader-disabled-field-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "Cascader disabled field: text color (content-disabled)."
+      "$description": "Cascader disabled field: text color (content-disabled).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "GrayText"
+        }
+      }
     },
     "cascader-popup-background": {
       "$value": "{plx-sys.surface-overlay}",
@@ -189,7 +194,12 @@
     "cascader-match-selected-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "Cascader match selected: text color (selected-content)."
+      "$description": "Cascader match selected: text color (selected-content).",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
     },
     "cascader-match-selected-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
