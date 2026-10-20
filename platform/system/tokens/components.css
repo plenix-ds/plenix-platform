@@ -1940,8 +1940,6 @@
   --plx-comp-entity-header-padding-block: var(--plx-sys-space-inset-lg);
   --plx-comp-entity-header-padding-inline-end: var(--plx-ref-space-20px);
   --plx-comp-entity-header-padding-inline-start: var(--plx-ref-space-20px);
-  --plx-comp-entity-header-avatar-border-color: var(--plx-sys-border-default);
-  --plx-comp-entity-header-avatar-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-entity-header-tile-height: var(--plx-ref-size-44px);
   --plx-comp-entity-header-tile-border-color: var(--plx-sys-border-default);
   --plx-comp-entity-header-tile-radius: var(--plx-sys-radius-avatar-4px);
@@ -2501,7 +2499,7 @@
   --plx-comp-avatar-presence-ring-width: var(--plx-sys-border-width-medium);
   --plx-comp-avatar-presence-offset: calc(-1 * var(--plx-sys-border-width-medium));
   --plx-comp-avatar-border-width: var(--plx-sys-border-width-thin);
-  --plx-comp-avatar-border-color: var(--plx-sys-border-media);
+  --plx-comp-avatar-border-color: var(--plx-sys-border-subtle);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-avatar-gender-icon-size: 75%;

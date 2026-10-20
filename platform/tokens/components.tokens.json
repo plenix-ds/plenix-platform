@@ -7941,14 +7941,6 @@
       "$value": "{plx-ref.space-20px}",
       "$type": "dimension"
     },
-    "entity-header-avatar-border-color": {
-      "$value": "{plx-sys.border-default}",
-      "$type": "color"
-    },
-    "entity-header-avatar-border-width": {
-      "$value": "{plx-sys.border-width-thin}",
-      "$type": "dimension"
-    },
     "entity-header-tile-height": {
       "$value": "{plx-ref.size-44px}",
       "$type": "dimension"
