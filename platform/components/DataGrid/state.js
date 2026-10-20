@@ -11,12 +11,14 @@ export function writeView(key, view) { if (key) try { localStorage.setItem('plx-
 export const visibilityOf = hidden => Object.fromEntries((Array.isArray(hidden) ? hidden : []).map(field => [field, false]));
 export const valueAt = (row, field) => String(field).split('.').reduce((value, key) => value == null ? undefined : value[key], row);
 export function opening(props) {
-  const saved = readView(props.storageKey) || {}, options = props.options || {}, known = new Set(props.columns.map(c=>c.field));
-  const fields = values => Array.isArray(values) ? values.filter(f=>known.has(f)) : undefined;
-  const widths = saved.widths && typeof saved.widths==='object' ? Object.fromEntries(Object.entries(saved.widths).filter(([key,value])=>known.has(key)&&Number.isFinite(parseFloat(value))&&parseFloat(value)>0)) : {};
+  const saved = props.onViewChange ? {} : readView(props.storageKey) || {}, options = props.options || {}, known = new Set(props.columns.map(c=>c.field));
+  const fields = values => Array.isArray(values) ? [...new Set(values.filter(f=>known.has(f)))] : undefined;
+  const groups=value=>Array.isArray(value)?fields(value).length?fields(value):false:typeof value==='string'?(known.has(value)?value:false):value;
+  const storedWidths=props.columnWidths??saved.widths;
+  const widths = storedWidths && typeof storedWidths==='object' ? Object.fromEntries(Object.entries(storedWidths).filter(([key,value])=>known.has(key)&&Number.isFinite(parseFloat(value))&&parseFloat(value)>0)) : {};
   const step = ['short','medium','tall','extra-tall'].includes(saved.rowHeight) ? saved.rowHeight : props.rowHeight || 'short';
-  return { sorting: normalizeSort(props.sort?.length ? props.sort : saved.sort || options.initialSort),
+  return { sorting: normalizeSort(Array.isArray(props.sort) ? props.sort : saved.sort || options.initialSort).filter(item=>known.has(item.id)),
     order: fields(props.columnOrder) || fields(saved.order) || props.columns.map(c => c.field),
     visibility: visibilityOf(fields(props.hiddenColumns) || fields(saved.hidden)), widths,
-    groupBy:props.groupBy??saved.groupBy??options.groupBy??false, collapsed:Array.isArray(saved.collapsed)?saved.collapsed:[], rowHeight: step, wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false };
+    groupBy:groups(props.groupBy??saved.groupBy??options.groupBy??false), collapsed:Array.isArray(props.collapsedGroups)?props.collapsedGroups:Array.isArray(saved.collapsed)?saved.collapsed:[], rowHeight: step, wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false };
 }
