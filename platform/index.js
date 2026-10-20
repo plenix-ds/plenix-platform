@@ -11,6 +11,7 @@ export { EventChip } from './components/EventChip/EventChip.jsx';
 export { RadioTiles } from './components/RadioTiles/RadioTiles.jsx';
 export { StatusDot } from './components/StatusDot/StatusDot.jsx';
 export { Tag, Chip, TagList, TagInput } from './components/Tag/Tag.jsx';
+export { DataPill } from './components/DataPill/DataPill.jsx';
 export { Kbd } from './components/Kbd/Kbd.jsx';
 export { Avatar, initialsOf } from './components/Avatar/Avatar.jsx';
 export { Divider } from './components/Divider/Divider.jsx';

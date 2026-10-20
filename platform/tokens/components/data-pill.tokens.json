@@ -1,0 +1,14 @@
+{
+  "$description": "DataPill (platform/components/DataPill): a value shown as a pill (owner, 2026-10-19). Colors come from the category palette ([data-plx-category]).",
+  "plx-comp": {
+    "data-pill-min-height": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "DataPill: its height, the density's inline control height (it never makes a row taller)." },
+    "data-pill-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "DataPill: its inline padding." },
+    "data-pill-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "DataPill: between the icon and the value." },
+    "data-pill-radius": { "$value": "{plx-sys.radius-pill-4px}", "$type": "dimension", "$description": "DataPill: its corners." },
+    "data-pill-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "DataPill: its border." },
+    "data-pill-icon-size": { "$value": "{plx-sys.icon-size-sm}", "$type": "dimension", "$description": "DataPill: its icon." },
+    "data-pill-font-weight": { "$value": "{plx-sys.font-weight-medium}", "$type": "fontWeight", "$description": "DataPill: the value's weight." },
+    "data-pill-line-height": { "$value": "{plx-ref.line-height-tight}", "$type": "number", "$description": "DataPill: the value's line height." },
+    "data-pill-data-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "DataPill: a technical value's font (Reddit Mono)." }
+  }
+}

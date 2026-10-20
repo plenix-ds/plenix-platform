@@ -5,6 +5,10 @@
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
        minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
+     cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
+       (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
+       icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
+       pill: false (as DataTable).
      Table.preload(): compatibility no-op; the renderer is already bundled.
    Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
      Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row. The table grows with its rows and never scrolls internally.
@@ -12,9 +16,9 @@
 import React from 'react';
 import { DataTableNext } from '../DataTableNext/DataTableNext.jsx';
 
-export function Table({ label, data, columns = [], index, empty, narrow = 'table', headerVisible = true, className }) {
-  const staticColumns = React.useMemo(() => columns.map(({ title, field, kind, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty }) =>
-    ({ title, field, kind, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty, headerSort: false, resizable: false })), [columns]);
-  return <DataTableNext isStatic label={label} data={data} columns={staticColumns} index={index} empty={empty} narrow={narrow} headerVisible={headerVisible} className={className} headerMenu={false} />;
+export function Table({ label, data, columns = [], index, empty, narrow = 'table', headerVisible = true, cells = 'text', className }) {
+  const staticColumns = React.useMemo(() => columns.map(({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty }) =>
+    ({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty, headerSort: false, resizable: false })), [columns]);
+  return <DataTableNext isStatic label={label} data={data} columns={staticColumns} index={index} empty={empty} narrow={narrow} headerVisible={headerVisible} cells={cells} className={className} headerMenu={false} />;
 }
 Table.preload = () => {};

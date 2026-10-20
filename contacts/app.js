@@ -386,6 +386,7 @@ const CAL_EVENTS = exports.CAL_EVENTS = [{
 const CONTACTS = exports.CONTACTS = [{
   id: 1,
   name: "Maya Chen",
+  gender: "female",
   role: "Creative Director",
   co: "Apex Co",
   av: "M",
@@ -395,6 +396,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 2,
   name: "Jeff Torres",
+  gender: "male",
   role: "Plumber",
   co: "ABC Plumbing",
   av: "J",
@@ -404,6 +406,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 3,
   name: "Luis Herrera",
+  gender: "male",
   role: "CPA",
   co: "Herrera Tax",
   av: "L",
@@ -413,6 +416,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 4,
   name: "James Whitfield",
+  gender: "male",
   role: "CEO",
   co: "Apex Co",
   av: "J",
@@ -422,6 +426,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 5,
   name: "Sarah Morgan",
+  gender: "female",
   role: "Friend",
   co: "",
   av: "S",
@@ -2567,12 +2572,17 @@ function ContactsScreen({
     inset: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
     name: c.name,
+    gender: c.gender,
     size: "md"
   }), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "none"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "heading"
-  }, c.name), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataPill, {
+    variant: "plain",
+    person: true,
+    gender: c.gender
+  }, c.name)), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "caption"
   }, c.co))))))), /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, contact ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "lg"
@@ -2580,7 +2590,8 @@ function ContactsScreen({
     title: contact.name,
     media: {
       person: contact.name,
-      color: contact.avColor
+      color: contact.avColor,
+      gender: contact.gender
     },
     subtitle: [contact.role, contact.co].filter(Boolean).join(' · '),
     facts: [{

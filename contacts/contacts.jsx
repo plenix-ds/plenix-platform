@@ -3,7 +3,7 @@
    Screens (Platforms Standard 4.3, 5.2): the list (#/) and a contact (#/contact/<id>), a history entry each; at Narrow one
    pane at a time (SecondaryPane detailOpen) with Back to the list; the list's scroll position is kept
    (plenix.contacts.view). */
-import { Avatar, Button, EmptyState, EntityHeader, Icon, Inline, PageContent, RowButton, SecondaryPane, Stack, Text, useAppLayout, useViewState } from 'plenix-platform';
+import { Avatar, Button, DataPill, EmptyState, EntityHeader, Icon, Inline, PageContent, RowButton, SecondaryPane, Stack, Text, useAppLayout, useViewState } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { CONTACTS } from '../suite/shared.jsx';
 const { useState } = React;
@@ -24,9 +24,9 @@ export function ContactsScreen({ screen }) {
           {CONTACTS.map((c) => (
             <RowButton key={c.id} selected={!narrow && sel === c.id} onClick={() => screen.open(['contact', c.id])}>
               <Inline gap="sm" inset="sm">
-                <Avatar name={c.name} size="md" />
+                <Avatar name={c.name} gender={c.gender} size="md" />
                 <Stack gap="none">
-                  <Text variant="heading">{c.name}</Text>
+                  <Text variant="heading"><DataPill variant="plain" person gender={c.gender}>{c.name}</DataPill></Text>
                   <Text variant="caption">{c.co}</Text>
                 </Stack>
               </Inline>
@@ -37,7 +37,7 @@ export function ContactsScreen({ screen }) {
       <PageContent>
         {contact ? (
           <Stack gap="lg">
-            <EntityHeader title={contact.name} media={{ person: contact.name, color: contact.avColor }} subtitle={[contact.role, contact.co].filter(Boolean).join(' · ')}
+            <EntityHeader title={contact.name} media={{ person: contact.name, color: contact.avColor, gender: contact.gender }} subtitle={[contact.role, contact.co].filter(Boolean).join(' · ')}
               facts={[{ label: 'Last message', value: contact.last, data: true }]}
               actions={[{ icon: 'phone', label: 'Call' }, { icon: 'mail', label: 'Email' }, { icon: 'message', label: 'Message', primary: true },
                 { icon: 'pencil', label: 'Edit' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />

@@ -96,11 +96,11 @@ export const CAL_EVENTS=[
   {id:7,date:28,title:"Spain trip — depart",   time:"All day", color:"green",cal:"travel"},
 ];
 export const CONTACTS=[
-  {id:1,name:"Maya Chen",       role:"Creative Director",co:"Apex Co",     av:"M",avColor:"blue",last:"10:24 AM",msg:"Sounds great — I'll have concepts by Friday."},
-  {id:2,name:"Jeff Torres",     role:"Plumber",          co:"ABC Plumbing",av:"J",avColor:"brown",last:"9:41 AM", msg:"We can do Thursday the 12th at 2pm."},
-  {id:3,name:"Luis Herrera",    role:"CPA",              co:"Herrera Tax", av:"L",avColor:"purple",last:"Yesterday",msg:"Your Q1 tax docs are attached."},
-  {id:4,name:"James Whitfield", role:"CEO",              co:"Apex Co",     av:"J",avColor:"blue",last:"Yesterday",msg:"RE: SOW — looks good, one small change."},
-  {id:5,name:"Sarah Morgan",    role:"Friend",           co:"",            av:"S",avColor:"green",last:"Mar 3",    msg:"Did you decide on the cabinet color?"},
+  {id:1,name:"Maya Chen",       gender:"female",role:"Creative Director",co:"Apex Co",     av:"M",avColor:"blue",last:"10:24 AM",msg:"Sounds great — I'll have concepts by Friday."},
+  {id:2,name:"Jeff Torres",     gender:"male",role:"Plumber",          co:"ABC Plumbing",av:"J",avColor:"brown",last:"9:41 AM", msg:"We can do Thursday the 12th at 2pm."},
+  {id:3,name:"Luis Herrera",    gender:"male",role:"CPA",              co:"Herrera Tax", av:"L",avColor:"purple",last:"Yesterday",msg:"Your Q1 tax docs are attached."},
+  {id:4,name:"James Whitfield", gender:"male",role:"CEO",              co:"Apex Co",     av:"J",avColor:"blue",last:"Yesterday",msg:"RE: SOW — looks good, one small change."},
+  {id:5,name:"Sarah Morgan",    gender:"female",role:"Friend",           co:"",            av:"S",avColor:"green",last:"Mar 3",    msg:"Did you decide on the cabinet color?"},
 ];
 export const THREADS=[
   {id:1,name:"Maya Chen",       av:"M",avColor:"blue",ch:"WhatsApp",preview:"Sounds great — I'll have concepts by Friday.",time:"10:24 AM",unread:2},

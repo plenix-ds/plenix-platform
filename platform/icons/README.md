@@ -16,7 +16,8 @@ https://github.com/google/material-design-icons/tree/737e3324305806514d7909874fa
 
 Rules: never edit, redraw, re-pad or re-weight a file; never mix in another set. To add an icon: pick the symbol on
 https://fonts.google.com/icons?icon.style=Sharp, download its four files from the same commit, add its name to
-`map.json`, build. A concept with no symbol is listed for a decision, not drawn.
+`map.json`, build. A concept with no symbol is listed for a decision, not drawn. Icons Plenix draws itself on the owner's decision live apart
+in `custom/` (see its README: person-male, person-female, 2026-10-19); build-icons.js reads it after this folder.
 
 ## The full library (batch 273)
 

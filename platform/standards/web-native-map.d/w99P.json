@@ -1,0 +1,9 @@
+{
+  "$description": "Part w99P: the iOS and Android counterparts of DataPill (owner, 2026-10-19): a value shown as a pill reads as a label on both platforms. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "data-display|Data pill": {
+      "ios": ["ios-content|Labels"],
+      "android": ["android-content|Label"]
+    }
+  }
+}

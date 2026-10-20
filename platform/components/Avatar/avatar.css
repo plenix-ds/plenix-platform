@@ -13,3 +13,7 @@
 /* presence (library wave 4): the StatusDot at the bottom end corner, ringed in the surface color so it reads on a picture */
 .plx-avatar--presence{position:relative;}
 .plx-avatar .plx-avatar__presence{border-bottom-color:var(--plx-comp-avatar-presence-ring-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-avatar-presence-ring-width);border-left-color:var(--plx-comp-avatar-presence-ring-color);border-left-style:solid;border-left-width:var(--plx-comp-avatar-presence-ring-width);border-right-color:var(--plx-comp-avatar-presence-ring-color);border-right-style:solid;border-right-width:var(--plx-comp-avatar-presence-ring-width);border-top-color:var(--plx-comp-avatar-presence-ring-color);border-top-style:solid;border-top-width:var(--plx-comp-avatar-presence-ring-width);box-sizing:content-box;inset-block-end:var(--plx-comp-avatar-presence-offset);inset-inline-end:var(--plx-comp-avatar-presence-offset);position:absolute;}
+/* gender (no picture): the person icon on the soft category color (blue or pink), the icon in its darkest shade; the icon
+   takes most of the square */
+.plx-avatar--gender[data-plx-category]{--plx-comp-avatar-own-background:var(--plx-comp-category-soft);--plx-comp-avatar-own-content:var(--plx-comp-category-on-soft);}
+.plx-avatar__gender{--plx-comp-icon-size:var(--plx-comp-avatar-gender-icon-size);}

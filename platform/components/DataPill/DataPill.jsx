@@ -1,0 +1,58 @@
+/* Plenix · DataPill
+   Summary: A value shown as a pill: the value itself (a case number, a person, a date, a price, an airport code, Yes or
+     No) at the size of the text around it, in a color and with an icon that say something about it (owner, 2026-10-19:
+     "data placed organized in pill style"). It never makes a row taller: its height is the density's inline control
+     height. A person's pill (or plain name) carries their gender: blue with the male icon, pink with the female icon.
+   Usage:
+     <DataPill data>CTM-2026-00061</DataPill>
+     <DataPill gender="female" fill>Marina Abdel-Malik</DataPill>
+     <DataPill tone="green" variant="solid" data>$639</DataPill>
+     <DataPill tone="orange" icon="calendar">Sat May 9</DataPill>
+     <DataPill gender="male" variant="plain">Patrick O'Brien</DataPill>
+   Props:
+     children: the value
+     tone: its color, a category color by name (CATEGORY_COLORS: red, green, yellow, blue, orange, purple, cyan, magenta,
+       lime, pink, teal, lavender, beige, maroon, mint, olive, apricot, navy, grey); default grey
+     variant: "soft" (default: a soft fill, a 1px border two shades darker, the text in the darkest shade) | "solid" (the
+       color as the fill, its own text color: a strong value such as a price band) | "plain" (no box: the icon and the
+       text in the color, a name in running text)
+     icon: an icon name before the value (a calendar for a date, the sun or the moon for a time)
+     data: a technical value (a code, a number, a time, a price): the data font
+     fill: the pill takes the whole width of its cell or container
+     gender: "male" | "female": a person's pill: blue with the person-male icon or pink with the person-female icon, and
+       the gender said to assistive technology; any other value (or none) with a person: grey with the default person
+       icon. Set person to show the default icon when the gender is unknown
+     person: the value is a person (the person icon when no gender is known)
+     strings: the words it announces, for other languages: { male: "male", female: "female" }
+     className: more classes on the pill
+     ...rest: other attributes go on the pill
+   Behavior:
+     The text never wraps; a value too long for a filled pill ends in an ellipsis and its full text is the tooltip (title).
+     The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
+   Notes:
+     Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
+     DataTable: a column's pill option draws each value as a DataPill (DataTable.jsx).
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.js';
+import { Icon } from '../Icon/Icon.jsx';
+
+const STRINGS = { male: 'male', female: 'female' };
+const GENDER = { male: { tone: 'blue', icon: 'person-male' }, female: { tone: 'pink', icon: 'person-female' } };
+
+export function DataPill({ children, tone, variant = 'soft', icon, data = false, fill = false, gender, person = false, strings, className, ...rest }) {
+  devWarn('DataPill', { variant }, { variant: ['soft', 'solid', 'plain'] });
+  const t = Object.assign({}, STRINGS, strings);
+  const g = GENDER[gender];
+  const color = g ? g.tone : (tone || (variant === 'plain' ? undefined : 'grey'));   // a plain value with no color keeps the text color
+  const glyph = g ? g.icon : (icon || (person ? 'person' : null));
+  const title = fill && (typeof children === 'string' || typeof children === 'number') ? String(children) : undefined;
+  return (
+    <span className={cx('plx-data-pill', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className)} data-plx-category={color} title={title} {...rest}>
+      {glyph ? <Icon name={glyph} size="sm" className="plx-data-pill__icon" filled={!!g} /> : null}
+      <span className="plx-data-pill__value">{children}</span>
+      {g ? <span className="plx-visually-hidden">{', ' + t[gender]}</span> : null}
+    </span>
+  );
+}

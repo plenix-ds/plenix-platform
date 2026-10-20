@@ -2502,6 +2502,9 @@
   --plx-comp-avatar-presence-offset: calc(-1 * var(--plx-sys-border-width-medium));
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-avatar-gender-icon-size: 75%;
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-avatar-group-ring: 0 0 0 var(--plx-sys-border-width-medium) var(--plx-sys-surface-default);
   --plx-comp-avatar-group-focus-ring: 0 0 0 var(--plx-sys-border-width-medium) var(--plx-sys-focus-ring-color);
   --plx-comp-avatar-group-xs-overlap: calc(-1 * var(--plx-ref-size-4px));
@@ -3209,6 +3212,17 @@
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-country-select-max-width: var(--plx-sys-field-width-lg);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-pill-min-height: var(--plx-sys-control-height-inline);
+  --plx-comp-data-pill-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-data-pill-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-data-pill-radius: var(--plx-sys-radius-pill-4px);
+  --plx-comp-data-pill-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-data-pill-icon-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-data-pill-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-data-pill-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-data-pill-data-font-family: var(--plx-sys-font-data);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-table-footer-border-color: var(--plx-sys-data-table-line);

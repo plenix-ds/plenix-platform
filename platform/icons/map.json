@@ -139,6 +139,8 @@
     "panel-right-open": "right_panel_open",
     "pencil": "edit",
     "person": "person",
+    "person-female": "person_female",
+    "person-male": "person_male",
     "phone": "call",
     "pin": "push_pin",
     "pin-filled": "push_pin#fill",

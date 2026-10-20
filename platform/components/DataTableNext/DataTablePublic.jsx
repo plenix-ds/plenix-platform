@@ -53,6 +53,11 @@
      movableRows with onRowMove(record, toIndex), movableColumns: drag, with the same moves in the menus
      rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
        button (default false: the page's ViewMenu sets these)
+     cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value is a DataPill with its column's type
+       icon (a calendar for a date, a person for a person; a person's value.gender makes it blue or pink with the male or
+       female icon); technical values (numbers, currency, dates, sizes, kind data) in the data font. A column chooses per value
+       with pill(value, record) → { tone, icon, variant, data, gender, fill } (a price band green to red, the sun or the moon
+       by the hour) or keeps its plain value with pill: false. Tags, badges and deleted values keep their own look
      mode: "fill" (default: fills the room left on screen, virtual rows) | "pages" (pageSize, pageSizes, a footer with
        Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
      fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning

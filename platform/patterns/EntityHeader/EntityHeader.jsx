@@ -15,7 +15,8 @@
      kind: "page" (default) | "section": a section header (32px icon, 15px title, 4px rule, a summary instead of tiles)
      title: the entity's name; 18px medium (15px in a section); a long name wraps, never cut off
      subtitle: the line under the title: the entity's description, where it belongs or who it involves; wraps
-     media: the entity's picture, always shown: { person, src, color } an Avatar; { icon, hue } a generic icon for the
+     media: the entity's picture, always shown: { person, src, color, gender } an Avatar (gender: its icon when there is no
+       picture); { icon, hue } a generic icon for the
        entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray) or on the surface
        (hue: surface, a white tile); or an element. 44px square (32px in a section)
      status: the Status tile, first in the details, in its tone as a whole: { tone, label, icon } (tone: a Badge tone:
@@ -61,7 +62,7 @@ const MAX_BUTTONS = 4;   // at most four buttons in the aside: three actions, th
 function Media({ media, section }) {
   let inner;
   if (React.isValidElement(media)) inner = media;
-  else if (media.person || media.src) inner = <Avatar className="plx-entity-header__avatar" name={media.person} src={media.src} color={media.color} size={section ? 'md' : 'xl'} />;
+  else if (media.person || media.src) inner = <Avatar className="plx-entity-header__avatar" name={media.person} src={media.src} color={media.color} gender={media.gender} size={section ? 'md' : 'xl'} />;
   else {
     const hue = HUES.indexOf(media.hue) >= 0 ? media.hue : 'gray';
     inner = <span className="plx-entity-header__tile" data-plx-media-hue={hue} aria-hidden="true"><Icon name={media.icon} size={section ? 'md' : 'lg'} /></span>;

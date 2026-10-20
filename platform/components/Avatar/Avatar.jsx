@@ -13,6 +13,8 @@
        its text color (otherwise the theme's avatar colors)
      category: instead of color, a category color by name (an avatar standing for a category): the color as its fill,
        black or white text (batch 290)
+     gender: "male" | "female": with no picture, the person-male or person-female icon on soft blue or soft pink (the
+       category palette) instead of the initials; any other value keeps the initials (owner, 2026-10-19)
      label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
        assistive technology
      presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
@@ -38,6 +40,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
+import { Icon } from '../Icon/Icon.jsx';
 import { StatusDot } from '../StatusDot/StatusDot.jsx';
 
 const SIZES = [20, 24, 28, 32, 40, 48, 64];   // the scale its classes define (plx-avatar--24 …)
@@ -56,7 +59,9 @@ export function initialsOf(name) {
   return (first + last).toUpperCase();
 }
 
-export function Avatar({ name, src, initials, size = 'sm', color, category, label, presence, strings, className, ...rest }) {
+const GENDER = { male: { tone: 'blue', icon: 'person-male' }, female: { tone: 'pink', icon: 'person-female' } };
+
+export function Avatar({ name, src, initials, size = 'sm', color, category, gender, label, presence, strings, className, ...rest }) {
   devWarn('Avatar', { size }, { size: ['2xs','xs','sm','md','lg','xl','2xl'] });
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
@@ -67,9 +72,11 @@ export function Avatar({ name, src, initials, size = 'sm', color, category, labe
   // a picture that fails to load falls back to the initials (batch 215)
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => { setFailed(false); }, [src]);
+  const picture = src && !failed;
+  const g = !picture ? GENDER[gender] : null;   // no picture and a known gender: the gender icon
   return (
-    <span className={cx('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', className)} data-plx-avatar="" data-plx-color={color || undefined} data-plx-category={category || undefined} role={label ? 'img' : undefined}
-      aria-label={named} aria-hidden={label ? undefined : true} {...rest}>{src && !failed ? <img className="plx-avatar__image" src={src} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} /> : text}
+    <span className={cx('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className)} data-plx-avatar="" data-plx-color={g ? undefined : color || undefined} data-plx-category={g ? g.tone : category || undefined} role={label ? 'img' : undefined}
+      aria-label={named} aria-hidden={label ? undefined : true} {...rest}>{picture ? <img className="plx-avatar__image" src={src} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} /> : g ? <Icon name={g.icon} filled className="plx-avatar__gender" /> : text}
       {p ? <StatusDot tone={p} size={DOT[s]} icon={DOT[s] !== 'sm'} className="plx-avatar__presence" /> : null}</span>
   );
 }
