@@ -78,6 +78,12 @@ const VIEWS = STATES.filter((s) => inScope(s[0]) && (!ONLY || ONLY.test(s[0])));
 if (!VIEWS.length) changed.none('DATA_GRIDS_OK 0/0 table views');
 changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
 
+// Keep the horizontal header/frozen-column regression in the behavior CI group.
+if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, 'data-grid-scroll-147.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+
 (async () => {
   const server = await serve(PORT);
   const browser = await launch();

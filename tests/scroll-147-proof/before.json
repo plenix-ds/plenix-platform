@@ -13,9 +13,9 @@
   {
     "dir": "ltr",
     "name": "resize wider",
-    "scroll": 362,
+    "scroll": 300,
     "headerScroll": 0,
-    "alignment": 362,
+    "alignment": 300,
     "frozen": 0,
     "headerVisible": true,
     "frozenBackground": false
@@ -23,9 +23,9 @@
   {
     "dir": "ltr",
     "name": "resize narrower",
-    "scroll": 362,
+    "scroll": 300,
     "headerScroll": 0,
-    "alignment": 362,
+    "alignment": 300,
     "frozen": 0,
     "headerVisible": true,
     "frozenBackground": false
@@ -33,9 +33,9 @@
   {
     "dir": "ltr",
     "name": "sort",
-    "scroll": 362,
+    "scroll": 300,
     "headerScroll": 0,
-    "alignment": 362,
+    "alignment": 300,
     "frozen": 0,
     "headerVisible": true,
     "frozenBackground": false
@@ -43,9 +43,9 @@
   {
     "dir": "ltr",
     "name": "hide column",
-    "scroll": 322,
+    "scroll": 300,
     "headerScroll": 0,
-    "alignment": 322,
+    "alignment": 300,
     "frozen": 0,
     "headerVisible": true,
     "frozenBackground": false
@@ -53,9 +53,9 @@
   {
     "dir": "ltr",
     "name": "reorder columns",
-    "scroll": 322,
+    "scroll": 300,
     "headerScroll": 0,
-    "alignment": 322,
+    "alignment": 300,
     "frozen": 0,
     "headerVisible": true,
     "frozenBackground": false
@@ -63,9 +63,9 @@
   {
     "dir": "ltr",
     "name": "resize column",
-    "scroll": 322,
+    "scroll": 300,
     "headerScroll": 0,
-    "alignment": 322,
+    "alignment": 300,
     "frozen": 0,
     "headerVisible": true,
     "frozenBackground": false
@@ -73,14 +73,26 @@
   {
     "dir": "ltr",
     "name": "multiple frozen columns and custom link",
-    "scroll": 322,
+    "scroll": 300,
     "headerScroll": 0,
     "alignment": 0,
     "frozen": 0,
     "headerVisible": true,
     "frozenBackground": false,
-    "movingC": 322,
+    "movingC": 300,
     "linkDisplay": "inline-flex"
+  },
+  {
+    "dir": "ltr",
+    "name": "opposite-direction content",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 300,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "layoutDirection": "rtl",
+    "valueDirection": "rtl"
   },
   {
     "dir": "rtl",
@@ -164,5 +176,17 @@
     "frozenBackground": false,
     "movingC": -300,
     "linkDisplay": "inline-flex"
+  },
+  {
+    "dir": "rtl",
+    "name": "opposite-direction content",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "layoutDirection": "ltr",
+    "valueDirection": "ltr"
   }
 ]
