@@ -81,7 +81,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { announce } from '../../utils/announce.jsx';
-import { useFloating } from '../../utils/floating.js';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { useOverflow, splitAt } from '../../utils/overflow.js';
 import { Toolbar } from '../Toolbar/Toolbar.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -138,7 +138,9 @@ const USER_STYLE = { SPAN: ['color', 'background-color', 'font-family', 'font-si
 export const RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
 const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
 const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
-const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+// the mention list goes to the top layer only where the browser also places it by anchor (as Menu and Popover): without
+// anchor positioning it stays inline, beside the text, where useFloating's inline placement works (RedSave P-48)
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const MENTION_CLASS = 'plx-rich-text-editor__mention';
 const CHECK_CLASS = 'plx-check__input';
 const USER_CONTENT = 'plx-user-content';

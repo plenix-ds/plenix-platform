@@ -37865,7 +37865,9 @@ const USER_STYLE = {
 const RICH_TEXT_STYLE_PROPERTIES = exports.RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
 const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
 const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
-const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+// the mention list goes to the top layer only where the browser also places it by anchor (as Menu and Popover): without
+// anchor positioning it stays inline, beside the text, where useFloating's inline placement works (RedSave P-48)
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const MENTION_CLASS = 'plx-rich-text-editor__mention';
 const CHECK_CLASS = 'plx-check__input';
 const USER_CONTENT = 'plx-user-content';
