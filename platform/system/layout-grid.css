@@ -6,26 +6,22 @@
    .plx-layout-grid is fluid (the full width); --contained stops it at --plx-sys-layout-grid-contained-max and centers it.
    Children place themselves with the span classes (.plx-span-N, system/grid.css). The window class follows the window
    (media queries: they cannot read tokens, so the conditions repeat the breakpoints --plx-ref-breakpoint-600px and -840px);
-   --narrow, --medium and --wide fix one class, for previews and documentation. Inside an application's main region the
+   --narrow, --medium and --wide fix one class, for previews and documentation (the window ranges leave them alone). Inside an application's main region the
    content grid (.plx-page-grid, system/grid.css) follows the region's width instead.
    .plx-layout-grid__overlay is the dev overlay (platform/dev/grid-overlay.js, ?grid): the columns drawn over the page. */
-.plx-layout-grid{box-sizing:border-box;column-gap:var(--plx-sys-layout-grid-gutter-narrow);display:grid;grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-narrow),minmax(0,1fr));inline-size:100%;min-inline-size:0;padding-inline-end:var(--plx-sys-layout-grid-margin-narrow);padding-inline-start:var(--plx-sys-layout-grid-margin-narrow);}
-@media (min-width: 600px){.plx-layout-grid{column-gap:var(--plx-sys-layout-grid-gutter-medium);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-medium),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-medium);padding-inline-start:var(--plx-sys-layout-grid-margin-medium);}}
-@media (min-width: 840px){.plx-layout-grid{column-gap:var(--plx-sys-layout-grid-gutter-wide);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-wide),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-wide);padding-inline-start:var(--plx-sys-layout-grid-margin-wide);}}
+@property --plx-state-layout-grid-columns{syntax:"*";inherits:false;}
+@property --plx-state-layout-grid-gutter{syntax:"*";inherits:false;}
+@property --plx-state-layout-grid-margin{syntax:"*";inherits:false;}
+/* Narrow is the default: under 600px, and wherever no window class applies */
+.plx-layout-grid{column-gap:var(--plx-state-layout-grid-gutter,var(--plx-sys-layout-grid-gutter-narrow));display:grid;grid-template-columns:repeat(var(--plx-state-layout-grid-columns,var(--plx-sys-layout-grid-columns-narrow)),minmax(0,1fr));inline-size:100%;min-inline-size:0;padding-inline-end:var(--plx-state-layout-grid-margin,var(--plx-sys-layout-grid-margin-narrow));padding-inline-start:var(--plx-state-layout-grid-margin,var(--plx-sys-layout-grid-margin-narrow));}
+@media (600px <= width < 840px){.plx-layout-grid:where(:not(.plx-layout-grid--narrow, .plx-layout-grid--medium, .plx-layout-grid--wide)){--plx-state-layout-grid-columns:var(--plx-sys-layout-grid-columns-medium);--plx-state-layout-grid-gutter:var(--plx-sys-layout-grid-gutter-medium);--plx-state-layout-grid-margin:var(--plx-sys-layout-grid-margin-medium);}}
+@media (width >= 840px){.plx-layout-grid:where(:not(.plx-layout-grid--narrow, .plx-layout-grid--medium, .plx-layout-grid--wide)){--plx-state-layout-grid-columns:var(--plx-sys-layout-grid-columns-wide);--plx-state-layout-grid-gutter:var(--plx-sys-layout-grid-gutter-wide);--plx-state-layout-grid-margin:var(--plx-sys-layout-grid-margin-wide);}}
 .plx-layout-grid--contained{margin-inline-end:auto;margin-inline-start:auto;max-inline-size:var(--plx-sys-layout-grid-contained-max);}
-/* one window class, whatever the window */
-.plx-layout-grid.plx-layout-grid--narrow{column-gap:var(--plx-sys-layout-grid-gutter-narrow);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-narrow),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-narrow);padding-inline-start:var(--plx-sys-layout-grid-margin-narrow);}
-.plx-layout-grid.plx-layout-grid--medium{column-gap:var(--plx-sys-layout-grid-gutter-medium);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-medium),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-medium);padding-inline-start:var(--plx-sys-layout-grid-margin-medium);}
-.plx-layout-grid.plx-layout-grid--wide{column-gap:var(--plx-sys-layout-grid-gutter-wide);grid-template-columns:repeat(var(--plx-sys-layout-grid-columns-wide),minmax(0,1fr));padding-inline-end:var(--plx-sys-layout-grid-margin-wide);padding-inline-start:var(--plx-sys-layout-grid-margin-wide);}
+/* one window class, whatever the window (Narrow is the default values) */
+.plx-layout-grid--medium{--plx-state-layout-grid-columns:var(--plx-sys-layout-grid-columns-medium);--plx-state-layout-grid-gutter:var(--plx-sys-layout-grid-gutter-medium);--plx-state-layout-grid-margin:var(--plx-sys-layout-grid-margin-medium);}
+.plx-layout-grid--wide{--plx-state-layout-grid-columns:var(--plx-sys-layout-grid-columns-wide);--plx-state-layout-grid-gutter:var(--plx-sys-layout-grid-gutter-wide);--plx-state-layout-grid-margin:var(--plx-sys-layout-grid-margin-wide);}
 
-/* ── the overlay: twelve column cells, as many shown as the window class has columns ── */
+/* ── the overlay: twelve column cells; the cells past the grid's columns wrap into rows with no height ── */
 .plx-layout-grid__overlay{block-size:100%;inset-block-start:0;inset-inline-start:0;inline-size:100%;opacity:var(--plx-sys-layout-grid-overlay-opacity);pointer-events:none;position:fixed;z-index:var(--plx-sys-layer-critical);}
-.plx-layout-grid--overlay{block-size:100%;}
+.plx-layout-grid--overlay{block-size:100%;grid-auto-rows:0;grid-template-rows:minmax(0,1fr);}
 .plx-layout-grid__column{background-color:var(--plx-sys-feedback-danger-solid);}
-.plx-layout-grid>.plx-layout-grid__column:nth-child(n+5){display:none;}
-@media (min-width: 600px){.plx-layout-grid>.plx-layout-grid__column:nth-child(n+5){display:block;}.plx-layout-grid>.plx-layout-grid__column:nth-child(n+9){display:none;}}
-@media (min-width: 840px){.plx-layout-grid>.plx-layout-grid__column:nth-child(n+9){display:block;}}
-.plx-layout-grid--narrow>.plx-layout-grid__column:nth-child(n+5){display:none;}
-.plx-layout-grid--medium>.plx-layout-grid__column:nth-child(n+5){display:block;}
-.plx-layout-grid--medium>.plx-layout-grid__column:nth-child(n+9){display:none;}
-.plx-layout-grid--wide>.plx-layout-grid__column:nth-child(n+5){display:block;}

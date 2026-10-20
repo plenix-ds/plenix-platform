@@ -2562,14 +2562,6 @@
    "combinator | .plx-widget-grid__item.is-dragging *": 1,
    "cross-block | .plx-widget-grid__menu.plx-menu-anchor:not(.plx-widget-grid__menu--inline)": 1
   },
-  "platform/system/layout-grid.css": {
-   "combinator | .plx-layout-grid>.plx-layout-grid__column:nth-child(n+5)": 2,
-   "combinator | .plx-layout-grid>.plx-layout-grid__column:nth-child(n+9)": 2,
-   "combinator | .plx-layout-grid--narrow>.plx-layout-grid__column:nth-child(n+5)": 1,
-   "combinator | .plx-layout-grid--medium>.plx-layout-grid__column:nth-child(n+5)": 1,
-   "combinator | .plx-layout-grid--medium>.plx-layout-grid__column:nth-child(n+9)": 1,
-   "combinator | .plx-layout-grid--wide>.plx-layout-grid__column:nth-child(n+5)": 1
-  },
   "platform/system/layout-modes.css": {
    "combinator | :is(.plx-form,.plx-form-section,.plx-fieldset,.plx-field,.plx-settings__row,.plx-dialog,.plx-sheet,.plx-side-panel,.plx-popover,.plx-inline-edit,.plx-find-panel,.plx-wizard) :is(.plx-input:not([class*=\"plx-input--width-\"]),.plx-select:not([class*=\"plx-input--width-\"]),.plx-combobox:not([class*=\"plx-input--width-\"]),.plx-search:not([class*=\"plx-input--width-\"]),.plx-number-input:not([class*=\"plx-input--width-\"]),.plx-date-picker:not([class*=\"plx-input--width-\"]),.plx-time-picker:not([class*=\"plx-input--width-\"]),.plx-tree-select:not([class*=\"plx-input--width-\"]),.plx-country-select:not([class*=\"plx-input--width-\"]),.plx-entity-picker:not([class*=\"plx-input--width-\"]),.plx-relative-date-input:not([class*=\"plx-input--width-\"]),.plx-input-group:not([class*=\"plx-input--width-\"]),.plx-file-input:not([class*=\"plx-input--width-\"]),.plx-mention-input:not([class*=\"plx-input--width-\"]))": 1,
    "combinator | :is(.plx-command-bar,.plx-toolbar,.plx-data-toolbar,.plx-filter-bar,.plx-action-bar,.plx-app-header) :is(.plx-input:not([class*=\"plx-input--width-\"]),.plx-select:not([class*=\"plx-input--width-\"]),.plx-combobox:not([class*=\"plx-input--width-\"]),.plx-search:not([class*=\"plx-input--width-\"]),.plx-number-input:not([class*=\"plx-input--width-\"]),.plx-date-picker:not([class*=\"plx-input--width-\"]),.plx-time-picker:not([class*=\"plx-input--width-\"]),.plx-tree-select:not([class*=\"plx-input--width-\"]),.plx-country-select:not([class*=\"plx-input--width-\"]),.plx-entity-picker:not([class*=\"plx-input--width-\"]),.plx-relative-date-input:not([class*=\"plx-input--width-\"]),.plx-input-group:not([class*=\"plx-input--width-\"]),.plx-file-input:not([class*=\"plx-input--width-\"]),.plx-mention-input:not([class*=\"plx-input--width-\"]))": 1,
