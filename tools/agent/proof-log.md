@@ -30,3 +30,5 @@ is listed here when it is dispatched; all results are read and explained togethe
 | 39432963454 | rerun of 39425820699 (batch 2): that run and 39431690303 failed before any check (a short hash cannot be checked out; dispatch with full hashes) | as batch 2 | as batch 2 | no |
 | 39432982899 | rerun of 39431690303 (batch 3), full hashes | as batch 3 | as batch 3 | no |
 | 39433002238 | rerun of 39432842425 (batch 4, cancelled), full hashes | as batch 4 | as batch 4 | no |
+| 39432963454, 39432982899, 39433002238 | reruns of batches 2-4: failed on icon outline values only (offset/width/color of an outline drawn as none: invisible), from the keylines change; fixed in the next commit | | | no |
+| 39435695402 | df32fc7e..6de21a5e combined proof of batches 2-5 (print tokens, system/, read-only, layout grid, layout modes, Tree, color scheme, nesting retired, Tabs, SegmentedControl, AppHeader, Menu, StatusIcon, Popover; icons back to their old computed outline). Expected VISUAL: disabled tabs; tabs nested in other Tabs; tree page focus sample; field width props inside forms and toolbars | all of batches 2-5 | 22 ds pages / 11 apps | no |
