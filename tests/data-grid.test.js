@@ -84,6 +84,12 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
   }
 }
 
+// Keep the horizontal header/frozen-column regression in the behavior CI group.
+if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, 'data-grid-scroll-147.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+
 (async () => {
   const server = await serve(PORT);
   const browser = await launch();
