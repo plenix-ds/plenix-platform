@@ -16,3 +16,4 @@ is listed here when it is dispatched; all results are read and explained togethe
 | 39357539407 | 39eb7d90 DataGrid and Table corners 2px (approved VISUAL: every table and grid frame) | DataGrid, Table | table, data-grid / files, settings, dam | no |
 | 39357801822 | a75429c0 DT-25 row-menu solid, DT-26 checkbox line (approved VISUAL: RedSave fixes) | DataGrid | data-grid, table / files, projects, dam | no |
 | 39357964649 | 17e7d3fa P-30 CommandBar sticky surface only when sticky (approved VISUAL: non-sticky bars lose the gray strip, e.g. Files) | CommandBar | command-bar, toolbar / files, projects, dam | no |
+| 39358730324 | 8963bc6e merge feature/metric-card + a96c2767 spec (NEW: MetricCard; approved? Avatar 1px border on every avatar — owner check pending; display sizes 24/28/36) | MetricCard, Metric, Avatar | metric-card, metric, avatar, data-grid / dashboard, contacts, messages, dam | no. Expect: every avatar gains a 1px border (pending owner OK) |
