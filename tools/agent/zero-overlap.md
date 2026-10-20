@@ -46,6 +46,14 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
 6. **Two classes on one element** only when they set different properties. A component that wears another block's class
    (the Select control's `plx-input`) gets its own class and its own rules on shared tokens.
 7. **Update the component's header comment** (its state order) and its JSX header (new classes).
+8. **Icons the component draws in its own state** are filled by the component: `stateIcon(icon, on)` from
+   `components/Icon/Icon.jsx` (Button, NavList, Tabs, SegmentedControl, AppHeader, ToolRail already do). Still on the
+   transitional ancestor rule (found on the spec pages, 2026-10-20): RadioTiles (the check), CommandMenu (item icon,
+   chevron), ProgressSteps (marker), Card (toggle), CollapsibleSection (chevron), DragHandle, EntityPicker (search),
+   and the design-system labs that write this markup as HTML (add `plx-icon--filled` or `plx-icon--outline`).
+   **Content inside a selected row** (DataGrid cells, ResourceList and SearchResult thumbnails, MediaCard badge and
+   placeholder, FileRow's file icon) also fills today only through the ancestor: leave these as they are; the owner
+   decides whether they should.
 
 ## Proof (for every change)
 

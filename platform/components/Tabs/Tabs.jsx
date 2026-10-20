@@ -50,10 +50,11 @@ import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Count } from '../Count/Count.jsx';
-import { Icon } from '../Icon/Icon.jsx';
+import { stateIcon } from '../Icon/Icon.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+// the selected tab fills its icon (the tab owns its state)
+const asIcon = stateIcon;
 export const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
 const STRINGS = { more: 'More', moreLabel: 'More tabs' };
 
@@ -137,7 +138,7 @@ export function Tabs({ variant = 'contained', orientation = 'horizontal', items,
                 aria-selected={on} aria-controls={tabsPanelId(base, t.value)} aria-posinset={i + 1} aria-setsize={items.length}
                 tabIndex={on ? 0 : -1} disabled={t.disabled || undefined} hidden={!shown(i) || undefined}
                 className={cx('plx-tabs__tab', on && 'is-selected')} onClick={() => select(t.value)}>
-                {t.icon ? <span className="plx-tabs__icon">{asIcon(t.icon)}</span> : null}
+                {t.icon ? <span className="plx-tabs__icon">{asIcon(t.icon, on)}</span> : null}
                 <span className="plx-tabs__label">{t.label}</span>
                 {t.count !== undefined ? <Count value={t.count} tone="neutral" /> : null}
               </button>

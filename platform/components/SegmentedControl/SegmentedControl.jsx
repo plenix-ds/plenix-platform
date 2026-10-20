@@ -25,7 +25,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { stateIcon } from '../Icon/Icon.jsx';
 
 export function SegmentedControl({ options, value, onChange, label, size = 'md', className, ...rest }) {
   devWarn('SegmentedControl', { size }, { size: ['md','sm'] });
@@ -47,7 +47,7 @@ export function SegmentedControl({ options, value, onChange, label, size = 'md',
         <button key={o.value} ref={(el) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={o.value === value} tabIndex={i === index ? 0 : -1}
           aria-label={o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined}
           className={cx('plx-segmented__item', o.value === value && 'is-selected')} onClick={() => onChange(o.value)} onKeyDown={(e) => move(e, i)}>
-          {o.icon ? <Icon name={o.icon} /> : null}{o.label ? <span>{o.label}</span> : null}
+          {o.icon ? stateIcon(o.icon, o.value === value) : null}{o.label ? <span>{o.label}</span> : null}
         </button>
       ))}
     </div>

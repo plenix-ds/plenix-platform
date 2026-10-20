@@ -22590,9 +22590,7 @@ function SegmentedControl({
     className: (0, _cx.cx)('plx-segmented__item', o.value === value && 'is-selected'),
     onClick: () => onChange(o.value),
     onKeyDown: e => move(e, i)
-  }, o.icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: o.icon
-  }) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
+  }, o.icon ? (0, _Icon.stateIcon)(o.icon, o.value === value) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
 }
   } },
   "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -24198,9 +24196,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        and pass idBase so the tabs point at it.
 */
 
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
+// the selected tab fills its icon (the tab owns its state)
+const asIcon = _Icon.stateIcon;
 const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
 exports.tabsPanelId = tabsPanelId;
 const STRINGS = {
@@ -24329,7 +24326,7 @@ function Tabs({
       onClick: () => select(t.value)
     }, t.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tabs__icon"
-    }, asIcon(t.icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    }, asIcon(t.icon, on)) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tabs__label"
     }, t.label), t.count !== undefined ? /*#__PURE__*/_react.default.createElement(_Count.Count, {
       value: t.count,
