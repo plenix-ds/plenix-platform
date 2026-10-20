@@ -1623,6 +1623,8 @@
   --plx-comp-row-button-easing: var(--plx-sys-motion-ease-standard);
   --plx-comp-row-button-hover-background: var(--plx-sys-state-hover);
   --plx-comp-row-button-selected-background: var(--plx-sys-state-selected);
+  --plx-comp-row-button-selected-shadow: inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);
+  --plx-comp-row-button-radius: var(--plx-sys-radius-control);
   --plx-comp-row-button-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-row-button-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-row-button-focus-outline-width: var(--plx-sys-border-width-medium);
@@ -2499,7 +2501,7 @@
   --plx-comp-avatar-presence-ring-width: var(--plx-sys-border-width-medium);
   --plx-comp-avatar-presence-offset: calc(-1 * var(--plx-sys-border-width-medium));
   --plx-comp-avatar-border-width: var(--plx-sys-border-width-thin);
-  --plx-comp-avatar-border-color: var(--plx-sys-border-subtle);
+  --plx-comp-avatar-border-color: var(--plx-sys-border-default);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-avatar-gender-icon-size: 75%;

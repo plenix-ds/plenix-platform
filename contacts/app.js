@@ -2579,7 +2579,8 @@ function ContactsScreen({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.DataPill, {
     variant: "plain",
     person: true,
-    gender: c.gender
+    gender: c.gender,
+    icon: false
   }, c.name)), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "caption"
   }, c.co))))))), /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, contact ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {

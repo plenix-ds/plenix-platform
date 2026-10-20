@@ -6638,6 +6638,16 @@
       "$value": "{plx-sys.state-selected}",
       "$type": "color"
     },
+    "row-button-selected-shadow": {
+      "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
+      "$type": "shadow",
+      "$description": "RowButton: the selected row's 1px inset ring, as the navigation pane's current item (owner, 2026-10-19)."
+    },
+    "row-button-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "RowButton: its corners, as the navigation pane's items (owner, 2026-10-19)."
+    },
     "row-button-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color"

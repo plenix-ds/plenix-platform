@@ -22,9 +22,9 @@
       "$description": "Avatar: the 1px border around every avatar, picture or placeholder (owner, 2026-10-19)."
     },
     "avatar-border-color": {
-      "$value": "{plx-sys.border-subtle}",
+      "$value": "{plx-sys.border-default}",
       "$type": "color",
-      "$description": "Avatar: the 1px border every avatar and profile picture has by default, the soft gray (border-subtle; owner, 2026-10-19)."
+      "$description": "Avatar: the 1px border every avatar and profile picture has by default, a soft gray that reads on white and on the soft gender fills alike (border-default; owner, 2026-10-19)."
     }
   }
 }

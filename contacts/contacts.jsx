@@ -26,7 +26,7 @@ export function ContactsScreen({ screen }) {
               <Inline gap="sm" inset="sm">
                 <Avatar name={c.name} gender={c.gender} size="md" />
                 <Stack gap="none">
-                  <Text variant="heading"><DataPill variant="plain" person gender={c.gender}>{c.name}</DataPill></Text>
+                  <Text variant="heading"><DataPill variant="plain" person gender={c.gender} icon={false}>{c.name}</DataPill></Text>
                   <Text variant="caption">{c.co}</Text>
                 </Stack>
               </Inline>
