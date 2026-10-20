@@ -3126,14 +3126,14 @@
    ]
   },
   "plx-text--body": {
-   "contract": "establishes",
-   "role": "body",
-   "font": "sans"
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-text--caption": {
-   "contract": "establishes",
-   "role": "caption",
-   "font": "sans"
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-text--data": {
    "contract": "follows",
