@@ -29,7 +29,6 @@
      The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
      and keeps its label. */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../../components/Menu/Menu.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
@@ -116,7 +115,7 @@ export const foldOrder = (actions) => {
 };
 
 export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a) => !!a.disabled, why = (a) => a.why, moreLabel = 'More actions',
-  dangerClass, size = 'sm', extra = [] }) {
+  dangerClass, size = 'sm', extra = [], foldStart = 2 }) {
   const folded = new Set(foldOrder(actions).slice(0, fold).map((a) => a.id || a.label));
   const kept = actions.filter((a) => !folded.has(a.id || a.label));
   const away = actions.filter((a) => folded.has(a.id || a.label));
@@ -144,15 +143,15 @@ export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a)
     );
     const el = loading ? button : panel ? <ActionPanel action={Object.assign({}, a, { disabled })} trigger={button} /> : a.choices ? <Menu label={a.label} trigger={button}>{radios(a)}</Menu> : a.items ? <Menu label={a.label} trigger={button}>{itemsOf(a, off)}</Menu> : button;
     const tip = (disabled && why(a)) || a.tooltip || (only ? name : null);
-    return <React.Fragment key={a.id || a.label}>{tip ? <ActionHint content={tip}>{el}</ActionHint> : el}</React.Fragment>;
+    const index = foldOrder(actions).indexOf(a);
+    return <span key={a.id || a.label} className="plx-bar-actions__hint-target" data-plx-fit-until={index >= 0 ? foldStart + index + 1 : undefined}>{tip ? <ActionHint content={tip}>{el}</ActionHint> : el}</span>;
   };
-  const plain = kept.filter((a) => !a.danger), danger = kept.filter((a) => a.danger);
   const allOff = away.length > 0 && !extra.length && away.every((a) => off(a));
   const more = away.length || extra.length ? (
     <Tooltip key="plx-more" content={allOff ? why(away[0]) : moreLabel}>
       <Menu label={moreLabel} placement="bottom-end" trigger={<Button size={size} variant="ghost" icon="more" iconOnly label={moreLabel} disabled={allOff} />}>
         {away.map((a, i) => {
-          const sep = a.danger && i > 0 && !away[i - 1].danger ? <MenuDivider key={(a.id || a.label) + '-sep'} /> : null;
+          const sep = i > 0 && (a.barSection !== away[i - 1].barSection || (a.danger && !away[i - 1].danger)) ? <MenuDivider key={(a.id || a.label) + '-sep'} /> : null;
           // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
           const busy = !!a.loading, disabled = off(a) || busy;
           const item = busy ? <MenuItem key={a.id || a.label} icon={<Spinner size="sm" label={a.label} />} danger={a.danger} checked={a.toggle ? !!a.pressed : undefined} aria-label={a.choices ? a.label + ': ' + current(a) : a.label} aria-busy disabled>{a.choices ? a.label + ': ' + current(a) : a.label}</MenuItem>
@@ -173,10 +172,19 @@ export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a)
   ) : null;
   return (
     <>
-      {plain.map(one)}
-      {more}
-      {danger.length && (plain.length || more) ? <span key="plx-danger-divider" className={cx('plx-bar-actions__divider')} aria-hidden="true" /> : null}
-      {danger.map(one)}
+      {kept.some(a => a.barSection === 'selection') ? ['selection', undefined].map(section => {
+        const group = kept.filter(a => a.barSection === section);
+        const regular = group.filter(a => !a.danger), destructive = group.filter(a => a.danger);
+        return group.length ? <React.Fragment key={section || 'page'}>
+          {section === undefined && kept.some(a => a.barSection === 'selection') ? <span className="plx-bar-actions__divider" aria-hidden="true" /> : null}
+          {regular.map(one)}
+          {destructive.length && regular.length ? <span className="plx-bar-actions__divider" aria-hidden="true" /> : null}
+          {destructive.map(one)}
+        </React.Fragment> : null;
+      }) : <>{kept.filter(a => !a.danger).map(one)}{more}
+        {kept.some(a => a.danger) && (kept.some(a => !a.danger) || more) ? <span className="plx-bar-actions__divider" aria-hidden="true" /> : null}
+        {kept.filter(a => a.danger).map(one)}</>}
+      {kept.some(a => a.barSection === 'selection') ? more : null}
     </>
   );
 }

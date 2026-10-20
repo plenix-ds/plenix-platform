@@ -2,8 +2,8 @@
    Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
      one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
      selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
+     the end. With rows selected the bar adds the selection's commands first, a separator and the page commands;
+     search and filters stay. selection.mode: 'swap' preserves the compact replacement behavior; Sort, Group, Columns and View stay where they are; the bar ends with "× N
      selected", which clears the selection. A page with no actions has a view bar (1F).
    Usage:
      <CommandBar label="Assets" count="24 assets"
@@ -39,13 +39,15 @@
        rows are selected ("× N selected" takes its place)
      status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
        is short of room, and while rows are selected
-     end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
+     end: more controls at the very end (Export); hidden in selection.mode: "swap". A descriptor { content,
        fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
        items are Menu children or MenuItem descriptors, including checked toggles.
      selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
-     selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
+     actions[].selection: 'also' (default), 'only' while selected, or 'never' while selected.
+     selection.mode: 'add' (default) keeps page commands, search, filters and end controls; 'swap' replaces them.
+     selection: the selection: { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
+       while more than one is selected, with a why-tooltip) before the page's commands by default, and ends
        with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
@@ -71,18 +73,18 @@
        the danger commands last. More shows only
        when something does not fit. A change of width, labels or counts starts again from icons and labels.
      Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
-     Commands are never hidden by state: they are disabled, with a tooltip saying why.
+     Commands follow their explicit selection policy; unavailable commands remain disabled with a why-tooltip.
      Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
-     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
+     Selection changes keep the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
        actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
-       stay mounted through the swap, so an open panel keeps its state.
+       stay mounted through selection changes, so an open panel keeps its state.
      The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
    Notes:
      The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
      bar: the plain table. */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { useBarFit } from '../../utils/barFit.js';
+import { useBarFit } from '../../utils/overflow.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Text } from '../../components/Text/Text.jsx';
@@ -133,23 +135,27 @@ export const CommandBarSearch = React.forwardRef(function CommandBarSearch(props
 export function CommandBar({ label, actions = [], find, quickFilters = [], view, count, status, end, selection, layout = 'auto', sticky = 'auto', narrow = false, strings, className }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = React.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  // Selection commands precede page commands by default; explicit swap retains the compact replacement mode.
   const sel = selection && !React.isValidElement(selection) && typeof selection === 'object' ? selection : null;
   const selCount = sel ? Number(sel.count) || 0 : 0;
   const selecting = selCount > 0;
-  const selActs = selecting ? (sel.actions || []) : [];
+  const swapping = selecting && sel.mode === 'swap';
+  const visible = a => selecting ? a.selection !== 'never' : a.selection !== 'only';
+  const selectionAction = a => ({ ...a, id: 'selection:' + (a.id || a.label), barSection: 'selection',
+    items: Array.isArray(a.items) ? a.items.map(item => React.isValidElement(item) ? item : selectionAction(item)) : a.items });
+  const selActs = selecting ? (sel.actions || []).filter(visible).map(selectionAction) : [];
   // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
   const shape = layout === 'auto' || layout === 'split' ? (actions.length ? 'one' : 'view') : layout;
-  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
+  const pageActs = shape === 'view' || swapping ? [] : actions.filter(visible);
+  const shown = selActs.concat(pageActs);
+  const quick = swapping ? [] : quickFilters;
   const ending = end && !React.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
   const endContent = ending ? ending.content : end;
-  const endFold = !selecting && ending && ending.fold;
+  const endFold = !swapping && ending && ending.fold;
   const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map((a) => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map((q) => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
+  const key = [shape, narrow, selecting ? 'sel:' + selCount + ':' + sel.mode : 'rest', shown.map(a => [a.id, a.label, a.icon, a.primary, a.disabled, a.loading, a.value, (a.choices || []).map(c => c.label).join(',')].join(':')).join('|'), quickFilters.map((q) => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label, count, status, sel && sel.hidden].join('§');
   const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
   const ctx = React.useMemo(() => ({ iconOnly: step >= ICONS, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
   // Commands fold first (from the end, Delete last), then an opted-in end control, then quick filters.
@@ -191,13 +197,13 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const off = (a) => !!a.disabled || !!(a.single && selCount > 1);
   const why = (a) => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words));
   const acts = shown.length || extraMenu.length ? (
-    <Toolbar.Group className="plx-command-bar__actions">
+    <Toolbar.Group className="plx-command-bar__actions" data-plx-fit-more={SEARCH + 1}>
       <BarActions actions={shown} iconOnly={ctx.iconOnly} fold={fold} moreLabel={t.more} dangerClass="plx-command-bar__danger"
-        off={selecting ? off : undefined} why={selecting ? why : undefined} extra={extraMenu} />
+        foldStart={SEARCH} off={a => a.barSection === 'selection' ? off(a) : !!a.disabled} why={a => a.barSection === 'selection' ? why(a) : a.why} extra={extraMenu} />
     </Toolbar.Group>
   ) : null;
-  const quickEls = quickKept.map((q) => <QuickFilter key={q.id || q.label} {...q} />);
-  const findEl = (find || quickEls.length) && !selecting ? <Toolbar.Group className="plx-command-bar__find">{find}{quickEls}</Toolbar.Group> : null;
+  const quickEls = quickKept.map((q, i) => <span key={q.id || q.label} className="plx-bar-actions__hint-target" data-plx-fit-until={SEARCH + foldOrder(shown).length + (endFold ? 1 : 0) + quick.length - i}><QuickFilter {...q} /></span>);
+  const findEl = (find || quickEls.length) && !swapping ? <Toolbar.Group className="plx-command-bar__find">{find}{quickEls}</Toolbar.Group> : null;
   const viewEl = view ? <Toolbar.Group className="plx-command-bar__view">{view}</Toolbar.Group> : null;
   const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null
     : typeof count === 'string' || typeof count === 'number' ? <Text variant="data" className="plx-command-bar__count">{count}</Text> : count;
@@ -213,11 +219,11 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
     </Tooltip>
   ) : null;
   const statusEl = selecting || !status || ctx.collapsed ? null : <Text variant="secondary" className="plx-command-bar__status">{status}</Text>;
-  const keptEnd = !selecting && !endAway ? endContent : null;
+  const keptEnd = !swapping && !endAway ? endContent : null;
   const tail = countEl || statusEl || keptEnd || clearEl ? (
     <Toolbar.Group className="plx-command-bar__end">
       {selecting && viewEl ? <Divider orientation="vertical" /> : null}
-      {countEl}{statusEl}{keptEnd}{clearEl}
+      {countEl}{statusEl}{keptEnd ? <span className="plx-bar-actions__hint-target" data-plx-fit-until={endFold ? SEARCH + foldOrder(shown).length + 1 : undefined}>{keptEnd}</span> : null}{clearEl}
     </Toolbar.Group>
   ) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
