@@ -63,7 +63,7 @@
      fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
        { rows, total }; search: the page's search text
      storageKey: keeps the person's view (sort, widths, order, hidden columns, row height, wrap, groups) in this browser
-     narrow: "list" (default: under narrowAt, 600px of its own width, a list of keyColumns) | "table" | "auto"
+     narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:

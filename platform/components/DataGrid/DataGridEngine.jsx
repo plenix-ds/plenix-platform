@@ -71,8 +71,9 @@ const RowTarget=React.forwardRef(function RowTarget({onAttach,...props},forwarde
 function NextEngine(props) {
   const inPane=React.useContext(GridPane);
   const { label, data=EMPTY_ROWS, columns, index='id', selectable=false, selected, keepHiddenSelection=true, onSelectionChange,
-    options={}, mode='fill', height, narrow='list', narrowAt='--plx-ref-size-600px', keyColumns, storageKey,
+    options={}, mode='fill', height, narrow:requestedNarrow, narrowAt='--plx-ref-size-600px', keyColumns, storageKey,
     isStatic=false, cells='text', headerMenu=true, rowMenu, rowMenuButton=true, columnMenu, onReady, on={}, className, empty, error, onRetry } = props;
+  const narrow=requestedNarrow===undefined?(inPane&&!isStatic?'table':'list'):requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID;   // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
   const S={...defaults,...props.strings}, initial=React.useMemo(()=>opening(props),[storageKey]);
   const frame=React.useRef(null),holder=React.useRef(null),header=React.useRef(null), live=React.useRef({}), ready=React.useRef(false);
