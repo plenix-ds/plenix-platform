@@ -15,3 +15,4 @@ is listed here when it is dispatched; all results are read and explained togethe
 | 39354884978 | d0332225 row label line = the grid's column line (approved VISUAL: tables with a row label; supersedes 2124327b's border) | Table, DataGrid | table, data-grid, button / settings, dam | no |
 | 39357539407 | 39eb7d90 DataGrid and Table corners 2px (approved VISUAL: every table and grid frame) | DataGrid, Table | table, data-grid / files, settings, dam | no |
 | 39357801822 | a75429c0 DT-25 row-menu solid, DT-26 checkbox line (approved VISUAL: RedSave fixes) | DataGrid | data-grid, table / files, projects, dam | no |
+| 39357964649 | 17e7d3fa P-30 CommandBar sticky surface only when sticky (approved VISUAL: non-sticky bars lose the gray strip, e.g. Files) | CommandBar | command-bar, toolbar / files, projects, dam | no |
