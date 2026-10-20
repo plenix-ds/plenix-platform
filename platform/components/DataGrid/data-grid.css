@@ -161,8 +161,8 @@
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row.plx-data-grid__grid-selected .plx-data-grid__grid-cell.plx-data-grid__cell--row-label{background-color:var(--plx-comp-data-grid-row-selected-background);}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell.plx-data-grid__grid-frozen,
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell.plx-data-grid__cell--row-label{background-color:var(--plx-comp-data-grid-row-selected-hover-background);}
-.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row .plx-data-grid__grid-cell.plx-data-grid__cell--row-label.plx-data-grid__grid-frozen-left,
-.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-header .plx-data-grid__grid-col.plx-data-grid__cell--row-label.plx-data-grid__grid-frozen-left{border-inline-end-color:var(--plx-comp-data-grid-row-label-border-right-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-data-grid-line-width);}
+.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row .plx-data-grid__grid-cell.plx-data-grid__cell--row-label,
+.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-header .plx-data-grid__grid-col.plx-data-grid__cell--row-label{border-inline-end-color:var(--plx-comp-data-grid-row-label-border-right-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-data-grid-line-width);}
 
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row .plx-data-grid__grid-cell.plx-data-grid__cell--row-label+.plx-data-grid__grid-cell:not(.plx-data-grid__cell--row-label)::before,
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-header .plx-data-grid__grid-col.plx-data-grid__cell--row-label+.plx-data-grid__grid-col:not(.plx-data-grid__cell--row-label)::before{content:none;}

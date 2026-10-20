@@ -31,9 +31,10 @@
 .plx-table[data-plx-engine="next"] .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--data{font-family:var(--plx-comp-table-data-font-family);font-size:var(--plx-comp-table-data-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-table[data-plx-engine="next"] .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--wrap{block-size:auto;line-height:var(--plx-comp-table-wrap-line-height);padding-block-end:var(--plx-comp-table-cell-wrap-padding-bottom);padding-block-start:var(--plx-comp-table-cell-wrap-padding-top);white-space:normal;}
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-label{background-color:var(--plx-comp-table-row-label-background);}
-/* the row header ends in one solid line, top to bottom of each row (owner, batch 244): the next column's short line gives way */
-.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-label.plx-table__grid-frozen-left,
-.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header .plx-table__grid-col.plx-table__cell--row-label.plx-table__grid-frozen-left{border-inline-end-color:var(--plx-comp-table-row-label-border-right-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-table-line-width);}
+/* the row header ends in one solid line, top to bottom of each row (owner, batch 244): the next column's short line gives
+   way; on the row label itself (the TanStack engine has no frozen-left class: the line was lost from 0.50.0 until 2026-10-19) */
+.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-label,
+.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header .plx-table__grid-col.plx-table__cell--row-label{border-inline-end-color:var(--plx-comp-table-row-label-border-right-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-table-line-width);}
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-label+.plx-table__grid-cell:not(.plx-table__cell--row-label)::before,
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header .plx-table__grid-col.plx-table__cell--row-label+.plx-table__grid-col:not(.plx-table__cell--row-label)::before{content:none;}
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-placeholder .plx-table__grid-placeholder-contents{color:var(--plx-comp-table-header-text);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}
