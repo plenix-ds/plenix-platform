@@ -103,6 +103,10 @@ export function Tabs({ variant = 'contained', orientation = 'horizontal', items,
   const at = items.findIndex((t) => t.value === current);
   const shown = (i) => (at < fit ? i < fit : (i < fit - 1 || i === at));
   const moved = items.filter((t, i) => !shown(i));
+  // every part carries its variant (tabs.css: no part is styled through the root); a segmented strip marks its first and
+  // last shown tabs (the rounded ends) and the shown tabs after the first (joined: no start edge)
+  const kind = vertical ? 'vertical' : variant, seg = kind === 'segmented';
+  const shownAt = items.map((t, i) => i).filter(shown), firstShown = shownAt[0], lastShown = shownAt[shownAt.length - 1];
   // focus goes to a tab once it is shown (a moved tab chosen by key or from the menu)
   const focusNext = React.useRef(null);
   React.useLayoutEffect(() => {
@@ -129,15 +133,16 @@ export function Tabs({ variant = 'contained', orientation = 'horizontal', items,
   const hasPanels = items.some((t) => t.content !== undefined);
   return (
     <div ref={root} className={cx('plx-tabs', vertical ? 'plx-tabs--vertical' : 'plx-tabs--' + variant, className)}>
-      <div className="plx-tabs__list">
-        <div ref={list} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : undefined} className="plx-tabs__tablist" onKeyDown={onKeyDown}>
+      <div className={cx('plx-tabs__list', 'plx-tabs__list--' + kind)}>
+        <div ref={list} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : undefined} className={cx('plx-tabs__tablist', 'plx-tabs__tablist--' + kind)} onKeyDown={onKeyDown}>
           {items.map((t, i) => {
             const on = t.value === current;
             return (
               <button key={t.value} ref={(el) => { refs.current[t.value] = el; }} type="button" role="tab" id={base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, '')}
                 aria-selected={on} aria-controls={tabsPanelId(base, t.value)} aria-posinset={i + 1} aria-setsize={items.length}
                 tabIndex={on ? 0 : -1} disabled={t.disabled || undefined} hidden={!shown(i) || undefined}
-                className={cx('plx-tabs__tab', on && 'is-selected')} onClick={() => select(t.value)}>
+                className={cx('plx-tabs__tab', 'plx-tabs__tab--' + kind, on && 'is-selected', seg && shown(i) && i !== firstShown && 'plx-tabs__tab--joined',
+                  seg && i === firstShown && 'plx-tabs__tab--first', seg && i === lastShown && 'plx-tabs__tab--last')} onClick={() => select(t.value)}>
                 {t.icon ? <span className="plx-tabs__icon">{asIcon(t.icon, on)}</span> : null}
                 <span className="plx-tabs__label">{t.label}</span>
                 {t.count !== undefined ? <Count value={t.count} tone="neutral" /> : null}
@@ -147,7 +152,7 @@ export function Tabs({ variant = 'contained', orientation = 'horizontal', items,
         </div>
         {moved.length ? (
           <Menu label={words.moreLabel} placement="bottom-end" className="plx-tabs__more-anchor" trigger={
-            <button type="button" className="plx-tabs__tab plx-tabs__more">
+            <button type="button" className={cx('plx-tabs__tab', 'plx-tabs__tab--' + kind, seg && 'plx-tabs__tab--first', seg && 'plx-tabs__tab--last', 'plx-tabs__more')}>
               <span className="plx-tabs__label">{words.more}</span>
               <span className="plx-tabs__more-caret" aria-hidden="true" />
             </button>}>
@@ -161,7 +166,8 @@ export function Tabs({ variant = 'contained', orientation = 'horizontal', items,
       </div>
       {hasPanels ? items.map((t) => (
         <div key={t.value} role="tabpanel" id={tabsPanelId(base, t.value)} aria-labelledby={base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, '')}
-          tabIndex={0} hidden={t.value !== current} className={cx('plx-tabs__panel', panelClassName)}>
+          tabIndex={0} hidden={t.value !== current}
+          className={cx('plx-tabs__panel', 'plx-tabs__panel--' + kind, kind === 'contained' && items[0] && current === items[0].value && 'plx-tabs__panel--corner', panelClassName)}>
           {t.value === current ? t.content : null}
         </div>
       )) : null}

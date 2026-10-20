@@ -46,7 +46,7 @@ export function SegmentedControl({ options, value, onChange, label, size = 'md',
       {options.map((o, i) => (
         <button key={o.value} ref={(el) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={o.value === value} tabIndex={i === index ? 0 : -1}
           aria-label={o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined}
-          className={cx('plx-segmented__item', o.value === value && 'is-selected')} onClick={() => onChange(o.value)} onKeyDown={(e) => move(e, i)}>
+          className={cx('plx-segmented__item', size === 'sm' && 'plx-segmented__item--sm', o.value === value && 'is-selected')} onClick={() => onChange(o.value)} onKeyDown={(e) => move(e, i)}>
           {o.icon ? stateIcon(o.icon, o.value === value) : null}{o.label ? <span>{o.label}</span> : null}
         </button>
       ))}

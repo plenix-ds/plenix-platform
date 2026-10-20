@@ -21,8 +21,8 @@
 /* on top of everything (owner, batch 272): the menu is a popover in the browser's top layer, placed by CSS anchor positioning.
    Each wrapper scopes the anchor name, so a menu finds its own trigger; position-area puts it on the trigger's side and
    edge, and it flips when it would leave the window. Nothing is written inline. */
-.plx-menu-anchor{anchor-scope:--plx-menu-trigger;}
-.plx-menu-anchor>:first-child{anchor-name:--plx-menu-trigger;}
+/* the anchor wraps the trigger and takes its size: the menu is placed against it */
+.plx-menu-anchor{anchor-name:--plx-menu-trigger;anchor-scope:--plx-menu-trigger;}
 .plx-menu[popover]{inset:auto;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;position-anchor:--plx-menu-trigger;position-try-fallbacks:flip-block, flip-inline;position:fixed;}
 .plx-menu[popover].plx-menu--bottom-start{margin-block-start:var(--plx-comp-menu-popover-bottom-start-margin-block-start);position-area:block-end span-inline-end;}
 .plx-menu[popover].plx-menu--bottom-end{margin-block-start:var(--plx-comp-menu-popover-bottom-end-margin-block-start);position-area:block-end span-inline-start;}
@@ -33,7 +33,7 @@
 /* submenus (MenuSub, library w05B): the item scopes its own anchor; the submenu is a popover at the item's end edge,
    level with it, and flips to the other side (or upward) when there is no room. The open item keeps the hover fill. */
 .plx-menu-sub{anchor-scope:--plx-menu-sub;display:flex;flex-direction:column;position:relative;}
-.plx-menu-sub>.plx-menu-sub__item{anchor-name:--plx-menu-sub;}
+.plx-menu-sub__item{anchor-name:--plx-menu-sub;}
 .plx-menu-sub__item.is-open{background-color:var(--plx-comp-menu-sub-open-background);}
 .plx-menu-sub__arrow{--plx-comp-icon-size:var(--plx-comp-menu-sub-arrow-size);color:var(--plx-comp-menu-sub-arrow-color);display:inline-flex;flex-shrink:0;}
 .plx-menu-sub__list:not([popover]){inset-block-start:var(--plx-comp-menu-sub-fallback-inset-block-start);inset-inline-start:var(--plx-comp-menu-sub-fallback-inset-inline-start);}

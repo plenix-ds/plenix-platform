@@ -22593,7 +22593,7 @@ function SegmentedControl({
     "aria-checked": o.value === value,
     tabIndex: i === index ? 0 : -1,
     "aria-label": o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined,
-    className: (0, _cx.cx)('plx-segmented__item', o.value === value && 'is-selected'),
+    className: (0, _cx.cx)('plx-segmented__item', size === 'sm' && 'plx-segmented__item--sm', o.value === value && 'is-selected'),
     onClick: () => onChange(o.value),
     onKeyDown: e => move(e, i)
   }, o.icon ? (0, _Icon.stateIcon)(o.icon, o.value === value) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
@@ -24274,6 +24274,13 @@ function Tabs({
   const at = items.findIndex(t => t.value === current);
   const shown = i => at < fit ? i < fit : i < fit - 1 || i === at;
   const moved = items.filter((t, i) => !shown(i));
+  // every part carries its variant (tabs.css: no part is styled through the root); a segmented strip marks its first and
+  // last shown tabs (the rounded ends) and the shown tabs after the first (joined: no start edge)
+  const kind = vertical ? 'vertical' : variant,
+    seg = kind === 'segmented';
+  const shownAt = items.map((t, i) => i).filter(shown),
+    firstShown = shownAt[0],
+    lastShown = shownAt[shownAt.length - 1];
   // focus goes to a tab once it is shown (a moved tab chosen by key or from the menu)
   const focusNext = _react.default.useRef(null);
   _react.default.useLayoutEffect(() => {
@@ -24303,13 +24310,13 @@ function Tabs({
     ref: root,
     className: (0, _cx.cx)('plx-tabs', vertical ? 'plx-tabs--vertical' : 'plx-tabs--' + variant, className)
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-tabs__list"
+    className: (0, _cx.cx)('plx-tabs__list', 'plx-tabs__list--' + kind)
   }, /*#__PURE__*/_react.default.createElement("div", {
     ref: list,
     role: "tablist",
     "aria-label": label,
     "aria-orientation": vertical ? 'vertical' : undefined,
-    className: "plx-tabs__tablist",
+    className: (0, _cx.cx)('plx-tabs__tablist', 'plx-tabs__tablist--' + kind),
     onKeyDown: onKeyDown
   }, items.map((t, i) => {
     const on = t.value === current;
@@ -24328,7 +24335,7 @@ function Tabs({
       tabIndex: on ? 0 : -1,
       disabled: t.disabled || undefined,
       hidden: !shown(i) || undefined,
-      className: (0, _cx.cx)('plx-tabs__tab', on && 'is-selected'),
+      className: (0, _cx.cx)('plx-tabs__tab', 'plx-tabs__tab--' + kind, on && 'is-selected', seg && shown(i) && i !== firstShown && 'plx-tabs__tab--joined', seg && i === firstShown && 'plx-tabs__tab--first', seg && i === lastShown && 'plx-tabs__tab--last'),
       onClick: () => select(t.value)
     }, t.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tabs__icon"
@@ -24344,7 +24351,7 @@ function Tabs({
     className: "plx-tabs__more-anchor",
     trigger: /*#__PURE__*/_react.default.createElement("button", {
       type: "button",
-      className: "plx-tabs__tab plx-tabs__more"
+      className: (0, _cx.cx)('plx-tabs__tab', 'plx-tabs__tab--' + kind, seg && 'plx-tabs__tab--first', seg && 'plx-tabs__tab--last', 'plx-tabs__more')
     }, /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tabs__label"
     }, words.more), /*#__PURE__*/_react.default.createElement("span", {
@@ -24366,7 +24373,7 @@ function Tabs({
     "aria-labelledby": base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, ''),
     tabIndex: 0,
     hidden: t.value !== current,
-    className: (0, _cx.cx)('plx-tabs__panel', panelClassName)
+    className: (0, _cx.cx)('plx-tabs__panel', 'plx-tabs__panel--' + kind, kind === 'contained' && items[0] && current === items[0].value && 'plx-tabs__panel--corner', panelClassName)
   }, t.value === current ? t.content : null)) : null);
 }
   } },
@@ -28493,12 +28500,14 @@ function AppHeader({
   const inApps = currentApp !== undefined; // the application said where it is (null: a screen that is not an application)
   const app = currentApp ? (0, _apps.appById)(currentApp) : null;
   const name = appName || (app ? app.label : null);
+  // the name's parts in the switch button give way (--switch: they shrink and end in an ellipsis)
+  const sw = (switcher !== undefined ? switcher : currentApp !== undefined) && !title;
   const brandEl = brand || (name ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Brand.BrandMark, null), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-app-header__name"
+    className: (0, _cx.cx)('plx-app-header__name', sw && 'plx-app-header__name--switch')
   }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-app-header__product"
+    className: (0, _cx.cx)('plx-app-header__product', sw && 'plx-app-header__product--switch')
   }, "Plenix"), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-app-header__app"
+    className: (0, _cx.cx)('plx-app-header__app', sw && 'plx-app-header__app--switch')
   }, name))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Brand.BrandMark, null), "Plenix"));
   const open = a => e => {
     if (onOpenApp && onOpenApp(a) === true) e.preventDefault();
@@ -28815,7 +28824,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
       key: a.id,
       className: (0, _cx.cx)('plx-app-switcher__tile', on && 'is-pinned', a.id === currentApp && 'is-current')
     }, /*#__PURE__*/_react.default.createElement("a", {
-      className: "plx-app-switcher__open",
+      className: (0, _cx.cx)('plx-app-switcher__open', a.id === currentApp && 'is-current'),
       href: (0, _apps.appHref)(a, appsRoot),
       "aria-current": a.id === currentApp ? 'page' : undefined,
       onClick: e => {
@@ -28831,7 +28840,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
       className: "plx-app-switcher__label"
     }, a.label)), /*#__PURE__*/_react.default.createElement("button", {
       type: "button",
-      className: "plx-app-switcher__pin",
+      className: (0, _cx.cx)('plx-app-switcher__pin', on && 'is-pinned'),
       "aria-pressed": on,
       "aria-label": (on ? 'Unpin ' : 'Pin ') + a.label + (on ? ' from' : ' to') + ' the header',
       onClick: () => pin(a)
@@ -28870,7 +28879,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
     id: id,
     role: "dialog",
     "aria-label": "Applications",
-    className: "plx-app-switcher__panel"
+    className: (0, _cx.cx)('plx-app-switcher__panel', brand && 'plx-app-switcher__panel--brand')
   }, pinnedList.length ? /*#__PURE__*/_react.default.createElement("section", {
     className: "plx-app-switcher__pinned",
     "aria-labelledby": id + '-pinned'

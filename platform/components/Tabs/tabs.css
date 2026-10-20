@@ -1,78 +1,92 @@
-/* Plenix · Tabs: folder, contained, segmented (the underline variant was removed, owner 2026-10-09) (D4; folder and contained keep the legacy folder tab look). */
-.plx-tabs{display:flex;flex-direction:column;min-inline-size:0;}
-/* the strip: the tab list (role=tablist) and, when tabs do not fit, the More menu button after it (outside the tab list).
-   Nothing scrolls sideways (reflow, Platforms Standard 3.5): the tab list clips sideways only while Tabs measures, before
-   the browser paints, and the tabs that do not fit are hidden and listed in More. */
-.plx-tabs__list{align-items:flex-end;column-gap:var(--plx-comp-tabs-list-gap);display:flex;max-inline-size:100%;min-inline-size:0;}
-.plx-tabs__tablist{align-items:inherit;column-gap:inherit;display:flex;flex-grow:0;flex-shrink:1;min-inline-size:0;overflow-x:clip;}
-.plx-tabs__tab[hidden]{display:none;}
-.plx-tabs__more-anchor{display:inline-flex;flex-shrink:0;}
-.plx-tabs__more-caret{-webkit-mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:currentcolor;block-size:var(--plx-comp-tabs-more-caret-size);flex-shrink:0;inline-size:var(--plx-comp-tabs-more-caret-size);mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;transition-duration:var(--plx-comp-tabs-more-caret-duration);transition-property:transform;}
-.plx-tabs__more[aria-expanded="true"] .plx-tabs__more-caret{transform:rotate(180deg);}
-.plx-tabs__tab{align-items:center;background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:var(--plx-comp-tabs-tab-text);column-gap:var(--plx-comp-tabs-tab-gap);cursor:pointer;display:inline-flex;flex-shrink:0;font-family:inherit;font-size:var(--plx-comp-tabs-tab-font-size);font-weight:var(--plx-comp-tabs-tab-font-weight);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-tabs-tab-min-height);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-tabs-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-tab-padding-inline);white-space:nowrap;}
-.plx-tabs__tab:hover,
-.plx-tabs__tab.is-hover{color:var(--plx-comp-tabs-tab-hover-text);}
-/* no focus outline on tabs (owner, 2026-10-09: "there is no blue focus on any tabs... remove"): arrow keys move and select,
-   and only the selected tab is in the Tab order, so keyboard focus is always on the selected tab, which its own look marks */
-.plx-tabs__tab:focus-visible,
-.plx-tabs__tab.is-focus-visible{outline-style:none;}
-.plx-tabs__tab:disabled{color:var(--plx-comp-tabs-tab-disabled-text);cursor:default;}
-.plx-tabs__tab.is-selected{color:var(--plx-comp-tabs-tab-selected-text);font-weight:var(--plx-comp-tabs-tab-selected-font-weight);}
-.plx-tabs__icon{display:inline-flex;}
-.plx-tabs__panel:focus-visible,
-.plx-tabs__panel.is-focus-visible{outline-style:none;}
-/* segmented: SegmentedControl look A (owner, 2026-10-14): joined segments at the button control height with a secondary
-   button's edge and background; the selected tab takes the selected-state blue tint with blue text. No gray track, no
-   raised thumb. Every shown tab but the first drops its start edge, so one line separates two tabs; the first and last
-   shown tabs (tabs moved into More are hidden, wherever they sit) round the group's outer corners. */
-.plx-tabs--segmented>.plx-tabs__list{align-items:center;align-self:flex-start;column-gap:var(--plx-comp-tabs-segmented-list-gap);}
-.plx-tabs--segmented .plx-tabs__tablist{align-items:stretch;column-gap:0;}
-.plx-tabs--segmented .plx-tabs__tab{background-color:var(--plx-comp-tabs-segmented-tab-background);border-bottom-color:var(--plx-comp-tabs-segmented-tab-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-tabs-segmented-tab-border-width);border-left-color:var(--plx-comp-tabs-segmented-tab-border-color);border-left-style:solid;border-left-width:var(--plx-comp-tabs-segmented-tab-border-width);border-right-color:var(--plx-comp-tabs-segmented-tab-border-color);border-right-style:solid;border-right-width:var(--plx-comp-tabs-segmented-tab-border-width);border-top-color:var(--plx-comp-tabs-segmented-tab-border-color);border-top-style:solid;border-top-width:var(--plx-comp-tabs-segmented-tab-border-width);border-end-end-radius:var(--plx-comp-tabs-segmented-tab-joined-radius);border-end-start-radius:var(--plx-comp-tabs-segmented-tab-joined-radius);border-start-end-radius:var(--plx-comp-tabs-segmented-tab-joined-radius);border-start-start-radius:var(--plx-comp-tabs-segmented-tab-joined-radius);color:var(--plx-comp-tabs-segmented-tab-text);font-size:var(--plx-comp-tabs-segmented-tab-font-size);font-weight:var(--plx-comp-tabs-segmented-tab-font-weight);justify-content:center;min-block-size:var(--plx-comp-tabs-segmented-tab-min-height);padding-inline-end:var(--plx-comp-tabs-segmented-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-segmented-tab-padding-inline);}
-.plx-tabs--segmented .plx-tabs__tab:not([hidden])~.plx-tabs__tab{border-inline-start-width:0;}
-.plx-tabs--segmented .plx-tabs__tab:not([hidden]):not(.plx-tabs__tab:not([hidden])~.plx-tabs__tab){border-end-start-radius:var(--plx-comp-tabs-segmented-tab-radius);border-start-start-radius:var(--plx-comp-tabs-segmented-tab-radius);}
-.plx-tabs--segmented .plx-tabs__tab:not([hidden]):not(:has(~.plx-tabs__tab:not([hidden]))){border-end-end-radius:var(--plx-comp-tabs-segmented-tab-radius);border-start-end-radius:var(--plx-comp-tabs-segmented-tab-radius);}
-.plx-tabs--segmented .plx-tabs__tab:hover,
-.plx-tabs--segmented .plx-tabs__tab.is-hover{background-color:var(--plx-comp-tabs-segmented-tab-hover-background);color:var(--plx-comp-tabs-segmented-tab-hover-text);}
-.plx-tabs--segmented .plx-tabs__tab.is-selected,
-.plx-tabs--segmented .plx-tabs__tab.is-selected:hover,
-.plx-tabs--segmented .plx-tabs__tab.is-selected.is-hover{background-color:var(--plx-comp-tabs-segmented-tab-selected-background);color:var(--plx-comp-tabs-segmented-tab-selected-text);font-weight:var(--plx-comp-tabs-segmented-tab-font-weight);}
-.plx-tabs--segmented>.plx-tabs__panel{padding-block-start:var(--plx-comp-tabs-segmented-panel-padding-block-start);}
-/* folder and contained: the legacy folder tab, on tokens; no line under the open tab */
-.plx-tabs--folder>.plx-tabs__list,.plx-tabs--contained>.plx-tabs__list{column-gap:var(--plx-comp-tabs-folder-list-gap);position:relative;z-index:var(--plx-comp-tabs-folder-list-z-index);}
-.plx-tabs--folder>.plx-tabs__list{background-image:var(--plx-comp-tabs-folder-list-background-image);background-position:0% 100%;background-repeat:no-repeat;background-size:var(--plx-comp-tabs-folder-list-background-size);}
-.plx-tabs--folder .plx-tabs__tab,.plx-tabs--contained .plx-tabs__tab{border-left-color:transparent;border-left-style:solid;border-left-width:var(--plx-comp-tabs-folder-tab-border-left-width);border-right-color:transparent;border-right-style:solid;border-right-width:var(--plx-comp-tabs-folder-tab-border-right-width);border-top-left-radius:var(--plx-comp-tabs-folder-tab-border-top-left-radius);border-top-right-radius:var(--plx-comp-tabs-folder-tab-border-top-right-radius);border-top-color:transparent;border-top-style:solid;border-top-width:var(--plx-comp-tabs-folder-tab-border-top-width);color:var(--plx-comp-tabs-folder-tab-text);font-size:var(--plx-comp-tabs-folder-tab-font-size);font-weight:var(--plx-comp-tabs-folder-tab-font-weight);min-block-size:var(--plx-comp-tabs-folder-tab-min-height);padding-inline-end:var(--plx-comp-tabs-folder-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-folder-tab-padding-inline);}
-.plx-tabs--folder .plx-tabs__tab:hover,.plx-tabs--contained .plx-tabs__tab:hover,
-.plx-tabs--folder .plx-tabs__tab.is-hover,.plx-tabs--contained .plx-tabs__tab.is-hover{color:var(--plx-comp-tabs-folder-tab-hover-text);}
-/* the open tab and the contained panel draw real borders, exactly like Panel and Card (owner, 2026-10-10: "the outer border is
-   not the same on all sides"). Inset box-shadows were not snapped to device pixels: at 150% a 1px line covered 1.5 device
-   pixels, blurred over two and heavier than every other frame; at 125% the sides differed by up to 20 shades. Borders are
-   snapped like every other frame's. */
-.plx-tabs--folder .plx-tabs__tab.is-selected,.plx-tabs--contained .plx-tabs__tab.is-selected{background-color:var(--plx-comp-tabs-folder-tab-selected-background);border-left-color:var(--plx-comp-tabs-folder-tab-selected-border-left-color);border-right-color:var(--plx-comp-tabs-folder-tab-selected-border-right-color);border-top-color:var(--plx-comp-tabs-folder-tab-selected-border-top-color);color:var(--plx-comp-tabs-folder-tab-selected-text);font-weight:var(--plx-comp-tabs-folder-tab-selected-font-weight);}
-.plx-tabs--folder>.plx-tabs__panel{padding-block-start:var(--plx-comp-tabs-folder-panel-padding-block-start);}
-/* contained: the panel's top border tucks under the tab list, where the open tab covers it */
-/* the contained panel: four real borders, like Panel and Card */
-.plx-tabs--contained>.plx-tabs__panel{background-color:var(--plx-comp-tabs-contained-panel-background);border-bottom-left-radius:var(--plx-comp-tabs-contained-panel-radius);border-bottom-right-radius:var(--plx-comp-tabs-contained-panel-radius);border-top-left-radius:var(--plx-comp-tabs-contained-panel-radius);border-top-right-radius:var(--plx-comp-tabs-contained-panel-radius);border-bottom-color:var(--plx-comp-tabs-contained-panel-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-tabs-contained-panel-border-width);border-left-color:var(--plx-comp-tabs-contained-panel-border-color);border-left-style:solid;border-left-width:var(--plx-comp-tabs-contained-panel-border-width);border-right-color:var(--plx-comp-tabs-contained-panel-border-color);border-right-style:solid;border-right-width:var(--plx-comp-tabs-contained-panel-border-width);border-top-color:var(--plx-comp-tabs-contained-panel-border-color);border-top-style:solid;border-top-width:var(--plx-comp-tabs-contained-panel-border-width);margin-block-start:var(--plx-comp-tabs-contained-panel-margin-block-start);padding-block-end:var(--plx-comp-tabs-contained-panel-padding-block);padding-block-start:var(--plx-comp-tabs-contained-panel-padding-block);padding-inline-end:var(--plx-comp-tabs-contained-panel-padding-inline);padding-inline-start:var(--plx-comp-tabs-contained-panel-padding-inline);}
-/* the first tab open: it stands on the panel's top-left corner, which is square to meet it (owner, batch 249) */
-.plx-tabs--contained:has(>.plx-tabs__list>.plx-tabs__tablist>.plx-tabs__tab:first-child[aria-selected="true"])>.plx-tabs__panel{border-start-start-radius:0;}
-/* the open tab's joint (owner, batch 271: "a thin underline on the open tab"): at fractional display scales (125%) the
-   tab's bottom edge falls inside a device pixel and blends with the panel's top edge under it, a faint line. The open tab
-   draws its own joint: a strip of its surface, between its side borders, two thin lines tall across the seam. The strip
-   reaches one thin line further (padding) and gives that line back (margin), so the joint has room below the tabs and
-   nothing below moves (the tab list clips only sideways, overflow-x: clip, never below). */
-.plx-tabs--folder .plx-tabs__tab.is-selected,.plx-tabs--contained .plx-tabs__tab.is-selected{position:relative;}
-.plx-tabs--folder>.plx-tabs__list,.plx-tabs--contained>.plx-tabs__list{margin-block-end:var(--plx-comp-tabs-folder-list-margin-block-end);padding-block-end:var(--plx-comp-tabs-folder-list-padding-block-end);}
-.plx-tabs--folder .plx-tabs__tab.is-selected::after,.plx-tabs--contained .plx-tabs__tab.is-selected::after{background-color:var(--plx-comp-tabs-folder-tab-selected-after-background);block-size:var(--plx-comp-tabs-folder-tab-selected-after-height);content:"";inset-block-end:var(--plx-comp-tabs-folder-tab-selected-after-inset-block-end);inset-inline-end:0;inset-inline-start:0;pointer-events:none;position:absolute;}
+/* Plenix · Tabs: folder, contained, segmented (the underline variant was removed, owner 2026-10-09) (D4; folder and contained keep the legacy folder tab look); vertical.
+   Zero overlap (Styling Standard 3.5): every part carries its variant as its own class (plx-tabs__list--<variant>,
+   __tablist--, __tab--, __panel--; Tabs.jsx), and each property is declared once per part. A tab's look by state is chosen
+   by state variables in one order: disabled, then selected, then hover, then rest. */
+@property --plx-state-tabs-tab-background{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-text{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-font-weight{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-shadow{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-cursor{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-position{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-start-border-width{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-start-radius{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-end-radius{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-edge-color{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-top-color{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-left-color{syntax:"*";inherits:false;}
+@property --plx-state-tabs-tab-right-color{syntax:"*";inherits:false;}
+@property --plx-state-tabs-panel-start-radius{syntax:"*";inherits:false;}
+.plx-tabs{display:flex;min-inline-size:0;}
+.plx-tabs:where(:not(.plx-tabs--vertical)){flex-direction:column;}
 /* vertical (library wave 7): the tab list in a column at the start, the panel beside it taking the rest of the width; each
    tab is a navigation list row (the hover fill, the open tab in the selected state, as the navigation pane's current row) */
 .plx-tabs--vertical{align-items:flex-start;column-gap:var(--plx-comp-tabs-vertical-gap);flex-direction:row;}
-.plx-tabs--vertical>.plx-tabs__list{align-items:stretch;flex-direction:column;flex-shrink:0;inline-size:var(--plx-comp-tabs-vertical-list-width);}
-.plx-tabs--vertical .plx-tabs__tablist{align-items:stretch;flex-direction:column;overflow-x:visible;row-gap:var(--plx-comp-tabs-vertical-list-row-gap);}
-.plx-tabs--vertical .plx-tabs__tab{border-end-end-radius:var(--plx-comp-tabs-vertical-tab-radius);border-end-start-radius:var(--plx-comp-tabs-vertical-tab-radius);border-start-end-radius:var(--plx-comp-tabs-vertical-tab-radius);border-start-start-radius:var(--plx-comp-tabs-vertical-tab-radius);color:var(--plx-comp-tabs-vertical-tab-text);font-size:var(--plx-comp-tabs-vertical-tab-font-size);font-weight:var(--plx-comp-tabs-vertical-tab-font-weight);justify-content:flex-start;min-block-size:var(--plx-comp-tabs-vertical-tab-min-height);padding-inline-end:var(--plx-comp-tabs-vertical-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-vertical-tab-padding-inline);text-align:start;white-space:normal;}
-.plx-tabs--vertical .plx-tabs__tab:hover,
-.plx-tabs--vertical .plx-tabs__tab.is-hover{background-color:var(--plx-comp-tabs-vertical-tab-hover-background);box-shadow:var(--plx-comp-tabs-vertical-tab-hover-shadow);color:var(--plx-comp-tabs-vertical-tab-hover-text);}
-.plx-tabs--vertical .plx-tabs__tab.is-selected,
-.plx-tabs--vertical .plx-tabs__tab.is-selected:hover,
-.plx-tabs--vertical .plx-tabs__tab.is-selected.is-hover{background-color:var(--plx-comp-tabs-vertical-tab-selected-background);box-shadow:var(--plx-comp-tabs-vertical-tab-selected-shadow);color:var(--plx-comp-tabs-vertical-tab-selected-text);font-weight:var(--plx-comp-tabs-vertical-tab-selected-font-weight);}
-.plx-tabs--vertical>.plx-tabs__panel{flex-basis:0%;flex-grow:1;min-inline-size:0;}
-/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
-.plx-tabs__tab{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+
+/* the strip: the tab list (role=tablist) and, when tabs do not fit, the More menu button after it (outside the tab list).
+   Nothing scrolls sideways (reflow, Platforms Standard 3.5): the tab list clips sideways only while Tabs measures, before
+   the browser paints, and the tabs that do not fit are hidden and listed in More. */
+.plx-tabs__list{display:flex;max-inline-size:100%;min-inline-size:0;}
+.plx-tabs__list--segmented{align-items:center;align-self:flex-start;column-gap:var(--plx-comp-tabs-segmented-list-gap);}
+/* folder and contained: the legacy folder tab, on tokens; no line under the open tab. The strip leaves room below the
+   tabs for the open tab's joint (below) and gives it back, so nothing below moves */
+.plx-tabs__list--folder,.plx-tabs__list--contained{align-items:flex-end;column-gap:var(--plx-comp-tabs-folder-list-gap);margin-block-end:var(--plx-comp-tabs-folder-list-margin-block-end);padding-block-end:var(--plx-comp-tabs-folder-list-padding-block-end);position:relative;z-index:var(--plx-comp-tabs-folder-list-z-index);}
+.plx-tabs__list--folder{background-image:var(--plx-comp-tabs-folder-list-background-image);background-position:0% 100%;background-repeat:no-repeat;background-size:var(--plx-comp-tabs-folder-list-background-size);}
+.plx-tabs__list--vertical{align-items:stretch;column-gap:var(--plx-comp-tabs-list-gap);flex-direction:column;flex-shrink:0;inline-size:var(--plx-comp-tabs-vertical-list-width);}
+.plx-tabs__tablist{display:flex;flex-grow:0;flex-shrink:1;min-inline-size:0;}
+.plx-tabs__tablist--folder,.plx-tabs__tablist--contained{align-items:inherit;column-gap:inherit;overflow-x:clip;}
+.plx-tabs__tablist--segmented{align-items:stretch;column-gap:0;overflow-x:clip;}
+.plx-tabs__tablist--vertical{align-items:stretch;column-gap:inherit;flex-direction:column;overflow-x:visible;row-gap:var(--plx-comp-tabs-vertical-list-row-gap);}
+.plx-tabs__more-anchor{display:inline-flex;flex-shrink:0;}
+/* the More button's caret turns while its menu is open (the button publishes the turn) */
+.plx-tabs__more[aria-expanded="true"]{--plx-comp-tabs-context-more-caret-transform:rotate(180deg);}
+.plx-tabs__more-caret{-webkit-mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:currentcolor;block-size:var(--plx-comp-tabs-more-caret-size);flex-shrink:0;inline-size:var(--plx-comp-tabs-more-caret-size);mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;transform:var(--plx-comp-tabs-context-more-caret-transform,none);transition-duration:var(--plx-comp-tabs-more-caret-duration);transition-property:transform;}
+
+/* ── a tab: what every variant shares ── */
+.plx-tabs__tab{align-items:center;column-gap:var(--plx-comp-tabs-tab-gap);cursor:var(--plx-state-tabs-tab-cursor,pointer);flex-shrink:0;font-family:inherit;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-tabs__tab:where(:not([hidden])){display:inline-flex;}
+.plx-tabs__tab[hidden]{display:none;}
+/* no focus outline on tabs (owner, 2026-10-09: "there is no blue focus on any tabs... remove"): arrow keys move and select,
+   and only the selected tab is in the Tab order, so keyboard focus is always on the selected tab, which its own look marks */
+.plx-tabs__tab:is(:focus-visible, .is-focus-visible){outline-style:none;}
+/* disabled first: the disabled text and the plain pointer, whatever else is true */
+.plx-tabs__tab:disabled{--plx-state-tabs-tab-cursor:default;--plx-state-tabs-tab-text:var(--plx-comp-tabs-tab-disabled-text);}
+
+/* segmented: SegmentedControl look A (owner, 2026-10-14): joined segments at the button control height with a secondary
+   button's edge and background; the selected tab takes the selected-state blue tint with blue text. No gray track, no
+   raised thumb. Every shown tab but the first drops its start edge (plx-tabs__tab--joined), so one line separates two tabs;
+   the first and last shown tabs (--first, --last: tabs moved into More are hidden, wherever they sit) round the group's
+   outer corners. */
+.plx-tabs__tab--segmented{background-color:var(--plx-state-tabs-tab-background,var(--plx-comp-tabs-segmented-tab-background));border-block-end-color:var(--plx-comp-tabs-segmented-tab-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-tabs-segmented-tab-border-width);border-block-start-color:var(--plx-comp-tabs-segmented-tab-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-tabs-segmented-tab-border-width);border-end-end-radius:var(--plx-state-tabs-tab-end-radius,var(--plx-comp-tabs-segmented-tab-joined-radius));border-end-start-radius:var(--plx-state-tabs-tab-start-radius,var(--plx-comp-tabs-segmented-tab-joined-radius));border-inline-end-color:var(--plx-comp-tabs-segmented-tab-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-tabs-segmented-tab-border-width);border-inline-start-color:var(--plx-comp-tabs-segmented-tab-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-state-tabs-tab-start-border-width,var(--plx-comp-tabs-segmented-tab-border-width));border-start-end-radius:var(--plx-state-tabs-tab-end-radius,var(--plx-comp-tabs-segmented-tab-joined-radius));border-start-start-radius:var(--plx-state-tabs-tab-start-radius,var(--plx-comp-tabs-segmented-tab-joined-radius));color:var(--plx-state-tabs-tab-text,var(--plx-comp-tabs-segmented-tab-text));font-size:var(--plx-comp-tabs-segmented-tab-font-size);font-weight:var(--plx-comp-tabs-segmented-tab-font-weight);justify-content:center;min-block-size:var(--plx-comp-tabs-segmented-tab-min-height);padding-inline-end:var(--plx-comp-tabs-segmented-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-segmented-tab-padding-inline);white-space:nowrap;}
+.plx-tabs__tab--joined{--plx-state-tabs-tab-start-border-width:0;}
+.plx-tabs__tab--first{--plx-state-tabs-tab-start-radius:var(--plx-comp-tabs-segmented-tab-radius);}
+.plx-tabs__tab--last{--plx-state-tabs-tab-end-radius:var(--plx-comp-tabs-segmented-tab-radius);}
+.plx-tabs__tab--segmented:is(:hover, .is-hover):where(:not(.is-selected, :disabled)){--plx-state-tabs-tab-background:var(--plx-comp-tabs-segmented-tab-hover-background);--plx-state-tabs-tab-text:var(--plx-comp-tabs-segmented-tab-hover-text);}
+.plx-tabs__tab--segmented.is-selected:where(:not(:disabled)){--plx-state-tabs-tab-background:var(--plx-comp-tabs-segmented-tab-selected-background);--plx-state-tabs-tab-text:var(--plx-comp-tabs-segmented-tab-selected-text);}
+
+/* folder and contained: the open tab draws real borders, exactly like Panel and Card (owner, 2026-10-10: "the outer
+   border is not the same on all sides"); inset box-shadows were not snapped to device pixels, borders are */
+.plx-tabs__tab--folder,.plx-tabs__tab--contained{background-color:var(--plx-state-tabs-tab-background,transparent);border-block-end-style:none;border-block-end-width:0;border-block-start-color:var(--plx-state-tabs-tab-top-color,transparent);border-block-start-style:solid;border-block-start-width:var(--plx-comp-tabs-folder-tab-border-top-width);border-left-color:var(--plx-state-tabs-tab-left-color,transparent);border-left-style:solid;border-left-width:var(--plx-comp-tabs-folder-tab-border-left-width);border-right-color:var(--plx-state-tabs-tab-right-color,transparent);border-right-style:solid;border-right-width:var(--plx-comp-tabs-folder-tab-border-right-width);border-top-left-radius:var(--plx-comp-tabs-folder-tab-border-top-left-radius);border-top-right-radius:var(--plx-comp-tabs-folder-tab-border-top-right-radius);color:var(--plx-state-tabs-tab-text,var(--plx-comp-tabs-folder-tab-text));font-size:var(--plx-comp-tabs-folder-tab-font-size);font-weight:var(--plx-state-tabs-tab-font-weight,var(--plx-comp-tabs-folder-tab-font-weight));min-block-size:var(--plx-comp-tabs-folder-tab-min-height);padding-inline-end:var(--plx-comp-tabs-folder-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-folder-tab-padding-inline);position:var(--plx-state-tabs-tab-position,static);white-space:nowrap;}
+.plx-tabs__tab:is(.plx-tabs__tab--folder, .plx-tabs__tab--contained):is(:hover, .is-hover):where(:not(.is-selected, :disabled)){--plx-state-tabs-tab-text:var(--plx-comp-tabs-folder-tab-hover-text);}
+.plx-tabs__tab:is(.plx-tabs__tab--folder, .plx-tabs__tab--contained).is-selected:where(:not(:disabled)){--plx-state-tabs-tab-background:var(--plx-comp-tabs-folder-tab-selected-background);--plx-state-tabs-tab-font-weight:var(--plx-comp-tabs-folder-tab-selected-font-weight);--plx-state-tabs-tab-left-color:var(--plx-comp-tabs-folder-tab-selected-border-left-color);--plx-state-tabs-tab-position:relative;--plx-state-tabs-tab-right-color:var(--plx-comp-tabs-folder-tab-selected-border-right-color);--plx-state-tabs-tab-text:var(--plx-comp-tabs-folder-tab-selected-text);--plx-state-tabs-tab-top-color:var(--plx-comp-tabs-folder-tab-selected-border-top-color);}
+/* the open tab's joint (owner, batch 271: "a thin underline on the open tab"): at fractional display scales (125%) the
+   tab's bottom edge falls inside a device pixel and blends with the panel's top edge under it, a faint line. The open tab
+   draws its own joint: a strip of its surface, between its side borders, two thin lines tall across the seam (the strip's
+   room is the list's padding and margin, above) */
+.plx-tabs__tab:is(.plx-tabs__tab--folder, .plx-tabs__tab--contained).is-selected:where(:not(:disabled))::after{background-color:var(--plx-comp-tabs-folder-tab-selected-after-background);block-size:var(--plx-comp-tabs-folder-tab-selected-after-height);content:"";inset-block-end:var(--plx-comp-tabs-folder-tab-selected-after-inset-block-end);inset-inline-end:0;inset-inline-start:0;pointer-events:none;position:absolute;}
+
+/* vertical: a navigation list row */
+.plx-tabs__tab--vertical{background-color:var(--plx-state-tabs-tab-background,transparent);border-block-end-style:none;border-block-end-width:0;border-block-start-style:none;border-block-start-width:0;border-end-end-radius:var(--plx-comp-tabs-vertical-tab-radius);border-end-start-radius:var(--plx-comp-tabs-vertical-tab-radius);border-inline-end-style:none;border-inline-end-width:0;border-inline-start-style:none;border-inline-start-width:0;border-start-end-radius:var(--plx-comp-tabs-vertical-tab-radius);border-start-start-radius:var(--plx-comp-tabs-vertical-tab-radius);box-shadow:var(--plx-state-tabs-tab-shadow,none);color:var(--plx-state-tabs-tab-text,var(--plx-comp-tabs-vertical-tab-text));font-size:var(--plx-comp-tabs-vertical-tab-font-size);font-weight:var(--plx-state-tabs-tab-font-weight,var(--plx-comp-tabs-vertical-tab-font-weight));justify-content:flex-start;min-block-size:var(--plx-comp-tabs-vertical-tab-min-height);padding-inline-end:var(--plx-comp-tabs-vertical-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-vertical-tab-padding-inline);text-align:start;white-space:normal;}
+.plx-tabs__tab--vertical:is(:hover, .is-hover):where(:not(.is-selected, :disabled)){--plx-state-tabs-tab-background:var(--plx-comp-tabs-vertical-tab-hover-background);--plx-state-tabs-tab-shadow:var(--plx-comp-tabs-vertical-tab-hover-shadow);--plx-state-tabs-tab-text:var(--plx-comp-tabs-vertical-tab-hover-text);}
+.plx-tabs__tab--vertical.is-selected:where(:not(:disabled)){--plx-state-tabs-tab-background:var(--plx-comp-tabs-vertical-tab-selected-background);--plx-state-tabs-tab-font-weight:var(--plx-comp-tabs-vertical-tab-selected-font-weight);--plx-state-tabs-tab-shadow:var(--plx-comp-tabs-vertical-tab-selected-shadow);--plx-state-tabs-tab-text:var(--plx-comp-tabs-vertical-tab-selected-text);}
+.plx-tabs__icon{display:inline-flex;}
+
+/* ── the panel ── */
+.plx-tabs__panel:is(:focus-visible, .is-focus-visible){outline-style:none;}
+.plx-tabs__panel--segmented{padding-block-start:var(--plx-comp-tabs-segmented-panel-padding-block-start);}
+.plx-tabs__panel--folder{padding-block-start:var(--plx-comp-tabs-folder-panel-padding-block-start);}
+/* the contained panel: four real borders, like Panel and Card; its top border tucks under the tab list, where the open
+   tab covers it. With the first tab open (plx-tabs__panel--corner) the tab stands on the panel's top-left corner, which
+   is square to meet it (owner, batch 249) */
+.plx-tabs__panel--contained{background-color:var(--plx-comp-tabs-contained-panel-background);border-bottom-color:var(--plx-comp-tabs-contained-panel-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-tabs-contained-panel-border-width);border-left-color:var(--plx-comp-tabs-contained-panel-border-color);border-left-style:solid;border-left-width:var(--plx-comp-tabs-contained-panel-border-width);border-right-color:var(--plx-comp-tabs-contained-panel-border-color);border-right-style:solid;border-right-width:var(--plx-comp-tabs-contained-panel-border-width);border-end-end-radius:var(--plx-comp-tabs-contained-panel-radius);border-end-start-radius:var(--plx-comp-tabs-contained-panel-radius);border-start-end-radius:var(--plx-comp-tabs-contained-panel-radius);border-start-start-radius:var(--plx-state-tabs-panel-start-radius,var(--plx-comp-tabs-contained-panel-radius));border-top-color:var(--plx-comp-tabs-contained-panel-border-color);border-top-style:solid;border-top-width:var(--plx-comp-tabs-contained-panel-border-width);margin-block-start:var(--plx-comp-tabs-contained-panel-margin-block-start);padding-block-end:var(--plx-comp-tabs-contained-panel-padding-block);padding-block-start:var(--plx-comp-tabs-contained-panel-padding-block);padding-inline-end:var(--plx-comp-tabs-contained-panel-padding-inline);padding-inline-start:var(--plx-comp-tabs-contained-panel-padding-inline);}
+.plx-tabs__panel--corner{--plx-state-tabs-panel-start-radius:0;}
+.plx-tabs__panel--vertical{flex-basis:0%;flex-grow:1;min-inline-size:0;}

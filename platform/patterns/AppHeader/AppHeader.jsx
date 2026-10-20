@@ -178,7 +178,9 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
   const inApps = currentApp !== undefined;   // the application said where it is (null: a screen that is not an application)
   const app = currentApp ? appById(currentApp) : null;
   const name = appName || (app ? app.label : null);
-  const brandEl = brand || (name ? <><BrandMark /><span className="plx-app-header__name"><span className="plx-app-header__product">Plenix</span><span className="plx-app-header__app">{name}</span></span></> : <><BrandMark />Plenix</>);
+  // the name's parts in the switch button give way (--switch: they shrink and end in an ellipsis)
+  const sw = (switcher !== undefined ? switcher : currentApp !== undefined) && !title;
+  const brandEl = brand || (name ? <><BrandMark /><span className={cx('plx-app-header__name', sw && 'plx-app-header__name--switch')}><span className={cx('plx-app-header__product', sw && 'plx-app-header__product--switch')}>Plenix</span><span className={cx('plx-app-header__app', sw && 'plx-app-header__app--switch')}>{name}</span></span></> : <><BrandMark />Plenix</>);
   const open = (a) => (e) => { if (onOpenApp && onOpenApp(a) === true) e.preventDefault(); };
   const pinned = nav || (inApps ? PLENIX_APPS.filter((a) => pinnedApps.indexOf(a.id) >= 0).map((a) => (
     <AppHeader.Item key={a.id} icon={<Icon name={a.icon} />} label={a.label} current={a.id === currentApp} href={appHref(a, appsRoot)} onClick={open(a)} />
@@ -314,12 +316,12 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
     const on = pinnedApps.indexOf(a.id) >= 0;
     return (
       <li key={a.id} className={cx('plx-app-switcher__tile', on && 'is-pinned', a.id === currentApp && 'is-current')}>
-        <a className="plx-app-switcher__open" href={appHref(a, appsRoot)} aria-current={a.id === currentApp ? 'page' : undefined}
+        <a className={cx('plx-app-switcher__open', a.id === currentApp && 'is-current')} href={appHref(a, appsRoot)} aria-current={a.id === currentApp ? 'page' : undefined}
           onClick={(e) => { if (onOpenApp && onOpenApp(a) === true) e.preventDefault(); setOpen(false); }}>
           <span className="plx-app-switcher__icon" aria-hidden="true"><Icon name={a.icon} /></span>
           <span className="plx-app-switcher__label">{a.label}</span>
         </a>
-        <button type="button" className="plx-app-switcher__pin" aria-pressed={on} aria-label={(on ? 'Unpin ' : 'Pin ') + a.label + (on ? ' from' : ' to') + ' the header'}
+        <button type="button" className={cx('plx-app-switcher__pin', on && 'is-pinned')} aria-pressed={on} aria-label={(on ? 'Unpin ' : 'Pin ') + a.label + (on ? ' from' : ' to') + ' the header'}
           onClick={() => pin(a)}><Icon name={on ? 'pin-filled' : 'pin'} /></button>
       </li>
     );
@@ -337,7 +339,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
           onClick={() => setOpen(!open)} />
       )}
       {open ? (
-        <div ref={panel} id={id} role="dialog" aria-label="Applications" className="plx-app-switcher__panel">
+        <div ref={panel} id={id} role="dialog" aria-label="Applications" className={cx('plx-app-switcher__panel', brand && 'plx-app-switcher__panel--brand')}>
           {pinnedList.length ? (
             <section className="plx-app-switcher__pinned" aria-labelledby={id + '-pinned'}>
               <h2 id={id + '-pinned'} className="plx-app-switcher__heading">Pinned to the header</h2>

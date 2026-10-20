@@ -928,10 +928,6 @@
   "platform/components/MediaPlayer/media-player.css": {
    "combinator | .plx-media-player[data-plx-fill] .plx-media-player__media": 1
   },
-  "platform/components/Menu/menu.css": {
-   "combinator | .plx-menu-anchor>:first-child": 1,
-   "combinator | .plx-menu-sub>.plx-menu-sub__item": 1
-  },
   "platform/components/MetricCard/metric-card.css": {
    "combinator | .plx-metric-card--soft .plx-metric-card__delta": 1,
    "combinator | .plx-metric-card--filled .plx-metric-card__delta": 1,
@@ -1134,9 +1130,6 @@
   },
   "platform/components/SectionHeading/section-heading.css": {
    "combinator | .plx-section-heading__toggle[aria-expanded=\"false\"] .plx-section-heading__chevron": 1
-  },
-  "platform/components/SegmentedControl/segmented-control.css": {
-   "combinator | .plx-segmented--sm .plx-segmented__item": 1
   },
   "platform/components/Sheet/sheet.css": {
    "combinator | .plx-sheet--task .plx-sheet__title": 1
@@ -2047,45 +2040,6 @@
    "combinator | .plx-table[data-plx-engine=\"next\"] .plx-table__grid .plx-table__grid-header[hidden]": 1,
    "combinator | .plx-table[data-plx-engine=\"next\"] .plx-table__grid .plx-table__grid-col-title": 1
   },
-  "platform/components/Tabs/tabs.css": {
-   "combinator | .plx-tabs__more[aria-expanded=\"true\"] .plx-tabs__more-caret": 1,
-   "combinator | .plx-tabs--segmented>.plx-tabs__list": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tablist": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab:not([hidden])~.plx-tabs__tab": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab:not([hidden]):not(.plx-tabs__tab:not([hidden])~.plx-tabs__tab)": 1,
-   "relational | .plx-tabs--segmented .plx-tabs__tab:not([hidden]):not(:has(~.plx-tabs__tab:not([hidden])))": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab:hover": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab.is-hover": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab.is-selected": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab.is-selected:hover": 1,
-   "combinator | .plx-tabs--segmented .plx-tabs__tab.is-selected.is-hover": 1,
-   "combinator | .plx-tabs--segmented>.plx-tabs__panel": 1,
-   "combinator | .plx-tabs--folder>.plx-tabs__list": 3,
-   "combinator | .plx-tabs--contained>.plx-tabs__list": 2,
-   "combinator | .plx-tabs--folder .plx-tabs__tab": 1,
-   "combinator | .plx-tabs--contained .plx-tabs__tab": 1,
-   "combinator | .plx-tabs--folder .plx-tabs__tab:hover": 1,
-   "combinator | .plx-tabs--contained .plx-tabs__tab:hover": 1,
-   "combinator | .plx-tabs--folder .plx-tabs__tab.is-hover": 1,
-   "combinator | .plx-tabs--contained .plx-tabs__tab.is-hover": 1,
-   "combinator | .plx-tabs--folder .plx-tabs__tab.is-selected": 2,
-   "combinator | .plx-tabs--contained .plx-tabs__tab.is-selected": 2,
-   "combinator | .plx-tabs--folder>.plx-tabs__panel": 1,
-   "combinator | .plx-tabs--contained>.plx-tabs__panel": 1,
-   "relational | .plx-tabs--contained:has(>.plx-tabs__list>.plx-tabs__tablist>.plx-tabs__tab:first-child[aria-selected=\"true\"])>.plx-tabs__panel": 1,
-   "combinator | .plx-tabs--folder .plx-tabs__tab.is-selected::after": 1,
-   "combinator | .plx-tabs--contained .plx-tabs__tab.is-selected::after": 1,
-   "combinator | .plx-tabs--vertical>.plx-tabs__list": 1,
-   "combinator | .plx-tabs--vertical .plx-tabs__tablist": 1,
-   "combinator | .plx-tabs--vertical .plx-tabs__tab": 1,
-   "combinator | .plx-tabs--vertical .plx-tabs__tab:hover": 1,
-   "combinator | .plx-tabs--vertical .plx-tabs__tab.is-hover": 1,
-   "combinator | .plx-tabs--vertical .plx-tabs__tab.is-selected": 1,
-   "combinator | .plx-tabs--vertical .plx-tabs__tab.is-selected:hover": 1,
-   "combinator | .plx-tabs--vertical .plx-tabs__tab.is-selected.is-hover": 1,
-   "combinator | .plx-tabs--vertical>.plx-tabs__panel": 1
-  },
   "platform/components/Tag/tag.css": {
    "relational | .plx-tag--chip:has(.plx-tag__toggle:hover)": 1,
    "relational | .plx-tag--chip:has(.plx-tag__toggle.is-hover)": 1,
@@ -2383,26 +2337,6 @@
    "combinator | .plx-activity-list--stacked .plx-activity-list__title": 1,
    "combinator | .plx-activity-list--title-2 .plx-activity-list__title": 1,
    "combinator | .plx-activity-list--stacked .plx-activity-list__meta": 1
-  },
-  "platform/patterns/AppHeader/app-header.css": {
-   "combinator | .plx-app-header--accent .plx-app-header__item:focus-visible": 1,
-   "combinator | .plx-app-header--accent .plx-app-header__item.is-focus-visible": 1,
-   "combinator | .plx-app-header__search>*": 1,
-   "combinator | .plx-app-header--compact .plx-app-header__nav": 1,
-   "combinator | .plx-app-header--compact .plx-app-header__nav+.plx-app-header__divider": 1,
-   "combinator | .plx-app-header--compact .plx-app-header__start>.plx-app-header__divider": 1,
-   "combinator | .plx-app-header--compact .plx-app-header__search-slot": 1,
-   "combinator | .plx-app-header--compact .plx-app-header__search": 1,
-   "combinator | .plx-app-switcher__tile.is-current>.plx-app-switcher__open": 1,
-   "combinator | .plx-app-switcher__tile:hover .plx-app-switcher__pin": 1,
-   "combinator | .plx-app-switcher__tile:focus-within .plx-app-switcher__pin": 1,
-   "combinator | .plx-app-switcher__tile.is-pinned .plx-app-switcher__pin": 2,
-   "combinator | .plx-app-switcher__tile.is-hover .plx-app-switcher__pin": 1,
-   "combinator | .plx-app-switcher--brand .plx-app-switcher__panel": 1,
-   "combinator | .plx-app-header__brand--switch .plx-app-header__name": 2,
-   "combinator | .plx-app-header__brand--switch .plx-app-header__product": 1,
-   "combinator | .plx-app-header__brand--switch .plx-app-header__app": 1,
-   "combinator | .plx-search-view__field>*": 1
   },
   "platform/patterns/Auth/auth.css": {
    "cross-block | .plx-form.plx-auth__form": 1
