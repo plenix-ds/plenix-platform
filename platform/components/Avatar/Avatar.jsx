@@ -1,5 +1,6 @@
 /* Plenix · Avatar
-   Summary: A person's picture, or their initials, in a rounded square (never a circle).
+   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
+     2026-10-19: every avatar and picture placeholder has the same border).
    Usage:
      <Avatar name="Maya Chen" size="md" />
      <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />

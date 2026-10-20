@@ -7,6 +7,7 @@
 @import url("components/VisuallyHidden/visually-hidden.css");
 @import url("components/Count/count.css");
 @import url("components/Metric/metric.css");
+@import url("components/MetricCard/metric-card.css");
 @import url("components/ProgressBar/progress-bar.css");
 @import url("components/DateBadge/date-badge.css");
 @import url("components/EventChip/event-chip.css");

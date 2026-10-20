@@ -2517,7 +2517,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      trendVariant: the sparkline's form: "line" (default) | "area" | "bar"
      trendLabel: what the trend shows ("Assets added per day"), its accessible name with its summary (default the label)
      trendColor: the sparkline's data-viz step (default "categorical-1")
-     card: shows the metric as a card (Card): the label is its title, the description its line, the figure and the trend
+     card: (deprecated: use MetricCard, one anatomy for every metric card) shows the metric as a card (Card): the label is its title, the description its line, the figure and the trend
        its body (default false; Metric card, library wave 9)
      href: with card, makes the card's title a link to the detailed view
      className: more classes on the metric (on the card with card)
@@ -2607,285 +2607,6 @@ Metric.Group = function MetricGroup({
   }, c) : null));
 };
   } },
-  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ProgressBar = ProgressBar;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressBar
-   Summary: How far a task or a quantity has come: a track with a fill (11 › Feedback › Loading and progress › Progress bar).
-   Usage:
-     <ProgressBar value={42} label="Uploading 3 files" showValue />
-     <ProgressBar label="Preparing the export" />
-     <ProgressBar value={7} max={12} tone="success" size="sm" label="Tasks done" labelHidden />
-     <ProgressBar value={60} color={project.color} label="Kitchen Renovation" />
-   Props:
-     value: how much is done; leave it out while the amount is unknown (the bar is then indeterminate)
-     max: the whole (default 100)
-     label: what is progressing; always the accessible name, shown above the bar unless labelHidden
-     labelHidden: the label is for assistive technology only (default false)
-     showValue: shows the percent at the end of the label row, a whole percent in the locale's format ("42%") (default false)
-     tone: "info" (default) | "success" | "warning" | "danger" | "neutral"
-     color: a color the data brings (a project's color), a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280); it fills the bar instead of the tone
-     size: "sm" (a 4px track) | "md" (default, an 8px track)
-     className: more classes on the wrapper
-     locale: the language the percent is formatted in (default: the page's language, document.documentElement.lang)
-   Behavior:
-     A known amount is the browser's own <progress value max> (batch 280: the function reports the amount, the design
-     system draws it, no width is written); without a value the track is a progressbar (role="progressbar") with no
-     value, its fill running from start to end again and again.
-     People who ask their system for less motion see the indeterminate fill still.
-   Notes:
-     The amount reaches the page as the <progress> element's value and a data color as data-plx-color: no style is written.
-     Other props pass through to the wrapper.
-*/
-function ProgressBar({
-  value,
-  max = 100,
-  label,
-  labelHidden = false,
-  showValue = false,
-  tone = 'info',
-  color,
-  size = 'md',
-  locale,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('ProgressBar', {
-    tone,
-    size
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
-    size: ['sm', 'md']
-  });
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
-  const known = typeof value === 'number' && !Number.isNaN(value);
-  const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
-  const id = 'plx-pb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const showLabel = label && !labelHidden;
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-progress-bar', 'plx-progress-bar--' + size, color ? 'plx-progress-bar--color' : 'plx-progress-bar--' + tone, !known && 'is-indeterminate', className),
-    "data-plx-color": color || undefined
-  }, rest), showLabel || showValue && known ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-progress-bar__head"
-  }, showLabel ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-progress-bar__label",
-    id: id
-  }, label) : null, showValue && known ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-progress-bar__value"
-  }, new Intl.NumberFormat(loc, {
-    style: 'percent',
-    maximumFractionDigits: 0
-  }).format(pct / 100)) : null) : null, known ? /*#__PURE__*/_react.default.createElement("progress", {
-    className: "plx-progress-bar__track plx-progress-bar__meter",
-    value: Math.max(0, Math.min(value, max || 100)),
-    max: max || 100,
-    "aria-labelledby": showLabel ? id : undefined,
-    "aria-label": showLabel ? undefined : label
-  }) : /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-progress-bar__track",
-    role: "progressbar",
-    "aria-labelledby": showLabel ? id : undefined,
-    "aria-label": showLabel ? undefined : label
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-progress-bar__fill"
-  })));
-}
-  } },
-  "platform/components/DateBadge/DateBadge.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DateBadge = DateBadge;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DateBadge
-   Summary: A day shown as its number and weekday, with today marked (02 › Inputs › Date and time › Calendar).
-   Usage:
-     <DateBadge day={6} weekday="Tue" today />
-     <DateBadge day={7} weekday="Wed" dateTime="2026-10-07" />
-   Props:
-     day: the day of the month
-     weekday: the short weekday name, shown above the number
-     today: marks today: the number on the action color (default false)
-     dateTime: the date, machine-readable (wraps the badge in <time>)
-     className: more classes on the badge
-   Behavior:
-     Today carries "Today" for assistive technology as well as its look.
-   Notes:
-     The time grid's day headers and the month view's day cells use it.
-*/
-function DateBadge({
-  day,
-  weekday,
-  today = false,
-  dateTime,
-  className,
-  ...rest
-}) {
-  const Tag = dateTime ? 'time' : 'span';
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    className: (0, _cx.cx)('plx-date-badge', today && 'is-today', className),
-    dateTime: dateTime
-  }, rest), weekday ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-date-badge__weekday"
-  }, weekday) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-date-badge__day"
-  }, day), today ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "Today") : null);
-}
-  } },
-  "platform/components/EventChip/EventChip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.EventChip = EventChip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EventChip
-   Summary: An event in a calendar: its title and time on a soft surface with an edge in the event's own color
-     (03 › Data display › Specialized displays › Calendar view).
-   Usage:
-     <EventChip title="Site visit" time="10:00" color={calendar.color} onClick={() => open(e)} />
-     <EventChip title="Design review" time="14:00–15:30" fill />
-   Props:
-     title: the event's name
-     time: when, as shown
-     color: the event's or its calendar's color, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280); it draws the start edge
-     fill: the chip fills its box (an event placed in a time grid); default false
-     onClick(event): makes the chip a button that opens the event
-     className: more classes on the chip
-   Behavior:
-     With onClick it is a button (focus ring, Enter and Space); without, plain text.
-   Notes:
-     The hue reaches the stylesheet as the data-plx-color attribute, the only way a data color enters (no style is written).
-     Other props pass through to the element.
-*/
-function EventChip({
-  title,
-  time,
-  color,
-  fill = false,
-  onClick,
-  className,
-  ...rest
-}) {
-  const Tag = onClick ? 'button' : 'span';
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    type: onClick ? 'button' : undefined,
-    onClick: onClick,
-    className: (0, _cx.cx)('plx-event-chip', fill && 'plx-event-chip--fill', onClick && 'plx-event-chip--interactive', className),
-    "data-plx-color": color || undefined
-  }, rest), time ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-event-chip__time"
-  }, time) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-event-chip__title"
-  }, title));
-}
-  } },
-  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RadioTiles = RadioTiles;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RadioTiles
-   Summary: A choice of one among a few options shown as tiles, each with a preview, a label and a description
-     (02 › Inputs › Selection › Selectable card).
-   Usage:
-     <RadioTiles legend="Header style" value={style} onChange={setStyle}
-       options={[{ value: 'solid', label: 'Solid', description: 'The accent color', preview: <…/> }, { value: 'light', label: 'Light' }]} />
-   Props:
-     legend: what is being chosen (the group's name)
-     legendHidden: the legend is for assistive technology only (default false)
-     options: [{ value, label, description, preview, disabled }]
-     value: the chosen value
-     onChange(value): runs when another tile is chosen
-     name: the radio group's name (default: a unique one)
-     size: "sm" | "md" (default) | "lg": the tiles' minimum width
-     className: more classes on the group
-   Behavior:
-     A native radio group: Tab moves into it, the arrow keys move the choice, Space chooses.
-     The chosen tile shows the selected border and a check; a focused tile shows the focus ring.
-   Notes:
-     The preview is decorative (aria-hidden); the label and description name the option.
-*/
-function RadioTiles({
-  legend,
-  legendHidden = false,
-  options = [],
-  value,
-  onChange,
-  name,
-  size = 'md',
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('RadioTiles', {
-    size
-  }, {
-    size: ['sm', 'md', 'lg']
-  });
-  const auto = 'plx-rt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
-    className: (0, _cx.cx)('plx-radio-tiles', 'plx-radio-tiles--' + size, className)
-  }, rest), /*#__PURE__*/_react.default.createElement("legend", {
-    className: (0, _cx.cx)('plx-radio-tiles__legend', legendHidden && 'plx-visually-hidden')
-  }, legend), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-radio-tiles__grid"
-  }, options.map(o => {
-    const on = o.value === value;
-    return /*#__PURE__*/_react.default.createElement("label", {
-      key: o.value,
-      className: (0, _cx.cx)('plx-radio-tile', on && 'is-selected', o.disabled && 'is-disabled')
-    }, /*#__PURE__*/_react.default.createElement("input", {
-      className: "plx-radio-tile__input plx-visually-hidden",
-      type: "radio",
-      name: name || auto,
-      value: o.value,
-      checked: on,
-      disabled: o.disabled,
-      onChange: () => {
-        if (onChange) onChange(o.value);
-      }
-    }), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-radio-tile__preview",
-      "aria-hidden": "true"
-    }, o.preview) : null, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-radio-tile__text"
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-radio-tile__label"
-    }, o.label), o.description ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-radio-tile__description"
-    }, o.description) : null), /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-radio-tile__check",
-      "aria-hidden": "true"
-    }, on ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "check",
-      size: "sm"
-    }) : null));
-  })));
-}
-  } },
   "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -2959,827 +2680,6 @@ function StatusDot({
   }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
 }
   } },
-  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
-exports.useFloating = useFloating;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFloating
-   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
-   Usage:
-     const anchor = React.useRef(null), panel = React.useRef(null);
-     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
-     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
-     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
-     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
-     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
-   Props:
-     anchorRef: a ref to the element the floating element is placed against
-     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
-     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
-     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
-     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
-     options.flip (true): moves to the opposite side when there is no room
-     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
-     options.matchWidth (false): at least as wide as the anchor
-     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
-     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
-   Behavior:
-     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
-     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
-     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
-     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
-   Notes:
-     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
-     Menu, Tooltip and Popover adopt it in their own tasks.
-*/
-
-const SLOTS = 16;
-const taken = new Array(SLOTS + 1).fill(false);
-const take = () => {
-  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
-    taken[i] = true;
-    return i;
-  }
-  return 0;
-};
-const release = i => {
-  if (i) taken[i] = false;
-};
-
-// what the browser can do, checked once
-const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
-const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
-const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
-const OFFSETS = {
-  none: null,
-  xs: '--plx-sys-floating-offset-xs',
-  sm: '--plx-sys-floating-offset-sm',
-  md: '--plx-sys-floating-offset-md'
-};
-const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
-
-// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
-function tokenPixels(name) {
-  if (!name || typeof document === 'undefined') return 0;
-  const root = document.documentElement,
-    v = getComputedStyle(root).getPropertyValue(name).trim(),
-    n = parseFloat(v) || 0;
-  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
-}
-const set = (el, name, value) => {
-  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
-};
-const isRtl = el => getComputedStyle(el).direction === 'rtl';
-
-// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
-function measured(anchor, floating, placement, flip, shift, gap) {
-  const a = anchor.getBoundingClientRect(),
-    f = floating.getBoundingClientRect();
-  const W = window.innerWidth,
-    H = window.innerHeight,
-    rtl = isRtl(anchor);
-  let [side, align] = placement.split('-');
-  const room = {
-    top: a.top - gap,
-    bottom: H - a.bottom - gap,
-    start: rtl ? W - a.right - gap : a.left - gap,
-    end: rtl ? a.left - gap : W - a.right - gap
-  };
-  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
-  const opposite = {
-    top: 'bottom',
-    bottom: 'top',
-    start: 'end',
-    end: 'start'
-  }[side];
-  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
-  if (shift && align && (side === 'top' || side === 'bottom')) {
-    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
-    const startEdge = rtl ? a.right : a.left,
-      endRoom = rtl ? startEdge : W - startEdge;
-    const endEdge = rtl ? a.left : a.right,
-      startRoom = rtl ? W - endEdge : endEdge;
-    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
-  }
-  if (shift && align && (side === 'start' || side === 'end')) {
-    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
-  }
-  return align ? side + '-' + align : side;
-}
-
-// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
-function pointAt(floating, x, y) {
-  const f = floating.getBoundingClientRect(),
-    W = window.innerWidth,
-    H = window.innerHeight,
-    m = tokenPixels('--plx-sys-floating-viewport-margin');
-  const rtl = isRtl(floating);
-  // the inline-start inset of the point, measured from the window's inline-start edge
-  let ix = rtl ? W - x : x,
-    iy = y;
-  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
-  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
-  ix = Math.max(m, Math.min(ix, W - m - f.width));
-  iy = Math.max(m, Math.min(iy, H - m - f.height));
-  return [Math.round(ix), Math.round(iy)];
-}
-function useFloating(anchorRef, floatingRef, options = {}) {
-  const {
-    open = true,
-    placement = 'bottom-start',
-    offset = 'xs',
-    flip = true,
-    shift = true,
-    matchWidth = false,
-    virtual = null
-  } = options;
-  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const pointer = !!(virtual && FLOATING_POINTER);
-  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
-  const [used, setUsed] = _react.default.useState(wanted);
-  const slot = _react.default.useRef(0);
-  const vx = virtual ? virtual.x : null,
-    vy = virtual ? virtual.y : null;
-  _react.default.useLayoutEffect(() => {
-    const anchor = anchorRef && anchorRef.current,
-      floating = floatingRef && floatingRef.current;
-    if (!open || !floating) return undefined;
-    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
-    if (pointer) {
-      set(floating, 'data-plx-floating-pointer', '');
-      const [ix, iy] = pointAt(floating, vx, vy);
-      set(floating, 'data-plx-floating-x', ix);
-      set(floating, 'data-plx-floating-y', iy);
-    } else if (anchor) {
-      if (!slot.current) slot.current = take();
-      set(anchor, 'data-plx-floating-anchor', slot.current || null);
-      set(floating, 'data-plx-floating', slot.current || 'inline');
-      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
-      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
-      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
-      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
-      if (host) set(host, 'data-plx-floating-host', '');
-      set(floating, 'data-plx-floating-placement', wanted);
-      let next = wanted;
-      if (mode === 'inline') {
-        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-        set(floating, 'data-plx-floating-placement', next);
-      }
-      setUsed(next);
-    }
-    return () => {
-      ATTRS.forEach(n => floating.removeAttribute(n));
-      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
-      if (host) host.removeAttribute('data-plx-floating-host');
-      release(slot.current);
-      slot.current = 0;
-    };
-  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
-
-  // the inline fallback measures again when the window changes size
-  _react.default.useEffect(() => {
-    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
-    const again = () => {
-      const anchor = anchorRef.current,
-        floating = floatingRef.current;
-      if (!anchor || !floating) return;
-      set(floating, 'data-plx-floating-placement', wanted);
-      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-      set(floating, 'data-plx-floating-placement', next);
-      setUsed(next);
-    };
-    window.addEventListener('resize', again);
-    return () => window.removeEventListener('resize', again);
-  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
-  return {
-    placement: mode === 'anchor' ? wanted : used,
-    mode
-  };
-}
-  } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Tooltip = Tooltip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _floating = require("../../utils/floating.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
-     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
-   Usage:
-     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
-     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
-     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
-   Props:
-     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
-     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
-     title: a short title above the body; it makes the tooltip rich
-     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
-       it opens on click (Enter or Space on the trigger) instead of on hover and focus
-     rich: the rich look without a title or an action (default false; true when title or action is given)
-     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
-       the time and only needs its tooltip when it is cut short
-     className: more classes on the wrapper
-     children: the control it labels (one element)
-   Behavior:
-     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
-     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
-     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
-     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
-     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
-     release is dropped): a long press asks what a control is, it does not use it.
-     The trigger is described by the tooltip (aria-describedby), added to any it already has.
-     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
-       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
-       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
-       the window.
-     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
-       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
-       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
-       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
-   Notes:
-     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
-     way to learn the control's name.
-     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
-     depends on hover.
-     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
-*/
-
-const SIDES = ['bottom', 'top', 'start', 'end'];
-
-// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-
-// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
-// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
-let lastInput = 'key',
-  listening = false;
-const listen = () => {
-  if (listening) return;
-  listening = true;
-  document.addEventListener('pointerdown', e => {
-    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
-  }, true);
-  document.addEventListener('keydown', () => {
-    lastInput = 'key';
-  }, true);
-};
-function Tooltip({
-  content,
-  placement = 'bottom',
-  title,
-  action,
-  rich = false,
-  disabled = false,
-  className,
-  children
-}) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const [open, setOpen] = _react.default.useState(false);
-  const wrap = _react.default.useRef(null);
-  const bubble = _react.default.useRef(null);
-  const press = _react.default.useRef(null); // the long-press timer
-  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
-  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
-  const isRich = !!(rich || title || action);
-  const toggle = !!action; // a toggletip: opened by a click on the trigger
-  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
-  const clear = () => {
-    clearTimeout(press.current);
-    clearTimeout(hide.current);
-  };
-  _react.default.useEffect(() => {
-    listen();
-    return clear;
-  }, []);
-  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
-  (0, _floating.useFloating)(wrap, bubble, {
-    open: open && !disabled && _floating.FLOATING_ANCHOR,
-    placement: side,
-    offset: 'sm',
-    flip: isRich,
-    shift: isRich
-  });
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const esc = e => {
-      if (e.key !== 'Escape') return;
-      const inside = wrap.current && wrap.current.contains(document.activeElement);
-      setOpen(false);
-      // a toggletip gives focus back to its trigger when Escape closes it from inside
-      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
-    };
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('keydown', esc);
-    if (toggle) document.addEventListener('mousedown', outside);
-    return () => {
-      document.removeEventListener('keydown', esc);
-      document.removeEventListener('mousedown', outside);
-    };
-  }, [open, toggle]);
-  const child = _react.default.Children.only(children);
-  const described = {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  };
-  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
-    'aria-expanded': open,
-    'aria-controls': open ? id + 'b' : undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  }) : described);
-  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-tooltip', className)
-  }, trigger);
-  const onPointerDown = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clear();
-    pressed.current = false;
-    press.current = setTimeout(() => {
-      pressed.current = true;
-      setOpen(true);
-    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
-  };
-  const onPointerEnd = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clearTimeout(press.current);
-    if (pressed.current) hide.current = setTimeout(() => {
-      setOpen(false);
-      pressed.current = false;
-    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
-  };
-  const onEnter = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    clearTimeout(hide.current);
-    setOpen(true);
-  };
-  const onLeave = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
-    if (isRich) {
-      clearTimeout(hide.current);
-      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
-    } else setOpen(false);
-  };
-  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-tooltip', className),
-    onPointerEnter: onEnter,
-    onPointerLeave: onLeave,
-    onPointerDown: onPointerDown,
-    onPointerUp: onPointerEnd,
-    onPointerCancel: onPointerEnd,
-    onContextMenu: e => {
-      if (pressed.current) e.preventDefault();
-    },
-    onClickCapture: e => {
-      if (pressed.current) {
-        e.preventDefault();
-        e.stopPropagation();
-        pressed.current = false;
-      }
-    },
-    onFocus: () => {
-      if (!toggle && lastInput !== 'touch') setOpen(true);
-    },
-    onBlur: e => {
-      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
-    }
-  }, trigger, isRich ? /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    id: id + 'b',
-    className: bubbleCls
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    role: "tooltip",
-    id: id,
-    className: "plx-tooltip__content"
-  }, title ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__title"
-  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__body"
-  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__action"
-  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    role: "tooltip",
-    id: id,
-    className: bubbleCls
-  }, content));
-}
-  } },
-  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Chip = Chip;
-exports.Tag = Tag;
-exports.TagInput = void 0;
-exports.TagList = TagList;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Tooltip = require("../Tooltip/Tooltip.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tag, Chip, TagList, TagInput
-   Summary: Small labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button. A tag with a
-     category is a category pill: its category color as a soft pill (owner, 2026-10-14, docs/pills-and-colors.md).
-   Usage:
-     <TagList label="Keywords">
-       <Tag onRemove={() => remove('sky')}>sky</Tag>
-       <Tag category="teal">Client</Tag>
-       <Chip selected={on} onClick={() => setOn(!on)}>Favorites</Chip>
-       <TagInput placeholder="Add a tag" onKeyDown={…} />
-     </TagList>
-   Props:
-     Tag.onRemove(event): shows a × button that runs it
-     Tag.removeLabel: the × button's accessible name; default "Remove " + the tag text
-     Tag.onRename(text): makes the tag renamable: its text becomes a button; activating it turns it into a field (Enter or leaving it keeps
-       the new text, Escape cancels); renameLabel: the button's accessible name (default "Rename " + the tag text)
-     Tag.category: the tag's category color, one of the 19 category colors (CATEGORY_COLORS: red, green, yellow, blue, orange,
-       purple, cyan, magenta, lime, pink, teal, lavender, beige, maroon, mint, olive, apricot, navy, grey); set as
-       data-plx-category: background shade 100, a 1px border in shade 300, text in shade 700. Without it the tag is gray. Legacy category="brown" uses Orange.
-     Tag.className: more classes on the tag
-     Tag.children: the tag text
-     Chip.selected: the chip is pressed (aria-pressed); default false
-     Chip.onClick(event): runs when the chip is clicked
-     Chip.onRemove(event): shows a × button that runs it
-     Chip.removeLabel: the × button's accessible name; default "Remove " + the chip text
-     Chip.className: more classes on the chip
-     Chip.children: the chip text
-     TagList.label: the accessible name of the group; without it the list is not a group
-     TagList.className: more classes on the list
-     TagList.children: the tags or chips
-     TagInput.onAdd(text): adds a tag: runs on Enter with the typed text (trimmed; never empty), then the field clears;
-       the application ignores a tag it already has
-     TagInput.label: the accessible name of the + button and the field, and the field's placeholder (default "Add a tag")
-     TagInput.collapsible: true (default): a + button that reveals the field; false: the field is always shown
-     TagInput.className: more classes on the input
-   Behavior:
-     The × button is a 24px target in a 16px box, 44px with touch (Platforms Standard 3.1); a chip's target grows the same
-       way past its 20px look. With touch, TagList parts its tags and rows, and keeps
-       12px above and below itself, so the targets do not overlap each other or the controls beside the list.
-     Selected chips are filled.
-     TagInput is a + at the end of the tag list, drawn as a Chip (the tag look as a button: its height, corners, fill and
-       border; owner, batch 272), its target 24px like the tag's × (owner, batch 271: "it should be a + and clicking that plus
-       exposes the text field"): pressing it reveals a text field like every other (the input's border, hover, focus and
-       disabled states), focused. Type a tag and press Enter to add it: it appears before the field, the field clears and
-       stays open for the next one. Escape, or leaving the field empty, closes it and returns focus to the +. Each tag's
-       × removes it. Without onAdd the field only reports what is typed (onChange, onKeyDown).
-     A tag being renamed is a small field with the input's focused border.
-   Notes:
-     Category colors identify labels; they never mean a workflow state. A status is a Badge (its six variants), never a
-       category tag, and a tag is never drawn in a status variant.
-     TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
-     TagInput is the "add a tag" field at the end of a TagList.
-     Other props reach the element: the tag, the chip's toggle button, the list, or the input.
-*/
-function RemoveButton({
-  label,
-  onClick
-}) {
-  return /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-tag__remove",
-    "aria-label": label,
-    onClick: onClick
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    "aria-hidden": "true"
-  }, "\xD7"));
-}
-function Tag({
-  category,
-  onRemove,
-  removeLabel,
-  onRename,
-  renameLabel,
-  className,
-  children,
-  ...rest
-}) {
-  const [editing, setEditing] = _react.default.useState(false);
-  const [draft, setDraft] = _react.default.useState('');
-  const text = typeof children === 'string' ? children : '';
-  const done = keep => {
-    setEditing(false);
-    if (keep && draft.trim() && draft.trim() !== text) onRename(draft.trim());
-  };
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className),
-    "data-plx-category": (category === 'brown' ? 'orange' : category) || undefined
-  }, rest), onRename && editing ? /*#__PURE__*/_react.default.createElement("input", {
-    className: "plx-tag__input",
-    value: draft,
-    "aria-label": renameLabel || 'Rename ' + (text || 'tag'),
-    autoFocus: true,
-    size: Math.max(4, draft.length),
-    onChange: e => setDraft(e.target.value),
-    onBlur: () => done(true),
-    onKeyDown: e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        done(true);
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        done(false);
-      }
-    }
-  }) : onRename ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-tag__label plx-tag__rename",
-    "aria-label": renameLabel || 'Rename ' + (text || 'tag'),
-    onClick: () => {
-      setDraft(text);
-      setEditing(true);
-    }
-  }, children) : /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tag__label"
-  }, children), onRemove ? /*#__PURE__*/_react.default.createElement(RemoveButton, {
-    label: removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'tag'),
-    onClick: onRemove
-  }) : null);
-}
-function Chip({
-  selected = false,
-  onRemove,
-  removeLabel,
-  className,
-  children,
-  ...rest
-}) {
-  if (onRemove) {
-    return /*#__PURE__*/_react.default.createElement("span", {
-      className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)
-    }, /*#__PURE__*/_react.default.createElement("button", _extends({
-      type: "button",
-      className: "plx-tag__toggle",
-      "aria-pressed": selected
-    }, rest), children), /*#__PURE__*/_react.default.createElement(RemoveButton, {
-      label: removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'filter'),
-      onClick: onRemove
-    }));
-  }
-  return /*#__PURE__*/_react.default.createElement("button", _extends({
-    type: "button",
-    className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className),
-    "aria-pressed": selected
-  }, rest), children);
-}
-function TagList({
-  className,
-  children,
-  label,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-tag-list', className),
-    role: label ? 'group' : undefined,
-    "aria-label": label
-  }, rest), children);
-}
-const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(function TagInput({
-  onAdd,
-  onKeyDown,
-  value,
-  onChange,
-  label = 'Add a tag',
-  collapsible = true,
-  id,
-  className,
-  onBlur,
-  ...rest
-}, ref) {
-  const [own, setOwn] = _react.default.useState('');
-  const [open, setOpen] = _react.default.useState(!collapsible);
-  const text = value !== undefined ? value : own;
-  const inputRef = _react.default.useRef(null),
-    plusRef = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => inputRef.current || plusRef.current);
-  const wasOpen = _react.default.useRef(open);
-  _react.default.useEffect(() => {
-    // opening focuses the field; closing returns focus to the + (only after a change, never on mount)
-    if (wasOpen.current === open) return;
-    wasOpen.current = open;
-    if (open && inputRef.current) inputRef.current.focus();else if (!open && plusRef.current && plusRef.current.focus) plusRef.current.focus();
-  }, [open]);
-  const setText = v => {
-    if (value === undefined) setOwn(v);else if (onChange) onChange({
-      target: {
-        value: v
-      },
-      currentTarget: {
-        value: v
-      }
-    });
-  };
-  const change = e => {
-    if (value === undefined) setOwn(e.target.value);
-    if (onChange) onChange(e);
-  };
-  const keyDown = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented) return;
-    if (e.key === 'Escape' && collapsible) {
-      e.preventDefault();
-      setText('');
-      setOpen(false);
-      return;
-    }
-    if (!onAdd || e.key !== 'Enter') return;
-    e.preventDefault();
-    const t = String(text).trim();
-    if (!t) return;
-    onAdd(t);
-    setText('');
-  };
-  const blur = e => {
-    if (onBlur) onBlur(e);
-    if (collapsible && !String(text).trim()) setOpen(false);
-  };
-  if (!open) {
-    return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: label
-    }, /*#__PURE__*/_react.default.createElement("button", {
-      ref: plusRef,
-      id: id,
-      type: "button",
-      "aria-label": label,
-      className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', 'plx-tag--add', className),
-      onClick: () => setOpen(true)
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "add",
-      size: "sm"
-    })));
-  }
-  return /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: inputRef,
-    id: id,
-    type: "text",
-    "aria-label": rest['aria-labelledby'] ? undefined : label,
-    placeholder: label,
-    className: (0, _cx.cx)('plx-input', 'plx-tag-input', className),
-    value: text,
-    onChange: change,
-    onKeyDown: keyDown,
-    onBlur: blur
-  }, rest));
-});
-  } },
-  "platform/components/DataPill/DataPill.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DataPill = DataPill;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _devWarn = require("../../utils/devWarn.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataPill
-   Summary: A value shown as a pill: the value itself (a case number, a person, a date, a price, an airport code, Yes or
-     No) at the size of the text around it, in a color and with an icon that say something about it (owner, 2026-10-19:
-     "data placed organized in pill style"). It never makes a row taller: its height is the density's inline control
-     height. A person's pill (or plain name) carries their gender: blue with the male icon, pink with the female icon.
-   Usage:
-     <DataPill data>CTM-2026-00061</DataPill>
-     <DataPill gender="female" fill>Marina Abdel-Malik</DataPill>
-     <DataPill tone="green" variant="solid" data>$639</DataPill>
-     <DataPill tone="orange" icon="calendar">Sat May 9</DataPill>
-     <DataPill gender="male" variant="plain">Patrick O'Brien</DataPill>
-   Props:
-     children: the value
-     tone: its color, a category color by name (CATEGORY_COLORS: red, green, yellow, blue, orange, purple, cyan, magenta,
-       lime, pink, teal, lavender, beige, maroon, mint, olive, apricot, navy, grey); default grey
-     variant: "soft" (default: a soft fill, a 1px border two shades darker, the text in the darkest shade) | "solid" (the
-       color as the fill, its own text color: a strong value such as a price band) | "plain" (no box: the icon and the
-       text in the color, a name in running text)
-     icon: an icon name before the value (a calendar for a date, the sun or the moon for a time)
-     data: a technical value (a code, a number, a time, a price): the data font
-     fill: the pill takes the whole width of its cell or container
-     gender: "male" | "female": a person's pill: blue with the person-male icon or pink with the person-female icon, and
-       the gender said to assistive technology; any other value (or none) with a person: grey with the default person
-       icon. Set person to show the default icon when the gender is unknown
-     person: the value is a person (the person icon when no gender is known)
-     strings: the words it announces, for other languages: { male: "male", female: "female" }
-     className: more classes on the pill
-     ...rest: other attributes go on the pill
-   Behavior:
-     The text never wraps; a value too long for a filled pill ends in an ellipsis and its full text is the tooltip (title).
-     The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
-   Notes:
-     Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
-     DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
-*/
-const STRINGS = {
-  male: 'male',
-  female: 'female'
-};
-const GENDER = {
-  male: {
-    tone: 'blue',
-    icon: 'person-male'
-  },
-  female: {
-    tone: 'pink',
-    icon: 'person-female'
-  }
-};
-function DataPill({
-  children,
-  tone,
-  variant = 'soft',
-  icon,
-  data = false,
-  fill = false,
-  gender,
-  person = false,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('DataPill', {
-    variant
-  }, {
-    variant: ['soft', 'solid', 'plain']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  const g = GENDER[gender];
-  const color = g ? g.tone : tone || (variant === 'plain' ? undefined : 'grey'); // a plain value with no color keeps the text color
-  const glyph = g ? g.icon : icon || (person ? 'person' : null);
-  const title = fill && (typeof children === 'string' || typeof children === 'number') ? String(children) : undefined;
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-data-pill', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className),
-    "data-plx-category": color,
-    title: title
-  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: glyph,
-    size: "sm",
-    className: "plx-data-pill__icon",
-    filled: !!g
-  }) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-data-pill__value"
-  }, children), g ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-visually-hidden"
-  }, ', ' + t[gender]) : null);
-}
-  } },
-  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Kbd = Kbd;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
-   Summary: A key or shortcut ("Ctrl K").
-   Usage:
-     <Kbd>Ctrl K</Kbd>
-     <Kbd onAccent>/</Kbd>
-   Props:
-     onAccent: the version for the blue header (default false)
-     children: the key or shortcut text
-     className: more classes on the <kbd>
-   Notes:
-     It uses the data font at a 16px label height.
-     Other props pass through to the <kbd>.
-*/
-function Kbd({
-  onAccent = false,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
-    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className)
-  }, rest), children);
-}
-  } },
   "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -3795,7 +2695,8 @@ var _Icon = require("../Icon/Icon.jsx");
 var _StatusDot = require("../StatusDot/StatusDot.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
-   Summary: A person's picture, or their initials, in a rounded square (never a circle).
+   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
+     2026-10-19: every avatar and picture placeholder has the same border).
    Usage:
      <Avatar name="Maya Chen" size="md" />
      <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
@@ -3940,168 +2841,74 @@ function Avatar({
   }) : null);
 }
   } },
-  "platform/components/Divider/Divider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Divider = Divider;
+exports.IconTile = IconTile;
 var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Divider
-   Summary: A 1px rule between groups.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · IconTile
+   Summary: An icon on a tinted, rounded square: the marker of an object type, a category or an integration in lists,
+     cards and headers (the entity's kind in EntityHeader's { icon, hue } media).
    Usage:
-     <Divider />
-     <Divider orientation="vertical" />
+     <IconTile icon="briefcase" hue="blue" />
+     <IconTile icon="alert" tone="warning" size="sm" label="Overdue" />
+     <IconTile icon="sparkle" hue="purple" size="lg" filled />
    Props:
-     orientation: "horizontal" (default) | "vertical" (in a row)
-     className: more classes on the rule
+     icon: the Plenix icon name (platform/icons/map.json)
+     hue: the tile's data color: "blue" | "green" | "purple" | "red" | "brown" | "gray" (default) | "surface" (the page
+       surface with the icon in the link blue)
+     tone: a status tone instead of a hue: "neutral" | "info" | "success" | "warning" | "danger"; it wins over hue
+     size: "sm" (a 32px tile, 16px icon) | "md" (40px, 20px; default) | "lg" (48px, 24px; EntityHeader's tile)
+     filled: the filled version of the icon (default false)
+     label: the accessible name, when the tile alone carries meaning; without it the tile is decorative
+     className: more classes on the tile
    Behavior:
-     It is a separator (role="separator") with its orientation.
+     Not interactive: no hover, no focus. A tile that opens something sits inside the row, card or button that does.
+     The tile and its icon size together by the named size, on the 4px grid; the icon is centered.
+     Hues are the data colors (the same in light and dark); tones are the feedback roles, which follow the theme.
    Notes:
-     Other props pass through to the <div>.
+     The icon is the Plenix set (Material Symbols, unedited); no letters or numbers in a tile.
+     Other props pass through to the <span>.
 */
-function Divider({
-  orientation = 'horizontal',
+const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
+const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
+const SIZES = ['sm', 'md', 'lg'];
+function IconTile({
+  icon,
+  hue = 'gray',
+  tone,
+  size = 'md',
+  filled = false,
+  label,
   className,
   ...rest
 }) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "separator",
-    "aria-orientation": orientation,
-    className: (0, _cx.cx)('plx-divider', 'plx-divider--' + orientation, className)
-  }, rest));
-}
-  } },
-  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Bleed = Bleed;
-exports.Center = Center;
-exports.Inline = Inline;
-exports.Stack = Stack;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
-   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
-     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
-   Usage:
-     <Stack gap="md">
-       <Inline gap="sm" justify="between">…</Inline>
-       <Inline wrap>…</Inline>
-     </Stack>
-     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
-     <Center maxWidth="sm" text><EmptyState … /></Center>
-     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
-   Props:
-     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*)
-     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
-     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
-     Inline.align: the same values; default "center"
-     Stack.justify: "start" | "center" | "end" | "between"
-     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
-     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
-     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
-     Stack.scroll: scrolls its own content
-     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
-     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
-     Stack.indent: starts one inline step in (a nested group)
-     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
-     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
-     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
-     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
-     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
-     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
-     Stack.className: more classes on the element
-     Stack.children: the content to lay out
-     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
-       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
-     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
-     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
-     Center.text: centers the lines of text (short headings and messages only)
-     Center.as, Center.className: as for Stack
-     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
-     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
-     Bleed.as, Bleed.className: as for Stack
-   Behavior:
-     A scrolling Stack or Inline shows its scroll bar on hover.
-     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
-       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
-       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
-     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
-       keeps no inset (text stays out of a Bleed).
-   Notes:
-     Inline takes the same props as Stack.
-     Any other prop reaches the element.
-     Applications build their layouts from these (and the Platform's patterns) instead of styles.
-*/
-function layout(kind, {
-  as: As = 'div',
-  gap,
-  align,
-  justify,
-  wrap,
-  inset,
-  grow,
-  scroll,
-  width,
-  maxHeight,
-  indent,
-  push,
-  reverse,
-  reverseBelow,
-  order,
-  orderBelow,
-  className,
-  children,
-  ...rest
-}, defaults) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
-  }, rest), children);
-}
-function Stack(props) {
-  return layout('stack', props, {
-    gap: 'md'
+  (0, _devWarn.devWarn)('IconTile', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
+    size: ['sm', 'md', 'lg']
   });
-}
-function Inline(props) {
-  return layout('inline', props, {
-    gap: 'sm',
-    align: 'center'
-  });
-}
-function Center({
-  as: As = 'div',
-  maxWidth = 'md',
-  intrinsic,
-  vertical,
-  text,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
-  }, rest), children);
-}
-function Bleed({
-  as: As = 'div',
-  space = 'md',
-  sides = 'inline',
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
-  }, rest), children);
+  const look = TONES.indexOf(tone) >= 0 ? tone : HUES.indexOf(hue) >= 0 ? hue : 'gray';
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-icon-tile', 'plx-icon-tile--' + s, 'plx-icon-tile--' + look, className),
+    role: label ? 'img' : undefined,
+    "aria-label": label,
+    "aria-hidden": label ? undefined : true
+  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    size: s,
+    filled: filled
+  }));
 }
   } },
   "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -4341,513 +3148,6 @@ function ButtonGroup({
   })));
 }
   } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Text = Text;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Button = require("../Button/Button.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
-   Summary: A run of text in one of the system's text roles, from the type tokens.
-   Usage:
-     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
-     <Text variant="display" as="h1">1,284 assets</Text>
-     <Text as="p" lines={3} expandable>A long description…</Text>
-     <Text variant="secondary" tabular>12:40</Text>
-   Props:
-     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
-       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
-       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
-       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
-       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
-       label: semibold 12px. strong: semibold, the current size.
-       heading: a group's title inside a page or dialog, semibold 13px.
-       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
-       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
-       title: a page title, the heading font, 20px, bold.
-       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
-         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
-       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
-         empty state (body-lg; library wave 2).
-     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
-     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
-     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
-     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
-       "Show less" to fold it again; default false
-     defaultExpanded: an expandable text starts unfolded; default false
-     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
-       change; default false
-     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
-     className: more classes on the text
-     children: the text
-     ...rest: other attributes go on the element
-   Behavior:
-     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
-       get all of it.
-     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
-       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
-     display and lead are type styles only: the element (as) gives the heading level.
-   Notes:
-     Applications never set a font, size, weight or color themselves.
-     There are no margins in any case, whatever the element.
-     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
-       label, down to show more and up to show less.
-*/
-const LINES = [2, 3, 4];
-const STRINGS = {
-  more: 'Show more',
-  less: 'Show less'
-};
-
-// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
-const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
-function Text({
-  as: As = 'span',
-  variant = 'body',
-  truncate = false,
-  lines,
-  expandable = false,
-  defaultExpanded = false,
-  tabular = false,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Text', {
-    variant
-  }, {
-    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
-  });
-  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
-  if (expandable && clamp) {
-    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
-      As: As,
-      variant: variant,
-      clamp: clamp,
-      defaultExpanded: defaultExpanded,
-      tabular: tabular,
-      strings: strings,
-      className: className,
-      rest: rest
-    }, children);
-  }
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto",
-    className: textClass(variant, truncate, clamp, false, tabular, className)
-  }, rest), children);
-}
-
-// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
-function ExpandableText({
-  As,
-  variant,
-  clamp,
-  defaultExpanded,
-  tabular,
-  strings,
-  className,
-  rest,
-  children
-}) {
-  const own = (0, _layer.useUid)('plx-text');
-  const id = rest.id || own;
-  const ref = _react.default.useRef(null);
-  const [open, setOpen] = _react.default.useState(defaultExpanded);
-  const [cut, setCut] = _react.default.useState(false);
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || open) return undefined;
-    const measure = () => setCut(el.scrollHeight > el.clientHeight);
-    measure();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const watch = new ResizeObserver(measure);
-    watch.observe(el);
-    return () => watch.disconnect();
-  }, [open, children]);
-  const words = Object.assign({}, STRINGS, strings);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-text-expand"
-  }, /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto"
-  }, rest, {
-    ref: ref,
-    id: id,
-    className: textClass(variant, false, clamp, open, tabular, className)
-  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "2xs",
-    iconEnd: open ? 'chevron-up' : 'chevron-down',
-    "aria-expanded": open,
-    "aria-controls": id,
-    onClick: () => setOpen(!open)
-  }, open ? words.less : words.more) : null);
-}
-  } },
-  "platform/components/Thumbnail/Thumbnail.jsx": { deps: {"react":null,"../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Thumbnail = Thumbnail;
-var _react = _interopRequireDefault(require("react"));
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Thumbnail
-   Summary: A small picture of a file or an item beside its name (a table's name cell, a list row).
-     It shows the picture, or an icon when there is none, in a 28px rounded square on the sunken surface.
-   Usage:
-     <Thumbnail src={asset.thumbUrl} icon="image-a-2" />
-   Props:
-     src: the picture's URL
-     alt: the picture's text alternative; default "" (empty when the name is next to it)
-     icon: the icon shown without src; default "document"
-   Behavior:
-     An image that fails to load falls back to the icon.
-     The picture loads lazily.
-     The icon is decorative and hidden from assistive technology.
-*/
-
-function Thumbnail({
-  src,
-  alt = '',
-  icon = 'document'
-}) {
-  // an image that fails to load falls back to the icon, as when there is none (batch 215)
-  const [failed, setFailed] = _react.default.useState(false);
-  _react.default.useEffect(() => {
-    setFailed(false);
-  }, [src]);
-  return src && !failed ? /*#__PURE__*/_react.default.createElement("img", {
-    className: "plx-thumbnail",
-    src: src,
-    alt: alt,
-    loading: "lazy",
-    decoding: "async",
-    onError: () => setFailed(true)
-  }) : /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-thumbnail plx-thumbnail--icon",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon,
-    size: "sm"
-  }));
-}
-  } },
-  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Notice = Notice;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Button = require("../Button/Button.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Notice
-   Summary: A short message inside a page, a panel or a dialog (an inline message); with a title, actions or a dismiss
-     button it is a section message: a message about one section of the page that people can act on or put away.
-     It shows its tone's soft surface and content color, an icon and the text.
-   Usage:
-     <Notice tone="warning">This folder is shared with 3 people.</Notice>
-     <Notice tone="danger" title="The export failed" actions={<Button size="xs" onClick={retry}>Try again</Button>}
-       onDismiss={() => setShown(false)}>The server did not answer.</Notice>
-   Props:
-     tone: "info" (default) | "success" | "warning" | "danger"
-     icon: an icon name; the tone's icon unless given
-     title: a short heading above the text, which names the message (a section message)
-     actions: buttons under the text (one or two, size "xs"), the next steps the message offers
-     onDismiss(event): shows a dismiss button at the end; called when it is pressed (the page hides the notice)
-     strings: the words it announces, for other languages: { dismiss: "Dismiss" } (the dismiss button's name)
-     className: more classes on the notice
-     children: the message text
-     ...rest: other attributes go on the notice element
-   Behavior:
-     A danger notice has role="alert", so screen readers announce it.
-     The dismiss button is the last Tab stop of the notice; the page decides what happens to focus after it hides the
-       notice (it moves to the next thing in the section).
-   Notes:
-     Without a title, actions or onDismiss the markup is the plain inline message (the icon and the text).
-*/
-const ICONS = {
-  info: 'info-circle',
-  success: 'circle-check',
-  warning: 'warning',
-  danger: 'alert'
-};
-const STRINGS = {
-  dismiss: 'Dismiss'
-};
-function Notice({
-  tone = 'info',
-  icon,
-  title,
-  actions,
-  onDismiss,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Notice', {
-    tone
-  }, {
-    tone: ['info', 'success', 'warning', 'danger']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  const section = title || actions;
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-notice', 'plx-notice--' + tone, className),
-    role: tone === 'danger' ? 'alert' : undefined
-  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon || ICONS[tone]
-  }), section ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-notice__body"
-  }, title ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-notice__title"
-  }, title) : null, children ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-notice__text"
-  }, children) : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-notice__actions"
-  }, actions) : null) : /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-notice__text"
-  }, children), onDismiss ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    className: "plx-notice__dismiss",
-    variant: "ghost",
-    size: "xs",
-    iconOnly: true,
-    icon: "close",
-    label: t.dismiss,
-    onClick: onDismiss
-  }) : null);
-}
-  } },
-  "platform/providers/apps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.appHref = exports.appById = exports.PLENIX_APPS = void 0;
-/* Plenix · applications (platform/providers/apps.js): every Plenix application, in one list for every product. The header
-   shows the pinned ones as links and the switcher shows them all (pinned first); the session keeps which are pinned.
-   id: the application's id. path: its page, relative to the Plenix folder, where every application has its own folder
-   beside platform/ (batch 149). appHref(app, root) turns it into a link from the current page, where root is the
-   relative path from that page to the Plenix folder ("../" from an application's page, "../../" from the spec). */
-const PLENIX_APPS = exports.PLENIX_APPS = [{
-  id: 'home',
-  label: 'Dashboard',
-  icon: 'home',
-  path: 'dashboard/index.html'
-}, {
-  id: 'projects',
-  label: 'Projects',
-  icon: 'briefcase',
-  path: 'projects/index.html'
-}, {
-  id: 'messaging',
-  label: 'Messages',
-  icon: 'message',
-  path: 'messages/index.html'
-}, {
-  id: 'contacts',
-  label: 'Contacts',
-  icon: 'settings-users',
-  path: 'contacts/index.html'
-}, {
-  id: 'calendar',
-  label: 'Calendar',
-  icon: 'calendar',
-  path: 'calendar/index.html'
-}, {
-  id: 'tasks',
-  label: 'Tasks',
-  icon: 'circle-check',
-  path: 'tasks/index.html'
-}, {
-  id: 'notes',
-  label: 'Notes',
-  icon: 'doc-text',
-  path: 'notes/index.html'
-}, {
-  id: 'bookmarks',
-  label: 'Bookmarks',
-  icon: 'bookmark',
-  path: 'bookmarks/index.html'
-}, {
-  id: 'files',
-  label: 'Files',
-  icon: 'folder',
-  path: 'files/index.html'
-}, {
-  id: 'assets',
-  label: 'Asset Manager',
-  icon: 'image-b',
-  path: 'dam/index.html'
-}];
-const appById = id => PLENIX_APPS.find(a => a.id === id);
-exports.appById = appById;
-const appHref = (app, root = '') => root + app.path.split('/').map(encodeURIComponent).join('/').replace(/%23/g, '#');
-exports.appHref = appHref;
-  } },
-  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/apps.js":"platform/providers/apps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BrandMark = BrandMark;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _apps = require("../../providers/apps.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BrandMark
-   Summary: The Plenix brand from the brand kit (platform/brand/): the mark alone, the wordmark, the logo (mark and wordmark
-     in one lockup) and the product mark of each application, in the brand colors, in one color or on the accent.
-   Usage:
-     <BrandMark />                                  the mark, decorative, beside the product name (the header)
-     <BrandMark label="Plenix" />                   the mark on its own, named
-     <BrandMark kind="logo" size="lg" />            the logo: the mark and the wordmark
-     <BrandMark kind="wordmark" tone="mono" />      the name alone, in the current text color
-     <BrandMark kind="product" app="notes" />       the product mark of an application (PLENIX_APPS)
-     <BrandMark kind="logo" tone="on-accent" />     on the blue header or another accent surface
-   Props:
-     BrandMark.kind: "mark" (default) | "wordmark" | "logo" (mark + wordmark) | "product" (the application's tile + its name)
-     BrandMark.tone: the colors. Without it the mark takes the current text color (as in the header); "brand" (the default of
-       the wordmark, the logo and the product mark) draws the mark in the brand blue and the name in the text color; "mono"
-       draws everything in the current text color; "on-accent" everything in the accent content color (the blue header)
-     BrandMark.size: "sm" (the minimum: a 16px mark) | "md" (20px) | "lg" (24px) | "xl" (32px); without it the mark takes
-       the control icon size and a lockup is "md"
-     BrandMark.app: kind="product": an application id from PLENIX_APPS ("notes") or an application ({ label, icon })
-     BrandMark.showName: kind="product": false draws the tile alone, named by the application (default true)
-     BrandMark.clearSpace: pads the lockup with the brand's clear space (brand-rules.json), for a logo that stands on its own
-     BrandMark.label: the accessible name of the mark alone (or of the product tile alone); without it the mark is decorative
-     BrandMark.strings: { name: "Plenix" } (the wordmark's text: the brand name of brand.json)
-     BrandMark.className: more classes
-   Behavior:
-     The mark is the brand kit's file (platform/brand/brand.json files.mark), drawn as a mask in the color its tone gives:
-       its square includes the kit's clear space. The wordmark is live text in the heading face, at a size of the type
-       scale, so it is read as the brand name; the mark inside a lockup is decorative.
-     The product mark is the application's icon (PLENIX_APPS) on the brand tile, then the application's name.
-     The sizes stop at "sm": below it the mark loses its central cross (the minimum sizes of brand-rules.json).
-   Notes:
-     Never redraw or recolor the mark by hand: replace the kit's files and build (build-brand.js). The brand rules (clear
-       space, minimum sizes, backgrounds, misuse) are platform/brand/brand-rules.json; the Brand application page shows them.
-     The brand blue comes from the brand tokens (tokens/components/brand.tokens.json), never from a palette color.
-     Other props pass through to the outer <span>.
-*/
-const STRINGS = {
-  name: 'Plenix'
-};
-function BrandMark({
-  kind = 'mark',
-  tone,
-  size,
-  app,
-  showName = true,
-  clearSpace = false,
-  label,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('BrandMark', {
-    tone,
-    size
-  }, {
-    tone: ['brand', 'mono', 'on-accent'],
-    size: ['sm', 'md', 'lg', 'xl']
-  });
-  const s = {
-    ...STRINGS,
-    ...strings
-  };
-  if (kind === 'mark') {
-    const cls = (0, _cx.cx)('plx-brand-mark', tone && 'plx-brand-mark--tone-' + tone, size && 'plx-brand-mark--size-' + size, className);
-    return label ? /*#__PURE__*/_react.default.createElement("span", _extends({
-      role: "img",
-      "aria-label": label,
-      className: cls
-    }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
-      "aria-hidden": "true",
-      className: cls
-    }, rest));
-  }
-  const lockup = (0, _cx.cx)('plx-brand-lockup', 'plx-brand-lockup--' + kind, 'plx-brand-lockup--tone-' + (tone || 'brand'), 'plx-brand-lockup--size-' + (size || 'md'), clearSpace && 'plx-brand-lockup--clear', className);
-  if (kind === 'product') {
-    const a = typeof app === 'string' ? (0, _apps.appById)(app) : app;
-    const name = a ? a.label : s.name;
-    return /*#__PURE__*/_react.default.createElement("span", _extends({
-      className: lockup,
-      role: showName ? undefined : 'img',
-      "aria-label": showName ? undefined : label || name
-    }, rest), /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-brand-lockup__tile",
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: a ? a.icon : 'home'
-    })), showName ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-brand-lockup__app"
-    }, name) : null);
-  }
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: lockup
-  }, rest), kind === 'logo' ? /*#__PURE__*/_react.default.createElement("span", {
-    "aria-hidden": "true",
-    className: "plx-brand-mark plx-brand-lockup__mark"
-  }) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-brand-lockup__name"
-  }, s.name));
-}
-  } },
-  "platform/components/ColorSwatch/dataColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DATA_COLORS = void 0;
-/* Plenix · DATA_COLORS
-   Summary: The data colors by name, GENERATED by build-steps.js from the --plx-sys-data-color-<hue> theme tokens (do not edit).
-   Usage:
-     import { DATA_COLORS } from 'plenix-platform';   // ["blue","green","purple","red","brown","gray"]
-     <ColorSwatch color={DATA_COLORS[0]} />
-   Props:
-     none: a list of hue names, in the order the theme defines them
-*/
-const DATA_COLORS = exports.DATA_COLORS = ["blue", "green", "purple", "red", "brown", "gray"];
-  } },
-  "platform/components/ColorSwatch/categoryColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CATEGORY_COLORS = void 0;
-/* Plenix · CATEGORY_COLORS
-   Summary: The category colors by name, GENERATED by build-steps.js from the --plx-sys-category-<name> tokens (do not edit):
-     The 19 active categories in the owner-approved order; deprecated aliases are omitted.
-   Usage:
-     import { CATEGORY_COLORS } from 'plenix-platform';
-     <ColorPicker palette="category" value={category.color} onChange={…} />
-   Props:
-     none: a list of names
-*/
-const CATEGORY_COLORS = exports.CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
-  } },
   "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -4946,6 +3246,211 @@ function Portal({
     ref: origin,
     "data-plx-portal-origin": ""
   }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
+}
+  } },
+  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.useFloating = useFloating;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFloating
+   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
+   Usage:
+     const anchor = React.useRef(null), panel = React.useRef(null);
+     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
+     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
+     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
+     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
+     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
+   Props:
+     anchorRef: a ref to the element the floating element is placed against
+     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
+     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
+     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
+     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
+     options.flip (true): moves to the opposite side when there is no room
+     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
+     options.matchWidth (false): at least as wide as the anchor
+     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
+     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
+   Behavior:
+     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
+     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
+     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
+     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
+   Notes:
+     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
+     Menu, Tooltip and Popover adopt it in their own tasks.
+*/
+
+const SLOTS = 16;
+const taken = new Array(SLOTS + 1).fill(false);
+const take = () => {
+  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    taken[i] = true;
+    return i;
+  }
+  return 0;
+};
+const release = i => {
+  if (i) taken[i] = false;
+};
+
+// what the browser can do, checked once
+const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
+const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
+const OFFSETS = {
+  none: null,
+  xs: '--plx-sys-floating-offset-xs',
+  sm: '--plx-sys-floating-offset-sm',
+  md: '--plx-sys-floating-offset-md'
+};
+const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
+
+// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
+function tokenPixels(name) {
+  if (!name || typeof document === 'undefined') return 0;
+  const root = document.documentElement,
+    v = getComputedStyle(root).getPropertyValue(name).trim(),
+    n = parseFloat(v) || 0;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
+}
+const set = (el, name, value) => {
+  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
+};
+const isRtl = el => getComputedStyle(el).direction === 'rtl';
+
+// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
+function measured(anchor, floating, placement, flip, shift, gap) {
+  const a = anchor.getBoundingClientRect(),
+    f = floating.getBoundingClientRect();
+  const W = window.innerWidth,
+    H = window.innerHeight,
+    rtl = isRtl(anchor);
+  let [side, align] = placement.split('-');
+  const room = {
+    top: a.top - gap,
+    bottom: H - a.bottom - gap,
+    start: rtl ? W - a.right - gap : a.left - gap,
+    end: rtl ? a.left - gap : W - a.right - gap
+  };
+  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
+  const opposite = {
+    top: 'bottom',
+    bottom: 'top',
+    start: 'end',
+    end: 'start'
+  }[side];
+  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
+  if (shift && align && (side === 'top' || side === 'bottom')) {
+    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
+    const startEdge = rtl ? a.right : a.left,
+      endRoom = rtl ? startEdge : W - startEdge;
+    const endEdge = rtl ? a.left : a.right,
+      startRoom = rtl ? W - endEdge : endEdge;
+    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
+  }
+  if (shift && align && (side === 'start' || side === 'end')) {
+    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
+  }
+  return align ? side + '-' + align : side;
+}
+
+// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
+function pointAt(floating, x, y) {
+  const f = floating.getBoundingClientRect(),
+    W = window.innerWidth,
+    H = window.innerHeight,
+    m = tokenPixels('--plx-sys-floating-viewport-margin');
+  const rtl = isRtl(floating);
+  // the inline-start inset of the point, measured from the window's inline-start edge
+  let ix = rtl ? W - x : x,
+    iy = y;
+  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
+  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
+  ix = Math.max(m, Math.min(ix, W - m - f.width));
+  iy = Math.max(m, Math.min(iy, H - m - f.height));
+  return [Math.round(ix), Math.round(iy)];
+}
+function useFloating(anchorRef, floatingRef, options = {}) {
+  const {
+    open = true,
+    placement = 'bottom-start',
+    offset = 'xs',
+    flip = true,
+    shift = true,
+    matchWidth = false,
+    virtual = null
+  } = options;
+  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const pointer = !!(virtual && FLOATING_POINTER);
+  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
+  const [used, setUsed] = _react.default.useState(wanted);
+  const slot = _react.default.useRef(0);
+  const vx = virtual ? virtual.x : null,
+    vy = virtual ? virtual.y : null;
+  _react.default.useLayoutEffect(() => {
+    const anchor = anchorRef && anchorRef.current,
+      floating = floatingRef && floatingRef.current;
+    if (!open || !floating) return undefined;
+    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
+    if (pointer) {
+      set(floating, 'data-plx-floating-pointer', '');
+      const [ix, iy] = pointAt(floating, vx, vy);
+      set(floating, 'data-plx-floating-x', ix);
+      set(floating, 'data-plx-floating-y', iy);
+    } else if (anchor) {
+      if (!slot.current) slot.current = take();
+      set(anchor, 'data-plx-floating-anchor', slot.current || null);
+      set(floating, 'data-plx-floating', slot.current || 'inline');
+      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
+      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
+      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
+      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
+      if (host) set(host, 'data-plx-floating-host', '');
+      set(floating, 'data-plx-floating-placement', wanted);
+      let next = wanted;
+      if (mode === 'inline') {
+        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+        set(floating, 'data-plx-floating-placement', next);
+      }
+      setUsed(next);
+    }
+    return () => {
+      ATTRS.forEach(n => floating.removeAttribute(n));
+      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
+      if (host) host.removeAttribute('data-plx-floating-host');
+      release(slot.current);
+      slot.current = 0;
+    };
+  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
+
+  // the inline fallback measures again when the window changes size
+  _react.default.useEffect(() => {
+    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
+    const again = () => {
+      const anchor = anchorRef.current,
+        floating = floatingRef.current;
+      if (!anchor || !floating) return;
+      set(floating, 'data-plx-floating-placement', wanted);
+      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+      set(floating, 'data-plx-floating-placement', next);
+      setUsed(next);
+    };
+    window.addEventListener('resize', again);
+    return () => window.removeEventListener('resize', again);
+  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
+  return {
+    placement: mode === 'anchor' ? wanted : used,
+    mode
+  };
 }
   } },
   "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -5932,6 +4437,95 @@ function ContextMenu({
   }, children))) : null);
 }
   } },
+  "platform/components/Link/Link.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Link = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Link
+   Summary: A link to another page or place: inside a sentence (inline), on its own line (standalone), to another site
+     (external) or back to the page above (back).
+   Usage:
+     <Text as="p">Read the <Link href="../guides/upload.html">upload guide</Link> first.</Text>
+     <Link href="../projects/" variant="standalone">View all projects</Link>
+     <Link href="https://m3.material.io" external>Material guidelines</Link>
+     <Link href="../" back>Projects</Link>
+     <Link href="#" variant="subtle">Terms</Link>   <Link href="#" onAccent>Help</Link>
+   Props:
+     href: where it goes (required: a link without one is a button)
+     variant: "inline" (default: in running text, always underlined) | "standalone" (on its own: medium weight, underlined
+       on hover, as tall as the minimum target) | "subtle" (the text color, underlined: footers and fine print)
+     external: another site: opens in a new tab (target="_blank", rel="noopener noreferrer"), shows the open icon after
+       the text and tells assistive technology (strings.newTab)
+     back: the page above: a leading chevron that points back; it draws as standalone
+     onAccent: the version for the blue header and other accent surfaces (default false)
+     visited: draws the visited color in documentation (the browser draws it on its own with :visited)
+     as: another element or component that renders the anchor (a router's link); it gets href, className and the rest
+     strings: the words it announces, for other languages: { newTab: "opens in a new tab" }
+     children: the link text: says where it goes ("Upload guide"), never "click here"
+     className: more classes on the link
+   Behavior:
+     Enter follows the link; it is one Tab stop. Hover thickens the underline (inline, subtle, on accent) or draws it
+       (standalone, back).
+     Keyboard focus shows the focus ring around the text (:focus-visible); a click does not.
+     The back chevron mirrors in right-to-left pages (the icon set's bidirectional icons).
+   Notes:
+     The underline is the non-color sign of a link in running text (WCAG 1.4.1); standalone links are recognized by their
+       place and weight.
+     Use a Button for an action that changes data; a Link only goes somewhere.
+     Other props pass through to the <a>. forwardRef: the ref is the <a>.
+*/
+const STRINGS = {
+  newTab: 'opens in a new tab'
+};
+const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link({
+  href,
+  variant = 'inline',
+  external = false,
+  back = false,
+  onAccent = false,
+  visited = false,
+  as: Tag = 'a',
+  strings,
+  className,
+  children,
+  ...rest
+}, ref) {
+  (0, _devWarn.devWarn)('Link', {
+    variant
+  }, {
+    variant: ['inline', 'standalone', 'subtle']
+  });
+  const s = Object.assign({}, STRINGS, strings);
+  const kind = back ? 'standalone' : variant;
+  const newTab = external ? {
+    target: '_blank',
+    rel: 'noopener noreferrer'
+  } : null;
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    ref: ref,
+    href: href
+  }, newTab, rest, {
+    className: (0, _cx.cx)('plx-link', 'plx-link--' + kind, back && 'plx-link--back', external && 'plx-link--external', onAccent && 'plx-link--on-accent', visited && 'is-visited', className)
+  }), back ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-link__icon"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-left"
+  })) : null, children, external ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-link__icon"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "open"
+  })) : null, external ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, " (", s.newTab, ")") : null);
+});
+  } },
   "platform/utils/overflow.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -6009,3264 +4603,227 @@ function useTruncated(ref) {
   return cut;
 }
   } },
-  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ColorPicker = ColorPicker;
-exports.ColorSwatch = ColorSwatch;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _dataColors = require("./dataColors.js");
-var _categoryColors = require("./categoryColors.js");
-var _Button = require("../Button/Button.jsx");
-var _Menu = require("../Menu/Menu.jsx");
-var _overflow = require("../../utils/overflow.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ColorSwatch
-   Summary: A color from the data shown as a small square chip (a category's color).
-   Usage:
-     <ColorSwatch color={category.color} />
-     <ColorSwatch color={category.color} label="Blue" pressed={picked === 'blue'} onClick={() => …} />
-     <ColorSwatch color="green" label="Green" showLabel />
-     <ColorPicker palette="category" colors={['red', 'green', 'blue']} value={c} onChange={setC} />
-   Props:
-     color: a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
-     category: instead of color, a category color by name (CATEGORY_COLORS: the category palette, its own tokens), set as
-       data-plx-category (batch 290)
-     tone: instead of color, a surface of the system it previews: "accent" (the accent surface) | "surface" | "frost"
-     size: "sm" (16px) | "md" (default; 20px)
-     shape: "square" (default: 2px corners, owner batch 291) | "round" (a circle)
-     pressed: marks the chosen color (aria-pressed), with onClick
-     label: the accessible name of the color, with onClick
-     showLabel: shows the label as text after the swatch (default false); with onClick the swatch and its label are one
-       button (wave 4)
-     onClick(event): makes the swatch a button that picks the color
-     className: more classes on the swatch
-     ColorPicker: the data colors (DATA_COLORS) as a group of swatch buttons, one pressed (batch 280: a data color is a hue)
-       ColorPicker.value: the chosen hue
-       ColorPicker.onChange(hue): runs with the hue picked
-       ColorPicker.label: the group's accessible name (default "Color")
-       ColorPicker.size: the swatches' size (default "md")
-       ColorPicker.palette: "data" (default: the data hues) | "category" (the category colors: categories use these)
-       ColorPicker.colors: a custom set: the names to offer from the palette, in this order (unknown names are left out)
-         (wave 4)
-       ColorPicker shows one row (owner, batch 290): the colors that do not fit are in a More menu at its end ("+n", or the
-       chosen color when it is one of them), each with its swatch and name
-       ColorPicker.className: more classes on the group
-   Behavior:
-     With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
-     With showLabel the color's name is text beside it, read as text; the swatch itself stays decorative.
-     A swatch button's target is at least 24px (44px with touch) whatever its size: it extends invisibly past the swatch
-       (Platforms Standard 3.1); with touch each swatch of a ColorPicker gets a slot that wide.
-   Notes:
-     The hue reaches the stylesheet as the data-plx-color attribute (system/steps.css), the only way a data color enters a page.
-     Other props pass through to the <button> or <span>.
-*/
-const nameOf = h => h.charAt(0).toUpperCase() + h.slice(1);
-function ColorSwatch({
-  color,
-  category,
-  tone,
-  size = 'md',
-  shape = 'square',
-  pressed,
-  label,
-  showLabel = false,
-  onClick,
-  className,
-  ...rest
-}) {
-  if (category === 'brown') category = 'orange';
-  (0, _devWarn.devWarn)('ColorSwatch', {
-    tone,
-    size
-  }, {
-    tone: ['accent', 'surface', 'frost'],
-    size: ['sm', 'md']
-  });
-  if (showLabel && label) {
-    // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
-    const chip = /*#__PURE__*/_react.default.createElement(ColorSwatch, {
-      color: color,
-      category: category,
-      tone: tone,
-      size: size,
-      shape: shape
-    });
-    const text = /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-color-swatch-label__text"
-    }, label);
-    return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
-      type: "button",
-      className: (0, _cx.cx)('plx-color-swatch-label', className),
-      "aria-pressed": !!pressed,
-      onClick: onClick
-    }, rest), chip, text) : /*#__PURE__*/_react.default.createElement("span", _extends({
-      className: (0, _cx.cx)('plx-color-swatch-label', className)
-    }, rest), chip, text);
-  }
-  const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
-  return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
-    type: "button",
-    className: cls,
-    "data-plx-color": color || undefined,
-    "data-plx-category": category || undefined,
-    "aria-pressed": !!pressed,
-    "aria-label": label,
-    onClick: onClick
-  }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: cls,
-    "data-plx-color": color || undefined,
-    "data-plx-category": category || undefined,
-    "aria-hidden": "true"
-  }, rest));
-}
-
-// the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
-function ColorPicker({
-  value,
-  onChange,
-  label = 'Color',
-  size = 'md',
-  palette = 'data',
-  colors,
-  invalid,
-  required,
-  className,
-  ...rest
-}) {
-  // invalid and required: from Field, not for a group
-  (0, _devWarn.devWarn)('ColorPicker', {
-    size
-  }, {
-    size: ['sm', 'md']
-  });
-  const cat = palette === 'category';
-  if (cat && value === 'brown') value = 'orange';
-  const all = cat ? _categoryColors.CATEGORY_COLORS : _dataColors.DATA_COLORS;
-  const list = Array.isArray(colors) ? [...new Set(colors.map(h => cat && h === 'brown' ? 'orange' : h))].filter(h => all.indexOf(h) >= 0) : all;
-  const ref = _react.default.useRef(null);
-  const fit = (0, _overflow.useOverflow)(ref, list.length, palette + size + list.join());
-  const hidden = list.slice(fit);
-  const pick = h => {
-    if (onChange) onChange(h);
-  };
-  const swatch = (h, extra) => /*#__PURE__*/_react.default.createElement(ColorSwatch, _extends({
-    key: h,
-    color: cat ? undefined : h,
-    category: cat ? h : undefined,
-    size: size
-  }, extra));
-  // each swatch in a slot as tall as the row, so every item and the More button share the first row's top
-  const items = list.map(h => /*#__PURE__*/_react.default.createElement("span", {
-    key: h,
-    "data-plx-overflow-item": "",
-    className: "plx-color-picker__slot"
-  }, swatch(h, {
-    label: nameOf(h),
-    pressed: value === h,
-    onClick: () => pick(h)
-  })));
-  const chosenHidden = hidden.indexOf(value) >= 0;
-  const more = hidden.length ? /*#__PURE__*/_react.default.createElement("span", {
-    key: "plx-more",
-    "data-plx-overflow-more": "",
-    className: "plx-color-picker__more"
-  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: 'More colors',
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "2xs",
-      variant: chosenHidden ? 'secondary' : 'ghost',
-      caret: true,
-      "aria-label": 'More colors' + (chosenHidden ? ', ' + nameOf(value) + ' chosen' : '')
-    }, chosenHidden ? /*#__PURE__*/_react.default.createElement(ColorSwatch, {
-      color: cat ? undefined : value,
-      category: cat ? value : undefined,
-      size: "sm"
-    }) : '+' + hidden.length)
-  }, hidden.map(h => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: h,
-    role: "menuitemradio",
-    checked: value === h,
-    icon: swatch(h, {
-      size: 'sm'
-    }),
-    onSelect: () => pick(h)
-  }, nameOf(h))))) : null;
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: ref,
-    role: "group",
-    "aria-label": label || undefined,
-    className: (0, _cx.cx)('plx-color-picker', className)
-  }, rest), (0, _overflow.splitAt)(items, fit, more));
-}
-  } },
-  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.gridPx = exports.GRID_TOKEN = void 0;
-exports.gridStep = gridStep;
-exports.onGrid = onGrid;
-exports.snapToGrid = snapToGrid;
-/* Plenix · grid (platform/utils/grid.js)
-   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
-     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
-     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
-     instead: snapSize and stepSize in utils/sizeSteps.js.
-   Usage:
-     import { snapToGrid, gridPx } from '../../utils/grid.js';
-     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
-     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
-   Props:
-     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
-     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
-     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
-     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
-   Behavior:
-     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
-     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
-   Notes:
-     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
-     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
-     length is neither a token nor passed through this helper (or the size steps).
-*/
-
-const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
-
-// the base spacing token in pixels where el is (a rem token follows the root font size)
-function gridStep(el) {
-  if (typeof document === 'undefined') return 4;
-  const at = el || document.documentElement,
-    win = at.ownerDocument.defaultView;
-  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
-  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
-  return px > 0 ? px : 4;
-}
-function snapToGrid(px, opts) {
-  const o = opts || {},
-    step = gridStep(o.el),
-    n = Number(px) || 0;
-  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
-  const q = n / step;
-  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
-}
-const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
-exports.gridPx = gridPx;
-function onGrid(px, el) {
-  const step = gridStep(el),
-    q = Math.abs(Number(px) || 0) / step;
-  return Math.abs(q - Math.round(q)) * step <= 0.5;
-}
-  } },
-  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DND_STRINGS = void 0;
-exports.clearDragOffset = clearDragOffset;
-exports.mergeDndProps = mergeDndProps;
-exports.moveItem = moveItem;
-exports.setDragOffset = setDragOffset;
-exports.transferItem = transferItem;
-exports.useDndSession = useDndSession;
-exports.useDraggable = useDraggable;
-exports.useDropTarget = useDropTarget;
-exports.useReposition = useReposition;
-exports.useSortable = useSortable;
-var _react = _interopRequireDefault(require("react"));
-var _announce = require("./announce.jsx");
-var _grid = require("./grid.js");
-var _direction = require("./direction.js");
-var _tokenTime = require("./tokenTime.js");
-var _useGesture = require("../hooks/useGesture.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · dnd (platform/utils/dnd.js)
-   Summary: The drag-and-drop engine (13 Interaction › Behavioral utilities › Drag-and-drop engine): pointer, pen and touch
-     dragging with a keyboard equivalent for every drag (WCAG 2.2, 2.1.1 and 2.5.7), announcements through the live
-     region, auto-scroll near the edges and drop targets with a visible state. Four kinds of drag share it: a sortable
-     list (reorder, and move between lists of one group), a data item dropped on a target (a file on a folder), a free
-     move (reposition on a canvas) and the drop target itself.
-   Usage:
-     const s = useSortable({ items, onReorder: setItems, getName: (x) => x.name, label: 'Steps' });
-     <ul {...s.listProps}>{items.map((x, i) => (
-       <li key={x.id} {...s.itemProps(i)} className={cx('my-row', s.itemProps(i).className)}>
-         <DragHandle dnd={s.handleProps(i)} />{x.name}</li>))}</ul>
-     const d = useDraggable({ data: asset, type: 'asset', name: asset.name });          // a data item
-     <div {...d.props}><DragHandle dnd={d.handleProps} />{asset.name}</div>
-     const t = useDropTarget({ name: 'Archive', accepts: (data, type) => type === 'asset', onDrop: (data) => archive(data) });
-     <div {...t.props}>Archive</div>
-     const r = useReposition({ position, onMove: setPosition, bounds: canvasRef, name: 'Sticky note' });
-     <div {...r.props}>…</div>
-   Props:
-     useSortable(options) → { listProps, itemProps(i), handleProps(i), moveTo(i, to), canMove(i, step), state }
-       options.items: the list, in order (required); options.getId(item) (default item.id); options.getName(item): the name
-         spoken in the announcements (default item.name, item.label, else the id)
-       options.onReorder(next, { item, from, to }): runs with the new order after a drop or a key move
-       options.id: the list's id among the lists of a group; options.group: lists that share a group take each other's
-         items; options.onMove({ item, from: { list, index }, to: { list, index } }): runs once when an item moves to
-         another list of the group (give every list of the group the same handler)
-       options.label: the list's name, spoken when an item moves to it
-       options.orientation: "vertical" (default) | "horizontal" | "grid": the arrow keys and the drop position follow it
-       options.handle: true (default) the drag starts on the handle (handleProps); false the whole item drags (itemProps
-         then carries the handlers, the tab stop and the name)
-       options.disabled: no drag (default false); options.strings: the words it announces (DND_STRINGS)
-     useDraggable(options) → { props, handleProps, targets(), state }
-       options.data, options.type: what is dragged and its kind, handed to the targets; options.name: its spoken name
-       options.handle: as useSortable; options.disabled; options.strings
-       targets(): the registered drop targets that take it, in page order ([{ id, name, drop() }]): a "Move to" menu
-     useDropTarget(options) → { ref, props, state }
-       options.name: the target's spoken name; options.accepts(data, type): true when it takes the item (default: all)
-       options.onDrop(data, type): runs when an item is dropped on it
-       options.native: { accepts(dataTransfer), onDrop(dataTransfer) }: also take the browser's own drags (files, text
-         from other windows); accepts sees only the types while dragging (dataTransfer.types)
-       options.disabled; state: null | "ready" (a drag it takes is under way) | "over" | "reject" (over, not taken)
-     useReposition(options) → { props, position, picked, moveBy(dx, dy) }
-       options.position: { x, y } in pixels from the element's place in the layout (on the grid); options.onMove(next)
-       options.bounds: a ref to the element it stays inside (default its offset parent); options.name; options.disabled
-     DND_STRINGS: the default words; moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
-       helpers; setDragOffset(el, dx, dy) and clearDragOffset(el, { settle }): move an element by a transform through
-       the Web Animations API (never a style attribute), snapped to the grid; mergeDndProps(a, b): one element's props
-       from the engine's and a component's (each event runs the engine's handler first; a handled event stops there)
-   Behavior:
-     Pointer: a press moves the item once it has traveled past --plx-sys-gesture-slop (on touch, a press held for the
-       long-press delay on an item without a handle, so the page still scrolls); the item follows the pointer, raised
-       (the Dragged treatment), and the place it will land shows: an insertion line in a list, the outline on a target.
-       Release drops it; Escape, or a pointer the system cancels, puts it back.
-     Keyboard (every drag): Space or Enter on the handle picks the item up; the arrow keys move it (in a list one place;
-       between lists of a group Arrow Left / Right in a vertical list; to the next target for a data item; one step,
-       Shift a large step, for a free move); Space or Enter drops it; Escape puts it back where it was; Tab drops it.
-       The arrow keys follow the writing direction. Focus stays on the item's handle as it moves.
-     Without dragging (WCAG 2.5.7): the patterns offer a menu of moves (Move up, Move down, Move to the start and end,
-       Move to a target) or move buttons; canMove, moveTo and targets() give them their state.
-     Every pick-up, move, drop and cancel is announced (announce()); the handle carries the instructions
-       (aria-describedby) and aria-pressed while the item is picked up.
-     Near the top or bottom (start or end) of the scrolling region, or the window, the region scrolls by itself while
-       something is dragged (--plx-sys-dnd-autoscroll-edge, -speed); a key move scrolls the item into view.
-   Notes:
-     The engine never changes a list itself: onReorder and onMove hand the new order to the page, which keeps it.
-     Positions are never written in a style attribute: the dragged item and a repositioned one move by a transform set
-       through the Web Animations API, snapped to the grid (utils/grid.js); reduced motion skips the settle.
-     system/dnd.css draws the states from the attributes the hooks set (data-plx-dnd-state, data-plx-drop,
-       data-plx-drop-state); a component may draw its own from the same attributes.
-*/
-
-const DND_STRINGS = exports.DND_STRINGS = {
-  handle: 'Move {name}',
-  instructions: 'Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  pickedUp: '{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  moved: '{name}, position {position} of {total}',
-  movedTo: '{name} moved to {list}, position {position} of {total}',
-  dropped: '{name} dropped at position {position} of {total}',
-  droppedIn: '{name} dropped in {list}, position {position} of {total}',
-  canceled: 'Move canceled. {name} is back at position {position} of {total}',
-  itemPickedUp: '{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.',
-  over: 'Over {target}',
-  overReject: '{target} does not take {name}',
-  droppedOn: '{name} dropped on {target}',
-  noTargets: 'No place takes {name}',
-  itemCanceled: 'Move canceled. {name} was not moved',
-  repositionPicked: '{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.',
-  repositioned: '{name} moved',
-  repositionDropped: '{name} dropped',
-  repositionCanceled: 'Move canceled. {name} is back where it was',
-  movable: 'movable',
-  list: 'the list'
-};
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
-const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/* ── list helpers ── */
-function moveItem(list, from, to) {
-  const next = list.slice();
-  if (from < 0 || from >= next.length) return next;
-  const [x] = next.splice(from, 1);
-  next.splice(Math.max(0, Math.min(next.length, to)), 0, x);
-  return next;
-}
-function transferItem(fromList, fromIndex, toList, toIndex) {
-  const a = fromList.slice(),
-    b = toList.slice();
-  const [x] = a.splice(fromIndex, 1);
-  b.splice(Math.max(0, Math.min(b.length, toIndex)), 0, x);
-  return [a, b];
-}
-
-/* ── one element's props from two sets: an event runs the engine's handler first, the other unless it was handled ── */
-function mergeDndProps(a, b) {
-  const out = Object.assign({}, b, a);
-  Object.keys(a || {}).forEach(k => {
-    if (/^on[A-Z]/.test(k) && b && typeof b[k] === 'function' && typeof a[k] === 'function') {
-      out[k] = e => {
-        a[k](e);
-        if (!e.defaultPrevented) b[k](e);
-      };
-    }
-  });
-  if (a && b && a.className && b.className) out.className = b.className + ' ' + a.className;
-  return out;
-}
-
-/* ── the session: one drag at a time, shared by every list, item and target on the page ── */
-let session = null;
-const subscribers = new Set();
-const subscribe = f => {
-  subscribers.add(f);
-  return () => subscribers.delete(f);
-};
-function setSession(next) {
-  session = next;
-  if (typeof document !== 'undefined') {
-    if (next) document.documentElement.setAttribute('data-plx-dnd-active', next.mode);else document.documentElement.removeAttribute('data-plx-dnd-active');
-  }
-  subscribers.forEach(f => f());
-}
-function patchSession(part) {
-  if (session) setSession(Object.assign({}, session, part));
-}
-function useDndSession() {
-  return _react.default.useSyncExternalStore(subscribe, () => session, () => null);
-}
-
-// the drop targets and the sortable lists on the page
-const targets = new Map();
-const lists = new Map();
-let uid = 0;
-const nextId = p => p + '-' + ++uid;
-const inPageOrder = els => els.sort((a, b) => a.el && b.el && a.el.compareDocumentPosition(b.el) & 4 ? -1 : 1);
-
-// the instructions every handle points to (aria-describedby): one hidden element per page and wording
-const described = {};
-function instructionsId(text) {
-  if (typeof document === 'undefined') return undefined;
-  if (described[text] && described[text].isConnected) return described[text].id;
-  const el = document.createElement('div');
-  el.id = nextId('plx-dnd-instructions');
-  el.className = 'plx-visually-hidden';
-  el.textContent = text;
-  document.body.appendChild(el);
-  described[text] = el;
-  return el.id;
-}
-
-/* ── moving an element without a style attribute: a transform through the Web Animations API, on the grid ── */
-const offsets = new WeakMap();
-function setDragOffset(el, dx, dy) {
-  if (!el || !el.animate) return;
-  const frame = [{
-    transform: 'translate(' + (0, _grid.gridPx)(dx, {
-      el
-    }) + ', ' + (0, _grid.gridPx)(dy, {
-      el
-    }) + ')'
-  }];
-  const a = offsets.get(el);
-  if (a && a.effect && a.effect.setKeyframes) {
-    a.effect.setKeyframes(frame);
-    return;
-  }
-  offsets.set(el, el.animate(frame, {
-    duration: 0,
-    fill: 'forwards'
-  }));
-}
-function clearDragOffset(el, opts) {
-  const a = el && offsets.get(el);
-  if (!a) return;
-  offsets.delete(el);
-  if (opts && opts.settle && !reduced() && el.animate) {
-    const ms = (0, _tokenTime.tokenMs)('--plx-sys-gesture-settle-duration', 0, el);
-    const easing = getComputedStyle(el).getPropertyValue('--plx-sys-gesture-settle-easing').trim() || 'ease';
-    const from = a.effect && a.effect.getKeyframes ? a.effect.getKeyframes()[0] : null;
-    a.cancel();
-    if (ms > 0 && from && from.transform) el.animate([{
-      transform: from.transform
-    }, {
-      transform: 'none'
-    }], {
-      duration: ms,
-      easing
-    });
-    return;
-  }
-  a.cancel();
-}
-
-/* ── auto-scroll: the region that scrolls, and the speed near its edges ── */
-function scrollParent(el) {
-  for (let p = el && el.parentElement; p; p = p.parentElement) {
-    const cs = getComputedStyle(p);
-    if (/(auto|scroll)/.test(cs.overflowY + cs.overflowX) && (p.scrollHeight > p.clientHeight || p.scrollWidth > p.clientWidth)) return p;
-  }
-  return document.scrollingElement || document.documentElement;
-}
-function lengthToken(name, el) {
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim(),
-    n = parseFloat(v);
-  if (isNaN(n)) return NaN;
-  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(document.documentElement).fontSize) : n;
-}
-function edgeSpeed(p, lo, hi, edge, speed) {
-  if (p < lo + edge) return -speed * Math.min(1, (lo + edge - p) / edge);
-  if (p > hi - edge) return speed * Math.min(1, (p - (hi - edge)) / edge);
-  return 0;
-}
-
-/* ── one pointer drag: slop (or the touch hold), the moves with scroll compensation and auto-scroll, the end ── */
-function trackPointer(e, o) {
-  if (e.pointerType === 'mouse' && e.button !== 0) return;
-  const at = e.currentTarget,
-    tk = (0, _useGesture.gestureTokens)(at);
-  const slop = tk.slop > 0 ? tk.slop : (0, _grid.snapToGrid)(8),
-    holdMs = o.hold && e.pointerType === 'touch' ? tk.longPressDelay > 0 ? tk.longPressDelay : 0 : 0;
-  const edge = lengthToken('--plx-sys-dnd-autoscroll-edge', at),
-    speed = lengthToken('--plx-sys-dnd-autoscroll-speed', at);
-  const x0 = e.clientX,
-    y0 = e.clientY,
-    id = e.pointerId;
-  const scroller = scrollParent(o.el());
-  const s0 = {
-    left: scroller.scrollLeft,
-    top: scroller.scrollTop
-  };
-  let started = false,
-    held = !holdMs,
-    timer = null,
-    raf = null,
-    last = {
-      x: x0,
-      y: y0
-    },
-    t0 = 0,
-    done = false;
-  const point = () => ({
-    x: last.x,
-    y: last.y,
-    dx: last.x - x0 + scroller.scrollLeft - s0.left,
-    dy: last.y - y0 + scroller.scrollTop - s0.top
-  });
-  const tick = t => {
-    if (done) return;
-    const dt = t0 ? Math.min(t - t0, 50) : 16;
-    t0 = t;
-    const root = scroller === document.scrollingElement || scroller === document.documentElement;
-    const r = root ? {
-      top: 0,
-      left: 0,
-      bottom: window.innerHeight,
-      right: window.innerWidth
-    } : scroller.getBoundingClientRect();
-    const vy = edge > 0 && speed > 0 ? edgeSpeed(last.y, r.top, r.bottom, edge, speed) : 0;
-    const vx = edge > 0 && speed > 0 && o.axis !== 'y' ? edgeSpeed(last.x, r.left, r.right, edge, speed) : 0;
-    if (vx || vy) {
-      const before = scroller.scrollTop + scroller.scrollLeft;
-      scroller.scrollTop += vy * dt;
-      scroller.scrollLeft += vx * dt;
-      if (scroller.scrollTop + scroller.scrollLeft !== before) o.onMove(point());
-    }
-    raf = requestAnimationFrame(tick);
-  };
-  const begin = () => {
-    started = true;
-    o.onStart(point());
-    o.onMove(point());
-    raf = requestAnimationFrame(tick);
-  };
-  const move = ev => {
-    if (ev.pointerId !== id) return;
-    last = {
-      x: ev.clientX,
-      y: ev.clientY
-    };
-    if (!started) {
-      const far = Math.hypot(last.x - x0, last.y - y0) > slop;
-      if (!held) {
-        if (far) finish(true);
-        return;
-      } // a touch that moves before the hold: the page scrolls
-      if (!far && !holdMs) return;
-      begin();
-    }
-    ev.preventDefault();
-    o.onMove(point());
-  };
-  const block = ev => {
-    if (started) ev.preventDefault();
-  }; // no page scroll while a touch drag is under way
-  const key = ev => {
-    if (ev.key === 'Escape' && started) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      finish(true);
-    }
-  };
-  const up = ev => {
-    if (ev.pointerId === id) finish(ev.type === 'pointercancel');
-  };
-  function finish(canceled) {
-    if (done) return;
-    done = true;
-    clearTimeout(timer);
-    if (raf) cancelAnimationFrame(raf);
-    document.removeEventListener('pointermove', move);
-    document.removeEventListener('pointerup', up);
-    document.removeEventListener('pointercancel', up);
-    document.removeEventListener('touchmove', block);
-    document.removeEventListener('keydown', key, true);
-    if (started) o.onEnd(Object.assign(point(), {
-      canceled
-    }));
-  }
-  if (holdMs) timer = setTimeout(() => {
-    held = true;
-    begin();
-  }, holdMs);
-  document.addEventListener('pointermove', move);
-  document.addEventListener('pointerup', up);
-  document.addEventListener('pointercancel', up);
-  document.addEventListener('touchmove', block, {
-    passive: false
-  });
-  document.addEventListener('keydown', key, true);
-}
-
-// a press that ended a drag is not also a click (the handle's menu does not open after a drag)
-function useClickGuard() {
-  const dragged = _react.default.useRef(false);
-  return {
-    set: () => {
-      dragged.current = true;
-      setTimeout(() => {
-        dragged.current = false;
-      }, 0);
-    },
-    onClick: e => {
-      if (dragged.current) {
-        e.preventDefault();
-        e.stopPropagation();
-        dragged.current = false;
-      }
-    }
-  };
-}
-const isKey = (e, ...keys) => keys.indexOf(e.key) >= 0;
-const pickKey = e => e.key === ' ' || e.key === 'Enter';
-
-/* ── where an item lands: how many items (the dragged one left out) come before the pointer ── */
-function landing(els, skip, x, y, orientation, rtl) {
-  let before = 0;
-  const kept = [];
-  els.forEach((el, i) => {
-    if (i === skip) return;
-    kept.push(i);
-    const r = el.getBoundingClientRect(),
-      mx = r.left + r.width / 2,
-      my = r.top + r.height / 2;
-    const ahead = rtl ? x < mx : x > mx;
-    if (orientation === 'horizontal' ? ahead : orientation === 'grid' ? y > r.bottom || y >= r.top && ahead : y > my) before++;
-  });
-  return {
-    to: before,
-    kept
-  };
-}
-// the insertion line for a landing place: before the item that will follow it, or after the last one
-function markOf(kept, to) {
-  if (!kept.length) return null;
-  return to < kept.length ? {
-    index: kept[to],
-    side: 'before'
-  } : {
-    index: kept[kept.length - 1],
-    side: 'after'
-  };
-}
-
-/* ── useSortable: reorder a list, and move items between the lists of a group ── */
-function useSortable(options) {
-  const o = options || {};
-  const items = o.items || [];
-  const getId = o.getId || (x => x.id);
-  const getName = o.getName || (x => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
-  const orientation = o.orientation || 'vertical',
-    useHandle = o.handle !== false;
-  const t = Object.assign({}, DND_STRINGS, o.strings);
-  const [listId] = _react.default.useState(() => o.id || nextId('plx-dnd-list'));
-  const listRef = _react.default.useRef(null);
-  const latest = _react.default.useRef(o);
-  latest.current = Object.assign({}, o, {
-    items,
-    getId,
-    getName,
-    label: o.label || t.list,
-    orientation
-  });
-  const now = useDndSession();
-  const guard = useClickGuard();
-  const describe = instructionsId(t.instructions);
-  _react.default.useEffect(() => {
-    const entry = {
-      id: listId,
-      group: o.group,
-      get el() {
-        return listRef.current;
-      },
-      get o() {
-        return latest.current;
-      }
-    };
-    lists.set(listId, entry);
-    return () => {
-      lists.delete(listId);
-    };
-  }, [listId, o.group]);
-  const ids = items.map(getId);
-  const els = () => listRef.current ? Array.from(listRef.current.querySelectorAll('[data-plx-dnd-owner="' + listId + '"]')) : [];
-  const handleOf = id => {
-    const root = listRef.current;
-    return root ? Array.from(root.querySelectorAll('[data-plx-dnd-key]')).find(el => el.getAttribute('data-plx-dnd-key') === String(id)) : null;
-  };
-  const columns = () => {
-    const e = els();
-    if (!e.length) return 1;
-    const top = e[0].offsetTop;
-    const n = e.filter(x => x.offsetTop === top).length;
-    return n || 1;
-  };
-  const group = () => Array.from(lists.values()).filter(l => l.el && (l.id === listId || o.group && l.group === o.group));
-
-  // a key move or a drop keeps focus on the moved item's handle (it may now be in another list)
-  _react.default.useLayoutEffect(() => {
-    if (!now || now.kind !== 'sortable' || now.mode !== 'keyboard' || now.list !== listId || ids.indexOf(now.id) < 0) return;
-    const el = handleOf(now.id);
-    if (el && document.activeElement !== el) el.focus({
-      preventScroll: true
-    });
-    if (el && el.scrollIntoView) el.scrollIntoView({
-      block: 'nearest',
-      inline: 'nearest',
-      behavior: reduced() ? 'auto' : 'smooth'
-    });
-  }, [now, ids.join('\n')]);
-  const say = (s, vars) => (0, _announce.announce)(fill(s, vars));
-  const reorder = (from, to) => {
-    const L = latest.current;
-    if (to === from || to < 0 || to >= L.items.length || !L.onReorder) return false;
-    const item = L.items[from];
-    L.onReorder(moveItem(L.items, from, to), {
-      item,
-      from,
-      to
-    });
-    return true;
-  };
-  // programmatic moves (a menu of moves, move buttons): announced, focus kept on the moved item's handle
-  // opts.focus(itemEl): the element to focus in the moved item afterwards (default its handle)
-  const moveTo = (i, to, opts) => {
-    const L = latest.current;
-    to = Math.max(0, Math.min(L.items.length - 1, to));
-    const item = L.items[i];
-    if (!reorder(i, to)) return;
-    say(t.moved, {
-      name: L.getName(item),
-      position: to + 1,
-      total: L.items.length
-    });
-    const id = L.getId(item);
-    setTimeout(() => {
-      const h = handleOf(id),
-        itemEl = h && h.closest('[data-plx-dnd-owner]');
-      const el = opts && opts.focus && itemEl ? opts.focus(itemEl) : h;
-      if (el) el.focus();
-    }, 0);
-  };
-  const canMove = (i, step) => i + step >= 0 && i + step < items.length;
-  const startKeyboard = i => {
-    const item = items[i];
-    setSession({
-      kind: 'sortable',
-      mode: 'keyboard',
-      group: o.group,
-      id: getId(item),
-      name: getName(item),
-      list: listId,
-      origin: {
-        list: listId,
-        index: i,
-        items: items.slice()
-      }
-    });
-    say(t.pickedUp, {
-      name: getName(item),
-      position: i + 1,
-      total: items.length
-    });
-  };
-  const keyDown = i => e => {
-    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
-    const item = items[i],
-      id = getId(item),
-      mine = now && now.kind === 'sortable' && now.mode === 'keyboard' && now.id === id && now.list === listId;
-    if (!mine) {
-      if (pickKey(e) && e.target === e.currentTarget) {
-        e.preventDefault();
-        startKeyboard(i);
-      }
-      return;
-    }
-    const L = latest.current,
-      name = L.getName(item);
-    if (pickKey(e)) {
-      e.preventDefault();
-      setSession(null);
-      say(now.origin.list === listId ? t.dropped : t.droppedIn, {
-        name,
-        list: L.label,
-        position: i + 1,
-        total: L.items.length
-      });
-      return;
-    }
-    if (e.key === 'Tab') {
-      setSession(null);
-      say(t.dropped, {
-        name,
-        position: i + 1,
-        total: L.items.length
-      });
-      return;
-    }
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      const back = now.origin;
-      if (back.list === listId) {
-        if (L.onReorder) L.onReorder(back.items, {
-          item,
-          from: i,
-          to: back.index
-        });
-      } else if (L.onMove) L.onMove({
-        item,
-        from: {
-          list: listId,
-          index: i
-        },
-        to: {
-          list: back.list,
-          index: back.index
-        }
-      });
-      setSession(Object.assign({}, now, {
-        list: back.list
-      }));
-      setTimeout(() => {
-        setSession(null);
-      }, 0);
-      say(t.canceled, {
-        name,
-        position: back.index + 1,
-        total: back.items.length
-      });
-      return;
-    }
-    let step = 0,
-      across = 0;
-    if (orientation === 'vertical') {
-      if (isKey(e, 'ArrowUp')) step = -1;else if (isKey(e, 'ArrowDown')) step = 1;else if (isKey(e, 'ArrowLeft', 'ArrowRight')) across = (0, _direction.arrowStep)(e, e.currentTarget, {
-        vertical: false
-      });
-    } else if (orientation === 'horizontal') {
-      step = (0, _direction.arrowStep)(e, e.currentTarget, {
-        vertical: false
-      });
-      if (!step && isKey(e, 'ArrowUp', 'ArrowDown')) across = e.key === 'ArrowDown' ? 1 : -1;
-    } else {
-      step = isKey(e, 'ArrowUp') ? -columns() : isKey(e, 'ArrowDown') ? columns() : (0, _direction.arrowStep)(e, e.currentTarget, {
-        vertical: false
-      });
-    }
-    if (isKey(e, 'Home')) step = -i;else if (isKey(e, 'End')) step = L.items.length - 1 - i;
-    if (!step && !across) return;
-    e.preventDefault();
-    if (step) {
-      const to = Math.max(0, Math.min(L.items.length - 1, i + step));
-      if (to !== i && reorder(i, to)) say(t.moved, {
-        name,
-        position: to + 1,
-        total: L.items.length
-      });
-      return;
-    }
-    // to the neighboring list of the group, in page order (the writing direction decides Left and Right)
-    if (!o.group || !L.onMove) return;
-    const g = inPageOrder(group());
-    const at = g.findIndex(l => l.id === listId),
-      nb = g[at + across];
-    if (!nb) return;
-    const index = Math.min(i, nb.o.items.length);
-    L.onMove({
-      item,
-      from: {
-        list: listId,
-        index: i
-      },
-      to: {
-        list: nb.id,
-        index
-      }
-    });
-    patchSession({
-      list: nb.id
-    });
-    say(t.movedTo, {
-      name,
-      list: nb.o.label,
-      position: index + 1,
-      total: nb.o.items.length + 1
-    });
-  };
-  const pointerDown = i => e => {
-    if (o.disabled || now && now.mode === 'keyboard') return;
-    const item = items[i],
-      id = getId(item);
-    const itemEl = () => els()[i];
-    trackPointer(e, {
-      el: itemEl,
-      hold: !useHandle,
-      onStart: () => setSession({
-        kind: 'sortable',
-        mode: 'pointer',
-        group: o.group,
-        id,
-        name: getName(item),
-        list: listId,
-        from: i,
-        over: {
-          list: listId,
-          to: i,
-          mark: null
-        }
-      }),
-      onMove: p => {
-        const el = itemEl();
-        if (el) setDragOffset(el, p.dx, p.dy);
-        // the list under the pointer: this one, or another of the group
-        const under = document.elementsFromPoint(p.x, p.y);
-        const g = group();
-        const hit = g.find(l => l.el && under.some(u => l.el.contains(u))) || (session && session.over ? g.find(l => l.id === session.over.list) : null) || lists.get(listId);
-        if (!hit || !hit.el) return;
-        const hitEls = Array.from(hit.el.querySelectorAll('[data-plx-dnd-owner="' + hit.id + '"]'));
-        const land = landing(hitEls, hit.id === listId ? i : -1, p.x, p.y, hit.o.orientation, (0, _direction.isRtl)(hit.el));
-        const mark = hit.id === listId && land.to === i ? null : markOf(land.kept, land.to);
-        const prev = session && session.over;
-        if (!prev || prev.list !== hit.id || prev.to !== land.to) patchSession({
-          over: {
-            list: hit.id,
-            to: land.to,
-            mark
-          }
-        });
-      },
-      onEnd: p => {
-        const el = itemEl(),
-          over = session && session.over,
-          L = latest.current;
-        guard.set();
-        const still = !over || p.canceled || over.list === listId && over.to === i;
-        if (el) clearDragOffset(el, {
-          settle: still
-        });
-        setSession(null);
-        if (p.canceled) {
-          say(t.canceled, {
-            name: L.getName(item),
-            position: i + 1,
-            total: L.items.length
-          });
-          return;
-        }
-        if (still) return;
-        if (over.list === listId) {
-          if (reorder(i, over.to)) say(t.dropped, {
-            name: L.getName(item),
-            position: over.to + 1,
-            total: L.items.length
-          });
-        } else if (L.onMove) {
-          const dest = lists.get(over.list);
-          L.onMove({
-            item,
-            from: {
-              list: listId,
-              index: i
-            },
-            to: {
-              list: over.list,
-              index: over.to
-            }
-          });
-          say(t.droppedIn, {
-            name: L.getName(item),
-            list: dest ? dest.o.label : t.list,
-            position: over.to + 1,
-            total: dest ? dest.o.items.length + 1 : over.to + 1
-          });
-        }
-      }
-    });
-  };
-  const stateOf = id => now && now.kind === 'sortable' && now.id === id && now.list === listId ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
-  const markFor = i => now && now.over && now.over.list === listId && now.over.mark && now.over.mark.index === i ? now.over.mark.side : undefined;
-  const handlers = i => ({
-    onPointerDown: pointerDown(i),
-    onKeyDown: keyDown(i),
-    onClick: guard.onClick,
-    'aria-describedby': describe,
-    'aria-pressed': stateOf(getId(items[i])) === 'picked' ? true : undefined,
-    'data-plx-dnd-key': String(getId(items[i])),
-    'data-plx-dnd-handle': ''
-  });
-  return {
-    listProps: {
-      ref: listRef,
-      'data-plx-dnd-list': listId,
-      'data-plx-dnd-orientation': orientation
-    },
-    itemProps: i => Object.assign({
-      className: 'plx-dnd-item',
-      'data-plx-dnd-owner': listId,
-      'data-plx-dnd-state': stateOf(getId(items[i])),
-      'data-plx-drop': markFor(i)
-    }, useHandle ? null : Object.assign(handlers(i), {
-      tabIndex: o.disabled ? undefined : 0,
-      'aria-label': fill(t.handle, {
-        name: getName(items[i])
-      })
-    })),
-    handleProps: i => useHandle ? Object.assign(handlers(i), {
-      'aria-label': fill(t.handle, {
-        name: getName(items[i])
-      }),
-      disabled: o.disabled || undefined
-    }) : {},
-    moveTo,
-    canMove,
-    state: {
-      active: now && now.kind === 'sortable' && now.list === listId && ids.indexOf(now.id) >= 0 ? now : null,
-      over: now && now.over && now.over.list === listId ? now.over : null
-    }
-  };
-}
-
-/* ── useDropTarget: a place that takes dragged items (and, with native, the browser's own drags) ── */
-function useDropTarget(options) {
-  const o = options || {};
-  const [id] = _react.default.useState(() => nextId('plx-dnd-target'));
-  const ref = _react.default.useRef(null);
-  const latest = _react.default.useRef(o);
-  latest.current = o;
-  const now = useDndSession();
-  const [nativeState, setNative] = _react.default.useState(null);
-  const depth = _react.default.useRef(0);
-  _react.default.useEffect(() => {
-    if (o.disabled) return undefined;
-    targets.set(id, {
-      id,
-      get el() {
-        return ref.current;
-      },
-      get o() {
-        return latest.current;
-      }
-    });
-    return () => {
-      targets.delete(id);
-    };
-  }, [id, o.disabled]);
-  const takes = s => !o.accepts || !!o.accepts(s.data, s.type);
-  let state = null;
-  if (now && now.kind === 'item' && !o.disabled) state = now.over === id ? takes(now) ? 'over' : 'reject' : takes(now) ? 'ready' : null;
-  if (nativeState) state = nativeState;
-  const nat = o.native;
-  const nativeProps = nat && !o.disabled ? {
-    onDragEnter: e => {
-      depth.current++;
-      setNative(!nat.accepts || nat.accepts(e.dataTransfer) ? 'over' : 'reject');
-    },
-    onDragOver: e => {
-      if (!nat.accepts || nat.accepts(e.dataTransfer)) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy';
-      } else e.dataTransfer.dropEffect = 'none';
-    },
-    onDragLeave: () => {
-      depth.current = Math.max(0, depth.current - 1);
-      if (!depth.current) setNative(null);
-    },
-    onDrop: e => {
-      e.preventDefault();
-      depth.current = 0;
-      setNative(null);
-      if ((!nat.accepts || nat.accepts(e.dataTransfer)) && nat.onDrop) nat.onDrop(e.dataTransfer);
-    }
-  } : {};
-  return {
-    ref,
-    state,
-    props: Object.assign({
-      ref,
-      className: 'plx-dnd-target',
-      'data-plx-drop-state': state || undefined,
-      'data-plx-dnd-target': id
-    }, nativeProps)
-  };
-}
-
-/* ── useDraggable: a data item people drop on a target (a file on a folder, a card on a column) ── */
-function useDraggable(options) {
-  const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
-  const [id] = _react.default.useState(() => nextId('plx-dnd-item'));
-  const ref = _react.default.useRef(null);
-  const now = useDndSession();
-  const guard = useClickGuard();
-  const describe = instructionsId(t.instructions);
-  const mine = now && now.kind === 'item' && now.id === id;
-  const takers = () => inPageOrder(Array.from(targets.values()).filter(x => x.el && (!x.o.accepts || x.o.accepts(o.data, o.type))));
-  const drop = target => {
-    if (target.o.onDrop) target.o.onDrop(o.data, o.type);
-    (0, _announce.announce)(fill(t.droppedOn, {
-      name: o.name,
-      target: target.o.name
-    }));
-  };
-  const keyDown = e => {
-    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
-    if (!mine) {
-      if (!pickKey(e) || e.target !== e.currentTarget) return;
-      e.preventDefault();
-      const list = takers();
-      if (!list.length) {
-        (0, _announce.announce)(fill(t.noTargets, {
-          name: o.name
-        }));
-        return;
-      }
-      setSession({
-        kind: 'item',
-        mode: 'keyboard',
-        id,
-        data: o.data,
-        type: o.type,
-        name: o.name,
-        over: list[0].id
-      });
-      (0, _announce.announce)(fill(t.itemPickedUp, {
-        name: o.name,
-        count: list.length
-      }) + ' ' + fill(t.over, {
-        target: list[0].o.name
-      }));
-      return;
-    }
-    if (pickKey(e) || e.key === 'Tab') {
-      if (pickKey(e)) e.preventDefault();
-      const target = targets.get(now.over);
-      setSession(null);
-      if (target) drop(target);
-      return;
-    }
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      setSession(null);
-      (0, _announce.announce)(fill(t.itemCanceled, {
-        name: o.name
-      }));
-      return;
-    }
-    const step = (0, _direction.arrowStep)(e, e.currentTarget);
-    if (!step) return;
-    e.preventDefault();
-    const list = takers();
-    const at = list.findIndex(x => x.id === now.over);
-    const next = list[(at + step + list.length) % list.length];
-    if (!next) return;
-    patchSession({
-      over: next.id
-    });
-    if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({
-      block: 'nearest',
-      inline: 'nearest',
-      behavior: reduced() ? 'auto' : 'smooth'
-    });
-    (0, _announce.announce)(fill(t.over, {
-      target: next.o.name
-    }));
-  };
-  const pointerDown = e => {
-    if (o.disabled || now && now.mode === 'keyboard') return;
-    trackPointer(e, {
-      el: () => ref.current,
-      hold: o.handle === false,
-      onStart: () => setSession({
-        kind: 'item',
-        mode: 'pointer',
-        id,
-        data: o.data,
-        type: o.type,
-        name: o.name,
-        over: null
-      }),
-      onMove: p => {
-        if (ref.current) setDragOffset(ref.current, p.dx, p.dy);
-        const under = document.elementsFromPoint(p.x, p.y);
-        let hit = null;
-        targets.forEach(x => {
-          if (!hit && x.el && under.some(u => x.el.contains(u))) hit = x;
-        });
-        const over = hit ? hit.id : null;
-        if (session && session.over !== over) {
-          patchSession({
-            over
-          });
-          if (hit) (0, _announce.announce)(fill(hit.o.accepts && !hit.o.accepts(o.data, o.type) ? t.overReject : t.over, {
-            target: hit.o.name,
-            name: o.name
-          }));
-        }
-      },
-      onEnd: p => {
-        const target = session && session.over ? targets.get(session.over) : null;
-        const ok = !p.canceled && target && (!target.o.accepts || target.o.accepts(o.data, o.type));
-        guard.set();
-        if (ref.current) clearDragOffset(ref.current, {
-          settle: !ok
-        });
-        setSession(null);
-        if (ok) drop(target);else (0, _announce.announce)(fill(t.itemCanceled, {
-          name: o.name
-        }));
-      }
-    });
-  };
-  const handlers = {
-    onPointerDown: pointerDown,
-    onKeyDown: keyDown,
-    onClick: guard.onClick,
-    'aria-describedby': describe,
-    'aria-pressed': mine && now.mode === 'keyboard' ? true : undefined,
-    'data-plx-dnd-handle': ''
-  };
-  const st = mine ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
-  return {
-    props: Object.assign({
-      ref,
-      className: 'plx-dnd-item',
-      'data-plx-dnd-state': st
-    }, o.handle === false ? Object.assign({}, handlers, {
-      tabIndex: 0,
-      'aria-label': fill(t.handle, {
-        name: o.name
-      })
-    }) : null),
-    handleProps: o.handle === false ? {} : Object.assign({}, handlers, {
-      'aria-label': fill(t.handle, {
-        name: o.name
-      }),
-      disabled: o.disabled || undefined
-    }),
-    targets: () => takers().map(x => ({
-      id: x.id,
-      name: x.o.name,
-      drop: () => drop(x)
-    })),
-    state: st || null
-  };
-}
-
-/* ── useReposition: a free move (a note on a board, a layer on a canvas), on the grid ── */
-function useReposition(options) {
-  const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
-  const pos = o.position || {
-    x: 0,
-    y: 0
-  };
-  const ref = _react.default.useRef(null);
-  const [id] = _react.default.useState(() => nextId('plx-dnd-move'));
-  const [preview, setPreview] = _react.default.useState(null);
-  const origin = _react.default.useRef(null);
-  const now = useDndSession();
-  const describe = instructionsId(t.instructions);
-  const picked = !!(now && now.kind === 'move' && now.id === id && now.mode === 'keyboard');
-  const shown = preview || pos;
-  const current = _react.default.useRef(shown);
-  current.current = shown; // the offset drawn now (the pointer handlers outlive a render)
-  // the resting place (and the preview while it moves): a transform through the Web Animations API
-  _react.default.useLayoutEffect(() => {
-    if (ref.current) setDragOffset(ref.current, shown.x, shown.y);
-  }, [shown.x, shown.y]);
-  _react.default.useEffect(() => () => {
-    if (ref.current) clearDragOffset(ref.current);
-  }, []);
-  // inside the bounds: the element's place in the layout (without its offset) and the frame it may move in
-  const clamp = (x, y) => {
-    const el = ref.current,
-      frame = o.bounds && o.bounds.current || el && el.offsetParent;
-    x = (0, _grid.snapToGrid)(x, {
-      el
-    });
-    y = (0, _grid.snapToGrid)(y, {
-      el
-    });
-    if (!el || !frame) return {
-      x,
-      y
-    };
-    const r = el.getBoundingClientRect(),
-      f = frame.getBoundingClientRect();
-    const left = r.left - current.current.x,
-      top = r.top - current.current.y;
-    const minX = (0, _grid.snapToGrid)(f.left - left, {
-        round: 'up',
-        el
-      }),
-      maxX = (0, _grid.snapToGrid)(f.right - left - r.width, {
-        round: 'down',
-        el
-      });
-    const minY = (0, _grid.snapToGrid)(f.top - top, {
-        round: 'up',
-        el
-      }),
-      maxY = (0, _grid.snapToGrid)(f.bottom - top - r.height, {
-        round: 'down',
-        el
-      });
-    return {
-      x: Math.max(minX, Math.min(maxX, x)),
-      y: Math.max(minY, Math.min(maxY, y))
-    };
-  };
-  const commit = next => {
-    if (o.onMove && (next.x !== pos.x || next.y !== pos.y)) o.onMove(next);
-  };
-  const moveBy = (dx, dy) => {
-    const next = clamp(pos.x + dx, pos.y + dy);
-    commit(next);
-    (0, _announce.announce)(fill(t.repositioned, {
-      name: o.name
-    }));
-  };
-  const keyDown = e => {
-    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
-    if (!picked) {
-      if (pickKey(e) && e.target === e.currentTarget) {
-        e.preventDefault();
-        origin.current = pos;
-        setPreview(pos);
-        setSession({
-          kind: 'move',
-          mode: 'keyboard',
-          id,
-          name: o.name
-        });
-        (0, _announce.announce)(fill(t.repositionPicked, {
-          name: o.name
-        }));
-      }
-      return;
-    }
-    if (pickKey(e) || e.key === 'Tab') {
-      if (pickKey(e)) e.preventDefault();
-      commit(preview || pos);
-      setPreview(null);
-      setSession(null);
-      (0, _announce.announce)(fill(t.repositionDropped, {
-        name: o.name
-      }));
-      return;
-    }
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      setPreview(null);
-      setSession(null);
-      (0, _announce.announce)(fill(t.repositionCanceled, {
-        name: o.name
-      }));
-      return;
-    }
-    // a free move goes the way the arrow points, in either writing direction
-    const sx = isKey(e, 'ArrowRight') ? 1 : isKey(e, 'ArrowLeft') ? -1 : 0,
-      sy = isKey(e, 'ArrowDown') ? 1 : isKey(e, 'ArrowUp') ? -1 : 0;
-    if (!sx && !sy) return;
-    e.preventDefault();
-    const step = lengthToken(e.shiftKey ? '--plx-sys-dnd-keyboard-step-large' : '--plx-sys-dnd-keyboard-step', e.currentTarget) || (0, _grid.snapToGrid)(8);
-    const base = preview || pos;
-    const next = clamp(base.x + sx * step, base.y + sy * step);
-    setPreview(next);
-    (0, _announce.announce)(fill(t.repositioned, {
-      name: o.name
-    }));
-  };
-  const pointerDown = e => {
-    if (o.disabled || picked) return;
-    const start = pos;
-    trackPointer(e, {
-      el: () => ref.current,
-      hold: false,
-      onStart: () => setSession({
-        kind: 'move',
-        mode: 'pointer',
-        id,
-        name: o.name
-      }),
-      onMove: p => setPreview(clamp(start.x + p.dx, start.y + p.dy)),
-      onEnd: p => {
-        const next = p.canceled ? null : clamp(start.x + p.dx, start.y + p.dy);
-        setPreview(null);
-        setSession(null);
-        if (next) {
-          commit(next);
-          (0, _announce.announce)(fill(t.repositionDropped, {
-            name: o.name
-          }));
-        }
-      }
-    });
-  };
-  const st = now && now.kind === 'move' && now.id === id ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
-  return {
-    props: {
-      ref,
-      tabIndex: o.disabled ? undefined : 0,
-      className: 'plx-dnd-item plx-dnd-move',
-      'data-plx-dnd-state': st,
-      'aria-label': o.name,
-      'aria-roledescription': t.movable || undefined,
-      'aria-describedby': describe,
-      'aria-pressed': picked ? true : undefined,
-      onPointerDown: pointerDown,
-      onKeyDown: keyDown
-    },
-    position: shown,
-    picked,
-    moveBy
-  };
-}
-  } },
-  "platform/components/DropZone/DropZone.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DropZone = DropZone;
+exports.Tooltip = Tooltip;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
-var _dnd = require("../../utils/dnd.js");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DropZone
-   Summary: Where files are dropped (an upload area): a dashed region on the sunken surface. It is also a drop target for
-     items dragged in the page (a data drop target: an asset dropped on a folder, a card on a column; 10 Patterns ›
-     Drop target), through the drag-and-drop engine, and shows whether it takes what is over it.
+/* Plenix · Tooltip
+   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
+     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
    Usage:
-     <DropZone as="button" active={dragging} onClick={openPicker} onDragOver={…} onDrop={…}>Drop files or click to choose</DropZone>
-     <DropZone name="Archive" accepts={(data, type) => type === 'asset'} onDropItem={(asset) => archive(asset)}>Archive</DropZone>
-     <DropZone reject={wrongType} rejectContent="Only images can go here" …>Drop images here</DropZone>
+     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
+     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
    Props:
-     as: "div" (default) | "button" (opens the file picker on click)
-     active: shows the highlight while files are dragged over it (default false)
-     reject: shows that what is dragged over it is not taken (default false): the border in the danger color and the
-       not-allowed pointer; the page sets it while it handles the browser's drag events itself
-     rejectContent: what the zone says while it does not take what is over it ("Only images can go here"), so the state
-       is never told by color alone (default: its children)
-     overlay: covers its positioned parent while files are dragged over a page (the asset browser), and lets the drop
-       reach the page (default false)
-     onDropItem(data, type): makes the zone a drop target for items dragged in the page with the drag-and-drop engine
-       (utils/dnd.js: useDraggable, a sortable list's items do not drop here); it runs when one is dropped on it
-     accepts(data, type): with onDropItem, true when the zone takes the item (default: every item)
-     name: with onDropItem, the zone's name in the announcements ("Over Archive", "Archive does not take Cross 014")
-     children: the zone's content
-     className: more classes on the zone
+     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
+     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
+     title: a short title above the body; it makes the tooltip rich
+     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+       it opens on click (Enter or Space on the trigger) instead of on hover and focus
+     rich: the rich look without a title or an action (default false; true when title or action is given)
+     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
+       the time and only needs its tooltip when it is cut short
+     className: more classes on the wrapper
+     children: the control it labels (one element)
    Behavior:
-     The zone is highlighted while active, or while an item it takes is over it; it shows the reject state while
-       reject is set, or while an item it does not take is over it.
-     With onDropItem the keyboard reaches it too: a picked-up item (Space or Enter on its handle) moves from target to
-       target with the arrow keys and drops with Space or Enter; each target is announced.
+     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
+     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
+     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
+     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
+     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
+     release is dropped): a long press asks what a control is, it does not use it.
+     The trigger is described by the tooltip (aria-describedby), added to any it already has.
+     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
+       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
+       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
+       the window.
+     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
+       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
+       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
+       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
    Notes:
-     The page handles the browser's drag and drop events (files); other props (onDragOver, onDrop, onClick, …) pass
-       through to the element.
-*/
-function DropZone({
-  as: As = 'div',
-  active = false,
-  reject = false,
-  rejectContent,
-  overlay = false,
-  onDropItem,
-  accepts,
-  name,
-  className,
-  children,
-  ...rest
-}) {
-  const target = (0, _dnd.useDropTarget)({
-    name,
-    accepts,
-    onDrop: onDropItem,
-    disabled: !onDropItem
-  });
-  const st = onDropItem ? target.state : null;
-  const refused = reject || st === 'reject';
-  const extra = onDropItem ? {
-    ref: target.ref,
-    'data-plx-dnd-target': target.props['data-plx-dnd-target'],
-    'data-plx-drop-state': target.props['data-plx-drop-state']
-  } : null;
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    type: As === 'button' ? 'button' : undefined
-  }, extra, {
-    className: (0, _cx.cx)('plx-drop-zone', (active || st === 'over') && 'is-active', refused && 'is-reject', overlay && 'plx-drop-zone--overlay', className)
-  }, rest), refused && rejectContent != null ? rejectContent : children);
-}
-  } },
-  "platform/components/Preview/Preview.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Preview = Preview;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Preview
-   Summary: The large picture of the item an inspector shows (or a placeholder with its icon and count).
-     It is the sunken surface, rounded, in a shape of the aspect-ratio scale (4:3 by default), with its content centered.
-   Usage:
-     <Preview ratio="16-9" fit="cover"><img className="plx-preview__media" src={src} alt="Kitchen, before" /></Preview>
-     <Preview as="button" onClick={openViewer} topStart={<Tag>PNG</Tag>} bottomEnd={<Icon name="expand" />}>
-       <img src={src} alt="" />
-     </Preview>
-   Props:
-     as: "div" (default) | "button" (opens the item, e.g. the media viewer)
-     ratio: the shape, from the aspect-ratio scale (--plx-ref-ratio-*): "4-3" (default) | "1-1" | "3-2" | "16-9" | "21-9" |
-       "3-4" | "9-16" (the last two portrait)
-     aspect: the older name of ratio, as a photo's: "4/3" | "3/2" | "1/1" | "16/9" (as MediaCard's); ratio wins
-     fit: how a picture (.plx-preview__media) fills the frame: none (default: a thumbnail at its own size, centered) |
-       "cover" (it fills the frame and is cropped to it) | "contain" (it fills the frame, the whole picture showing)
-     topStart: a small mark in the top-start corner (the type)
-     bottomEnd: a small mark in the bottom-end corner (an expand icon)
-     className: more classes on the preview
-     children: the picture or placeholder
-     ...rest: other attributes go on the preview element (onClick for a button)
-   Behavior:
-     The frame keeps its ratio at every width, so the space is reserved before the picture loads.
-     cover and contain never stretch the picture; cover crops what does not fit, contain leaves the sunken surface around it.
-   Notes:
-     A ratio outside the scale falls back to 4:3: add it to the scale (a token) first.
-*/
-// the aspect-ratio scale (the Aspect-ratio scale foundation, platform/tokens/reference/ratio.tokens.json)
-const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
-const FITS = ['cover', 'contain'];
-function Preview({
-  as: As = 'div',
-  ratio,
-  aspect = '4/3',
-  fit,
-  topStart,
-  bottomEnd,
-  className,
-  children,
-  ...rest
-}) {
-  const r = ratio || String(aspect).replace('/', '-');
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    type: As === 'button' ? 'button' : undefined,
-    "data-plx-ratio": RATIOS.indexOf(r) >= 0 ? r : '4-3'
-  }, rest, {
-    className: (0, _cx.cx)('plx-preview', As === 'button' && 'plx-preview--button', FITS.indexOf(fit) >= 0 && 'plx-preview--' + fit, className)
-  }), children, topStart ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-preview__corner plx-preview__corner--top-start"
-  }, topStart) : null, bottomEnd ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-preview__corner plx-preview__corner--bottom-end"
-  }, bottomEnd) : null);
-}
-  } },
-  "platform/components/Fieldset/Fieldset.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Fieldset = Fieldset;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Fieldset
-   Summary: A group of related controls with its title (a legend): no border, the legend as secondary text, the controls
-     stacked under it, or side by side in a row when they make one value together (a field group: width and height, the
-     parts of an address line).
-   Usage:
-     <Fieldset legend="Export" gap="sm"><Checkbox label="Originals" /><Checkbox label="Metadata" /></Fieldset>
-     <Fieldset legend="Size" layout="row"><Field label="Width"><Input width="xs" /></Field><Field label="Height"><Input width="xs" /></Field></Fieldset>
-     <Fieldset legend="Sort by" hideLegend><RadioGroup … /></Fieldset>
-   Props:
-     legend: the title of the group
-     layout: "stack" (default; the controls under each other) | "row" (a field group: the controls side by side, wrapping
-       onto more lines when the row is narrow)
-     gap: the space between the stacked controls: "xs" (default) | "sm" | "md" (layout "stack")
-     hideLegend: the legend is read by assistive technology but not shown, for a group whose title is already on screen
-       (a section heading, a dialog title) (default false)
-     children: the controls
-     className: more classes on the <fieldset>
-   Behavior:
-     The legend names the group: a screen reader reads it when focus enters the group.
-     A row keeps its controls aligned at their tops (their labels on one line) and wraps when it runs out of room.
-   Notes:
-     Other props pass through to the <fieldset> (disabled turns every control in it off).
-*/
-function Fieldset({
-  legend,
-  layout = 'stack',
-  gap = 'xs',
-  hideLegend = false,
-  className,
-  children,
-  ...rest
-}) {
-  const row = layout === 'row';
-  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
-    className: (0, _cx.cx)('plx-fieldset', row ? 'plx-fieldset--row' : 'plx-stack plx-stack--gap-' + gap, className)
-  }, rest), /*#__PURE__*/_react.default.createElement("legend", {
-    className: (0, _cx.cx)('plx-fieldset__legend', hideLegend && 'plx-visually-hidden')
-  }, legend), children);
-}
-  } },
-  "platform/components/Columns/Columns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Columns = Columns;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Columns
-   Summary: Equal columns side by side (a two- or three-column layout inside a dialog or a page), or a sidebar beside the
-     main column; they collapse into one column below a window class.
-   Usage:
-     <Columns count={3} divided><Stack>…</Stack><Stack>…</Stack><Stack>…</Stack></Columns>
-     <Columns ratio="sidebar-start" collapseBelow="wide"><Stack>Filters</Stack><Stack>Results</Stack></Columns>
-   Props:
-     count: 2 (default) | 3
-     divided: a divider between the columns, each column padded (default false; the upload dialog's three steps)
-     gap: "none" | "md" (default) | "lg", when not divided
-     ratio: "equal" (default) | "sidebar-start" (a narrow first column, one third) | "sidebar-end" (a narrow last
-       column); two columns only
-     collapseBelow: none (default: always side by side) | "medium" (one column in a Narrow window, under 600px) | "wide"
-       (one column in a Narrow or Medium window, under 840px)
-     children: the columns; each child is one column (a Stack)
-     className: more classes on the row
-   Behavior:
-     The window class is the main region's width (Platforms Standard 3.3), read by a container query on the shell's
-       main region (.plx-shell-main), so a page with an inspector open collapses sooner than the window would say.
-     Collapsed, the columns stack in their markup order with the layout gap between them; divided columns trade their
-       vertical lines for a line above each column after the first.
-     The reading and focus order are the markup order at every width.
-   Notes:
-     Outside the shell's main region nothing collapses (there is no window class to read).
-     Other props pass through to the <div>.
-*/
-function Columns({
-  count = 2,
-  divided = false,
-  gap = 'md',
-  ratio = 'equal',
-  collapseBelow,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-columns', 'plx-columns--' + count, divided ? 'plx-columns--divided' : 'plx-columns--gap-' + gap, count === 2 && ratio !== 'equal' ? 'plx-columns--' + ratio : null, collapseBelow ? 'plx-columns--collapse-below-' + collapseBelow : null, className)
-  }, rest), children);
-}
-  } },
-  "platform/components/Breadcrumbs/Breadcrumbs.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Breadcrumbs = Breadcrumbs;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Breadcrumbs
-   Summary: Shows where the page sits in a hierarchy, from the top level to the current page.
-   Usage:
-     <Breadcrumbs label="Breadcrumb"
-       items={[{ label: 'UI Inventory', href: '#/' }, { label: 'Forms', href: '#/forms' }, { label: 'Combobox' }]} />
-   Props:
-     items: the levels, from the top level to the current page: [{ label, href, onClick }]
-     items[].href: the link of the level; an item without href is plain text
-     items[].onClick: runs when the level's link is clicked
-     label: the accessible name of the navigation landmark (default "Breadcrumb")
-     className: more classes on the <nav>
-   Behavior:
-     It is a navigation landmark with an ordered list.
-     Every item but the last is a link (or plain text without href).
-     The last item is the current page (aria-current="page").
-     Separators are drawn by CSS and hidden from assistive technology.
+     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
+     way to learn the control's name.
+     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
+     depends on hover.
+     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
 */
 
-function Breadcrumbs({
-  items = [],
-  label = 'Breadcrumb',
-  className
-}) {
-  return /*#__PURE__*/_react.default.createElement("nav", {
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-breadcrumbs', className)
-  }, /*#__PURE__*/_react.default.createElement("ol", {
-    className: "plx-breadcrumbs__list"
-  }, items.map((it, i) => {
-    const last = i === items.length - 1;
-    return /*#__PURE__*/_react.default.createElement("li", {
-      key: i,
-      className: "plx-breadcrumbs__item"
-    }, last ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-breadcrumbs__current",
-      "aria-current": "page"
-    }, it.label) : it.href ? /*#__PURE__*/_react.default.createElement("a", {
-      className: "plx-breadcrumbs__link",
-      href: it.href,
-      onClick: it.onClick
-    }, it.label) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-breadcrumbs__text"
-    }, it.label));
-  })));
-}
-  } },
-  "platform/components/List/List.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
+const SIDES = ['bottom', 'top', 'start', 'end'];
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.List = List;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · List, List.Item
-   Summary: A list of short statements, each with a leading icon in a tone (do and don't, features, requirements); or an
-     ordered list, numbered (1, 2, 3) or lettered (a, b, c), or drawn as steps; lists nest one level inside an item.
-   Usage:
-     <List items={[{ icon: 'circle-check', tone: 'success', children: 'Use it for…' }]} />
-     <List><List.Item icon="close" tone="danger">Avoid…</List.Item></List>
-     <List ordered items={[{ children: 'Create the project' }, { children: 'Upload the files', items: [{ children: 'Photos' }], ordered: 'alpha' }]} />
-     <List ordered variant="steps" items={[{ children: 'Choose the files' }, { children: 'Add the details' }]} />
-     <List variant="bullets" items={[{ children: 'Presence: online, away, busy, offline.' }, { children: 'Workflow: done, in progress.' }]} />
-   Props:
-     List.items: the statements: [{ icon, tone, children, items, ordered, variant }]; or pass List.Item children
-     List.ordered: an ordered list (<ol>): "decimal" (true is the same) | "alpha"; without it, the icon list (<ul>)
-     List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow |
-       "bullets": a plain list, each statement after a small square bullet (owner, 2026-10-15: for points of a text)
-     List.label: names the list for assistive technology when its heading is not next to it
-     List.children: List.Item elements, when there are no items
-     List.className: more classes on the list
-     List.Item.icon: the icon name (icon lists)
-     List.Item.tone: "neutral" (default) | "success" | "danger" | "info" | "warning"
-     List.Item.items: a nested list under the statement, of the same kind unless List.Item.ordered says otherwise
-     List.Item.ordered: the kind of the nested list: "decimal" | "alpha" | false (an icon list)
-     List.Item.variant: the nested list's variant ("icons", the default, or "bullets" for points under a statement)
-     List.Item.children: the statement
-     List.Item.className: more classes on the <li>
-   Behavior:
-     Items wrap; the icon, number or step sits on the first line.
-     The icon is decorative and hidden from assistive technology (the text carries the meaning); an ordered list is an
-       <ol>, so its numbers are announced with the items.
-     A nested list starts under its statement's text (the same keyline); nest one level only (two at most).
-*/
-
-const kindOf = ordered => ordered === 'alpha' ? 'alpha' : ordered ? 'decimal' : null;
-function List({
-  items,
-  label,
-  ordered,
-  variant = 'icons',
-  className,
-  children
-}) {
-  (0, _devWarn.devWarn)('List', {
-    variant
-  }, {
-    variant: ['icons', 'steps', 'bullets']
-  });
-  const kind = kindOf(ordered || (variant === 'steps' ? 'decimal' : null));
-  const Tag = kind ? 'ol' : 'ul';
-  return /*#__PURE__*/_react.default.createElement(Tag, {
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', !kind && variant === 'bullets' && 'plx-list--bullets', className)
-  }, items ? items.map((it, i) => /*#__PURE__*/_react.default.createElement(List.Item, {
-    key: i,
-    icon: it.icon,
-    tone: it.tone,
-    items: it.items,
-    ordered: it.ordered === undefined ? kind : it.ordered,
-    variant: it.variant
-  }, it.children)) : children);
-}
-List.Item = function ListItem({
-  icon,
-  tone = 'neutral',
-  items,
-  ordered,
-  variant,
-  className,
-  children
-}) {
-  (0, _devWarn.devWarn)('List.Item', {
-    tone
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral']
-  });
-  const text = /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-list__text"
-  }, children);
-  return /*#__PURE__*/_react.default.createElement("li", {
-    className: (0, _cx.cx)('plx-list__item', 'plx-list__item--' + tone, className)
-  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-list__icon",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  })) : null, items && items.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-list__body"
-  }, text, /*#__PURE__*/_react.default.createElement(List, {
-    items: items,
-    ordered: ordered,
-    variant: variant,
-    className: "plx-list--nested"
-  })) : text);
-};
-  } },
-  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CodeBlock = CodeBlock;
-exports.detect = detect;
-exports.highlight = highlight;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../Button/Button.jsx");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · CodeBlock
-   Summary: Code or a file's source, in the code font (Reddit Mono) on the page surface, with a Copy button.
-   Usage:
-     <CodeBlock title="platform/components/Button/Button.jsx" maxHeight="tall">{text}</CodeBlock>
-   Props:
-     title: a file name or caption shown above the code (in the data font)
-     maxHeight: "none" (default) | "tall" (a box that scrolls, for whole files)
-     copy: false hides the Copy button (default true)
-     label: the accessible name of the code region (default the title, else strings.code)
-     strings: the words it shows and announces, for other languages: { code: "Code", copy: "Copy", copied: "Copied",
-       failed: "Could not copy" }
-     language: "auto" (default: from the title's extension, else read from the code) | "jsx" | "js" | "css" | "html" | "text"
-     children: the code, as a string
-     className: more classes on the block
-   Behavior:
-     The code keeps its own line breaks and scrolls sideways.
-     The code is one Tab stop (a focusable region) so a keyboard user can scroll it.
-     The code is colored in the usual editor manner: keywords, strings, comments, numbers, functions, tags, attributes and
-       properties, custom properties, selectors.
-     "text" is not colored.
-     Copy puts the code on the clipboard and reads "Copied" with a check for a moment; screen readers hear "Copied" (or
-       "Could not copy" when the clipboard refuses).
-   Notes:
-     The colors come from the --plx-sys-code-* roles.
-     The highlighter (highlight, detect) is shared with CodeEditor, which colors its text the same way; it is not public.
-*/
-
-const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';
-// each rule: [kind, pattern]; the first that matches at a position wins
-const RULES = {
-  js: [['comment', /\/\*[\s\S]*?\*\/|\/\/[^\n]*/], ['string', /'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`/], ['tag', /<\/?[A-Za-z][\w.]*/], ['attribute', /[A-Za-z_][\w-]*(?==(?!=)[{"'])/], ['keyword', new RegExp('\\b(?:' + KEYWORDS + ')\\b')], ['number', /\b\d+(?:\.\d+)?\b/], ['function', /\b[A-Za-z_$][\w$]*(?=\()/]],
-  css: [['comment', /\/\*[\s\S]*?\*\//], ['string', /'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"/], ['brace', /[{}]/], ['variable', /--[\w-]+/], ['keyword', /@[\w-]+|!important/], ['attribute', /[\w-]+(?=\s*:)/], ['function', /\b[\w-]+(?=\()/], ['number', /-?\b\d+(?:\.\d+)?(?:px|rem|em|%|ms|s|deg|fr|vh|vw|ch)?\b/]]
-};
-RULES.jsx = RULES.js;
-RULES.html = RULES.js;
-function detect(title, text) {
-  const ext = title ? (String(title).match(/\.(\w+)$/) || [])[1] : null;
-  if (ext) return ext === 'css' ? 'css' : /^(jsx?|mjs|tsx?)$/.test(ext) ? 'jsx' : ext === 'html' ? 'html' : 'text';
-  return /^\s*(?:[.#:@\w[\]*-][^{\n]*)\{[^}]*:[^}]*;/m.test(text) && !/=>|import |<[A-Z]/.test(text) ? 'css' : 'jsx';
-}
-
-// the code as a list of plain strings and colored spans (CodeEditor colors its text with it too)
-function highlight(text, language) {
-  const rules = RULES[language];
-  if (!rules) return text;
-  const all = new RegExp(rules.map(([, re]) => '(' + re.source + ')').join('|'), 'g');
-  const out = [];
-  let at = 0,
-    depth = 0,
-    m,
-    n = 0;
-  const plain = s => {
-    if (!s) return;
-    out.push(language === 'css' && depth === 0 ? /*#__PURE__*/_react.default.createElement("span", {
-      key: n++,
-      className: "plx-code-block__tok--selector"
-    }, s) : s);
-  };
-  while (m = all.exec(text)) {
-    if (m[0] === '') {
-      all.lastIndex++;
-      continue;
-    }
-    plain(text.slice(at, m.index));
-    const kind = rules[m.slice(1).findIndex(g => g !== undefined)][0];
-    if (kind === 'brace') {
-      depth += m[0] === '{' ? 1 : -1;
-      if (depth < 0) depth = 0;
-      out.push(m[0]);
-    } else if (language === 'css' && depth === 0 && kind !== 'comment' && kind !== 'keyword' && kind !== 'string') plain(m[0]);else if (kind === 'tag') {
-      const slash = m[0][1] === '/' ? 2 : 1;
-      out.push(m[0].slice(0, slash));
-      out.push(/*#__PURE__*/_react.default.createElement("span", {
-        key: n++,
-        className: "plx-code-block__tok--tag"
-      }, m[0].slice(slash)));
-    } else out.push(/*#__PURE__*/_react.default.createElement("span", {
-      key: n++,
-      className: 'plx-code-block__tok--' + kind
-    }, m[0]));
-    at = all.lastIndex;
-  }
-  plain(text.slice(at));
-  return out;
-}
-const STRINGS = {
-  code: 'Code',
-  copy: 'Copy',
-  copied: 'Copied',
-  failed: 'Could not copy'
-};
-function CodeBlock({
-  title,
-  maxHeight = 'none',
-  copy = true,
-  label,
-  language = 'auto',
-  strings,
-  className,
-  children
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const [copied, setCopied] = _react.default.useState(false);
-  const [said, setSaid] = _react.default.useState(''); // what screen readers hear after Copy (batch 213)
-  const text = typeof children === 'string' ? children : String(children == null ? '' : children);
-  const lang = language === 'auto' ? detect(title, text) : language;
-  const colored = _react.default.useMemo(() => highlight(text, lang), [text, lang]);
-  const doCopy = () => {
-    const done = () => {
-      setCopied(true);
-      setSaid(t.copied);
-      setTimeout(() => {
-        setCopied(false);
-        setSaid('');
-      }, 1500);
-    };
-    const failed = () => {
-      setSaid(t.failed);
-      setTimeout(() => setSaid(''), 3000);
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, failed);else failed();
-  };
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-code-block', 'plx-code-block--' + maxHeight, className)
-  }, title || copy ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-code-block__head"
-  }, title ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-code-block__title"
-  }, title) : /*#__PURE__*/_react.default.createElement("span", null), copy ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "xs",
-    variant: "ghost",
-    icon: copied ? 'check' : undefined,
-    onClick: doCopy
-  }, copied ? t.copied : t.copy) : null, copy ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status"
-  }, said) : null) : null, /*#__PURE__*/_react.default.createElement("pre", {
-    className: "plx-code-block__pre",
-    tabIndex: 0,
-    "aria-label": label || title || t.code
-  }, /*#__PURE__*/_react.default.createElement("code", {
-    "data-plx-language": lang
-  }, colored)));
-}
-  } },
-  "platform/components/SectionHeading/SectionHeading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SectionHeading = SectionHeading;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SectionHeading
-   Summary: A small uppercase heading that names a group (navigation sections, panel sections, settings), sized by its level.
-   Usage:
-     <SectionHeading collapsible expanded={open} onToggle={() => setOpen(!open)} controls="recent-body">Recent</SectionHeading>
-     <SectionHeading level={2}>Appearance</SectionHeading>
-   Props:
-     level: the heading level; default 3; null for a plain label. Each level takes its own size from the type scale: 2 (13px)
-       is larger than 3 (11px), which is larger than 4 (10px); a plain label and levels 5 and 6 are 10px
-     collapsible: renders a button that shows or hides the section; default false
-     expanded: whether the section is shown (collapsible only); default true
-     onToggle(event): runs when the button is clicked (collapsible only)
-     controls: the id of the section body (collapsible only)
-     actions: controls at the end of the heading
-     className: more classes on the heading
-     children: the label text
-     ...rest: other attributes go on the heading element
-   Behavior:
-     The chevron turns with expanded.
-     The size follows the level (plx-section-heading--level-2, -3, -4), so pick the level from the outline, never for a size.
-   Notes:
-     It sets no outer margin: the list or panel it sits in spaces it.
-*/
-// the levels with their own size (section-heading.css); the others keep the base size
-const LEVELS = [2, 3, 4];
-function SectionHeading({
-  level = 3,
-  collapsible = false,
-  expanded = true,
-  onToggle,
-  controls,
-  actions,
-  className,
-  children,
-  ...rest
-}) {
-  const Tag = level ? 'h' + level : 'div';
-  const sized = LEVELS.indexOf(level) >= 0 && 'plx-section-heading--level-' + level;
-  if (collapsible) {
-    return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-      className: (0, _cx.cx)('plx-section-heading', sized, 'plx-section-heading--collapsible', className)
-    }, rest), /*#__PURE__*/_react.default.createElement("button", {
-      type: "button",
-      className: "plx-section-heading__toggle",
-      "aria-expanded": expanded,
-      "aria-controls": controls,
-      onClick: onToggle
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-section-heading__label"
-    }, children), /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-section-heading__chevron",
-      "aria-hidden": "true"
-    })), actions ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-section-heading__actions"
-    }, actions) : null);
-  }
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    className: (0, _cx.cx)('plx-section-heading', sized, className)
-  }, rest), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-section-heading__label"
-  }, children), actions ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-section-heading__actions"
-  }, actions) : null);
-}
-  } },
-  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CollapsibleSection = CollapsibleSection;
-exports.ShowMore = ShowMore;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Button = require("../Button/Button.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CollapsibleSection
-   Summary: A titled section that expands and collapses.
-   Usage:
-     <CollapsibleSection title="Collections" icon="briefcase" defaultExpanded actions={<Button…/>}>…</CollapsibleSection>
-   Props:
-     title: the section title
-     icon: an <Icon> (or an icon name) before the title
-     expanded: the open state, when controlled
-     defaultExpanded: the first open state, when uncontrolled (default true)
-     onToggle(next): runs with the new open state when the header is clicked
-     actions: controls beside the header, outside its button
-     headingLevel: the heading level of the title (default 3; null for a plain label)
-     className: more classes on the <section>
-     bodyClassName: more classes on the body
-     children: the body
-     ShowMore: the "Show more" button under a list that shows only its first rows (owner, batch 276: it carries an icon):
-       ShowMore.expanded: the rest is shown (aria-expanded); the label reads "Show less" and the chevron points up
-       ShowMore.count: how many are hidden, shown as "Show more (count)" (a number, or text such as "+3")
-       ShowMore.onToggle(next): runs with the new state
-       ShowMore.size: the button size (default "2xs", the smallest); other props reach the Button (variant)
-   Behavior:
-     Controlled with expanded and onToggle(next); uncontrolled with defaultExpanded.
-     The header is one button (aria-expanded, pointing at the body).
-     The chevron at the end points down while open.
-     The body is removed from view, and from the accessibility tree, while collapsed.
-   Notes:
-     It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
-       chevron at the end.
-*/
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
-function CollapsibleSection({
-  title,
-  icon,
-  expanded,
-  defaultExpanded = true,
-  onToggle,
-  actions,
-  headingLevel = 3,
-  className,
-  bodyClassName,
-  children
-}) {
-  const id = (0, _layer.useUid)('plx-collapsible-section');
-  const [own, setOwn] = _react.default.useState(defaultExpanded);
-  const open = expanded !== undefined ? expanded : own;
-  const toggle = () => {
-    if (expanded === undefined) setOwn(!open);
-    if (onToggle) onToggle(!open);
-  };
-  const Tag = headingLevel ? 'h' + headingLevel : 'div';
-  return /*#__PURE__*/_react.default.createElement("section", {
-    className: (0, _cx.cx)('plx-collapsible-section', open && 'is-expanded', className)
-  }, /*#__PURE__*/_react.default.createElement(Tag, {
-    className: "plx-collapsible-section__heading"
-  }, /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-collapsible-section__toggle",
-    "aria-expanded": open,
-    "aria-controls": id + '-body',
-    onClick: toggle
-  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-collapsible-section__icon",
-    "aria-hidden": "true"
-  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-collapsible-section__title"
-  }, title), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-collapsible-section__chevron",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-down"
-  }))), actions ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-collapsible-section__actions"
-  }, actions) : null), /*#__PURE__*/_react.default.createElement("div", {
-    id: id + '-body',
-    className: (0, _cx.cx)('plx-collapsible-section__body', bodyClassName),
-    hidden: !open
-  }, children));
-}
-
-// "Show more (n)" / "Show less" with its chevron after the label: down to show more, up to show less (batch 276)
-function ShowMore({
-  expanded = false,
-  count,
-  onToggle,
-  size = '2xs',
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('ShowMore', {
-    size
-  }, {
-    size: ['md', 'sm', 'xs', '2xs', 'lg']
-  });
-  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
-    size: size,
-    iconEnd: expanded ? 'chevron-up' : 'chevron-down',
-    "aria-expanded": expanded,
-    onClick: () => {
-      if (onToggle) onToggle(!expanded);
-    }
-  }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
-}
-  } },
-  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ProgressSteps = ProgressSteps;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressSteps
-   Summary: The steps of a task done in order (setup, an import, a checkout) and where the person is: each step's marker,
-     name and optional line, joined by connectors, with the done, current, upcoming and failed steps each told by an icon
-     or number and in words. Horizontal or vertical; clickable to go back to a step; or compact ("Step 2 of 5" over a
-     bar of segments) where names add nothing. The navigation Stepper, the Progress tracker and Step progress.
-   Usage:
-     <ProgressSteps label="Import" current={1} steps={[{ label: 'Upload' }, { label: 'Map columns' }, { label: 'Review' }]} />
-     <ProgressSteps orientation="vertical" current={2} steps={[{ label: 'Details', description: 'Name and owner' }, …]} />
-     <ProgressSteps current={2} onStepClick={setStep} steps={steps} />                                  // clickable
-     <ProgressSteps current={1} steps={[{ label: 'Upload' }, { label: 'Map columns', status: 'error' }, …]} />
-     <ProgressSteps variant="compact" current={1} steps={steps} />                                      // Step 2 of 5
-   Props:
-     steps: the steps, in order: [{ label, description, status, disabled }]
-     steps[].label: the step's short name (a noun: Details, Review)
-     steps[].description: a second line under the name (optional; not in the compact form)
-     steps[].status: "complete" | "current" | "upcoming" | "error" (needs attention); default from current: the steps
-       before it are complete, it is current, the steps after it upcoming
-     steps[].disabled: the step cannot be chosen even when it is complete (clickable steps)
-     current: the index of the current step (0-based)
-     orientation: "horizontal" (default; one row, the connectors between) | "vertical" (one step under another, the
-       connector down the marker column, room for descriptions)
-     variant: "default" | "compact" ("Step 2 of 5: Review" over a bar of one segment per step)
-     onStepClick(index): makes the done and current steps buttons that go to that step (clickable); upcoming steps stay
-       text (people cannot skip ahead)
-     label: the accessible name of the list ("Import steps")
-     strings: the words it shows and announces, for other languages: { step: "Step {n} of {total}", complete:
-       "Complete", current: "Current step", upcoming: "Not started", error: "Needs attention" }
-     className: more classes on the steps
-   Behavior:
-     The steps are an ordered list; the current step is aria-current="step". Every step's state is said in words after its
-       name (visually hidden: "Complete", "Needs attention"), never by color alone: a complete step shows a check, a
-       failed one an alert, the others their number.
-     Clickable: the done and current steps are buttons in the Tab order (Enter or Space goes to the step); upcoming and
-       disabled steps are not focusable.
-     Horizontal steps that do not fit their row wrap onto more lines; a vertical list is the choice on a narrow window.
-     Compact: the text says the step and its name; the bar's segments are decoration (hidden from screen readers).
-   Notes:
-     Steps that can be done in any order are tabs or sections, not steps. Three to seven steps; two need no stepper.
-     Statuses of records are a Badge; these markers belong to the steps only.
-     Other props pass through to the outer element.
-*/
-const STRINGS = {
-  step: 'Step {n} of {total}',
-  complete: 'Complete',
-  current: 'Current step',
-  upcoming: 'Not started',
-  error: 'Needs attention'
-};
-const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
-function ProgressSteps({
-  steps = [],
-  current = 0,
-  orientation = 'horizontal',
-  variant = 'default',
-  onStepClick,
-  label,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('ProgressSteps', {
-    variant
-  }, {
-    variant: ['default', 'compact']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
-  if (variant === 'compact') {
-    const at = Math.max(0, Math.min(current, steps.length - 1));
-    const step = steps[at] || {};
-    return /*#__PURE__*/_react.default.createElement("div", _extends({
-      role: "group",
-      "aria-label": label,
-      className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--compact', className)
-    }, rest), /*#__PURE__*/_react.default.createElement("p", {
-      className: "plx-progress-steps__count"
-    }, fill(t.step, at + 1, steps.length), step.label ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__count-label"
-    }, ': ' + step.label) : null), /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-progress-steps__segments",
-      "aria-hidden": "true"
-    }, steps.map((s, i) => /*#__PURE__*/_react.default.createElement("span", {
-      key: i,
-      className: (0, _cx.cx)('plx-progress-steps__segment', 'is-' + statusOf(s, i))
-    }))));
-  }
-  return /*#__PURE__*/_react.default.createElement("ol", _extends({
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--' + (orientation === 'vertical' ? 'vertical' : 'horizontal'), onStepClick && 'plx-progress-steps--clickable', className)
-  }, rest), steps.map((s, i) => {
-    const status = statusOf(s, i);
-    const canGo = onStepClick && !s.disabled && (status === 'complete' || status === 'current' || status === 'error');
-    const marker = /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__marker",
-      "aria-hidden": "true"
-    }, status === 'complete' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "check"
-    }) : status === 'error' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "alert"
-    }) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__number"
-    }, i + 1));
-    const words = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__label"
-    }, s.label), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t[status]));
-    return /*#__PURE__*/_react.default.createElement("li", {
-      key: i,
-      className: (0, _cx.cx)('plx-progress-steps__step', 'is-' + status),
-      "aria-current": status === 'current' ? 'step' : undefined
-    }, canGo ? /*#__PURE__*/_react.default.createElement("button", {
-      type: "button",
-      className: "plx-progress-steps__head plx-progress-steps__button",
-      onClick: () => onStepClick(i)
-    }, marker, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__text"
-    }, words)) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__head"
-    }, marker, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__text"
-    }, words)), s.description ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__description"
-    }, s.description) : null, i < steps.length - 1 ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-progress-steps__connector",
-      "aria-hidden": "true"
-    }) : null);
-  }));
-}
-  } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Textarea = exports.Select = exports.Input = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _grid = require("../../utils/grid.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
-   Summary: The text field family, at the standard control height.
-   Usage:
-     <Input value={name} onChange={(e) => …} width="md" />
-     <Textarea rows={5} value={notes} onChange={(e) => …} />
-     <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
-     <Input appearance="filled" … />               <Textarea autoGrow … />
-   Props:
-     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
-     Select.size: as Input.size; numeric values retain the native select size attribute.
-     Input.invalid: marks the field (aria-invalid); put the message in Field's error
-     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*)
-     Input.data: the data font, for codes, hex values, links to copy (default false)
-     Input.emphasis: semibold, for a record's title (default false)
-     Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
-       (owner, batch 275); the system sizes it, so it takes no width or utility
-     Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
-       (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
-     Input.appearance: "outline" (default; a border on every side) | "filled" (the same border and corners, a gray fill and
-       the value in dark gray); one appearance per form. There is no underline field (owner, 2026-10-16)
-     Input.className: more classes on the <input>
-     Textarea.invalid: marks the field (aria-invalid)
-     Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
-     Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
-       scrolls inside; it cannot be resized by hand (default false)
-     Textarea.appearance: as Input.appearance
-     Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
-     Textarea.className: more classes on the <textarea>
-     Select.invalid: marks the field (aria-invalid)
-     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
-     Select.block: the select takes its own line, as wide as its room (InlineEdit)
-     Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
-     Select.children: <option>s, when there are no options
-     Select.appearance: as Input.appearance (on the <select>)
-     Select.className: more classes on the wrapper
-   Behavior:
-     Inside a Field, the label, description and error are connected for you.
-     Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
-     it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
-     red fill; read-only and disabled keep their fills.
-     autoGrow: the browser sizes the text area to its content (field-sizing: content); where it cannot, the text area
-     measures its content on each change and sets its height on the 4px grid (gridPx), the one inline style it writes.
-     Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
-     check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
-   Notes:
-     They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
-     All three forward their ref to the native element.
-*/
-// the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
-const TYPE_HINTS = {
-  email: {
-    inputMode: 'email',
-    autoCapitalize: 'off',
-    spellCheck: false
-  },
-  url: {
-    inputMode: 'url',
-    autoCapitalize: 'off',
-    spellCheck: false
-  },
-  tel: {
-    inputMode: 'tel'
-  },
-  search: {
-    inputMode: 'search',
-    enterKeyHint: 'search'
-  }
+// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
 };
 
-// the appearance class (outline is the base look: no class)
-const look = appearance => appearance === 'filled' && 'plx-input--filled';
-const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
-  invalid,
-  width,
-  data = false,
-  emphasis = false,
-  appearance,
-  size,
-  className,
-  type = 'text',
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
-    type: type,
-    size: size === 'sm' || size === 'md' ? undefined : size,
-    className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
-    "aria-invalid": invalid || undefined
-  }, TYPE_HINTS[type], rest));
-});
-
-// can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
-const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
-const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(function Textarea({
-  invalid,
-  appearance,
-  autoGrow = false,
-  data = false,
-  className,
-  rows = 3,
-  onInput,
-  ...rest
-}, ref) {
-  const own = _react.default.useRef(null);
-  const setRef = _react.default.useCallback(el => {
-    own.current = el;
-    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
-  }, [ref]);
-  // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
-  const fit = _react.default.useCallback(() => {
-    const el = own.current;
-    if (!el || !autoGrow || SIZES_ITSELF) return;
-    el.style.blockSize = '';
-    const edge = el.offsetHeight - el.clientHeight;
-    el.style.blockSize = (0, _grid.gridPx)(el.scrollHeight + edge, {
-      round: 'up',
-      el
-    });
-  }, [autoGrow]);
-  _react.default.useLayoutEffect(() => {
-    fit();
-  });
-  return /*#__PURE__*/_react.default.createElement("textarea", _extends({
-    ref: setRef,
-    rows: rows,
-    className: (0, _cx.cx)('plx-input', 'plx-textarea', data && 'plx-input--data', autoGrow && 'plx-textarea--auto-grow', look(appearance), className),
-    "aria-invalid": invalid || undefined,
-    onInput: e => {
-      fit();
-      if (onInput) onInput(e);
-    }
-  }, rest));
-});
-
-/* options: [{ value, label }] or children <option>s */
-const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select({
-  invalid,
-  options,
-  appearance,
-  size,
-  joined,
-  block = false,
-  className,
-  children,
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
-  }, /*#__PURE__*/_react.default.createElement("select", _extends({
-    ref: ref,
-    size: size === 'sm' || size === 'md' ? undefined : size,
-    className: (0, _cx.cx)('plx-input', 'plx-select__control', look(appearance)),
-    "aria-invalid": invalid || undefined
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
-    key: o.value,
-    value: o.value,
-    disabled: o.disabled
-  }, o.label)) : children));
-});
-  } },
-  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Chat = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-var _Button = require("../Button/Button.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _ProgressSteps = require("../ProgressSteps/ProgressSteps.jsx");
-var _Text = require("../Text/Text.jsx");
-var _Input = require("../Input/Input.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Chat
-   Summary: The live messaging surface of a conversation (12 › Collaboration and communication › Chat): its header, the
-     thread of messages (mine on the end side, theirs on the start side), the typing dots and the composer.
-   Usage:
-     <Chat.Header title="Maya Chen" meta="Online" avatar={<Avatar name="Maya Chen" />} actions={<…/>} />
-     <Chat.Thread label="Conversation with Maya Chen">
-       <Chat.Message author="Maya Chen" time="10:24" avatar={<Avatar name="Maya Chen" size="xs" />}>Are the renders ready?</Chat.Message>
-       <Chat.Message mine time="10:26">Uploading them now.</Chat.Message>
-       <Chat.Typing label="Maya is typing" />
-     </Chat.Thread>
-     <Chat.Composer value={text} onChange={setText} onSend={send} />
-   Props:
-     Chat.Header.title: who or what the conversation is with
-     Chat.Header.meta: a short line under the title (presence, members)
-     Chat.Header.avatar: an Avatar before the title
-     Chat.Header.actions: buttons at the end
-     Chat.Thread.label: the accessible name of the thread (default "Conversation")
-     Chat.Thread.follow: opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
-       to read (default true)
-     Chat.Thread.children: the messages, in order (the oldest first)
-     Chat.Message.mine: the message is the person's own (end side, in the action color); default false
-     Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
-     Chat.Message.time: when, as shown; dateTime: the same as a machine-readable date
-     Chat.Message.avatar: an Avatar beside their messages
-     Chat.Message.children: the message text or content
-     Chat.Composer.value / onChange(text): the message being written
-     Chat.Composer.onSend(text): runs on Send and on Enter (Shift+Enter starts a new line)
-     Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
-     Chat.Composer.sendLabel: default "Send"; disabled: the composer is inert
-     Chat.Typing.label: the text announced to assistive technology (default "Typing")
-     Chat.Typing.variant: typing (default) | thinking | steps; steps: [{label,status}], current: active step index
-     Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
-     className on every part: more classes
-   Behavior:
-     The thread is a log (role="log", aria-live="polite"): new messages are announced.
-     Send is disabled while the message is empty.
-     Chat.Typing is a status region (role="status"), so its label is announced.
-     The dots pulse one after another; people who ask their system for less motion see them still.
-   Notes:
-     Other props pass through to the <span>.
-     It was TypingIndicator in the loading family (batch 168); the owner placed it under Chat.
-*/
-function Typing({
-  label,
-  variant = 'typing',
-  steps = [],
-  current = 0,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Chat.Typing', {
-    variant
-  }, {
-    variant: ['typing', 'thinking', 'steps']
-  });
-  const t = Object.assign({
-    thinking: 'Thinking'
-  }, strings);
-  if (variant === 'thinking' || variant === 'steps') return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-chat__thinking', className),
-    role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__thinking-label"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    "aria-hidden": "true",
-    role: "presentation",
-    label: ""
-  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "sparkle"
-  }), /*#__PURE__*/_react.default.createElement(_Text.Text, null, label || t.thinking)), variant === 'steps' && steps.length ? /*#__PURE__*/_react.default.createElement(_ProgressSteps.ProgressSteps, {
-    label: label || t.thinking,
-    steps: steps,
-    current: current,
-    strings: strings
-  }) : null);
-  if (label === undefined) label = 'Typing';
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-chat__typing', className),
-    role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement("span", {
-    "aria-hidden": "true"
-  }), /*#__PURE__*/_react.default.createElement("span", {
-    "aria-hidden": "true"
-  }), /*#__PURE__*/_react.default.createElement("span", {
-    "aria-hidden": "true"
-  }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
-}
-function Header({
-  title,
-  meta,
-  avatar,
-  actions,
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-chat__header', className)
-  }, rest), avatar ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chat__header-avatar"
-  }, avatar) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__header-text"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__header-title"
-  }, title), meta ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__header-meta"
-  }, meta) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__header-actions"
-  }, actions) : null);
-}
-function Thread({
-  label = 'Conversation',
-  follow = true,
-  className,
-  children,
-  ...rest
-}) {
-  // it opens at the newest message and follows new ones, unless the person has scrolled up to read (batch 215)
-  const ref = _react.default.useRef(null),
-    atEnd = _react.default.useRef(true);
-  const count = _react.default.Children.count(children);
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (follow && el && atEnd.current) el.scrollTop = el.scrollHeight;
-  }, [count, follow]);
-  const onScroll = e => {
-    const el = e.currentTarget;
-    atEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight <= el.clientHeight / 4;
-    if (rest.onScroll) rest.onScroll(e);
-  };
-  // it scrolls, so it is in the Tab order: the keyboard can scroll it too
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: ref,
-    className: (0, _cx.cx)('plx-chat__thread', className),
-    role: "log",
-    "aria-live": "polite",
-    "aria-label": label,
-    tabIndex: 0
-  }, rest, {
-    onScroll: onScroll
-  }), children);
-}
-function Message({
-  mine = false,
-  author,
-  time,
-  dateTime,
-  avatar,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-chat__message', mine && 'plx-chat__message--mine', className)
-  }, rest), !mine && avatar ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chat__avatar"
-  }, avatar) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__bubble"
-  }, author && !mine || time ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__meta"
-  }, mine ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "You") : author ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chat__author"
-  }, author) : null, time ? /*#__PURE__*/_react.default.createElement("time", {
-    className: "plx-chat__time",
-    dateTime: dateTime
-  }, time) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__body"
-  }, children)));
-}
-function Composer({
-  value = '',
-  onChange,
-  onSend,
-  placeholder = 'Write a message',
-  label = 'Message',
-  sendLabel = 'Send',
-  disabled = false,
-  className,
-  ...rest
-}) {
-  const empty = !String(value).trim();
-  const send = () => {
-    if (!empty && onSend) onSend(value);
-  };
-  return /*#__PURE__*/_react.default.createElement("form", _extends({
-    className: (0, _cx.cx)('plx-chat__composer', className),
-    onSubmit: e => {
-      e.preventDefault();
-      send();
-    }
-  }, rest), /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
-    className: "plx-chat__field",
-    rows: 1,
-    value: value,
-    placeholder: placeholder,
-    "aria-label": label,
-    disabled: disabled,
-    onChange: e => {
-      if (onChange) onChange(e.target.value);
-    },
-    onKeyDown: e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        send();
-      }
-    }
-  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    type: "submit",
-    variant: "primary",
-    disabled: disabled || empty
-  }, sendLabel));
-}
-const Chat = exports.Chat = {
-  Header,
-  Thread,
-  Message,
-  Composer,
-  Typing
+// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
+// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
+let lastInput = 'key',
+  listening = false;
+const listen = () => {
+  if (listening) return;
+  listening = true;
+  document.addEventListener('pointerdown', e => {
+    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
+  }, true);
+  document.addEventListener('keydown', () => {
+    lastInput = 'key';
+  }, true);
 };
-  } },
-  "platform/components/EmptyState/EmptyState.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.EmptyState = EmptyState;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EmptyState
-   Summary: What a region shows when it has nothing yet, and how to add the first item; in a tone, what failed, what needs
-     care or what went well, and the one action that follows (platforms.md 5.5); with a kind, the common system states
-     (offline, degraded, permission denied, not found, maintenance, completion) with their icon, tone and words.
-   Usage:
-     <EmptyState size="page" icon="folder" title="No assets yet" action={<Button variant="primary">Upload</Button>}>
-       Upload files to start.</EmptyState>
-     <EmptyState tone="error" title="The assets could not load" action={<Button icon="refresh" onClick={reload}>Retry</Button>}>
-       The server did not answer.</EmptyState>
-     <EmptyState kind="offline" action={<Button icon="refresh" onClick={reload}>Try again</Button>} />
-     <EmptyState kind="permission-denied" title="You can’t open this project">Ask its owner to share it with you.</EmptyState>
-   Props:
-     size: "inline" (default; a line inside a list or table area) | "page" (a whole view)
-     tone: "neutral" (default; empty) | "error" (the content could not load: the title names the problem, the action
-       recovers; announced as an alert, the icon in the danger color) | "warning" (something needs care before the region
-       works fully: the icon in the warning color) | "success" (the work here is finished: the icon in the success color);
-       warning and success are announced politely (role="status")
-     kind: a system state that brings its icon, tone, title and text (each still overridable by the props):
-       "offline" (warning, wifi-off) | "degraded" (warning, cloud-off) | "permission-denied" (neutral) | "not-found" (neutral)
-       | "maintenance" (neutral) | "completion" (success)
-     icon: an icon name or an <Icon> (or other mark); hidden from assistive technology; the default comes from the kind,
-       else from the tone (error and warning "warning", success "circle-check")
-     title: the main line (the kind's title unless given)
-     action: a button (one: the action that fills the region, recovers from the error or moves on)
-     children: the explaining text (the kind's text unless given)
-     strings: the kinds' words, for other languages: { offline: { title, text }, degraded: { … }, … } (merged over the defaults)
-     className: more classes on the region
-   Behavior:
-     The error tone is a live alert (role="alert"): a screen reader says it when it appears. Warning and success are a
-       status (role="status"), read when the reader is idle. The neutral tone is not announced.
-     Its words carry the meaning; the tone color on the icon is never the only sign (WCAG 1.4.1).
-   Notes:
-     Other props pass through to the <div>.
-     A kind sets defaults only: an explicit tone, icon, title or children wins.
-*/
-// the system states: their tone and icon, and their words (STRINGS, translatable through the strings prop)
-const KINDS = {
-  offline: {
-    tone: 'warning',
-    icon: 'wifi-off'
-  },
-  degraded: {
-    tone: 'warning',
-    icon: 'cloud-off'
-  },
-  'permission-denied': {
-    tone: 'neutral',
-    icon: 'lock'
-  },
-  'not-found': {
-    tone: 'neutral',
-    icon: 'doc-search'
-  },
-  maintenance: {
-    tone: 'neutral',
-    icon: 'settings-maintenance'
-  },
-  completion: {
-    tone: 'success',
-    icon: 'circle-check'
-  }
-};
-const STRINGS = {
-  offline: {
-    title: 'You’re offline',
-    text: 'Check your connection. This page updates when you’re back online.'
-  },
-  degraded: {
-    title: 'Some features aren’t working',
-    text: 'A service is slow or not responding, so what you see may be out of date.'
-  },
-  'permission-denied': {
-    title: 'You don’t have access',
-    text: 'Ask the owner to share it with you.'
-  },
-  'not-found': {
-    title: 'This page doesn’t exist',
-    text: 'It may have been moved or deleted. Check the address or go back.'
-  },
-  maintenance: {
-    title: 'Down for maintenance',
-    text: 'This service is being updated. Try again in a few minutes.'
-  },
-  completion: {
-    title: 'All done',
-    text: 'There’s nothing left to do here.'
-  }
-};
-const TONE_ICONS = {
-  error: 'warning',
-  warning: 'warning',
-  success: 'circle-check'
-};
-const ROLES = {
-  error: 'alert',
-  warning: 'status',
-  success: 'status'
-};
-function EmptyState({
-  size = 'inline',
-  tone,
-  kind,
-  icon,
+function Tooltip({
+  content,
+  placement = 'bottom',
   title,
   action,
-  strings,
+  rich = false,
+  disabled = false,
   className,
-  children,
-  ...rest
+  children
 }) {
-  (0, _devWarn.devWarn)('EmptyState', {
-    size,
-    tone
-  }, {
-    size: ['inline', 'page'],
-    tone: ['neutral', 'error', 'warning', 'success']
-  });
-  const preset = KINDS[kind];
-  const words = preset ? Object.assign({}, STRINGS[kind], strings && strings[kind]) : null;
-  const t = tone || (preset ? preset.tone : 'neutral');
-  const mark = icon !== undefined ? icon : preset ? preset.icon : TONE_ICONS[t];
-  const head = title !== undefined ? title : words ? words.title : null;
-  const text = children !== undefined && children !== null ? children : words ? words.text : null;
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-empty-state', 'plx-empty-state--' + size, t !== 'neutral' && 'plx-empty-state--' + t, className),
-    role: ROLES[t]
-  }, rest), mark ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-empty-state__icon",
-    "aria-hidden": "true"
-  }, typeof mark === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: mark
-  }) : mark) : null, head ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-empty-state__title"
-  }, head) : null, text ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-empty-state__text"
-  }, text) : null, action ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-empty-state__action"
-  }, action) : null);
-}
-  } },
-  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Pagination = Pagination;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pagination
-   Summary: Page buttons, an optional summary ("1–30 of 120") and an optional per-page choice.
-   Usage:
-     <Pagination page={2} pageCount={4} onPageChange={setPage}
-       total={120} perPage={30} perPageOptions={[30, 60, 120]} onPerPageChange={setPerPage} />
-   Props:
-     page: the current page, 1-based; default 1
-     pageCount: the number of pages; default 1
-     onPageChange(page): runs when another page is chosen
-     total: the number of items; with it the summary shows
-     perPage: the number of items per page
-     perPageOptions: the per-page choices; with onPerPageChange the per-page choice shows
-     onPerPageChange(n): runs when another per-page number is chosen
-     label: the accessible name of the navigation; default strings.label: "Pages"
-     className: more classes on the navigation
-     strings: the words it shows and announces, for other languages: { label: "Pages", range: "{first}–{last} of {total}",
-       previous: "Previous page", next: "Next page", page: "Page {n}", perPage: "Per page" }
-     ...rest: other attributes go on the navigation element
-   Behavior:
-     Shows the first and last page, the current page and its neighbors, with "…" between gaps.
-     Previous is disabled on the first page; Next on the last.
-     The current page carries aria-current="page".
-*/
-const STRINGS = {
-  label: 'Pages',
-  range: '{first}–{last} of {total}',
-  previous: 'Previous page',
-  next: 'Next page',
-  page: 'Page {n}',
-  perPage: 'Per page'
-};
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
-function pagesToShow(page, count) {
-  const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
-  const list = Array.from(set).sort((a, b) => a - b),
-    out = [];
-  list.forEach((p, i) => {
-    if (i && p - list[i - 1] > 1) out.push('gap-' + p);
-    out.push(p);
-  });
-  return out;
-}
-function Pagination({
-  page = 1,
-  pageCount = 1,
-  onPageChange,
-  total,
-  perPage,
-  perPageOptions,
-  onPerPageChange,
-  label,
-  strings,
-  className,
-  ...rest
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const go = p => {
-    if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
+  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  const wrap = _react.default.useRef(null);
+  const bubble = _react.default.useRef(null);
+  const press = _react.default.useRef(null); // the long-press timer
+  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
+  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
+  const isRich = !!(rich || title || action);
+  const toggle = !!action; // a toggletip: opened by a click on the trigger
+  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
+  const clear = () => {
+    clearTimeout(press.current);
+    clearTimeout(hide.current);
   };
-  const first = total ? (page - 1) * (perPage || 0) + 1 : null;
-  const last = total ? Math.min(total, page * (perPage || total)) : null;
-  return /*#__PURE__*/_react.default.createElement("nav", _extends({
-    className: (0, _cx.cx)('plx-pagination', className),
-    "aria-label": label || t.label
-  }, rest), total ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-pagination__info"
-  }, fill(t.range, {
-    first,
-    last,
-    total
-  })) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-pagination__pages"
-  }, /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-pagination__page plx-pagination__step",
-    "aria-label": t.previous,
-    disabled: page <= 1,
-    onClick: () => go(page - 1)
-  }, "\u2039"), pagesToShow(page, pageCount).map(p => typeof p === 'string' ? /*#__PURE__*/_react.default.createElement("span", {
-    key: p,
-    className: "plx-pagination__gap",
-    "aria-hidden": "true"
-  }, "\u2026") : /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    key: p,
-    className: "plx-pagination__page",
-    "aria-current": p === page ? 'page' : undefined,
-    "aria-label": fill(t.page, {
-      n: p
-    }),
-    onClick: () => go(p)
-  }, p)), /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-pagination__page plx-pagination__step",
-    "aria-label": t.next,
-    disabled: page >= pageCount,
-    onClick: () => go(page + 1)
-  }, "\u203A")), perPageOptions && onPerPageChange ? /*#__PURE__*/_react.default.createElement("label", {
-    className: "plx-pagination__per-page"
-  }, /*#__PURE__*/_react.default.createElement("span", null, t.perPage), /*#__PURE__*/_react.default.createElement("select", {
-    className: "plx-pagination__select",
-    value: perPage,
-    onChange: e => onPerPageChange(Number(e.target.value))
-  }, perPageOptions.map(n => /*#__PURE__*/_react.default.createElement("option", {
-    key: n,
-    value: n
-  }, n)))) : null);
-}
-  } },
-  "platform/components/Rating/Rating.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Rating = Rating;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../../utils/direction.js");
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Rating
-   Summary: 1 to max stars as a radio group, for rating an item.
-   Usage:
-     <Rating value={rating} onChange={setRating} />
-   Props:
-     value: the number of stars; 0 = none (default)
-     onChange(value): runs when the rating changes
-     max: the number of stars; default 5
-     label: the accessible name; default "Rating"
-     readOnly: shows the stars as a picture that cannot be changed; default false
-     className: more classes on the rating
-     ...rest: other attributes go on the rating element
-   Behavior:
-     Arrow keys move the rating; Space or Enter chooses a star.
-     Choosing the current value again clears it.
-     Read-only, it is announced as "Rating: 3 of 5".
-*/
-function Rating({
-  value = 0,
-  onChange,
-  max = 5,
-  label = 'Rating',
-  readOnly = false,
-  className,
-  ...rest
-}) {
-  const stars = Array.from({
-    length: max
-  }, (_, i) => i + 1);
-  const starRefs = _react.default.useRef({});
-  const focusNext = _react.default.useRef(0); // the star the keyboard chose: focus moves there once the value has changed
   _react.default.useEffect(() => {
-    const el = focusNext.current && starRefs.current[focusNext.current];
-    if (el) el.focus();
-    focusNext.current = 0;
-  }, [value]);
-  if (readOnly) {
-    return /*#__PURE__*/_react.default.createElement("span", _extends({
-      className: (0, _cx.cx)('plx-rating', 'plx-rating--read-only', className),
-      role: "img",
-      "aria-label": label + ': ' + value + ' of ' + max
-    }, rest), stars.map(n => /*#__PURE__*/_react.default.createElement("span", {
-      key: n,
-      className: (0, _cx.cx)('plx-rating__star', n <= value && 'plx-rating__star--on'),
-      "aria-hidden": "true"
-    }, "\u2605")));
-  }
-  const choose = n => onChange && onChange(n === value ? 0 : n);
-  // the arrow keys in reading order (Up is more, Down is less); focus follows the chosen star, as in a radio group (batch 213)
-  const onKey = (e, n) => {
-    const step = e.key === 'ArrowUp' ? 1 : e.key === 'ArrowDown' ? -1 : (0, _direction.arrowStep)(e, e.currentTarget, {
-      vertical: false
-    });
-    if (!step) return;
-    e.preventDefault();
-    const next = Math.min(max, Math.max(1, n + step));
-    focusNext.current = next;
-    if (onChange) onChange(next);
-  };
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-rating', className),
-    role: "radiogroup",
-    "aria-label": label
-  }, rest), stars.map(n => /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    key: n,
-    ref: el => {
-      starRefs.current[n] = el;
-    },
-    role: "radio",
-    "aria-checked": n === value,
-    "aria-label": n + (n === 1 ? ' star' : ' stars'),
-    tabIndex: (value ? n === value : n === 1) ? 0 : -1,
-    className: (0, _cx.cx)('plx-rating__star', n <= value && 'plx-rating__star--on'),
-    onClick: () => choose(n),
-    onKeyDown: e => onKey(e, n)
-  }, "\u2605")));
-}
-  } },
-  "platform/components/RowButton/RowButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RowButton = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RowButton
-   Summary: A whole row or tile that is one button, holding any layout (an avatar, two lines of text, a time).
-   Usage:
-     <RowButton selected onClick={open}>…</RowButton>
-   Props:
-     selected: marks the row whose details are shown (aria-current="true"); default false
-     current: an aria-current value instead, e.g. "date" for today in a calendar
-     pressed: makes it a toggle (aria-pressed)
-     expanded: a row that opens a panel below it (aria-expanded)
-     hover: false: no hover fill (for tiles that draw their own surface); default true
-     className: more classes on the button
-     style: lays out the content
-     children: the content, in any layout
-     ...rest: other attributes go on the button (onClick)
-   Behavior:
-     It is a native button with no look of its own beyond the states: a hover fill, a selected fill and the focus ring.
-     A pressed button shows the selected fill too.
-   Notes:
-     Use it when a Button's single centered label cannot hold the content: list rows that open a record, calendar day cells, compact project tiles.
-     Lay out the content with the style prop or children; the button is a block that fills its column and aligns to the start.
-*/
-const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(function RowButton({
-  selected = false,
-  current,
-  pressed,
-  expanded,
-  hover = true,
-  className,
-  children,
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: "button",
-    "aria-current": current || (selected ? 'true' : undefined),
-    "aria-pressed": pressed,
-    "aria-expanded": expanded
-  }, rest, {
-    className: (0, _cx.cx)('plx-row-button', hover && 'plx-row-button--hover', (selected || pressed) && 'is-selected', className)
-  }), children);
-});
-  } },
-  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SegmentedControl = SegmentedControl;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _direction = require("../../utils/direction.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SegmentedControl
-   Summary: One choice from a few short options, shown together (S | M | L; Light | Dark | System): a bordered group of
-     joined segments at the button height; the chosen one is tinted blue with blue text and icon (look A, owner, 2026-10-14).
-     It sets a value (a radio group).
-   Usage:
-     <SegmentedControl label="Theme" value={theme} onChange={setTheme}
-       options={[{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }, { value: 'system', label: 'System' }]} />
-   Props:
-     options: the choices, in order: [{ value, label, icon, ariaLabel }]
-     options[].icon: an icon name; optional
-     options[].ariaLabel: the accessible name of an icon-only option; default its value
-     value: the chosen value
-     onChange(value): runs when another option is chosen
-     label: the group's accessible name
-     size: "md" (default) | "sm"
-     className: more classes on the group
-     ...rest: other attributes go on the group element
-   Behavior:
-     Arrow keys move to the next or previous option and choose it, wrapping around; Home and End go to the first and last.
-     Only the chosen option is in the Tab order.
-   Notes:
-     To switch between panels of content, use Tabs (variant "segmented").
-*/
-function SegmentedControl({
-  options,
-  value,
-  onChange,
-  label,
-  size = 'md',
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('SegmentedControl', {
-    size
-  }, {
-    size: ['md', 'sm']
+    listen();
+    return clear;
+  }, []);
+  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
+  (0, _floating.useFloating)(wrap, bubble, {
+    open: open && !disabled && _floating.FLOATING_ANCHOR,
+    placement: side,
+    offset: 'sm',
+    flip: isRich,
+    shift: isRich
   });
-  const refs = _react.default.useRef([]);
-  const index = Math.max(0, options.findIndex(o => o.value === value));
-  const move = (e, i) => {
-    let n = null;
-    const step = (0, _direction.arrowStep)(e, e.currentTarget); // in reading order: right to left reverses Left and Right (batch 213)
-    if (step > 0) n = (i + 1) % options.length;
-    if (step < 0) n = (i - 1 + options.length) % options.length;
-    if (e.key === 'Home') n = 0;
-    if (e.key === 'End') n = options.length - 1;
-    if (n === null) return;
-    e.preventDefault();
-    onChange(options[n].value);
-    if (refs.current[n]) refs.current[n].focus();
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const esc = e => {
+      if (e.key !== 'Escape') return;
+      const inside = wrap.current && wrap.current.contains(document.activeElement);
+      setOpen(false);
+      // a toggletip gives focus back to its trigger when Escape closes it from inside
+      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
+    };
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('keydown', esc);
+    if (toggle) document.addEventListener('mousedown', outside);
+    return () => {
+      document.removeEventListener('keydown', esc);
+      document.removeEventListener('mousedown', outside);
+    };
+  }, [open, toggle]);
+  const child = _react.default.Children.only(children);
+  const described = {
+    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
   };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "radiogroup",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)
-  }, rest), options.map((o, i) => /*#__PURE__*/_react.default.createElement("button", {
-    key: o.value,
-    ref: el => {
-      refs.current[i] = el;
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
+    'aria-expanded': open,
+    'aria-controls': open ? id + 'b' : undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  }) : described);
+  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className)
+  }, trigger);
+  const onPointerDown = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clear();
+    pressed.current = false;
+    press.current = setTimeout(() => {
+      pressed.current = true;
+      setOpen(true);
+    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
+  };
+  const onPointerEnd = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clearTimeout(press.current);
+    if (pressed.current) hide.current = setTimeout(() => {
+      setOpen(false);
+      pressed.current = false;
+    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
+  };
+  const onEnter = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    clearTimeout(hide.current);
+    setOpen(true);
+  };
+  const onLeave = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
+    if (isRich) {
+      clearTimeout(hide.current);
+      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
+    } else setOpen(false);
+  };
+  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-tooltip', className),
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
+    onPointerDown: onPointerDown,
+    onPointerUp: onPointerEnd,
+    onPointerCancel: onPointerEnd,
+    onContextMenu: e => {
+      if (pressed.current) e.preventDefault();
     },
-    type: "button",
-    role: "radio",
-    "aria-checked": o.value === value,
-    tabIndex: i === index ? 0 : -1,
-    "aria-label": o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined,
-    className: (0, _cx.cx)('plx-segmented__item', o.value === value && 'is-selected'),
-    onClick: () => onChange(o.value),
-    onKeyDown: e => move(e, i)
-  }, o.icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: o.icon
-  }) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
+    onClickCapture: e => {
+      if (pressed.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        pressed.current = false;
+      }
+    },
+    onFocus: () => {
+      if (!toggle && lastInput !== 'touch') setOpen(true);
+    },
+    onBlur: e => {
+      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
+    }
+  }, trigger, isRich ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    id: id + 'b',
+    className: bubbleCls
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    role: "tooltip",
+    id: id,
+    className: "plx-tooltip__content"
+  }, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__title"
+  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__body"
+  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__action"
+  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    id: id,
+    className: bubbleCls
+  }, content));
 }
   } },
   "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -9453,1357 +5010,236 @@ function Field({
   }, info) : null));
 }
   } },
-  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Checkbox = void 0;
-exports.ChoiceList = ChoiceList;
-exports.Radio = void 0;
-exports.RadioGroup = RadioGroup;
-exports.Switch = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
-   Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
+exports.gridPx = exports.GRID_TOKEN = void 0;
+exports.gridStep = gridStep;
+exports.onGrid = onGrid;
+exports.snapToGrid = snapToGrid;
+/* Plenix · grid (platform/utils/grid.js)
+   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
+     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
+     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
+     instead: snapSize and stepSize in utils/sizeSteps.js.
    Usage:
-     <Checkbox checked={on} onChange={(e) => …} label="Include subfolders" description="…" indeterminate={some} />
-     <RadioGroup label="Format" value={fmt} onChange={(value) => …}
-       options={[{ value: 'png', label: 'PNG', description: '…' }, { value: 'jpg', label: 'JPG' }]} layout="row" />
-     <ChoiceList legend="Plan" value={plan} onChange={(value) => …} options={[{ value: 'team', label: 'Team', description: '…' }]} />
-     <Switch checked={on} onChange={(e) => …} label="Notifications" />
+     import { snapToGrid, gridPx } from '../../utils/grid.js';
+     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
+     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
    Props:
-     Checkbox.label: the text beside the box
-     Checkbox.description: a second line under the label
-     Checkbox.indeterminate: shows the mixed state (default false)
-     Checkbox.className: more classes on the row
-     Checkbox.checked: whether the box is checked (passed to the <input>)
-     Checkbox.onChange(event): runs when the box changes (passed to the <input>)
-     Radio.label: the text beside the circle; without it there is no visible text
-     Radio.description: a second line under the label
-     Radio.className: more classes on the row
-     RadioGroup.label: the legend of the group
-     RadioGroup.name: the radio name (default a generated one)
-     RadioGroup.value: the selected option value
-     RadioGroup.onChange(value): runs with the chosen option value
-     RadioGroup.options: the choices: [{ value, label, description, disabled }]
-     RadioGroup.layout: "column" (default) | "row"
-     RadioGroup.className: more classes on the <fieldset>
-     ChoiceList.legend: the legend of the list
-     ChoiceList.name: the radio name (default a generated one)
-     ChoiceList.value: the selected option value
-     ChoiceList.onChange(value): runs with the chosen option value
-     ChoiceList.options: the choices, shown as cards with descriptions: [{ value, label, description, hidden }]
-     ChoiceList.className: more classes on the <fieldset>
-     Switch.label: the text beside the switch
-     Switch.labelHidden: true hides the label and uses it as the accessible name (default false)
-     Switch.className: more classes on the row
-     Switch.checked: whether the switch is on (passed to the <input>)
-     Switch.onChange(event): runs when the switch changes (passed to the <input>)
+     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
+     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
+     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
+     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
    Behavior:
-     The whole row (control and label) is the target, at least the inline-action height.
-     A Checkbox without label or description (a row's selection box) still has a 24px target (44px with touch): it extends
-       invisibly past the 16px box (Platforms Standard 3.1).
-     Switch is a checkbox with role="switch".
-     The selected ChoiceList card shows the selected state.
+     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
+     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
    Notes:
-     The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
-     Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
-     RadioGroup and ChoiceList pass other props to the <fieldset>.
+     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
+     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
+     length is neither a token nor passed through this helper (or the size steps).
 */
-const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
-  label,
-  description,
-  indeterminate = false,
-  className,
-  ...rest
-}, ref) {
-  const inner = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => inner.current);
-  _react.default.useEffect(() => {
-    if (inner.current) inner.current.indeterminate = indeterminate;
-  }, [indeterminate]);
-  return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className)
-  }, /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: inner,
-    type: "checkbox",
-    className: "plx-check__input"
-  }, rest)), label || description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__label"
-  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__description"
-  }, description) : null) : null);
-});
-const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Radio({
-  label,
-  description,
-  className,
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className)
-  }, /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
-    type: "radio",
-    className: "plx-check__input"
-  }, rest)), label ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__label"
-  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__description"
-  }, description) : null) : null);
-});
-function RadioGroup({
-  label,
-  name,
-  value,
-  onChange,
-  options,
-  layout = 'column',
-  className,
-  ...rest
-}) {
-  const auto = 'plx-r' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
-    className: (0, _cx.cx)('plx-radio-group', 'plx-radio-group--' + layout, className)
-  }, rest), label ? /*#__PURE__*/_react.default.createElement("legend", {
-    className: "plx-radio-group__legend"
-  }, label) : null, options.map(o => /*#__PURE__*/_react.default.createElement(Radio, {
-    key: o.value,
-    name: name || auto,
-    value: o.value,
-    label: o.label,
-    description: o.description,
-    checked: o.value === value,
-    onChange: () => onChange(o.value),
-    disabled: o.disabled
-  })));
+
+const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
+
+// the base spacing token in pixels where el is (a rem token follows the root font size)
+function gridStep(el) {
+  if (typeof document === 'undefined') return 4;
+  const at = el || document.documentElement,
+    win = at.ownerDocument.defaultView;
+  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
+  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
+  return px > 0 ? px : 4;
 }
-function ChoiceList({
-  legend,
-  name,
-  value,
-  onChange,
-  options,
-  className,
-  ...rest
-}) {
-  const auto = 'plx-c' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
-    className: (0, _cx.cx)('plx-choice-list', className)
-  }, rest), legend ? /*#__PURE__*/_react.default.createElement("legend", {
-    className: "plx-choice-list__legend"
-  }, legend) : null, options.map(o => /*#__PURE__*/_react.default.createElement("label", {
-    key: o.value,
-    className: (0, _cx.cx)('plx-choice', o.value === value && 'is-selected'),
-    hidden: o.hidden || undefined
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    type: "radio",
-    className: "plx-choice__input",
-    name: name || auto,
-    value: o.value,
-    checked: o.value === value,
-    onChange: () => onChange(o.value)
-  }), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-choice__text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-choice__label"
-  }, o.label), o.description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-choice__description"
-  }, o.description) : null))));
+function snapToGrid(px, opts) {
+  const o = opts || {},
+    step = gridStep(o.el),
+    n = Number(px) || 0;
+  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
+  const q = n / step;
+  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
 }
-const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function Switch({
-  label,
-  labelHidden = false,
-  className,
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-switch', className)
-  }, /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
-    type: "checkbox",
-    role: "switch",
-    className: "plx-switch__input",
-    "aria-label": labelHidden ? label : undefined
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-switch__track",
-    "aria-hidden": "true"
-  }), label && !labelHidden ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-switch__label"
-  }, label) : null);
-});
+const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
+exports.gridPx = gridPx;
+function onGrid(px, el) {
+  const step = gridStep(el),
+    q = Math.abs(Number(px) || 0) / step;
+  return Math.abs(q - Math.round(q)) * step <= 0.5;
+}
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Combobox = void 0;
+exports.Textarea = exports.Select = exports.Input = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
-var _Tag = require("../Tag/Tag.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _announce = require("../../utils/announce.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
-   Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
-   Usage:
-     <Combobox label="Owner" options={[{ value: 'mc', label: 'Maya Chen' }]} value={owner} onChange={(value) => …} />
-     <Combobox multiple creatable options={tags} values={chosen} onChange={(values) => …} onCreate={(text) => …} />
-     <Combobox label="Owner" loadOptions={(text) => api.people(text)} value={owner} onChange={…} />   // async select
-     <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
-     <Combobox marks="radio" options={…} value={…} onChange={…} />                                     // radio select
-   Props:
-     size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
-     options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
-     value: the chosen value, for a single choice
-     values: the chosen values, with multiple
-     onChange(value): runs with the chosen value; with multiple it runs with the new array of values
-     multiple: allows several values; chosen values show as tags before the field (default false)
-     creatable: offers "Create “text”" when nothing matches exactly (default false)
-     onCreate(text): runs with the typed text when "Create" is chosen
-     placeholder: the hint in the empty field
-     label: the accessible name when there is no Field
-     invalid: shows the invalid state
-     disabled: the field cannot be used
-     emptyText: the text when nothing matches (default "No matches")
-     loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
-       the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
-     loadDelay: the pause after typing before loadOptions runs, in milliseconds (default 300; 0 when the field is empty)
-     minChars: the characters needed before loadOptions runs (default 0: it also loads when the list opens)
-     loading: shows the loading row whatever loadOptions does (for options the caller loads itself) (default false)
-     marks: a mark before each option: "checkbox" (several, with multiple) | "radio" (one choice) | none (default)
-     strings: the words it shows and announces, for other languages: { loading: "Loading…", error: "The options could not
-       be loaded", results: (n) => n + " options" } (results is announced after each load)
-     id: the id of the input (a Field sets it)
-     className: more classes on the combobox
-     ref: forwarded to the <input>
-   Behavior:
-     The list opens on focus and on typing, and closes on a click outside.
-     ↓ / ↑ move, Enter chooses, Escape closes.
-     Backspace in an empty multiple field removes the last value.
-     A single choice closes the list; with multiple, choosing toggles the value and the list stays open.
-     A tag's remove button removes its value.
-     With loadOptions, each pause in typing loads once; an answer that arrives after a newer request is dropped. The list
-       is busy (aria-busy) while it loads, the number of options is announced politely, a failed load says so in the list.
-     Options loaded earlier keep naming the chosen values when a later load no longer has them.
-     Marks are the Checkbox and Radio controls drawn inside the option: not focusable and hidden from assistive
-       technology (the option's own aria-selected says it is chosen).
-   Notes:
-     The list is a menu surface: border only, no shadow (D9).
-     Other props pass through to the <input>.
-*/
-const STRINGS = {
-  loading: 'Loading…',
-  error: 'The options could not be loaded',
-  results: n => n + (n === 1 ? ' option' : ' options')
-};
-const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(function Combobox({
-  options = [],
-  value,
-  values,
-  onChange,
-  multiple = false,
-  creatable = false,
-  onCreate,
-  placeholder,
-  label,
-  invalid,
-  disabled,
-  emptyText = 'No matches',
-  loadOptions,
-  loadDelay = 300,
-  minChars = 0,
-  loading = false,
-  marks,
-  strings,
-  className,
-  id,
-  size,
-  ...rest
-}, ref) {
-  const t = Object.assign({}, STRINGS, strings);
-  const auto = 'plx-cb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const listId = auto + '-list';
-  const [open, setOpen] = _react.default.useState(false);
-  const [text, setText] = _react.default.useState('');
-  const [active, setActive] = _react.default.useState(0);
-  const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => input.current);
-  // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
-  const [loaded, setLoaded] = _react.default.useState([]);
-  const [busy, setBusy] = _react.default.useState(false);
-  const [failed, setFailed] = _react.default.useState(false);
-  const loader = _react.default.useRef(loadOptions),
-    request = _react.default.useRef(0),
-    seen = _react.default.useRef(new Map());
-  loader.current = loadOptions;
-  const async = !!loadOptions;
-  _react.default.useEffect(() => {
-    if (!async || !open) return undefined;
-    const query = text.trim();
-    if (query.length < minChars) {
-      request.current++;
-      setLoaded([]);
-      setBusy(false);
-      setFailed(false);
-      return undefined;
-    }
-    const n = ++request.current;
-    setBusy(true);
-    setFailed(false);
-    const timer = setTimeout(() => {
-      Promise.resolve().then(() => loader.current(query)).then(list => {
-        if (n !== request.current) return;
-        const got = Array.isArray(list) ? list : [];
-        got.forEach(o => seen.current.set(o.value, o));
-        setLoaded(got);
-        setBusy(false);
-        (0, _announce.announce)(t.results(got.length));
-      }, () => {
-        if (n !== request.current) return;
-        setLoaded([]);
-        setBusy(false);
-        setFailed(true);
-      });
-    }, query ? loadDelay : 0);
-    return () => clearTimeout(timer);
-  }, [async, open, text, minChars, loadDelay]);
-  const isLoading = !!loading || async && busy;
-  const optionOf = v => options.find(x => x.value === v) || (async ? loaded.find(x => x.value === v) || seen.current.get(v) : undefined);
-  const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
-  const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
-  const q = text.trim().toLowerCase();
-  const matching = isLoading || failed ? [] : async ? loaded : options.filter(o => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
-  // grouped options stay together under their group's heading (groups in the order they first appear)
-  const groupOrder = [];
-  matching.forEach(o => {
-    if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group);
-  });
-  const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter(o => o.group === g)), []);
-  const canCreate = creatable && q && !isLoading && !(async ? loaded : options).some(o => String(o.label).toLowerCase() === q);
-  const items = filtered.map(o => ({
-    kind: 'option',
-    o
-  })).concat(canCreate ? [{
-    kind: 'create'
-  }] : []);
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const off = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', off);
-    return () => document.removeEventListener('mousedown', off);
-  }, [open]);
-  _react.default.useEffect(() => {
-    setActive(0);
-  }, [q, open]);
-  const choose = item => {
-    if (!item) return;
-    if (item.kind === 'create') {
-      if (onCreate) onCreate(text.trim());
-      setText('');
-      return;
-    }
-    const v = item.o.value;
-    if (multiple) {
-      onChange(chosen.indexOf(v) >= 0 ? chosen.filter(x => x !== v) : chosen.concat([v]));
-      setText('');
-    } else {
-      onChange(v);
-      setText('');
-      setOpen(false);
-    }
-  };
-  const onKey = e => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (!open) setOpen(true);else setActive(a => Math.min(items.length - 1, a + 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setActive(a => Math.max(0, a - 1));
-    } else if (e.key === 'Enter') {
-      if (open && items[active]) {
-        e.preventDefault();
-        choose(items[active]);
-      }
-    } else if (e.key === 'Escape') {
-      if (open) {
-        e.preventDefault();
-        setOpen(false);
-      }
-    } else if (e.key === 'Backspace' && multiple && !text && chosen.length) {
-      onChange(chosen.slice(0, -1));
-    }
-  };
-  const optId = i => auto + '-o' + i;
-  return /*#__PURE__*/_react.default.createElement("div", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-combobox__field plx-input",
-    "aria-invalid": invalid || undefined,
-    onClick: () => {
-      if (!disabled && input.current) input.current.focus();
-    }
-  }, multiple ? chosen.map(v => {
-    const o = optionOf(v);
-    const t = o ? o.label : v;
-    return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
-      key: v,
-      onRemove: () => onChange(chosen.filter(x => x !== v)),
-      removeLabel: 'Remove ' + t
-    }, t);
-  }) : null, /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: input,
-    id: id,
-    size: size === 'sm' || size === 'md' ? undefined : size,
-    className: "plx-combobox__input",
-    role: "combobox",
-    "aria-expanded": open,
-    "aria-controls": listId,
-    "aria-autocomplete": "list",
-    "aria-activedescendant": open && items[active] ? optId(active) : undefined,
-    "aria-label": label,
-    disabled: disabled,
-    autoComplete: "off",
-    value: open || multiple ? text : current ? current.label : '',
-    placeholder: multiple && chosen.length ? '' : current && !open ? current.label : placeholder,
-    onChange: e => {
-      setText(e.target.value);
-      setOpen(true);
-    },
-    onFocus: () => setOpen(true),
-    onKeyDown: onKey
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-combobox__chevron",
-    "aria-hidden": "true"
-  })), open ? /*#__PURE__*/_react.default.createElement("ul", {
-    className: "plx-combobox__list",
-    id: listId,
-    role: "listbox",
-    "aria-multiselectable": multiple || undefined,
-    "aria-busy": isLoading || undefined
-  }, items.length ? items.map((it, i) => it.kind === 'create' ? /*#__PURE__*/_react.default.createElement("li", {
-    key: "create",
-    id: optId(i),
-    role: "option",
-    "aria-selected": false,
-    className: (0, _cx.cx)('plx-combobox__option', 'plx-combobox__create', i === active && 'is-active'),
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => choose(it),
-    onMouseEnter: () => setActive(i)
-  }, "Create \u201C", text.trim(), "\u201D") : [it.o.group && (i === 0 || !items[i - 1].o || items[i - 1].o.group !== it.o.group) ? /*#__PURE__*/_react.default.createElement("li", {
-    key: 'g-' + it.o.group,
-    className: "plx-combobox__group",
-    role: "presentation"
-  }, it.o.group) : null, /*#__PURE__*/_react.default.createElement("li", {
-    key: it.o.value,
-    id: optId(i),
-    role: "option",
-    "aria-selected": chosen.indexOf(it.o.value) >= 0,
-    className: (0, _cx.cx)('plx-combobox__option', i === active && 'is-active', chosen.indexOf(it.o.value) >= 0 && 'is-selected'),
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => choose(it),
-    onMouseEnter: () => setActive(i)
-  }, marks ? /*#__PURE__*/_react.default.createElement("input", {
-    type: marks === 'radio' ? 'radio' : 'checkbox',
-    className: "plx-check__input plx-combobox__mark",
-    tabIndex: -1,
-    "aria-hidden": "true",
-    checked: chosen.indexOf(it.o.value) >= 0,
-    readOnly: true
-  }) : null, marks ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-combobox__option-label"
-  }, it.o.label) : it.o.label)]) : isLoading ? /*#__PURE__*/_react.default.createElement("li", {
-    className: "plx-combobox__loading",
-    role: "presentation"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: t.loading
-  }), /*#__PURE__*/_react.default.createElement("span", {
-    "aria-hidden": "true"
-  }, t.loading)) : failed ? /*#__PURE__*/_react.default.createElement("li", {
-    className: "plx-combobox__empty plx-combobox__error",
-    role: "presentation"
-  }, t.error) : /*#__PURE__*/_react.default.createElement("li", {
-    className: "plx-combobox__empty",
-    role: "presentation"
-  }, emptyText)) : null);
-});
-  } },
-  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SearchField = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-var _Button = require("../Button/Button.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-var _Kbd = require("../Kbd/Kbd.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _Tooltip = require("../Tooltip/Tooltip.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchField
-   Summary: A search input with a search icon, an optional clear button and an optional shortcut hint; optionally a list
-     under it of suggestions while people type, and of their recent searches while it is empty.
-   Usage:
-     <SearchField value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery('')} shortcut="Ctrl K" />
-     const history = useSearchHistory('assets');
-     <SearchField value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')}
-       suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
-       onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
-   Props:
-     size: "sm" explicitly selects the existing toolbar control height; omitted or "md" preserves today’s search height.
-     value: the search text
-     onChange(event): runs when the text changes
-     onClear(): runs from the clear button; without it there is no clear button
-     placeholder: the placeholder text; default "Search"
-     label: the accessible name; default "Search"
-     shortcut: a keyboard shortcut hint ("Ctrl K")
-     loading: shows a spinner in place of the search icon; default false
-     onAccent: the look for the blue header; default false
-     suggestions: what to offer while there is text, already matched to it by the caller: strings, or
-       [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
-     recent: the person's recent searches (strings, newest first: useSearchHistory), offered while the field is empty
-     onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
-       'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
-     onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
-     onRemoveRecent(text): removes one recent search: its row's remove button (an "×" named "Remove <term>"), or Delete
-       on it; onClearRecent(): removes them all (the Clear button in the list's heading); without them the recent
-       searches cannot be removed here
-     strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
-       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
-     width: "auto" (default: as wide as its container gives it) | "bar" (the command bar's search: one fixed width, 240px,
-       never squeezed; owner, 2026-10-14) | "fill" (the whole width: the find field inside a panel, a dialog or a menu)
-     collapsed: the narrow bar's search (owner, 2026-10-14): an icon-only search button in the field's place (tinted while
-       there is text) that opens the field across the bar, over its other controls; default false
-     open, onOpenChange(open): (collapsed) whether the field is open across the bar, kept by the caller (CommandBar keeps
-       it, so the bar holds its width step while the field is open)
-     className: more classes on the field
-     ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
-   Behavior:
-     The clear button shows only while there is text.
-     The shortcut hint shows only while the field is empty.
-     It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
-     With suggestions or recent searches it is a combobox (the ARIA pattern): the list opens on focus and on typing, under
-       the field; Arrow Down and Up move through it (the text stays the person's own), Enter chooses, Escape closes the
-       list (a second Escape clears the text, as in the browser); a click chooses; a click outside closes it. The number
-       of suggestions is announced politely after typing pauses. Delete on a recent search removes it (onRemoveRecent).
-     Recent searches with onRemoveRecent (owner, 2026-10-14): the WAI-ARIA "combobox with grid popup" pattern. The field
-       has aria-haspopup="grid"; the list is a grid named by its heading, one row per search with two cells: the term and
-       its remove button (an icon-only ghost button, "Remove <term>"). The focus stays in the field (aria-activedescendant
-       names the active cell): Arrow Down and Up move between rows (in the same cell), Arrow Right moves into the remove
-       cell and Arrow Left back to the term (mirrored right to left); Enter on the term searches it, Enter on the remove
-       cell removes it, and Delete removes the active row from either cell. The removal is announced politely. A click on
-       the term searches, a click on the button removes. Without onRemoveRecent, and for suggestions, the list stays a
-       listbox.
-     Collapsed: the button opens the field across the nearest positioned box (the command bar's row), focused, with × to
-       clear once there is text; Escape closes it and the focus returns to the button; leaving it empty closes it too.
-   Notes:
-     It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
-     ranks and limits the suggestions (about eight) and the recent searches (about five).
-*/
-const STRINGS = {
-  suggestions: 'Suggestions',
-  recent: 'Recent searches',
-  clearRecent: 'Clear recent searches',
-  clear: 'Clear search',
-  results: '{n} suggestions',
-  removed: '{query} removed from recent searches',
-  remove: 'Remove {query}'
-};
-const asItem = kind => x => typeof x === 'string' ? {
-  value: x,
-  label: x,
-  kind
-} : Object.assign({
-  label: x.value
-}, x, {
-  kind
-});
-
-// the label with the part that matches the text in bold (the first match, ignoring case)
-function marked(label, text) {
-  const s = String(label),
-    q = String(text || '').trim();
-  const at = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1;
-  if (at < 0) return s;
-  return [s.slice(0, at), /*#__PURE__*/_react.default.createElement("strong", {
-    key: "m",
-    className: "plx-search__match"
-  }, s.slice(at, at + q.length)), s.slice(at + q.length)];
-}
-
-// the field itself (width "auto", "bar" or "fill")
-const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput({
-  value,
-  onChange,
-  onClear,
-  placeholder = 'Search',
-  label = 'Search',
-  shortcut,
-  loading = false,
-  onAccent = false,
-  suggestions,
-  recent,
-  onSelect,
-  onSubmitSearch,
-  onRemoveRecent,
-  onClearRecent,
-  strings,
-  className,
-  onKeyDown,
-  onFocus,
-  width = 'auto',
-  size,
-  ...rest
-}, ref) {
-  const t = Object.assign({}, STRINGS, strings);
-  const auto = 'plx-sf' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const listId = auto + '-list';
-  const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null),
-    list = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => input.current);
-  const hasList = !!(suggestions || recent);
-  const text = value == null ? '' : String(value);
-  const showRecent = !text;
-  const items = showRecent ? (recent || []).map(asItem('recent')) : (suggestions || []).map(asItem('suggestion'));
-  const [open, setOpen] = _react.default.useState(false);
-  const [active, setActive] = _react.default.useState(-1);
-  const [cell, setCell] = _react.default.useState(0); // the grid's active cell in its row: 0 the term, 1 the remove button
-  const shown = hasList && open && items.length > 0;
-  // recent searches that can be removed one by one: the combobox with grid popup (WAI-ARIA APG)
-  const grid = showRecent && !!onRemoveRecent;
-  _react.default.useEffect(() => {
-    setActive(-1);
-    setCell(0);
-  }, [text, showRecent]);
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const off = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', off);
-    return () => document.removeEventListener('mousedown', off);
-  }, [open]);
-  // the number of suggestions, once typing pauses (announce waits for the pause)
-  _react.default.useEffect(() => {
-    if (shown && !showRecent) (0, _announce.announce)(t.results.replace('{n}', (0, _format.formatNumber)(items.length)));
-  }, [shown, showRecent, items.length, t.results]);
-  // the active option stays in view in a long list
-  _react.default.useEffect(() => {
-    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-r' + active + ', #' + auto + '-o' + active) : null;
-    if (el && el.scrollIntoView) el.scrollIntoView({
-      block: 'nearest'
-    });
-  }, [active, auto]);
-  const setText = v => {
-    if (onChange && input.current) onChange({
-      target: Object.assign(input.current, {
-        value: v
-      }),
-      currentTarget: input.current
-    });
-  };
-  const choose = item => {
-    setOpen(false);
-    if (onSelect) onSelect(item);else {
-      setText(item.value);
-      if (onSubmitSearch) onSubmitSearch(item.value);
-    }
-  };
-  // one recent search removed (its button, Delete, or Enter on its remove cell): the active row stays in place
-  const removeRecent = i => {
-    const it = items[i];
-    if (!it || !onRemoveRecent) return;
-    onRemoveRecent(it.value);
-    if (active >= 0) setActive(a => Math.min(a, items.length - 2));
-    if (items.length <= 1) setCell(0);
-    (0, _announce.announce)(t.removed.replace('{query}', it.value));
-  };
-  const keys = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || !hasList) {
-      if (e.key === 'Enter' && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text);
-      return;
-    }
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (!open) setOpen(true);else if (items.length) setActive(a => (a + 1) % items.length);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (!open) setOpen(true);else if (items.length) setActive(a => a <= 0 ? items.length - 1 : a - 1);
-    } else if (grid && shown && active >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
-      // the grid's cells in reading order: toward the end is the remove cell (Arrow Left in a right-to-left page)
-      const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === 'rtl';
-      e.preventDefault();
-      setCell(e.key === 'ArrowRight' !== rtl ? 1 : 0);
-    } else if (e.key === 'Enter') {
-      if (shown && items[active] && grid && cell === 1) {
-        e.preventDefault();
-        removeRecent(active);
-      } else if (shown && items[active]) {
-        e.preventDefault();
-        choose(items[active]);
-      } else {
-        setOpen(false);
-        if (onSubmitSearch) onSubmitSearch(text);
-      }
-    } else if (e.key === 'Escape') {
-      if (shown) {
-        e.preventDefault();
-        setOpen(false);
-      }
-    } else if (e.key === 'Delete' && shown && showRecent && items[active] && onRemoveRecent) {
-      e.preventDefault();
-      removeRecent(active);
-    } else if (!open && e.key.length === 1) setOpen(true);
-  };
-  const optId = i => auto + '-o' + i;
-  const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
-  const comboProps = hasList ? {
-    role: 'combobox',
-    'aria-expanded': shown,
-    'aria-controls': listId,
-    'aria-autocomplete': 'list',
-    'aria-haspopup': grid ? 'grid' : undefined,
-    'aria-activedescendant': shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : undefined
-  } : {};
-  return /*#__PURE__*/_react.default.createElement("div", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', onAccent && 'plx-search--on-accent', shown && 'is-open', className),
-    role: "search"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__icon",
-    "aria-hidden": "true"
-  }, loading ? /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: "Searching"
-  }) : /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "search"
-  })), /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: input,
-    size: size === 'sm' || size === 'md' ? undefined : size,
-    type: "search",
-    inputMode: "search",
-    enterKeyHint: "search",
-    autoComplete: "off",
-    className: "plx-search__input",
-    "aria-label": label,
-    placeholder: placeholder,
-    value: value,
-    onChange: e => {
-      if (hasList) setOpen(true);
-      if (onChange) onChange(e);
-    },
-    onKeyDown: keys,
-    onFocus: e => {
-      if (hasList) setOpen(true);
-      if (onFocus) onFocus(e);
-    }
-  }, comboProps, rest)), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-search__clear",
-    "aria-label": t.clear,
-    onClick: onClear
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "close"
-  })) : null, shortcut && !value ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__kbd"
-  }, /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, {
-    onAccent: onAccent
-  }, shortcut)) : null, hasList ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search__popup",
-    hidden: !shown
-  }, showRecent ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search__popup-head"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__popup-title",
-    id: listId + '-t'
-  }, t.recent), onClearRecent ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    size: "2xs",
-    className: "plx-search__popup-action",
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => {
-      onClearRecent();
-      setOpen(false);
-      if (input.current) input.current.focus();
-    }
-  }, t.clearRecent) : null) : null, grid ? /*#__PURE__*/_react.default.createElement("div", {
-    ref: list,
-    id: listId,
-    role: "grid",
-    className: "plx-search__list plx-search__grid",
-    "aria-labelledby": listId + '-t'
-  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("div", {
-    key: it.kind + ':' + it.value,
-    id: auto + '-r' + i,
-    role: "row",
-    className: (0, _cx.cx)('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active'),
-    onMouseDown: e => e.preventDefault(),
-    onMouseEnter: () => setActive(i)
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    id: cellId(i, 0),
-    role: "gridcell",
-    "aria-selected": i === active && cell === 0,
-    className: "plx-search__cell",
-    onClick: () => choose(it)
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-icon",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "clock"
-  })), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-label"
-  }, it.label))), /*#__PURE__*/_react.default.createElement("span", {
-    id: cellId(i, 1),
-    role: "gridcell",
-    "aria-selected": i === active && cell === 1,
-    className: "plx-search__remove-cell"
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    size: "xs",
-    iconOnly: true,
-    icon: "close",
-    tabIndex: -1,
-    label: t.remove.replace('{query}', it.value),
-    className: (0, _cx.cx)('plx-search__remove', i === active && cell === 1 && 'is-focus-visible'),
-    onMouseDown: e => e.preventDefault(),
-    onClick: e => {
-      e.stopPropagation();
-      removeRecent(i);
-      if (input.current) input.current.focus();
-    }
-  }))))) : /*#__PURE__*/_react.default.createElement("ul", {
-    ref: list,
-    id: listId,
-    role: "listbox",
-    className: "plx-search__list",
-    "aria-label": showRecent ? undefined : t.suggestions,
-    "aria-labelledby": showRecent ? listId + '-t' : undefined
-  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
-    key: it.kind + ':' + it.value,
-    id: optId(i),
-    role: "option",
-    "aria-selected": i === active,
-    className: (0, _cx.cx)('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active'),
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => choose(it),
-    onMouseEnter: () => setActive(i)
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-icon",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: it.kind === 'recent' ? 'clock' : 'search'
-  })), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-label"
-  }, it.kind === 'recent' ? it.label : marked(it.label, text)), it.description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-description"
-  }, it.description) : null))))) : null);
-});
-
-// the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
-function CollapsedSearch({
-  value,
-  label = 'Search',
-  onKeyDown,
-  onBlur,
-  className,
-  open: openProp,
-  onOpenChange,
-  ...rest
-}, ref) {
-  const [own, setOwn] = _react.default.useState(false);
-  const open = openProp === undefined ? own : openProp;
-  const setOpen = v => {
-    setOwn(v);
-    if (onOpenChange) onOpenChange(v);
-  };
-  const field = _react.default.useRef(null),
-    button = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => open ? field.current : button.current);
-  _react.default.useEffect(() => {
-    if (open && field.current) field.current.focus();
-  }, [open]);
-  const close = refocus => {
-    setOpen(false);
-    if (refocus) setTimeout(() => {
-      if (button.current) button.current.focus();
-    }, 0);
-  };
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: label
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    ref: button,
-    size: "sm",
-    variant: "ghost",
-    icon: "search",
-    iconOnly: true,
-    label: label,
-    selected: !!value,
-    "aria-expanded": open,
-    className: (0, _cx.cx)('plx-search__toggle', className),
-    onClick: () => setOpen(true)
-  })), open ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search__over"
-  }, /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
-    ref: field,
-    value: value,
-    label: label,
-    width: "fill"
-  }, rest, {
-    onKeyDown: e => {
-      if (onKeyDown) onKeyDown(e);
-      if (e.key === 'Escape' && !e.defaultPrevented && e.currentTarget.getAttribute('aria-expanded') !== 'true') {
-        e.preventDefault();
-        close(true);
-      }
-    },
-    onBlur: e => {
-      if (onBlur) onBlur(e);
-      if (!e.currentTarget.value) close(false);
-    }
-  }))) : null);
-}
-const Collapsed = /*#__PURE__*/_react.default.forwardRef(CollapsedSearch);
-const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef(function SearchField({
-  collapsed = false,
-  ...props
-}, ref) {
-  return collapsed ? /*#__PURE__*/_react.default.createElement(Collapsed, _extends({
-    ref: ref
-  }, props)) : /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
-    ref: ref
-  }, props));
-});
-  } },
-  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Slider = Slider;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
 var _grid = require("../../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Slider
-   Summary: A value picked from a range by dragging; with range, two thumbs pick a minimum and a maximum (range slider);
-     with marks, labeled values sit under the track.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
+   Summary: The text field family, at the standard control height.
    Usage:
-     <Slider label="Brightness" value={v} min={0} max={100} step={1} unit="%" onChange={(v) => …} onCommit={(v) => …} />
-     <Slider range label="Price" value={[20, 80]} min={0} max={200} step={5} unit=" €" onChange={([low, high]) => …} />
-     <Slider label="Quality" value={q} min={0} max={100} step={25} marks={[0, 25, 50, 75, 100]} onChange={…} />
+     <Input value={name} onChange={(e) => …} width="md" />
+     <Textarea rows={5} value={notes} onChange={(e) => …} />
+     <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
+     <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
-     label: the label above the track
-     value: the current value, a number; with range, [low, high]
-     min: the lowest value; default 0
-     max: the highest value; default 100
-     step: the step between values; default 1
-     unit: text after the value ("%"); default ""
-     range: two thumbs, for a minimum and a maximum: value and onChange take [low, high] (default false)
-     marks: labeled values under the track: an array of numbers or of { value, label }, or true for one mark per step
-       (only when there are 12 steps or fewer) (default none)
-     onChange(value): follows every move (live preview); with range, onChange([low, high])
-     onCommit(value): runs when the person lets go or finishes with the keys (record the change, e.g. in an undo history)
-     disabled: default false
-     strings: the thumbs' names with range, for other languages: { minimum: "Minimum", maximum: "Maximum" } (each thumb
-       is named "<label>, minimum" and "<label>, maximum")
-     className: more classes on the slider
-     ...rest: other attributes go on the range input (the first one with range)
+     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
+     Select.size: as Input.size; numeric values retain the native select size attribute.
+     Input.invalid: marks the field (aria-invalid); put the message in Field's error
+     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*)
+     Input.data: the data font, for codes, hex values, links to copy (default false)
+     Input.emphasis: semibold, for a record's title (default false)
+     Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
+       (owner, batch 275); the system sizes it, so it takes no width or utility
+     Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
+       (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
+     Input.appearance: "outline" (default; a border on every side) | "filled" (the same border and corners, a gray fill and
+       the value in dark gray); one appearance per form. There is no underline field (owner, 2026-10-16)
+     Input.className: more classes on the <input>
+     Textarea.invalid: marks the field (aria-invalid)
+     Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
+     Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
+       scrolls inside; it cannot be resized by hand (default false)
+     Textarea.appearance: as Input.appearance
+     Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
+     Textarea.className: more classes on the <textarea>
+     Select.invalid: marks the field (aria-invalid)
+     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
+     Select.block: the select takes its own line, as wide as its room (InlineEdit)
+     Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
+     Select.children: <option>s, when there are no options
+     Select.appearance: as Input.appearance (on the <select>)
+     Select.className: more classes on the wrapper
    Behavior:
-     It is a native range input (two with range), so keys work: arrows, Page Up/Down, Home, End.
-     The label and the current value sit above the track ("20–80 €" with range).
-     The thumbs of a range never cross: the minimum stops at the maximum and the maximum at the minimum. Where they meet,
-       the one that can still move is on top.
-     A range or marked slider draws its own track (the plain slider is the browser's control): the filled part between
-       the thumbs and each mark sit where the thumbs' centers are, measured from the track and placed on the 4px grid.
+     Inside a Field, the label, description and error are connected for you.
+     Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
+     it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
+     red fill; read-only and disabled keep their fills.
+     autoGrow: the browser sizes the text area to its content (field-sizing: content); where it cannot, the text area
+     measures its content on each change and sets its height on the 4px grid (gridPx), the one inline style it writes.
+     Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
+     check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
-     The fill and the marks are placed by JavaScript (inline inset and inline size through gridPx, utils/grid.js); every
-       other value is a --plx-comp-slider-* token.
-     Mark labels are values: they use the data font.
+     They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
+     All three forward their ref to the native element.
 */
-const STRINGS = {
-  minimum: 'Minimum',
-  maximum: 'Maximum'
+// the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
+const TYPE_HINTS = {
+  email: {
+    inputMode: 'email',
+    autoCapitalize: 'off',
+    spellCheck: false
+  },
+  url: {
+    inputMode: 'url',
+    autoCapitalize: 'off',
+    spellCheck: false
+  },
+  tel: {
+    inputMode: 'tel'
+  },
+  search: {
+    inputMode: 'search',
+    enterKeyHint: 'search'
+  }
 };
-const MAX_STEP_MARKS = 12;
 
-// the marks to draw: [{ value, label }] inside [min, max]
-function marksOf(marks, min, max, step) {
-  if (!marks) return [];
-  let list = marks;
-  if (marks === true) {
-    const n = Math.floor((max - min) / step);
-    if (n < 1 || n > MAX_STEP_MARKS) return [];
-    list = Array.from({
-      length: n + 1
-    }, (x, i) => min + i * step);
-  }
-  return list.map(m => typeof m === 'object' ? m : {
-    value: m,
-    label: String(m)
-  }).filter(m => m.value >= min && m.value <= max);
-}
-function Slider({
-  label,
-  value,
-  min = 0,
-  max = 100,
-  step = 1,
-  unit = '',
-  range = false,
-  marks,
-  onChange,
-  onCommit,
-  disabled = false,
-  strings,
+// the appearance class (outline is the base look: no class)
+const look = appearance => appearance === 'filled' && 'plx-input--filled';
+const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
+  invalid,
+  width,
+  data = false,
+  emphasis = false,
+  appearance,
+  size,
   className,
+  type = 'text',
   ...rest
-}) {
-  const id = (0, _layer.useUid)('plx-slider');
-  const t = Object.assign({}, STRINGS, strings);
-  const drawn = marksOf(marks, min, max, step);
-  const custom = range || drawn.length > 0;
-  const span = _react.default.useRef(null);
-  const [width, setWidth] = _react.default.useState(0);
-  // the width between the thumbs' centers at min and at max (the span is inset by half a thumb on each side, in CSS)
-  _react.default.useLayoutEffect(() => {
-    const el = span.current;
-    if (!custom || !el) return undefined;
-    const measure = () => setWidth(el.getBoundingClientRect().width);
-    measure();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [custom]);
-  const low = range ? Math.min(Number(value && value[0] != null ? value[0] : min), Number(value && value[1] != null ? value[1] : max)) : min;
-  const high = range ? Math.max(low, Number(value && value[1] != null ? value[1] : max)) : Number(value);
-  const at = v => (max > min ? (Math.min(max, Math.max(min, v)) - min) / (max - min) : 0) * width;
-  const commit = next => onCommit && onCommit(next);
-  const keyCommit = next => e => {
-    if (/Arrow|Page|Home|End/.test(e.key)) commit(next(Number(e.currentTarget.value)));
-  };
-  const shown = range ? low + '–' + high + unit : value + unit;
-  if (!custom) {
-    return /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)('plx-slider', className)
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-slider__head"
-    }, /*#__PURE__*/_react.default.createElement("label", {
-      htmlFor: id,
-      className: "plx-slider__label"
-    }, label), /*#__PURE__*/_react.default.createElement("output", {
-      htmlFor: id,
-      className: "plx-slider__value"
-    }, value + unit)), /*#__PURE__*/_react.default.createElement("input", _extends({
-      id: id,
-      type: "range",
-      className: "plx-slider__input",
-      min: min,
-      max: max,
-      step: step,
-      value: value,
-      disabled: disabled,
-      "aria-valuetext": value + unit,
-      onChange: e => onChange && onChange(Number(e.target.value)),
-      onPointerUp: e => onCommit && onCommit(Number(e.currentTarget.value)),
-      onKeyUp: e => {
-        if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value));
-      }
-    }, rest)));
-  }
-  const lowOf = v => [Math.min(v, high), high],
-    highOf = v => [low, Math.max(v, low)];
-  const fillStart = range ? at(low) : 0,
-    fillEnd = at(high);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-slider', 'plx-slider--custom', range && 'plx-slider--range', drawn.length && 'plx-slider--marks', disabled && 'is-disabled', className)
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-slider__head"
-  }, range ? /*#__PURE__*/_react.default.createElement("span", {
-    id: id + '-label',
-    className: "plx-slider__label"
-  }, label) : /*#__PURE__*/_react.default.createElement("label", {
-    htmlFor: id,
-    className: "plx-slider__label"
-  }, label), /*#__PURE__*/_react.default.createElement("output", {
-    htmlFor: range ? id + ' ' + id + '-high' : id,
-    className: "plx-slider__value"
-  }, shown)), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-slider__control"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-slider__rail",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    ref: span,
-    className: "plx-slider__span"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-slider__fill",
-    style: {
-      insetInlineStart: (0, _grid.gridPx)(fillStart),
-      inlineSize: (0, _grid.gridPx)(fillEnd - fillStart)
-    }
-  }))), range ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("input", _extends({
-    id: id,
-    type: "range",
-    className: (0, _cx.cx)('plx-slider__input', low > (min + max) / 2 && 'is-on-top'),
-    min: min,
-    max: max,
-    step: step,
-    value: low,
-    disabled: disabled,
-    "aria-label": label + ', ' + t.minimum.toLowerCase(),
-    "aria-valuetext": low + unit,
-    onChange: e => onChange && onChange(lowOf(Number(e.target.value))),
-    onPointerUp: e => commit(lowOf(Number(e.currentTarget.value))),
-    onKeyUp: keyCommit(lowOf)
-  }, rest)), /*#__PURE__*/_react.default.createElement("input", {
-    id: id + '-high',
-    type: "range",
-    className: "plx-slider__input",
-    min: min,
-    max: max,
-    step: step,
-    value: high,
-    disabled: disabled,
-    "aria-label": label + ', ' + t.maximum.toLowerCase(),
-    "aria-valuetext": high + unit,
-    onChange: e => onChange && onChange(highOf(Number(e.target.value))),
-    onPointerUp: e => commit(highOf(Number(e.currentTarget.value))),
-    onKeyUp: keyCommit(highOf)
-  })) : /*#__PURE__*/_react.default.createElement("input", _extends({
-    id: id,
-    type: "range",
-    className: "plx-slider__input",
-    min: min,
-    max: max,
-    step: step,
-    value: value,
-    disabled: disabled,
-    "aria-valuetext": value + unit,
-    onChange: e => onChange && onChange(Number(e.target.value)),
-    onPointerUp: e => commit(Number(e.currentTarget.value)),
-    onKeyUp: keyCommit(v => v)
-  }, rest))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-slider__marks",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-slider__marks-span"
-  }, drawn.map(m => /*#__PURE__*/_react.default.createElement("span", {
-    key: m.value,
-    className: "plx-slider__mark",
-    style: {
-      insetInlineStart: (0, _grid.gridPx)(at(m.value))
-    }
-  }, m.label)))) : null);
-}
-  } },
-  "platform/utils/roving.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.roveTo = roveTo;
-exports.useRovingFocus = useRovingFocus;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Roving focus (platform/utils/roving.js)
-   Summary: One Tab stop for a group of controls (a toolbar, a rail): only the current control is in the Tab order
-     (tabindex 0), the others are reached with the arrow keys (tabindex -1). The current control is the one last focused,
-     else the first. This is the WAI-ARIA toolbar pattern: Tab enters and leaves the group in one step.
-   Usage:
-     const ref = React.useRef(null);
-     useRovingFocus(ref, () => items());          // after every render
-     <div ref={ref} onFocus={(e) => roveTo(ref, items(), e.target)}>
-   Props:
-     useRovingFocus(ref, getItems): keeps exactly one item at tabindex 0 after every render
-     roveTo(ref, items, el): makes el the current item (call when focus enters an item)
-*/
-
-function apply(items, current) {
-  items.forEach(el => {
-    const on = el === current;
-    if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
-    el.setAttribute('data-plx-roving', on ? 'current' : '');
-  });
-}
-function roveTo(ref, items, el) {
-  if (!ref.current || items.indexOf(el) < 0) return;
-  apply(items, el);
-}
-function useRovingFocus(ref, getItems) {
-  _react.default.useEffect(() => {
-    if (!ref.current) return;
-    const items = getItems();
-    if (!items.length) return;
-    const current = items.filter(el => el.getAttribute('data-plx-roving') === 'current')[0] || items[0];
-    apply(items, current);
-  });
-}
-  } },
-  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Toolbar = Toolbar;
-var _react = _interopRequireDefault(require("react"));
-var _roving = require("../../utils/roving.js");
-var _direction = require("../../utils/direction.js");
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Toolbar, Toolbar.Group, Toolbar.Spacer
-   Summary: One row of controls (role="toolbar").
-   Usage:
-     <Toolbar label="Asset actions">
-       <Toolbar.Group>…</Toolbar.Group>
-       <Toolbar.Spacer/>
-       <Toolbar.Group>…</Toolbar.Group>
-     </Toolbar>
-   Props:
-     Toolbar.label: its accessible name
-     Toolbar.variant: "default" (rows wrap; gaps follow the density) | "bar" (one row that never wraps, fixed gaps: CommandBar)
-     Toolbar.onKeyDown(event): runs first; preventDefault stops the toolbar's own key handling
-     Toolbar.className: more classes on the toolbar
-     Toolbar.children: controls, groups and spacers. Stack and Inline layout wrappers (also nested inside Group) are transparent: toolbar spacing applies to their controls.
-       Keep semantic composites together; do not wrap popup internals in a layout wrapper intended to be flattened.
-     Toolbar.Group.className: more classes on the group
-     Toolbar.Group.children: the controls in the group
-     Toolbar.Spacer: pushes what follows to the end of the row; no props
-   Behavior:
-     One Tab stop: Tab enters and leaves the toolbar; the current control (the one last used) is in the Tab order.
-     Arrow keys move between its controls in reading order (wrapping; reversed in right to left); Home and End jump to the
-     first and last.
-     Tab leaves the toolbar.
-     Text fields, text areas, selects and editable regions keep their own arrow and Home/End behavior.
-     Descendant controls are discovered through wrappers; nested toolbars retain their own focus scope.
-     In a radio group, only the checked option is a stop.
-   Notes:
-     Every control in it takes the toolbar control height.
-     Other props reach the toolbar or group element.
-*/
-const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
-const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
-function Toolbar({
-  label,
-  variant = 'default',
-  className,
-  children,
-  onKeyDown,
-  onFocus,
-  ...rest
-}) {
-  const ref = _react.default.useRef(null);
-  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), el => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === 'visible' && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute('data-plx-roving'))) : [];
-  _react.default.useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    const refresh = () => {
-      root.querySelectorAll('[data-plx-toolbar-layout]').forEach(el => {
-        if (el.closest('[role="toolbar"]') === root) el.removeAttribute('data-plx-toolbar-layout');
-      });
-      const visit = parent => Array.from(parent.children).forEach(el => {
-        if (el.matches('.plx-stack,.plx-inline') && getComputedStyle(el).display !== 'none') {
-          el.setAttribute('data-plx-toolbar-layout', '');
-          visit(el);
-        } else if (el.classList.contains('plx-toolbar__group')) visit(el);
-      });
-      visit(root);
-      const items = itemsOf();
-      (0, _roving.roveTo)(ref, items, items.find(el => el.getAttribute('data-plx-roving') === 'current') || items[0]);
-    };
-    refresh();
-    const observer = new MutationObserver(refresh);
-    observer.observe(root, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['disabled', 'hidden', 'inert', 'aria-hidden', 'aria-disabled', 'class']
-    });
-    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(refresh) : null;
-    if (resize) resize.observe(root);
-    window.addEventListener('resize', refresh);
-    return () => {
-      observer.disconnect();
-      if (resize) resize.disconnect();
-      window.removeEventListener('resize', refresh);
-    };
-  }, []);
-  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
-  (0, _roving.useRovingFocus)(ref, itemsOf);
-  const onKey = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return; // preserve the control's editing keys
-    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return; // popup/composite controls keep their own keys
-    if (e.target.closest('[role="toolbar"]') !== ref.current) return; // a nested toolbar owns its arrows
-    const items = itemsOf();
-    const i = items.indexOf(document.activeElement);
-    if (i < 0) return;
-    const step = (0, _direction.arrowStep)(e, ref.current, {
-      vertical: false
-    }); // in reading order: right to left reverses Left and Right
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
-    e.preventDefault();
-    items[n].focus();
-  };
-  const onFocusIn = e => {
-    if (onFocus) onFocus(e);
-    (0, _roving.roveTo)(ref, itemsOf(), e.target);
-  };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
-    role: "toolbar",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
-    onKeyDown: onKey,
-    onFocus: onFocusIn
-  }, rest), children);
-}
-Toolbar.Group = function ToolbarGroup({
+    type: type,
+    size: size === 'sm' || size === 'md' ? undefined : size,
+    className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
+    "aria-invalid": invalid || undefined
+  }, TYPE_HINTS[type], rest));
+});
+
+// can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
+const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
+const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(function Textarea({
+  invalid,
+  appearance,
+  autoGrow = false,
+  data = false,
+  className,
+  rows = 3,
+  onInput,
+  ...rest
+}, ref) {
+  const own = _react.default.useRef(null);
+  const setRef = _react.default.useCallback(el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  }, [ref]);
+  // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
+  const fit = _react.default.useCallback(() => {
+    const el = own.current;
+    if (!el || !autoGrow || SIZES_ITSELF) return;
+    el.style.blockSize = '';
+    const edge = el.offsetHeight - el.clientHeight;
+    el.style.blockSize = (0, _grid.gridPx)(el.scrollHeight + edge, {
+      round: 'up',
+      el
+    });
+  }, [autoGrow]);
+  _react.default.useLayoutEffect(() => {
+    fit();
+  });
+  return /*#__PURE__*/_react.default.createElement("textarea", _extends({
+    ref: setRef,
+    rows: rows,
+    className: (0, _cx.cx)('plx-input', 'plx-textarea', data && 'plx-input--data', autoGrow && 'plx-textarea--auto-grow', look(appearance), className),
+    "aria-invalid": invalid || undefined,
+    onInput: e => {
+      fit();
+      if (onInput) onInput(e);
+    }
+  }, rest));
+});
+
+/* options: [{ value, label }] or children <option>s */
+const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select({
+  invalid,
+  options,
+  appearance,
+  size,
+  joined,
+  block = false,
   className,
   children,
   ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-toolbar__group', className)
-  }, rest), children);
-};
-Toolbar.Spacer = function ToolbarSpacer() {
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-toolbar__spacer",
-    "aria-hidden": "true"
-  });
-};
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
+  }, /*#__PURE__*/_react.default.createElement("select", _extends({
+    ref: ref,
+    size: size === 'sm' || size === 'md' ? undefined : size,
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', look(appearance)),
+    "aria-invalid": invalid || undefined
+  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+    key: o.value,
+    value: o.value,
+    disabled: o.disabled
+  }, o.label)) : children));
+});
   } },
   "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
@@ -12200,421 +6636,585 @@ function Sheet({
   }, footer) : null)), document.body);
 }
   } },
-  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ToastProvider = ToastProvider;
-exports.useToast = useToast;
-exports.useUndo = useUndo;
+exports.Popover = Popover;
 var _react = _interopRequireDefault(require("react"));
-var _reactDom = require("react-dom");
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _floating = require("../../utils/floating.js");
+var _Button = require("../Button/Button.jsx");
+var _Sheet = require("../Sheet/Sheet.jsx");
+var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
+   Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
+     a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
+     dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
+     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
+   Usage:
+     <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
+     <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
+     <Popover trigger={<Link href="/people/maya">Maya Chen</Link>} triggerOn="hover" label="Maya Chen" size="sm">…</Popover>
+     <Popover trigger={target} triggerOn="manual" open={open} onOpenChange={setOpen} arrow placement="bottom">…</Popover>
+   Props:
+     trigger: the element that opens it (one element; it gets the ref, and for a click popover aria-haspopup="dialog",
+       aria-expanded and aria-controls)
+     triggerOn: "click" (default: click, Enter or Space on the trigger) | "hover" (a hover card: opens after
+       --plx-comp-popover-hover-open-delay on pointer hover and on keyboard focus, and stays open while the pointer is in
+       it) | "manual" (only the open prop opens it: a teaching bubble pointing at its target)
+     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
+     onOpenChange(open): runs when it opens or closes
+     title: the title in its header; it names the popover
+     label: the accessible name when there is no title
+     footer: a row of actions at the bottom, at the end edge
+     closeButton: a Close button at the end of the header (default false; Escape and a click outside always close it)
+     placement: where it sits against the trigger: "bottom-start" (default) | "bottom" | "bottom-end" | "top" | "top-start"
+       | "top-end" | "start" | "start-top" | "start-bottom" | "end" | "end-top" | "end-bottom" (start and end follow the
+       writing direction)
+     size: "md" (default; 320px wide) | "sm" (240px) | "lg" (400px) | "auto" (as wide as its content); never wider than
+       the window less its margins
+     arrow: a caret on the edge that faces the trigger, pointing at it (default false)
+     role: "dialog" (default) | "alertdialog" (a question that needs an answer: Popconfirm) | null (a disclosure panel of
+       links, MegaMenu: no popup role, and the trigger is a plain disclosure button with aria-expanded)
+     initialFocus: a ref to the element that takes focus when it opens (default: the first control in its body, else its
+       first control (Close, a footer action), else the popover)
+     focusOnOpen: focus moves into it when it opens (default true for a click popover, false for hover and manual)
+     sheetOnNarrow: at the Narrow window class a click popover opens as a bottom Sheet instead (default true; a hover
+       card never does)
+     strings: the words it shows and announces, for other languages: { close: "Close" }
+     className: more classes on the popover
+     anchorClassName: a layout class for the anchor (the trigger's box in the page): its owner's placement of it (DatePicker, TreeSelect)
+     children: the content
+     Other props pass through to the popover's <div> (aria-describedby).
+   Behavior:
+     Click: the trigger opens and closes it; focus moves into it (initialFocus, else the first control in its body, else
+       its first control, else the popover) and returns to the trigger when Escape closes it, or when it closes while
+       focus is inside it (Close, an action). Escape, a click outside, and Tab out of it close it. It is not modal: the
+       page stays usable and focus is not trapped.
+     Hover: opens after the open delay on pointer hover, and at once on keyboard focus of the trigger; closes
+       --plx-comp-popover-hover-close-delay after the pointer leaves both, on blur, and with Escape. Touch has no hover:
+       a tap follows the trigger (a link), so a hover card holds nothing that is only there.
+     Manual: opens and closes only by the open prop (a click outside does not close it); Escape asks to close it
+       (onOpenChange(false)) and returns focus to the trigger.
+     Placement: by CSS anchor positioning it flips to the other side and shifts its alignment to stay in the window, and
+       follows the trigger on scroll and resize; without it, it is drawn inside the trigger's wrapper on its side. With an
+       arrow it keeps its side and alignment, so the arrow always points at the trigger.
+     At the Narrow window class (under --plx-sys-shell-phone-below) a click popover is a bottom Sheet: the same title,
+       content and footer, modal, with the sheet's own close.
+   Notes:
+     One popover at a time; never a popover inside a popover. A hint of a few words is a Tooltip; a decision that blocks
+       the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
+     ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
+*/
+const STRINGS = {
+  close: 'Close'
+};
+const SIZES = ['sm', 'md', 'lg', 'auto'];
+
+// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+function Popover({
+  trigger,
+  triggerOn = 'click',
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  title,
+  label,
+  footer,
+  closeButton = false,
+  placement = 'bottom-start',
+  size = 'md',
+  arrow = false,
+  role = 'dialog',
+  initialFocus,
+  focusOnOpen,
+  sheetOnNarrow = true,
+  strings,
+  className,
+  anchorClassName,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Popover', {
+    size
+  }, {
+    size: ['md', 'sm', 'lg', 'auto']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-popover');
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(!!defaultOpen);
+  const open = controlled ? !!openProp : own;
+  const setOpen = _react.default.useCallback(v => {
+    if (!controlled) setOwn(v);
+    if (onOpenChange) onOpenChange(v);
+  }, [controlled, onOpenChange]);
+  const wrap = _react.default.useRef(null),
+    panel = _react.default.useRef(null),
+    anchor = _react.default.useRef(null),
+    timer = _react.default.useRef(null);
+  const hover = triggerOn === 'hover',
+    click = triggerOn === 'click';
+  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
+  const asSheet = click && sheetOnNarrow && narrow;
+  const floating = open && !asSheet;
+  const where = _floating.PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const {
+    placement: used
+  } = (0, _floating.useFloating)(anchor, panel, {
+    open: floating,
+    placement: where,
+    offset: arrow ? 'md' : 'xs',
+    flip: !arrow,
+    shift: !arrow
+  });
+  const [side, align] = used.split('-');
+  const close = _react.default.useCallback(refocus => {
+    setOpen(false);
+    if (refocus && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [setOpen]);
+  (0, _layer.useLayer)(panel, floating, {
+    onEscape: () => close(!hover)
+  });
+
+  // into the top layer as soon as it is in the page, before focus moves in
+  _react.default.useLayoutEffect(() => {
+    const el = panel.current;
+    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [floating]);
+  // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
+  const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
+  _react.default.useEffect(() => {
+    if (!floating) return undefined;
+    if (takeFocus) {
+      const root = panel.current;
+      const wanted = initialFocus && initialFocus.current;
+      const first = wanted || (0, _layer.focusables)(root.querySelector('.plx-popover__body'))[0] || (0, _layer.focusables)(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    if (!click) return undefined;
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', outside);
+    return () => document.removeEventListener('mousedown', outside);
+  }, [floating]);
+  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
+  // closed while focus was inside it (Close, an action, the open prop): focus goes back to the trigger, not the page
+  const inside = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (floating || !inside.current) return;
+    inside.current = false;
+    const a = document.activeElement;
+    if ((!a || a === document.body) && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [floating]);
+
+  // the hover card's timers: open after the open delay, close after the close delay (cancelled by coming back)
+  const later = v => {
+    clearTimeout(timer.current);
+    const el = wrap.current;
+    timer.current = setTimeout(() => setOpen(v), ms(el, v ? '--plx-comp-popover-hover-open-delay' : '--plx-comp-popover-hover-close-delay'));
+  };
+  const hoverProps = hover ? {
+    onPointerEnter: e => {
+      if (e.pointerType !== 'touch') later(true);
+    },
+    onPointerLeave: e => {
+      if (e.pointerType !== 'touch') later(false);
+    },
+    onFocus: e => {
+      if (e.target === anchor.current && e.target.matches(':focus-visible')) {
+        clearTimeout(timer.current);
+        setOpen(true);
+      }
+    },
+    onBlur: e => {
+      if (!wrap.current.contains(e.relatedTarget)) {
+        clearTimeout(timer.current);
+        setOpen(false);
+      }
+    }
+  } : click ? {
+    // Tab out of the popover (or the trigger) to somewhere else closes it; a click on its text does not (no related target)
+    onBlur: e => {
+      if (floating && e.relatedTarget && !wrap.current.contains(e.relatedTarget)) setOpen(false);
+    } // the sheet is a portal: not while it shows
+  } : {};
+  const child = _react.default.Children.only(trigger);
+  const triggerEl = /*#__PURE__*/_react.default.cloneElement(child, click ? {
+    ref: anchor,
+    'aria-haspopup': role ? 'dialog' : undefined,
+    'aria-expanded': open,
+    'aria-controls': open ? id : undefined,
+    expanded: undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  } : {
+    ref: anchor
+  });
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const titleId = id + 't';
+  const header = title || closeButton ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__header"
+  }, title ? /*#__PURE__*/_react.default.createElement("h2", {
+    id: titleId,
+    className: "plx-popover__title"
+  }, title) : null, closeButton ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.close,
+    className: "plx-popover__close",
+    onClick: () => close(true)
+  }) : null) : null;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    ref: wrap,
+    className: (0, _cx.cx)('plx-popover-anchor', anchorClassName)
+  }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: panel,
+    id: id,
+    role: role || undefined,
+    "aria-labelledby": role && title ? titleId : undefined,
+    "aria-label": role && !title ? label : undefined,
+    tabIndex: -1,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    "data-plx-popover-side": side,
+    "data-plx-popover-align": align || 'center',
+    className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
+    onFocus: () => {
+      inside.current = true;
+    },
+    onBlur: e => {
+      inside.current = !!(panel.current && panel.current.contains(e.relatedTarget));
+    }
+  }, rest), arrow ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-popover__arrow",
+    "aria-hidden": "true"
+  }) : null, header, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__body"
+  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__footer"
+  }, footer) : null) : null, asSheet ? /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
+    open: open,
+    onClose: () => setOpen(false),
+    title: title || label,
+    footer: footer,
+    form: "bottom",
+    initialFocus: initialFocus,
+    closeLabel: t.close
+  }, children) : null);
+}
+  } },
+  "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ContextualHelp = ContextualHelp;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Link = require("../Link/Link.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ContextualHelp
+   Summary: Help where the question comes up: an info button beside a label, heading or setting that opens a short
+     explanation in a Popover (09 Overlays › Contextual help), or the same explanation shown in place as an inline tip
+     (10 Patterns › Contextual education).
+   Usage:
+     <Field label={<>Retention <ContextualHelp title="Retention">Deleted files stay in the trash for 30 days.</ContextualHelp></>}>…</Field>
+     <ContextualHelp title="Storage" link={{ href: '../help/storage.html', label: 'About storage' }}>Originals count toward your quota; previews do not.</ContextualHelp>
+     <ContextualHelp variant="inline" title="Tip">Drop files anywhere on the page to upload them.</ContextualHelp>
+   Props:
+     title: the explanation's title (the popover's title; bold before the text of an inline tip)
+     children: the explanation: one to three sentences
+     link: { href, label }: a link to more help after the explanation (optional): on its own line in the popover, at the
+       end of the sentence in an inline tip
+     variant: "info" (default: the info button and its popover) | "inline" (an inline tip: the explanation shown in place,
+       after the info icon, in the muted color)
+     label: the info button's accessible name (default strings.more with the title: "More about Retention")
+     placement: where the popover opens (default "bottom-start"; Popover's placements)
+     size: the popover's width: "sm" (default; 240px) | "md" | "lg"
+     strings: the words it announces, for other languages: { more: "More about {title}", moreUntitled: "More information" }
+     className: more classes on the wrapper
+   Behavior:
+     Info: the button opens the popover on click, Enter or Space (never on hover) and focus moves into it; Escape returns
+       focus to the button, and a click outside or Tab away closes it. At the Narrow window class it opens as a bottom
+       sheet (Popover's sheetOnNarrow).
+     Inline: plain text in the page, read in order; the link is one Tab stop.
+   Notes:
+     The button is the inline-action role (a 24px target) and ghost, so it sits on the label's line without weight.
+     Help that everyone needs is helper text, not hidden help; errors and warnings are never contextual help.
+*/
+
+const STRINGS = {
+  more: 'More about {title}',
+  moreUntitled: 'More information'
+};
+function ContextualHelp({
+  title,
+  children,
+  link,
+  variant = 'info',
+  label,
+  placement = 'bottom-start',
+  size = 'sm',
+  strings,
+  className
+}) {
+  (0, _devWarn.devWarn)('ContextualHelp', {
+    variant,
+    size
+  }, {
+    variant: ['info', 'inline'],
+    size: ['sm', 'md', 'lg']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  const more = v => link && link.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: link.href,
+    variant: v,
+    className: "plx-contextual-help__link"
+  }, link.label) : null;
+  if (variant === 'inline') {
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-contextual-help', 'plx-contextual-help--inline', className)
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-contextual-help__icon",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "info-circle",
+      size: "sm"
+    })), /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-contextual-help__tip"
+    }, title ? /*#__PURE__*/_react.default.createElement("strong", {
+      className: "plx-contextual-help__title"
+    }, title) : null, title ? ' ' : null, children, link ? ' ' : null, more('inline')));
+  }
+  const name = label || (typeof title === 'string' && title ? t.more.split('{title}').join(title) : t.moreUntitled);
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-contextual-help', 'plx-contextual-help--info', className)
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "xs",
+      iconOnly: true,
+      icon: "info-circle",
+      label: name
+    }),
+    title: title,
+    label: name,
+    placement: placement,
+    size: size
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-contextual-help__text"
+  }, children), link && link.href ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-contextual-help__more"
+  }, more('standalone')) : null));
+}
+  } },
+  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProgressBar = ProgressBar;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressBar
+   Summary: How far a task or a quantity has come: a track with a fill (11 › Feedback › Loading and progress › Progress bar).
+   Usage:
+     <ProgressBar value={42} label="Uploading 3 files" showValue />
+     <ProgressBar label="Preparing the export" />
+     <ProgressBar value={7} max={12} tone="success" size="sm" label="Tasks done" labelHidden />
+     <ProgressBar value={60} color={project.color} label="Kitchen Renovation" />
+   Props:
+     value: how much is done; leave it out while the amount is unknown (the bar is then indeterminate)
+     max: the whole (default 100)
+     label: what is progressing; always the accessible name, shown above the bar unless labelHidden
+     labelHidden: the label is for assistive technology only (default false)
+     showValue: shows the percent at the end of the label row, a whole percent in the locale's format ("42%") (default false)
+     tone: "info" (default) | "success" | "warning" | "danger" | "neutral"
+     color: a color the data brings (a project's color), a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280); it fills the bar instead of the tone
+     size: "sm" (a 4px track) | "md" (default, an 8px track)
+     className: more classes on the wrapper
+     locale: the language the percent is formatted in (default: the page's language, document.documentElement.lang)
+   Behavior:
+     A known amount is the browser's own <progress value max> (batch 280: the function reports the amount, the design
+     system draws it, no width is written); without a value the track is a progressbar (role="progressbar") with no
+     value, its fill running from start to end again and again.
+     People who ask their system for less motion see the indeterminate fill still.
+   Notes:
+     The amount reaches the page as the <progress> element's value and a data color as data-plx-color: no style is written.
+     Other props pass through to the wrapper.
+*/
+function ProgressBar({
+  value,
+  max = 100,
+  label,
+  labelHidden = false,
+  showValue = false,
+  tone = 'info',
+  color,
+  size = 'md',
+  locale,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('ProgressBar', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
+    size: ['sm', 'md']
+  });
+  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const known = typeof value === 'number' && !Number.isNaN(value);
+  const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
+  const id = 'plx-pb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const showLabel = label && !labelHidden;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-progress-bar', 'plx-progress-bar--' + size, color ? 'plx-progress-bar--color' : 'plx-progress-bar--' + tone, !known && 'is-indeterminate', className),
+    "data-plx-color": color || undefined
+  }, rest), showLabel || showValue && known ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-progress-bar__head"
+  }, showLabel ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-progress-bar__label",
+    id: id
+  }, label) : null, showValue && known ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-progress-bar__value"
+  }, new Intl.NumberFormat(loc, {
+    style: 'percent',
+    maximumFractionDigits: 0
+  }).format(pct / 100)) : null) : null, known ? /*#__PURE__*/_react.default.createElement("progress", {
+    className: "plx-progress-bar__track plx-progress-bar__meter",
+    value: Math.max(0, Math.min(value, max || 100)),
+    max: max || 100,
+    "aria-labelledby": showLabel ? id : undefined,
+    "aria-label": showLabel ? undefined : label
+  }) : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-progress-bar__track",
+    role: "progressbar",
+    "aria-labelledby": showLabel ? id : undefined,
+    "aria-label": showLabel ? undefined : label
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-progress-bar__fill"
+  })));
+}
+  } },
+  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Notice = Notice;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
-var _tokenTime = require("../../utils/tokenTime.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ToastProvider, useToast, useUndo
-   Summary: A short message about something that just happened, at the end of the screen; with an action (Undo) it is the
-     undo pattern.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Notice
+   Summary: A short message inside a page, a panel or a dialog (an inline message); with a title, actions or a dismiss
+     button it is a section message: a message about one section of the page that people can act on or put away.
+     It shows its tone's soft surface and content color, an icon and the text.
    Usage:
-     <ToastProvider>…the application…</ToastProvider>
-     const toast = useToast();
-     toast.show('Saved', { tone: 'success' });
-     toast.show('Asset moved to Crosses', { action: { label: 'Undo', onAction: () => moveBack() } });
-     const undoable = useUndo();
-     undoable('3 assets archived', { onUndo: () => restore(ids), onCommit: () => purge(ids) });
+     <Notice tone="warning">This folder is shared with 3 people.</Notice>
+     <Notice tone="danger" title="The export failed" actions={<Button size="xs" onClick={retry}>Try again</Button>}
+       onDismiss={() => setShown(false)}>The server did not answer.</Notice>
    Props:
-     ToastProvider.duration: the default milliseconds before a toast leaves by itself; default the --plx-comp-toast-duration token
-     ToastProvider.children: the application
-     toast.show(message, options): shows a toast and returns its id
-     options.tone: "info" (default) | "success" | "warning" | "danger"
-     options.duration: milliseconds before it leaves by itself; 0 keeps it until dismissed or its action is used
-     options.action: { label, onAction() }: one action button in the toast (Undo, View); using it runs onAction and closes
-       the toast
-     options.onClose(reason): runs once when the toast leaves: "action" (its action was used), "dismiss" (the Dismiss
-       button or toast.dismiss) or "timeout"
-     toast.dismiss(id): removes the toast with that id
-     useUndo(): returns undoable(message, options): a toast with an Undo action for something already done
-       options.onUndo(): puts it back (the Undo action was used)
-       options.onCommit(): runs when the toast leaves without Undo (timed out or dismissed): the moment to make it final
-       options.label: the action's label (default "Undo")
-       options.tone, options.duration: as toast.show
+     tone: "info" (default) | "success" | "warning" | "danger"
+     icon: an icon name; the tone's icon unless given
+     title: a short heading above the text, which names the message (a section message)
+     actions: buttons under the text (one or two, size "xs"), the next steps the message offers
+     onDismiss(event): shows a dismiss button at the end; called when it is pressed (the page hides the notice)
+     strings: the words it announces, for other languages: { dismiss: "Dismiss" } (the dismiss button's name)
+     className: more classes on the notice
+     children: the message text
+     ...rest: other attributes go on the notice element
    Behavior:
-     A danger toast stays until dismissed (unless a duration is given) and is announced at once (role="alert").
-     The other toasts are announced politely.
-     Every toast has a Dismiss button.
-     A toast with an action stays while the pointer is over it or focus is inside it, and starts its time again when they
-       leave, so the action is never taken away from someone reaching for it.
+     A danger notice has role="alert", so screen readers announce it.
+     The dismiss button is the last Tab stop of the notice; the page decides what happens to focus after it hides the
+       notice (it moves to the next thing in the section).
    Notes:
-     Wrap the application once in ToastProvider; useToast needs it.
-     Not for anything the person must act on: use a dialog or an inline message.
+     Without a title, actions or onDismiss the markup is the plain inline message (the icon and the text).
 */
-
-const ToastContext = /*#__PURE__*/_react.default.createContext(null);
-const TONE_ICON = {
-  info: 'circle-info',
+const ICONS = {
+  info: 'info-circle',
   success: 'circle-check',
   warning: 'warning',
   danger: 'alert'
 };
-let nextId = 1;
-function ToastProvider({
-  duration,
-  children
-}) {
-  const [toasts, setToasts] = _react.default.useState([]);
-  const timers = _react.default.useRef(new Map()); // id -> { wait, timer, onClose }
-  const remove = _react.default.useCallback(id => setToasts(all => all.filter(t => t.id !== id)), []);
-  const dismiss = _react.default.useCallback((id, reason = 'dismiss') => {
-    const t = timers.current.get(id);
-    if (t) {
-      clearTimeout(t.timer);
-      timers.current.delete(id);
-      if (t.onClose) t.onClose(reason);
-    }
-    setToasts(all => all.map(x => x.id === id ? {
-      ...x,
-      leaving: true
-    } : x));
-    setTimeout(() => remove(id), (0, _tokenTime.tokenMs)('--plx-comp-toast-animation-duration'));
-  }, [remove]);
-  const start = _react.default.useCallback(id => {
-    const t = timers.current.get(id);
-    if (!t || !(t.wait > 0)) return;
-    clearTimeout(t.timer);
-    t.timer = setTimeout(() => dismiss(id, 'timeout'), t.wait);
-  }, [dismiss]);
-  const hold = _react.default.useCallback(id => {
-    const t = timers.current.get(id);
-    if (t) clearTimeout(t.timer);
-  }, []);
-  const show = _react.default.useCallback((message, {
-    tone = 'info',
-    duration: ms,
-    action,
-    onClose
-  } = {}) => {
-    const id = nextId++;
-    const wait = ms !== undefined ? ms : tone === 'danger' ? 0 : duration !== undefined ? duration : (0, _tokenTime.tokenMs)('--plx-comp-toast-duration');
-    timers.current.set(id, {
-      wait,
-      timer: null,
-      onClose
-    });
-    setToasts(all => all.concat({
-      id,
-      message,
-      tone,
-      action,
-      leaving: false
-    }));
-    start(id);
-    return id;
-  }, [start, duration]);
-  const api = _react.default.useMemo(() => ({
-    show,
-    dismiss
-  }), [show, dismiss]);
-  return /*#__PURE__*/_react.default.createElement(ToastContext.Provider, {
-    value: api
-  }, children, /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-toast-region",
-    "aria-live": "polite"
-  }, toasts.map(t => /*#__PURE__*/_react.default.createElement("div", {
-    key: t.id,
-    role: t.tone === 'danger' ? 'alert' : undefined,
-    className: (0, _cx.cx)('plx-toast', 'plx-toast--' + t.tone, t.leaving && 'is-leaving'),
-    onAnimationEnd: t.leaving ? () => remove(t.id) : undefined,
-    onPointerEnter: t.action ? () => hold(t.id) : undefined,
-    onPointerLeave: t.action ? () => start(t.id) : undefined,
-    onFocus: t.action ? () => hold(t.id) : undefined,
-    onBlur: t.action ? e => {
-      if (!e.currentTarget.contains(e.relatedTarget)) start(t.id);
-    } : undefined
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-toast__icon"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: TONE_ICON[t.tone] || TONE_ICON.info
-  })), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-toast__message"
-  }, t.message), t.action ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "xs",
-    className: "plx-toast__action",
-    onClick: () => {
-      if (t.action.onAction) t.action.onAction();
-      dismiss(t.id, 'action');
-    }
-  }, t.action.label) : null, /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-toast__close",
-    "aria-label": "Dismiss",
-    onClick: () => dismiss(t.id)
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "close"
-  }))))), document.body));
-}
-function useToast() {
-  const api = _react.default.useContext(ToastContext);
-  if (!api) throw new Error('useToast needs a <ToastProvider> around the application');
-  return api;
-}
-
-// the undo pattern: the action is already done; the toast offers Undo for as long as it shows, then the change is final
-function useUndo() {
-  const toast = useToast();
-  return _react.default.useCallback((message, {
-    onUndo,
-    onCommit,
-    label = 'Undo',
-    tone,
-    duration
-  } = {}) => toast.show(message, {
-    tone,
-    duration,
-    action: {
-      label,
-      onAction: onUndo
-    },
-    onClose: reason => {
-      if (reason !== 'action' && onCommit) onCommit();
-    }
-  }), [toast]);
-}
-  } },
-  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Tabs = Tabs;
-exports.tabsPanelId = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _direction = require("../../utils/direction.js");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Count = require("../Count/Count.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-var _Menu = require("../Menu/Menu.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tabs
-   Summary: Switch between views of the same thing.
-   Usage:
-     <Tabs label="Asset details" value={tab} onChange={setTab}
-       items={[{ value: 'info', label: 'Info', count: 3, content: <…/> }, …]} />
-   Props:
-     variant: "contained" (default) | "folder" | "segmented"
-     orientation: "horizontal" (default) | "vertical" (the tabs in a column at the start, the panel beside them: many
-       sections or long names, as a settings page; the vertical look replaces the variant's)
-     items: the tabs, in order: [{ value, label, icon, count, content, disabled }]
-     items[].icon: an icon name or element before the label
-     items[].count: a count after the label
-     items[].content: the tab's panel; without content Tabs draws only the tab list
-     items[].disabled: the tab cannot be chosen and keys skip it
-     value: the selected tab's value (controlled)
-     defaultValue: the first selected tab when uncontrolled; default the first item
-     onChange(value): runs when another tab is selected
-     label: the accessible name of the tab list
-     idBase: the base of the tab and panel ids, for a panel the application renders
-     className: more classes on the tabs
-     panelClassName: more classes on each panel
-     strings: the words it shows, for other languages: { more: "More", moreLabel: "More tabs" }
-   Behavior:
-     In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
-     The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
-     Arrow keys move and select (wrapping); Home and End go to the first and last. Vertical tabs say so
-       (aria-orientation); Up and Down move there, Left and Right too.
-     Only the selected tab is in the Tab order.
-     The open folder tab has no line beneath it.
-     Vertical tabs never move into More: the column grows with them and the panel takes the rest of the width.
-     Tabs that do not fit on one row move into a "More" menu after the last shown tab: a menu button outside the tab list,
-       its own Tab stop. The tab list never scrolls sideways (Platforms Standard 3.5, reflow). The selected tab is always
-       shown: when it is one of the moved tabs, it takes the last shown place. Arrow keys, Home and End still reach every
-       tab, moved ones included (the one chosen is shown); each tab states its place in the whole set (aria-posinset,
-       aria-setsize), so a screen reader counts the moved tabs too. Choosing a tab in the menu selects it and focuses it.
-   Notes:
-     "contained" is the standard: folder tabs joined to a bordered panel.
-     "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
-     content below with no frame of its own; for tabs inside a pane or a card that is already framed.
-     "segmented" is a compact switch with SegmentedControl's look A (owner, 2026-10-14): joined segments at the button
-       control height, the selected one in the selected-state blue tint.
-     orientation="vertical" (library wave 7) draws each tab as a navigation list row: the hover fill, and the open tab in
-       the selected state (the navigation pane's current row), never a focus ring.
-     Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
-       and pass idBase so the tabs point at it.
-*/
-
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
-const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
-exports.tabsPanelId = tabsPanelId;
 const STRINGS = {
-  more: 'More',
-  moreLabel: 'More tabs'
+  dismiss: 'Dismiss'
 };
-
-/* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
-   lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
-   shown, takes its own room, so the list narrows and the count is checked again). The width is the Tabs' own, which
-   does not follow the count, so the two never chase each other. */
-function useTabsFit(rootRef, listRef, count, key) {
-  const [fit, setFit] = _react.default.useState(count);
-  const [width, setWidth] = _react.default.useState(0);
-  _react.default.useLayoutEffect(() => {
-    setFit(count);
-  }, [count, key, width]);
-  _react.default.useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root || typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(() => setWidth(root.clientWidth));
-    ro.observe(root);
-    return () => ro.disconnect();
-  }, []);
-  _react.default.useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!list || fit <= 1) return;
-    const box = list.getBoundingClientRect();
-    const out = Array.prototype.some.call(list.children, el => {
-      if (el.hidden) return false;
-      const r = el.getBoundingClientRect();
-      return r.right > box.right + 0.5 || r.left < box.left - 0.5;
-    });
-    if (out) setFit(fit - 1);
-  });
-  return Math.max(1, Math.min(fit, count));
-}
-function Tabs({
-  variant = 'contained',
-  orientation = 'horizontal',
-  items,
-  value,
-  defaultValue,
-  onChange,
-  label,
-  idBase,
+function Notice({
+  tone = 'info',
+  icon,
+  title,
+  actions,
+  onDismiss,
+  strings,
   className,
-  panelClassName,
-  strings
+  children,
+  ...rest
 }) {
-  (0, _devWarn.devWarn)('Tabs', {
-    variant
+  (0, _devWarn.devWarn)('Notice', {
+    tone
   }, {
-    variant: ['contained', 'folder', 'segmented']
+    tone: ['info', 'success', 'warning', 'danger']
   });
-  const words = Object.assign({}, STRINGS, strings);
-  const uid = (0, _layer.useUid)('plx-tabs');
-  const base = idBase || uid;
-  const [own, setOwn] = _react.default.useState(defaultValue !== undefined ? defaultValue : items[0] ? items[0].value : undefined);
-  const current = value !== undefined ? value : own;
-  const refs = _react.default.useRef({});
-  const root = _react.default.useRef(null),
-    list = _react.default.useRef(null);
-  const vertical = orientation === 'vertical';
-  const measured = useTabsFit(root, list, items.length, items.map(t => t.label).join('|') + '|' + String(current));
-  const fit = vertical ? items.length : measured;
-  // the shown tabs: the first `fit`; the selected tab takes the last place when it is not among them
-  const at = items.findIndex(t => t.value === current);
-  const shown = i => at < fit ? i < fit : i < fit - 1 || i === at;
-  const moved = items.filter((t, i) => !shown(i));
-  // focus goes to a tab once it is shown (a moved tab chosen by key or from the menu)
-  const focusNext = _react.default.useRef(null);
-  _react.default.useLayoutEffect(() => {
-    const el = focusNext.current !== null ? refs.current[focusNext.current] : null;
-    if (el && !el.hidden) {
-      focusNext.current = null;
-      el.focus();
-    }
-  });
-  const select = v => {
-    if (value === undefined) setOwn(v);
-    if (onChange) onChange(v);
-  };
-  const enabled = items.filter(t => !t.disabled);
-  const onKeyDown = e => {
-    const at = enabled.findIndex(t => t.value === current);
-    let next = null;
-    const step = (0, _direction.arrowStep)(e, e.currentTarget); // in reading order: right to left reverses Left and Right (batch 213)
-    if (step > 0) next = (at + 1) % enabled.length;else if (step < 0) next = (at - 1 + enabled.length) % enabled.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = enabled.length - 1;else return;
-    e.preventDefault();
-    const t = enabled[next];
-    select(t.value);
-    if (refs.current[t.value] && !refs.current[t.value].hidden) refs.current[t.value].focus();else focusNext.current = t.value;
-  };
-  const hasPanels = items.some(t => t.content !== undefined);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    ref: root,
-    className: (0, _cx.cx)('plx-tabs', vertical ? 'plx-tabs--vertical' : 'plx-tabs--' + variant, className)
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-tabs__list"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    ref: list,
-    role: "tablist",
-    "aria-label": label,
-    "aria-orientation": vertical ? 'vertical' : undefined,
-    className: "plx-tabs__tablist",
-    onKeyDown: onKeyDown
-  }, items.map((t, i) => {
-    const on = t.value === current;
-    return /*#__PURE__*/_react.default.createElement("button", {
-      key: t.value,
-      ref: el => {
-        refs.current[t.value] = el;
-      },
-      type: "button",
-      role: "tab",
-      id: base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, ''),
-      "aria-selected": on,
-      "aria-controls": tabsPanelId(base, t.value),
-      "aria-posinset": i + 1,
-      "aria-setsize": items.length,
-      tabIndex: on ? 0 : -1,
-      disabled: t.disabled || undefined,
-      hidden: !shown(i) || undefined,
-      className: (0, _cx.cx)('plx-tabs__tab', on && 'is-selected'),
-      onClick: () => select(t.value)
-    }, t.icon ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tabs__icon"
-    }, asIcon(t.icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tabs__label"
-    }, t.label), t.count !== undefined ? /*#__PURE__*/_react.default.createElement(_Count.Count, {
-      value: t.count,
-      tone: "neutral"
-    }) : null);
-  })), moved.length ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: words.moreLabel,
-    placement: "bottom-end",
-    className: "plx-tabs__more-anchor",
-    trigger: /*#__PURE__*/_react.default.createElement("button", {
-      type: "button",
-      className: "plx-tabs__tab plx-tabs__more"
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tabs__label"
-    }, words.more), /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tabs__more-caret",
-      "aria-hidden": "true"
-    }))
-  }, moved.map(t => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: t.value,
-    icon: t.icon,
-    disabled: t.disabled,
-    onSelect: () => {
-      focusNext.current = t.value;
-      select(t.value);
-    }
-  }, t.count !== undefined ? t.label + ' (' + t.count + ')' : t.label))) : null), hasPanels ? items.map(t => /*#__PURE__*/_react.default.createElement("div", {
-    key: t.value,
-    role: "tabpanel",
-    id: tabsPanelId(base, t.value),
-    "aria-labelledby": base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, ''),
-    tabIndex: 0,
-    hidden: t.value !== current,
-    className: (0, _cx.cx)('plx-tabs__panel', panelClassName)
-  }, t.value === current ? t.content : null)) : null);
+  const t = Object.assign({}, STRINGS, strings);
+  const section = title || actions;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-notice', 'plx-notice--' + tone, className),
+    role: tone === 'danger' ? 'alert' : undefined
+  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon || ICONS[tone]
+  }), section ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__body"
+  }, title ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__title"
+  }, title) : null, children ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__text"
+  }, children) : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__actions"
+  }, actions) : null) : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__text"
+  }, children), onDismiss ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    className: "plx-notice__dismiss",
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.dismiss,
+    onClick: onDismiss
+  }) : null);
 }
   } },
   "platform/components/DataGrid/scrollbars.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -12738,6 +7338,1207 @@ function Scrollbars({
     "data-plx-scroll-viewport": viewportId,
     onPointerDown: event => start(event, axis)
   })));
+}
+  } },
+  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DND_STRINGS = void 0;
+exports.clearDragOffset = clearDragOffset;
+exports.mergeDndProps = mergeDndProps;
+exports.moveItem = moveItem;
+exports.setDragOffset = setDragOffset;
+exports.transferItem = transferItem;
+exports.useDndSession = useDndSession;
+exports.useDraggable = useDraggable;
+exports.useDropTarget = useDropTarget;
+exports.useReposition = useReposition;
+exports.useSortable = useSortable;
+var _react = _interopRequireDefault(require("react"));
+var _announce = require("./announce.jsx");
+var _grid = require("./grid.js");
+var _direction = require("./direction.js");
+var _tokenTime = require("./tokenTime.js");
+var _useGesture = require("../hooks/useGesture.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · dnd (platform/utils/dnd.js)
+   Summary: The drag-and-drop engine (13 Interaction › Behavioral utilities › Drag-and-drop engine): pointer, pen and touch
+     dragging with a keyboard equivalent for every drag (WCAG 2.2, 2.1.1 and 2.5.7), announcements through the live
+     region, auto-scroll near the edges and drop targets with a visible state. Four kinds of drag share it: a sortable
+     list (reorder, and move between lists of one group), a data item dropped on a target (a file on a folder), a free
+     move (reposition on a canvas) and the drop target itself.
+   Usage:
+     const s = useSortable({ items, onReorder: setItems, getName: (x) => x.name, label: 'Steps' });
+     <ul {...s.listProps}>{items.map((x, i) => (
+       <li key={x.id} {...s.itemProps(i)} className={cx('my-row', s.itemProps(i).className)}>
+         <DragHandle dnd={s.handleProps(i)} />{x.name}</li>))}</ul>
+     const d = useDraggable({ data: asset, type: 'asset', name: asset.name });          // a data item
+     <div {...d.props}><DragHandle dnd={d.handleProps} />{asset.name}</div>
+     const t = useDropTarget({ name: 'Archive', accepts: (data, type) => type === 'asset', onDrop: (data) => archive(data) });
+     <div {...t.props}>Archive</div>
+     const r = useReposition({ position, onMove: setPosition, bounds: canvasRef, name: 'Sticky note' });
+     <div {...r.props}>…</div>
+   Props:
+     useSortable(options) → { listProps, itemProps(i), handleProps(i), moveTo(i, to), canMove(i, step), state }
+       options.items: the list, in order (required); options.getId(item) (default item.id); options.getName(item): the name
+         spoken in the announcements (default item.name, item.label, else the id)
+       options.onReorder(next, { item, from, to }): runs with the new order after a drop or a key move
+       options.id: the list's id among the lists of a group; options.group: lists that share a group take each other's
+         items; options.onMove({ item, from: { list, index }, to: { list, index } }): runs once when an item moves to
+         another list of the group (give every list of the group the same handler)
+       options.label: the list's name, spoken when an item moves to it
+       options.orientation: "vertical" (default) | "horizontal" | "grid": the arrow keys and the drop position follow it
+       options.handle: true (default) the drag starts on the handle (handleProps); false the whole item drags (itemProps
+         then carries the handlers, the tab stop and the name)
+       options.disabled: no drag (default false); options.strings: the words it announces (DND_STRINGS)
+     useDraggable(options) → { props, handleProps, targets(), state }
+       options.data, options.type: what is dragged and its kind, handed to the targets; options.name: its spoken name
+       options.handle: as useSortable; options.disabled; options.strings
+       targets(): the registered drop targets that take it, in page order ([{ id, name, drop() }]): a "Move to" menu
+     useDropTarget(options) → { ref, props, state }
+       options.name: the target's spoken name; options.accepts(data, type): true when it takes the item (default: all)
+       options.onDrop(data, type): runs when an item is dropped on it
+       options.native: { accepts(dataTransfer), onDrop(dataTransfer) }: also take the browser's own drags (files, text
+         from other windows); accepts sees only the types while dragging (dataTransfer.types)
+       options.disabled; state: null | "ready" (a drag it takes is under way) | "over" | "reject" (over, not taken)
+     useReposition(options) → { props, position, picked, moveBy(dx, dy) }
+       options.position: { x, y } in pixels from the element's place in the layout (on the grid); options.onMove(next)
+       options.bounds: a ref to the element it stays inside (default its offset parent); options.name; options.disabled
+     DND_STRINGS: the default words; moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
+       helpers; setDragOffset(el, dx, dy) and clearDragOffset(el, { settle }): move an element by a transform through
+       the Web Animations API (never a style attribute), snapped to the grid; mergeDndProps(a, b): one element's props
+       from the engine's and a component's (each event runs the engine's handler first; a handled event stops there)
+   Behavior:
+     Pointer: a press moves the item once it has traveled past --plx-sys-gesture-slop (on touch, a press held for the
+       long-press delay on an item without a handle, so the page still scrolls); the item follows the pointer, raised
+       (the Dragged treatment), and the place it will land shows: an insertion line in a list, the outline on a target.
+       Release drops it; Escape, or a pointer the system cancels, puts it back.
+     Keyboard (every drag): Space or Enter on the handle picks the item up; the arrow keys move it (in a list one place;
+       between lists of a group Arrow Left / Right in a vertical list; to the next target for a data item; one step,
+       Shift a large step, for a free move); Space or Enter drops it; Escape puts it back where it was; Tab drops it.
+       The arrow keys follow the writing direction. Focus stays on the item's handle as it moves.
+     Without dragging (WCAG 2.5.7): the patterns offer a menu of moves (Move up, Move down, Move to the start and end,
+       Move to a target) or move buttons; canMove, moveTo and targets() give them their state.
+     Every pick-up, move, drop and cancel is announced (announce()); the handle carries the instructions
+       (aria-describedby) and aria-pressed while the item is picked up.
+     Near the top or bottom (start or end) of the scrolling region, or the window, the region scrolls by itself while
+       something is dragged (--plx-sys-dnd-autoscroll-edge, -speed); a key move scrolls the item into view.
+   Notes:
+     The engine never changes a list itself: onReorder and onMove hand the new order to the page, which keeps it.
+     Positions are never written in a style attribute: the dragged item and a repositioned one move by a transform set
+       through the Web Animations API, snapped to the grid (utils/grid.js); reduced motion skips the settle.
+     system/dnd.css draws the states from the attributes the hooks set (data-plx-dnd-state, data-plx-drop,
+       data-plx-drop-state); a component may draw its own from the same attributes.
+*/
+
+const DND_STRINGS = exports.DND_STRINGS = {
+  handle: 'Move {name}',
+  instructions: 'Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
+  pickedUp: '{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
+  moved: '{name}, position {position} of {total}',
+  movedTo: '{name} moved to {list}, position {position} of {total}',
+  dropped: '{name} dropped at position {position} of {total}',
+  droppedIn: '{name} dropped in {list}, position {position} of {total}',
+  canceled: 'Move canceled. {name} is back at position {position} of {total}',
+  itemPickedUp: '{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.',
+  over: 'Over {target}',
+  overReject: '{target} does not take {name}',
+  droppedOn: '{name} dropped on {target}',
+  noTargets: 'No place takes {name}',
+  itemCanceled: 'Move canceled. {name} was not moved',
+  repositionPicked: '{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.',
+  repositioned: '{name} moved',
+  repositionDropped: '{name} dropped',
+  repositionCanceled: 'Move canceled. {name} is back where it was',
+  movable: 'movable',
+  list: 'the list'
+};
+const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── list helpers ── */
+function moveItem(list, from, to) {
+  const next = list.slice();
+  if (from < 0 || from >= next.length) return next;
+  const [x] = next.splice(from, 1);
+  next.splice(Math.max(0, Math.min(next.length, to)), 0, x);
+  return next;
+}
+function transferItem(fromList, fromIndex, toList, toIndex) {
+  const a = fromList.slice(),
+    b = toList.slice();
+  const [x] = a.splice(fromIndex, 1);
+  b.splice(Math.max(0, Math.min(b.length, toIndex)), 0, x);
+  return [a, b];
+}
+
+/* ── one element's props from two sets: an event runs the engine's handler first, the other unless it was handled ── */
+function mergeDndProps(a, b) {
+  const out = Object.assign({}, b, a);
+  Object.keys(a || {}).forEach(k => {
+    if (/^on[A-Z]/.test(k) && b && typeof b[k] === 'function' && typeof a[k] === 'function') {
+      out[k] = e => {
+        a[k](e);
+        if (!e.defaultPrevented) b[k](e);
+      };
+    }
+  });
+  if (a && b && a.className && b.className) out.className = b.className + ' ' + a.className;
+  return out;
+}
+
+/* ── the session: one drag at a time, shared by every list, item and target on the page ── */
+let session = null;
+const subscribers = new Set();
+const subscribe = f => {
+  subscribers.add(f);
+  return () => subscribers.delete(f);
+};
+function setSession(next) {
+  session = next;
+  if (typeof document !== 'undefined') {
+    if (next) document.documentElement.setAttribute('data-plx-dnd-active', next.mode);else document.documentElement.removeAttribute('data-plx-dnd-active');
+  }
+  subscribers.forEach(f => f());
+}
+function patchSession(part) {
+  if (session) setSession(Object.assign({}, session, part));
+}
+function useDndSession() {
+  return _react.default.useSyncExternalStore(subscribe, () => session, () => null);
+}
+
+// the drop targets and the sortable lists on the page
+const targets = new Map();
+const lists = new Map();
+let uid = 0;
+const nextId = p => p + '-' + ++uid;
+const inPageOrder = els => els.sort((a, b) => a.el && b.el && a.el.compareDocumentPosition(b.el) & 4 ? -1 : 1);
+
+// the instructions every handle points to (aria-describedby): one hidden element per page and wording
+const described = {};
+function instructionsId(text) {
+  if (typeof document === 'undefined') return undefined;
+  if (described[text] && described[text].isConnected) return described[text].id;
+  const el = document.createElement('div');
+  el.id = nextId('plx-dnd-instructions');
+  el.className = 'plx-visually-hidden';
+  el.textContent = text;
+  document.body.appendChild(el);
+  described[text] = el;
+  return el.id;
+}
+
+/* ── moving an element without a style attribute: a transform through the Web Animations API, on the grid ── */
+const offsets = new WeakMap();
+function setDragOffset(el, dx, dy) {
+  if (!el || !el.animate) return;
+  const frame = [{
+    transform: 'translate(' + (0, _grid.gridPx)(dx, {
+      el
+    }) + ', ' + (0, _grid.gridPx)(dy, {
+      el
+    }) + ')'
+  }];
+  const a = offsets.get(el);
+  if (a && a.effect && a.effect.setKeyframes) {
+    a.effect.setKeyframes(frame);
+    return;
+  }
+  offsets.set(el, el.animate(frame, {
+    duration: 0,
+    fill: 'forwards'
+  }));
+}
+function clearDragOffset(el, opts) {
+  const a = el && offsets.get(el);
+  if (!a) return;
+  offsets.delete(el);
+  if (opts && opts.settle && !reduced() && el.animate) {
+    const ms = (0, _tokenTime.tokenMs)('--plx-sys-gesture-settle-duration', 0, el);
+    const easing = getComputedStyle(el).getPropertyValue('--plx-sys-gesture-settle-easing').trim() || 'ease';
+    const from = a.effect && a.effect.getKeyframes ? a.effect.getKeyframes()[0] : null;
+    a.cancel();
+    if (ms > 0 && from && from.transform) el.animate([{
+      transform: from.transform
+    }, {
+      transform: 'none'
+    }], {
+      duration: ms,
+      easing
+    });
+    return;
+  }
+  a.cancel();
+}
+
+/* ── auto-scroll: the region that scrolls, and the speed near its edges ── */
+function scrollParent(el) {
+  for (let p = el && el.parentElement; p; p = p.parentElement) {
+    const cs = getComputedStyle(p);
+    if (/(auto|scroll)/.test(cs.overflowY + cs.overflowX) && (p.scrollHeight > p.clientHeight || p.scrollWidth > p.clientWidth)) return p;
+  }
+  return document.scrollingElement || document.documentElement;
+}
+function lengthToken(name, el) {
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim(),
+    n = parseFloat(v);
+  if (isNaN(n)) return NaN;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(document.documentElement).fontSize) : n;
+}
+function edgeSpeed(p, lo, hi, edge, speed) {
+  if (p < lo + edge) return -speed * Math.min(1, (lo + edge - p) / edge);
+  if (p > hi - edge) return speed * Math.min(1, (p - (hi - edge)) / edge);
+  return 0;
+}
+
+/* ── one pointer drag: slop (or the touch hold), the moves with scroll compensation and auto-scroll, the end ── */
+function trackPointer(e, o) {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const at = e.currentTarget,
+    tk = (0, _useGesture.gestureTokens)(at);
+  const slop = tk.slop > 0 ? tk.slop : (0, _grid.snapToGrid)(8),
+    holdMs = o.hold && e.pointerType === 'touch' ? tk.longPressDelay > 0 ? tk.longPressDelay : 0 : 0;
+  const edge = lengthToken('--plx-sys-dnd-autoscroll-edge', at),
+    speed = lengthToken('--plx-sys-dnd-autoscroll-speed', at);
+  const x0 = e.clientX,
+    y0 = e.clientY,
+    id = e.pointerId;
+  const scroller = scrollParent(o.el());
+  const s0 = {
+    left: scroller.scrollLeft,
+    top: scroller.scrollTop
+  };
+  let started = false,
+    held = !holdMs,
+    timer = null,
+    raf = null,
+    last = {
+      x: x0,
+      y: y0
+    },
+    t0 = 0,
+    done = false;
+  const point = () => ({
+    x: last.x,
+    y: last.y,
+    dx: last.x - x0 + scroller.scrollLeft - s0.left,
+    dy: last.y - y0 + scroller.scrollTop - s0.top
+  });
+  const tick = t => {
+    if (done) return;
+    const dt = t0 ? Math.min(t - t0, 50) : 16;
+    t0 = t;
+    const root = scroller === document.scrollingElement || scroller === document.documentElement;
+    const r = root ? {
+      top: 0,
+      left: 0,
+      bottom: window.innerHeight,
+      right: window.innerWidth
+    } : scroller.getBoundingClientRect();
+    const vy = edge > 0 && speed > 0 ? edgeSpeed(last.y, r.top, r.bottom, edge, speed) : 0;
+    const vx = edge > 0 && speed > 0 && o.axis !== 'y' ? edgeSpeed(last.x, r.left, r.right, edge, speed) : 0;
+    if (vx || vy) {
+      const before = scroller.scrollTop + scroller.scrollLeft;
+      scroller.scrollTop += vy * dt;
+      scroller.scrollLeft += vx * dt;
+      if (scroller.scrollTop + scroller.scrollLeft !== before) o.onMove(point());
+    }
+    raf = requestAnimationFrame(tick);
+  };
+  const begin = () => {
+    started = true;
+    o.onStart(point());
+    o.onMove(point());
+    raf = requestAnimationFrame(tick);
+  };
+  const move = ev => {
+    if (ev.pointerId !== id) return;
+    last = {
+      x: ev.clientX,
+      y: ev.clientY
+    };
+    if (!started) {
+      const far = Math.hypot(last.x - x0, last.y - y0) > slop;
+      if (!held) {
+        if (far) finish(true);
+        return;
+      } // a touch that moves before the hold: the page scrolls
+      if (!far && !holdMs) return;
+      begin();
+    }
+    ev.preventDefault();
+    o.onMove(point());
+  };
+  const block = ev => {
+    if (started) ev.preventDefault();
+  }; // no page scroll while a touch drag is under way
+  const key = ev => {
+    if (ev.key === 'Escape' && started) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      finish(true);
+    }
+  };
+  const up = ev => {
+    if (ev.pointerId === id) finish(ev.type === 'pointercancel');
+  };
+  function finish(canceled) {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    if (raf) cancelAnimationFrame(raf);
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    document.removeEventListener('pointercancel', up);
+    document.removeEventListener('touchmove', block);
+    document.removeEventListener('keydown', key, true);
+    if (started) o.onEnd(Object.assign(point(), {
+      canceled
+    }));
+  }
+  if (holdMs) timer = setTimeout(() => {
+    held = true;
+    begin();
+  }, holdMs);
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
+  document.addEventListener('pointercancel', up);
+  document.addEventListener('touchmove', block, {
+    passive: false
+  });
+  document.addEventListener('keydown', key, true);
+}
+
+// a press that ended a drag is not also a click (the handle's menu does not open after a drag)
+function useClickGuard() {
+  const dragged = _react.default.useRef(false);
+  return {
+    set: () => {
+      dragged.current = true;
+      setTimeout(() => {
+        dragged.current = false;
+      }, 0);
+    },
+    onClick: e => {
+      if (dragged.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        dragged.current = false;
+      }
+    }
+  };
+}
+const isKey = (e, ...keys) => keys.indexOf(e.key) >= 0;
+const pickKey = e => e.key === ' ' || e.key === 'Enter';
+
+/* ── where an item lands: how many items (the dragged one left out) come before the pointer ── */
+function landing(els, skip, x, y, orientation, rtl) {
+  let before = 0;
+  const kept = [];
+  els.forEach((el, i) => {
+    if (i === skip) return;
+    kept.push(i);
+    const r = el.getBoundingClientRect(),
+      mx = r.left + r.width / 2,
+      my = r.top + r.height / 2;
+    const ahead = rtl ? x < mx : x > mx;
+    if (orientation === 'horizontal' ? ahead : orientation === 'grid' ? y > r.bottom || y >= r.top && ahead : y > my) before++;
+  });
+  return {
+    to: before,
+    kept
+  };
+}
+// the insertion line for a landing place: before the item that will follow it, or after the last one
+function markOf(kept, to) {
+  if (!kept.length) return null;
+  return to < kept.length ? {
+    index: kept[to],
+    side: 'before'
+  } : {
+    index: kept[kept.length - 1],
+    side: 'after'
+  };
+}
+
+/* ── useSortable: reorder a list, and move items between the lists of a group ── */
+function useSortable(options) {
+  const o = options || {};
+  const items = o.items || [];
+  const getId = o.getId || (x => x.id);
+  const getName = o.getName || (x => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
+  const orientation = o.orientation || 'vertical',
+    useHandle = o.handle !== false;
+  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const [listId] = _react.default.useState(() => o.id || nextId('plx-dnd-list'));
+  const listRef = _react.default.useRef(null);
+  const latest = _react.default.useRef(o);
+  latest.current = Object.assign({}, o, {
+    items,
+    getId,
+    getName,
+    label: o.label || t.list,
+    orientation
+  });
+  const now = useDndSession();
+  const guard = useClickGuard();
+  const describe = instructionsId(t.instructions);
+  _react.default.useEffect(() => {
+    const entry = {
+      id: listId,
+      group: o.group,
+      get el() {
+        return listRef.current;
+      },
+      get o() {
+        return latest.current;
+      }
+    };
+    lists.set(listId, entry);
+    return () => {
+      lists.delete(listId);
+    };
+  }, [listId, o.group]);
+  const ids = items.map(getId);
+  const els = () => listRef.current ? Array.from(listRef.current.querySelectorAll('[data-plx-dnd-owner="' + listId + '"]')) : [];
+  const handleOf = id => {
+    const root = listRef.current;
+    return root ? Array.from(root.querySelectorAll('[data-plx-dnd-key]')).find(el => el.getAttribute('data-plx-dnd-key') === String(id)) : null;
+  };
+  const columns = () => {
+    const e = els();
+    if (!e.length) return 1;
+    const top = e[0].offsetTop;
+    const n = e.filter(x => x.offsetTop === top).length;
+    return n || 1;
+  };
+  const group = () => Array.from(lists.values()).filter(l => l.el && (l.id === listId || o.group && l.group === o.group));
+
+  // a key move or a drop keeps focus on the moved item's handle (it may now be in another list)
+  _react.default.useLayoutEffect(() => {
+    if (!now || now.kind !== 'sortable' || now.mode !== 'keyboard' || now.list !== listId || ids.indexOf(now.id) < 0) return;
+    const el = handleOf(now.id);
+    if (el && document.activeElement !== el) el.focus({
+      preventScroll: true
+    });
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: reduced() ? 'auto' : 'smooth'
+    });
+  }, [now, ids.join('\n')]);
+  const say = (s, vars) => (0, _announce.announce)(fill(s, vars));
+  const reorder = (from, to) => {
+    const L = latest.current;
+    if (to === from || to < 0 || to >= L.items.length || !L.onReorder) return false;
+    const item = L.items[from];
+    L.onReorder(moveItem(L.items, from, to), {
+      item,
+      from,
+      to
+    });
+    return true;
+  };
+  // programmatic moves (a menu of moves, move buttons): announced, focus kept on the moved item's handle
+  // opts.focus(itemEl): the element to focus in the moved item afterwards (default its handle)
+  const moveTo = (i, to, opts) => {
+    const L = latest.current;
+    to = Math.max(0, Math.min(L.items.length - 1, to));
+    const item = L.items[i];
+    if (!reorder(i, to)) return;
+    say(t.moved, {
+      name: L.getName(item),
+      position: to + 1,
+      total: L.items.length
+    });
+    const id = L.getId(item);
+    setTimeout(() => {
+      const h = handleOf(id),
+        itemEl = h && h.closest('[data-plx-dnd-owner]');
+      const el = opts && opts.focus && itemEl ? opts.focus(itemEl) : h;
+      if (el) el.focus();
+    }, 0);
+  };
+  const canMove = (i, step) => i + step >= 0 && i + step < items.length;
+  const startKeyboard = i => {
+    const item = items[i];
+    setSession({
+      kind: 'sortable',
+      mode: 'keyboard',
+      group: o.group,
+      id: getId(item),
+      name: getName(item),
+      list: listId,
+      origin: {
+        list: listId,
+        index: i,
+        items: items.slice()
+      }
+    });
+    say(t.pickedUp, {
+      name: getName(item),
+      position: i + 1,
+      total: items.length
+    });
+  };
+  const keyDown = i => e => {
+    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
+    const item = items[i],
+      id = getId(item),
+      mine = now && now.kind === 'sortable' && now.mode === 'keyboard' && now.id === id && now.list === listId;
+    if (!mine) {
+      if (pickKey(e) && e.target === e.currentTarget) {
+        e.preventDefault();
+        startKeyboard(i);
+      }
+      return;
+    }
+    const L = latest.current,
+      name = L.getName(item);
+    if (pickKey(e)) {
+      e.preventDefault();
+      setSession(null);
+      say(now.origin.list === listId ? t.dropped : t.droppedIn, {
+        name,
+        list: L.label,
+        position: i + 1,
+        total: L.items.length
+      });
+      return;
+    }
+    if (e.key === 'Tab') {
+      setSession(null);
+      say(t.dropped, {
+        name,
+        position: i + 1,
+        total: L.items.length
+      });
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      const back = now.origin;
+      if (back.list === listId) {
+        if (L.onReorder) L.onReorder(back.items, {
+          item,
+          from: i,
+          to: back.index
+        });
+      } else if (L.onMove) L.onMove({
+        item,
+        from: {
+          list: listId,
+          index: i
+        },
+        to: {
+          list: back.list,
+          index: back.index
+        }
+      });
+      setSession(Object.assign({}, now, {
+        list: back.list
+      }));
+      setTimeout(() => {
+        setSession(null);
+      }, 0);
+      say(t.canceled, {
+        name,
+        position: back.index + 1,
+        total: back.items.length
+      });
+      return;
+    }
+    let step = 0,
+      across = 0;
+    if (orientation === 'vertical') {
+      if (isKey(e, 'ArrowUp')) step = -1;else if (isKey(e, 'ArrowDown')) step = 1;else if (isKey(e, 'ArrowLeft', 'ArrowRight')) across = (0, _direction.arrowStep)(e, e.currentTarget, {
+        vertical: false
+      });
+    } else if (orientation === 'horizontal') {
+      step = (0, _direction.arrowStep)(e, e.currentTarget, {
+        vertical: false
+      });
+      if (!step && isKey(e, 'ArrowUp', 'ArrowDown')) across = e.key === 'ArrowDown' ? 1 : -1;
+    } else {
+      step = isKey(e, 'ArrowUp') ? -columns() : isKey(e, 'ArrowDown') ? columns() : (0, _direction.arrowStep)(e, e.currentTarget, {
+        vertical: false
+      });
+    }
+    if (isKey(e, 'Home')) step = -i;else if (isKey(e, 'End')) step = L.items.length - 1 - i;
+    if (!step && !across) return;
+    e.preventDefault();
+    if (step) {
+      const to = Math.max(0, Math.min(L.items.length - 1, i + step));
+      if (to !== i && reorder(i, to)) say(t.moved, {
+        name,
+        position: to + 1,
+        total: L.items.length
+      });
+      return;
+    }
+    // to the neighboring list of the group, in page order (the writing direction decides Left and Right)
+    if (!o.group || !L.onMove) return;
+    const g = inPageOrder(group());
+    const at = g.findIndex(l => l.id === listId),
+      nb = g[at + across];
+    if (!nb) return;
+    const index = Math.min(i, nb.o.items.length);
+    L.onMove({
+      item,
+      from: {
+        list: listId,
+        index: i
+      },
+      to: {
+        list: nb.id,
+        index
+      }
+    });
+    patchSession({
+      list: nb.id
+    });
+    say(t.movedTo, {
+      name,
+      list: nb.o.label,
+      position: index + 1,
+      total: nb.o.items.length + 1
+    });
+  };
+  const pointerDown = i => e => {
+    if (o.disabled || now && now.mode === 'keyboard') return;
+    const item = items[i],
+      id = getId(item);
+    const itemEl = () => els()[i];
+    trackPointer(e, {
+      el: itemEl,
+      hold: !useHandle,
+      onStart: () => setSession({
+        kind: 'sortable',
+        mode: 'pointer',
+        group: o.group,
+        id,
+        name: getName(item),
+        list: listId,
+        from: i,
+        over: {
+          list: listId,
+          to: i,
+          mark: null
+        }
+      }),
+      onMove: p => {
+        const el = itemEl();
+        if (el) setDragOffset(el, p.dx, p.dy);
+        // the list under the pointer: this one, or another of the group
+        const under = document.elementsFromPoint(p.x, p.y);
+        const g = group();
+        const hit = g.find(l => l.el && under.some(u => l.el.contains(u))) || (session && session.over ? g.find(l => l.id === session.over.list) : null) || lists.get(listId);
+        if (!hit || !hit.el) return;
+        const hitEls = Array.from(hit.el.querySelectorAll('[data-plx-dnd-owner="' + hit.id + '"]'));
+        const land = landing(hitEls, hit.id === listId ? i : -1, p.x, p.y, hit.o.orientation, (0, _direction.isRtl)(hit.el));
+        const mark = hit.id === listId && land.to === i ? null : markOf(land.kept, land.to);
+        const prev = session && session.over;
+        if (!prev || prev.list !== hit.id || prev.to !== land.to) patchSession({
+          over: {
+            list: hit.id,
+            to: land.to,
+            mark
+          }
+        });
+      },
+      onEnd: p => {
+        const el = itemEl(),
+          over = session && session.over,
+          L = latest.current;
+        guard.set();
+        const still = !over || p.canceled || over.list === listId && over.to === i;
+        if (el) clearDragOffset(el, {
+          settle: still
+        });
+        setSession(null);
+        if (p.canceled) {
+          say(t.canceled, {
+            name: L.getName(item),
+            position: i + 1,
+            total: L.items.length
+          });
+          return;
+        }
+        if (still) return;
+        if (over.list === listId) {
+          if (reorder(i, over.to)) say(t.dropped, {
+            name: L.getName(item),
+            position: over.to + 1,
+            total: L.items.length
+          });
+        } else if (L.onMove) {
+          const dest = lists.get(over.list);
+          L.onMove({
+            item,
+            from: {
+              list: listId,
+              index: i
+            },
+            to: {
+              list: over.list,
+              index: over.to
+            }
+          });
+          say(t.droppedIn, {
+            name: L.getName(item),
+            list: dest ? dest.o.label : t.list,
+            position: over.to + 1,
+            total: dest ? dest.o.items.length + 1 : over.to + 1
+          });
+        }
+      }
+    });
+  };
+  const stateOf = id => now && now.kind === 'sortable' && now.id === id && now.list === listId ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
+  const markFor = i => now && now.over && now.over.list === listId && now.over.mark && now.over.mark.index === i ? now.over.mark.side : undefined;
+  const handlers = i => ({
+    onPointerDown: pointerDown(i),
+    onKeyDown: keyDown(i),
+    onClick: guard.onClick,
+    'aria-describedby': describe,
+    'aria-pressed': stateOf(getId(items[i])) === 'picked' ? true : undefined,
+    'data-plx-dnd-key': String(getId(items[i])),
+    'data-plx-dnd-handle': ''
+  });
+  return {
+    listProps: {
+      ref: listRef,
+      'data-plx-dnd-list': listId,
+      'data-plx-dnd-orientation': orientation
+    },
+    itemProps: i => Object.assign({
+      className: 'plx-dnd-item',
+      'data-plx-dnd-owner': listId,
+      'data-plx-dnd-state': stateOf(getId(items[i])),
+      'data-plx-drop': markFor(i)
+    }, useHandle ? null : Object.assign(handlers(i), {
+      tabIndex: o.disabled ? undefined : 0,
+      'aria-label': fill(t.handle, {
+        name: getName(items[i])
+      })
+    })),
+    handleProps: i => useHandle ? Object.assign(handlers(i), {
+      'aria-label': fill(t.handle, {
+        name: getName(items[i])
+      }),
+      disabled: o.disabled || undefined
+    }) : {},
+    moveTo,
+    canMove,
+    state: {
+      active: now && now.kind === 'sortable' && now.list === listId && ids.indexOf(now.id) >= 0 ? now : null,
+      over: now && now.over && now.over.list === listId ? now.over : null
+    }
+  };
+}
+
+/* ── useDropTarget: a place that takes dragged items (and, with native, the browser's own drags) ── */
+function useDropTarget(options) {
+  const o = options || {};
+  const [id] = _react.default.useState(() => nextId('plx-dnd-target'));
+  const ref = _react.default.useRef(null);
+  const latest = _react.default.useRef(o);
+  latest.current = o;
+  const now = useDndSession();
+  const [nativeState, setNative] = _react.default.useState(null);
+  const depth = _react.default.useRef(0);
+  _react.default.useEffect(() => {
+    if (o.disabled) return undefined;
+    targets.set(id, {
+      id,
+      get el() {
+        return ref.current;
+      },
+      get o() {
+        return latest.current;
+      }
+    });
+    return () => {
+      targets.delete(id);
+    };
+  }, [id, o.disabled]);
+  const takes = s => !o.accepts || !!o.accepts(s.data, s.type);
+  let state = null;
+  if (now && now.kind === 'item' && !o.disabled) state = now.over === id ? takes(now) ? 'over' : 'reject' : takes(now) ? 'ready' : null;
+  if (nativeState) state = nativeState;
+  const nat = o.native;
+  const nativeProps = nat && !o.disabled ? {
+    onDragEnter: e => {
+      depth.current++;
+      setNative(!nat.accepts || nat.accepts(e.dataTransfer) ? 'over' : 'reject');
+    },
+    onDragOver: e => {
+      if (!nat.accepts || nat.accepts(e.dataTransfer)) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      } else e.dataTransfer.dropEffect = 'none';
+    },
+    onDragLeave: () => {
+      depth.current = Math.max(0, depth.current - 1);
+      if (!depth.current) setNative(null);
+    },
+    onDrop: e => {
+      e.preventDefault();
+      depth.current = 0;
+      setNative(null);
+      if ((!nat.accepts || nat.accepts(e.dataTransfer)) && nat.onDrop) nat.onDrop(e.dataTransfer);
+    }
+  } : {};
+  return {
+    ref,
+    state,
+    props: Object.assign({
+      ref,
+      className: 'plx-dnd-target',
+      'data-plx-drop-state': state || undefined,
+      'data-plx-dnd-target': id
+    }, nativeProps)
+  };
+}
+
+/* ── useDraggable: a data item people drop on a target (a file on a folder, a card on a column) ── */
+function useDraggable(options) {
+  const o = options || {};
+  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const [id] = _react.default.useState(() => nextId('plx-dnd-item'));
+  const ref = _react.default.useRef(null);
+  const now = useDndSession();
+  const guard = useClickGuard();
+  const describe = instructionsId(t.instructions);
+  const mine = now && now.kind === 'item' && now.id === id;
+  const takers = () => inPageOrder(Array.from(targets.values()).filter(x => x.el && (!x.o.accepts || x.o.accepts(o.data, o.type))));
+  const drop = target => {
+    if (target.o.onDrop) target.o.onDrop(o.data, o.type);
+    (0, _announce.announce)(fill(t.droppedOn, {
+      name: o.name,
+      target: target.o.name
+    }));
+  };
+  const keyDown = e => {
+    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!mine) {
+      if (!pickKey(e) || e.target !== e.currentTarget) return;
+      e.preventDefault();
+      const list = takers();
+      if (!list.length) {
+        (0, _announce.announce)(fill(t.noTargets, {
+          name: o.name
+        }));
+        return;
+      }
+      setSession({
+        kind: 'item',
+        mode: 'keyboard',
+        id,
+        data: o.data,
+        type: o.type,
+        name: o.name,
+        over: list[0].id
+      });
+      (0, _announce.announce)(fill(t.itemPickedUp, {
+        name: o.name,
+        count: list.length
+      }) + ' ' + fill(t.over, {
+        target: list[0].o.name
+      }));
+      return;
+    }
+    if (pickKey(e) || e.key === 'Tab') {
+      if (pickKey(e)) e.preventDefault();
+      const target = targets.get(now.over);
+      setSession(null);
+      if (target) drop(target);
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      setSession(null);
+      (0, _announce.announce)(fill(t.itemCanceled, {
+        name: o.name
+      }));
+      return;
+    }
+    const step = (0, _direction.arrowStep)(e, e.currentTarget);
+    if (!step) return;
+    e.preventDefault();
+    const list = takers();
+    const at = list.findIndex(x => x.id === now.over);
+    const next = list[(at + step + list.length) % list.length];
+    if (!next) return;
+    patchSession({
+      over: next.id
+    });
+    if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: reduced() ? 'auto' : 'smooth'
+    });
+    (0, _announce.announce)(fill(t.over, {
+      target: next.o.name
+    }));
+  };
+  const pointerDown = e => {
+    if (o.disabled || now && now.mode === 'keyboard') return;
+    trackPointer(e, {
+      el: () => ref.current,
+      hold: o.handle === false,
+      onStart: () => setSession({
+        kind: 'item',
+        mode: 'pointer',
+        id,
+        data: o.data,
+        type: o.type,
+        name: o.name,
+        over: null
+      }),
+      onMove: p => {
+        if (ref.current) setDragOffset(ref.current, p.dx, p.dy);
+        const under = document.elementsFromPoint(p.x, p.y);
+        let hit = null;
+        targets.forEach(x => {
+          if (!hit && x.el && under.some(u => x.el.contains(u))) hit = x;
+        });
+        const over = hit ? hit.id : null;
+        if (session && session.over !== over) {
+          patchSession({
+            over
+          });
+          if (hit) (0, _announce.announce)(fill(hit.o.accepts && !hit.o.accepts(o.data, o.type) ? t.overReject : t.over, {
+            target: hit.o.name,
+            name: o.name
+          }));
+        }
+      },
+      onEnd: p => {
+        const target = session && session.over ? targets.get(session.over) : null;
+        const ok = !p.canceled && target && (!target.o.accepts || target.o.accepts(o.data, o.type));
+        guard.set();
+        if (ref.current) clearDragOffset(ref.current, {
+          settle: !ok
+        });
+        setSession(null);
+        if (ok) drop(target);else (0, _announce.announce)(fill(t.itemCanceled, {
+          name: o.name
+        }));
+      }
+    });
+  };
+  const handlers = {
+    onPointerDown: pointerDown,
+    onKeyDown: keyDown,
+    onClick: guard.onClick,
+    'aria-describedby': describe,
+    'aria-pressed': mine && now.mode === 'keyboard' ? true : undefined,
+    'data-plx-dnd-handle': ''
+  };
+  const st = mine ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
+  return {
+    props: Object.assign({
+      ref,
+      className: 'plx-dnd-item',
+      'data-plx-dnd-state': st
+    }, o.handle === false ? Object.assign({}, handlers, {
+      tabIndex: 0,
+      'aria-label': fill(t.handle, {
+        name: o.name
+      })
+    }) : null),
+    handleProps: o.handle === false ? {} : Object.assign({}, handlers, {
+      'aria-label': fill(t.handle, {
+        name: o.name
+      }),
+      disabled: o.disabled || undefined
+    }),
+    targets: () => takers().map(x => ({
+      id: x.id,
+      name: x.o.name,
+      drop: () => drop(x)
+    })),
+    state: st || null
+  };
+}
+
+/* ── useReposition: a free move (a note on a board, a layer on a canvas), on the grid ── */
+function useReposition(options) {
+  const o = options || {};
+  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const pos = o.position || {
+    x: 0,
+    y: 0
+  };
+  const ref = _react.default.useRef(null);
+  const [id] = _react.default.useState(() => nextId('plx-dnd-move'));
+  const [preview, setPreview] = _react.default.useState(null);
+  const origin = _react.default.useRef(null);
+  const now = useDndSession();
+  const describe = instructionsId(t.instructions);
+  const picked = !!(now && now.kind === 'move' && now.id === id && now.mode === 'keyboard');
+  const shown = preview || pos;
+  const current = _react.default.useRef(shown);
+  current.current = shown; // the offset drawn now (the pointer handlers outlive a render)
+  // the resting place (and the preview while it moves): a transform through the Web Animations API
+  _react.default.useLayoutEffect(() => {
+    if (ref.current) setDragOffset(ref.current, shown.x, shown.y);
+  }, [shown.x, shown.y]);
+  _react.default.useEffect(() => () => {
+    if (ref.current) clearDragOffset(ref.current);
+  }, []);
+  // inside the bounds: the element's place in the layout (without its offset) and the frame it may move in
+  const clamp = (x, y) => {
+    const el = ref.current,
+      frame = o.bounds && o.bounds.current || el && el.offsetParent;
+    x = (0, _grid.snapToGrid)(x, {
+      el
+    });
+    y = (0, _grid.snapToGrid)(y, {
+      el
+    });
+    if (!el || !frame) return {
+      x,
+      y
+    };
+    const r = el.getBoundingClientRect(),
+      f = frame.getBoundingClientRect();
+    const left = r.left - current.current.x,
+      top = r.top - current.current.y;
+    const minX = (0, _grid.snapToGrid)(f.left - left, {
+        round: 'up',
+        el
+      }),
+      maxX = (0, _grid.snapToGrid)(f.right - left - r.width, {
+        round: 'down',
+        el
+      });
+    const minY = (0, _grid.snapToGrid)(f.top - top, {
+        round: 'up',
+        el
+      }),
+      maxY = (0, _grid.snapToGrid)(f.bottom - top - r.height, {
+        round: 'down',
+        el
+      });
+    return {
+      x: Math.max(minX, Math.min(maxX, x)),
+      y: Math.max(minY, Math.min(maxY, y))
+    };
+  };
+  const commit = next => {
+    if (o.onMove && (next.x !== pos.x || next.y !== pos.y)) o.onMove(next);
+  };
+  const moveBy = (dx, dy) => {
+    const next = clamp(pos.x + dx, pos.y + dy);
+    commit(next);
+    (0, _announce.announce)(fill(t.repositioned, {
+      name: o.name
+    }));
+  };
+  const keyDown = e => {
+    if (o.disabled || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!picked) {
+      if (pickKey(e) && e.target === e.currentTarget) {
+        e.preventDefault();
+        origin.current = pos;
+        setPreview(pos);
+        setSession({
+          kind: 'move',
+          mode: 'keyboard',
+          id,
+          name: o.name
+        });
+        (0, _announce.announce)(fill(t.repositionPicked, {
+          name: o.name
+        }));
+      }
+      return;
+    }
+    if (pickKey(e) || e.key === 'Tab') {
+      if (pickKey(e)) e.preventDefault();
+      commit(preview || pos);
+      setPreview(null);
+      setSession(null);
+      (0, _announce.announce)(fill(t.repositionDropped, {
+        name: o.name
+      }));
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      setPreview(null);
+      setSession(null);
+      (0, _announce.announce)(fill(t.repositionCanceled, {
+        name: o.name
+      }));
+      return;
+    }
+    // a free move goes the way the arrow points, in either writing direction
+    const sx = isKey(e, 'ArrowRight') ? 1 : isKey(e, 'ArrowLeft') ? -1 : 0,
+      sy = isKey(e, 'ArrowDown') ? 1 : isKey(e, 'ArrowUp') ? -1 : 0;
+    if (!sx && !sy) return;
+    e.preventDefault();
+    const step = lengthToken(e.shiftKey ? '--plx-sys-dnd-keyboard-step-large' : '--plx-sys-dnd-keyboard-step', e.currentTarget) || (0, _grid.snapToGrid)(8);
+    const base = preview || pos;
+    const next = clamp(base.x + sx * step, base.y + sy * step);
+    setPreview(next);
+    (0, _announce.announce)(fill(t.repositioned, {
+      name: o.name
+    }));
+  };
+  const pointerDown = e => {
+    if (o.disabled || picked) return;
+    const start = pos;
+    trackPointer(e, {
+      el: () => ref.current,
+      hold: false,
+      onStart: () => setSession({
+        kind: 'move',
+        mode: 'pointer',
+        id,
+        name: o.name
+      }),
+      onMove: p => setPreview(clamp(start.x + p.dx, start.y + p.dy)),
+      onEnd: p => {
+        const next = p.canceled ? null : clamp(start.x + p.dx, start.y + p.dy);
+        setPreview(null);
+        setSession(null);
+        if (next) {
+          commit(next);
+          (0, _announce.announce)(fill(t.repositionDropped, {
+            name: o.name
+          }));
+        }
+      }
+    });
+  };
+  const st = now && now.kind === 'move' && now.id === id ? now.mode === 'keyboard' ? 'picked' : 'dragging' : undefined;
+  return {
+    props: {
+      ref,
+      tabIndex: o.disabled ? undefined : 0,
+      className: 'plx-dnd-item plx-dnd-move',
+      'data-plx-dnd-state': st,
+      'aria-label': o.name,
+      'aria-roledescription': t.movable || undefined,
+      'aria-describedby': describe,
+      'aria-pressed': picked ? true : undefined,
+      onPointerDown: pointerDown,
+      onKeyDown: keyDown
+    },
+    position: shown,
+    picked,
+    moveBy
+  };
 }
   } },
   "platform/components/DragHandle/DragHandle.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -19502,292 +15303,425 @@ function tokenPixels(token, el) {
   return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
 }
   } },
-  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Popover = Popover;
+exports.Text = Text;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
-var _floating = require("../../utils/floating.js");
 var _Button = require("../Button/Button.jsx");
-var _Sheet = require("../Sheet/Sheet.jsx");
-var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
-   Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
-     a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
-     dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
-     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
+   Summary: A run of text in one of the system's text roles, from the type tokens.
    Usage:
-     <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
-     <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
-     <Popover trigger={<Link href="/people/maya">Maya Chen</Link>} triggerOn="hover" label="Maya Chen" size="sm">…</Popover>
-     <Popover trigger={target} triggerOn="manual" open={open} onOpenChange={setOpen} arrow placement="bottom">…</Popover>
+     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
+     <Text variant="display" as="h1">1,284 assets</Text>
+     <Text as="p" lines={3} expandable>A long description…</Text>
+     <Text variant="secondary" tabular>12:40</Text>
    Props:
-     trigger: the element that opens it (one element; it gets the ref, and for a click popover aria-haspopup="dialog",
-       aria-expanded and aria-controls)
-     triggerOn: "click" (default: click, Enter or Space on the trigger) | "hover" (a hover card: opens after
-       --plx-comp-popover-hover-open-delay on pointer hover and on keyboard focus, and stays open while the pointer is in
-       it) | "manual" (only the open prop opens it: a teaching bubble pointing at its target)
-     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
-     onOpenChange(open): runs when it opens or closes
-     title: the title in its header; it names the popover
-     label: the accessible name when there is no title
-     footer: a row of actions at the bottom, at the end edge
-     closeButton: a Close button at the end of the header (default false; Escape and a click outside always close it)
-     placement: where it sits against the trigger: "bottom-start" (default) | "bottom" | "bottom-end" | "top" | "top-start"
-       | "top-end" | "start" | "start-top" | "start-bottom" | "end" | "end-top" | "end-bottom" (start and end follow the
-       writing direction)
-     size: "md" (default; 320px wide) | "sm" (240px) | "lg" (400px) | "auto" (as wide as its content); never wider than
-       the window less its margins
-     arrow: a caret on the edge that faces the trigger, pointing at it (default false)
-     role: "dialog" (default) | "alertdialog" (a question that needs an answer: Popconfirm) | null (a disclosure panel of
-       links, MegaMenu: no popup role, and the trigger is a plain disclosure button with aria-expanded)
-     initialFocus: a ref to the element that takes focus when it opens (default: the first control in its body, else its
-       first control (Close, a footer action), else the popover)
-     focusOnOpen: focus moves into it when it opens (default true for a click popover, false for hover and manual)
-     sheetOnNarrow: at the Narrow window class a click popover opens as a bottom Sheet instead (default true; a hover
-       card never does)
-     strings: the words it shows and announces, for other languages: { close: "Close" }
-     className: more classes on the popover
-     anchorClassName: a layout class for the anchor (the trigger's box in the page): its owner's placement of it (DatePicker, TreeSelect)
-     children: the content
-     Other props pass through to the popover's <div> (aria-describedby).
+     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
+       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
+       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
+       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
+       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
+       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
+       label: semibold 12px. strong: semibold, the current size.
+       heading: a group's title inside a page or dialog, semibold 13px.
+       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
+       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
+       title: a page title, the heading font, 20px, bold.
+       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
+         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
+       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
+         empty state (body-lg; library wave 2).
+     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
+     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
+     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
+     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
+       "Show less" to fold it again; default false
+     defaultExpanded: an expandable text starts unfolded; default false
+     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
+       change; default false
+     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
+     className: more classes on the text
+     children: the text
+     ...rest: other attributes go on the element
    Behavior:
-     Click: the trigger opens and closes it; focus moves into it (initialFocus, else the first control in its body, else
-       its first control, else the popover) and returns to the trigger when Escape closes it, or when it closes while
-       focus is inside it (Close, an action). Escape, a click outside, and Tab out of it close it. It is not modal: the
-       page stays usable and focus is not trapped.
-     Hover: opens after the open delay on pointer hover, and at once on keyboard focus of the trigger; closes
-       --plx-comp-popover-hover-close-delay after the pointer leaves both, on blur, and with Escape. Touch has no hover:
-       a tap follows the trigger (a link), so a hover card holds nothing that is only there.
-     Manual: opens and closes only by the open prop (a click outside does not close it); Escape asks to close it
-       (onOpenChange(false)) and returns focus to the trigger.
-     Placement: by CSS anchor positioning it flips to the other side and shifts its alignment to stay in the window, and
-       follows the trigger on scroll and resize; without it, it is drawn inside the trigger's wrapper on its side. With an
-       arrow it keeps its side and alignment, so the arrow always points at the trigger.
-     At the Narrow window class (under --plx-sys-shell-phone-below) a click popover is a bottom Sheet: the same title,
-       content and footer, modal, with the sheet's own close.
+     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
+       get all of it.
+     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
+       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
+     display and lead are type styles only: the element (as) gives the heading level.
    Notes:
-     One popover at a time; never a popover inside a popover. A hint of a few words is a Tooltip; a decision that blocks
-       the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
-     ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
+     Applications never set a font, size, weight or color themselves.
+     There are no margins in any case, whatever the element.
+     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
+       label, down to show more and up to show less.
 */
+const LINES = [2, 3, 4];
 const STRINGS = {
-  close: 'Close'
+  more: 'Show more',
+  less: 'Show less'
 };
-const SIZES = ['sm', 'md', 'lg', 'auto'];
 
-// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
-// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-function Popover({
-  trigger,
-  triggerOn = 'click',
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  title,
-  label,
-  footer,
-  closeButton = false,
-  placement = 'bottom-start',
-  size = 'md',
-  arrow = false,
-  role = 'dialog',
-  initialFocus,
-  focusOnOpen,
-  sheetOnNarrow = true,
+// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
+const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
+function Text({
+  as: As = 'span',
+  variant = 'body',
+  truncate = false,
+  lines,
+  expandable = false,
+  defaultExpanded = false,
+  tabular = false,
   strings,
   className,
-  anchorClassName,
   children,
   ...rest
 }) {
-  (0, _devWarn.devWarn)('Popover', {
-    size
+  (0, _devWarn.devWarn)('Text', {
+    variant
   }, {
-    size: ['md', 'sm', 'lg', 'auto']
+    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
   });
-  const t = Object.assign({}, STRINGS, strings);
-  const id = (0, _layer.useUid)('plx-popover');
-  const controlled = openProp !== undefined;
-  const [own, setOwn] = _react.default.useState(!!defaultOpen);
-  const open = controlled ? !!openProp : own;
-  const setOpen = _react.default.useCallback(v => {
-    if (!controlled) setOwn(v);
-    if (onOpenChange) onOpenChange(v);
-  }, [controlled, onOpenChange]);
-  const wrap = _react.default.useRef(null),
-    panel = _react.default.useRef(null),
-    anchor = _react.default.useRef(null),
-    timer = _react.default.useRef(null);
-  const hover = triggerOn === 'hover',
-    click = triggerOn === 'click';
-  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
-  const asSheet = click && sheetOnNarrow && narrow;
-  const floating = open && !asSheet;
-  const where = _floating.PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const {
-    placement: used
-  } = (0, _floating.useFloating)(anchor, panel, {
-    open: floating,
-    placement: where,
-    offset: arrow ? 'md' : 'xs',
-    flip: !arrow,
-    shift: !arrow
-  });
-  const [side, align] = used.split('-');
-  const close = _react.default.useCallback(refocus => {
-    setOpen(false);
-    if (refocus && anchor.current && anchor.current.focus) anchor.current.focus();
-  }, [setOpen]);
-  (0, _layer.useLayer)(panel, floating, {
-    onEscape: () => close(!hover)
-  });
+  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
+  if (expandable && clamp) {
+    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
+      As: As,
+      variant: variant,
+      clamp: clamp,
+      defaultExpanded: defaultExpanded,
+      tabular: tabular,
+      strings: strings,
+      className: className,
+      rest: rest
+    }, children);
+  }
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto",
+    className: textClass(variant, truncate, clamp, false, tabular, className)
+  }, rest), children);
+}
 
-  // into the top layer as soon as it is in the page, before focus moves in
+// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
+function ExpandableText({
+  As,
+  variant,
+  clamp,
+  defaultExpanded,
+  tabular,
+  strings,
+  className,
+  rest,
+  children
+}) {
+  const own = (0, _layer.useUid)('plx-text');
+  const id = rest.id || own;
+  const ref = _react.default.useRef(null);
+  const [open, setOpen] = _react.default.useState(defaultExpanded);
+  const [cut, setCut] = _react.default.useState(false);
   _react.default.useLayoutEffect(() => {
-    const el = panel.current;
-    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
-  }, [floating]);
-  // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
-  const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
-  _react.default.useEffect(() => {
-    if (!floating) return undefined;
-    if (takeFocus) {
-      const root = panel.current;
-      const wanted = initialFocus && initialFocus.current;
-      const first = wanted || (0, _layer.focusables)(root.querySelector('.plx-popover__body'))[0] || (0, _layer.focusables)(root)[0] || root;
-      if (first) first.focus({
-        preventScroll: true
-      });
-    }
-    if (!click) return undefined;
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', outside);
-    return () => document.removeEventListener('mousedown', outside);
-  }, [floating]);
-  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
-  // closed while focus was inside it (Close, an action, the open prop): focus goes back to the trigger, not the page
-  const inside = _react.default.useRef(false);
-  _react.default.useEffect(() => {
-    if (floating || !inside.current) return;
-    inside.current = false;
-    const a = document.activeElement;
-    if ((!a || a === document.body) && anchor.current && anchor.current.focus) anchor.current.focus();
-  }, [floating]);
-
-  // the hover card's timers: open after the open delay, close after the close delay (cancelled by coming back)
-  const later = v => {
-    clearTimeout(timer.current);
-    const el = wrap.current;
-    timer.current = setTimeout(() => setOpen(v), ms(el, v ? '--plx-comp-popover-hover-open-delay' : '--plx-comp-popover-hover-close-delay'));
-  };
-  const hoverProps = hover ? {
-    onPointerEnter: e => {
-      if (e.pointerType !== 'touch') later(true);
-    },
-    onPointerLeave: e => {
-      if (e.pointerType !== 'touch') later(false);
-    },
-    onFocus: e => {
-      if (e.target === anchor.current && e.target.matches(':focus-visible')) {
-        clearTimeout(timer.current);
-        setOpen(true);
-      }
-    },
-    onBlur: e => {
-      if (!wrap.current.contains(e.relatedTarget)) {
-        clearTimeout(timer.current);
-        setOpen(false);
-      }
-    }
-  } : click ? {
-    // Tab out of the popover (or the trigger) to somewhere else closes it; a click on its text does not (no related target)
-    onBlur: e => {
-      if (floating && e.relatedTarget && !wrap.current.contains(e.relatedTarget)) setOpen(false);
-    } // the sheet is a portal: not while it shows
-  } : {};
-  const child = _react.default.Children.only(trigger);
-  const triggerEl = /*#__PURE__*/_react.default.cloneElement(child, click ? {
-    ref: anchor,
-    'aria-haspopup': role ? 'dialog' : undefined,
-    'aria-expanded': open,
-    'aria-controls': open ? id : undefined,
-    expanded: undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  } : {
-    ref: anchor
-  });
-  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const titleId = id + 't';
-  const header = title || closeButton ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__header"
-  }, title ? /*#__PURE__*/_react.default.createElement("h2", {
-    id: titleId,
-    className: "plx-popover__title"
-  }, title) : null, closeButton ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    size: "xs",
-    iconOnly: true,
-    icon: "close",
-    label: t.close,
-    className: "plx-popover__close",
-    onClick: () => close(true)
-  }) : null) : null;
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    ref: wrap,
-    className: (0, _cx.cx)('plx-popover-anchor', anchorClassName)
-  }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: panel,
+    const el = ref.current;
+    if (!el || open) return undefined;
+    const measure = () => setCut(el.scrollHeight > el.clientHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const watch = new ResizeObserver(measure);
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [open, children]);
+  const words = Object.assign({}, STRINGS, strings);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-text-expand"
+  }, /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto"
+  }, rest, {
+    ref: ref,
     id: id,
-    role: role || undefined,
-    "aria-labelledby": role && title ? titleId : undefined,
-    "aria-label": role && !title ? label : undefined,
-    tabIndex: -1,
-    popover: TOP_LAYER ? 'manual' : undefined,
-    "data-plx-popover-side": side,
-    "data-plx-popover-align": align || 'center',
-    className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
-    onFocus: () => {
-      inside.current = true;
-    },
-    onBlur: e => {
-      inside.current = !!(panel.current && panel.current.contains(e.relatedTarget));
-    }
-  }, rest), arrow ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-popover__arrow",
+    className: textClass(variant, false, clamp, open, tabular, className)
+  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "2xs",
+    iconEnd: open ? 'chevron-up' : 'chevron-down',
+    "aria-expanded": open,
+    "aria-controls": id,
+    onClick: () => setOpen(!open)
+  }, open ? words.less : words.more) : null);
+}
+  } },
+  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Pagination = Pagination;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pagination
+   Summary: Page buttons, an optional summary ("1–30 of 120") and an optional per-page choice.
+   Usage:
+     <Pagination page={2} pageCount={4} onPageChange={setPage}
+       total={120} perPage={30} perPageOptions={[30, 60, 120]} onPerPageChange={setPerPage} />
+   Props:
+     page: the current page, 1-based; default 1
+     pageCount: the number of pages; default 1
+     onPageChange(page): runs when another page is chosen
+     total: the number of items; with it the summary shows
+     perPage: the number of items per page
+     perPageOptions: the per-page choices; with onPerPageChange the per-page choice shows
+     onPerPageChange(n): runs when another per-page number is chosen
+     label: the accessible name of the navigation; default strings.label: "Pages"
+     className: more classes on the navigation
+     strings: the words it shows and announces, for other languages: { label: "Pages", range: "{first}–{last} of {total}",
+       previous: "Previous page", next: "Next page", page: "Page {n}", perPage: "Per page" }
+     ...rest: other attributes go on the navigation element
+   Behavior:
+     Shows the first and last page, the current page and its neighbors, with "…" between gaps.
+     Previous is disabled on the first page; Next on the last.
+     The current page carries aria-current="page".
+*/
+const STRINGS = {
+  label: 'Pages',
+  range: '{first}–{last} of {total}',
+  previous: 'Previous page',
+  next: 'Next page',
+  page: 'Page {n}',
+  perPage: 'Per page'
+};
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+function pagesToShow(page, count) {
+  const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
+  const list = Array.from(set).sort((a, b) => a - b),
+    out = [];
+  list.forEach((p, i) => {
+    if (i && p - list[i - 1] > 1) out.push('gap-' + p);
+    out.push(p);
+  });
+  return out;
+}
+function Pagination({
+  page = 1,
+  pageCount = 1,
+  onPageChange,
+  total,
+  perPage,
+  perPageOptions,
+  onPerPageChange,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const go = p => {
+    if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
+  };
+  const first = total ? (page - 1) * (perPage || 0) + 1 : null;
+  const last = total ? Math.min(total, page * (perPage || total)) : null;
+  return /*#__PURE__*/_react.default.createElement("nav", _extends({
+    className: (0, _cx.cx)('plx-pagination', className),
+    "aria-label": label || t.label
+  }, rest), total ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-pagination__info"
+  }, fill(t.range, {
+    first,
+    last,
+    total
+  })) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-pagination__pages"
+  }, /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-pagination__page plx-pagination__step",
+    "aria-label": t.previous,
+    disabled: page <= 1,
+    onClick: () => go(page - 1)
+  }, "\u2039"), pagesToShow(page, pageCount).map(p => typeof p === 'string' ? /*#__PURE__*/_react.default.createElement("span", {
+    key: p,
+    className: "plx-pagination__gap",
     "aria-hidden": "true"
-  }) : null, header, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__body"
-  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-popover__footer"
-  }, footer) : null) : null, asSheet ? /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
-    open: open,
-    onClose: () => setOpen(false),
-    title: title || label,
-    footer: footer,
-    form: "bottom",
-    initialFocus: initialFocus,
-    closeLabel: t.close
-  }, children) : null);
+  }, "\u2026") : /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    key: p,
+    className: "plx-pagination__page",
+    "aria-current": p === page ? 'page' : undefined,
+    "aria-label": fill(t.page, {
+      n: p
+    }),
+    onClick: () => go(p)
+  }, p)), /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-pagination__page plx-pagination__step",
+    "aria-label": t.next,
+    disabled: page >= pageCount,
+    onClick: () => go(page + 1)
+  }, "\u203A")), perPageOptions && onPerPageChange ? /*#__PURE__*/_react.default.createElement("label", {
+    className: "plx-pagination__per-page"
+  }, /*#__PURE__*/_react.default.createElement("span", null, t.perPage), /*#__PURE__*/_react.default.createElement("select", {
+    className: "plx-pagination__select",
+    value: perPage,
+    onChange: e => onPerPageChange(Number(e.target.value))
+  }, perPageOptions.map(n => /*#__PURE__*/_react.default.createElement("option", {
+    key: n,
+    value: n
+  }, n)))) : null);
+}
+  } },
+  "platform/components/EmptyState/EmptyState.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EmptyState = EmptyState;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EmptyState
+   Summary: What a region shows when it has nothing yet, and how to add the first item; in a tone, what failed, what needs
+     care or what went well, and the one action that follows (platforms.md 5.5); with a kind, the common system states
+     (offline, degraded, permission denied, not found, maintenance, completion) with their icon, tone and words.
+   Usage:
+     <EmptyState size="page" icon="folder" title="No assets yet" action={<Button variant="primary">Upload</Button>}>
+       Upload files to start.</EmptyState>
+     <EmptyState tone="error" title="The assets could not load" action={<Button icon="refresh" onClick={reload}>Retry</Button>}>
+       The server did not answer.</EmptyState>
+     <EmptyState kind="offline" action={<Button icon="refresh" onClick={reload}>Try again</Button>} />
+     <EmptyState kind="permission-denied" title="You can’t open this project">Ask its owner to share it with you.</EmptyState>
+   Props:
+     size: "inline" (default; a line inside a list or table area) | "page" (a whole view)
+     tone: "neutral" (default; empty) | "error" (the content could not load: the title names the problem, the action
+       recovers; announced as an alert, the icon in the danger color) | "warning" (something needs care before the region
+       works fully: the icon in the warning color) | "success" (the work here is finished: the icon in the success color);
+       warning and success are announced politely (role="status")
+     kind: a system state that brings its icon, tone, title and text (each still overridable by the props):
+       "offline" (warning, wifi-off) | "degraded" (warning, cloud-off) | "permission-denied" (neutral) | "not-found" (neutral)
+       | "maintenance" (neutral) | "completion" (success)
+     icon: an icon name or an <Icon> (or other mark); hidden from assistive technology; the default comes from the kind,
+       else from the tone (error and warning "warning", success "circle-check")
+     title: the main line (the kind's title unless given)
+     action: a button (one: the action that fills the region, recovers from the error or moves on)
+     children: the explaining text (the kind's text unless given)
+     strings: the kinds' words, for other languages: { offline: { title, text }, degraded: { … }, … } (merged over the defaults)
+     className: more classes on the region
+   Behavior:
+     The error tone is a live alert (role="alert"): a screen reader says it when it appears. Warning and success are a
+       status (role="status"), read when the reader is idle. The neutral tone is not announced.
+     Its words carry the meaning; the tone color on the icon is never the only sign (WCAG 1.4.1).
+   Notes:
+     Other props pass through to the <div>.
+     A kind sets defaults only: an explicit tone, icon, title or children wins.
+*/
+// the system states: their tone and icon, and their words (STRINGS, translatable through the strings prop)
+const KINDS = {
+  offline: {
+    tone: 'warning',
+    icon: 'wifi-off'
+  },
+  degraded: {
+    tone: 'warning',
+    icon: 'cloud-off'
+  },
+  'permission-denied': {
+    tone: 'neutral',
+    icon: 'lock'
+  },
+  'not-found': {
+    tone: 'neutral',
+    icon: 'doc-search'
+  },
+  maintenance: {
+    tone: 'neutral',
+    icon: 'settings-maintenance'
+  },
+  completion: {
+    tone: 'success',
+    icon: 'circle-check'
+  }
+};
+const STRINGS = {
+  offline: {
+    title: 'You’re offline',
+    text: 'Check your connection. This page updates when you’re back online.'
+  },
+  degraded: {
+    title: 'Some features aren’t working',
+    text: 'A service is slow or not responding, so what you see may be out of date.'
+  },
+  'permission-denied': {
+    title: 'You don’t have access',
+    text: 'Ask the owner to share it with you.'
+  },
+  'not-found': {
+    title: 'This page doesn’t exist',
+    text: 'It may have been moved or deleted. Check the address or go back.'
+  },
+  maintenance: {
+    title: 'Down for maintenance',
+    text: 'This service is being updated. Try again in a few minutes.'
+  },
+  completion: {
+    title: 'All done',
+    text: 'There’s nothing left to do here.'
+  }
+};
+const TONE_ICONS = {
+  error: 'warning',
+  warning: 'warning',
+  success: 'circle-check'
+};
+const ROLES = {
+  error: 'alert',
+  warning: 'status',
+  success: 'status'
+};
+function EmptyState({
+  size = 'inline',
+  tone,
+  kind,
+  icon,
+  title,
+  action,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('EmptyState', {
+    size,
+    tone
+  }, {
+    size: ['inline', 'page'],
+    tone: ['neutral', 'error', 'warning', 'success']
+  });
+  const preset = KINDS[kind];
+  const words = preset ? Object.assign({}, STRINGS[kind], strings && strings[kind]) : null;
+  const t = tone || (preset ? preset.tone : 'neutral');
+  const mark = icon !== undefined ? icon : preset ? preset.icon : TONE_ICONS[t];
+  const head = title !== undefined ? title : words ? words.title : null;
+  const text = children !== undefined && children !== null ? children : words ? words.text : null;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-empty-state', 'plx-empty-state--' + size, t !== 'neutral' && 'plx-empty-state--' + t, className),
+    role: ROLES[t]
+  }, rest), mark ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-empty-state__icon",
+    "aria-hidden": "true"
+  }, typeof mark === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: mark
+  }) : mark) : null, head ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-empty-state__title"
+  }, head) : null, text ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-empty-state__text"
+  }, text) : null, action ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-empty-state__action"
+  }, action) : null);
 }
   } },
   "platform/components/DataGrid/state.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -19847,6 +15781,365 @@ function opening(props) {
     rowHeight: step,
     wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false
   };
+}
+  } },
+  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Chip = Chip;
+exports.Tag = Tag;
+exports.TagInput = void 0;
+exports.TagList = TagList;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tag, Chip, TagList, TagInput
+   Summary: Small labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button. A tag with a
+     category is a category pill: its category color as a soft pill (owner, 2026-10-14, docs/pills-and-colors.md).
+   Usage:
+     <TagList label="Keywords">
+       <Tag onRemove={() => remove('sky')}>sky</Tag>
+       <Tag category="teal">Client</Tag>
+       <Chip selected={on} onClick={() => setOn(!on)}>Favorites</Chip>
+       <TagInput placeholder="Add a tag" onKeyDown={…} />
+     </TagList>
+   Props:
+     Tag.onRemove(event): shows a × button that runs it
+     Tag.removeLabel: the × button's accessible name; default "Remove " + the tag text
+     Tag.onRename(text): makes the tag renamable: its text becomes a button; activating it turns it into a field (Enter or leaving it keeps
+       the new text, Escape cancels); renameLabel: the button's accessible name (default "Rename " + the tag text)
+     Tag.category: the tag's category color, one of the 19 category colors (CATEGORY_COLORS: red, green, yellow, blue, orange,
+       purple, cyan, magenta, lime, pink, teal, lavender, beige, maroon, mint, olive, apricot, navy, grey); set as
+       data-plx-category: background shade 100, a 1px border in shade 300, text in shade 700. Without it the tag is gray. Legacy category="brown" uses Orange.
+     Tag.className: more classes on the tag
+     Tag.children: the tag text
+     Chip.selected: the chip is pressed (aria-pressed); default false
+     Chip.onClick(event): runs when the chip is clicked
+     Chip.onRemove(event): shows a × button that runs it
+     Chip.removeLabel: the × button's accessible name; default "Remove " + the chip text
+     Chip.className: more classes on the chip
+     Chip.children: the chip text
+     TagList.label: the accessible name of the group; without it the list is not a group
+     TagList.className: more classes on the list
+     TagList.children: the tags or chips
+     TagInput.onAdd(text): adds a tag: runs on Enter with the typed text (trimmed; never empty), then the field clears;
+       the application ignores a tag it already has
+     TagInput.label: the accessible name of the + button and the field, and the field's placeholder (default "Add a tag")
+     TagInput.collapsible: true (default): a + button that reveals the field; false: the field is always shown
+     TagInput.className: more classes on the input
+   Behavior:
+     The × button is a 24px target in a 16px box, 44px with touch (Platforms Standard 3.1); a chip's target grows the same
+       way past its 20px look. With touch, TagList parts its tags and rows, and keeps
+       12px above and below itself, so the targets do not overlap each other or the controls beside the list.
+     Selected chips are filled.
+     TagInput is a + at the end of the tag list, drawn as a Chip (the tag look as a button: its height, corners, fill and
+       border; owner, batch 272), its target 24px like the tag's × (owner, batch 271: "it should be a + and clicking that plus
+       exposes the text field"): pressing it reveals a text field like every other (the input's border, hover, focus and
+       disabled states), focused. Type a tag and press Enter to add it: it appears before the field, the field clears and
+       stays open for the next one. Escape, or leaving the field empty, closes it and returns focus to the +. Each tag's
+       × removes it. Without onAdd the field only reports what is typed (onChange, onKeyDown).
+     A tag being renamed is a small field with the input's focused border.
+   Notes:
+     Category colors identify labels; they never mean a workflow state. A status is a Badge (its six variants), never a
+       category tag, and a tag is never drawn in a status variant.
+     TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
+     TagInput is the "add a tag" field at the end of a TagList.
+     Other props reach the element: the tag, the chip's toggle button, the list, or the input.
+*/
+function RemoveButton({
+  label,
+  onClick
+}) {
+  return /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-tag__remove",
+    "aria-label": label,
+    onClick: onClick
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, "\xD7"));
+}
+function Tag({
+  category,
+  onRemove,
+  removeLabel,
+  onRename,
+  renameLabel,
+  className,
+  children,
+  ...rest
+}) {
+  const [editing, setEditing] = _react.default.useState(false);
+  const [draft, setDraft] = _react.default.useState('');
+  const text = typeof children === 'string' ? children : '';
+  const done = keep => {
+    setEditing(false);
+    if (keep && draft.trim() && draft.trim() !== text) onRename(draft.trim());
+  };
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className),
+    "data-plx-category": (category === 'brown' ? 'orange' : category) || undefined
+  }, rest), onRename && editing ? /*#__PURE__*/_react.default.createElement("input", {
+    className: "plx-tag__input",
+    value: draft,
+    "aria-label": renameLabel || 'Rename ' + (text || 'tag'),
+    autoFocus: true,
+    size: Math.max(4, draft.length),
+    onChange: e => setDraft(e.target.value),
+    onBlur: () => done(true),
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        done(true);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        done(false);
+      }
+    }
+  }) : onRename ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-tag__label plx-tag__rename",
+    "aria-label": renameLabel || 'Rename ' + (text || 'tag'),
+    onClick: () => {
+      setDraft(text);
+      setEditing(true);
+    }
+  }, children) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tag__label"
+  }, children), onRemove ? /*#__PURE__*/_react.default.createElement(RemoveButton, {
+    label: removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'tag'),
+    onClick: onRemove
+  }) : null);
+}
+function Chip({
+  selected = false,
+  onRemove,
+  removeLabel,
+  className,
+  children,
+  ...rest
+}) {
+  if (onRemove) {
+    return /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)
+    }, /*#__PURE__*/_react.default.createElement("button", _extends({
+      type: "button",
+      className: "plx-tag__toggle",
+      "aria-pressed": selected
+    }, rest), children), /*#__PURE__*/_react.default.createElement(RemoveButton, {
+      label: removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'filter'),
+      onClick: onRemove
+    }));
+  }
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    type: "button",
+    className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className),
+    "aria-pressed": selected
+  }, rest), children);
+}
+function TagList({
+  className,
+  children,
+  label,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-tag-list', className),
+    role: label ? 'group' : undefined,
+    "aria-label": label
+  }, rest), children);
+}
+const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(function TagInput({
+  onAdd,
+  onKeyDown,
+  value,
+  onChange,
+  label = 'Add a tag',
+  collapsible = true,
+  id,
+  className,
+  onBlur,
+  ...rest
+}, ref) {
+  const [own, setOwn] = _react.default.useState('');
+  const [open, setOpen] = _react.default.useState(!collapsible);
+  const text = value !== undefined ? value : own;
+  const inputRef = _react.default.useRef(null),
+    plusRef = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => inputRef.current || plusRef.current);
+  const wasOpen = _react.default.useRef(open);
+  _react.default.useEffect(() => {
+    // opening focuses the field; closing returns focus to the + (only after a change, never on mount)
+    if (wasOpen.current === open) return;
+    wasOpen.current = open;
+    if (open && inputRef.current) inputRef.current.focus();else if (!open && plusRef.current && plusRef.current.focus) plusRef.current.focus();
+  }, [open]);
+  const setText = v => {
+    if (value === undefined) setOwn(v);else if (onChange) onChange({
+      target: {
+        value: v
+      },
+      currentTarget: {
+        value: v
+      }
+    });
+  };
+  const change = e => {
+    if (value === undefined) setOwn(e.target.value);
+    if (onChange) onChange(e);
+  };
+  const keyDown = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented) return;
+    if (e.key === 'Escape' && collapsible) {
+      e.preventDefault();
+      setText('');
+      setOpen(false);
+      return;
+    }
+    if (!onAdd || e.key !== 'Enter') return;
+    e.preventDefault();
+    const t = String(text).trim();
+    if (!t) return;
+    onAdd(t);
+    setText('');
+  };
+  const blur = e => {
+    if (onBlur) onBlur(e);
+    if (collapsible && !String(text).trim()) setOpen(false);
+  };
+  if (!open) {
+    return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+      content: label
+    }, /*#__PURE__*/_react.default.createElement("button", {
+      ref: plusRef,
+      id: id,
+      type: "button",
+      "aria-label": label,
+      className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', 'plx-tag--add', className),
+      onClick: () => setOpen(true)
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "add",
+      size: "sm"
+    })));
+  }
+  return /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: inputRef,
+    id: id,
+    type: "text",
+    "aria-label": rest['aria-labelledby'] ? undefined : label,
+    placeholder: label,
+    className: (0, _cx.cx)('plx-input', 'plx-tag-input', className),
+    value: text,
+    onChange: change,
+    onKeyDown: keyDown,
+    onBlur: blur
+  }, rest));
+});
+  } },
+  "platform/components/DataPill/DataPill.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataPill = DataPill;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _devWarn = require("../../utils/devWarn.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataPill
+   Summary: A value shown as a pill: the value itself (a case number, a person, a date, a price, an airport code, Yes or
+     No) at the size of the text around it, in a color and with an icon that say something about it (owner, 2026-10-19:
+     "data placed organized in pill style"). It never makes a row taller: its height is the density's inline control
+     height. A person's pill (or plain name) carries their gender: blue with the male icon, pink with the female icon.
+   Usage:
+     <DataPill data>CTM-2026-00061</DataPill>
+     <DataPill gender="female" fill>Marina Abdel-Malik</DataPill>
+     <DataPill tone="green" variant="solid" data>$639</DataPill>
+     <DataPill tone="orange" icon="calendar">Sat May 9</DataPill>
+     <DataPill gender="male" variant="plain">Patrick O'Brien</DataPill>
+   Props:
+     children: the value
+     tone: its color, a category color by name (CATEGORY_COLORS: red, green, yellow, blue, orange, purple, cyan, magenta,
+       lime, pink, teal, lavender, beige, maroon, mint, olive, apricot, navy, grey); default grey
+     variant: "soft" (default: a soft fill, a 1px border two shades darker, the text in the darkest shade) | "solid" (the
+       color as the fill, its own text color: a strong value such as a price band) | "plain" (no box: the icon and the
+       text in the color, a name in running text)
+     icon: an icon name before the value (a calendar for a date, the sun or the moon for a time)
+     data: a technical value (a code, a number, a time, a price): the data font
+     fill: the pill takes the whole width of its cell or container
+     gender: "male" | "female": a person's pill: blue with the person-male icon or pink with the person-female icon, and
+       the gender said to assistive technology; any other value (or none) with a person: grey with the default person
+       icon. Set person to show the default icon when the gender is unknown
+     person: the value is a person (the person icon when no gender is known)
+     strings: the words it announces, for other languages: { male: "male", female: "female" }
+     className: more classes on the pill
+     ...rest: other attributes go on the pill
+   Behavior:
+     The text never wraps; a value too long for a filled pill ends in an ellipsis and its full text is the tooltip (title).
+     The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
+   Notes:
+     Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
+     DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
+*/
+const STRINGS = {
+  male: 'male',
+  female: 'female'
+};
+const GENDER = {
+  male: {
+    tone: 'blue',
+    icon: 'person-male'
+  },
+  female: {
+    tone: 'pink',
+    icon: 'person-female'
+  }
+};
+function DataPill({
+  children,
+  tone,
+  variant = 'soft',
+  icon,
+  data = false,
+  fill = false,
+  gender,
+  person = false,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('DataPill', {
+    variant
+  }, {
+    variant: ['soft', 'solid', 'plain']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  const g = GENDER[gender];
+  const color = g ? g.tone : tone || (variant === 'plain' ? undefined : 'grey'); // a plain value with no color keeps the text color
+  const glyph = g ? g.icon : icon || (person ? 'person' : null);
+  const title = fill && (typeof children === 'string' || typeof children === 'number') ? String(children) : undefined;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-data-pill', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className),
+    "data-plx-category": color,
+    title: title
+  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: glyph,
+    size: "sm",
+    className: "plx-data-pill__icon",
+    filled: !!g
+  }) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-data-pill__value"
+  }, children), g ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-visually-hidden"
+  }, ', ' + t[gender]) : null);
 }
   } },
   "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -21994,6 +18287,5986 @@ function DataGridEngine(props) {
 }
 DataGridEngine.preload = () => Promise.resolve();
   } },
+  "platform/components/Table/Table.jsx": { deps: {"react":null,"../DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Table = Table;
+var _react = _interopRequireDefault(require("react"));
+var _DataGridEngine = require("../DataGrid/DataGridEngine.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Table
+   Summary: Static reference information in rows and columns, using the DataGrid's React renderer and Table tokens.
+   Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
+   Props:
+     label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
+       minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
+     empty: no-record message; narrow: "table" by default; className.
+     cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
+       (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
+       icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
+       pill: false (as DataGrid).
+     Table.preload(): compatibility no-op; the renderer is already bundled.
+   Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
+     Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row. The table grows with its rows and never scrolls internally.
+   Notes: Existing Table tokens preserve the static-table look; use DataGrid for records people work with. */
+
+function Table({
+  label,
+  data,
+  columns = [],
+  index,
+  empty,
+  narrow = 'table',
+  headerVisible = true,
+  cells = 'text',
+  className
+}) {
+  const staticColumns = _react.default.useMemo(() => columns.map(({
+    title,
+    field,
+    kind,
+    type,
+    pill,
+    render,
+    width,
+    minWidth,
+    maxWidth,
+    rowLabel,
+    frozen,
+    hozAlign,
+    headerHozAlign,
+    empty
+  }) => ({
+    title,
+    field,
+    kind,
+    type,
+    pill,
+    render,
+    width,
+    minWidth,
+    maxWidth,
+    rowLabel,
+    frozen,
+    hozAlign,
+    headerHozAlign,
+    empty,
+    headerSort: false,
+    resizable: false
+  })), [columns]);
+  return /*#__PURE__*/_react.default.createElement(_DataGridEngine.DataGridEngine, {
+    isStatic: true,
+    label: label,
+    data: data,
+    columns: staticColumns,
+    index: index,
+    empty: empty,
+    narrow: narrow,
+    headerVisible: headerVisible,
+    cells: cells,
+    className: className,
+    headerMenu: false
+  });
+}
+Table.preload = () => {};
+  } },
+  "platform/components/Details/Details.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Details = Details;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Details
+   Summary: One block of optional detail behind a short summary line that opens it in place: the native details and
+     summary elements, styled (09 Overlays › Disclosure › Details). It is not a section: a part of the page with a heading
+     that folds is a CollapsibleSection; a set of them is an Accordion.
+   Usage:
+     <Details summary="Why do we need your phone number?">We text you a code when you sign in from a new device.</Details>
+     <Details summary="Technical details" variant="bordered" defaultOpen>…</Details>
+     <Text as="p">The upload failed. <Details summary="Show the error" variant="inline">…</Details></Text>
+     <Details summary="Filters" open={open} onToggle={setOpen}>…</Details>
+   Props:
+     summary: the line that is always shown and opens it: a question or a short phrase (required)
+     children: the detail it reveals: a few sentences, a short list, a code sample
+     variant: "default" (a chevron and the summary in the body text; the detail indented under it) | "bordered" (in a box
+       with a border, for detail that should read as one piece: logs, technical data) | "inline" (small and muted, in a
+       line of text or under a message; the detail is not indented)
+     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
+     onToggle(open): runs when it opens or closes
+     name: the native exclusive group: Details with the same name close each other (one open at a time)
+     className: more classes on the <details>
+     Other props pass through to the <details>.
+   Behavior:
+     The summary is a native disclosure: a click, Enter or Space opens and closes it, and assistive technology announces
+       it as expanded or collapsed. The chevron points to the end when closed and down when open.
+     The browser's find in page opens it when the text found is inside (the native element does this).
+     It opens at once, without an animation, so nothing moves under the pointer.
+   Notes:
+     Start closed; put only optional detail inside: what everyone needs stays on the page. Never nest one in another.
+*/
+const VARIANTS = ['default', 'bordered', 'inline'];
+function Details({
+  summary,
+  children,
+  variant = 'default',
+  open: openProp,
+  defaultOpen = false,
+  onToggle,
+  name,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Details', {
+    variant
+  }, {
+    variant: ['default', 'bordered', 'inline']
+  });
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(!!defaultOpen);
+  const open = controlled ? !!openProp : own;
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'default';
+  // the native element toggles itself; the state follows it (and a controlled value is put back if the caller keeps it)
+  const toggled = e => {
+    const now = e.currentTarget.open;
+    if (now === open) return;
+    if (!controlled) setOwn(now);
+    if (onToggle) onToggle(now);
+  };
+  return /*#__PURE__*/_react.default.createElement("details", _extends({
+    className: (0, _cx.cx)('plx-details', 'plx-details--' + v, className),
+    open: open,
+    name: name,
+    onToggle: toggled
+  }, rest), /*#__PURE__*/_react.default.createElement("summary", {
+    className: "plx-details__summary"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-details__marker",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-details__chevron plx-details__chevron--closed"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-right"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-details__chevron plx-details__chevron--open"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down"
+  }))), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-details__label"
+  }, summary)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-details__content"
+  }, children));
+}
+  } },
+  "platform/charts/Gauge.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./scales.js":"platform/charts/scales.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Gauge = Gauge;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _Details = require("../components/Details/Details.jsx");
+var _Table = require("../components/Table/Table.jsx");
+var _Badge = require("../components/Badge/Badge.jsx");
+var _scales = require("./scales.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Gauge
+   Summary: A gauge (07 Data Display › Charts › Gauge): one value inside a known range, as a semicircle track filled up to
+     the value, the value in the data font in its middle, the minimum and maximum at the ends, and, with thresholds, the
+     warning and critical ranges along the outside of the track with a status badge that names the range the value is in.
+     A meter to assistive technology (role meter with its value, minimum, maximum and value text).
+   Usage:
+     <Gauge title="Storage used" value={72} format={(v) => v + '%'} label="of 100 GB" />
+     <Gauge title="Storage used" value={86} format={(v) => v + '%'}
+       thresholds={[{ value: 80, level: 'warning', label: 'Nearly full' }, { value: 95, level: 'critical', label: 'Full' }]} />
+   Props:
+     title: what is measured (required): the caption's title and the meter's name
+     description: one sentence on what the value means
+     value: the value (required); min, max: the range (default 0 and 100); values outside are drawn at the ends
+     format: (value) => text for the value, the ends and the table (default formatNumber)
+     label: a few words under the value that say its unit or its whole ("of 100 GB", "score")
+     thresholds: the ranges that call for attention, from their start upward: [{ value, level: "warning" | "critical",
+       label }]; each range runs to the next threshold or the maximum, along the outside of the track in the data-viz
+       alert color; the range the value is in shows as a status badge with its label
+     size: "sm" (160px wide) | "md" (default, 200px) | "lg" (240px)
+     hideCaption: keeps the title and description for assistive technology only (default false)
+     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data",
+       measure: "Measure", value: "Value", min: "Minimum", max: "Maximum", ok: "" (a badge for the range under every
+       threshold; empty: none) }
+     className: more classes on the figure
+   Behavior:
+     Static: it has no keyboard stop of its own; the meter's value text says the value, its label and its range's name
+       ("86%, of 100 GB, Nearly full"). The data grid under it lists the value, the ends and the thresholds.
+     The status badge pairs the range's color with its name and icon, so color is never the only cue.
+   Notes:
+     The track, the fill and the bands are SVG paths (geometry only) colored by classes: the fill the first categorical
+       data-viz color, the bands the alert scale; sizes, widths and type are --plx-comp-gauge-* tokens. One value per
+       gauge: to compare values, use a bar or bullet chart; for a value without a range, a metric.
+*/
+
+const STRINGS = {
+  showData: 'Show the data',
+  table: '{title}: data',
+  measure: 'Measure',
+  value: 'Value',
+  min: 'Minimum',
+  max: 'Maximum',
+  ok: ''
+};
+const SIZES = ['sm', 'md', 'lg'];
+const LEVELS = {
+  warning: {
+    tone: 'waiting',
+    icon: 'warning'
+  },
+  critical: {
+    tone: 'negative',
+    icon: 'alert'
+  }
+};
+// the dial's geometry in SVG user units (the SVG is scaled to the size's width): the center, the track's radius and the
+// thresholds' radius outside it
+const VB_W = 160,
+  VB_H = 88,
+  CX = 80,
+  CY = 80,
+  R = 60,
+  RB = 74;
+const arc = (r, t0, t1) => {
+  const at = t => {
+    const a = Math.PI * (1 - t);
+    return [CX + r * Math.cos(a), CY - r * Math.sin(a)];
+  };
+  const p = at(t0),
+    q = at(t1);
+  return 'M' + p[0] + ',' + p[1] + 'A' + r + ',' + r + ' 0 0 1 ' + q[0] + ',' + q[1];
+};
+function Gauge({
+  title,
+  description,
+  value,
+  min = 0,
+  max = 100,
+  format,
+  label,
+  thresholds = [],
+  size = 'md',
+  hideCaption = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = 'plx-gauge' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
+  const span = max - min || 1;
+  const frac = v => Math.min(1, Math.max(0, (Number(v) - min) / span));
+  const v = Number(value);
+  const bands = thresholds.filter(x => x && LEVELS[x.level]).slice().sort((a, b) => a.value - b.value);
+  const now = bands.filter(b => v >= b.value).pop();
+  const status = now ? {
+    tone: LEVELS[now.level].tone,
+    icon: LEVELS[now.level].icon,
+    label: now.label
+  } : t.ok ? {
+    tone: 'success',
+    icon: 'circle-check',
+    label: t.ok
+  } : null;
+  const valueText = [fmt(v), label, status && status.label].filter(Boolean).join(', ');
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const table = {
+    columns: [{
+      title: t.measure,
+      field: 'm',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.value,
+      field: 'v',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: [{
+      id: 1,
+      m: t.value,
+      v: fmt(v)
+    }, {
+      id: 2,
+      m: t.min,
+      v: fmt(min)
+    }, {
+      id: 3,
+      m: t.max,
+      v: fmt(max)
+    }].concat(bands.map((b, i) => ({
+      id: 4 + i,
+      m: b.label || b.level,
+      v: fmt(b.value)
+    })))
+  };
+  return /*#__PURE__*/_react.default.createElement("figure", {
+    className: (0, _cx.cx)('plx-chart', 'plx-gauge', 'plx-gauge--' + s, bands.length && 'plx-gauge--thresholds', className)
+  }, /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: (0, _cx.cx)('plx-chart__caption', hideCaption && 'plx-visually-hidden')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    id: uid + '-title',
+    className: "plx-chart__title"
+  }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
+    id: uid + '-desc',
+    className: "plx-chart__description"
+  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__meter",
+    role: "meter",
+    "aria-labelledby": uid + '-title',
+    "aria-describedby": description ? uid + '-desc' : undefined,
+    "aria-valuenow": v,
+    "aria-valuemin": min,
+    "aria-valuemax": max,
+    "aria-valuetext": valueText
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__dial"
+  }, /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-gauge__svg",
+    viewBox: '0 0 ' + VB_W + ' ' + VB_H,
+    "aria-hidden": "true",
+    focusable: "false"
+  }, bands.map((b, i) => /*#__PURE__*/_react.default.createElement("path", {
+    key: i,
+    className: "plx-gauge__band",
+    "data-plx-dataviz": 'alert-' + b.level,
+    d: arc(RB, frac(b.value), i + 1 < bands.length ? frac(bands[i + 1].value) : 1)
+  })), /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-gauge__track",
+    d: arc(R, 0, 1)
+  }), frac(v) > 0 ? /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-gauge__fill",
+    "data-plx-dataviz": (0, _scales.seriesColor)(0),
+    d: arc(R, 0, frac(v))
+  }) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__readout",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__value"
+  }, fmt(v)), label ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__label"
+  }, label) : null)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__range",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__end"
+  }, fmt(min)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__end"
+  }, fmt(max))), status ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    className: "plx-gauge__status",
+    tone: status.tone,
+    icon: status.icon
+  }, status.label) : null), /*#__PURE__*/_react.default.createElement(_Details.Details, {
+    summary: t.showData,
+    variant: "inline",
+    className: "plx-chart__data"
+  }, /*#__PURE__*/_react.default.createElement(_Table.Table, {
+    label: t.table.replace('{title}', title || ''),
+    columns: table.columns,
+    data: table.data
+  })));
+}
+  } },
+  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartFrame = ChartFrame;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _direction = require("../utils/direction.js");
+var _Details = require("../components/Details/Details.jsx");
+var _Table = require("../components/Table/Table.jsx");
+var _Button = require("../components/Button/Button.jsx");
+var _grid = require("../utils/grid.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartFrame
+   Summary: The frame every Plenix chart is drawn in (07 Data Display › Charts › Chart foundations): a figure with the
+     chart's title and description, a responsive SVG plot that measures itself (a ResizeObserver) and hands its size and
+     inner area (the plot less its margins) to the chart, and the data as a table for people who cannot see the chart.
+   Usage:
+     <ChartFrame title="Uploads per month" description="Uploads rose every month from January to June."
+       table={{ columns: [{ title: 'Month', field: 'month', kind: 'name' }, { title: 'Uploads', field: 'n', kind: 'data' }], data: rows }}>
+       {({ inner }) => { const x = scaleBand({ domain: months, range: [0, inner.width] }); … return <g>…</g>; }}
+     </ChartFrame>
+     <ChartFrame title="…" interaction={useChartInteraction({ columns: rows.length, describe })}>…</ChartFrame>
+   Props:
+     title: the chart's name (required): the caption's title and the SVG's accessible name
+     description: one or two sentences that say what the chart shows (its takeaway); the SVG's description
+     hideCaption: keeps the title and description for assistive technology only (default false), when a heading beside
+       the chart already shows them
+     size: the plot's height: "sm" (160px) | "md" (240px, default) | "lg" (320px); the width is the container's
+     margin: the room around the plot for axes and labels, in pixels: { top, end, bottom, start } (each optional; the
+       defaults are the --plx-comp-chart-margin-* tokens); values snap to the 4px grid; start and end follow the writing
+       direction
+     table: the data as a table under the chart: { columns, data } as the Table takes them (technical values kind
+       "data"); shown behind a Details line ("Show the data") so it is always one click away
+     legend: the chart's legend (a ChartLegend), placed by legendPosition (chart parts, wave 8)
+     legendPosition: "bottom" (default: under the plot) | "top" (between the caption and the plot: tight dashboard
+       cards) | "end" (beside the
+       plot, after it; give the legend orientation="vertical"); the plot keeps the rest of the width
+     interaction: the chart's interaction (useChartInteraction, platform/charts/interaction.js; wave 9): the plot becomes
+       one Tab stop named "{title}, interactive chart" with the keyboard hint as its description, and hands its keys and
+       the pointer (in plot coordinates) to the interaction; a Reset zoom button shows above the plot while it is zoomed
+     actions: controls above the plot, at its end (a network graph's zoom buttons); Buttons of size sm
+     fitHeight: (width) => the plot's height in pixels for its width, for a chart whose height follows its content (a
+       diagram drawn at its own size); the plot's height is then the SVG's, not the size's
+     children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
+       inside a group already moved by the margins; or SVG nodes
+     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" } (the
+       interaction's words are the interaction's strings)
+     className: more classes on the figure
+   Behavior:
+     The plot fills its container's width and follows it when it resizes; the chart is drawn once the size is known.
+     The SVG is one image to assistive technology (role img, named by the title and described by the description);
+       its marks are hidden from it, so the table carries the values.
+     Interactive (interaction): the plot takes focus once (its border takes the focus color, no outer ring) and hands
+       the arrow keys, Home, End, Enter, Space, Escape and the pointer to the interaction, which says each value in the
+       live region; the tooltip and the focus ring the chart draws follow it.
+     Marks take their colors from the data-viz scales: data-plx-dataviz="<scale>-<step>" on a mark (seriesColor(i))
+       and the frame's mark classes (plx-chart__mark, plx-chart__line, plx-chart__point) fill or stroke it with that
+       step; axis lines, grid lines and tick labels have their classes too (plx-chart__axis-line, plx-chart__grid-line,
+       plx-chart__tick-label: the data font).
+   Notes:
+     No color, size or font is written in a chart: only SVG geometry (x, y, width, height, d, transform) and classes.
+     Chart parts (platform/charts/parts: Axis, GridLines, ChartLegend, ChartTooltip, DataLabel, ReferenceLine,
+       ChartAnnotation; wave 8) and the charts themselves (wave 9) build on this frame.
+*/
+const STRINGS = {
+  showData: 'Show the data',
+  table: '{title}: data'
+};
+const MARGIN_TOKENS = {
+  top: '--plx-comp-chart-margin-block-start',
+  end: '--plx-comp-chart-margin-inline-end',
+  bottom: '--plx-comp-chart-margin-block-end',
+  start: '--plx-comp-chart-margin-inline-start'
+};
+function ChartFrame({
+  title,
+  description,
+  hideCaption = false,
+  size = 'md',
+  margin,
+  legend,
+  legendPosition = 'bottom',
+  table,
+  interaction,
+  actions,
+  fitHeight,
+  strings,
+  className,
+  children
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = 'plx-chart' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const frame = _react.default.useRef(null),
+    plot = _react.default.useRef(null);
+  const [box, setBox] = _react.default.useState({
+    width: 0,
+    height: 0,
+    rtl: false,
+    tokens: null
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = plot.current;
+    if (!el) return undefined;
+    const measure = () => {
+      const cs = getComputedStyle(frame.current);
+      const tokens = {};
+      Object.keys(MARGIN_TOKENS).forEach(k => {
+        tokens[k] = parseFloat(cs.getPropertyValue(MARGIN_TOKENS[k])) || 0;
+      });
+      const r = el.getBoundingClientRect();
+      // an interactive plot has a border (its focus border): the SVG is drawn inside it
+      const next = {
+        width: Math.floor(r.width - el.clientLeft * 2),
+        height: Math.floor(r.height - el.clientTop * 2),
+        rtl: (0, _direction.isRtl)(el),
+        tokens
+      };
+      setBox(b => b.width === next.width && b.height === next.height && b.rtl === next.rtl && JSON.stringify(b.tokens) === JSON.stringify(tokens) ? b : next);
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const m = {};
+  Object.keys(MARGIN_TOKENS).forEach(k => {
+    m[k] = (0, _grid.snapToGrid)(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0);
+  });
+  const left = box.rtl ? m.end : m.start;
+  const fit = typeof fitHeight === 'function';
+  const height = fit ? box.width > 0 ? Math.max(1, Math.ceil(fitHeight(box.width))) : 0 : box.height;
+  const inner = {
+    width: Math.max(0, box.width - m.start - m.end),
+    height: Math.max(0, height - m.top - m.bottom)
+  };
+  const dims = {
+    width: box.width,
+    height,
+    inner,
+    margin: m
+  };
+  const titleId = uid + '-title',
+    descId = uid + '-desc',
+    hintId = uid + '-hint';
+  const ia = interaction && interaction.interactive ? interaction : null;
+  // the pointer in plot coordinates: inside the border, less the margins
+  const local = e => {
+    const el = plot.current,
+      r = el.getBoundingClientRect();
+    return [e.clientX - r.left - el.clientLeft - left, e.clientY - r.top - el.clientTop - m.top];
+  };
+  const on = fn => e => {
+    const p = local(e);
+    fn(p[0], p[1], e);
+  };
+  const plotProps = ia ? {
+    tabIndex: 0,
+    role: 'group',
+    'aria-label': ia.strings.plot.replace('{title}', title || ''),
+    'aria-describedby': hintId,
+    onKeyDown: ia.keyDown,
+    onFocus: ia.onFocus,
+    onBlur: ia.onBlur,
+    onPointerDown: on(ia.pointerDown),
+    onPointerMove: on(ia.pointerMove),
+    onPointerUp: on(ia.pointerUp),
+    onPointerLeave: ia.pointerLeave
+  } : {};
+  const toolbar = ia && ia.zoomed || actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chart__actions"
+  }, actions, ia && ia.zoomed ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    icon: "refresh",
+    onClick: ia.resetZoom
+  }, ia.strings.resetZoom) : null) : null;
+  const caption = /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: (0, _cx.cx)('plx-chart__caption', hideCaption && 'plx-visually-hidden')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    id: titleId,
+    className: "plx-chart__title"
+  }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
+    id: descId,
+    className: "plx-chart__description"
+  }, description) : null);
+  // the legend (chart parts): before the plot, after it, or beside it in a row with it
+  const lp = ['top', 'bottom', 'end'].indexOf(legendPosition) >= 0 ? legendPosition : 'bottom';
+  const key = legend ? /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart__legend', 'plx-chart__legend--' + lp)
+  }, legend) : null;
+  const plotArea = /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: plot,
+    className: (0, _cx.cx)('plx-chart__plot', fit && 'plx-chart__plot--fit', ia && 'plx-chart__plot--interactive', ia && ia.mode === 'point' && ia.active && 'plx-chart__plot--dimming')
+  }, plotProps), ia ? /*#__PURE__*/_react.default.createElement("span", {
+    id: hintId,
+    className: "plx-visually-hidden"
+  }, ia.hint) : null, box.width > 0 && height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-chart__svg",
+    width: box.width,
+    height: height,
+    viewBox: '0 0 ' + box.width + ' ' + height,
+    role: "img",
+    "aria-labelledby": titleId,
+    "aria-describedby": description ? descId : undefined,
+    focusable: "false"
+  }, /*#__PURE__*/_react.default.createElement("g", {
+    transform: 'translate(' + left + ',' + m.top + ')',
+    "aria-hidden": "true"
+  }, typeof children === 'function' ? children(dims) : children)) : null);
+  return /*#__PURE__*/_react.default.createElement("figure", {
+    ref: frame,
+    className: (0, _cx.cx)('plx-chart', 'plx-chart--' + size, className)
+  }, caption, toolbar, lp === 'top' ? key : null, lp === 'end' && key ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chart__body"
+  }, plotArea, key) : plotArea, lp === 'bottom' ? key : null, table && table.data ? /*#__PURE__*/_react.default.createElement(_Details.Details, {
+    summary: t.showData,
+    variant: "inline",
+    className: "plx-chart__data"
+  }, /*#__PURE__*/_react.default.createElement(_Table.Table, {
+    label: t.table.replace('{title}', title || ''),
+    columns: table.columns,
+    data: table.data,
+    index: table.index
+  })) : null);
+}
+  } },
+  "platform/charts/parts/ChartLegend.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartLegend = ChartLegend;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartLegend
+   Summary: The key of a chart's series (07 Data Display › Charts › Chart legend): each series' color swatch and name,
+     and its value when it helps; above the plot, beside it, or under it, and, interactive, a toggle per series that shows
+     or hides it.
+   Usage:
+     const series = [{ id: 'web', label: 'Web' }, { id: 'ios', label: 'iOS' }, { id: 'android', label: 'Android' }]
+       .map((s, i) => ({ ...s, color: seriesColor(i) }));
+     <ChartFrame title="Sign-ups by platform" legend={<ChartLegend items={series} />} …>…</ChartFrame>
+     <ChartFrame … legendPosition="end" legend={<ChartLegend items={series} orientation="vertical" />}>…</ChartFrame>
+     <ChartLegend items={series} interactive hidden={off} onToggle={(id, visible) => …} />
+   Props:
+     items: the series, in the chart's order: [{ id, label, color, value }]; color is the series' data-viz step
+       ("categorical-1", seriesColor(i)); value is an optional figure after the name (a total, a share), the data font
+     orientation: "horizontal" (default: items in a row that wraps, above or under the plot) | "vertical" (one per line,
+       beside the plot)
+     shape: the swatch: "square" (default: bars, areas, slices) | "line" (line series)
+     interactive: each item is a toggle button that shows or hides its series (default false)
+     hidden: the ids of the hidden series, when the parent controls them; defaultHidden: the first ones, otherwise
+     onToggle(id, visible): runs when a series is shown or hidden; the chart draws only the visible ones
+     label: the legend's accessible name (default strings.legend)
+     strings: the words it says, for other languages: { legend: "Legend" }
+     className: more classes on the legend
+   Behavior:
+     The legend is real text next to the plot (not inside the image), so assistive technology reads the series names.
+     Interactive: each toggle has aria-pressed (pressed = shown); Tab moves between them, Enter or Space toggles. A hidden
+       series keeps its place with a hollow swatch (a line swatch in the disabled color) and a muted name, so it can
+       be shown again. The last series shown cannot
+       be hidden: its toggle does nothing.
+     Names wrap rather than being cut; a vertical legend keeps its width to the longest name.
+   Notes:
+     Colors come from the data-viz scales through data-plx-dataviz (no color is written). Color is never the only cue: the
+       names are always shown; on a line chart label the lines directly when there is room.
+*/
+const STRINGS = {
+  legend: 'Legend'
+};
+function ChartLegend({
+  items = [],
+  orientation = 'horizontal',
+  shape = 'square',
+  interactive = false,
+  hidden,
+  defaultHidden = [],
+  onToggle,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [own, setOwn] = _react.default.useState(defaultHidden);
+  const off = hidden === undefined ? own : hidden;
+  const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
+  const s = shape === 'line' ? 'line' : 'square';
+  const toggle = id => {
+    const visible = off.indexOf(id) >= 0;
+    // the last series shown stays shown: a chart never goes empty from its legend
+    if (!visible && items.length - off.length <= 1) return;
+    if (hidden === undefined) setOwn(visible ? off.filter(x => x !== id) : off.concat([id]));
+    if (onToggle) onToggle(id, visible);
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-chart-legend', 'plx-chart-legend--' + o, interactive && 'plx-chart-legend--interactive', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-chart-legend__list",
+    "aria-label": label || t.legend
+  }, items.map((it, i) => {
+    const id = it.id === undefined ? i : it.id;
+    const shown = off.indexOf(id) < 0;
+    const inside = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)('plx-chart-legend__swatch', 'plx-chart-legend__swatch--' + s),
+      "data-plx-dataviz": it.color || undefined,
+      "aria-hidden": "true"
+    }), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-chart-legend__label"
+    }, it.label), it.value !== undefined && it.value !== null ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-chart-legend__value"
+    }, it.value) : null);
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: id,
+      className: "plx-chart-legend__item"
+    }, interactive ? /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-chart-legend__toggle",
+      "aria-pressed": shown,
+      onClick: () => toggle(id)
+    }, inside) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-chart-legend__entry"
+    }, inside));
+  })));
+}
+  } },
+  "platform/charts/parts/ChartTooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartTooltip = ChartTooltip;
+exports.chartTooltipText = chartTooltipText;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ChartTooltip
+   Summary: The values at one point of a chart (07 Data Display › Charts › Chart tooltip), shown where the pointer or the
+     keyboard is: one point's value (single), or every series' value at one x position with a crosshair line (shared).
+     Drawn inside ChartFrame's plot, beside the point, on the side with room.
+   Usage:
+     {active ? <ChartTooltip x={x(active.date)} y={y(active.value)} inner={inner} title={formatDate(active.date)} titleKind="data"
+       items={[{ label: 'Downloads', value: formatNumber(active.value), color: seriesColor(0) }]} /> : null}
+     <ChartTooltip variant="shared" x={x('Mar')} inner={inner} title="March"
+       items={series.map((s, i) => ({ label: s.label, value: formatNumber(s.values[2]), color: seriesColor(i) }))} />
+   Props:
+     x: the point's position across the plot, in pixels (scalePosition(xScale, value)) (required)
+     y: the point's position down the plot (single; shared tooltips sit at the top of the plot)
+     inner: the plot area's size, { width, height } (ChartFrame's inner) (required)
+     variant: "single" (default: one point; the tooltip sits above it, or under it near the top) | "shared" (every series
+       at one x: a crosshair line down the plot and the tooltip at its top)
+     title: the point's heading: its category, date or time
+     titleKind: "text" (default: a name, the UI font) | "data" (a date, a time or a number: the data font)
+     items: the values: [{ label, value, color }]; label the series' name, value the formatted value (the data font), color
+       the series' data-viz step (seriesColor(i)); an item without a color has no swatch (a value that is not a
+       series: a running total, a count); one item for single
+     className: more classes on the tooltip
+   Behavior:
+     It does not take the pointer (pointer-events none), so moving along the chart keeps reaching the marks under it.
+     The tooltip goes after the point when it is in the first half of the plot and before it in the second half, so it
+       stays inside the chart.
+     It shows values already in the chart's data grid; with the plot it is hidden from assistive technology. The chart
+       interaction (useChartInteraction, platform/charts/interaction.js) moves it with the pointer and the arrow keys and
+       says the same values in the live region: chartTooltipText({ title, items }) is that sentence ("March 2026: Web
+       150, iOS 130, Android 90"), so the tooltip and the announcement never differ.
+     chartTooltipText({ title, items }): the tooltip's content as one plain sentence, for the live region
+   Notes:
+     Drawn in an SVG foreignObject at the point (geometry only); the surface is the popover's (overlay surface, border,
+       menu radius and shadow), from the chart-parts tokens. Swatches take the series' data-viz color.
+*/
+
+// the room the tooltip may take beside its point, in pixels (SVG geometry): it is laid out inside this box
+const BOX_W = 240,
+  BOX_H = 200;
+
+// the tooltip as one sentence: the title, then each series' name and value (what the live region says)
+function chartTooltipText({
+  title,
+  items = []
+} = {}) {
+  const values = items.map(it => [it.label, it.value].filter(x => x !== undefined && x !== null && x !== '').join(' ')).join(', ');
+  return title !== undefined && title !== null && title !== '' ? String(title) + (values ? ': ' + values : '') : values;
+}
+function ChartTooltip({
+  x,
+  y,
+  inner,
+  variant = 'single',
+  title,
+  titleKind = 'text',
+  items = [],
+  className
+}) {
+  if (x === undefined || x === null || !inner) return null;
+  const v = variant === 'shared' ? 'shared' : 'single';
+  const side = x > inner.width / 2 ? 'start' : 'end';
+  const py = v === 'shared' || y === undefined || y === null ? 0 : y;
+  const vert = v === 'shared' ? 'below' : py < BOX_H / 2 ? 'below' : 'above';
+  const fx = side === 'end' ? x : x - BOX_W;
+  const fy = vert === 'below' ? py : py - BOX_H;
+  return /*#__PURE__*/_react.default.createElement("g", {
+    className: (0, _cx.cx)('plx-chart-tooltip-layer', 'plx-chart-tooltip-layer--' + v)
+  }, v === 'shared' ? /*#__PURE__*/_react.default.createElement("line", {
+    className: "plx-chart-tooltip__crosshair",
+    x1: x,
+    x2: x,
+    y1: 0,
+    y2: inner.height
+  }) : null, /*#__PURE__*/_react.default.createElement("foreignObject", {
+    className: "plx-chart-tooltip__room",
+    x: fx,
+    y: fy,
+    width: BOX_W,
+    height: BOX_H
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart-tooltip__place', 'plx-chart-tooltip__place--' + side, 'plx-chart-tooltip__place--' + vert)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart-tooltip', 'plx-chart-tooltip--' + v, className)
+  }, title !== undefined && title !== null ? /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart-tooltip__title', titleKind === 'data' && 'plx-chart-tooltip__title--data')
+  }, title) : null, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-chart-tooltip__list"
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: i,
+    className: "plx-chart-tooltip__item"
+  }, it.color ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chart-tooltip__swatch",
+    "data-plx-dataviz": it.color
+  }) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chart-tooltip__label"
+  }, it.label), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chart-tooltip__value"
+  }, it.value))))))));
+}
+  } },
+  "platform/charts/parts/DataLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataLabel = DataLabel;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DataLabel
+   Summary: A value written on a chart beside its mark (07 Data Display › Charts › Data label): above a column, after the
+     end of a bar, or centered on a point or a slice with a halo in the surface color, in the data font.
+   Usage:
+     {months.map((m) => <DataLabel key={m.name} x={scalePosition(x, m.name)} y={y(m.value)} value={m.value} />)}
+     <DataLabel x={x(bar.value)} y={scalePosition(y, bar.name)} value={bar.value} position="end" />
+     <DataLabel x={cx} y={cy} value="42%" position="center" />
+   Props:
+     x, y: the mark's anchor in plot pixels: the top middle of a column, the end middle of a bar, a point's center (required)
+     value: the value: a number is formatted in the reader's locale (formatNumber); a string is shown as it is (already
+       formatted: "42%", "1.2 MB")
+     format: (value) => text, instead of formatNumber
+     position: "top" (default: above the anchor, centered: columns) | "end" (after the anchor, centered on it: bars) |
+       "center" (on the anchor, with a halo: points, slices, inside a large mark)
+     className: more classes on the <text>
+   Behavior:
+     The label sits --plx-comp-chart-data-label-offset from its anchor (top, end), or on it (center); the halo is a stroke
+       in the surface color painted under the text, so it stays readable over a mark or a line.
+     Hidden from assistive technology with the rest of the plot: the data grid carries the values.
+   Notes:
+     Label the marks people compare, not every mark: a few labeled values (the last, the highest) read better than a full
+       set. Values are technical: the data font; no color is written (the label's tokens).
+*/
+
+const POSITIONS = ['top', 'end', 'center'];
+function DataLabel({
+  x,
+  y,
+  value,
+  format,
+  position = 'top',
+  className
+}) {
+  if (x === undefined || y === undefined || x === null || y === null) return null;
+  const p = POSITIONS.indexOf(position) >= 0 ? position : 'top';
+  const text = typeof format === 'function' ? format(value) : typeof value === 'number' ? (0, _format.formatNumber)(value) : value;
+  return /*#__PURE__*/_react.default.createElement("text", {
+    className: (0, _cx.cx)('plx-chart-data-label', 'plx-chart-data-label--' + p, className),
+    x: x,
+    y: y
+  }, text);
+}
+  } },
+  "platform/charts/chart-kit.js": { deps: {"react":null,"./scales.js":"platform/charts/scales.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AXIS_TITLE_ROOM = void 0;
+exports.finite = finite;
+exports.halfRoom = halfRoom;
+exports.labelRoom = labelRoom;
+exports.legendItems = legendItems;
+exports.useChartHover = useChartHover;
+exports.withColors = withColors;
+var _react = _interopRequireDefault(require("react"));
+var _scales = require("./scales.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · chart kit (platform/charts/chart-kit.js): the small helpers the charts of library wave 9, lane B share
+   (BarChart, ComboChart, PieChart, BulletChart, BoxPlot, RadarChart, SankeyDiagram, TimelineChart). Internal: not public.
+   Summary: The mark under the pointer (useChartHover: the minimal pointer interaction that shows a ChartTooltip), the room
+     an axis's labels need beside the plot (labelRoom), and the series' colors and legend items.
+   Usage:
+     const [active, hover] = useChartHover();
+     <rect {...hover('2:1')} … />   {active === '2:1' ? <ChartTooltip … /> : null}
+     const margin = { start: labelRoom(categories) };
+   Props:
+     useChartHover(): [active, hover, setActive]; hover(key) returns the pointer handlers of one mark (enter shows it,
+       leave hides it)
+     labelRoom(texts, extra?): the pixels a column of tick labels takes (their longest text in the data font, the tick
+       offset and a gap), plus extra (an axis title's room); snapped to the 4px grid by ChartFrame
+     halfRoom(text): the room after the plot for a tick label centered on the plot's end (the last tick of a value axis
+       along the bottom)
+     AXIS_TITLE_ROOM: the room an axis title's line takes beside the tick labels
+     withColors(series): the series with an id and a data-viz step each (seriesColor by their order in the data)
+     legendItems(series, value?): the ChartLegend items of the series; value(s, i) adds a figure after a name
+   Behavior:
+     Pointer only: keyboard and screen reader people read the values in the chart's data grid ("Show the data"). The
+       chart interaction foundation (wave 9, lane A) replaces useChartHover with the keyboard, the pointer and a live
+       region in one hook.
+   Notes:
+     The label room is an estimate from the number of characters (the data font is monospaced: about 7px a character at
+       the tick labels' 11px); a margin given to the chart always wins. */
+
+// px: about one character of the data font at the tick labels' size (Reddit Mono 11px is 6.6px wide)
+const CHAR = 7;
+// px: the tick offset (8px, --plx-comp-chart-axis-tick-offset) and a 4px gap before the frame's edge
+const TICK_ROOM = 12;
+const AXIS_TITLE_ROOM = exports.AXIS_TITLE_ROOM = 16;
+function useChartHover() {
+  const [active, setActive] = _react.default.useState(null);
+  const hover = key => ({
+    onPointerEnter: () => setActive(key),
+    onPointerLeave: () => setActive(a => a === key ? null : a)
+  });
+  return [active, hover, setActive];
+}
+function labelRoom(texts, extra = 0) {
+  const longest = (texts || []).reduce((n, s) => Math.max(n, String(s === undefined || s === null ? '' : s).length), 0);
+  return Math.ceil((longest * CHAR + TICK_ROOM + extra) / 4) * 4;
+}
+
+// the room after the plot that a tick label centered on its end needs (half its text and a gap; at least the 8px default)
+function halfRoom(text) {
+  return Math.max(8, Math.ceil((String(text === undefined || text === null ? '' : text).length * CHAR / 2 + 4) / 4) * 4);
+}
+function withColors(series) {
+  return (series || []).map((s, i) => Object.assign({}, s, {
+    id: s.id === undefined ? String(i) : s.id,
+    color: s.color || (0, _scales.seriesColor)(i)
+  }));
+}
+function legendItems(series, value) {
+  return (series || []).map((s, i) => ({
+    id: s.id,
+    label: s.label,
+    color: s.color,
+    value: value ? value(s, i) : undefined
+  }));
+}
+function finite(v) {
+  const n = Number(v);
+  return isFinite(n) ? n : 0;
+}
+  } },
+  "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PieChart = PieChart;
+exports.pieSlices = pieSlices;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _DataLabel = require("./parts/DataLabel.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PieChart
+   Summary: The shares of a few parts in one whole (07 Data Display › Charts › Pie chart, Donut chart): a circle cut into
+     slices from 12 o'clock, largest first, clockwise (pie); a ring with the total or a key value in its hollow center
+     (donut); or a half ring across the top with its value under it (half). Small parts are grouped into Other. Drawn in
+     ChartFrame with a legend that gives each part's share, a tooltip and the data grid.
+   Usage:
+     <PieChart title="Storage by file type" description="Videos take more than half of the storage."
+       data={[{ id: 'video', label: 'Videos', value: 540 }, { id: 'img', label: 'Images', value: 260 }, { id: 'doc', label: 'Documents', value: 120 }]} />
+     <PieChart variant="donut" title="Storage by file type" data={parts} centerLabel="GB used" format={(v) => formatNumber(v)} />
+     <PieChart variant="half" title="Quota used" data={[{ id: 'used', label: 'Used', value: 72 }, { id: 'free', label: 'Free', value: 28 }]}
+       centerValue="72%" centerLabel="of 1 TB" />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     data: the parts: [{ id, label, value, color }] (values above zero; color an optional data-viz step, default by the
+       part's order in the data)
+     variant: "pie" (default) | "donut" (a ring with a center value) | "half" (a half ring across the top, the value under
+       its middle)
+     centerValue: the donut's or the half ring's value (default the total, formatted); centerLabel: the words under it
+       (default strings.total)
+     sort: slices largest first, clockwise from the top (default true; false keeps the data's order); Other stays last
+     maxSlices: the most slices drawn (default 6): the smallest parts beyond them are grouped into one Other slice
+     format: (value) => text for the values (center, tooltip, table); default formatNumber
+     showValues: writes each share on its slice when the slice is large enough (8% or more) (default false)
+     legend: false hides the legend (default shown, each part with its share); legendPosition: ChartFrame's
+     tooltip: shows the part under the pointer, its value and share (default true)
+     size, margin, hideCaption, className: ChartFrame's
+     strings: { part: "Part", value: "Value", share: "Share", total: "Total", other: "Other" } and ChartFrame's strings
+   Behavior:
+     A part keeps its color by its order in the data, not by its size; Other takes the neutral categorical color.
+     Hover a slice: the tooltip shows its name, value and share. The legend and the data grid carry every part's value
+       and share: the chart's keyboard and screen reader view.
+   Notes:
+     Two to five parts read best; for many parts or parts of similar size use a bar chart. Slices are parted by a thin line
+       in the surface color (pie-chart tokens); the hole is 60% of the radius (geometry).
+*/
+const STRINGS = {
+  part: 'Part',
+  value: 'Value',
+  share: 'Share',
+  total: 'Total',
+  other: 'Other'
+};
+const VARIANTS = ['pie', 'donut', 'half'];
+const HOLE = 0.6; // the hollow center's radius, a share of the ring's radius
+const LABEL_MIN = 0.08; // the least share written on its slice
+const FULL = Math.PI * 2 - 1e-6;
+const OTHER_COLOR = 'categorical-6';
+// px: a margin that keeps the ring off the frame's edges (on the 4px grid)
+const RING_MARGIN = {
+  top: 8,
+  end: 8,
+  bottom: 8,
+  start: 8
+};
+
+// the point at an angle (0 = 12 o'clock, clockwise) and a radius from the center
+const at = (cx0, cy0, r, a) => [cx0 + r * Math.sin(a), cy0 - r * Math.cos(a)];
+function arcPath(cx0, cy0, r0, r1, a0, a1) {
+  const span = Math.min(a1 - a0, FULL);
+  const end = a0 + span,
+    large = span > Math.PI ? 1 : 0;
+  const [x0, y0] = at(cx0, cy0, r1, a0),
+    [x1, y1] = at(cx0, cy0, r1, end);
+  if (r0 <= 0) return 'M' + cx0 + ',' + cy0 + 'L' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'Z';
+  const [x2, y2] = at(cx0, cy0, r0, end),
+    [x3, y3] = at(cx0, cy0, r0, a0);
+  return 'M' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'L' + x2 + ',' + y2 + 'A' + r0 + ',' + r0 + ' 0 ' + large + ' 0 ' + x3 + ',' + y3 + 'Z';
+}
+
+// the parts to draw: colors by the data's order, the smallest beyond maxSlices grouped into Other, sorted by size
+function pieSlices(data, {
+  sort = true,
+  maxSlices = 6,
+  other = 'Other'
+} = {}) {
+  const parts = (data || []).map((d, i) => ({
+    id: d.id === undefined ? String(i) : d.id,
+    label: d.label,
+    value: Math.max(0, (0, _chartKit.finite)(d.value)),
+    color: d.color,
+    index: i
+  })).filter(d => d.value > 0);
+  let kept = parts,
+    rest = [];
+  if (parts.length > maxSlices) {
+    const bySize = parts.slice().sort((a, b) => b.value - a.value);
+    const keep = new Set(bySize.slice(0, Math.max(1, maxSlices - 1)).map(d => d.id));
+    kept = parts.filter(d => keep.has(d.id));
+    rest = parts.filter(d => !keep.has(d.id));
+  }
+  kept = kept.map((d, i) => Object.assign({}, d, {
+    color: d.color || (0, _scales.seriesColor)(i)
+  }));
+  if (sort) kept.sort((a, b) => b.value - a.value);
+  if (rest.length) kept.push({
+    id: '__other',
+    label: other,
+    value: rest.reduce((a, d) => a + d.value, 0),
+    color: OTHER_COLOR,
+    index: -1,
+    parts: rest
+  });
+  const total = kept.reduce((a, d) => a + d.value, 0);
+  return kept.map(d => Object.assign(d, {
+    share: total ? d.value / total : 0
+  }));
+}
+function PieChart({
+  title,
+  description,
+  hideCaption,
+  size,
+  data = [],
+  variant = 'pie',
+  centerValue,
+  centerLabel,
+  sort = true,
+  maxSlices = 6,
+  format,
+  showValues = false,
+  legend,
+  legendPosition,
+  tooltip = true,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'pie';
+  const fmt = x => typeof format === 'function' ? format(x) : (0, _format.formatNumber)(x);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const slices = pieSlices(data, {
+    sort,
+    maxSlices,
+    other: t.other
+  });
+  const total = slices.reduce((a, d) => a + d.value, 0);
+  const table = {
+    columns: [{
+      title: t.part,
+      field: 'part',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.value,
+      field: 'value',
+      kind: 'data',
+      hozAlign: 'right'
+    }, {
+      title: t.share,
+      field: 'share',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: slices.map((d, i) => ({
+      id: i + 1,
+      part: d.label,
+      value: fmt(d.value),
+      share: (0, _format.formatPercent)(d.share)
+    }))
+  };
+  const key = legend === false ? null : /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: (0, _chartKit.legendItems)(slices, d => (0, _format.formatPercent)(d.share)),
+    orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
+  });
+  const m = Object.assign({}, RING_MARGIN, margin);
+  const center = v === 'pie' ? null : {
+    value: centerValue === undefined ? fmt(total) : centerValue,
+    label: centerLabel === undefined ? t.total : centerLabel
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: key,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-pie-chart', 'plx-pie-chart--' + v, className)
+  }, ({
+    inner
+  }) => {
+    const half = v === 'half';
+    const r1 = Math.max(0, half ? Math.min(inner.width / 2, inner.height) : Math.min(inner.width, inner.height) / 2);
+    const r0 = v === 'pie' ? 0 : r1 * HOLE;
+    const cx0 = inner.width / 2,
+      cy0 = half ? inner.height : inner.height / 2;
+    const from = half ? -Math.PI / 2 : 0,
+      sweep = half ? Math.PI : Math.PI * 2;
+    let a = from;
+    const geo = slices.map(d => {
+      const a0 = a;
+      a += d.share * sweep;
+      return {
+        d,
+        a0,
+        a1: a
+      };
+    });
+    let tip = null;
+    if (tooltip && active !== null) {
+      const g = geo.filter(x => x.d.id === active)[0];
+      if (g) {
+        const [px, py] = at(cx0, cy0, (r0 + r1) / 2, (g.a0 + g.a1) / 2);
+        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+          x: px,
+          y: py,
+          inner: inner,
+          title: g.d.label,
+          items: [{
+            label: t.value,
+            value: fmt(g.d.value) + ' · ' + (0, _format.formatPercent)(g.d.share),
+            color: g.d.color
+          }]
+        });
+      }
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, geo.map(({
+      d,
+      a0,
+      a1
+    }) => /*#__PURE__*/_react.default.createElement("path", _extends({
+      key: d.id,
+      className: "plx-chart__mark plx-pie-chart__slice",
+      "data-plx-dataviz": d.color,
+      d: arcPath(cx0, cy0, r0, r1, a0, a1)
+    }, tooltip ? hover(d.id) : {}))), showValues ? geo.filter(g => g.d.share >= LABEL_MIN).map(({
+      d,
+      a0,
+      a1
+    }) => {
+      const [px, py] = at(cx0, cy0, r0 ? (r0 + r1) / 2 : r1 * 0.62, (a0 + a1) / 2);
+      return /*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+        key: 'l' + d.id,
+        x: px,
+        y: py,
+        value: (0, _format.formatPercent)(d.share),
+        position: "center"
+      });
+    }) : null, center ? /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-pie-chart__center"
+    }, /*#__PURE__*/_react.default.createElement("text", {
+      className: "plx-pie-chart__center-value",
+      x: cx0,
+      y: cy0
+    }, center.value), center.label ? /*#__PURE__*/_react.default.createElement("text", {
+      className: "plx-pie-chart__center-label",
+      x: cx0,
+      y: cy0
+    }, center.label) : null) : null, tip);
+  });
+}
+  } },
+  "platform/components/MetricCard/MetricCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Table/Table.jsx":"platform/components/Table/Table.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","../../charts/Gauge.jsx":"platform/charts/Gauge.jsx","../../charts/PieChart.jsx":"platform/charts/PieChart.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MetricCard = MetricCard;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _devWarn = require("../../utils/devWarn.js");
+var _layer = require("../../utils/layer.js");
+var _format = require("../../utils/format.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _IconTile = require("../IconTile/IconTile.jsx");
+var _Count = require("../Count/Count.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _ContextualHelp = require("../ContextualHelp/ContextualHelp.jsx");
+var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
+var _Notice = require("../Notice/Notice.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _Table = require("../Table/Table.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _Sparkline = require("../../charts/Sparkline.jsx");
+var _Gauge = require("../../charts/Gauge.jsx");
+var _PieChart = require("../../charts/PieChart.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · MetricCard
+   Summary: One key figure in a card, with one anatomy for every kind of data (07 › Cards and objects › Metric card;
+     owner, 2026-10-19). The header names what is measured (icon, title, info, period filter, More menu, then a context line
+     that says the scope or the period); the body shows the value with its unit or target, a status, the change, and the
+     one visual its type draws; a footer note closes it. The type is chosen by the shape of the data, never by the look.
+   Usage:
+     <MetricCard icon="checklist" title="Open tasks" context="All projects" value="128"
+       change={{ amount: '12', direction: 'up', versus: 'since last week' }} goodWhen="down" />
+     <MetricCard type="trend" icon="image-b" title="Assets added" context="Last 30 days" value="1,284"
+       change={{ amount: '12.5%', direction: 'up', versus: 'vs previous 30 days' }} goodWhen="up"
+       trend={[38, 41, 40, 44, 47, 52]} trendVariant="area" footer="Updated 5 minutes ago" />
+     <MetricCard type="progress" title="Tasks done" context="Kitchen renovation" value="36" target="147"
+       progress={{ value: 36, max: 147 }} status={{ tone: 'active', label: '24%' }} />
+     <MetricCard type="person" person={{ name: 'Maya Chen', role: 'Designer', src: '/people/mc.jpg' }} value="12" unit="open tasks" />
+     <MetricCard type="month" title="Days worked" value="11" target="22 work days"
+       month={{ year: 2026, month: 10, levels: [2, 3, 0, …], today: 19 }} filter={<Select size="sm" … />} />
+     <MetricCard layout="tile" title="Cases to assign" value="12" href="#/cases?assigned=none" />
+   Props:
+     type: what the data is (default "value"):
+       "value" one number | "trend" a number and its recent history | "progress" a number against a target, or rows of them
+       | "gauge" a score in a fixed range with zones | "breakdown" a total split into 2–6 parts, or ordered ranges
+       | "comparison" two numbers of one unit | "list" the top items, ranked bars, or records that need action
+       | "summary" 2–4 figures about one subject | "person" one number about one person (the picture inside the card)
+       | "week" a value or a yes / no per day | "month" a level per day of a month | "table" a total and its 3–8 rows
+     layout: "stacked" (default) | "beside" (the visual at the end, beside the figure: a card two columns wide)
+       | "inline" (value types: the context beside the value) | "tile" (no header: the title, then the value at the end)
+       | "icon-start" (no header: a large icon tile before the value and the title)
+     appearance: "plain" (default) | "edge" (a start edge in the color) | "soft" (the color's soft fill) | "filled" (the
+       color as the fill, every text white) | "gradient" (a radial gradient from color to gradientTo, every text white);
+       filled and gradient only for the value and summary types, which draw no colored visual
+     color: the data color of the edge, the fill and the gradient: "blue" (default) | "green" | "purple" | "red" | "brown"
+       | "gray"; gradientTo: the gradient's second color (default "purple")
+     size: the value's display size: "sm" (24) | "md" (default, 28) | "lg" (36, a dashboard's first row)
+     icon: an icon name or element before the title (the same icon for the same subject everywhere)
+     title: what is measured, a short noun phrase (required; the person's name for type person)
+     context: the scope or the period the figure covers ("Last 30 days", "All projects")
+     info: one to three sentences on how the figure is calculated: an info button after the title (ContextualHelp)
+     filter: the card's own period control (a Select, size "sm"), only when its period differs from the page's
+     menu: MenuItems for the More menu (open details, export); never the card's main action
+     href: makes the title a link to the details; the whole card is then its target
+     headingLevel: the title's heading level (default 3)
+     value: the figure, already formatted ("1,284", "$1.77M"); missing data: leave it out and the card shows "–"
+     unit: a unit after the value ("hrs", "GB", "active cases"); target: the whole it counts toward ("147": "/ 147")
+     status: { tone, icon, label }: a status badge at the end of the value row (Badge tones)
+     change: { amount, direction: "up" | "down", versus }: the change since the last period
+     goodWhen: which way is good: "up" (higher is better) | "down" (lower is better) | "none" (default: neither): the change's color
+     footer: one line: a status message, the source, when it was updated, the threshold rule
+     state: "ready" (default) | "loading" (placeholders) | "empty" (no data: "–" and emptyText) | "error" (the message and
+       Try again) | "stale" (an Out of date badge); emptyText: the no-data line; errorText; onRetry(): Try again
+     trend: the values, oldest first (type trend); trendVariant: "line" | "area" (default) | "bar"; trendLabel: what they show
+     progress: { value, max, tone } (type progress, person): a progress bar
+     rows: [{ id, label, detail, value, max, tone: "good" | "bad" | "neutral" }]: progress rows (type progress), each with its percent
+     gauge: { value, min, max, format, label, thresholds } (type gauge): Gauge's props
+     parts: [{ id, label, value, color }] (type breakdown); breakdown: "bar" (default: a split bar and a legend) | "donut"
+       | "ranges" (ordered ranges in their order, each with a bar)
+     compare: [{ label, value, amount, color }, { … }] (type comparison): the two sides; amount is the number for the bar
+     items: [{ id, label, value, amount, icon, color, person: { name, src }, status, href }] (type list); list: "ranked"
+       (default) | "bars" | "records"
+     metrics: [{ value, unit, label }] (type summary): 2–4 figures
+     person: { name, role, src, gender } (type person): the picture inside the card; the name is the title, the role the context
+     days: seven values, Monday first (type week): numbers for bars, true / false for marks, null for days to come; week:
+       "bars" (default) | "marks"; weekMax: the bars' full height (default the largest value)
+     month: { year, month (1–12), levels: one level 0–3 per working day so far, today } (type month): a month calendar, Monday first
+     table: { label, columns, data } (type table): Table's props, 3–8 rows
+     strings: the words it shows and announces, for other languages (see STRINGS)
+     className: more classes on the root (layout integration only)
+   Behavior:
+     The value is the largest text in the card, never colored; the change carries good or bad with its arrow and color, the
+       status with its badge. A down change shows the up arrow turned (the icon set gets no down arrow).
+     The header stays in every state, so people know which card is loading or failed.
+     With href, the title is the link and the whole card is its target; the info button, the filter and the menu stay their own targets.
+     Colors come from the data colors only (data-plx-color); filled and gradient turn every text white and the header buttons with it.
+   Notes:
+     One card per subject. Cards in a row share the type, the layout, the size and the style, so they line up.
+     The same metric for each project or region is the same card repeated, never a new type.
+     More than eight table rows, or rows people sort and filter, is a DataGrid in a Panel, not a card.
+*/
+const TYPES = ['value', 'trend', 'progress', 'gauge', 'breakdown', 'comparison', 'list', 'summary', 'person', 'week', 'month', 'table'];
+const LAYOUTS = ['stacked', 'beside', 'inline', 'tile', 'icon-start'];
+const APPEARANCES = ['plain', 'edge', 'soft', 'filled', 'gradient'];
+const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
+const ORDER = ['blue', 'purple', 'brown', 'green', 'red', 'gray']; // breakdown parts without a color, by their order
+
+const STRINGS = {
+  more: 'More for {title}',
+  up: 'Up',
+  down: 'Down',
+  good: 'good',
+  bad: 'bad',
+  vs: 'vs',
+  empty: 'No data',
+  loading: 'Loading {title}',
+  error: 'Couldn’t load the figures.',
+  retry: 'Try again',
+  stale: 'Out of date',
+  rank: '#{n}',
+  toCome: 'to come',
+  hit: 'hit',
+  missed: 'missed',
+  weekdays: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+  weekdayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+  month: '{done} of {days} working days so far',
+  parts: '{label} {share}',
+  compare: '{a} {av}, {b} {bv}'
+};
+const fill = (s, o) => Object.keys(o).reduce((t, k) => t.split('{' + k + '}').join(o[k]), s);
+function toneOf(change, goodWhen) {
+  if (!change || goodWhen === 'none' || !goodWhen) return 'neutral';
+  return change.direction === goodWhen ? 'good' : 'bad';
+}
+
+// the change: arrow + amount in the good, bad or neutral color, then what it is compared with
+function Change({
+  change,
+  goodWhen,
+  t
+}) {
+  if (!change) return null;
+  const tone = toneOf(change, goodWhen);
+  const down = change.direction === 'down';
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__change"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-metric-card__delta', 'plx-metric-card__delta--' + tone)
+  }, change.direction ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "arrow-up",
+    className: (0, _cx.cx)('plx-metric-card__arrow', down && 'plx-metric-card__arrow--down')
+  }) : null, change.direction ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, (down ? t.down : t.up) + (tone === 'neutral' ? ' ' : ' (' + t[tone] + ') ')) : null, change.amount), change.versus ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__versus"
+  }, change.versus) : null);
+}
+
+// the figure: value · unit · / target, with the status badge at the end of the row
+function Figure({
+  value,
+  unit,
+  target,
+  status,
+  inlineContext,
+  empty
+}) {
+  const none = empty || value === undefined || value === null || value === '';
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__figure"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-metric-card__value', none && 'plx-metric-card__value--empty')
+  }, none ? '–' : value), unit ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__unit"
+  }, unit) : null, target ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__unit"
+  }, '/ ' + target) : null, inlineContext ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__unit"
+  }, inlineContext) : null, status ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__status"
+  }, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: status.tone,
+    icon: status.icon
+  }, status.label)) : null);
+}
+
+// a split bar: SVG geometry only (the parts' widths come from the data), each part in its data color
+function SplitBar({
+  parts,
+  label
+}) {
+  const total = parts.reduce((s, p) => s + (p.value > 0 ? p.value : 0), 0) || 1;
+  let x = 0;
+  return /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-metric-card__split",
+    viewBox: "0 0 100 8",
+    preserveAspectRatio: "none",
+    role: "img",
+    "aria-label": label
+  }, parts.map((p, i) => {
+    const w = (p.value > 0 ? p.value : 0) / total * 100;
+    const r = /*#__PURE__*/_react.default.createElement("rect", {
+      key: p.id || i,
+      className: "plx-metric-card__split-part",
+      "data-plx-color": p.color,
+      x: x,
+      y: "0",
+      width: Math.max(0, w - (i < parts.length - 1 ? 0.6 : 0)),
+      height: "8"
+    });
+    x += w;
+    return r;
+  }));
+}
+function Legend({
+  parts,
+  total
+}) {
+  return /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-metric-card__legend"
+  }, parts.map(p => /*#__PURE__*/_react.default.createElement("li", {
+    key: p.id,
+    className: "plx-metric-card__legend-row"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__key",
+    "data-plx-color": p.color,
+    "aria-hidden": "true"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__legend-label"
+  }, p.label), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__number"
+  }, p.display !== undefined ? p.display : p.value), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__share"
+  }, (0, _format.formatPercent)(total ? p.value / total : 0)))));
+}
+function ProgressRows({
+  rows
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__rows"
+  }, rows.map(r => {
+    const ratio = r.max ? r.value / r.max : 0;
+    return /*#__PURE__*/_react.default.createElement("div", {
+      key: r.id || r.label,
+      className: "plx-metric-card__progress-row"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__row-text"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-metric-card__row-label"
+    }, r.label), r.detail ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-metric-card__row-detail"
+    }, r.detail) : null), /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)('plx-metric-card__delta', 'plx-metric-card__delta--' + (r.tone || 'neutral'))
+    }, (0, _format.formatPercent)(ratio)), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__row-bar"
+    }, /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+      value: r.value,
+      max: r.max,
+      size: "sm",
+      tone: r.tone === 'good' ? 'success' : r.tone === 'bad' ? 'danger' : 'neutral',
+      label: r.label,
+      labelHidden: true
+    })));
+  }));
+}
+function ListVisual({
+  items = [],
+  variant,
+  t
+}) {
+  if (variant === 'bars') {
+    const max = Math.max(1, ...items.map(i => i.amount !== undefined ? i.amount : Number(i.value) || 0));
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__rows"
+    }, items.map(i => /*#__PURE__*/_react.default.createElement("div", {
+      key: i.id,
+      className: "plx-metric-card__bar-row"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-metric-card__row-label"
+    }, i.label), /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+      value: i.amount !== undefined ? i.amount : Number(i.value) || 0,
+      max: max,
+      size: "sm",
+      label: i.label,
+      labelHidden: true
+    }), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-metric-card__number"
+    }, i.value))));
+  }
+  return /*#__PURE__*/_react.default.createElement("ol", {
+    className: (0, _cx.cx)('plx-metric-card__list', variant === 'records' && 'plx-metric-card__list--records')
+  }, items.map((i, n) => {
+    const label = i.href ? /*#__PURE__*/_react.default.createElement("a", {
+      className: "plx-metric-card__row-link",
+      href: i.href
+    }, i.label) : i.label;
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: i.id,
+      className: "plx-metric-card__list-row"
+    }, variant === 'records' ? null : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-metric-card__rank"
+    }, fill(t.rank, {
+      n: n + 1
+    })), variant === 'records' ? null : i.person ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+      name: i.person.name,
+      src: i.person.src,
+      gender: i.person.gender,
+      size: "sm"
+    }) : i.icon ? /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
+      icon: i.icon,
+      hue: i.color,
+      size: "sm"
+    }) : /*#__PURE__*/_react.default.createElement("span", null), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-metric-card__row-label"
+    }, label), i.status ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+      tone: i.status.tone,
+      icon: i.status.icon
+    }, i.status.label) : /*#__PURE__*/_react.default.createElement(_Count.Count, {
+      variant: "pill",
+      tone: "neutral",
+      value: i.value
+    }));
+  }));
+}
+function Summary({
+  metrics = []
+}) {
+  return /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-metric-card__summary"
+  }, metrics.map((m, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: m.id || i,
+    className: "plx-metric-card__summary-item"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__summary-figure"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-metric-card__summary-value', (m.value === undefined || m.value === null || m.value === '') && 'plx-metric-card__value--empty')
+  }, m.value === undefined || m.value === null || m.value === '' ? '–' : m.value), m.unit ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__unit"
+  }, m.unit) : null), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__label"
+  }, m.label))));
+}
+function Week({
+  days = [],
+  variant,
+  max,
+  t
+}) {
+  const top = max || Math.max(1, ...days.filter(d => typeof d === 'number'));
+  const said = days.map((d, i) => t.weekdayNames[i] + ' ' + (d === null || d === undefined ? t.toCome : d === true ? t.hit : d === false ? t.missed : d)).join(', ');
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__week",
+    role: "img",
+    "aria-label": said
+  }, days.map((d, i) => /*#__PURE__*/_react.default.createElement("span", {
+    key: i,
+    className: "plx-metric-card__day-cell"
+  }, variant === 'marks' ? d === null || d === undefined ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__mark plx-metric-card__mark--none"
+  }, '–') : /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-metric-card__mark', d ? 'plx-metric-card__delta--good' : 'plx-metric-card__delta--bad')
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: d ? 'check' : 'close'
+  })) : /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-metric-card__day-bar",
+    viewBox: "0 0 12 40",
+    preserveAspectRatio: "none",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("rect", {
+    className: "plx-metric-card__day-track",
+    x: "0",
+    y: "0",
+    width: "12",
+    height: "40"
+  }), typeof d === 'number' && d > 0 ? /*#__PURE__*/_react.default.createElement("rect", {
+    className: "plx-metric-card__day-fill",
+    x: "0",
+    y: 40 - Math.min(1, d / top) * 40,
+    width: "12",
+    height: Math.min(1, d / top) * 40
+  }) : null), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__day-letter",
+    "aria-hidden": "true"
+  }, t.weekdays[i]))));
+}
+function Month({
+  month,
+  t
+}) {
+  if (!month) return null;
+  const first = new Date(month.year, month.month - 1, 1);
+  const start = (first.getDay() + 6) % 7; // Monday first
+  const days = new Date(month.year, month.month, 0).getDate();
+  const levels = month.levels || [];
+  const cells = [];
+  let work = 0,
+    done = 0;
+  t.weekdays.forEach((d, i) => cells.push(/*#__PURE__*/_react.default.createElement("span", {
+    key: 'h' + i,
+    className: "plx-metric-card__day-letter",
+    "aria-hidden": "true"
+  }, d)));
+  for (let i = 0; i < start; i++) cells.push(/*#__PURE__*/_react.default.createElement("span", {
+    key: 'e' + i,
+    "aria-hidden": "true"
+  }));
+  for (let d = 1; d <= days; d++) {
+    const weekend = (start + d - 1) % 7 > 4;
+    const future = month.today && d > month.today;
+    let level = 'none';
+    if (!future) {
+      level = weekend ? '0' : String(levels[work] || 0);
+      if (!weekend) {
+        work++;
+        if (levels[work - 1] > 0) done++;
+      }
+    }
+    cells.push(/*#__PURE__*/_react.default.createElement("span", {
+      key: d,
+      "aria-hidden": "true",
+      className: (0, _cx.cx)('plx-metric-card__date', 'plx-metric-card__date--' + level, d === month.today && 'plx-metric-card__date--today')
+    }, d));
+  }
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__month",
+    role: "img",
+    "aria-label": fill(t.month, {
+      done,
+      days: work
+    })
+  }, cells);
+}
+function Loading() {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__placeholder"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Skeleton, {
+    width: "96px",
+    height: "32px"
+  }), /*#__PURE__*/_react.default.createElement(_Loading.Skeleton, {
+    width: "160px",
+    height: "16px"
+  }), /*#__PURE__*/_react.default.createElement(_Loading.Skeleton, {
+    height: "32px"
+  }));
+}
+function MetricCard({
+  type = 'value',
+  layout = 'stacked',
+  appearance = 'plain',
+  color = 'blue',
+  gradientTo = 'purple',
+  size = 'md',
+  icon,
+  title,
+  context,
+  info,
+  filter,
+  menu,
+  href,
+  headingLevel = 3,
+  value,
+  unit,
+  target,
+  status,
+  change,
+  goodWhen = 'none',
+  footer,
+  state = 'ready',
+  emptyText,
+  errorText,
+  onRetry,
+  trend,
+  trendVariant = 'area',
+  trendLabel,
+  progress,
+  rows,
+  gauge,
+  parts,
+  breakdown = 'bar',
+  compare,
+  items,
+  list = 'ranked',
+  metrics,
+  person,
+  days,
+  week = 'bars',
+  weekMax,
+  month,
+  table,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('MetricCard', {
+    type,
+    layout,
+    appearance,
+    size
+  }, {
+    type: TYPES,
+    layout: LAYOUTS,
+    appearance: APPEARANCES,
+    size: ['sm', 'md', 'lg']
+  });
+  if ((appearance === 'filled' || appearance === 'gradient') && type !== 'value' && type !== 'summary') (0, _devWarn.devWarn)('MetricCard', {
+    appearance: appearance + ' with type ' + type
+  }, {
+    appearance: ['plain', 'edge', 'soft']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-metric-card');
+  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
+  const name = type === 'person' && person ? title || person.name : title;
+  const line = type === 'person' && person && context === undefined ? person.role : context;
+  const empty = state === 'empty';
+  const shownStatus = state === 'stale' && !status ? {
+    tone: 'waiting',
+    icon: 'clock',
+    label: t.stale
+  } : status;
+  const hue = HUES.indexOf(color) >= 0 ? color : 'blue';
+  const titleText = href ? /*#__PURE__*/_react.default.createElement("a", {
+    className: "plx-metric-card__link",
+    href: href
+  }, name) : name;
+  const iconEl = icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-metric-card__icon",
+    "aria-hidden": "true"
+  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  }) : icon) : null;
+  const moreLabel = fill(t.more, {
+    title: typeof name === 'string' ? name : ''
+  });
+  const actions = info || filter || menu ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__actions"
+  }, info ? /*#__PURE__*/_react.default.createElement(_ContextualHelp.ContextualHelp, {
+    title: typeof name === 'string' ? name : ''
+  }, info) : null, filter || null, menu ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      iconOnly: true,
+      icon: "more",
+      label: moreLabel,
+      variant: "ghost",
+      size: "sm"
+    }),
+    placement: "bottom-end"
+  }, menu) : null) : null;
+  const rootProps = {
+    className: (0, _cx.cx)('plx-metric-card', 'plx-metric-card--' + type, 'plx-metric-card--' + layout, 'plx-metric-card--' + appearance, 'plx-metric-card--' + size, href && 'plx-metric-card--link', className),
+    'data-plx-color': appearance !== 'plain' ? hue : undefined,
+    'data-plx-gradient-to': appearance === 'gradient' ? gradientTo : undefined,
+    'aria-labelledby': id,
+    'aria-busy': state === 'loading' ? true : undefined,
+    ...rest
+  };
+
+  // the two headerless layouts: tile and icon-start
+  if (layout === 'tile' || layout === 'icon-start') {
+    return /*#__PURE__*/_react.default.createElement("article", rootProps, layout === 'icon-start' && icon ? /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
+      icon: typeof icon === 'string' ? icon : undefined,
+      hue: hue,
+      size: "lg"
+    }) : null, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__compact"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)('plx-metric-card__value', empty && 'plx-metric-card__value--empty')
+    }, empty || value === undefined ? '–' : value), /*#__PURE__*/_react.default.createElement(H, {
+      id: id,
+      className: "plx-metric-card__title"
+    }, titleText)));
+  }
+  let visual = null;
+  let showFigure = type !== 'gauge' && type !== 'comparison' && type !== 'summary' && !(type === 'list' && value === undefined) && !(type === 'breakdown' && (breakdown === 'donut' || value === undefined));
+  if (state === 'ready' || state === 'stale') {
+    if (type === 'trend' && trend && trend.length) visual = /*#__PURE__*/_react.default.createElement(_Sparkline.Sparkline, {
+      values: trend,
+      variant: trendVariant,
+      size: "fill",
+      showLast: trendVariant !== 'bar',
+      label: trendLabel || (typeof name === 'string' ? name : '')
+    });
+    if (type === 'progress' && rows) visual = /*#__PURE__*/_react.default.createElement(ProgressRows, {
+      rows: rows
+    });else if ((type === 'progress' || type === 'person') && progress) visual = /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+      value: progress.value,
+      max: progress.max,
+      tone: progress.tone,
+      size: type === 'person' ? 'sm' : 'md',
+      label: typeof name === 'string' ? name : '',
+      labelHidden: true
+    });
+    if (type === 'progress' && rows && value === undefined) showFigure = false;
+    if (type === 'gauge' && gauge) visual = /*#__PURE__*/_react.default.createElement(_Gauge.Gauge, _extends({
+      title: typeof name === 'string' ? name : '',
+      hideCaption: true,
+      size: "sm"
+    }, gauge));
+    if (type === 'breakdown' && parts) {
+      const coloured = parts.map((p, i) => Object.assign({}, p, {
+        color: p.color || ORDER[i % ORDER.length]
+      }));
+      const total = coloured.reduce((s, p) => s + (p.value > 0 ? p.value : 0), 0);
+      if (breakdown === 'donut') visual = /*#__PURE__*/_react.default.createElement(_PieChart.PieChart, {
+        variant: "donut",
+        hideCaption: true,
+        size: "sm",
+        title: typeof name === 'string' ? name : '',
+        data: parts.map(p => ({
+          id: p.id,
+          label: p.label,
+          value: p.value
+        })),
+        centerValue: value,
+        centerLabel: unit
+      });else if (breakdown === 'ranges') visual = /*#__PURE__*/_react.default.createElement(ProgressRows, {
+        rows: parts.map(p => ({
+          id: p.id,
+          label: p.label,
+          detail: p.detail,
+          value: p.value,
+          max: total,
+          tone: 'neutral'
+        }))
+      });else visual = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(SplitBar, {
+        parts: coloured,
+        label: coloured.map(p => fill(t.parts, {
+          label: p.label,
+          share: (0, _format.formatPercent)(total ? p.value / total : 0)
+        })).join(', ')
+      }), /*#__PURE__*/_react.default.createElement(Legend, {
+        parts: coloured,
+        total: total
+      }));
+      if (breakdown === 'donut') showFigure = false;
+    }
+    if (type === 'comparison' && compare && compare.length === 2) {
+      const [a, b] = compare;
+      visual = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+        className: "plx-metric-card__compare"
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "plx-metric-card__side"
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-metric-card__value"
+      }, a.value), /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-metric-card__label"
+      }, a.label)), /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-metric-card__versus"
+      }, t.vs), /*#__PURE__*/_react.default.createElement("div", {
+        className: "plx-metric-card__side plx-metric-card__side--end"
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-metric-card__value"
+      }, b.value), /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-metric-card__label"
+      }, b.label))), /*#__PURE__*/_react.default.createElement(SplitBar, {
+        parts: [{
+          id: 'a',
+          value: a.amount !== undefined ? a.amount : Number(a.value) || 0,
+          color: a.color || 'green'
+        }, {
+          id: 'b',
+          value: b.amount !== undefined ? b.amount : Number(b.value) || 0,
+          color: b.color || 'gray'
+        }],
+        label: fill(t.compare, {
+          a: a.label,
+          av: a.value,
+          b: b.label,
+          bv: b.value
+        })
+      }));
+    }
+    if (type === 'list') visual = /*#__PURE__*/_react.default.createElement(ListVisual, {
+      items: items,
+      variant: list,
+      t: t
+    });
+    if (type === 'summary') visual = /*#__PURE__*/_react.default.createElement(Summary, {
+      metrics: metrics
+    });
+    if (type === 'week') visual = /*#__PURE__*/_react.default.createElement(Week, {
+      days: days,
+      variant: week,
+      max: weekMax,
+      t: t
+    });
+    if (type === 'month') visual = /*#__PURE__*/_react.default.createElement(Month, {
+      month: month,
+      t: t
+    });
+    if (type === 'table' && table) visual = /*#__PURE__*/_react.default.createElement(_Table.Table, {
+      label: table.label || (typeof name === 'string' ? name : ''),
+      columns: table.columns,
+      data: table.data
+    });
+  }
+  let body;
+  if (state === 'loading') body = /*#__PURE__*/_react.default.createElement(Loading, null);else if (state === 'error') body = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Figure, {
+    empty: true
+  }), /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger",
+    actions: onRetry ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      icon: "refresh",
+      onClick: onRetry
+    }, t.retry) : undefined
+  }, errorText || t.error));else {
+    const figure = showFigure || empty ? /*#__PURE__*/_react.default.createElement(Figure, {
+      value: value,
+      unit: unit,
+      target: target,
+      status: shownStatus,
+      empty: empty,
+      inlineContext: layout === 'inline' ? line : undefined
+    }) : null;
+    const block = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, figure, empty ? null : /*#__PURE__*/_react.default.createElement(Change, {
+      change: change,
+      goodWhen: goodWhen,
+      t: t
+    }));
+    if (type === 'person' && person) body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__person"
+    }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+      name: person.name,
+      src: person.src,
+      gender: person.gender,
+      size: "2xl"
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__stack"
+    }, block, empty ? null : visual));else if (layout === 'beside' && visual && !empty) body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__beside"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__stack"
+    }, block), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-metric-card__visual"
+    }, visual));else body = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, block, empty ? null : visual);
+  }
+  const note = empty ? emptyText || t.empty : footer;
+  return /*#__PURE__*/_react.default.createElement("article", rootProps, /*#__PURE__*/_react.default.createElement("header", {
+    className: "plx-metric-card__header"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__heading"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    id: id,
+    className: (0, _cx.cx)('plx-metric-card__title', iconEl && 'plx-metric-card__title--icon')
+  }, iconEl, titleText), line && layout !== 'inline' ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-metric-card__context"
+  }, line) : null), actions), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-metric-card__body"
+  }, body), note ? /*#__PURE__*/_react.default.createElement("footer", {
+    className: "plx-metric-card__footer"
+  }, note) : null);
+}
+  } },
+  "platform/components/DateBadge/DateBadge.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DateBadge = DateBadge;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DateBadge
+   Summary: A day shown as its number and weekday, with today marked (02 › Inputs › Date and time › Calendar).
+   Usage:
+     <DateBadge day={6} weekday="Tue" today />
+     <DateBadge day={7} weekday="Wed" dateTime="2026-10-07" />
+   Props:
+     day: the day of the month
+     weekday: the short weekday name, shown above the number
+     today: marks today: the number on the action color (default false)
+     dateTime: the date, machine-readable (wraps the badge in <time>)
+     className: more classes on the badge
+   Behavior:
+     Today carries "Today" for assistive technology as well as its look.
+   Notes:
+     The time grid's day headers and the month view's day cells use it.
+*/
+function DateBadge({
+  day,
+  weekday,
+  today = false,
+  dateTime,
+  className,
+  ...rest
+}) {
+  const Tag = dateTime ? 'time' : 'span';
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: (0, _cx.cx)('plx-date-badge', today && 'is-today', className),
+    dateTime: dateTime
+  }, rest), weekday ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-date-badge__weekday"
+  }, weekday) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-date-badge__day"
+  }, day), today ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "Today") : null);
+}
+  } },
+  "platform/components/EventChip/EventChip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EventChip = EventChip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EventChip
+   Summary: An event in a calendar: its title and time on a soft surface with an edge in the event's own color
+     (03 › Data display › Specialized displays › Calendar view).
+   Usage:
+     <EventChip title="Site visit" time="10:00" color={calendar.color} onClick={() => open(e)} />
+     <EventChip title="Design review" time="14:00–15:30" fill />
+   Props:
+     title: the event's name
+     time: when, as shown
+     color: the event's or its calendar's color, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280); it draws the start edge
+     fill: the chip fills its box (an event placed in a time grid); default false
+     onClick(event): makes the chip a button that opens the event
+     className: more classes on the chip
+   Behavior:
+     With onClick it is a button (focus ring, Enter and Space); without, plain text.
+   Notes:
+     The hue reaches the stylesheet as the data-plx-color attribute, the only way a data color enters (no style is written).
+     Other props pass through to the element.
+*/
+function EventChip({
+  title,
+  time,
+  color,
+  fill = false,
+  onClick,
+  className,
+  ...rest
+}) {
+  const Tag = onClick ? 'button' : 'span';
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    type: onClick ? 'button' : undefined,
+    onClick: onClick,
+    className: (0, _cx.cx)('plx-event-chip', fill && 'plx-event-chip--fill', onClick && 'plx-event-chip--interactive', className),
+    "data-plx-color": color || undefined
+  }, rest), time ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-event-chip__time"
+  }, time) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-event-chip__title"
+  }, title));
+}
+  } },
+  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RadioTiles = RadioTiles;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RadioTiles
+   Summary: A choice of one among a few options shown as tiles, each with a preview, a label and a description
+     (02 › Inputs › Selection › Selectable card).
+   Usage:
+     <RadioTiles legend="Header style" value={style} onChange={setStyle}
+       options={[{ value: 'solid', label: 'Solid', description: 'The accent color', preview: <…/> }, { value: 'light', label: 'Light' }]} />
+   Props:
+     legend: what is being chosen (the group's name)
+     legendHidden: the legend is for assistive technology only (default false)
+     options: [{ value, label, description, preview, disabled }]
+     value: the chosen value
+     onChange(value): runs when another tile is chosen
+     name: the radio group's name (default: a unique one)
+     size: "sm" | "md" (default) | "lg": the tiles' minimum width
+     className: more classes on the group
+   Behavior:
+     A native radio group: Tab moves into it, the arrow keys move the choice, Space chooses.
+     The chosen tile shows the selected border and a check; a focused tile shows the focus ring.
+   Notes:
+     The preview is decorative (aria-hidden); the label and description name the option.
+*/
+function RadioTiles({
+  legend,
+  legendHidden = false,
+  options = [],
+  value,
+  onChange,
+  name,
+  size = 'md',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('RadioTiles', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
+  const auto = 'plx-rt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
+    className: (0, _cx.cx)('plx-radio-tiles', 'plx-radio-tiles--' + size, className)
+  }, rest), /*#__PURE__*/_react.default.createElement("legend", {
+    className: (0, _cx.cx)('plx-radio-tiles__legend', legendHidden && 'plx-visually-hidden')
+  }, legend), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-radio-tiles__grid"
+  }, options.map(o => {
+    const on = o.value === value;
+    return /*#__PURE__*/_react.default.createElement("label", {
+      key: o.value,
+      className: (0, _cx.cx)('plx-radio-tile', on && 'is-selected', o.disabled && 'is-disabled')
+    }, /*#__PURE__*/_react.default.createElement("input", {
+      className: "plx-radio-tile__input plx-visually-hidden",
+      type: "radio",
+      name: name || auto,
+      value: o.value,
+      checked: on,
+      disabled: o.disabled,
+      onChange: () => {
+        if (onChange) onChange(o.value);
+      }
+    }), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-radio-tile__preview",
+      "aria-hidden": "true"
+    }, o.preview) : null, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-radio-tile__text"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-radio-tile__label"
+    }, o.label), o.description ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-radio-tile__description"
+    }, o.description) : null), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-radio-tile__check",
+      "aria-hidden": "true"
+    }, on ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "check",
+      size: "sm"
+    }) : null));
+  })));
+}
+  } },
+  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Kbd = Kbd;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
+   Summary: A key or shortcut ("Ctrl K").
+   Usage:
+     <Kbd>Ctrl K</Kbd>
+     <Kbd onAccent>/</Kbd>
+   Props:
+     onAccent: the version for the blue header (default false)
+     children: the key or shortcut text
+     className: more classes on the <kbd>
+   Notes:
+     It uses the data font at a 16px label height.
+     Other props pass through to the <kbd>.
+*/
+function Kbd({
+  onAccent = false,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
+    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className)
+  }, rest), children);
+}
+  } },
+  "platform/components/Divider/Divider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Divider = Divider;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Divider
+   Summary: A 1px rule between groups.
+   Usage:
+     <Divider />
+     <Divider orientation="vertical" />
+   Props:
+     orientation: "horizontal" (default) | "vertical" (in a row)
+     className: more classes on the rule
+   Behavior:
+     It is a separator (role="separator") with its orientation.
+   Notes:
+     Other props pass through to the <div>.
+*/
+function Divider({
+  orientation = 'horizontal',
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "separator",
+    "aria-orientation": orientation,
+    className: (0, _cx.cx)('plx-divider', 'plx-divider--' + orientation, className)
+  }, rest));
+}
+  } },
+  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Bleed = Bleed;
+exports.Center = Center;
+exports.Inline = Inline;
+exports.Stack = Stack;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
+   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
+     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
+   Usage:
+     <Stack gap="md">
+       <Inline gap="sm" justify="between">…</Inline>
+       <Inline wrap>…</Inline>
+     </Stack>
+     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
+     <Center maxWidth="sm" text><EmptyState … /></Center>
+     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
+   Props:
+     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*)
+     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
+     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
+     Inline.align: the same values; default "center"
+     Stack.justify: "start" | "center" | "end" | "between"
+     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
+     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
+     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
+     Stack.scroll: scrolls its own content
+     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
+     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
+     Stack.indent: starts one inline step in (a nested group)
+     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
+     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
+     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
+     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
+     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
+     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
+     Stack.className: more classes on the element
+     Stack.children: the content to lay out
+     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
+       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
+     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
+     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
+     Center.text: centers the lines of text (short headings and messages only)
+     Center.as, Center.className: as for Stack
+     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
+     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
+     Bleed.as, Bleed.className: as for Stack
+   Behavior:
+     A scrolling Stack or Inline shows its scroll bar on hover.
+     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
+       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
+       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
+     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
+       keeps no inset (text stays out of a Bleed).
+   Notes:
+     Inline takes the same props as Stack.
+     Any other prop reaches the element.
+     Applications build their layouts from these (and the Platform's patterns) instead of styles.
+*/
+function layout(kind, {
+  as: As = 'div',
+  gap,
+  align,
+  justify,
+  wrap,
+  inset,
+  grow,
+  scroll,
+  width,
+  maxHeight,
+  indent,
+  push,
+  reverse,
+  reverseBelow,
+  order,
+  orderBelow,
+  className,
+  children,
+  ...rest
+}, defaults) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
+  }, rest), children);
+}
+function Stack(props) {
+  return layout('stack', props, {
+    gap: 'md'
+  });
+}
+function Inline(props) {
+  return layout('inline', props, {
+    gap: 'sm',
+    align: 'center'
+  });
+}
+function Center({
+  as: As = 'div',
+  maxWidth = 'md',
+  intrinsic,
+  vertical,
+  text,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
+  }, rest), children);
+}
+function Bleed({
+  as: As = 'div',
+  space = 'md',
+  sides = 'inline',
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
+  }, rest), children);
+}
+  } },
+  "platform/components/Thumbnail/Thumbnail.jsx": { deps: {"react":null,"../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Thumbnail = Thumbnail;
+var _react = _interopRequireDefault(require("react"));
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Thumbnail
+   Summary: A small picture of a file or an item beside its name (a table's name cell, a list row).
+     It shows the picture, or an icon when there is none, in a 28px rounded square on the sunken surface.
+   Usage:
+     <Thumbnail src={asset.thumbUrl} icon="image-a-2" />
+   Props:
+     src: the picture's URL
+     alt: the picture's text alternative; default "" (empty when the name is next to it)
+     icon: the icon shown without src; default "document"
+   Behavior:
+     An image that fails to load falls back to the icon.
+     The picture loads lazily.
+     The icon is decorative and hidden from assistive technology.
+*/
+
+function Thumbnail({
+  src,
+  alt = '',
+  icon = 'document'
+}) {
+  // an image that fails to load falls back to the icon, as when there is none (batch 215)
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+  }, [src]);
+  return src && !failed ? /*#__PURE__*/_react.default.createElement("img", {
+    className: "plx-thumbnail",
+    src: src,
+    alt: alt,
+    loading: "lazy",
+    decoding: "async",
+    onError: () => setFailed(true)
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-thumbnail plx-thumbnail--icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    size: "sm"
+  }));
+}
+  } },
+  "platform/providers/apps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.appHref = exports.appById = exports.PLENIX_APPS = void 0;
+/* Plenix · applications (platform/providers/apps.js): every Plenix application, in one list for every product. The header
+   shows the pinned ones as links and the switcher shows them all (pinned first); the session keeps which are pinned.
+   id: the application's id. path: its page, relative to the Plenix folder, where every application has its own folder
+   beside platform/ (batch 149). appHref(app, root) turns it into a link from the current page, where root is the
+   relative path from that page to the Plenix folder ("../" from an application's page, "../../" from the spec). */
+const PLENIX_APPS = exports.PLENIX_APPS = [{
+  id: 'home',
+  label: 'Dashboard',
+  icon: 'home',
+  path: 'dashboard/index.html'
+}, {
+  id: 'projects',
+  label: 'Projects',
+  icon: 'briefcase',
+  path: 'projects/index.html'
+}, {
+  id: 'messaging',
+  label: 'Messages',
+  icon: 'message',
+  path: 'messages/index.html'
+}, {
+  id: 'contacts',
+  label: 'Contacts',
+  icon: 'settings-users',
+  path: 'contacts/index.html'
+}, {
+  id: 'calendar',
+  label: 'Calendar',
+  icon: 'calendar',
+  path: 'calendar/index.html'
+}, {
+  id: 'tasks',
+  label: 'Tasks',
+  icon: 'circle-check',
+  path: 'tasks/index.html'
+}, {
+  id: 'notes',
+  label: 'Notes',
+  icon: 'doc-text',
+  path: 'notes/index.html'
+}, {
+  id: 'bookmarks',
+  label: 'Bookmarks',
+  icon: 'bookmark',
+  path: 'bookmarks/index.html'
+}, {
+  id: 'files',
+  label: 'Files',
+  icon: 'folder',
+  path: 'files/index.html'
+}, {
+  id: 'assets',
+  label: 'Asset Manager',
+  icon: 'image-b',
+  path: 'dam/index.html'
+}];
+const appById = id => PLENIX_APPS.find(a => a.id === id);
+exports.appById = appById;
+const appHref = (app, root = '') => root + app.path.split('/').map(encodeURIComponent).join('/').replace(/%23/g, '#');
+exports.appHref = appHref;
+  } },
+  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/apps.js":"platform/providers/apps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BrandMark = BrandMark;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _apps = require("../../providers/apps.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BrandMark
+   Summary: The Plenix brand from the brand kit (platform/brand/): the mark alone, the wordmark, the logo (mark and wordmark
+     in one lockup) and the product mark of each application, in the brand colors, in one color or on the accent.
+   Usage:
+     <BrandMark />                                  the mark, decorative, beside the product name (the header)
+     <BrandMark label="Plenix" />                   the mark on its own, named
+     <BrandMark kind="logo" size="lg" />            the logo: the mark and the wordmark
+     <BrandMark kind="wordmark" tone="mono" />      the name alone, in the current text color
+     <BrandMark kind="product" app="notes" />       the product mark of an application (PLENIX_APPS)
+     <BrandMark kind="logo" tone="on-accent" />     on the blue header or another accent surface
+   Props:
+     BrandMark.kind: "mark" (default) | "wordmark" | "logo" (mark + wordmark) | "product" (the application's tile + its name)
+     BrandMark.tone: the colors. Without it the mark takes the current text color (as in the header); "brand" (the default of
+       the wordmark, the logo and the product mark) draws the mark in the brand blue and the name in the text color; "mono"
+       draws everything in the current text color; "on-accent" everything in the accent content color (the blue header)
+     BrandMark.size: "sm" (the minimum: a 16px mark) | "md" (20px) | "lg" (24px) | "xl" (32px); without it the mark takes
+       the control icon size and a lockup is "md"
+     BrandMark.app: kind="product": an application id from PLENIX_APPS ("notes") or an application ({ label, icon })
+     BrandMark.showName: kind="product": false draws the tile alone, named by the application (default true)
+     BrandMark.clearSpace: pads the lockup with the brand's clear space (brand-rules.json), for a logo that stands on its own
+     BrandMark.label: the accessible name of the mark alone (or of the product tile alone); without it the mark is decorative
+     BrandMark.strings: { name: "Plenix" } (the wordmark's text: the brand name of brand.json)
+     BrandMark.className: more classes
+   Behavior:
+     The mark is the brand kit's file (platform/brand/brand.json files.mark), drawn as a mask in the color its tone gives:
+       its square includes the kit's clear space. The wordmark is live text in the heading face, at a size of the type
+       scale, so it is read as the brand name; the mark inside a lockup is decorative.
+     The product mark is the application's icon (PLENIX_APPS) on the brand tile, then the application's name.
+     The sizes stop at "sm": below it the mark loses its central cross (the minimum sizes of brand-rules.json).
+   Notes:
+     Never redraw or recolor the mark by hand: replace the kit's files and build (build-brand.js). The brand rules (clear
+       space, minimum sizes, backgrounds, misuse) are platform/brand/brand-rules.json; the Brand application page shows them.
+     The brand blue comes from the brand tokens (tokens/components/brand.tokens.json), never from a palette color.
+     Other props pass through to the outer <span>.
+*/
+const STRINGS = {
+  name: 'Plenix'
+};
+function BrandMark({
+  kind = 'mark',
+  tone,
+  size,
+  app,
+  showName = true,
+  clearSpace = false,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('BrandMark', {
+    tone,
+    size
+  }, {
+    tone: ['brand', 'mono', 'on-accent'],
+    size: ['sm', 'md', 'lg', 'xl']
+  });
+  const s = {
+    ...STRINGS,
+    ...strings
+  };
+  if (kind === 'mark') {
+    const cls = (0, _cx.cx)('plx-brand-mark', tone && 'plx-brand-mark--tone-' + tone, size && 'plx-brand-mark--size-' + size, className);
+    return label ? /*#__PURE__*/_react.default.createElement("span", _extends({
+      role: "img",
+      "aria-label": label,
+      className: cls
+    }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
+      "aria-hidden": "true",
+      className: cls
+    }, rest));
+  }
+  const lockup = (0, _cx.cx)('plx-brand-lockup', 'plx-brand-lockup--' + kind, 'plx-brand-lockup--tone-' + (tone || 'brand'), 'plx-brand-lockup--size-' + (size || 'md'), clearSpace && 'plx-brand-lockup--clear', className);
+  if (kind === 'product') {
+    const a = typeof app === 'string' ? (0, _apps.appById)(app) : app;
+    const name = a ? a.label : s.name;
+    return /*#__PURE__*/_react.default.createElement("span", _extends({
+      className: lockup,
+      role: showName ? undefined : 'img',
+      "aria-label": showName ? undefined : label || name
+    }, rest), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-brand-lockup__tile",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: a ? a.icon : 'home'
+    })), showName ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-brand-lockup__app"
+    }, name) : null);
+  }
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: lockup
+  }, rest), kind === 'logo' ? /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true",
+    className: "plx-brand-mark plx-brand-lockup__mark"
+  }) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-brand-lockup__name"
+  }, s.name));
+}
+  } },
+  "platform/components/ColorSwatch/dataColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DATA_COLORS = void 0;
+/* Plenix · DATA_COLORS
+   Summary: The data colors by name, GENERATED by build-steps.js from the --plx-sys-data-color-<hue> theme tokens (do not edit).
+   Usage:
+     import { DATA_COLORS } from 'plenix-platform';   // ["blue","green","purple","red","brown","gray"]
+     <ColorSwatch color={DATA_COLORS[0]} />
+   Props:
+     none: a list of hue names, in the order the theme defines them
+*/
+const DATA_COLORS = exports.DATA_COLORS = ["blue", "green", "purple", "red", "brown", "gray"];
+  } },
+  "platform/components/ColorSwatch/categoryColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CATEGORY_COLORS = void 0;
+/* Plenix · CATEGORY_COLORS
+   Summary: The category colors by name, GENERATED by build-steps.js from the --plx-sys-category-<name> tokens (do not edit):
+     The 19 active categories in the owner-approved order; deprecated aliases are omitted.
+   Usage:
+     import { CATEGORY_COLORS } from 'plenix-platform';
+     <ColorPicker palette="category" value={category.color} onChange={…} />
+   Props:
+     none: a list of names
+*/
+const CATEGORY_COLORS = exports.CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
+  } },
+  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ColorPicker = ColorPicker;
+exports.ColorSwatch = ColorSwatch;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _dataColors = require("./dataColors.js");
+var _categoryColors = require("./categoryColors.js");
+var _Button = require("../Button/Button.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _overflow = require("../../utils/overflow.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ColorSwatch
+   Summary: A color from the data shown as a small square chip (a category's color).
+   Usage:
+     <ColorSwatch color={category.color} />
+     <ColorSwatch color={category.color} label="Blue" pressed={picked === 'blue'} onClick={() => …} />
+     <ColorSwatch color="green" label="Green" showLabel />
+     <ColorPicker palette="category" colors={['red', 'green', 'blue']} value={c} onChange={setC} />
+   Props:
+     color: a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
+     category: instead of color, a category color by name (CATEGORY_COLORS: the category palette, its own tokens), set as
+       data-plx-category (batch 290)
+     tone: instead of color, a surface of the system it previews: "accent" (the accent surface) | "surface" | "frost"
+     size: "sm" (16px) | "md" (default; 20px)
+     shape: "square" (default: 2px corners, owner batch 291) | "round" (a circle)
+     pressed: marks the chosen color (aria-pressed), with onClick
+     label: the accessible name of the color, with onClick
+     showLabel: shows the label as text after the swatch (default false); with onClick the swatch and its label are one
+       button (wave 4)
+     onClick(event): makes the swatch a button that picks the color
+     className: more classes on the swatch
+     ColorPicker: the data colors (DATA_COLORS) as a group of swatch buttons, one pressed (batch 280: a data color is a hue)
+       ColorPicker.value: the chosen hue
+       ColorPicker.onChange(hue): runs with the hue picked
+       ColorPicker.label: the group's accessible name (default "Color")
+       ColorPicker.size: the swatches' size (default "md")
+       ColorPicker.palette: "data" (default: the data hues) | "category" (the category colors: categories use these)
+       ColorPicker.colors: a custom set: the names to offer from the palette, in this order (unknown names are left out)
+         (wave 4)
+       ColorPicker shows one row (owner, batch 290): the colors that do not fit are in a More menu at its end ("+n", or the
+       chosen color when it is one of them), each with its swatch and name
+       ColorPicker.className: more classes on the group
+   Behavior:
+     With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
+     With showLabel the color's name is text beside it, read as text; the swatch itself stays decorative.
+     A swatch button's target is at least 24px (44px with touch) whatever its size: it extends invisibly past the swatch
+       (Platforms Standard 3.1); with touch each swatch of a ColorPicker gets a slot that wide.
+   Notes:
+     The hue reaches the stylesheet as the data-plx-color attribute (system/steps.css), the only way a data color enters a page.
+     Other props pass through to the <button> or <span>.
+*/
+const nameOf = h => h.charAt(0).toUpperCase() + h.slice(1);
+function ColorSwatch({
+  color,
+  category,
+  tone,
+  size = 'md',
+  shape = 'square',
+  pressed,
+  label,
+  showLabel = false,
+  onClick,
+  className,
+  ...rest
+}) {
+  if (category === 'brown') category = 'orange';
+  (0, _devWarn.devWarn)('ColorSwatch', {
+    tone,
+    size
+  }, {
+    tone: ['accent', 'surface', 'frost'],
+    size: ['sm', 'md']
+  });
+  if (showLabel && label) {
+    // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
+    const chip = /*#__PURE__*/_react.default.createElement(ColorSwatch, {
+      color: color,
+      category: category,
+      tone: tone,
+      size: size,
+      shape: shape
+    });
+    const text = /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-color-swatch-label__text"
+    }, label);
+    return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
+      type: "button",
+      className: (0, _cx.cx)('plx-color-swatch-label', className),
+      "aria-pressed": !!pressed,
+      onClick: onClick
+    }, rest), chip, text) : /*#__PURE__*/_react.default.createElement("span", _extends({
+      className: (0, _cx.cx)('plx-color-swatch-label', className)
+    }, rest), chip, text);
+  }
+  const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
+  return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
+    type: "button",
+    className: cls,
+    "data-plx-color": color || undefined,
+    "data-plx-category": category || undefined,
+    "aria-pressed": !!pressed,
+    "aria-label": label,
+    onClick: onClick
+  }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: cls,
+    "data-plx-color": color || undefined,
+    "data-plx-category": category || undefined,
+    "aria-hidden": "true"
+  }, rest));
+}
+
+// the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
+function ColorPicker({
+  value,
+  onChange,
+  label = 'Color',
+  size = 'md',
+  palette = 'data',
+  colors,
+  invalid,
+  required,
+  className,
+  ...rest
+}) {
+  // invalid and required: from Field, not for a group
+  (0, _devWarn.devWarn)('ColorPicker', {
+    size
+  }, {
+    size: ['sm', 'md']
+  });
+  const cat = palette === 'category';
+  if (cat && value === 'brown') value = 'orange';
+  const all = cat ? _categoryColors.CATEGORY_COLORS : _dataColors.DATA_COLORS;
+  const list = Array.isArray(colors) ? [...new Set(colors.map(h => cat && h === 'brown' ? 'orange' : h))].filter(h => all.indexOf(h) >= 0) : all;
+  const ref = _react.default.useRef(null);
+  const fit = (0, _overflow.useOverflow)(ref, list.length, palette + size + list.join());
+  const hidden = list.slice(fit);
+  const pick = h => {
+    if (onChange) onChange(h);
+  };
+  const swatch = (h, extra) => /*#__PURE__*/_react.default.createElement(ColorSwatch, _extends({
+    key: h,
+    color: cat ? undefined : h,
+    category: cat ? h : undefined,
+    size: size
+  }, extra));
+  // each swatch in a slot as tall as the row, so every item and the More button share the first row's top
+  const items = list.map(h => /*#__PURE__*/_react.default.createElement("span", {
+    key: h,
+    "data-plx-overflow-item": "",
+    className: "plx-color-picker__slot"
+  }, swatch(h, {
+    label: nameOf(h),
+    pressed: value === h,
+    onClick: () => pick(h)
+  })));
+  const chosenHidden = hidden.indexOf(value) >= 0;
+  const more = hidden.length ? /*#__PURE__*/_react.default.createElement("span", {
+    key: "plx-more",
+    "data-plx-overflow-more": "",
+    className: "plx-color-picker__more"
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: 'More colors',
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "2xs",
+      variant: chosenHidden ? 'secondary' : 'ghost',
+      caret: true,
+      "aria-label": 'More colors' + (chosenHidden ? ', ' + nameOf(value) + ' chosen' : '')
+    }, chosenHidden ? /*#__PURE__*/_react.default.createElement(ColorSwatch, {
+      color: cat ? undefined : value,
+      category: cat ? value : undefined,
+      size: "sm"
+    }) : '+' + hidden.length)
+  }, hidden.map(h => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: h,
+    role: "menuitemradio",
+    checked: value === h,
+    icon: swatch(h, {
+      size: 'sm'
+    }),
+    onSelect: () => pick(h)
+  }, nameOf(h))))) : null;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    role: "group",
+    "aria-label": label || undefined,
+    className: (0, _cx.cx)('plx-color-picker', className)
+  }, rest), (0, _overflow.splitAt)(items, fit, more));
+}
+  } },
+  "platform/components/DropZone/DropZone.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DropZone = DropZone;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _dnd = require("../../utils/dnd.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DropZone
+   Summary: Where files are dropped (an upload area): a dashed region on the sunken surface. It is also a drop target for
+     items dragged in the page (a data drop target: an asset dropped on a folder, a card on a column; 10 Patterns ›
+     Drop target), through the drag-and-drop engine, and shows whether it takes what is over it.
+   Usage:
+     <DropZone as="button" active={dragging} onClick={openPicker} onDragOver={…} onDrop={…}>Drop files or click to choose</DropZone>
+     <DropZone name="Archive" accepts={(data, type) => type === 'asset'} onDropItem={(asset) => archive(asset)}>Archive</DropZone>
+     <DropZone reject={wrongType} rejectContent="Only images can go here" …>Drop images here</DropZone>
+   Props:
+     as: "div" (default) | "button" (opens the file picker on click)
+     active: shows the highlight while files are dragged over it (default false)
+     reject: shows that what is dragged over it is not taken (default false): the border in the danger color and the
+       not-allowed pointer; the page sets it while it handles the browser's drag events itself
+     rejectContent: what the zone says while it does not take what is over it ("Only images can go here"), so the state
+       is never told by color alone (default: its children)
+     overlay: covers its positioned parent while files are dragged over a page (the asset browser), and lets the drop
+       reach the page (default false)
+     onDropItem(data, type): makes the zone a drop target for items dragged in the page with the drag-and-drop engine
+       (utils/dnd.js: useDraggable, a sortable list's items do not drop here); it runs when one is dropped on it
+     accepts(data, type): with onDropItem, true when the zone takes the item (default: every item)
+     name: with onDropItem, the zone's name in the announcements ("Over Archive", "Archive does not take Cross 014")
+     children: the zone's content
+     className: more classes on the zone
+   Behavior:
+     The zone is highlighted while active, or while an item it takes is over it; it shows the reject state while
+       reject is set, or while an item it does not take is over it.
+     With onDropItem the keyboard reaches it too: a picked-up item (Space or Enter on its handle) moves from target to
+       target with the arrow keys and drops with Space or Enter; each target is announced.
+   Notes:
+     The page handles the browser's drag and drop events (files); other props (onDragOver, onDrop, onClick, …) pass
+       through to the element.
+*/
+function DropZone({
+  as: As = 'div',
+  active = false,
+  reject = false,
+  rejectContent,
+  overlay = false,
+  onDropItem,
+  accepts,
+  name,
+  className,
+  children,
+  ...rest
+}) {
+  const target = (0, _dnd.useDropTarget)({
+    name,
+    accepts,
+    onDrop: onDropItem,
+    disabled: !onDropItem
+  });
+  const st = onDropItem ? target.state : null;
+  const refused = reject || st === 'reject';
+  const extra = onDropItem ? {
+    ref: target.ref,
+    'data-plx-dnd-target': target.props['data-plx-dnd-target'],
+    'data-plx-drop-state': target.props['data-plx-drop-state']
+  } : null;
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    type: As === 'button' ? 'button' : undefined
+  }, extra, {
+    className: (0, _cx.cx)('plx-drop-zone', (active || st === 'over') && 'is-active', refused && 'is-reject', overlay && 'plx-drop-zone--overlay', className)
+  }, rest), refused && rejectContent != null ? rejectContent : children);
+}
+  } },
+  "platform/components/Preview/Preview.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Preview = Preview;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Preview
+   Summary: The large picture of the item an inspector shows (or a placeholder with its icon and count).
+     It is the sunken surface, rounded, in a shape of the aspect-ratio scale (4:3 by default), with its content centered.
+   Usage:
+     <Preview ratio="16-9" fit="cover"><img className="plx-preview__media" src={src} alt="Kitchen, before" /></Preview>
+     <Preview as="button" onClick={openViewer} topStart={<Tag>PNG</Tag>} bottomEnd={<Icon name="expand" />}>
+       <img src={src} alt="" />
+     </Preview>
+   Props:
+     as: "div" (default) | "button" (opens the item, e.g. the media viewer)
+     ratio: the shape, from the aspect-ratio scale (--plx-ref-ratio-*): "4-3" (default) | "1-1" | "3-2" | "16-9" | "21-9" |
+       "3-4" | "9-16" (the last two portrait)
+     aspect: the older name of ratio, as a photo's: "4/3" | "3/2" | "1/1" | "16/9" (as MediaCard's); ratio wins
+     fit: how a picture (.plx-preview__media) fills the frame: none (default: a thumbnail at its own size, centered) |
+       "cover" (it fills the frame and is cropped to it) | "contain" (it fills the frame, the whole picture showing)
+     topStart: a small mark in the top-start corner (the type)
+     bottomEnd: a small mark in the bottom-end corner (an expand icon)
+     className: more classes on the preview
+     children: the picture or placeholder
+     ...rest: other attributes go on the preview element (onClick for a button)
+   Behavior:
+     The frame keeps its ratio at every width, so the space is reserved before the picture loads.
+     cover and contain never stretch the picture; cover crops what does not fit, contain leaves the sunken surface around it.
+   Notes:
+     A ratio outside the scale falls back to 4:3: add it to the scale (a token) first.
+*/
+// the aspect-ratio scale (the Aspect-ratio scale foundation, platform/tokens/reference/ratio.tokens.json)
+const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
+const FITS = ['cover', 'contain'];
+function Preview({
+  as: As = 'div',
+  ratio,
+  aspect = '4/3',
+  fit,
+  topStart,
+  bottomEnd,
+  className,
+  children,
+  ...rest
+}) {
+  const r = ratio || String(aspect).replace('/', '-');
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    type: As === 'button' ? 'button' : undefined,
+    "data-plx-ratio": RATIOS.indexOf(r) >= 0 ? r : '4-3'
+  }, rest, {
+    className: (0, _cx.cx)('plx-preview', As === 'button' && 'plx-preview--button', FITS.indexOf(fit) >= 0 && 'plx-preview--' + fit, className)
+  }), children, topStart ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-preview__corner plx-preview__corner--top-start"
+  }, topStart) : null, bottomEnd ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-preview__corner plx-preview__corner--bottom-end"
+  }, bottomEnd) : null);
+}
+  } },
+  "platform/components/Fieldset/Fieldset.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Fieldset = Fieldset;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Fieldset
+   Summary: A group of related controls with its title (a legend): no border, the legend as secondary text, the controls
+     stacked under it, or side by side in a row when they make one value together (a field group: width and height, the
+     parts of an address line).
+   Usage:
+     <Fieldset legend="Export" gap="sm"><Checkbox label="Originals" /><Checkbox label="Metadata" /></Fieldset>
+     <Fieldset legend="Size" layout="row"><Field label="Width"><Input width="xs" /></Field><Field label="Height"><Input width="xs" /></Field></Fieldset>
+     <Fieldset legend="Sort by" hideLegend><RadioGroup … /></Fieldset>
+   Props:
+     legend: the title of the group
+     layout: "stack" (default; the controls under each other) | "row" (a field group: the controls side by side, wrapping
+       onto more lines when the row is narrow)
+     gap: the space between the stacked controls: "xs" (default) | "sm" | "md" (layout "stack")
+     hideLegend: the legend is read by assistive technology but not shown, for a group whose title is already on screen
+       (a section heading, a dialog title) (default false)
+     children: the controls
+     className: more classes on the <fieldset>
+   Behavior:
+     The legend names the group: a screen reader reads it when focus enters the group.
+     A row keeps its controls aligned at their tops (their labels on one line) and wraps when it runs out of room.
+   Notes:
+     Other props pass through to the <fieldset> (disabled turns every control in it off).
+*/
+function Fieldset({
+  legend,
+  layout = 'stack',
+  gap = 'xs',
+  hideLegend = false,
+  className,
+  children,
+  ...rest
+}) {
+  const row = layout === 'row';
+  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
+    className: (0, _cx.cx)('plx-fieldset', row ? 'plx-fieldset--row' : 'plx-stack plx-stack--gap-' + gap, className)
+  }, rest), /*#__PURE__*/_react.default.createElement("legend", {
+    className: (0, _cx.cx)('plx-fieldset__legend', hideLegend && 'plx-visually-hidden')
+  }, legend), children);
+}
+  } },
+  "platform/components/Columns/Columns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Columns = Columns;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Columns
+   Summary: Equal columns side by side (a two- or three-column layout inside a dialog or a page), or a sidebar beside the
+     main column; they collapse into one column below a window class.
+   Usage:
+     <Columns count={3} divided><Stack>…</Stack><Stack>…</Stack><Stack>…</Stack></Columns>
+     <Columns ratio="sidebar-start" collapseBelow="wide"><Stack>Filters</Stack><Stack>Results</Stack></Columns>
+   Props:
+     count: 2 (default) | 3
+     divided: a divider between the columns, each column padded (default false; the upload dialog's three steps)
+     gap: "none" | "md" (default) | "lg", when not divided
+     ratio: "equal" (default) | "sidebar-start" (a narrow first column, one third) | "sidebar-end" (a narrow last
+       column); two columns only
+     collapseBelow: none (default: always side by side) | "medium" (one column in a Narrow window, under 600px) | "wide"
+       (one column in a Narrow or Medium window, under 840px)
+     children: the columns; each child is one column (a Stack)
+     className: more classes on the row
+   Behavior:
+     The window class is the main region's width (Platforms Standard 3.3), read by a container query on the shell's
+       main region (.plx-shell-main), so a page with an inspector open collapses sooner than the window would say.
+     Collapsed, the columns stack in their markup order with the layout gap between them; divided columns trade their
+       vertical lines for a line above each column after the first.
+     The reading and focus order are the markup order at every width.
+   Notes:
+     Outside the shell's main region nothing collapses (there is no window class to read).
+     Other props pass through to the <div>.
+*/
+function Columns({
+  count = 2,
+  divided = false,
+  gap = 'md',
+  ratio = 'equal',
+  collapseBelow,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-columns', 'plx-columns--' + count, divided ? 'plx-columns--divided' : 'plx-columns--gap-' + gap, count === 2 && ratio !== 'equal' ? 'plx-columns--' + ratio : null, collapseBelow ? 'plx-columns--collapse-below-' + collapseBelow : null, className)
+  }, rest), children);
+}
+  } },
+  "platform/components/Breadcrumbs/Breadcrumbs.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Breadcrumbs = Breadcrumbs;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Breadcrumbs
+   Summary: Shows where the page sits in a hierarchy, from the top level to the current page.
+   Usage:
+     <Breadcrumbs label="Breadcrumb"
+       items={[{ label: 'UI Inventory', href: '#/' }, { label: 'Forms', href: '#/forms' }, { label: 'Combobox' }]} />
+   Props:
+     items: the levels, from the top level to the current page: [{ label, href, onClick }]
+     items[].href: the link of the level; an item without href is plain text
+     items[].onClick: runs when the level's link is clicked
+     label: the accessible name of the navigation landmark (default "Breadcrumb")
+     className: more classes on the <nav>
+   Behavior:
+     It is a navigation landmark with an ordered list.
+     Every item but the last is a link (or plain text without href).
+     The last item is the current page (aria-current="page").
+     Separators are drawn by CSS and hidden from assistive technology.
+*/
+
+function Breadcrumbs({
+  items = [],
+  label = 'Breadcrumb',
+  className
+}) {
+  return /*#__PURE__*/_react.default.createElement("nav", {
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-breadcrumbs', className)
+  }, /*#__PURE__*/_react.default.createElement("ol", {
+    className: "plx-breadcrumbs__list"
+  }, items.map((it, i) => {
+    const last = i === items.length - 1;
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: i,
+      className: "plx-breadcrumbs__item"
+    }, last ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-breadcrumbs__current",
+      "aria-current": "page"
+    }, it.label) : it.href ? /*#__PURE__*/_react.default.createElement("a", {
+      className: "plx-breadcrumbs__link",
+      href: it.href,
+      onClick: it.onClick
+    }, it.label) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-breadcrumbs__text"
+    }, it.label));
+  })));
+}
+  } },
+  "platform/components/List/List.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.List = List;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · List, List.Item
+   Summary: A list of short statements, each with a leading icon in a tone (do and don't, features, requirements); or an
+     ordered list, numbered (1, 2, 3) or lettered (a, b, c), or drawn as steps; lists nest one level inside an item.
+   Usage:
+     <List items={[{ icon: 'circle-check', tone: 'success', children: 'Use it for…' }]} />
+     <List><List.Item icon="close" tone="danger">Avoid…</List.Item></List>
+     <List ordered items={[{ children: 'Create the project' }, { children: 'Upload the files', items: [{ children: 'Photos' }], ordered: 'alpha' }]} />
+     <List ordered variant="steps" items={[{ children: 'Choose the files' }, { children: 'Add the details' }]} />
+     <List variant="bullets" items={[{ children: 'Presence: online, away, busy, offline.' }, { children: 'Workflow: done, in progress.' }]} />
+   Props:
+     List.items: the statements: [{ icon, tone, children, items, ordered, variant }]; or pass List.Item children
+     List.ordered: an ordered list (<ol>): "decimal" (true is the same) | "alpha"; without it, the icon list (<ul>)
+     List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow |
+       "bullets": a plain list, each statement after a small square bullet (owner, 2026-10-15: for points of a text)
+     List.label: names the list for assistive technology when its heading is not next to it
+     List.children: List.Item elements, when there are no items
+     List.className: more classes on the list
+     List.Item.icon: the icon name (icon lists)
+     List.Item.tone: "neutral" (default) | "success" | "danger" | "info" | "warning"
+     List.Item.items: a nested list under the statement, of the same kind unless List.Item.ordered says otherwise
+     List.Item.ordered: the kind of the nested list: "decimal" | "alpha" | false (an icon list)
+     List.Item.variant: the nested list's variant ("icons", the default, or "bullets" for points under a statement)
+     List.Item.children: the statement
+     List.Item.className: more classes on the <li>
+   Behavior:
+     Items wrap; the icon, number or step sits on the first line.
+     The icon is decorative and hidden from assistive technology (the text carries the meaning); an ordered list is an
+       <ol>, so its numbers are announced with the items.
+     A nested list starts under its statement's text (the same keyline); nest one level only (two at most).
+*/
+
+const kindOf = ordered => ordered === 'alpha' ? 'alpha' : ordered ? 'decimal' : null;
+function List({
+  items,
+  label,
+  ordered,
+  variant = 'icons',
+  className,
+  children
+}) {
+  (0, _devWarn.devWarn)('List', {
+    variant
+  }, {
+    variant: ['icons', 'steps', 'bullets']
+  });
+  const kind = kindOf(ordered || (variant === 'steps' ? 'decimal' : null));
+  const Tag = kind ? 'ol' : 'ul';
+  return /*#__PURE__*/_react.default.createElement(Tag, {
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', !kind && variant === 'bullets' && 'plx-list--bullets', className)
+  }, items ? items.map((it, i) => /*#__PURE__*/_react.default.createElement(List.Item, {
+    key: i,
+    icon: it.icon,
+    tone: it.tone,
+    items: it.items,
+    ordered: it.ordered === undefined ? kind : it.ordered,
+    variant: it.variant
+  }, it.children)) : children);
+}
+List.Item = function ListItem({
+  icon,
+  tone = 'neutral',
+  items,
+  ordered,
+  variant,
+  className,
+  children
+}) {
+  (0, _devWarn.devWarn)('List.Item', {
+    tone
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
+  const text = /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-list__text"
+  }, children);
+  return /*#__PURE__*/_react.default.createElement("li", {
+    className: (0, _cx.cx)('plx-list__item', 'plx-list__item--' + tone, className)
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-list__icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  })) : null, items && items.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-list__body"
+  }, text, /*#__PURE__*/_react.default.createElement(List, {
+    items: items,
+    ordered: ordered,
+    variant: variant,
+    className: "plx-list--nested"
+  })) : text);
+};
+  } },
+  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CodeBlock = CodeBlock;
+exports.detect = detect;
+exports.highlight = highlight;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · CodeBlock
+   Summary: Code or a file's source, in the code font (Reddit Mono) on the page surface, with a Copy button.
+   Usage:
+     <CodeBlock title="platform/components/Button/Button.jsx" maxHeight="tall">{text}</CodeBlock>
+   Props:
+     title: a file name or caption shown above the code (in the data font)
+     maxHeight: "none" (default) | "tall" (a box that scrolls, for whole files)
+     copy: false hides the Copy button (default true)
+     label: the accessible name of the code region (default the title, else strings.code)
+     strings: the words it shows and announces, for other languages: { code: "Code", copy: "Copy", copied: "Copied",
+       failed: "Could not copy" }
+     language: "auto" (default: from the title's extension, else read from the code) | "jsx" | "js" | "css" | "html" | "text"
+     children: the code, as a string
+     className: more classes on the block
+   Behavior:
+     The code keeps its own line breaks and scrolls sideways.
+     The code is one Tab stop (a focusable region) so a keyboard user can scroll it.
+     The code is colored in the usual editor manner: keywords, strings, comments, numbers, functions, tags, attributes and
+       properties, custom properties, selectors.
+     "text" is not colored.
+     Copy puts the code on the clipboard and reads "Copied" with a check for a moment; screen readers hear "Copied" (or
+       "Could not copy" when the clipboard refuses).
+   Notes:
+     The colors come from the --plx-sys-code-* roles.
+     The highlighter (highlight, detect) is shared with CodeEditor, which colors its text the same way; it is not public.
+*/
+
+const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';
+// each rule: [kind, pattern]; the first that matches at a position wins
+const RULES = {
+  js: [['comment', /\/\*[\s\S]*?\*\/|\/\/[^\n]*/], ['string', /'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`/], ['tag', /<\/?[A-Za-z][\w.]*/], ['attribute', /[A-Za-z_][\w-]*(?==(?!=)[{"'])/], ['keyword', new RegExp('\\b(?:' + KEYWORDS + ')\\b')], ['number', /\b\d+(?:\.\d+)?\b/], ['function', /\b[A-Za-z_$][\w$]*(?=\()/]],
+  css: [['comment', /\/\*[\s\S]*?\*\//], ['string', /'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"/], ['brace', /[{}]/], ['variable', /--[\w-]+/], ['keyword', /@[\w-]+|!important/], ['attribute', /[\w-]+(?=\s*:)/], ['function', /\b[\w-]+(?=\()/], ['number', /-?\b\d+(?:\.\d+)?(?:px|rem|em|%|ms|s|deg|fr|vh|vw|ch)?\b/]]
+};
+RULES.jsx = RULES.js;
+RULES.html = RULES.js;
+function detect(title, text) {
+  const ext = title ? (String(title).match(/\.(\w+)$/) || [])[1] : null;
+  if (ext) return ext === 'css' ? 'css' : /^(jsx?|mjs|tsx?)$/.test(ext) ? 'jsx' : ext === 'html' ? 'html' : 'text';
+  return /^\s*(?:[.#:@\w[\]*-][^{\n]*)\{[^}]*:[^}]*;/m.test(text) && !/=>|import |<[A-Z]/.test(text) ? 'css' : 'jsx';
+}
+
+// the code as a list of plain strings and colored spans (CodeEditor colors its text with it too)
+function highlight(text, language) {
+  const rules = RULES[language];
+  if (!rules) return text;
+  const all = new RegExp(rules.map(([, re]) => '(' + re.source + ')').join('|'), 'g');
+  const out = [];
+  let at = 0,
+    depth = 0,
+    m,
+    n = 0;
+  const plain = s => {
+    if (!s) return;
+    out.push(language === 'css' && depth === 0 ? /*#__PURE__*/_react.default.createElement("span", {
+      key: n++,
+      className: "plx-code-block__tok--selector"
+    }, s) : s);
+  };
+  while (m = all.exec(text)) {
+    if (m[0] === '') {
+      all.lastIndex++;
+      continue;
+    }
+    plain(text.slice(at, m.index));
+    const kind = rules[m.slice(1).findIndex(g => g !== undefined)][0];
+    if (kind === 'brace') {
+      depth += m[0] === '{' ? 1 : -1;
+      if (depth < 0) depth = 0;
+      out.push(m[0]);
+    } else if (language === 'css' && depth === 0 && kind !== 'comment' && kind !== 'keyword' && kind !== 'string') plain(m[0]);else if (kind === 'tag') {
+      const slash = m[0][1] === '/' ? 2 : 1;
+      out.push(m[0].slice(0, slash));
+      out.push(/*#__PURE__*/_react.default.createElement("span", {
+        key: n++,
+        className: "plx-code-block__tok--tag"
+      }, m[0].slice(slash)));
+    } else out.push(/*#__PURE__*/_react.default.createElement("span", {
+      key: n++,
+      className: 'plx-code-block__tok--' + kind
+    }, m[0]));
+    at = all.lastIndex;
+  }
+  plain(text.slice(at));
+  return out;
+}
+const STRINGS = {
+  code: 'Code',
+  copy: 'Copy',
+  copied: 'Copied',
+  failed: 'Could not copy'
+};
+function CodeBlock({
+  title,
+  maxHeight = 'none',
+  copy = true,
+  label,
+  language = 'auto',
+  strings,
+  className,
+  children
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [copied, setCopied] = _react.default.useState(false);
+  const [said, setSaid] = _react.default.useState(''); // what screen readers hear after Copy (batch 213)
+  const text = typeof children === 'string' ? children : String(children == null ? '' : children);
+  const lang = language === 'auto' ? detect(title, text) : language;
+  const colored = _react.default.useMemo(() => highlight(text, lang), [text, lang]);
+  const doCopy = () => {
+    const done = () => {
+      setCopied(true);
+      setSaid(t.copied);
+      setTimeout(() => {
+        setCopied(false);
+        setSaid('');
+      }, 1500);
+    };
+    const failed = () => {
+      setSaid(t.failed);
+      setTimeout(() => setSaid(''), 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, failed);else failed();
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-code-block', 'plx-code-block--' + maxHeight, className)
+  }, title || copy ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-code-block__head"
+  }, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-code-block__title"
+  }, title) : /*#__PURE__*/_react.default.createElement("span", null), copy ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    icon: copied ? 'check' : undefined,
+    onClick: doCopy
+  }, copied ? t.copied : t.copy) : null, copy ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status"
+  }, said) : null) : null, /*#__PURE__*/_react.default.createElement("pre", {
+    className: "plx-code-block__pre",
+    tabIndex: 0,
+    "aria-label": label || title || t.code
+  }, /*#__PURE__*/_react.default.createElement("code", {
+    "data-plx-language": lang
+  }, colored)));
+}
+  } },
+  "platform/components/SectionHeading/SectionHeading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SectionHeading = SectionHeading;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SectionHeading
+   Summary: A small uppercase heading that names a group (navigation sections, panel sections, settings), sized by its level.
+   Usage:
+     <SectionHeading collapsible expanded={open} onToggle={() => setOpen(!open)} controls="recent-body">Recent</SectionHeading>
+     <SectionHeading level={2}>Appearance</SectionHeading>
+   Props:
+     level: the heading level; default 3; null for a plain label. Each level takes its own size from the type scale: 2 (13px)
+       is larger than 3 (11px), which is larger than 4 (10px); a plain label and levels 5 and 6 are 10px
+     collapsible: renders a button that shows or hides the section; default false
+     expanded: whether the section is shown (collapsible only); default true
+     onToggle(event): runs when the button is clicked (collapsible only)
+     controls: the id of the section body (collapsible only)
+     actions: controls at the end of the heading
+     className: more classes on the heading
+     children: the label text
+     ...rest: other attributes go on the heading element
+   Behavior:
+     The chevron turns with expanded.
+     The size follows the level (plx-section-heading--level-2, -3, -4), so pick the level from the outline, never for a size.
+   Notes:
+     It sets no outer margin: the list or panel it sits in spaces it.
+*/
+// the levels with their own size (section-heading.css); the others keep the base size
+const LEVELS = [2, 3, 4];
+function SectionHeading({
+  level = 3,
+  collapsible = false,
+  expanded = true,
+  onToggle,
+  controls,
+  actions,
+  className,
+  children,
+  ...rest
+}) {
+  const Tag = level ? 'h' + level : 'div';
+  const sized = LEVELS.indexOf(level) >= 0 && 'plx-section-heading--level-' + level;
+  if (collapsible) {
+    return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+      className: (0, _cx.cx)('plx-section-heading', sized, 'plx-section-heading--collapsible', className)
+    }, rest), /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-section-heading__toggle",
+      "aria-expanded": expanded,
+      "aria-controls": controls,
+      onClick: onToggle
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-section-heading__label"
+    }, children), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-section-heading__chevron",
+      "aria-hidden": "true"
+    })), actions ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-section-heading__actions"
+    }, actions) : null);
+  }
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: (0, _cx.cx)('plx-section-heading', sized, className)
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-section-heading__label"
+  }, children), actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-section-heading__actions"
+  }, actions) : null);
+}
+  } },
+  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CollapsibleSection = CollapsibleSection;
+exports.ShowMore = ShowMore;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CollapsibleSection
+   Summary: A titled section that expands and collapses.
+   Usage:
+     <CollapsibleSection title="Collections" icon="briefcase" defaultExpanded actions={<Button…/>}>…</CollapsibleSection>
+   Props:
+     title: the section title
+     icon: an <Icon> (or an icon name) before the title
+     expanded: the open state, when controlled
+     defaultExpanded: the first open state, when uncontrolled (default true)
+     onToggle(next): runs with the new open state when the header is clicked
+     actions: controls beside the header, outside its button
+     headingLevel: the heading level of the title (default 3; null for a plain label)
+     className: more classes on the <section>
+     bodyClassName: more classes on the body
+     children: the body
+     ShowMore: the "Show more" button under a list that shows only its first rows (owner, batch 276: it carries an icon):
+       ShowMore.expanded: the rest is shown (aria-expanded); the label reads "Show less" and the chevron points up
+       ShowMore.count: how many are hidden, shown as "Show more (count)" (a number, or text such as "+3")
+       ShowMore.onToggle(next): runs with the new state
+       ShowMore.size: the button size (default "2xs", the smallest); other props reach the Button (variant)
+   Behavior:
+     Controlled with expanded and onToggle(next); uncontrolled with defaultExpanded.
+     The header is one button (aria-expanded, pointing at the body).
+     The chevron at the end points down while open.
+     The body is removed from view, and from the accessibility tree, while collapsed.
+   Notes:
+     It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
+       chevron at the end.
+*/
+const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i
+}) : i;
+function CollapsibleSection({
+  title,
+  icon,
+  expanded,
+  defaultExpanded = true,
+  onToggle,
+  actions,
+  headingLevel = 3,
+  className,
+  bodyClassName,
+  children
+}) {
+  const id = (0, _layer.useUid)('plx-collapsible-section');
+  const [own, setOwn] = _react.default.useState(defaultExpanded);
+  const open = expanded !== undefined ? expanded : own;
+  const toggle = () => {
+    if (expanded === undefined) setOwn(!open);
+    if (onToggle) onToggle(!open);
+  };
+  const Tag = headingLevel ? 'h' + headingLevel : 'div';
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-collapsible-section', open && 'is-expanded', className)
+  }, /*#__PURE__*/_react.default.createElement(Tag, {
+    className: "plx-collapsible-section__heading"
+  }, /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-collapsible-section__toggle",
+    "aria-expanded": open,
+    "aria-controls": id + '-body',
+    onClick: toggle
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-collapsible-section__icon",
+    "aria-hidden": "true"
+  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-collapsible-section__title"
+  }, title), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-collapsible-section__chevron",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down"
+  }))), actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-collapsible-section__actions"
+  }, actions) : null), /*#__PURE__*/_react.default.createElement("div", {
+    id: id + '-body',
+    className: (0, _cx.cx)('plx-collapsible-section__body', bodyClassName),
+    hidden: !open
+  }, children));
+}
+
+// "Show more (n)" / "Show less" with its chevron after the label: down to show more, up to show less (batch 276)
+function ShowMore({
+  expanded = false,
+  count,
+  onToggle,
+  size = '2xs',
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('ShowMore', {
+    size
+  }, {
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    size: size,
+    iconEnd: expanded ? 'chevron-up' : 'chevron-down',
+    "aria-expanded": expanded,
+    onClick: () => {
+      if (onToggle) onToggle(!expanded);
+    }
+  }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
+}
+  } },
+  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProgressSteps = ProgressSteps;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressSteps
+   Summary: The steps of a task done in order (setup, an import, a checkout) and where the person is: each step's marker,
+     name and optional line, joined by connectors, with the done, current, upcoming and failed steps each told by an icon
+     or number and in words. Horizontal or vertical; clickable to go back to a step; or compact ("Step 2 of 5" over a
+     bar of segments) where names add nothing. The navigation Stepper, the Progress tracker and Step progress.
+   Usage:
+     <ProgressSteps label="Import" current={1} steps={[{ label: 'Upload' }, { label: 'Map columns' }, { label: 'Review' }]} />
+     <ProgressSteps orientation="vertical" current={2} steps={[{ label: 'Details', description: 'Name and owner' }, …]} />
+     <ProgressSteps current={2} onStepClick={setStep} steps={steps} />                                  // clickable
+     <ProgressSteps current={1} steps={[{ label: 'Upload' }, { label: 'Map columns', status: 'error' }, …]} />
+     <ProgressSteps variant="compact" current={1} steps={steps} />                                      // Step 2 of 5
+   Props:
+     steps: the steps, in order: [{ label, description, status, disabled }]
+     steps[].label: the step's short name (a noun: Details, Review)
+     steps[].description: a second line under the name (optional; not in the compact form)
+     steps[].status: "complete" | "current" | "upcoming" | "error" (needs attention); default from current: the steps
+       before it are complete, it is current, the steps after it upcoming
+     steps[].disabled: the step cannot be chosen even when it is complete (clickable steps)
+     current: the index of the current step (0-based)
+     orientation: "horizontal" (default; one row, the connectors between) | "vertical" (one step under another, the
+       connector down the marker column, room for descriptions)
+     variant: "default" | "compact" ("Step 2 of 5: Review" over a bar of one segment per step)
+     onStepClick(index): makes the done and current steps buttons that go to that step (clickable); upcoming steps stay
+       text (people cannot skip ahead)
+     label: the accessible name of the list ("Import steps")
+     strings: the words it shows and announces, for other languages: { step: "Step {n} of {total}", complete:
+       "Complete", current: "Current step", upcoming: "Not started", error: "Needs attention" }
+     className: more classes on the steps
+   Behavior:
+     The steps are an ordered list; the current step is aria-current="step". Every step's state is said in words after its
+       name (visually hidden: "Complete", "Needs attention"), never by color alone: a complete step shows a check, a
+       failed one an alert, the others their number.
+     Clickable: the done and current steps are buttons in the Tab order (Enter or Space goes to the step); upcoming and
+       disabled steps are not focusable.
+     Horizontal steps that do not fit their row wrap onto more lines; a vertical list is the choice on a narrow window.
+     Compact: the text says the step and its name; the bar's segments are decoration (hidden from screen readers).
+   Notes:
+     Steps that can be done in any order are tabs or sections, not steps. Three to seven steps; two need no stepper.
+     Statuses of records are a Badge; these markers belong to the steps only.
+     Other props pass through to the outer element.
+*/
+const STRINGS = {
+  step: 'Step {n} of {total}',
+  complete: 'Complete',
+  current: 'Current step',
+  upcoming: 'Not started',
+  error: 'Needs attention'
+};
+const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
+function ProgressSteps({
+  steps = [],
+  current = 0,
+  orientation = 'horizontal',
+  variant = 'default',
+  onStepClick,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('ProgressSteps', {
+    variant
+  }, {
+    variant: ['default', 'compact']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
+  if (variant === 'compact') {
+    const at = Math.max(0, Math.min(current, steps.length - 1));
+    const step = steps[at] || {};
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      role: "group",
+      "aria-label": label,
+      className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--compact', className)
+    }, rest), /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-progress-steps__count"
+    }, fill(t.step, at + 1, steps.length), step.label ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__count-label"
+    }, ': ' + step.label) : null), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-progress-steps__segments",
+      "aria-hidden": "true"
+    }, steps.map((s, i) => /*#__PURE__*/_react.default.createElement("span", {
+      key: i,
+      className: (0, _cx.cx)('plx-progress-steps__segment', 'is-' + statusOf(s, i))
+    }))));
+  }
+  return /*#__PURE__*/_react.default.createElement("ol", _extends({
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--' + (orientation === 'vertical' ? 'vertical' : 'horizontal'), onStepClick && 'plx-progress-steps--clickable', className)
+  }, rest), steps.map((s, i) => {
+    const status = statusOf(s, i);
+    const canGo = onStepClick && !s.disabled && (status === 'complete' || status === 'current' || status === 'error');
+    const marker = /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__marker",
+      "aria-hidden": "true"
+    }, status === 'complete' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "check"
+    }) : status === 'error' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "alert"
+    }) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__number"
+    }, i + 1));
+    const words = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__label"
+    }, s.label), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t[status]));
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: i,
+      className: (0, _cx.cx)('plx-progress-steps__step', 'is-' + status),
+      "aria-current": status === 'current' ? 'step' : undefined
+    }, canGo ? /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-progress-steps__head plx-progress-steps__button",
+      onClick: () => onStepClick(i)
+    }, marker, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__text"
+    }, words)) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__head"
+    }, marker, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__text"
+    }, words)), s.description ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__description"
+    }, s.description) : null, i < steps.length - 1 ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__connector",
+      "aria-hidden": "true"
+    }) : null);
+  }));
+}
+  } },
+  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Chat = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _ProgressSteps = require("../ProgressSteps/ProgressSteps.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Input = require("../Input/Input.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Chat
+   Summary: The live messaging surface of a conversation (12 › Collaboration and communication › Chat): its header, the
+     thread of messages (mine on the end side, theirs on the start side), the typing dots and the composer.
+   Usage:
+     <Chat.Header title="Maya Chen" meta="Online" avatar={<Avatar name="Maya Chen" />} actions={<…/>} />
+     <Chat.Thread label="Conversation with Maya Chen">
+       <Chat.Message author="Maya Chen" time="10:24" avatar={<Avatar name="Maya Chen" size="xs" />}>Are the renders ready?</Chat.Message>
+       <Chat.Message mine time="10:26">Uploading them now.</Chat.Message>
+       <Chat.Typing label="Maya is typing" />
+     </Chat.Thread>
+     <Chat.Composer value={text} onChange={setText} onSend={send} />
+   Props:
+     Chat.Header.title: who or what the conversation is with
+     Chat.Header.meta: a short line under the title (presence, members)
+     Chat.Header.avatar: an Avatar before the title
+     Chat.Header.actions: buttons at the end
+     Chat.Thread.label: the accessible name of the thread (default "Conversation")
+     Chat.Thread.follow: opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
+       to read (default true)
+     Chat.Thread.children: the messages, in order (the oldest first)
+     Chat.Message.mine: the message is the person's own (end side, in the action color); default false
+     Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
+     Chat.Message.time: when, as shown; dateTime: the same as a machine-readable date
+     Chat.Message.avatar: an Avatar beside their messages
+     Chat.Message.children: the message text or content
+     Chat.Composer.value / onChange(text): the message being written
+     Chat.Composer.onSend(text): runs on Send and on Enter (Shift+Enter starts a new line)
+     Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
+     Chat.Composer.sendLabel: default "Send"; disabled: the composer is inert
+     Chat.Typing.label: the text announced to assistive technology (default "Typing")
+     Chat.Typing.variant: typing (default) | thinking | steps; steps: [{label,status}], current: active step index
+     Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
+     className on every part: more classes
+   Behavior:
+     The thread is a log (role="log", aria-live="polite"): new messages are announced.
+     Send is disabled while the message is empty.
+     Chat.Typing is a status region (role="status"), so its label is announced.
+     The dots pulse one after another; people who ask their system for less motion see them still.
+   Notes:
+     Other props pass through to the <span>.
+     It was TypingIndicator in the loading family (batch 168); the owner placed it under Chat.
+*/
+function Typing({
+  label,
+  variant = 'typing',
+  steps = [],
+  current = 0,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Chat.Typing', {
+    variant
+  }, {
+    variant: ['typing', 'thinking', 'steps']
+  });
+  const t = Object.assign({
+    thinking: 'Thinking'
+  }, strings);
+  if (variant === 'thinking' || variant === 'steps') return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-chat__thinking', className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__thinking-label"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    "aria-hidden": "true",
+    role: "presentation",
+    label: ""
+  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "sparkle"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, null, label || t.thinking)), variant === 'steps' && steps.length ? /*#__PURE__*/_react.default.createElement(_ProgressSteps.ProgressSteps, {
+    label: label || t.thinking,
+    steps: steps,
+    current: current,
+    strings: strings
+  }) : null);
+  if (label === undefined) label = 'Typing';
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-chat__typing', className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
+}
+function Header({
+  title,
+  meta,
+  avatar,
+  actions,
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-chat__header', className)
+  }, rest), avatar ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__header-avatar"
+  }, avatar) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__header-text"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__header-title"
+  }, title), meta ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__header-meta"
+  }, meta) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__header-actions"
+  }, actions) : null);
+}
+function Thread({
+  label = 'Conversation',
+  follow = true,
+  className,
+  children,
+  ...rest
+}) {
+  // it opens at the newest message and follows new ones, unless the person has scrolled up to read (batch 215)
+  const ref = _react.default.useRef(null),
+    atEnd = _react.default.useRef(true);
+  const count = _react.default.Children.count(children);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (follow && el && atEnd.current) el.scrollTop = el.scrollHeight;
+  }, [count, follow]);
+  const onScroll = e => {
+    const el = e.currentTarget;
+    atEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight <= el.clientHeight / 4;
+    if (rest.onScroll) rest.onScroll(e);
+  };
+  // it scrolls, so it is in the Tab order: the keyboard can scroll it too
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    className: (0, _cx.cx)('plx-chat__thread', className),
+    role: "log",
+    "aria-live": "polite",
+    "aria-label": label,
+    tabIndex: 0
+  }, rest, {
+    onScroll: onScroll
+  }), children);
+}
+function Message({
+  mine = false,
+  author,
+  time,
+  dateTime,
+  avatar,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-chat__message', mine && 'plx-chat__message--mine', className)
+  }, rest), !mine && avatar ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__avatar"
+  }, avatar) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__bubble"
+  }, author && !mine || time ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__meta"
+  }, mine ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "You") : author ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__author"
+  }, author) : null, time ? /*#__PURE__*/_react.default.createElement("time", {
+    className: "plx-chat__time",
+    dateTime: dateTime
+  }, time) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__body"
+  }, children)));
+}
+function Composer({
+  value = '',
+  onChange,
+  onSend,
+  placeholder = 'Write a message',
+  label = 'Message',
+  sendLabel = 'Send',
+  disabled = false,
+  className,
+  ...rest
+}) {
+  const empty = !String(value).trim();
+  const send = () => {
+    if (!empty && onSend) onSend(value);
+  };
+  return /*#__PURE__*/_react.default.createElement("form", _extends({
+    className: (0, _cx.cx)('plx-chat__composer', className),
+    onSubmit: e => {
+      e.preventDefault();
+      send();
+    }
+  }, rest), /*#__PURE__*/_react.default.createElement(_Input.Textarea, {
+    className: "plx-chat__field",
+    rows: 1,
+    value: value,
+    placeholder: placeholder,
+    "aria-label": label,
+    disabled: disabled,
+    onChange: e => {
+      if (onChange) onChange(e.target.value);
+    },
+    onKeyDown: e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
+    }
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    type: "submit",
+    variant: "primary",
+    disabled: disabled || empty
+  }, sendLabel));
+}
+const Chat = exports.Chat = {
+  Header,
+  Thread,
+  Message,
+  Composer,
+  Typing
+};
+  } },
+  "platform/components/Rating/Rating.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Rating = Rating;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../../utils/direction.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Rating
+   Summary: 1 to max stars as a radio group, for rating an item.
+   Usage:
+     <Rating value={rating} onChange={setRating} />
+   Props:
+     value: the number of stars; 0 = none (default)
+     onChange(value): runs when the rating changes
+     max: the number of stars; default 5
+     label: the accessible name; default "Rating"
+     readOnly: shows the stars as a picture that cannot be changed; default false
+     className: more classes on the rating
+     ...rest: other attributes go on the rating element
+   Behavior:
+     Arrow keys move the rating; Space or Enter chooses a star.
+     Choosing the current value again clears it.
+     Read-only, it is announced as "Rating: 3 of 5".
+*/
+function Rating({
+  value = 0,
+  onChange,
+  max = 5,
+  label = 'Rating',
+  readOnly = false,
+  className,
+  ...rest
+}) {
+  const stars = Array.from({
+    length: max
+  }, (_, i) => i + 1);
+  const starRefs = _react.default.useRef({});
+  const focusNext = _react.default.useRef(0); // the star the keyboard chose: focus moves there once the value has changed
+  _react.default.useEffect(() => {
+    const el = focusNext.current && starRefs.current[focusNext.current];
+    if (el) el.focus();
+    focusNext.current = 0;
+  }, [value]);
+  if (readOnly) {
+    return /*#__PURE__*/_react.default.createElement("span", _extends({
+      className: (0, _cx.cx)('plx-rating', 'plx-rating--read-only', className),
+      role: "img",
+      "aria-label": label + ': ' + value + ' of ' + max
+    }, rest), stars.map(n => /*#__PURE__*/_react.default.createElement("span", {
+      key: n,
+      className: (0, _cx.cx)('plx-rating__star', n <= value && 'plx-rating__star--on'),
+      "aria-hidden": "true"
+    }, "\u2605")));
+  }
+  const choose = n => onChange && onChange(n === value ? 0 : n);
+  // the arrow keys in reading order (Up is more, Down is less); focus follows the chosen star, as in a radio group (batch 213)
+  const onKey = (e, n) => {
+    const step = e.key === 'ArrowUp' ? 1 : e.key === 'ArrowDown' ? -1 : (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    });
+    if (!step) return;
+    e.preventDefault();
+    const next = Math.min(max, Math.max(1, n + step));
+    focusNext.current = next;
+    if (onChange) onChange(next);
+  };
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-rating', className),
+    role: "radiogroup",
+    "aria-label": label
+  }, rest), stars.map(n => /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    key: n,
+    ref: el => {
+      starRefs.current[n] = el;
+    },
+    role: "radio",
+    "aria-checked": n === value,
+    "aria-label": n + (n === 1 ? ' star' : ' stars'),
+    tabIndex: (value ? n === value : n === 1) ? 0 : -1,
+    className: (0, _cx.cx)('plx-rating__star', n <= value && 'plx-rating__star--on'),
+    onClick: () => choose(n),
+    onKeyDown: e => onKey(e, n)
+  }, "\u2605")));
+}
+  } },
+  "platform/components/RowButton/RowButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RowButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RowButton
+   Summary: A whole row or tile that is one button, holding any layout (an avatar, two lines of text, a time).
+   Usage:
+     <RowButton selected onClick={open}>…</RowButton>
+   Props:
+     selected: marks the row whose details are shown (aria-current="true"); default false
+     current: an aria-current value instead, e.g. "date" for today in a calendar
+     pressed: makes it a toggle (aria-pressed)
+     expanded: a row that opens a panel below it (aria-expanded)
+     hover: false: no hover fill (for tiles that draw their own surface); default true
+     className: more classes on the button
+     style: lays out the content
+     children: the content, in any layout
+     ...rest: other attributes go on the button (onClick)
+   Behavior:
+     It is a native button with no look of its own beyond the states: a hover fill, a selected fill and the focus ring.
+     A pressed button shows the selected fill too.
+   Notes:
+     Use it when a Button's single centered label cannot hold the content: list rows that open a record, calendar day cells, compact project tiles.
+     Lay out the content with the style prop or children; the button is a block that fills its column and aligns to the start.
+*/
+const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(function RowButton({
+  selected = false,
+  current,
+  pressed,
+  expanded,
+  hover = true,
+  className,
+  children,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: "button",
+    "aria-current": current || (selected ? 'true' : undefined),
+    "aria-pressed": pressed,
+    "aria-expanded": expanded
+  }, rest, {
+    className: (0, _cx.cx)('plx-row-button', hover && 'plx-row-button--hover', (selected || pressed) && 'is-selected', className)
+  }), children);
+});
+  } },
+  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SegmentedControl = SegmentedControl;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _direction = require("../../utils/direction.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SegmentedControl
+   Summary: One choice from a few short options, shown together (S | M | L; Light | Dark | System): a bordered group of
+     joined segments at the button height; the chosen one is tinted blue with blue text and icon (look A, owner, 2026-10-14).
+     It sets a value (a radio group).
+   Usage:
+     <SegmentedControl label="Theme" value={theme} onChange={setTheme}
+       options={[{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }, { value: 'system', label: 'System' }]} />
+   Props:
+     options: the choices, in order: [{ value, label, icon, ariaLabel }]
+     options[].icon: an icon name; optional
+     options[].ariaLabel: the accessible name of an icon-only option; default its value
+     value: the chosen value
+     onChange(value): runs when another option is chosen
+     label: the group's accessible name
+     size: "md" (default) | "sm"
+     className: more classes on the group
+     ...rest: other attributes go on the group element
+   Behavior:
+     Arrow keys move to the next or previous option and choose it, wrapping around; Home and End go to the first and last.
+     Only the chosen option is in the Tab order.
+   Notes:
+     To switch between panels of content, use Tabs (variant "segmented").
+*/
+function SegmentedControl({
+  options,
+  value,
+  onChange,
+  label,
+  size = 'md',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('SegmentedControl', {
+    size
+  }, {
+    size: ['md', 'sm']
+  });
+  const refs = _react.default.useRef([]);
+  const index = Math.max(0, options.findIndex(o => o.value === value));
+  const move = (e, i) => {
+    let n = null;
+    const step = (0, _direction.arrowStep)(e, e.currentTarget); // in reading order: right to left reverses Left and Right (batch 213)
+    if (step > 0) n = (i + 1) % options.length;
+    if (step < 0) n = (i - 1 + options.length) % options.length;
+    if (e.key === 'Home') n = 0;
+    if (e.key === 'End') n = options.length - 1;
+    if (n === null) return;
+    e.preventDefault();
+    onChange(options[n].value);
+    if (refs.current[n]) refs.current[n].focus();
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "radiogroup",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)
+  }, rest), options.map((o, i) => /*#__PURE__*/_react.default.createElement("button", {
+    key: o.value,
+    ref: el => {
+      refs.current[i] = el;
+    },
+    type: "button",
+    role: "radio",
+    "aria-checked": o.value === value,
+    tabIndex: i === index ? 0 : -1,
+    "aria-label": o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined,
+    className: (0, _cx.cx)('plx-segmented__item', o.value === value && 'is-selected'),
+    onClick: () => onChange(o.value),
+    onKeyDown: e => move(e, i)
+  }, o.icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: o.icon
+  }) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
+}
+  } },
+  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Checkbox = void 0;
+exports.ChoiceList = ChoiceList;
+exports.Radio = void 0;
+exports.RadioGroup = RadioGroup;
+exports.Switch = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
+   Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
+   Usage:
+     <Checkbox checked={on} onChange={(e) => …} label="Include subfolders" description="…" indeterminate={some} />
+     <RadioGroup label="Format" value={fmt} onChange={(value) => …}
+       options={[{ value: 'png', label: 'PNG', description: '…' }, { value: 'jpg', label: 'JPG' }]} layout="row" />
+     <ChoiceList legend="Plan" value={plan} onChange={(value) => …} options={[{ value: 'team', label: 'Team', description: '…' }]} />
+     <Switch checked={on} onChange={(e) => …} label="Notifications" />
+   Props:
+     Checkbox.label: the text beside the box
+     Checkbox.description: a second line under the label
+     Checkbox.indeterminate: shows the mixed state (default false)
+     Checkbox.className: more classes on the row
+     Checkbox.checked: whether the box is checked (passed to the <input>)
+     Checkbox.onChange(event): runs when the box changes (passed to the <input>)
+     Radio.label: the text beside the circle; without it there is no visible text
+     Radio.description: a second line under the label
+     Radio.className: more classes on the row
+     RadioGroup.label: the legend of the group
+     RadioGroup.name: the radio name (default a generated one)
+     RadioGroup.value: the selected option value
+     RadioGroup.onChange(value): runs with the chosen option value
+     RadioGroup.options: the choices: [{ value, label, description, disabled }]
+     RadioGroup.layout: "column" (default) | "row"
+     RadioGroup.className: more classes on the <fieldset>
+     ChoiceList.legend: the legend of the list
+     ChoiceList.name: the radio name (default a generated one)
+     ChoiceList.value: the selected option value
+     ChoiceList.onChange(value): runs with the chosen option value
+     ChoiceList.options: the choices, shown as cards with descriptions: [{ value, label, description, hidden }]
+     ChoiceList.className: more classes on the <fieldset>
+     Switch.label: the text beside the switch
+     Switch.labelHidden: true hides the label and uses it as the accessible name (default false)
+     Switch.className: more classes on the row
+     Switch.checked: whether the switch is on (passed to the <input>)
+     Switch.onChange(event): runs when the switch changes (passed to the <input>)
+   Behavior:
+     The whole row (control and label) is the target, at least the inline-action height.
+     A Checkbox without label or description (a row's selection box) still has a 24px target (44px with touch): it extends
+       invisibly past the 16px box (Platforms Standard 3.1).
+     Switch is a checkbox with role="switch".
+     The selected ChoiceList card shows the selected state.
+   Notes:
+     The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
+     Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
+     RadioGroup and ChoiceList pass other props to the <fieldset>.
+*/
+const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
+  label,
+  description,
+  indeterminate = false,
+  className,
+  ...rest
+}, ref) {
+  const inner = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => inner.current);
+  _react.default.useEffect(() => {
+    if (inner.current) inner.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: (0, _cx.cx)('plx-check', className)
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: inner,
+    type: "checkbox",
+    className: "plx-check__input"
+  }, rest)), label || description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__label"
+  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__description"
+  }, description) : null) : null);
+});
+const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Radio({
+  label,
+  description,
+  className,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: (0, _cx.cx)('plx-check', className)
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: ref,
+    type: "radio",
+    className: "plx-check__input"
+  }, rest)), label ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__label"
+  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__description"
+  }, description) : null) : null);
+});
+function RadioGroup({
+  label,
+  name,
+  value,
+  onChange,
+  options,
+  layout = 'column',
+  className,
+  ...rest
+}) {
+  const auto = 'plx-r' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
+    className: (0, _cx.cx)('plx-radio-group', 'plx-radio-group--' + layout, className)
+  }, rest), label ? /*#__PURE__*/_react.default.createElement("legend", {
+    className: "plx-radio-group__legend"
+  }, label) : null, options.map(o => /*#__PURE__*/_react.default.createElement(Radio, {
+    key: o.value,
+    name: name || auto,
+    value: o.value,
+    label: o.label,
+    description: o.description,
+    checked: o.value === value,
+    onChange: () => onChange(o.value),
+    disabled: o.disabled
+  })));
+}
+function ChoiceList({
+  legend,
+  name,
+  value,
+  onChange,
+  options,
+  className,
+  ...rest
+}) {
+  const auto = 'plx-c' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
+    className: (0, _cx.cx)('plx-choice-list', className)
+  }, rest), legend ? /*#__PURE__*/_react.default.createElement("legend", {
+    className: "plx-choice-list__legend"
+  }, legend) : null, options.map(o => /*#__PURE__*/_react.default.createElement("label", {
+    key: o.value,
+    className: (0, _cx.cx)('plx-choice', o.value === value && 'is-selected'),
+    hidden: o.hidden || undefined
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "radio",
+    className: "plx-choice__input",
+    name: name || auto,
+    value: o.value,
+    checked: o.value === value,
+    onChange: () => onChange(o.value)
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-choice__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-choice__label"
+  }, o.label), o.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-choice__description"
+  }, o.description) : null))));
+}
+const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function Switch({
+  label,
+  labelHidden = false,
+  className,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: (0, _cx.cx)('plx-switch', className)
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: ref,
+    type: "checkbox",
+    role: "switch",
+    className: "plx-switch__input",
+    "aria-label": labelHidden ? label : undefined
+  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-switch__track",
+    "aria-hidden": "true"
+  }), label && !labelHidden ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-switch__label"
+  }, label) : null);
+});
+  } },
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Combobox = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Tag = require("../Tag/Tag.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _announce = require("../../utils/announce.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
+   Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
+   Usage:
+     <Combobox label="Owner" options={[{ value: 'mc', label: 'Maya Chen' }]} value={owner} onChange={(value) => …} />
+     <Combobox multiple creatable options={tags} values={chosen} onChange={(values) => …} onCreate={(text) => …} />
+     <Combobox label="Owner" loadOptions={(text) => api.people(text)} value={owner} onChange={…} />   // async select
+     <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
+     <Combobox marks="radio" options={…} value={…} onChange={…} />                                     // radio select
+   Props:
+     size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
+     options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
+     value: the chosen value, for a single choice
+     values: the chosen values, with multiple
+     onChange(value): runs with the chosen value; with multiple it runs with the new array of values
+     multiple: allows several values; chosen values show as tags before the field (default false)
+     creatable: offers "Create “text”" when nothing matches exactly (default false)
+     onCreate(text): runs with the typed text when "Create" is chosen
+     placeholder: the hint in the empty field
+     label: the accessible name when there is no Field
+     invalid: shows the invalid state
+     disabled: the field cannot be used
+     emptyText: the text when nothing matches (default "No matches")
+     loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
+       the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
+     loadDelay: the pause after typing before loadOptions runs, in milliseconds (default 300; 0 when the field is empty)
+     minChars: the characters needed before loadOptions runs (default 0: it also loads when the list opens)
+     loading: shows the loading row whatever loadOptions does (for options the caller loads itself) (default false)
+     marks: a mark before each option: "checkbox" (several, with multiple) | "radio" (one choice) | none (default)
+     strings: the words it shows and announces, for other languages: { loading: "Loading…", error: "The options could not
+       be loaded", results: (n) => n + " options" } (results is announced after each load)
+     id: the id of the input (a Field sets it)
+     className: more classes on the combobox
+     ref: forwarded to the <input>
+   Behavior:
+     The list opens on focus and on typing, and closes on a click outside.
+     ↓ / ↑ move, Enter chooses, Escape closes.
+     Backspace in an empty multiple field removes the last value.
+     A single choice closes the list; with multiple, choosing toggles the value and the list stays open.
+     A tag's remove button removes its value.
+     With loadOptions, each pause in typing loads once; an answer that arrives after a newer request is dropped. The list
+       is busy (aria-busy) while it loads, the number of options is announced politely, a failed load says so in the list.
+     Options loaded earlier keep naming the chosen values when a later load no longer has them.
+     Marks are the Checkbox and Radio controls drawn inside the option: not focusable and hidden from assistive
+       technology (the option's own aria-selected says it is chosen).
+   Notes:
+     The list is a menu surface: border only, no shadow (D9).
+     Other props pass through to the <input>.
+*/
+const STRINGS = {
+  loading: 'Loading…',
+  error: 'The options could not be loaded',
+  results: n => n + (n === 1 ? ' option' : ' options')
+};
+const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(function Combobox({
+  options = [],
+  value,
+  values,
+  onChange,
+  multiple = false,
+  creatable = false,
+  onCreate,
+  placeholder,
+  label,
+  invalid,
+  disabled,
+  emptyText = 'No matches',
+  loadOptions,
+  loadDelay = 300,
+  minChars = 0,
+  loading = false,
+  marks,
+  strings,
+  className,
+  id,
+  size,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = 'plx-cb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const listId = auto + '-list';
+  const [open, setOpen] = _react.default.useState(false);
+  const [text, setText] = _react.default.useState('');
+  const [active, setActive] = _react.default.useState(0);
+  const wrap = _react.default.useRef(null),
+    input = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
+  const [loaded, setLoaded] = _react.default.useState([]);
+  const [busy, setBusy] = _react.default.useState(false);
+  const [failed, setFailed] = _react.default.useState(false);
+  const loader = _react.default.useRef(loadOptions),
+    request = _react.default.useRef(0),
+    seen = _react.default.useRef(new Map());
+  loader.current = loadOptions;
+  const async = !!loadOptions;
+  _react.default.useEffect(() => {
+    if (!async || !open) return undefined;
+    const query = text.trim();
+    if (query.length < minChars) {
+      request.current++;
+      setLoaded([]);
+      setBusy(false);
+      setFailed(false);
+      return undefined;
+    }
+    const n = ++request.current;
+    setBusy(true);
+    setFailed(false);
+    const timer = setTimeout(() => {
+      Promise.resolve().then(() => loader.current(query)).then(list => {
+        if (n !== request.current) return;
+        const got = Array.isArray(list) ? list : [];
+        got.forEach(o => seen.current.set(o.value, o));
+        setLoaded(got);
+        setBusy(false);
+        (0, _announce.announce)(t.results(got.length));
+      }, () => {
+        if (n !== request.current) return;
+        setLoaded([]);
+        setBusy(false);
+        setFailed(true);
+      });
+    }, query ? loadDelay : 0);
+    return () => clearTimeout(timer);
+  }, [async, open, text, minChars, loadDelay]);
+  const isLoading = !!loading || async && busy;
+  const optionOf = v => options.find(x => x.value === v) || (async ? loaded.find(x => x.value === v) || seen.current.get(v) : undefined);
+  const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
+  const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
+  const q = text.trim().toLowerCase();
+  const matching = isLoading || failed ? [] : async ? loaded : options.filter(o => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
+  // grouped options stay together under their group's heading (groups in the order they first appear)
+  const groupOrder = [];
+  matching.forEach(o => {
+    if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group);
+  });
+  const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter(o => o.group === g)), []);
+  const canCreate = creatable && q && !isLoading && !(async ? loaded : options).some(o => String(o.label).toLowerCase() === q);
+  const items = filtered.map(o => ({
+    kind: 'option',
+    o
+  })).concat(canCreate ? [{
+    kind: 'create'
+  }] : []);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  _react.default.useEffect(() => {
+    setActive(0);
+  }, [q, open]);
+  const choose = item => {
+    if (!item) return;
+    if (item.kind === 'create') {
+      if (onCreate) onCreate(text.trim());
+      setText('');
+      return;
+    }
+    const v = item.o.value;
+    if (multiple) {
+      onChange(chosen.indexOf(v) >= 0 ? chosen.filter(x => x !== v) : chosen.concat([v]));
+      setText('');
+    } else {
+      onChange(v);
+      setText('');
+      setOpen(false);
+    }
+  };
+  const onKey = e => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) setOpen(true);else setActive(a => Math.min(items.length - 1, a + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive(a => Math.max(0, a - 1));
+    } else if (e.key === 'Enter') {
+      if (open && items[active]) {
+        e.preventDefault();
+        choose(items[active]);
+      }
+    } else if (e.key === 'Escape') {
+      if (open) {
+        e.preventDefault();
+        setOpen(false);
+      }
+    } else if (e.key === 'Backspace' && multiple && !text && chosen.length) {
+      onChange(chosen.slice(0, -1));
+    }
+  };
+  const optId = i => auto + '-o' + i;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-combobox__field plx-input",
+    "aria-invalid": invalid || undefined,
+    onClick: () => {
+      if (!disabled && input.current) input.current.focus();
+    }
+  }, multiple ? chosen.map(v => {
+    const o = optionOf(v);
+    const t = o ? o.label : v;
+    return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
+      key: v,
+      onRemove: () => onChange(chosen.filter(x => x !== v)),
+      removeLabel: 'Remove ' + t
+    }, t);
+  }) : null, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: input,
+    id: id,
+    size: size === 'sm' || size === 'md' ? undefined : size,
+    className: "plx-combobox__input",
+    role: "combobox",
+    "aria-expanded": open,
+    "aria-controls": listId,
+    "aria-autocomplete": "list",
+    "aria-activedescendant": open && items[active] ? optId(active) : undefined,
+    "aria-label": label,
+    disabled: disabled,
+    autoComplete: "off",
+    value: open || multiple ? text : current ? current.label : '',
+    placeholder: multiple && chosen.length ? '' : current && !open ? current.label : placeholder,
+    onChange: e => {
+      setText(e.target.value);
+      setOpen(true);
+    },
+    onFocus: () => setOpen(true),
+    onKeyDown: onKey
+  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-combobox__chevron",
+    "aria-hidden": "true"
+  })), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-combobox__list",
+    id: listId,
+    role: "listbox",
+    "aria-multiselectable": multiple || undefined,
+    "aria-busy": isLoading || undefined
+  }, items.length ? items.map((it, i) => it.kind === 'create' ? /*#__PURE__*/_react.default.createElement("li", {
+    key: "create",
+    id: optId(i),
+    role: "option",
+    "aria-selected": false,
+    className: (0, _cx.cx)('plx-combobox__option', 'plx-combobox__create', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(it),
+    onMouseEnter: () => setActive(i)
+  }, "Create \u201C", text.trim(), "\u201D") : [it.o.group && (i === 0 || !items[i - 1].o || items[i - 1].o.group !== it.o.group) ? /*#__PURE__*/_react.default.createElement("li", {
+    key: 'g-' + it.o.group,
+    className: "plx-combobox__group",
+    role: "presentation"
+  }, it.o.group) : null, /*#__PURE__*/_react.default.createElement("li", {
+    key: it.o.value,
+    id: optId(i),
+    role: "option",
+    "aria-selected": chosen.indexOf(it.o.value) >= 0,
+    className: (0, _cx.cx)('plx-combobox__option', i === active && 'is-active', chosen.indexOf(it.o.value) >= 0 && 'is-selected'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(it),
+    onMouseEnter: () => setActive(i)
+  }, marks ? /*#__PURE__*/_react.default.createElement("input", {
+    type: marks === 'radio' ? 'radio' : 'checkbox',
+    className: "plx-check__input plx-combobox__mark",
+    tabIndex: -1,
+    "aria-hidden": "true",
+    checked: chosen.indexOf(it.o.value) >= 0,
+    readOnly: true
+  }) : null, marks ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-combobox__option-label"
+  }, it.o.label) : it.o.label)]) : isLoading ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-combobox__loading",
+    role: "presentation"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.loading
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, t.loading)) : failed ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-combobox__empty plx-combobox__error",
+    role: "presentation"
+  }, t.error) : /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-combobox__empty",
+    role: "presentation"
+  }, emptyText)) : null);
+});
+  } },
+  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SearchField = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Kbd = require("../Kbd/Kbd.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchField
+   Summary: A search input with a search icon, an optional clear button and an optional shortcut hint; optionally a list
+     under it of suggestions while people type, and of their recent searches while it is empty.
+   Usage:
+     <SearchField value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery('')} shortcut="Ctrl K" />
+     const history = useSearchHistory('assets');
+     <SearchField value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')}
+       suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
+       onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
+   Props:
+     size: "sm" explicitly selects the existing toolbar control height; omitted or "md" preserves today’s search height.
+     value: the search text
+     onChange(event): runs when the text changes
+     onClear(): runs from the clear button; without it there is no clear button
+     placeholder: the placeholder text; default "Search"
+     label: the accessible name; default "Search"
+     shortcut: a keyboard shortcut hint ("Ctrl K")
+     loading: shows a spinner in place of the search icon; default false
+     onAccent: the look for the blue header; default false
+     suggestions: what to offer while there is text, already matched to it by the caller: strings, or
+       [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
+     recent: the person's recent searches (strings, newest first: useSearchHistory), offered while the field is empty
+     onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
+       'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
+     onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
+     onRemoveRecent(text): removes one recent search: its row's remove button (an "×" named "Remove <term>"), or Delete
+       on it; onClearRecent(): removes them all (the Clear button in the list's heading); without them the recent
+       searches cannot be removed here
+     strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
+       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
+     width: "auto" (default: as wide as its container gives it) | "bar" (the command bar's search: one fixed width, 240px,
+       never squeezed; owner, 2026-10-14) | "fill" (the whole width: the find field inside a panel, a dialog or a menu)
+     collapsed: the narrow bar's search (owner, 2026-10-14): an icon-only search button in the field's place (tinted while
+       there is text) that opens the field across the bar, over its other controls; default false
+     open, onOpenChange(open): (collapsed) whether the field is open across the bar, kept by the caller (CommandBar keeps
+       it, so the bar holds its width step while the field is open)
+     className: more classes on the field
+     ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
+   Behavior:
+     The clear button shows only while there is text.
+     The shortcut hint shows only while the field is empty.
+     It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
+     With suggestions or recent searches it is a combobox (the ARIA pattern): the list opens on focus and on typing, under
+       the field; Arrow Down and Up move through it (the text stays the person's own), Enter chooses, Escape closes the
+       list (a second Escape clears the text, as in the browser); a click chooses; a click outside closes it. The number
+       of suggestions is announced politely after typing pauses. Delete on a recent search removes it (onRemoveRecent).
+     Recent searches with onRemoveRecent (owner, 2026-10-14): the WAI-ARIA "combobox with grid popup" pattern. The field
+       has aria-haspopup="grid"; the list is a grid named by its heading, one row per search with two cells: the term and
+       its remove button (an icon-only ghost button, "Remove <term>"). The focus stays in the field (aria-activedescendant
+       names the active cell): Arrow Down and Up move between rows (in the same cell), Arrow Right moves into the remove
+       cell and Arrow Left back to the term (mirrored right to left); Enter on the term searches it, Enter on the remove
+       cell removes it, and Delete removes the active row from either cell. The removal is announced politely. A click on
+       the term searches, a click on the button removes. Without onRemoveRecent, and for suggestions, the list stays a
+       listbox.
+     Collapsed: the button opens the field across the nearest positioned box (the command bar's row), focused, with × to
+       clear once there is text; Escape closes it and the focus returns to the button; leaving it empty closes it too.
+   Notes:
+     It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
+     ranks and limits the suggestions (about eight) and the recent searches (about five).
+*/
+const STRINGS = {
+  suggestions: 'Suggestions',
+  recent: 'Recent searches',
+  clearRecent: 'Clear recent searches',
+  clear: 'Clear search',
+  results: '{n} suggestions',
+  removed: '{query} removed from recent searches',
+  remove: 'Remove {query}'
+};
+const asItem = kind => x => typeof x === 'string' ? {
+  value: x,
+  label: x,
+  kind
+} : Object.assign({
+  label: x.value
+}, x, {
+  kind
+});
+
+// the label with the part that matches the text in bold (the first match, ignoring case)
+function marked(label, text) {
+  const s = String(label),
+    q = String(text || '').trim();
+  const at = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1;
+  if (at < 0) return s;
+  return [s.slice(0, at), /*#__PURE__*/_react.default.createElement("strong", {
+    key: "m",
+    className: "plx-search__match"
+  }, s.slice(at, at + q.length)), s.slice(at + q.length)];
+}
+
+// the field itself (width "auto", "bar" or "fill")
+const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput({
+  value,
+  onChange,
+  onClear,
+  placeholder = 'Search',
+  label = 'Search',
+  shortcut,
+  loading = false,
+  onAccent = false,
+  suggestions,
+  recent,
+  onSelect,
+  onSubmitSearch,
+  onRemoveRecent,
+  onClearRecent,
+  strings,
+  className,
+  onKeyDown,
+  onFocus,
+  width = 'auto',
+  size,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = 'plx-sf' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const listId = auto + '-list';
+  const wrap = _react.default.useRef(null),
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const hasList = !!(suggestions || recent);
+  const text = value == null ? '' : String(value);
+  const showRecent = !text;
+  const items = showRecent ? (recent || []).map(asItem('recent')) : (suggestions || []).map(asItem('suggestion'));
+  const [open, setOpen] = _react.default.useState(false);
+  const [active, setActive] = _react.default.useState(-1);
+  const [cell, setCell] = _react.default.useState(0); // the grid's active cell in its row: 0 the term, 1 the remove button
+  const shown = hasList && open && items.length > 0;
+  // recent searches that can be removed one by one: the combobox with grid popup (WAI-ARIA APG)
+  const grid = showRecent && !!onRemoveRecent;
+  _react.default.useEffect(() => {
+    setActive(-1);
+    setCell(0);
+  }, [text, showRecent]);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  // the number of suggestions, once typing pauses (announce waits for the pause)
+  _react.default.useEffect(() => {
+    if (shown && !showRecent) (0, _announce.announce)(t.results.replace('{n}', (0, _format.formatNumber)(items.length)));
+  }, [shown, showRecent, items.length, t.results]);
+  // the active option stays in view in a long list
+  _react.default.useEffect(() => {
+    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-r' + active + ', #' + auto + '-o' + active) : null;
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [active, auto]);
+  const setText = v => {
+    if (onChange && input.current) onChange({
+      target: Object.assign(input.current, {
+        value: v
+      }),
+      currentTarget: input.current
+    });
+  };
+  const choose = item => {
+    setOpen(false);
+    if (onSelect) onSelect(item);else {
+      setText(item.value);
+      if (onSubmitSearch) onSubmitSearch(item.value);
+    }
+  };
+  // one recent search removed (its button, Delete, or Enter on its remove cell): the active row stays in place
+  const removeRecent = i => {
+    const it = items[i];
+    if (!it || !onRemoveRecent) return;
+    onRemoveRecent(it.value);
+    if (active >= 0) setActive(a => Math.min(a, items.length - 2));
+    if (items.length <= 1) setCell(0);
+    (0, _announce.announce)(t.removed.replace('{query}', it.value));
+  };
+  const keys = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || !hasList) {
+      if (e.key === 'Enter' && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text);
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) setOpen(true);else if (items.length) setActive(a => (a + 1) % items.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) setOpen(true);else if (items.length) setActive(a => a <= 0 ? items.length - 1 : a - 1);
+    } else if (grid && shown && active >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      // the grid's cells in reading order: toward the end is the remove cell (Arrow Left in a right-to-left page)
+      const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === 'rtl';
+      e.preventDefault();
+      setCell(e.key === 'ArrowRight' !== rtl ? 1 : 0);
+    } else if (e.key === 'Enter') {
+      if (shown && items[active] && grid && cell === 1) {
+        e.preventDefault();
+        removeRecent(active);
+      } else if (shown && items[active]) {
+        e.preventDefault();
+        choose(items[active]);
+      } else {
+        setOpen(false);
+        if (onSubmitSearch) onSubmitSearch(text);
+      }
+    } else if (e.key === 'Escape') {
+      if (shown) {
+        e.preventDefault();
+        setOpen(false);
+      }
+    } else if (e.key === 'Delete' && shown && showRecent && items[active] && onRemoveRecent) {
+      e.preventDefault();
+      removeRecent(active);
+    } else if (!open && e.key.length === 1) setOpen(true);
+  };
+  const optId = i => auto + '-o' + i;
+  const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
+  const comboProps = hasList ? {
+    role: 'combobox',
+    'aria-expanded': shown,
+    'aria-controls': listId,
+    'aria-autocomplete': 'list',
+    'aria-haspopup': grid ? 'grid' : undefined,
+    'aria-activedescendant': shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : undefined
+  } : {};
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', onAccent && 'plx-search--on-accent', shown && 'is-open', className),
+    role: "search"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__icon",
+    "aria-hidden": "true"
+  }, loading ? /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: "Searching"
+  }) : /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "search"
+  })), /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: input,
+    size: size === 'sm' || size === 'md' ? undefined : size,
+    type: "search",
+    inputMode: "search",
+    enterKeyHint: "search",
+    autoComplete: "off",
+    className: "plx-search__input",
+    "aria-label": label,
+    placeholder: placeholder,
+    value: value,
+    onChange: e => {
+      if (hasList) setOpen(true);
+      if (onChange) onChange(e);
+    },
+    onKeyDown: keys,
+    onFocus: e => {
+      if (hasList) setOpen(true);
+      if (onFocus) onFocus(e);
+    }
+  }, comboProps, rest)), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-search__clear",
+    "aria-label": t.clear,
+    onClick: onClear
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "close"
+  })) : null, shortcut && !value ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__kbd"
+  }, /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, {
+    onAccent: onAccent
+  }, shortcut)) : null, hasList ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__popup",
+    hidden: !shown
+  }, showRecent ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__popup-head"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__popup-title",
+    id: listId + '-t'
+  }, t.recent), onClearRecent ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "2xs",
+    className: "plx-search__popup-action",
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => {
+      onClearRecent();
+      setOpen(false);
+      if (input.current) input.current.focus();
+    }
+  }, t.clearRecent) : null) : null, grid ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
+    id: listId,
+    role: "grid",
+    className: "plx-search__list plx-search__grid",
+    "aria-labelledby": listId + '-t'
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("div", {
+    key: it.kind + ':' + it.value,
+    id: auto + '-r' + i,
+    role: "row",
+    className: (0, _cx.cx)('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    id: cellId(i, 0),
+    role: "gridcell",
+    "aria-selected": i === active && cell === 0,
+    className: "plx-search__cell",
+    onClick: () => choose(it)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "clock"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-label"
+  }, it.label))), /*#__PURE__*/_react.default.createElement("span", {
+    id: cellId(i, 1),
+    role: "gridcell",
+    "aria-selected": i === active && cell === 1,
+    className: "plx-search__remove-cell"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    tabIndex: -1,
+    label: t.remove.replace('{query}', it.value),
+    className: (0, _cx.cx)('plx-search__remove', i === active && cell === 1 && 'is-focus-visible'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: e => {
+      e.stopPropagation();
+      removeRecent(i);
+      if (input.current) input.current.focus();
+    }
+  }))))) : /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    id: listId,
+    role: "listbox",
+    className: "plx-search__list",
+    "aria-label": showRecent ? undefined : t.suggestions,
+    "aria-labelledby": showRecent ? listId + '-t' : undefined
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: it.kind + ':' + it.value,
+    id: optId(i),
+    role: "option",
+    "aria-selected": i === active,
+    className: (0, _cx.cx)('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(it),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: it.kind === 'recent' ? 'clock' : 'search'
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-label"
+  }, it.kind === 'recent' ? it.label : marked(it.label, text)), it.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-description"
+  }, it.description) : null))))) : null);
+});
+
+// the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
+function CollapsedSearch({
+  value,
+  label = 'Search',
+  onKeyDown,
+  onBlur,
+  className,
+  open: openProp,
+  onOpenChange,
+  ...rest
+}, ref) {
+  const [own, setOwn] = _react.default.useState(false);
+  const open = openProp === undefined ? own : openProp;
+  const setOpen = v => {
+    setOwn(v);
+    if (onOpenChange) onOpenChange(v);
+  };
+  const field = _react.default.useRef(null),
+    button = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => open ? field.current : button.current);
+  _react.default.useEffect(() => {
+    if (open && field.current) field.current.focus();
+  }, [open]);
+  const close = refocus => {
+    setOpen(false);
+    if (refocus) setTimeout(() => {
+      if (button.current) button.current.focus();
+    }, 0);
+  };
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: button,
+    size: "sm",
+    variant: "ghost",
+    icon: "search",
+    iconOnly: true,
+    label: label,
+    selected: !!value,
+    "aria-expanded": open,
+    className: (0, _cx.cx)('plx-search__toggle', className),
+    onClick: () => setOpen(true)
+  })), open ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__over"
+  }, /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
+    ref: field,
+    value: value,
+    label: label,
+    width: "fill"
+  }, rest, {
+    onKeyDown: e => {
+      if (onKeyDown) onKeyDown(e);
+      if (e.key === 'Escape' && !e.defaultPrevented && e.currentTarget.getAttribute('aria-expanded') !== 'true') {
+        e.preventDefault();
+        close(true);
+      }
+    },
+    onBlur: e => {
+      if (onBlur) onBlur(e);
+      if (!e.currentTarget.value) close(false);
+    }
+  }))) : null);
+}
+const Collapsed = /*#__PURE__*/_react.default.forwardRef(CollapsedSearch);
+const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef(function SearchField({
+  collapsed = false,
+  ...props
+}, ref) {
+  return collapsed ? /*#__PURE__*/_react.default.createElement(Collapsed, _extends({
+    ref: ref
+  }, props)) : /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
+    ref: ref
+  }, props));
+});
+  } },
+  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Slider = Slider;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _grid = require("../../utils/grid.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Slider
+   Summary: A value picked from a range by dragging; with range, two thumbs pick a minimum and a maximum (range slider);
+     with marks, labeled values sit under the track.
+   Usage:
+     <Slider label="Brightness" value={v} min={0} max={100} step={1} unit="%" onChange={(v) => …} onCommit={(v) => …} />
+     <Slider range label="Price" value={[20, 80]} min={0} max={200} step={5} unit=" €" onChange={([low, high]) => …} />
+     <Slider label="Quality" value={q} min={0} max={100} step={25} marks={[0, 25, 50, 75, 100]} onChange={…} />
+   Props:
+     label: the label above the track
+     value: the current value, a number; with range, [low, high]
+     min: the lowest value; default 0
+     max: the highest value; default 100
+     step: the step between values; default 1
+     unit: text after the value ("%"); default ""
+     range: two thumbs, for a minimum and a maximum: value and onChange take [low, high] (default false)
+     marks: labeled values under the track: an array of numbers or of { value, label }, or true for one mark per step
+       (only when there are 12 steps or fewer) (default none)
+     onChange(value): follows every move (live preview); with range, onChange([low, high])
+     onCommit(value): runs when the person lets go or finishes with the keys (record the change, e.g. in an undo history)
+     disabled: default false
+     strings: the thumbs' names with range, for other languages: { minimum: "Minimum", maximum: "Maximum" } (each thumb
+       is named "<label>, minimum" and "<label>, maximum")
+     className: more classes on the slider
+     ...rest: other attributes go on the range input (the first one with range)
+   Behavior:
+     It is a native range input (two with range), so keys work: arrows, Page Up/Down, Home, End.
+     The label and the current value sit above the track ("20–80 €" with range).
+     The thumbs of a range never cross: the minimum stops at the maximum and the maximum at the minimum. Where they meet,
+       the one that can still move is on top.
+     A range or marked slider draws its own track (the plain slider is the browser's control): the filled part between
+       the thumbs and each mark sit where the thumbs' centers are, measured from the track and placed on the 4px grid.
+   Notes:
+     The fill and the marks are placed by JavaScript (inline inset and inline size through gridPx, utils/grid.js); every
+       other value is a --plx-comp-slider-* token.
+     Mark labels are values: they use the data font.
+*/
+const STRINGS = {
+  minimum: 'Minimum',
+  maximum: 'Maximum'
+};
+const MAX_STEP_MARKS = 12;
+
+// the marks to draw: [{ value, label }] inside [min, max]
+function marksOf(marks, min, max, step) {
+  if (!marks) return [];
+  let list = marks;
+  if (marks === true) {
+    const n = Math.floor((max - min) / step);
+    if (n < 1 || n > MAX_STEP_MARKS) return [];
+    list = Array.from({
+      length: n + 1
+    }, (x, i) => min + i * step);
+  }
+  return list.map(m => typeof m === 'object' ? m : {
+    value: m,
+    label: String(m)
+  }).filter(m => m.value >= min && m.value <= max);
+}
+function Slider({
+  label,
+  value,
+  min = 0,
+  max = 100,
+  step = 1,
+  unit = '',
+  range = false,
+  marks,
+  onChange,
+  onCommit,
+  disabled = false,
+  strings,
+  className,
+  ...rest
+}) {
+  const id = (0, _layer.useUid)('plx-slider');
+  const t = Object.assign({}, STRINGS, strings);
+  const drawn = marksOf(marks, min, max, step);
+  const custom = range || drawn.length > 0;
+  const span = _react.default.useRef(null);
+  const [width, setWidth] = _react.default.useState(0);
+  // the width between the thumbs' centers at min and at max (the span is inset by half a thumb on each side, in CSS)
+  _react.default.useLayoutEffect(() => {
+    const el = span.current;
+    if (!custom || !el) return undefined;
+    const measure = () => setWidth(el.getBoundingClientRect().width);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [custom]);
+  const low = range ? Math.min(Number(value && value[0] != null ? value[0] : min), Number(value && value[1] != null ? value[1] : max)) : min;
+  const high = range ? Math.max(low, Number(value && value[1] != null ? value[1] : max)) : Number(value);
+  const at = v => (max > min ? (Math.min(max, Math.max(min, v)) - min) / (max - min) : 0) * width;
+  const commit = next => onCommit && onCommit(next);
+  const keyCommit = next => e => {
+    if (/Arrow|Page|Home|End/.test(e.key)) commit(next(Number(e.currentTarget.value)));
+  };
+  const shown = range ? low + '–' + high + unit : value + unit;
+  if (!custom) {
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-slider', className)
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-slider__head"
+    }, /*#__PURE__*/_react.default.createElement("label", {
+      htmlFor: id,
+      className: "plx-slider__label"
+    }, label), /*#__PURE__*/_react.default.createElement("output", {
+      htmlFor: id,
+      className: "plx-slider__value"
+    }, value + unit)), /*#__PURE__*/_react.default.createElement("input", _extends({
+      id: id,
+      type: "range",
+      className: "plx-slider__input",
+      min: min,
+      max: max,
+      step: step,
+      value: value,
+      disabled: disabled,
+      "aria-valuetext": value + unit,
+      onChange: e => onChange && onChange(Number(e.target.value)),
+      onPointerUp: e => onCommit && onCommit(Number(e.currentTarget.value)),
+      onKeyUp: e => {
+        if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value));
+      }
+    }, rest)));
+  }
+  const lowOf = v => [Math.min(v, high), high],
+    highOf = v => [low, Math.max(v, low)];
+  const fillStart = range ? at(low) : 0,
+    fillEnd = at(high);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-slider', 'plx-slider--custom', range && 'plx-slider--range', drawn.length && 'plx-slider--marks', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__head"
+  }, range ? /*#__PURE__*/_react.default.createElement("span", {
+    id: id + '-label',
+    className: "plx-slider__label"
+  }, label) : /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: id,
+    className: "plx-slider__label"
+  }, label), /*#__PURE__*/_react.default.createElement("output", {
+    htmlFor: range ? id + ' ' + id + '-high' : id,
+    className: "plx-slider__value"
+  }, shown)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__control"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__rail",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: span,
+    className: "plx-slider__span"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__fill",
+    style: {
+      insetInlineStart: (0, _grid.gridPx)(fillStart),
+      inlineSize: (0, _grid.gridPx)(fillEnd - fillStart)
+    }
+  }))), range ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("input", _extends({
+    id: id,
+    type: "range",
+    className: (0, _cx.cx)('plx-slider__input', low > (min + max) / 2 && 'is-on-top'),
+    min: min,
+    max: max,
+    step: step,
+    value: low,
+    disabled: disabled,
+    "aria-label": label + ', ' + t.minimum.toLowerCase(),
+    "aria-valuetext": low + unit,
+    onChange: e => onChange && onChange(lowOf(Number(e.target.value))),
+    onPointerUp: e => commit(lowOf(Number(e.currentTarget.value))),
+    onKeyUp: keyCommit(lowOf)
+  }, rest)), /*#__PURE__*/_react.default.createElement("input", {
+    id: id + '-high',
+    type: "range",
+    className: "plx-slider__input",
+    min: min,
+    max: max,
+    step: step,
+    value: high,
+    disabled: disabled,
+    "aria-label": label + ', ' + t.maximum.toLowerCase(),
+    "aria-valuetext": high + unit,
+    onChange: e => onChange && onChange(highOf(Number(e.target.value))),
+    onPointerUp: e => commit(highOf(Number(e.currentTarget.value))),
+    onKeyUp: keyCommit(highOf)
+  })) : /*#__PURE__*/_react.default.createElement("input", _extends({
+    id: id,
+    type: "range",
+    className: "plx-slider__input",
+    min: min,
+    max: max,
+    step: step,
+    value: value,
+    disabled: disabled,
+    "aria-valuetext": value + unit,
+    onChange: e => onChange && onChange(Number(e.target.value)),
+    onPointerUp: e => commit(Number(e.currentTarget.value)),
+    onKeyUp: keyCommit(v => v)
+  }, rest))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__marks",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__marks-span"
+  }, drawn.map(m => /*#__PURE__*/_react.default.createElement("span", {
+    key: m.value,
+    className: "plx-slider__mark",
+    style: {
+      insetInlineStart: (0, _grid.gridPx)(at(m.value))
+    }
+  }, m.label)))) : null);
+}
+  } },
+  "platform/utils/roving.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.roveTo = roveTo;
+exports.useRovingFocus = useRovingFocus;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Roving focus (platform/utils/roving.js)
+   Summary: One Tab stop for a group of controls (a toolbar, a rail): only the current control is in the Tab order
+     (tabindex 0), the others are reached with the arrow keys (tabindex -1). The current control is the one last focused,
+     else the first. This is the WAI-ARIA toolbar pattern: Tab enters and leaves the group in one step.
+   Usage:
+     const ref = React.useRef(null);
+     useRovingFocus(ref, () => items());          // after every render
+     <div ref={ref} onFocus={(e) => roveTo(ref, items(), e.target)}>
+   Props:
+     useRovingFocus(ref, getItems): keeps exactly one item at tabindex 0 after every render
+     roveTo(ref, items, el): makes el the current item (call when focus enters an item)
+*/
+
+function apply(items, current) {
+  items.forEach(el => {
+    const on = el === current;
+    if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
+    el.setAttribute('data-plx-roving', on ? 'current' : '');
+  });
+}
+function roveTo(ref, items, el) {
+  if (!ref.current || items.indexOf(el) < 0) return;
+  apply(items, el);
+}
+function useRovingFocus(ref, getItems) {
+  _react.default.useEffect(() => {
+    if (!ref.current) return;
+    const items = getItems();
+    if (!items.length) return;
+    const current = items.filter(el => el.getAttribute('data-plx-roving') === 'current')[0] || items[0];
+    apply(items, current);
+  });
+}
+  } },
+  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Toolbar = Toolbar;
+var _react = _interopRequireDefault(require("react"));
+var _roving = require("../../utils/roving.js");
+var _direction = require("../../utils/direction.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Toolbar, Toolbar.Group, Toolbar.Spacer
+   Summary: One row of controls (role="toolbar").
+   Usage:
+     <Toolbar label="Asset actions">
+       <Toolbar.Group>…</Toolbar.Group>
+       <Toolbar.Spacer/>
+       <Toolbar.Group>…</Toolbar.Group>
+     </Toolbar>
+   Props:
+     Toolbar.label: its accessible name
+     Toolbar.variant: "default" (rows wrap; gaps follow the density) | "bar" (one row that never wraps, fixed gaps: CommandBar)
+     Toolbar.onKeyDown(event): runs first; preventDefault stops the toolbar's own key handling
+     Toolbar.className: more classes on the toolbar
+     Toolbar.children: controls, groups and spacers. Stack and Inline layout wrappers (also nested inside Group) are transparent: toolbar spacing applies to their controls.
+       Keep semantic composites together; do not wrap popup internals in a layout wrapper intended to be flattened.
+     Toolbar.Group.className: more classes on the group
+     Toolbar.Group.children: the controls in the group
+     Toolbar.Spacer: pushes what follows to the end of the row; no props
+   Behavior:
+     One Tab stop: Tab enters and leaves the toolbar; the current control (the one last used) is in the Tab order.
+     Arrow keys move between its controls in reading order (wrapping; reversed in right to left); Home and End jump to the
+     first and last.
+     Tab leaves the toolbar.
+     Text fields, text areas, selects and editable regions keep their own arrow and Home/End behavior.
+     Descendant controls are discovered through wrappers; nested toolbars retain their own focus scope.
+     In a radio group, only the checked option is a stop.
+   Notes:
+     Every control in it takes the toolbar control height.
+     Other props reach the toolbar or group element.
+*/
+const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
+const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
+function Toolbar({
+  label,
+  variant = 'default',
+  className,
+  children,
+  onKeyDown,
+  onFocus,
+  ...rest
+}) {
+  const ref = _react.default.useRef(null);
+  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), el => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === 'visible' && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute('data-plx-roving'))) : [];
+  _react.default.useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const refresh = () => {
+      root.querySelectorAll('[data-plx-toolbar-layout]').forEach(el => {
+        if (el.closest('[role="toolbar"]') === root) el.removeAttribute('data-plx-toolbar-layout');
+      });
+      const visit = parent => Array.from(parent.children).forEach(el => {
+        if (el.matches('.plx-stack,.plx-inline') && getComputedStyle(el).display !== 'none') {
+          el.setAttribute('data-plx-toolbar-layout', '');
+          visit(el);
+        } else if (el.classList.contains('plx-toolbar__group')) visit(el);
+      });
+      visit(root);
+      const items = itemsOf();
+      (0, _roving.roveTo)(ref, items, items.find(el => el.getAttribute('data-plx-roving') === 'current') || items[0]);
+    };
+    refresh();
+    const observer = new MutationObserver(refresh);
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['disabled', 'hidden', 'inert', 'aria-hidden', 'aria-disabled', 'class']
+    });
+    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(refresh) : null;
+    if (resize) resize.observe(root);
+    window.addEventListener('resize', refresh);
+    return () => {
+      observer.disconnect();
+      if (resize) resize.disconnect();
+      window.removeEventListener('resize', refresh);
+    };
+  }, []);
+  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
+  (0, _roving.useRovingFocus)(ref, itemsOf);
+  const onKey = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return; // preserve the control's editing keys
+    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return; // popup/composite controls keep their own keys
+    if (e.target.closest('[role="toolbar"]') !== ref.current) return; // a nested toolbar owns its arrows
+    const items = itemsOf();
+    const i = items.indexOf(document.activeElement);
+    if (i < 0) return;
+    const step = (0, _direction.arrowStep)(e, ref.current, {
+      vertical: false
+    }); // in reading order: right to left reverses Left and Right
+    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
+    e.preventDefault();
+    items[n].focus();
+  };
+  const onFocusIn = e => {
+    if (onFocus) onFocus(e);
+    (0, _roving.roveTo)(ref, itemsOf(), e.target);
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    role: "toolbar",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
+    onKeyDown: onKey,
+    onFocus: onFocusIn
+  }, rest), children);
+}
+Toolbar.Group = function ToolbarGroup({
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-toolbar__group', className)
+  }, rest), children);
+};
+Toolbar.Spacer = function ToolbarSpacer() {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-toolbar__spacer",
+    "aria-hidden": "true"
+  });
+};
+  } },
+  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ToastProvider = ToastProvider;
+exports.useToast = useToast;
+exports.useUndo = useUndo;
+var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+var _tokenTime = require("../../utils/tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ToastProvider, useToast, useUndo
+   Summary: A short message about something that just happened, at the end of the screen; with an action (Undo) it is the
+     undo pattern.
+   Usage:
+     <ToastProvider>…the application…</ToastProvider>
+     const toast = useToast();
+     toast.show('Saved', { tone: 'success' });
+     toast.show('Asset moved to Crosses', { action: { label: 'Undo', onAction: () => moveBack() } });
+     const undoable = useUndo();
+     undoable('3 assets archived', { onUndo: () => restore(ids), onCommit: () => purge(ids) });
+   Props:
+     ToastProvider.duration: the default milliseconds before a toast leaves by itself; default the --plx-comp-toast-duration token
+     ToastProvider.children: the application
+     toast.show(message, options): shows a toast and returns its id
+     options.tone: "info" (default) | "success" | "warning" | "danger"
+     options.duration: milliseconds before it leaves by itself; 0 keeps it until dismissed or its action is used
+     options.action: { label, onAction() }: one action button in the toast (Undo, View); using it runs onAction and closes
+       the toast
+     options.onClose(reason): runs once when the toast leaves: "action" (its action was used), "dismiss" (the Dismiss
+       button or toast.dismiss) or "timeout"
+     toast.dismiss(id): removes the toast with that id
+     useUndo(): returns undoable(message, options): a toast with an Undo action for something already done
+       options.onUndo(): puts it back (the Undo action was used)
+       options.onCommit(): runs when the toast leaves without Undo (timed out or dismissed): the moment to make it final
+       options.label: the action's label (default "Undo")
+       options.tone, options.duration: as toast.show
+   Behavior:
+     A danger toast stays until dismissed (unless a duration is given) and is announced at once (role="alert").
+     The other toasts are announced politely.
+     Every toast has a Dismiss button.
+     A toast with an action stays while the pointer is over it or focus is inside it, and starts its time again when they
+       leave, so the action is never taken away from someone reaching for it.
+   Notes:
+     Wrap the application once in ToastProvider; useToast needs it.
+     Not for anything the person must act on: use a dialog or an inline message.
+*/
+
+const ToastContext = /*#__PURE__*/_react.default.createContext(null);
+const TONE_ICON = {
+  info: 'circle-info',
+  success: 'circle-check',
+  warning: 'warning',
+  danger: 'alert'
+};
+let nextId = 1;
+function ToastProvider({
+  duration,
+  children
+}) {
+  const [toasts, setToasts] = _react.default.useState([]);
+  const timers = _react.default.useRef(new Map()); // id -> { wait, timer, onClose }
+  const remove = _react.default.useCallback(id => setToasts(all => all.filter(t => t.id !== id)), []);
+  const dismiss = _react.default.useCallback((id, reason = 'dismiss') => {
+    const t = timers.current.get(id);
+    if (t) {
+      clearTimeout(t.timer);
+      timers.current.delete(id);
+      if (t.onClose) t.onClose(reason);
+    }
+    setToasts(all => all.map(x => x.id === id ? {
+      ...x,
+      leaving: true
+    } : x));
+    setTimeout(() => remove(id), (0, _tokenTime.tokenMs)('--plx-comp-toast-animation-duration'));
+  }, [remove]);
+  const start = _react.default.useCallback(id => {
+    const t = timers.current.get(id);
+    if (!t || !(t.wait > 0)) return;
+    clearTimeout(t.timer);
+    t.timer = setTimeout(() => dismiss(id, 'timeout'), t.wait);
+  }, [dismiss]);
+  const hold = _react.default.useCallback(id => {
+    const t = timers.current.get(id);
+    if (t) clearTimeout(t.timer);
+  }, []);
+  const show = _react.default.useCallback((message, {
+    tone = 'info',
+    duration: ms,
+    action,
+    onClose
+  } = {}) => {
+    const id = nextId++;
+    const wait = ms !== undefined ? ms : tone === 'danger' ? 0 : duration !== undefined ? duration : (0, _tokenTime.tokenMs)('--plx-comp-toast-duration');
+    timers.current.set(id, {
+      wait,
+      timer: null,
+      onClose
+    });
+    setToasts(all => all.concat({
+      id,
+      message,
+      tone,
+      action,
+      leaving: false
+    }));
+    start(id);
+    return id;
+  }, [start, duration]);
+  const api = _react.default.useMemo(() => ({
+    show,
+    dismiss
+  }), [show, dismiss]);
+  return /*#__PURE__*/_react.default.createElement(ToastContext.Provider, {
+    value: api
+  }, children, /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-toast-region",
+    "aria-live": "polite"
+  }, toasts.map(t => /*#__PURE__*/_react.default.createElement("div", {
+    key: t.id,
+    role: t.tone === 'danger' ? 'alert' : undefined,
+    className: (0, _cx.cx)('plx-toast', 'plx-toast--' + t.tone, t.leaving && 'is-leaving'),
+    onAnimationEnd: t.leaving ? () => remove(t.id) : undefined,
+    onPointerEnter: t.action ? () => hold(t.id) : undefined,
+    onPointerLeave: t.action ? () => start(t.id) : undefined,
+    onFocus: t.action ? () => hold(t.id) : undefined,
+    onBlur: t.action ? e => {
+      if (!e.currentTarget.contains(e.relatedTarget)) start(t.id);
+    } : undefined
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-toast__icon"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: TONE_ICON[t.tone] || TONE_ICON.info
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-toast__message"
+  }, t.message), t.action ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    className: "plx-toast__action",
+    onClick: () => {
+      if (t.action.onAction) t.action.onAction();
+      dismiss(t.id, 'action');
+    }
+  }, t.action.label) : null, /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-toast__close",
+    "aria-label": "Dismiss",
+    onClick: () => dismiss(t.id)
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "close"
+  }))))), document.body));
+}
+function useToast() {
+  const api = _react.default.useContext(ToastContext);
+  if (!api) throw new Error('useToast needs a <ToastProvider> around the application');
+  return api;
+}
+
+// the undo pattern: the action is already done; the toast offers Undo for as long as it shows, then the change is final
+function useUndo() {
+  const toast = useToast();
+  return _react.default.useCallback((message, {
+    onUndo,
+    onCommit,
+    label = 'Undo',
+    tone,
+    duration
+  } = {}) => toast.show(message, {
+    tone,
+    duration,
+    action: {
+      label,
+      onAction: onUndo
+    },
+    onClose: reason => {
+      if (reason !== 'action' && onCommit) onCommit();
+    }
+  }), [toast]);
+}
+  } },
+  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Tabs = Tabs;
+exports.tabsPanelId = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _direction = require("../../utils/direction.js");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Count = require("../Count/Count.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tabs
+   Summary: Switch between views of the same thing.
+   Usage:
+     <Tabs label="Asset details" value={tab} onChange={setTab}
+       items={[{ value: 'info', label: 'Info', count: 3, content: <…/> }, …]} />
+   Props:
+     variant: "contained" (default) | "folder" | "segmented"
+     orientation: "horizontal" (default) | "vertical" (the tabs in a column at the start, the panel beside them: many
+       sections or long names, as a settings page; the vertical look replaces the variant's)
+     items: the tabs, in order: [{ value, label, icon, count, content, disabled }]
+     items[].icon: an icon name or element before the label
+     items[].count: a count after the label
+     items[].content: the tab's panel; without content Tabs draws only the tab list
+     items[].disabled: the tab cannot be chosen and keys skip it
+     value: the selected tab's value (controlled)
+     defaultValue: the first selected tab when uncontrolled; default the first item
+     onChange(value): runs when another tab is selected
+     label: the accessible name of the tab list
+     idBase: the base of the tab and panel ids, for a panel the application renders
+     className: more classes on the tabs
+     panelClassName: more classes on each panel
+     strings: the words it shows, for other languages: { more: "More", moreLabel: "More tabs" }
+   Behavior:
+     In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
+     The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
+     Arrow keys move and select (wrapping); Home and End go to the first and last. Vertical tabs say so
+       (aria-orientation); Up and Down move there, Left and Right too.
+     Only the selected tab is in the Tab order.
+     The open folder tab has no line beneath it.
+     Vertical tabs never move into More: the column grows with them and the panel takes the rest of the width.
+     Tabs that do not fit on one row move into a "More" menu after the last shown tab: a menu button outside the tab list,
+       its own Tab stop. The tab list never scrolls sideways (Platforms Standard 3.5, reflow). The selected tab is always
+       shown: when it is one of the moved tabs, it takes the last shown place. Arrow keys, Home and End still reach every
+       tab, moved ones included (the one chosen is shown); each tab states its place in the whole set (aria-posinset,
+       aria-setsize), so a screen reader counts the moved tabs too. Choosing a tab in the menu selects it and focuses it.
+   Notes:
+     "contained" is the standard: folder tabs joined to a bordered panel.
+     "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
+     content below with no frame of its own; for tabs inside a pane or a card that is already framed.
+     "segmented" is a compact switch with SegmentedControl's look A (owner, 2026-10-14): joined segments at the button
+       control height, the selected one in the selected-state blue tint.
+     orientation="vertical" (library wave 7) draws each tab as a navigation list row: the hover fill, and the open tab in
+       the selected state (the navigation pane's current row), never a focus ring.
+     Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
+       and pass idBase so the tabs point at it.
+*/
+
+const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i
+}) : i;
+const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
+exports.tabsPanelId = tabsPanelId;
+const STRINGS = {
+  more: 'More',
+  moreLabel: 'More tabs'
+};
+
+/* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
+   lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
+   shown, takes its own room, so the list narrows and the count is checked again). The width is the Tabs' own, which
+   does not follow the count, so the two never chase each other. */
+function useTabsFit(rootRef, listRef, count, key) {
+  const [fit, setFit] = _react.default.useState(count);
+  const [width, setWidth] = _react.default.useState(0);
+  _react.default.useLayoutEffect(() => {
+    setFit(count);
+  }, [count, key, width]);
+  _react.default.useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => setWidth(root.clientWidth));
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, []);
+  _react.default.useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list || fit <= 1) return;
+    const box = list.getBoundingClientRect();
+    const out = Array.prototype.some.call(list.children, el => {
+      if (el.hidden) return false;
+      const r = el.getBoundingClientRect();
+      return r.right > box.right + 0.5 || r.left < box.left - 0.5;
+    });
+    if (out) setFit(fit - 1);
+  });
+  return Math.max(1, Math.min(fit, count));
+}
+function Tabs({
+  variant = 'contained',
+  orientation = 'horizontal',
+  items,
+  value,
+  defaultValue,
+  onChange,
+  label,
+  idBase,
+  className,
+  panelClassName,
+  strings
+}) {
+  (0, _devWarn.devWarn)('Tabs', {
+    variant
+  }, {
+    variant: ['contained', 'folder', 'segmented']
+  });
+  const words = Object.assign({}, STRINGS, strings);
+  const uid = (0, _layer.useUid)('plx-tabs');
+  const base = idBase || uid;
+  const [own, setOwn] = _react.default.useState(defaultValue !== undefined ? defaultValue : items[0] ? items[0].value : undefined);
+  const current = value !== undefined ? value : own;
+  const refs = _react.default.useRef({});
+  const root = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  const vertical = orientation === 'vertical';
+  const measured = useTabsFit(root, list, items.length, items.map(t => t.label).join('|') + '|' + String(current));
+  const fit = vertical ? items.length : measured;
+  // the shown tabs: the first `fit`; the selected tab takes the last place when it is not among them
+  const at = items.findIndex(t => t.value === current);
+  const shown = i => at < fit ? i < fit : i < fit - 1 || i === at;
+  const moved = items.filter((t, i) => !shown(i));
+  // focus goes to a tab once it is shown (a moved tab chosen by key or from the menu)
+  const focusNext = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    const el = focusNext.current !== null ? refs.current[focusNext.current] : null;
+    if (el && !el.hidden) {
+      focusNext.current = null;
+      el.focus();
+    }
+  });
+  const select = v => {
+    if (value === undefined) setOwn(v);
+    if (onChange) onChange(v);
+  };
+  const enabled = items.filter(t => !t.disabled);
+  const onKeyDown = e => {
+    const at = enabled.findIndex(t => t.value === current);
+    let next = null;
+    const step = (0, _direction.arrowStep)(e, e.currentTarget); // in reading order: right to left reverses Left and Right (batch 213)
+    if (step > 0) next = (at + 1) % enabled.length;else if (step < 0) next = (at - 1 + enabled.length) % enabled.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = enabled.length - 1;else return;
+    e.preventDefault();
+    const t = enabled[next];
+    select(t.value);
+    if (refs.current[t.value] && !refs.current[t.value].hidden) refs.current[t.value].focus();else focusNext.current = t.value;
+  };
+  const hasPanels = items.some(t => t.content !== undefined);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    className: (0, _cx.cx)('plx-tabs', vertical ? 'plx-tabs--vertical' : 'plx-tabs--' + variant, className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-tabs__list"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
+    role: "tablist",
+    "aria-label": label,
+    "aria-orientation": vertical ? 'vertical' : undefined,
+    className: "plx-tabs__tablist",
+    onKeyDown: onKeyDown
+  }, items.map((t, i) => {
+    const on = t.value === current;
+    return /*#__PURE__*/_react.default.createElement("button", {
+      key: t.value,
+      ref: el => {
+        refs.current[t.value] = el;
+      },
+      type: "button",
+      role: "tab",
+      id: base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, ''),
+      "aria-selected": on,
+      "aria-controls": tabsPanelId(base, t.value),
+      "aria-posinset": i + 1,
+      "aria-setsize": items.length,
+      tabIndex: on ? 0 : -1,
+      disabled: t.disabled || undefined,
+      hidden: !shown(i) || undefined,
+      className: (0, _cx.cx)('plx-tabs__tab', on && 'is-selected'),
+      onClick: () => select(t.value)
+    }, t.icon ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tabs__icon"
+    }, asIcon(t.icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tabs__label"
+    }, t.label), t.count !== undefined ? /*#__PURE__*/_react.default.createElement(_Count.Count, {
+      value: t.count,
+      tone: "neutral"
+    }) : null);
+  })), moved.length ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: words.moreLabel,
+    placement: "bottom-end",
+    className: "plx-tabs__more-anchor",
+    trigger: /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-tabs__tab plx-tabs__more"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tabs__label"
+    }, words.more), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tabs__more-caret",
+      "aria-hidden": "true"
+    }))
+  }, moved.map(t => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: t.value,
+    icon: t.icon,
+    disabled: t.disabled,
+    onSelect: () => {
+      focusNext.current = t.value;
+      select(t.value);
+    }
+  }, t.count !== undefined ? t.label + ' (' + t.count + ')' : t.label))) : null), hasPanels ? items.map(t => /*#__PURE__*/_react.default.createElement("div", {
+    key: t.value,
+    role: "tabpanel",
+    id: tabsPanelId(base, t.value),
+    "aria-labelledby": base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, ''),
+    tabIndex: 0,
+    hidden: t.value !== current,
+    className: (0, _cx.cx)('plx-tabs__panel', panelClassName)
+  }, t.value === current ? t.content : null)) : null);
+}
+  } },
   "platform/components/DataGrid/actions.jsx": { deps: {"react":null,"../Toast/Toast.jsx":"platform/components/Toast/Toast.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -22078,95 +24351,6 @@ function useDataGridActions(actions, selection, strings) {
   };
   return typeof actions === 'function' ? (...args) => (actions(...args) || []).map(wrap) : Array.isArray(actions) ? actions.map(wrap) : actions;
 }
-  } },
-  "platform/components/Link/Link.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Link = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Link
-   Summary: A link to another page or place: inside a sentence (inline), on its own line (standalone), to another site
-     (external) or back to the page above (back).
-   Usage:
-     <Text as="p">Read the <Link href="../guides/upload.html">upload guide</Link> first.</Text>
-     <Link href="../projects/" variant="standalone">View all projects</Link>
-     <Link href="https://m3.material.io" external>Material guidelines</Link>
-     <Link href="../" back>Projects</Link>
-     <Link href="#" variant="subtle">Terms</Link>   <Link href="#" onAccent>Help</Link>
-   Props:
-     href: where it goes (required: a link without one is a button)
-     variant: "inline" (default: in running text, always underlined) | "standalone" (on its own: medium weight, underlined
-       on hover, as tall as the minimum target) | "subtle" (the text color, underlined: footers and fine print)
-     external: another site: opens in a new tab (target="_blank", rel="noopener noreferrer"), shows the open icon after
-       the text and tells assistive technology (strings.newTab)
-     back: the page above: a leading chevron that points back; it draws as standalone
-     onAccent: the version for the blue header and other accent surfaces (default false)
-     visited: draws the visited color in documentation (the browser draws it on its own with :visited)
-     as: another element or component that renders the anchor (a router's link); it gets href, className and the rest
-     strings: the words it announces, for other languages: { newTab: "opens in a new tab" }
-     children: the link text: says where it goes ("Upload guide"), never "click here"
-     className: more classes on the link
-   Behavior:
-     Enter follows the link; it is one Tab stop. Hover thickens the underline (inline, subtle, on accent) or draws it
-       (standalone, back).
-     Keyboard focus shows the focus ring around the text (:focus-visible); a click does not.
-     The back chevron mirrors in right-to-left pages (the icon set's bidirectional icons).
-   Notes:
-     The underline is the non-color sign of a link in running text (WCAG 1.4.1); standalone links are recognized by their
-       place and weight.
-     Use a Button for an action that changes data; a Link only goes somewhere.
-     Other props pass through to the <a>. forwardRef: the ref is the <a>.
-*/
-const STRINGS = {
-  newTab: 'opens in a new tab'
-};
-const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link({
-  href,
-  variant = 'inline',
-  external = false,
-  back = false,
-  onAccent = false,
-  visited = false,
-  as: Tag = 'a',
-  strings,
-  className,
-  children,
-  ...rest
-}, ref) {
-  (0, _devWarn.devWarn)('Link', {
-    variant
-  }, {
-    variant: ['inline', 'standalone', 'subtle']
-  });
-  const s = Object.assign({}, STRINGS, strings);
-  const kind = back ? 'standalone' : variant;
-  const newTab = external ? {
-    target: '_blank',
-    rel: 'noopener noreferrer'
-  } : null;
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    ref: ref,
-    href: href
-  }, newTab, rest, {
-    className: (0, _cx.cx)('plx-link', 'plx-link--' + kind, back && 'plx-link--back', external && 'plx-link--external', onAccent && 'plx-link--on-accent', visited && 'is-visited', className)
-  }), back ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-link__icon"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-left"
-  })) : null, children, external ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-link__icon"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "open"
-  })) : null, external ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, " (", s.newTab, ")") : null);
-});
   } },
   "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -24543,92 +26727,6 @@ function DataGrid(props) {
 DataGrid.useActions = _actions.useDataGridActions;
 // nothing to load ahead: the engine is part of the Platform bundle (kept so pages that called it keep working)
 DataGrid.preload = () => {};
-  } },
-  "platform/components/Table/Table.jsx": { deps: {"react":null,"../DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Table = Table;
-var _react = _interopRequireDefault(require("react"));
-var _DataGridEngine = require("../DataGrid/DataGridEngine.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Table
-   Summary: Static reference information in rows and columns, using the DataGrid's React renderer and Table tokens.
-   Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
-   Props:
-     label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
-       minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
-     empty: no-record message; narrow: "table" by default; className.
-     cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
-       (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
-       icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
-       pill: false (as DataGrid).
-     Table.preload(): compatibility no-op; the renderer is already bundled.
-   Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
-     Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row. The table grows with its rows and never scrolls internally.
-   Notes: Existing Table tokens preserve the static-table look; use DataGrid for records people work with. */
-
-function Table({
-  label,
-  data,
-  columns = [],
-  index,
-  empty,
-  narrow = 'table',
-  headerVisible = true,
-  cells = 'text',
-  className
-}) {
-  const staticColumns = _react.default.useMemo(() => columns.map(({
-    title,
-    field,
-    kind,
-    type,
-    pill,
-    render,
-    width,
-    minWidth,
-    maxWidth,
-    rowLabel,
-    frozen,
-    hozAlign,
-    headerHozAlign,
-    empty
-  }) => ({
-    title,
-    field,
-    kind,
-    type,
-    pill,
-    render,
-    width,
-    minWidth,
-    maxWidth,
-    rowLabel,
-    frozen,
-    hozAlign,
-    headerHozAlign,
-    empty,
-    headerSort: false,
-    resizable: false
-  })), [columns]);
-  return /*#__PURE__*/_react.default.createElement(_DataGridEngine.DataGridEngine, {
-    isStatic: true,
-    label: label,
-    data: data,
-    columns: staticColumns,
-    index: index,
-    empty: empty,
-    narrow: narrow,
-    headerVisible: headerVisible,
-    cells: cells,
-    className: className,
-    headerMenu: false
-  });
-}
-Table.preload = () => {};
   } },
   "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -31915,76 +34013,6 @@ const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(funct
   }, reason)) : null, children));
 });
   } },
-  "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.IconTile = IconTile;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · IconTile
-   Summary: An icon on a tinted, rounded square: the marker of an object type, a category or an integration in lists,
-     cards and headers (the entity's kind in EntityHeader's { icon, hue } media).
-   Usage:
-     <IconTile icon="briefcase" hue="blue" />
-     <IconTile icon="alert" tone="warning" size="sm" label="Overdue" />
-     <IconTile icon="sparkle" hue="purple" size="lg" filled />
-   Props:
-     icon: the Plenix icon name (platform/icons/map.json)
-     hue: the tile's data color: "blue" | "green" | "purple" | "red" | "brown" | "gray" (default) | "surface" (the page
-       surface with the icon in the link blue)
-     tone: a status tone instead of a hue: "neutral" | "info" | "success" | "warning" | "danger"; it wins over hue
-     size: "sm" (a 32px tile, 16px icon) | "md" (40px, 20px; default) | "lg" (48px, 24px; EntityHeader's tile)
-     filled: the filled version of the icon (default false)
-     label: the accessible name, when the tile alone carries meaning; without it the tile is decorative
-     className: more classes on the tile
-   Behavior:
-     Not interactive: no hover, no focus. A tile that opens something sits inside the row, card or button that does.
-     The tile and its icon size together by the named size, on the 4px grid; the icon is centered.
-     Hues are the data colors (the same in light and dark); tones are the feedback roles, which follow the theme.
-   Notes:
-     The icon is the Plenix set (Material Symbols, unedited); no letters or numbers in a tile.
-     Other props pass through to the <span>.
-*/
-const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
-const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
-const SIZES = ['sm', 'md', 'lg'];
-function IconTile({
-  icon,
-  hue = 'gray',
-  tone,
-  size = 'md',
-  filled = false,
-  label,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('IconTile', {
-    tone,
-    size
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
-    size: ['sm', 'md', 'lg']
-  });
-  const look = TONES.indexOf(tone) >= 0 ? tone : HUES.indexOf(hue) >= 0 ? hue : 'gray';
-  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-icon-tile', 'plx-icon-tile--' + s, 'plx-icon-tile--' + look, className),
-    role: label ? 'img' : undefined,
-    "aria-label": label,
-    "aria-hidden": label ? undefined : true
-  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon,
-    size: s,
-    filled: filled
-  }));
-}
-  } },
   "platform/components/Pictogram/Pictogram.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -34148,116 +36176,6 @@ function Time({
   }, el) : el;
 }
   } },
-  "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ContextualHelp = ContextualHelp;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Button = require("../Button/Button.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-var _Link = require("../Link/Link.jsx");
-var _Popover = require("../Popover/Popover.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ContextualHelp
-   Summary: Help where the question comes up: an info button beside a label, heading or setting that opens a short
-     explanation in a Popover (09 Overlays › Contextual help), or the same explanation shown in place as an inline tip
-     (10 Patterns › Contextual education).
-   Usage:
-     <Field label={<>Retention <ContextualHelp title="Retention">Deleted files stay in the trash for 30 days.</ContextualHelp></>}>…</Field>
-     <ContextualHelp title="Storage" link={{ href: '../help/storage.html', label: 'About storage' }}>Originals count toward your quota; previews do not.</ContextualHelp>
-     <ContextualHelp variant="inline" title="Tip">Drop files anywhere on the page to upload them.</ContextualHelp>
-   Props:
-     title: the explanation's title (the popover's title; bold before the text of an inline tip)
-     children: the explanation: one to three sentences
-     link: { href, label }: a link to more help after the explanation (optional): on its own line in the popover, at the
-       end of the sentence in an inline tip
-     variant: "info" (default: the info button and its popover) | "inline" (an inline tip: the explanation shown in place,
-       after the info icon, in the muted color)
-     label: the info button's accessible name (default strings.more with the title: "More about Retention")
-     placement: where the popover opens (default "bottom-start"; Popover's placements)
-     size: the popover's width: "sm" (default; 240px) | "md" | "lg"
-     strings: the words it announces, for other languages: { more: "More about {title}", moreUntitled: "More information" }
-     className: more classes on the wrapper
-   Behavior:
-     Info: the button opens the popover on click, Enter or Space (never on hover) and focus moves into it; Escape returns
-       focus to the button, and a click outside or Tab away closes it. At the Narrow window class it opens as a bottom
-       sheet (Popover's sheetOnNarrow).
-     Inline: plain text in the page, read in order; the link is one Tab stop.
-   Notes:
-     The button is the inline-action role (a 24px target) and ghost, so it sits on the label's line without weight.
-     Help that everyone needs is helper text, not hidden help; errors and warnings are never contextual help.
-*/
-
-const STRINGS = {
-  more: 'More about {title}',
-  moreUntitled: 'More information'
-};
-function ContextualHelp({
-  title,
-  children,
-  link,
-  variant = 'info',
-  label,
-  placement = 'bottom-start',
-  size = 'sm',
-  strings,
-  className
-}) {
-  (0, _devWarn.devWarn)('ContextualHelp', {
-    variant,
-    size
-  }, {
-    variant: ['info', 'inline'],
-    size: ['sm', 'md', 'lg']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  const more = v => link && link.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
-    href: link.href,
-    variant: v,
-    className: "plx-contextual-help__link"
-  }, link.label) : null;
-  if (variant === 'inline') {
-    return /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)('plx-contextual-help', 'plx-contextual-help--inline', className)
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-contextual-help__icon",
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "info-circle",
-      size: "sm"
-    })), /*#__PURE__*/_react.default.createElement("p", {
-      className: "plx-contextual-help__tip"
-    }, title ? /*#__PURE__*/_react.default.createElement("strong", {
-      className: "plx-contextual-help__title"
-    }, title) : null, title ? ' ' : null, children, link ? ' ' : null, more('inline')));
-  }
-  const name = label || (typeof title === 'string' && title ? t.more.split('{title}').join(title) : t.moreUntitled);
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-contextual-help', 'plx-contextual-help--info', className)
-  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "ghost",
-      size: "xs",
-      iconOnly: true,
-      icon: "info-circle",
-      label: name
-    }),
-    title: title,
-    label: name,
-    placement: placement,
-    size: size
-  }, /*#__PURE__*/_react.default.createElement("p", {
-    className: "plx-contextual-help__text"
-  }, children), link && link.href ? /*#__PURE__*/_react.default.createElement("p", {
-    className: "plx-contextual-help__more"
-  }, more('standalone')) : null));
-}
-  } },
   "platform/components/Spotlight/Spotlight.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/portal.jsx":"platform/utils/portal.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -34933,99 +36851,6 @@ const CopyButton = exports.CopyButton = /*#__PURE__*/_react.default.forwardRef(f
     onFocus: e => e.target.select()
   }), button);
 });
-  } },
-  "platform/components/Details/Details.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Details = Details;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Details
-   Summary: One block of optional detail behind a short summary line that opens it in place: the native details and
-     summary elements, styled (09 Overlays › Disclosure › Details). It is not a section: a part of the page with a heading
-     that folds is a CollapsibleSection; a set of them is an Accordion.
-   Usage:
-     <Details summary="Why do we need your phone number?">We text you a code when you sign in from a new device.</Details>
-     <Details summary="Technical details" variant="bordered" defaultOpen>…</Details>
-     <Text as="p">The upload failed. <Details summary="Show the error" variant="inline">…</Details></Text>
-     <Details summary="Filters" open={open} onToggle={setOpen}>…</Details>
-   Props:
-     summary: the line that is always shown and opens it: a question or a short phrase (required)
-     children: the detail it reveals: a few sentences, a short list, a code sample
-     variant: "default" (a chevron and the summary in the body text; the detail indented under it) | "bordered" (in a box
-       with a border, for detail that should read as one piece: logs, technical data) | "inline" (small and muted, in a
-       line of text or under a message; the detail is not indented)
-     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
-     onToggle(open): runs when it opens or closes
-     name: the native exclusive group: Details with the same name close each other (one open at a time)
-     className: more classes on the <details>
-     Other props pass through to the <details>.
-   Behavior:
-     The summary is a native disclosure: a click, Enter or Space opens and closes it, and assistive technology announces
-       it as expanded or collapsed. The chevron points to the end when closed and down when open.
-     The browser's find in page opens it when the text found is inside (the native element does this).
-     It opens at once, without an animation, so nothing moves under the pointer.
-   Notes:
-     Start closed; put only optional detail inside: what everyone needs stays on the page. Never nest one in another.
-*/
-const VARIANTS = ['default', 'bordered', 'inline'];
-function Details({
-  summary,
-  children,
-  variant = 'default',
-  open: openProp,
-  defaultOpen = false,
-  onToggle,
-  name,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Details', {
-    variant
-  }, {
-    variant: ['default', 'bordered', 'inline']
-  });
-  const controlled = openProp !== undefined;
-  const [own, setOwn] = _react.default.useState(!!defaultOpen);
-  const open = controlled ? !!openProp : own;
-  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'default';
-  // the native element toggles itself; the state follows it (and a controlled value is put back if the caller keeps it)
-  const toggled = e => {
-    const now = e.currentTarget.open;
-    if (now === open) return;
-    if (!controlled) setOwn(now);
-    if (onToggle) onToggle(now);
-  };
-  return /*#__PURE__*/_react.default.createElement("details", _extends({
-    className: (0, _cx.cx)('plx-details', 'plx-details--' + v, className),
-    open: open,
-    name: name,
-    onToggle: toggled
-  }, rest), /*#__PURE__*/_react.default.createElement("summary", {
-    className: "plx-details__summary"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-details__marker",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-details__chevron plx-details__chevron--closed"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-right"
-  })), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-details__chevron plx-details__chevron--open"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "chevron-down"
-  }))), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-details__label"
-  }, summary)), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-details__content"
-  }, children));
-}
   } },
   "platform/components/FloatingActionButton/FloatingActionButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -42504,235 +44329,6 @@ function AvatarUpload({
   }, error) : null);
 }
   } },
-  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ChartFrame = ChartFrame;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../utils/cx.js");
-var _direction = require("../utils/direction.js");
-var _Details = require("../components/Details/Details.jsx");
-var _Table = require("../components/Table/Table.jsx");
-var _Button = require("../components/Button/Button.jsx");
-var _grid = require("../utils/grid.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartFrame
-   Summary: The frame every Plenix chart is drawn in (07 Data Display › Charts › Chart foundations): a figure with the
-     chart's title and description, a responsive SVG plot that measures itself (a ResizeObserver) and hands its size and
-     inner area (the plot less its margins) to the chart, and the data as a table for people who cannot see the chart.
-   Usage:
-     <ChartFrame title="Uploads per month" description="Uploads rose every month from January to June."
-       table={{ columns: [{ title: 'Month', field: 'month', kind: 'name' }, { title: 'Uploads', field: 'n', kind: 'data' }], data: rows }}>
-       {({ inner }) => { const x = scaleBand({ domain: months, range: [0, inner.width] }); … return <g>…</g>; }}
-     </ChartFrame>
-     <ChartFrame title="…" interaction={useChartInteraction({ columns: rows.length, describe })}>…</ChartFrame>
-   Props:
-     title: the chart's name (required): the caption's title and the SVG's accessible name
-     description: one or two sentences that say what the chart shows (its takeaway); the SVG's description
-     hideCaption: keeps the title and description for assistive technology only (default false), when a heading beside
-       the chart already shows them
-     size: the plot's height: "sm" (160px) | "md" (240px, default) | "lg" (320px); the width is the container's
-     margin: the room around the plot for axes and labels, in pixels: { top, end, bottom, start } (each optional; the
-       defaults are the --plx-comp-chart-margin-* tokens); values snap to the 4px grid; start and end follow the writing
-       direction
-     table: the data as a table under the chart: { columns, data } as the Table takes them (technical values kind
-       "data"); shown behind a Details line ("Show the data") so it is always one click away
-     legend: the chart's legend (a ChartLegend), placed by legendPosition (chart parts, wave 8)
-     legendPosition: "bottom" (default: under the plot) | "top" (between the caption and the plot: tight dashboard
-       cards) | "end" (beside the
-       plot, after it; give the legend orientation="vertical"); the plot keeps the rest of the width
-     interaction: the chart's interaction (useChartInteraction, platform/charts/interaction.js; wave 9): the plot becomes
-       one Tab stop named "{title}, interactive chart" with the keyboard hint as its description, and hands its keys and
-       the pointer (in plot coordinates) to the interaction; a Reset zoom button shows above the plot while it is zoomed
-     actions: controls above the plot, at its end (a network graph's zoom buttons); Buttons of size sm
-     fitHeight: (width) => the plot's height in pixels for its width, for a chart whose height follows its content (a
-       diagram drawn at its own size); the plot's height is then the SVG's, not the size's
-     children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
-       inside a group already moved by the margins; or SVG nodes
-     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" } (the
-       interaction's words are the interaction's strings)
-     className: more classes on the figure
-   Behavior:
-     The plot fills its container's width and follows it when it resizes; the chart is drawn once the size is known.
-     The SVG is one image to assistive technology (role img, named by the title and described by the description);
-       its marks are hidden from it, so the table carries the values.
-     Interactive (interaction): the plot takes focus once (its border takes the focus color, no outer ring) and hands
-       the arrow keys, Home, End, Enter, Space, Escape and the pointer to the interaction, which says each value in the
-       live region; the tooltip and the focus ring the chart draws follow it.
-     Marks take their colors from the data-viz scales: data-plx-dataviz="<scale>-<step>" on a mark (seriesColor(i))
-       and the frame's mark classes (plx-chart__mark, plx-chart__line, plx-chart__point) fill or stroke it with that
-       step; axis lines, grid lines and tick labels have their classes too (plx-chart__axis-line, plx-chart__grid-line,
-       plx-chart__tick-label: the data font).
-   Notes:
-     No color, size or font is written in a chart: only SVG geometry (x, y, width, height, d, transform) and classes.
-     Chart parts (platform/charts/parts: Axis, GridLines, ChartLegend, ChartTooltip, DataLabel, ReferenceLine,
-       ChartAnnotation; wave 8) and the charts themselves (wave 9) build on this frame.
-*/
-const STRINGS = {
-  showData: 'Show the data',
-  table: '{title}: data'
-};
-const MARGIN_TOKENS = {
-  top: '--plx-comp-chart-margin-block-start',
-  end: '--plx-comp-chart-margin-inline-end',
-  bottom: '--plx-comp-chart-margin-block-end',
-  start: '--plx-comp-chart-margin-inline-start'
-};
-function ChartFrame({
-  title,
-  description,
-  hideCaption = false,
-  size = 'md',
-  margin,
-  legend,
-  legendPosition = 'bottom',
-  table,
-  interaction,
-  actions,
-  fitHeight,
-  strings,
-  className,
-  children
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const uid = 'plx-chart' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const frame = _react.default.useRef(null),
-    plot = _react.default.useRef(null);
-  const [box, setBox] = _react.default.useState({
-    width: 0,
-    height: 0,
-    rtl: false,
-    tokens: null
-  });
-  _react.default.useLayoutEffect(() => {
-    const el = plot.current;
-    if (!el) return undefined;
-    const measure = () => {
-      const cs = getComputedStyle(frame.current);
-      const tokens = {};
-      Object.keys(MARGIN_TOKENS).forEach(k => {
-        tokens[k] = parseFloat(cs.getPropertyValue(MARGIN_TOKENS[k])) || 0;
-      });
-      const r = el.getBoundingClientRect();
-      // an interactive plot has a border (its focus border): the SVG is drawn inside it
-      const next = {
-        width: Math.floor(r.width - el.clientLeft * 2),
-        height: Math.floor(r.height - el.clientTop * 2),
-        rtl: (0, _direction.isRtl)(el),
-        tokens
-      };
-      setBox(b => b.width === next.width && b.height === next.height && b.rtl === next.rtl && JSON.stringify(b.tokens) === JSON.stringify(tokens) ? b : next);
-    };
-    measure();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-  const m = {};
-  Object.keys(MARGIN_TOKENS).forEach(k => {
-    m[k] = (0, _grid.snapToGrid)(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0);
-  });
-  const left = box.rtl ? m.end : m.start;
-  const fit = typeof fitHeight === 'function';
-  const height = fit ? box.width > 0 ? Math.max(1, Math.ceil(fitHeight(box.width))) : 0 : box.height;
-  const inner = {
-    width: Math.max(0, box.width - m.start - m.end),
-    height: Math.max(0, height - m.top - m.bottom)
-  };
-  const dims = {
-    width: box.width,
-    height,
-    inner,
-    margin: m
-  };
-  const titleId = uid + '-title',
-    descId = uid + '-desc',
-    hintId = uid + '-hint';
-  const ia = interaction && interaction.interactive ? interaction : null;
-  // the pointer in plot coordinates: inside the border, less the margins
-  const local = e => {
-    const el = plot.current,
-      r = el.getBoundingClientRect();
-    return [e.clientX - r.left - el.clientLeft - left, e.clientY - r.top - el.clientTop - m.top];
-  };
-  const on = fn => e => {
-    const p = local(e);
-    fn(p[0], p[1], e);
-  };
-  const plotProps = ia ? {
-    tabIndex: 0,
-    role: 'group',
-    'aria-label': ia.strings.plot.replace('{title}', title || ''),
-    'aria-describedby': hintId,
-    onKeyDown: ia.keyDown,
-    onFocus: ia.onFocus,
-    onBlur: ia.onBlur,
-    onPointerDown: on(ia.pointerDown),
-    onPointerMove: on(ia.pointerMove),
-    onPointerUp: on(ia.pointerUp),
-    onPointerLeave: ia.pointerLeave
-  } : {};
-  const toolbar = ia && ia.zoomed || actions ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chart__actions"
-  }, actions, ia && ia.zoomed ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    icon: "refresh",
-    onClick: ia.resetZoom
-  }, ia.strings.resetZoom) : null) : null;
-  const caption = /*#__PURE__*/_react.default.createElement("figcaption", {
-    className: (0, _cx.cx)('plx-chart__caption', hideCaption && 'plx-visually-hidden')
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    id: titleId,
-    className: "plx-chart__title"
-  }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
-    id: descId,
-    className: "plx-chart__description"
-  }, description) : null);
-  // the legend (chart parts): before the plot, after it, or beside it in a row with it
-  const lp = ['top', 'bottom', 'end'].indexOf(legendPosition) >= 0 ? legendPosition : 'bottom';
-  const key = legend ? /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-chart__legend', 'plx-chart__legend--' + lp)
-  }, legend) : null;
-  const plotArea = /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: plot,
-    className: (0, _cx.cx)('plx-chart__plot', fit && 'plx-chart__plot--fit', ia && 'plx-chart__plot--interactive', ia && ia.mode === 'point' && ia.active && 'plx-chart__plot--dimming')
-  }, plotProps), ia ? /*#__PURE__*/_react.default.createElement("span", {
-    id: hintId,
-    className: "plx-visually-hidden"
-  }, ia.hint) : null, box.width > 0 && height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
-    className: "plx-chart__svg",
-    width: box.width,
-    height: height,
-    viewBox: '0 0 ' + box.width + ' ' + height,
-    role: "img",
-    "aria-labelledby": titleId,
-    "aria-describedby": description ? descId : undefined,
-    focusable: "false"
-  }, /*#__PURE__*/_react.default.createElement("g", {
-    transform: 'translate(' + left + ',' + m.top + ')',
-    "aria-hidden": "true"
-  }, typeof children === 'function' ? children(dims) : children)) : null);
-  return /*#__PURE__*/_react.default.createElement("figure", {
-    ref: frame,
-    className: (0, _cx.cx)('plx-chart', 'plx-chart--' + size, className)
-  }, caption, toolbar, lp === 'top' ? key : null, lp === 'end' && key ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chart__body"
-  }, plotArea, key) : plotArea, lp === 'bottom' ? key : null, table && table.data ? /*#__PURE__*/_react.default.createElement(_Details.Details, {
-    summary: t.showData,
-    variant: "inline",
-    className: "plx-chart__data"
-  }, /*#__PURE__*/_react.default.createElement(_Table.Table, {
-    label: t.table.replace('{title}', title || ''),
-    columns: table.columns,
-    data: table.data,
-    index: table.index
-  })) : null);
-}
-  } },
   "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -45468,272 +47064,6 @@ function GridLines({
       y2: inner.height
     });
   }));
-}
-  } },
-  "platform/charts/parts/ChartLegend.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ChartLegend = ChartLegend;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartLegend
-   Summary: The key of a chart's series (07 Data Display › Charts › Chart legend): each series' color swatch and name,
-     and its value when it helps; above the plot, beside it, or under it, and, interactive, a toggle per series that shows
-     or hides it.
-   Usage:
-     const series = [{ id: 'web', label: 'Web' }, { id: 'ios', label: 'iOS' }, { id: 'android', label: 'Android' }]
-       .map((s, i) => ({ ...s, color: seriesColor(i) }));
-     <ChartFrame title="Sign-ups by platform" legend={<ChartLegend items={series} />} …>…</ChartFrame>
-     <ChartFrame … legendPosition="end" legend={<ChartLegend items={series} orientation="vertical" />}>…</ChartFrame>
-     <ChartLegend items={series} interactive hidden={off} onToggle={(id, visible) => …} />
-   Props:
-     items: the series, in the chart's order: [{ id, label, color, value }]; color is the series' data-viz step
-       ("categorical-1", seriesColor(i)); value is an optional figure after the name (a total, a share), the data font
-     orientation: "horizontal" (default: items in a row that wraps, above or under the plot) | "vertical" (one per line,
-       beside the plot)
-     shape: the swatch: "square" (default: bars, areas, slices) | "line" (line series)
-     interactive: each item is a toggle button that shows or hides its series (default false)
-     hidden: the ids of the hidden series, when the parent controls them; defaultHidden: the first ones, otherwise
-     onToggle(id, visible): runs when a series is shown or hidden; the chart draws only the visible ones
-     label: the legend's accessible name (default strings.legend)
-     strings: the words it says, for other languages: { legend: "Legend" }
-     className: more classes on the legend
-   Behavior:
-     The legend is real text next to the plot (not inside the image), so assistive technology reads the series names.
-     Interactive: each toggle has aria-pressed (pressed = shown); Tab moves between them, Enter or Space toggles. A hidden
-       series keeps its place with a hollow swatch (a line swatch in the disabled color) and a muted name, so it can
-       be shown again. The last series shown cannot
-       be hidden: its toggle does nothing.
-     Names wrap rather than being cut; a vertical legend keeps its width to the longest name.
-   Notes:
-     Colors come from the data-viz scales through data-plx-dataviz (no color is written). Color is never the only cue: the
-       names are always shown; on a line chart label the lines directly when there is room.
-*/
-const STRINGS = {
-  legend: 'Legend'
-};
-function ChartLegend({
-  items = [],
-  orientation = 'horizontal',
-  shape = 'square',
-  interactive = false,
-  hidden,
-  defaultHidden = [],
-  onToggle,
-  label,
-  strings,
-  className,
-  ...rest
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const [own, setOwn] = _react.default.useState(defaultHidden);
-  const off = hidden === undefined ? own : hidden;
-  const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
-  const s = shape === 'line' ? 'line' : 'square';
-  const toggle = id => {
-    const visible = off.indexOf(id) >= 0;
-    // the last series shown stays shown: a chart never goes empty from its legend
-    if (!visible && items.length - off.length <= 1) return;
-    if (hidden === undefined) setOwn(visible ? off.filter(x => x !== id) : off.concat([id]));
-    if (onToggle) onToggle(id, visible);
-  };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-chart-legend', 'plx-chart-legend--' + o, interactive && 'plx-chart-legend--interactive', className)
-  }, rest), /*#__PURE__*/_react.default.createElement("ul", {
-    className: "plx-chart-legend__list",
-    "aria-label": label || t.legend
-  }, items.map((it, i) => {
-    const id = it.id === undefined ? i : it.id;
-    const shown = off.indexOf(id) < 0;
-    const inside = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
-      className: (0, _cx.cx)('plx-chart-legend__swatch', 'plx-chart-legend__swatch--' + s),
-      "data-plx-dataviz": it.color || undefined,
-      "aria-hidden": "true"
-    }), /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-chart-legend__label"
-    }, it.label), it.value !== undefined && it.value !== null ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-chart-legend__value"
-    }, it.value) : null);
-    return /*#__PURE__*/_react.default.createElement("li", {
-      key: id,
-      className: "plx-chart-legend__item"
-    }, interactive ? /*#__PURE__*/_react.default.createElement("button", {
-      type: "button",
-      className: "plx-chart-legend__toggle",
-      "aria-pressed": shown,
-      onClick: () => toggle(id)
-    }, inside) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-chart-legend__entry"
-    }, inside));
-  })));
-}
-  } },
-  "platform/charts/parts/ChartTooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ChartTooltip = ChartTooltip;
-exports.chartTooltipText = chartTooltipText;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ChartTooltip
-   Summary: The values at one point of a chart (07 Data Display › Charts › Chart tooltip), shown where the pointer or the
-     keyboard is: one point's value (single), or every series' value at one x position with a crosshair line (shared).
-     Drawn inside ChartFrame's plot, beside the point, on the side with room.
-   Usage:
-     {active ? <ChartTooltip x={x(active.date)} y={y(active.value)} inner={inner} title={formatDate(active.date)} titleKind="data"
-       items={[{ label: 'Downloads', value: formatNumber(active.value), color: seriesColor(0) }]} /> : null}
-     <ChartTooltip variant="shared" x={x('Mar')} inner={inner} title="March"
-       items={series.map((s, i) => ({ label: s.label, value: formatNumber(s.values[2]), color: seriesColor(i) }))} />
-   Props:
-     x: the point's position across the plot, in pixels (scalePosition(xScale, value)) (required)
-     y: the point's position down the plot (single; shared tooltips sit at the top of the plot)
-     inner: the plot area's size, { width, height } (ChartFrame's inner) (required)
-     variant: "single" (default: one point; the tooltip sits above it, or under it near the top) | "shared" (every series
-       at one x: a crosshair line down the plot and the tooltip at its top)
-     title: the point's heading: its category, date or time
-     titleKind: "text" (default: a name, the UI font) | "data" (a date, a time or a number: the data font)
-     items: the values: [{ label, value, color }]; label the series' name, value the formatted value (the data font), color
-       the series' data-viz step (seriesColor(i)); an item without a color has no swatch (a value that is not a
-       series: a running total, a count); one item for single
-     className: more classes on the tooltip
-   Behavior:
-     It does not take the pointer (pointer-events none), so moving along the chart keeps reaching the marks under it.
-     The tooltip goes after the point when it is in the first half of the plot and before it in the second half, so it
-       stays inside the chart.
-     It shows values already in the chart's data grid; with the plot it is hidden from assistive technology. The chart
-       interaction (useChartInteraction, platform/charts/interaction.js) moves it with the pointer and the arrow keys and
-       says the same values in the live region: chartTooltipText({ title, items }) is that sentence ("March 2026: Web
-       150, iOS 130, Android 90"), so the tooltip and the announcement never differ.
-     chartTooltipText({ title, items }): the tooltip's content as one plain sentence, for the live region
-   Notes:
-     Drawn in an SVG foreignObject at the point (geometry only); the surface is the popover's (overlay surface, border,
-       menu radius and shadow), from the chart-parts tokens. Swatches take the series' data-viz color.
-*/
-
-// the room the tooltip may take beside its point, in pixels (SVG geometry): it is laid out inside this box
-const BOX_W = 240,
-  BOX_H = 200;
-
-// the tooltip as one sentence: the title, then each series' name and value (what the live region says)
-function chartTooltipText({
-  title,
-  items = []
-} = {}) {
-  const values = items.map(it => [it.label, it.value].filter(x => x !== undefined && x !== null && x !== '').join(' ')).join(', ');
-  return title !== undefined && title !== null && title !== '' ? String(title) + (values ? ': ' + values : '') : values;
-}
-function ChartTooltip({
-  x,
-  y,
-  inner,
-  variant = 'single',
-  title,
-  titleKind = 'text',
-  items = [],
-  className
-}) {
-  if (x === undefined || x === null || !inner) return null;
-  const v = variant === 'shared' ? 'shared' : 'single';
-  const side = x > inner.width / 2 ? 'start' : 'end';
-  const py = v === 'shared' || y === undefined || y === null ? 0 : y;
-  const vert = v === 'shared' ? 'below' : py < BOX_H / 2 ? 'below' : 'above';
-  const fx = side === 'end' ? x : x - BOX_W;
-  const fy = vert === 'below' ? py : py - BOX_H;
-  return /*#__PURE__*/_react.default.createElement("g", {
-    className: (0, _cx.cx)('plx-chart-tooltip-layer', 'plx-chart-tooltip-layer--' + v)
-  }, v === 'shared' ? /*#__PURE__*/_react.default.createElement("line", {
-    className: "plx-chart-tooltip__crosshair",
-    x1: x,
-    x2: x,
-    y1: 0,
-    y2: inner.height
-  }) : null, /*#__PURE__*/_react.default.createElement("foreignObject", {
-    className: "plx-chart-tooltip__room",
-    x: fx,
-    y: fy,
-    width: BOX_W,
-    height: BOX_H
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-chart-tooltip__place', 'plx-chart-tooltip__place--' + side, 'plx-chart-tooltip__place--' + vert)
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-chart-tooltip', 'plx-chart-tooltip--' + v, className)
-  }, title !== undefined && title !== null ? /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-chart-tooltip__title', titleKind === 'data' && 'plx-chart-tooltip__title--data')
-  }, title) : null, /*#__PURE__*/_react.default.createElement("ul", {
-    className: "plx-chart-tooltip__list"
-  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
-    key: i,
-    className: "plx-chart-tooltip__item"
-  }, it.color ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chart-tooltip__swatch",
-    "data-plx-dataviz": it.color
-  }) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chart-tooltip__label"
-  }, it.label), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chart-tooltip__value"
-  }, it.value))))))));
-}
-  } },
-  "platform/charts/parts/DataLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DataLabel = DataLabel;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _format = require("../../utils/format.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DataLabel
-   Summary: A value written on a chart beside its mark (07 Data Display › Charts › Data label): above a column, after the
-     end of a bar, or centered on a point or a slice with a halo in the surface color, in the data font.
-   Usage:
-     {months.map((m) => <DataLabel key={m.name} x={scalePosition(x, m.name)} y={y(m.value)} value={m.value} />)}
-     <DataLabel x={x(bar.value)} y={scalePosition(y, bar.name)} value={bar.value} position="end" />
-     <DataLabel x={cx} y={cy} value="42%" position="center" />
-   Props:
-     x, y: the mark's anchor in plot pixels: the top middle of a column, the end middle of a bar, a point's center (required)
-     value: the value: a number is formatted in the reader's locale (formatNumber); a string is shown as it is (already
-       formatted: "42%", "1.2 MB")
-     format: (value) => text, instead of formatNumber
-     position: "top" (default: above the anchor, centered: columns) | "end" (after the anchor, centered on it: bars) |
-       "center" (on the anchor, with a halo: points, slices, inside a large mark)
-     className: more classes on the <text>
-   Behavior:
-     The label sits --plx-comp-chart-data-label-offset from its anchor (top, end), or on it (center); the halo is a stroke
-       in the surface color painted under the text, so it stays readable over a mark or a line.
-     Hidden from assistive technology with the rest of the plot: the data grid carries the values.
-   Notes:
-     Label the marks people compare, not every mark: a few labeled values (the last, the highest) read better than a full
-       set. Values are technical: the data font; no color is written (the label's tokens).
-*/
-
-const POSITIONS = ['top', 'end', 'center'];
-function DataLabel({
-  x,
-  y,
-  value,
-  format,
-  position = 'top',
-  className
-}) {
-  if (x === undefined || y === undefined || x === null || y === null) return null;
-  const p = POSITIONS.indexOf(position) >= 0 ? position : 'top';
-  const text = typeof format === 'function' ? format(value) : typeof value === 'number' ? (0, _format.formatNumber)(value) : value;
-  return /*#__PURE__*/_react.default.createElement("text", {
-    className: (0, _cx.cx)('plx-chart-data-label', 'plx-chart-data-label--' + p, className),
-    x: x,
-    y: y
-  }, text);
 }
   } },
   "platform/charts/parts/ReferenceLine.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./position.js":"platform/charts/parts/position.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -48475,222 +49805,6 @@ function AreaChart({
   }));
 }
   } },
-  "platform/charts/Gauge.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./scales.js":"platform/charts/scales.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Gauge = Gauge;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../utils/cx.js");
-var _format = require("../utils/format.js");
-var _Details = require("../components/Details/Details.jsx");
-var _Table = require("../components/Table/Table.jsx");
-var _Badge = require("../components/Badge/Badge.jsx");
-var _scales = require("./scales.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Gauge
-   Summary: A gauge (07 Data Display › Charts › Gauge): one value inside a known range, as a semicircle track filled up to
-     the value, the value in the data font in its middle, the minimum and maximum at the ends, and, with thresholds, the
-     warning and critical ranges along the outside of the track with a status badge that names the range the value is in.
-     A meter to assistive technology (role meter with its value, minimum, maximum and value text).
-   Usage:
-     <Gauge title="Storage used" value={72} format={(v) => v + '%'} label="of 100 GB" />
-     <Gauge title="Storage used" value={86} format={(v) => v + '%'}
-       thresholds={[{ value: 80, level: 'warning', label: 'Nearly full' }, { value: 95, level: 'critical', label: 'Full' }]} />
-   Props:
-     title: what is measured (required): the caption's title and the meter's name
-     description: one sentence on what the value means
-     value: the value (required); min, max: the range (default 0 and 100); values outside are drawn at the ends
-     format: (value) => text for the value, the ends and the table (default formatNumber)
-     label: a few words under the value that say its unit or its whole ("of 100 GB", "score")
-     thresholds: the ranges that call for attention, from their start upward: [{ value, level: "warning" | "critical",
-       label }]; each range runs to the next threshold or the maximum, along the outside of the track in the data-viz
-       alert color; the range the value is in shows as a status badge with its label
-     size: "sm" (160px wide) | "md" (default, 200px) | "lg" (240px)
-     hideCaption: keeps the title and description for assistive technology only (default false)
-     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data",
-       measure: "Measure", value: "Value", min: "Minimum", max: "Maximum", ok: "" (a badge for the range under every
-       threshold; empty: none) }
-     className: more classes on the figure
-   Behavior:
-     Static: it has no keyboard stop of its own; the meter's value text says the value, its label and its range's name
-       ("86%, of 100 GB, Nearly full"). The data grid under it lists the value, the ends and the thresholds.
-     The status badge pairs the range's color with its name and icon, so color is never the only cue.
-   Notes:
-     The track, the fill and the bands are SVG paths (geometry only) colored by classes: the fill the first categorical
-       data-viz color, the bands the alert scale; sizes, widths and type are --plx-comp-gauge-* tokens. One value per
-       gauge: to compare values, use a bar or bullet chart; for a value without a range, a metric.
-*/
-
-const STRINGS = {
-  showData: 'Show the data',
-  table: '{title}: data',
-  measure: 'Measure',
-  value: 'Value',
-  min: 'Minimum',
-  max: 'Maximum',
-  ok: ''
-};
-const SIZES = ['sm', 'md', 'lg'];
-const LEVELS = {
-  warning: {
-    tone: 'waiting',
-    icon: 'warning'
-  },
-  critical: {
-    tone: 'negative',
-    icon: 'alert'
-  }
-};
-// the dial's geometry in SVG user units (the SVG is scaled to the size's width): the center, the track's radius and the
-// thresholds' radius outside it
-const VB_W = 160,
-  VB_H = 88,
-  CX = 80,
-  CY = 80,
-  R = 60,
-  RB = 74;
-const arc = (r, t0, t1) => {
-  const at = t => {
-    const a = Math.PI * (1 - t);
-    return [CX + r * Math.cos(a), CY - r * Math.sin(a)];
-  };
-  const p = at(t0),
-    q = at(t1);
-  return 'M' + p[0] + ',' + p[1] + 'A' + r + ',' + r + ' 0 0 1 ' + q[0] + ',' + q[1];
-};
-function Gauge({
-  title,
-  description,
-  value,
-  min = 0,
-  max = 100,
-  format,
-  label,
-  thresholds = [],
-  size = 'md',
-  hideCaption = false,
-  strings,
-  className
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const uid = 'plx-gauge' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
-  const span = max - min || 1;
-  const frac = v => Math.min(1, Math.max(0, (Number(v) - min) / span));
-  const v = Number(value);
-  const bands = thresholds.filter(x => x && LEVELS[x.level]).slice().sort((a, b) => a.value - b.value);
-  const now = bands.filter(b => v >= b.value).pop();
-  const status = now ? {
-    tone: LEVELS[now.level].tone,
-    icon: LEVELS[now.level].icon,
-    label: now.label
-  } : t.ok ? {
-    tone: 'success',
-    icon: 'circle-check',
-    label: t.ok
-  } : null;
-  const valueText = [fmt(v), label, status && status.label].filter(Boolean).join(', ');
-  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const table = {
-    columns: [{
-      title: t.measure,
-      field: 'm',
-      kind: 'name',
-      rowLabel: true
-    }, {
-      title: t.value,
-      field: 'v',
-      kind: 'data',
-      hozAlign: 'right'
-    }],
-    data: [{
-      id: 1,
-      m: t.value,
-      v: fmt(v)
-    }, {
-      id: 2,
-      m: t.min,
-      v: fmt(min)
-    }, {
-      id: 3,
-      m: t.max,
-      v: fmt(max)
-    }].concat(bands.map((b, i) => ({
-      id: 4 + i,
-      m: b.label || b.level,
-      v: fmt(b.value)
-    })))
-  };
-  return /*#__PURE__*/_react.default.createElement("figure", {
-    className: (0, _cx.cx)('plx-chart', 'plx-gauge', 'plx-gauge--' + s, bands.length && 'plx-gauge--thresholds', className)
-  }, /*#__PURE__*/_react.default.createElement("figcaption", {
-    className: (0, _cx.cx)('plx-chart__caption', hideCaption && 'plx-visually-hidden')
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    id: uid + '-title',
-    className: "plx-chart__title"
-  }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
-    id: uid + '-desc',
-    className: "plx-chart__description"
-  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-gauge__meter",
-    role: "meter",
-    "aria-labelledby": uid + '-title',
-    "aria-describedby": description ? uid + '-desc' : undefined,
-    "aria-valuenow": v,
-    "aria-valuemin": min,
-    "aria-valuemax": max,
-    "aria-valuetext": valueText
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-gauge__dial"
-  }, /*#__PURE__*/_react.default.createElement("svg", {
-    className: "plx-gauge__svg",
-    viewBox: '0 0 ' + VB_W + ' ' + VB_H,
-    "aria-hidden": "true",
-    focusable: "false"
-  }, bands.map((b, i) => /*#__PURE__*/_react.default.createElement("path", {
-    key: i,
-    className: "plx-gauge__band",
-    "data-plx-dataviz": 'alert-' + b.level,
-    d: arc(RB, frac(b.value), i + 1 < bands.length ? frac(bands[i + 1].value) : 1)
-  })), /*#__PURE__*/_react.default.createElement("path", {
-    className: "plx-gauge__track",
-    d: arc(R, 0, 1)
-  }), frac(v) > 0 ? /*#__PURE__*/_react.default.createElement("path", {
-    className: "plx-gauge__fill",
-    "data-plx-dataviz": (0, _scales.seriesColor)(0),
-    d: arc(R, 0, frac(v))
-  }) : null), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-gauge__readout",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-gauge__value"
-  }, fmt(v)), label ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-gauge__label"
-  }, label) : null)), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-gauge__range",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-gauge__end"
-  }, fmt(min)), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-gauge__end"
-  }, fmt(max))), status ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    className: "plx-gauge__status",
-    tone: status.tone,
-    icon: status.icon
-  }, status.label) : null), /*#__PURE__*/_react.default.createElement(_Details.Details, {
-    summary: t.showData,
-    variant: "inline",
-    className: "plx-chart__data"
-  }, /*#__PURE__*/_react.default.createElement(_Table.Table, {
-    label: t.table.replace('{title}', title || ''),
-    columns: table.columns,
-    data: table.data
-  })));
-}
-  } },
   "platform/charts/HeatMap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -50802,89 +51916,6 @@ function Diagram({
   }, draw);
 }
   } },
-  "platform/charts/chart-kit.js": { deps: {"react":null,"./scales.js":"platform/charts/scales.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.AXIS_TITLE_ROOM = void 0;
-exports.finite = finite;
-exports.halfRoom = halfRoom;
-exports.labelRoom = labelRoom;
-exports.legendItems = legendItems;
-exports.useChartHover = useChartHover;
-exports.withColors = withColors;
-var _react = _interopRequireDefault(require("react"));
-var _scales = require("./scales.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · chart kit (platform/charts/chart-kit.js): the small helpers the charts of library wave 9, lane B share
-   (BarChart, ComboChart, PieChart, BulletChart, BoxPlot, RadarChart, SankeyDiagram, TimelineChart). Internal: not public.
-   Summary: The mark under the pointer (useChartHover: the minimal pointer interaction that shows a ChartTooltip), the room
-     an axis's labels need beside the plot (labelRoom), and the series' colors and legend items.
-   Usage:
-     const [active, hover] = useChartHover();
-     <rect {...hover('2:1')} … />   {active === '2:1' ? <ChartTooltip … /> : null}
-     const margin = { start: labelRoom(categories) };
-   Props:
-     useChartHover(): [active, hover, setActive]; hover(key) returns the pointer handlers of one mark (enter shows it,
-       leave hides it)
-     labelRoom(texts, extra?): the pixels a column of tick labels takes (their longest text in the data font, the tick
-       offset and a gap), plus extra (an axis title's room); snapped to the 4px grid by ChartFrame
-     halfRoom(text): the room after the plot for a tick label centered on the plot's end (the last tick of a value axis
-       along the bottom)
-     AXIS_TITLE_ROOM: the room an axis title's line takes beside the tick labels
-     withColors(series): the series with an id and a data-viz step each (seriesColor by their order in the data)
-     legendItems(series, value?): the ChartLegend items of the series; value(s, i) adds a figure after a name
-   Behavior:
-     Pointer only: keyboard and screen reader people read the values in the chart's data grid ("Show the data"). The
-       chart interaction foundation (wave 9, lane A) replaces useChartHover with the keyboard, the pointer and a live
-       region in one hook.
-   Notes:
-     The label room is an estimate from the number of characters (the data font is monospaced: about 7px a character at
-       the tick labels' 11px); a margin given to the chart always wins. */
-
-// px: about one character of the data font at the tick labels' size (Reddit Mono 11px is 6.6px wide)
-const CHAR = 7;
-// px: the tick offset (8px, --plx-comp-chart-axis-tick-offset) and a 4px gap before the frame's edge
-const TICK_ROOM = 12;
-const AXIS_TITLE_ROOM = exports.AXIS_TITLE_ROOM = 16;
-function useChartHover() {
-  const [active, setActive] = _react.default.useState(null);
-  const hover = key => ({
-    onPointerEnter: () => setActive(key),
-    onPointerLeave: () => setActive(a => a === key ? null : a)
-  });
-  return [active, hover, setActive];
-}
-function labelRoom(texts, extra = 0) {
-  const longest = (texts || []).reduce((n, s) => Math.max(n, String(s === undefined || s === null ? '' : s).length), 0);
-  return Math.ceil((longest * CHAR + TICK_ROOM + extra) / 4) * 4;
-}
-
-// the room after the plot that a tick label centered on its end needs (half its text and a gap; at least the 8px default)
-function halfRoom(text) {
-  return Math.max(8, Math.ceil((String(text === undefined || text === null ? '' : text).length * CHAR / 2 + 4) / 4) * 4);
-}
-function withColors(series) {
-  return (series || []).map((s, i) => Object.assign({}, s, {
-    id: s.id === undefined ? String(i) : s.id,
-    color: s.color || (0, _scales.seriesColor)(i)
-  }));
-}
-function legendItems(series, value) {
-  return (series || []).map((s, i) => ({
-    id: s.id,
-    label: s.label,
-    color: s.color,
-    value: value ? value(s, i) : undefined
-  }));
-}
-function finite(v) {
-  const n = Number(v);
-  return isFinite(n) ? n : 0;
-}
-  } },
   "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -51653,279 +52684,6 @@ function ComboChart({
       width: x.step(),
       height: inner.height
     }, hover(ci)))) : null, tip);
-  });
-}
-  } },
-  "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PieChart = PieChart;
-exports.pieSlices = pieSlices;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../utils/cx.js");
-var _format = require("../utils/format.js");
-var _ChartFrame = require("./ChartFrame.jsx");
-var _scales = require("./scales.js");
-var _ChartLegend = require("./parts/ChartLegend.jsx");
-var _ChartTooltip = require("./parts/ChartTooltip.jsx");
-var _DataLabel = require("./parts/DataLabel.jsx");
-var _chartKit = require("./chart-kit.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PieChart
-   Summary: The shares of a few parts in one whole (07 Data Display › Charts › Pie chart, Donut chart): a circle cut into
-     slices from 12 o'clock, largest first, clockwise (pie); a ring with the total or a key value in its hollow center
-     (donut); or a half ring across the top with its value under it (half). Small parts are grouped into Other. Drawn in
-     ChartFrame with a legend that gives each part's share, a tooltip and the data grid.
-   Usage:
-     <PieChart title="Storage by file type" description="Videos take more than half of the storage."
-       data={[{ id: 'video', label: 'Videos', value: 540 }, { id: 'img', label: 'Images', value: 260 }, { id: 'doc', label: 'Documents', value: 120 }]} />
-     <PieChart variant="donut" title="Storage by file type" data={parts} centerLabel="GB used" format={(v) => formatNumber(v)} />
-     <PieChart variant="half" title="Quota used" data={[{ id: 'used', label: 'Used', value: 72 }, { id: 'free', label: 'Free', value: 28 }]}
-       centerValue="72%" centerLabel="of 1 TB" />
-   Props:
-     title: the chart's name (required); description: its takeaway (ChartFrame)
-     data: the parts: [{ id, label, value, color }] (values above zero; color an optional data-viz step, default by the
-       part's order in the data)
-     variant: "pie" (default) | "donut" (a ring with a center value) | "half" (a half ring across the top, the value under
-       its middle)
-     centerValue: the donut's or the half ring's value (default the total, formatted); centerLabel: the words under it
-       (default strings.total)
-     sort: slices largest first, clockwise from the top (default true; false keeps the data's order); Other stays last
-     maxSlices: the most slices drawn (default 6): the smallest parts beyond them are grouped into one Other slice
-     format: (value) => text for the values (center, tooltip, table); default formatNumber
-     showValues: writes each share on its slice when the slice is large enough (8% or more) (default false)
-     legend: false hides the legend (default shown, each part with its share); legendPosition: ChartFrame's
-     tooltip: shows the part under the pointer, its value and share (default true)
-     size, margin, hideCaption, className: ChartFrame's
-     strings: { part: "Part", value: "Value", share: "Share", total: "Total", other: "Other" } and ChartFrame's strings
-   Behavior:
-     A part keeps its color by its order in the data, not by its size; Other takes the neutral categorical color.
-     Hover a slice: the tooltip shows its name, value and share. The legend and the data grid carry every part's value
-       and share: the chart's keyboard and screen reader view.
-   Notes:
-     Two to five parts read best; for many parts or parts of similar size use a bar chart. Slices are parted by a thin line
-       in the surface color (pie-chart tokens); the hole is 60% of the radius (geometry).
-*/
-const STRINGS = {
-  part: 'Part',
-  value: 'Value',
-  share: 'Share',
-  total: 'Total',
-  other: 'Other'
-};
-const VARIANTS = ['pie', 'donut', 'half'];
-const HOLE = 0.6; // the hollow center's radius, a share of the ring's radius
-const LABEL_MIN = 0.08; // the least share written on its slice
-const FULL = Math.PI * 2 - 1e-6;
-const OTHER_COLOR = 'categorical-6';
-// px: a margin that keeps the ring off the frame's edges (on the 4px grid)
-const RING_MARGIN = {
-  top: 8,
-  end: 8,
-  bottom: 8,
-  start: 8
-};
-
-// the point at an angle (0 = 12 o'clock, clockwise) and a radius from the center
-const at = (cx0, cy0, r, a) => [cx0 + r * Math.sin(a), cy0 - r * Math.cos(a)];
-function arcPath(cx0, cy0, r0, r1, a0, a1) {
-  const span = Math.min(a1 - a0, FULL);
-  const end = a0 + span,
-    large = span > Math.PI ? 1 : 0;
-  const [x0, y0] = at(cx0, cy0, r1, a0),
-    [x1, y1] = at(cx0, cy0, r1, end);
-  if (r0 <= 0) return 'M' + cx0 + ',' + cy0 + 'L' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'Z';
-  const [x2, y2] = at(cx0, cy0, r0, end),
-    [x3, y3] = at(cx0, cy0, r0, a0);
-  return 'M' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'L' + x2 + ',' + y2 + 'A' + r0 + ',' + r0 + ' 0 ' + large + ' 0 ' + x3 + ',' + y3 + 'Z';
-}
-
-// the parts to draw: colors by the data's order, the smallest beyond maxSlices grouped into Other, sorted by size
-function pieSlices(data, {
-  sort = true,
-  maxSlices = 6,
-  other = 'Other'
-} = {}) {
-  const parts = (data || []).map((d, i) => ({
-    id: d.id === undefined ? String(i) : d.id,
-    label: d.label,
-    value: Math.max(0, (0, _chartKit.finite)(d.value)),
-    color: d.color,
-    index: i
-  })).filter(d => d.value > 0);
-  let kept = parts,
-    rest = [];
-  if (parts.length > maxSlices) {
-    const bySize = parts.slice().sort((a, b) => b.value - a.value);
-    const keep = new Set(bySize.slice(0, Math.max(1, maxSlices - 1)).map(d => d.id));
-    kept = parts.filter(d => keep.has(d.id));
-    rest = parts.filter(d => !keep.has(d.id));
-  }
-  kept = kept.map((d, i) => Object.assign({}, d, {
-    color: d.color || (0, _scales.seriesColor)(i)
-  }));
-  if (sort) kept.sort((a, b) => b.value - a.value);
-  if (rest.length) kept.push({
-    id: '__other',
-    label: other,
-    value: rest.reduce((a, d) => a + d.value, 0),
-    color: OTHER_COLOR,
-    index: -1,
-    parts: rest
-  });
-  const total = kept.reduce((a, d) => a + d.value, 0);
-  return kept.map(d => Object.assign(d, {
-    share: total ? d.value / total : 0
-  }));
-}
-function PieChart({
-  title,
-  description,
-  hideCaption,
-  size,
-  data = [],
-  variant = 'pie',
-  centerValue,
-  centerLabel,
-  sort = true,
-  maxSlices = 6,
-  format,
-  showValues = false,
-  legend,
-  legendPosition,
-  tooltip = true,
-  margin,
-  strings,
-  className
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'pie';
-  const fmt = x => typeof format === 'function' ? format(x) : (0, _format.formatNumber)(x);
-  const [active, hover] = (0, _chartKit.useChartHover)();
-  const slices = pieSlices(data, {
-    sort,
-    maxSlices,
-    other: t.other
-  });
-  const total = slices.reduce((a, d) => a + d.value, 0);
-  const table = {
-    columns: [{
-      title: t.part,
-      field: 'part',
-      kind: 'name',
-      rowLabel: true
-    }, {
-      title: t.value,
-      field: 'value',
-      kind: 'data',
-      hozAlign: 'right'
-    }, {
-      title: t.share,
-      field: 'share',
-      kind: 'data',
-      hozAlign: 'right'
-    }],
-    data: slices.map((d, i) => ({
-      id: i + 1,
-      part: d.label,
-      value: fmt(d.value),
-      share: (0, _format.formatPercent)(d.share)
-    }))
-  };
-  const key = legend === false ? null : /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
-    items: (0, _chartKit.legendItems)(slices, d => (0, _format.formatPercent)(d.share)),
-    orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
-  });
-  const m = Object.assign({}, RING_MARGIN, margin);
-  const center = v === 'pie' ? null : {
-    value: centerValue === undefined ? fmt(total) : centerValue,
-    label: centerLabel === undefined ? t.total : centerLabel
-  };
-  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
-    title: title,
-    description: description,
-    hideCaption: hideCaption,
-    size: size,
-    margin: m,
-    legend: key,
-    legendPosition: legendPosition,
-    table: table,
-    strings: strings,
-    className: (0, _cx.cx)('plx-pie-chart', 'plx-pie-chart--' + v, className)
-  }, ({
-    inner
-  }) => {
-    const half = v === 'half';
-    const r1 = Math.max(0, half ? Math.min(inner.width / 2, inner.height) : Math.min(inner.width, inner.height) / 2);
-    const r0 = v === 'pie' ? 0 : r1 * HOLE;
-    const cx0 = inner.width / 2,
-      cy0 = half ? inner.height : inner.height / 2;
-    const from = half ? -Math.PI / 2 : 0,
-      sweep = half ? Math.PI : Math.PI * 2;
-    let a = from;
-    const geo = slices.map(d => {
-      const a0 = a;
-      a += d.share * sweep;
-      return {
-        d,
-        a0,
-        a1: a
-      };
-    });
-    let tip = null;
-    if (tooltip && active !== null) {
-      const g = geo.filter(x => x.d.id === active)[0];
-      if (g) {
-        const [px, py] = at(cx0, cy0, (r0 + r1) / 2, (g.a0 + g.a1) / 2);
-        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
-          x: px,
-          y: py,
-          inner: inner,
-          title: g.d.label,
-          items: [{
-            label: t.value,
-            value: fmt(g.d.value) + ' · ' + (0, _format.formatPercent)(g.d.share),
-            color: g.d.color
-          }]
-        });
-      }
-    }
-    return /*#__PURE__*/_react.default.createElement("g", null, geo.map(({
-      d,
-      a0,
-      a1
-    }) => /*#__PURE__*/_react.default.createElement("path", _extends({
-      key: d.id,
-      className: "plx-chart__mark plx-pie-chart__slice",
-      "data-plx-dataviz": d.color,
-      d: arcPath(cx0, cy0, r0, r1, a0, a1)
-    }, tooltip ? hover(d.id) : {}))), showValues ? geo.filter(g => g.d.share >= LABEL_MIN).map(({
-      d,
-      a0,
-      a1
-    }) => {
-      const [px, py] = at(cx0, cy0, r0 ? (r0 + r1) / 2 : r1 * 0.62, (a0 + a1) / 2);
-      return /*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
-        key: 'l' + d.id,
-        x: px,
-        y: py,
-        value: (0, _format.formatPercent)(d.share),
-        position: "center"
-      });
-    }) : null, center ? /*#__PURE__*/_react.default.createElement("g", {
-      className: "plx-pie-chart__center"
-    }, /*#__PURE__*/_react.default.createElement("text", {
-      className: "plx-pie-chart__center-value",
-      x: cx0,
-      y: cy0
-    }, center.value), center.label ? /*#__PURE__*/_react.default.createElement("text", {
-      className: "plx-pie-chart__center-label",
-      x: cx0,
-      y: cy0
-    }, center.label) : null) : null, tip);
   });
 }
   } },
@@ -72973,7 +73731,7 @@ const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(functio
   }, rest), children);
 });
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -74303,6 +75061,12 @@ Object.defineProperty(exports, "Metric", {
   enumerable: true,
   get: function () {
     return _Metric.Metric;
+  }
+});
+Object.defineProperty(exports, "MetricCard", {
+  enumerable: true,
+  get: function () {
+    return _MetricCard.MetricCard;
   }
 });
 Object.defineProperty(exports, "MfaChallenge", {
@@ -76445,6 +77209,7 @@ var _Badge = require("./components/Badge/Badge.jsx");
 var _VisuallyHidden = require("./components/VisuallyHidden/VisuallyHidden.jsx");
 var _Count = require("./components/Count/Count.jsx");
 var _Metric = require("./components/Metric/Metric.jsx");
+var _MetricCard = require("./components/MetricCard/MetricCard.jsx");
 var _ProgressBar = require("./components/ProgressBar/ProgressBar.jsx");
 var _DateBadge = require("./components/DateBadge/DateBadge.jsx");
 var _EventChip = require("./components/EventChip/EventChip.jsx");

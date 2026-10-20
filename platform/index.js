@@ -5,6 +5,7 @@ export { Badge } from './components/Badge/Badge.jsx';
 export { VisuallyHidden } from './components/VisuallyHidden/VisuallyHidden.jsx';
 export { Count } from './components/Count/Count.jsx';
 export { Metric } from './components/Metric/Metric.jsx';
+export { MetricCard } from './components/MetricCard/MetricCard.jsx';
 export { ProgressBar } from './components/ProgressBar/ProgressBar.jsx';
 export { DateBadge } from './components/DateBadge/DateBadge.jsx';
 export { EventChip } from './components/EventChip/EventChip.jsx';

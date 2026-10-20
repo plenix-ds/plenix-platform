@@ -1,0 +1,128 @@
+/* Plenix · MetricCard (platform/components/MetricCard): one key figure in a card. Anatomy and API: MetricCard.jsx.
+   .plx-metric-card                  the card: Panel's frame values; no outer margin
+   .plx-metric-card--edge|soft|filled|gradient   the styles, from the data color on [data-plx-color]
+   .plx-metric-card--sm|md|lg        the value's display size
+   .plx-metric-card--beside|inline|tile|icon-start   the layouts (stacked is the default)
+   .plx-metric-card__header          icon + title, the context line, the actions; a line under it
+   .plx-metric-card__body            the figure, the change, the visual
+   .plx-metric-card__footer          one note; a line over it
+   Typography: establishes its roles (title, context, value, unit, change, labels); the change's amount and the numbers
+   in rows use the data role. Public hooks: none. States: a link card has hover (border) and focus-visible (outline). */
+.plx-metric-card{--_metric-card-text:var(--plx-comp-metric-card-title-text);--_metric-card-muted:var(--plx-comp-metric-card-context-text);--_metric-card-subtle:var(--plx-comp-metric-card-subtle-text);--_metric-card-divider:var(--plx-comp-metric-card-divider-color);--_metric-card-value-size:var(--plx-comp-metric-card-value-md-font-size);background-color:var(--plx-comp-metric-card-background);border-bottom-color:var(--plx-comp-metric-card-border-color);border-bottom-left-radius:var(--plx-comp-metric-card-radius);border-bottom-right-radius:var(--plx-comp-metric-card-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-metric-card-border-width);border-left-color:var(--plx-comp-metric-card-border-color);border-left-style:solid;border-left-width:var(--plx-comp-metric-card-border-width);border-right-color:var(--plx-comp-metric-card-border-color);border-right-style:solid;border-right-width:var(--plx-comp-metric-card-border-width);border-top-color:var(--plx-comp-metric-card-border-color);border-top-left-radius:var(--plx-comp-metric-card-radius);border-top-right-radius:var(--plx-comp-metric-card-radius);border-top-style:solid;border-top-width:var(--plx-comp-metric-card-border-width);box-sizing:border-box;color:var(--_metric-card-text);display:flex;flex-direction:column;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;position:relative;}
+.plx-metric-card--sm{--_metric-card-value-size:var(--plx-comp-metric-card-value-sm-font-size);}
+.plx-metric-card--lg{--_metric-card-value-size:var(--plx-comp-metric-card-value-lg-font-size);}
+
+/* the styles: edge, soft, filled, gradient (data colors only) */
+.plx-metric-card--edge{border-inline-start-color:var(--plx-comp-data-color);border-inline-start-width:var(--plx-comp-metric-card-edge-width);}
+.plx-metric-card--soft{--_metric-card-text:var(--plx-comp-data-color-on-soft);--_metric-card-muted:var(--plx-comp-data-color-on-soft);--_metric-card-subtle:var(--plx-comp-data-color-on-soft);background-color:var(--plx-comp-data-color-soft);}
+.plx-metric-card--filled,.plx-metric-card--gradient{--_metric-card-text:var(--plx-comp-metric-card-on-color-text);--_metric-card-muted:var(--plx-comp-metric-card-on-color-text);--_metric-card-subtle:var(--plx-comp-metric-card-on-color-text);--_metric-card-divider:var(--plx-comp-metric-card-on-color-divider);--plx-comp-button-context-icon-color:var(--plx-comp-metric-card-on-color-text);background-color:var(--plx-comp-data-color);border-bottom-color:transparent;border-left-color:transparent;border-right-color:transparent;border-top-color:transparent;}
+.plx-metric-card--gradient{background-image:radial-gradient(circle at 0% 0%,var(--plx-comp-data-color),var(--_metric-card-gradient-to));}
+.plx-metric-card[data-plx-gradient-to="blue"]{--_metric-card-gradient-to:var(--plx-sys-data-color-blue);}
+.plx-metric-card[data-plx-gradient-to="green"]{--_metric-card-gradient-to:var(--plx-sys-data-color-green);}
+.plx-metric-card[data-plx-gradient-to="purple"]{--_metric-card-gradient-to:var(--plx-sys-data-color-purple);}
+.plx-metric-card[data-plx-gradient-to="red"]{--_metric-card-gradient-to:var(--plx-sys-data-color-red);}
+.plx-metric-card[data-plx-gradient-to="brown"]{--_metric-card-gradient-to:var(--plx-sys-data-color-brown);}
+.plx-metric-card[data-plx-gradient-to="gray"]{--_metric-card-gradient-to:var(--plx-sys-data-color-gray);}
+
+/* a link card: the title is the link, its target covers the card */
+.plx-metric-card--link:hover{border-bottom-color:var(--plx-comp-metric-card-link-hover-border-color);border-left-color:var(--plx-comp-metric-card-link-hover-border-color);border-right-color:var(--plx-comp-metric-card-link-hover-border-color);border-top-color:var(--plx-comp-metric-card-link-hover-border-color);}
+.plx-metric-card__link{color:inherit;text-decoration-line:none;}
+.plx-metric-card__link::after{content:"";inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;position:absolute;}
+.plx-metric-card__link:focus-visible{outline-color:var(--plx-comp-metric-card-focus-outline-color);outline-offset:var(--plx-comp-metric-card-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-metric-card-focus-outline-width);}
+.plx-metric-card__row-link{color:inherit;text-decoration-line:none;}
+.plx-metric-card__row-link:hover{text-decoration-line:underline;}
+
+/* header */
+.plx-metric-card__header{align-items:flex-start;border-bottom-color:var(--_metric-card-divider);border-bottom-style:solid;border-bottom-width:var(--plx-comp-metric-card-divider-width);column-gap:var(--plx-comp-metric-card-header-gap);display:flex;padding-block-end:var(--plx-comp-metric-card-header-padding-block);padding-block-start:var(--plx-comp-metric-card-header-padding-block);padding-inline-end:var(--plx-comp-metric-card-padding-inline);padding-inline-start:var(--plx-comp-metric-card-padding-inline);}
+.plx-metric-card__heading{display:grid;flex-basis:0;flex-grow:1;flex-shrink:1;min-inline-size:0;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card__title{color:var(--_metric-card-text);font-family:var(--plx-comp-metric-card-title-font-family);font-size:var(--plx-comp-metric-card-title-font-size);font-weight:var(--plx-comp-metric-card-title-font-weight);line-height:var(--plx-ref-line-height-tight);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
+.plx-metric-card__title--icon{align-items:center;column-gap:var(--plx-comp-metric-card-title-gap);display:flex;}
+.plx-metric-card__icon{color:var(--_metric-card-text);display:inline-flex;flex-shrink:0;}
+.plx-metric-card__context{color:var(--_metric-card-muted);font-size:var(--plx-comp-metric-card-context-font-size);margin-block-end:0;margin-block-start:0;}
+.plx-metric-card__actions{align-items:center;column-gap:var(--plx-comp-metric-card-actions-gap);display:flex;flex-shrink:0;position:relative;}
+
+/* body */
+.plx-metric-card__body{display:grid;flex-grow:1;padding-block-end:var(--plx-comp-metric-card-body-padding-block);padding-block-start:var(--plx-comp-metric-card-body-padding-block);padding-inline-end:var(--plx-comp-metric-card-padding-inline);padding-inline-start:var(--plx-comp-metric-card-padding-inline);row-gap:var(--plx-comp-metric-card-body-row-gap);align-content:start;}
+.plx-metric-card__stack{display:grid;min-inline-size:0;row-gap:var(--plx-comp-metric-card-body-row-gap);}
+.plx-metric-card__beside{align-items:end;column-gap:var(--plx-comp-metric-card-beside-gap);display:grid;grid-template-columns:auto minmax(0,1fr);}
+.plx-metric-card__visual{min-inline-size:0;}
+.plx-metric-card__person{align-items:center;column-gap:var(--plx-comp-metric-card-beside-gap);display:grid;grid-template-columns:auto minmax(0,1fr);}
+.plx-metric-card__placeholder{display:grid;row-gap:var(--plx-comp-metric-card-body-row-gap);}
+.plx-metric-card__figure{align-items:baseline;column-gap:var(--plx-comp-metric-card-figure-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card__value{color:var(--_metric-card-text);font-family:var(--plx-comp-metric-card-value-font-family);font-size:var(--_metric-card-value-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-metric-card-value-font-weight);line-height:var(--plx-comp-metric-card-value-line-height);word-spacing:normal;}
+.plx-metric-card__value--empty{color:var(--_metric-card-subtle);}
+.plx-metric-card__unit{color:var(--_metric-card-muted);font-size:var(--plx-comp-metric-card-unit-font-size);}
+.plx-metric-card__status{margin-inline-start:auto;}
+.plx-metric-card__change{align-items:center;color:var(--_metric-card-muted);column-gap:var(--plx-comp-metric-card-change-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-metric-card-change-font-size);}
+.plx-metric-card__delta{align-items:center;display:inline-flex;font-family:var(--plx-comp-metric-card-delta-font-family);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-metric-card-delta-font-weight);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-metric-card__delta--good{color:var(--plx-comp-metric-card-delta-good-text);}
+.plx-metric-card__delta--bad{color:var(--plx-comp-metric-card-delta-bad-text);}
+.plx-metric-card__delta--neutral{color:var(--plx-comp-metric-card-delta-neutral-text);}
+.plx-metric-card--soft .plx-metric-card__delta,.plx-metric-card--filled .plx-metric-card__delta,.plx-metric-card--gradient .plx-metric-card__delta{color:var(--_metric-card-text);}
+.plx-metric-card__arrow--down{transform:rotate(180deg);}
+.plx-metric-card__versus{color:var(--_metric-card-muted);}
+.plx-metric-card__label{color:var(--_metric-card-muted);font-size:var(--plx-comp-metric-card-label-font-size);}
+.plx-metric-card__number,.plx-metric-card__share{font-family:var(--plx-sys-font-data);font-size:var(--plx-comp-metric-card-label-font-size);font-variant-numeric:tabular-nums;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-metric-card__share{color:var(--_metric-card-muted);text-align:end;}
+
+/* breakdown and comparison: the split bar, the legend */
+.plx-metric-card__split{block-size:var(--plx-comp-metric-card-bar-height);border-bottom-left-radius:var(--plx-comp-metric-card-bar-radius);border-bottom-right-radius:var(--plx-comp-metric-card-bar-radius);border-top-left-radius:var(--plx-comp-metric-card-bar-radius);border-top-right-radius:var(--plx-comp-metric-card-bar-radius);display:block;inline-size:100%;}
+.plx-metric-card__split-part{fill:var(--plx-comp-data-color);}
+.plx-metric-card__legend{display:grid;list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card__legend-row{align-items:center;column-gap:var(--plx-comp-metric-card-title-gap);display:grid;font-size:var(--plx-comp-metric-card-label-font-size);grid-template-columns:auto minmax(0,1fr) auto auto;}
+.plx-metric-card__key{background-color:var(--plx-comp-data-color);block-size:var(--plx-comp-metric-card-bar-height);inline-size:var(--plx-comp-metric-card-bar-height);}
+.plx-metric-card__compare{align-items:end;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);}
+.plx-metric-card__side{display:grid;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card__side--end{justify-items:end;text-align:end;}
+
+/* rows: progress rows, ranges, ranked bars */
+.plx-metric-card__rows{display:grid;row-gap:var(--plx-comp-metric-card-rows-gap);}
+.plx-metric-card__progress-row{align-items:end;column-gap:var(--plx-comp-metric-card-header-gap);display:grid;grid-template-columns:minmax(0,1fr) auto;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card__row-text{display:grid;}
+.plx-metric-card__row-label{font-size:var(--plx-comp-metric-card-label-font-size);min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-metric-card__row-detail{color:var(--_metric-card-subtle);font-family:var(--plx-sys-font-data);font-size:var(--plx-comp-metric-card-footer-font-size);font-variant-numeric:tabular-nums;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-metric-card__row-bar{grid-column-end:-1;grid-column-start:1;}
+.plx-metric-card__bar-row{align-items:center;column-gap:var(--plx-comp-metric-card-title-gap);display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr) auto;}
+
+/* list: ranked rows and record rows */
+.plx-metric-card__list{display:grid;list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+.plx-metric-card__list-row{align-items:center;border-block-start-color:var(--_metric-card-divider);border-block-start-style:solid;border-block-start-width:var(--plx-comp-metric-card-divider-width);column-gap:var(--plx-comp-metric-card-title-gap);display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;padding-block-end:var(--plx-comp-metric-card-row-padding-block);padding-block-start:var(--plx-comp-metric-card-row-padding-block);}
+.plx-metric-card__list-row:first-child{border-block-start-style:none;}
+.plx-metric-card__list--records .plx-metric-card__list-row{grid-template-columns:minmax(0,1fr) auto;}
+.plx-metric-card__rank{color:var(--_metric-card-subtle);font-family:var(--plx-sys-font-data);font-size:var(--plx-comp-metric-card-label-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
+
+/* summary: 2–4 figures, divided */
+.plx-metric-card__summary{display:flex;flex-wrap:wrap;list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-metric-card-body-row-gap);}
+.plx-metric-card__summary-item{display:grid;padding-inline-end:var(--plx-comp-metric-card-padding-inline);row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card__summary-item+.plx-metric-card__summary-item{border-inline-start-color:var(--_metric-card-divider);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-metric-card-divider-width);padding-inline-start:var(--plx-comp-metric-card-padding-inline);}
+.plx-metric-card__summary-figure{align-items:baseline;column-gap:var(--plx-comp-metric-card-figure-gap);display:flex;}
+.plx-metric-card__summary-value{color:var(--_metric-card-text);font-family:var(--plx-comp-metric-card-value-font-family);font-size:var(--plx-comp-metric-card-value-sm-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-metric-card-value-font-weight);line-height:var(--plx-comp-metric-card-value-line-height);word-spacing:normal;}
+
+/* week and month */
+.plx-metric-card__week,.plx-metric-card__month{column-gap:var(--plx-comp-metric-card-cell-gap);display:grid;grid-template-columns:repeat(7,minmax(0,1fr));row-gap:var(--plx-comp-metric-card-cell-gap);text-align:center;}
+.plx-metric-card__day-cell{display:grid;justify-items:center;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card__day-bar{block-size:var(--plx-comp-metric-card-week-bar-height);display:block;inline-size:var(--plx-comp-metric-card-week-bar-width);}
+.plx-metric-card__day-track{fill:var(--plx-comp-metric-card-track-background);}
+.plx-metric-card__day-fill{fill:var(--plx-sys-data-color-blue);}
+.plx-metric-card__day-letter{color:var(--_metric-card-subtle);font-size:var(--plx-comp-metric-card-small-font-size);}
+.plx-metric-card__mark{display:inline-flex;}
+.plx-metric-card__mark--none{color:var(--_metric-card-subtle);}
+.plx-metric-card__date{align-items:center;block-size:var(--plx-comp-metric-card-day-height);border-bottom-left-radius:var(--plx-comp-metric-card-day-radius);border-bottom-right-radius:var(--plx-comp-metric-card-day-radius);border-top-left-radius:var(--plx-comp-metric-card-day-radius);border-top-right-radius:var(--plx-comp-metric-card-day-radius);display:flex;font-family:var(--plx-sys-font-data);font-size:var(--plx-comp-metric-card-small-font-size);font-variant-numeric:tabular-nums;justify-content:center;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-metric-card__date--none{color:var(--_metric-card-subtle);}
+.plx-metric-card__date--0{background-color:var(--plx-comp-metric-card-track-background);color:var(--_metric-card-muted);}
+.plx-metric-card__date--1{background-color:var(--plx-sys-data-color-blue-soft);color:var(--plx-sys-data-color-blue-on-soft);}
+.plx-metric-card__date--2{background-color:var(--plx-sys-data-color-blue);color:var(--plx-comp-metric-card-on-color-text);}
+.plx-metric-card__date--3{background-color:var(--plx-sys-data-color-purple);color:var(--plx-comp-metric-card-on-color-text);}
+.plx-metric-card__date--today{outline-color:var(--plx-comp-metric-card-today-outline-color);outline-offset:var(--plx-comp-metric-card-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-metric-card-today-outline-width);}
+
+/* footer */
+.plx-metric-card__footer{border-block-start-color:var(--_metric-card-divider);border-block-start-style:solid;border-block-start-width:var(--plx-comp-metric-card-divider-width);color:var(--_metric-card-subtle);font-size:var(--plx-comp-metric-card-footer-font-size);padding-block-end:var(--plx-comp-metric-card-footer-padding-block);padding-block-start:var(--plx-comp-metric-card-footer-padding-block);padding-inline-end:var(--plx-comp-metric-card-padding-inline);padding-inline-start:var(--plx-comp-metric-card-padding-inline);text-align:end;}
+
+/* the headerless layouts: tile (title, then the value at the end) and icon-start (a large tile, the value, the title) */
+.plx-metric-card--tile,.plx-metric-card--icon-start{align-items:center;column-gap:var(--plx-comp-metric-card-header-gap);flex-direction:row;padding-block-end:var(--plx-comp-metric-card-header-padding-block);padding-block-start:var(--plx-comp-metric-card-header-padding-block);padding-inline-end:var(--plx-comp-metric-card-padding-inline);padding-inline-start:var(--plx-comp-metric-card-padding-inline);}
+.plx-metric-card__compact{display:grid;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
+.plx-metric-card--tile .plx-metric-card__compact{align-items:center;column-gap:var(--plx-comp-metric-card-header-gap);grid-template-columns:minmax(0,1fr) auto;}
+.plx-metric-card--tile .plx-metric-card__value{grid-column-start:2;grid-row-start:1;}
+.plx-metric-card--tile .plx-metric-card__title{font-size:var(--plx-comp-metric-card-tile-font-size);grid-column-start:1;grid-row-start:1;}
+.plx-metric-card--icon-start .plx-metric-card__value{font-size:var(--plx-comp-metric-card-value-sm-font-size);}
+.plx-metric-card--icon-start .plx-metric-card__title{color:var(--_metric-card-muted);font-size:var(--plx-comp-metric-card-label-font-size);font-weight:var(--plx-sys-font-weight-regular);}
