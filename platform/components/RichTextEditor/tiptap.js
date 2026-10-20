@@ -10,7 +10,7 @@
      Only the first editor on a page loads the file; later editors reuse the same promise. Pages without an editor never
        load it (no prefetch): RichTextEditor.preload() starts the load early on a page whose first screen has an editor.
      The file comes from the shared vendor folder (utils/vendorBase.js: next to the
-       Platform script, the release's CDN copy in the npm package, or window.PlenixVendorBase).
+       Platform script or an explicit window.PlenixVendorBase). Package builds import their own local lazy engine chunk.
      The engine has no stylesheet of its own: the few rules ProseMirror needs are in rich-text-editor.css, on tokens.
    Notes:
      A failed load rejects and is forgotten, so the next editor that mounts tries again.
@@ -24,16 +24,26 @@ const loading = new WeakMap();
 export function loadTiptap(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);
   if (!w) return Promise.reject(new Error('Tiptap needs a browser'));
-  if (w.PlenixTiptap) return Promise.resolve(w.PlenixTiptap);
   if (loading.has(w)) return loading.get(w);
-  const doc = w.document;
-  const p = new Promise((resolve, reject) => {
-    const script = doc.createElement('script');
-    script.src = vendorBase() + 'tiptap/tiptap.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'tiptap');
-    script.onload = () => { if (w.PlenixTiptap) resolve(w.PlenixTiptap); else { loading.delete(w); script.remove(); reject(new Error('Tiptap did not load from ' + script.src)); } };
-    script.onerror = () => { loading.delete(w); script.remove(); reject(new Error('Tiptap could not be loaded from ' + script.src)); };
-    doc.head.appendChild(script);
-  });
-  loading.set(w, p);
-  return p;
+  // Package builds inject a local lazy module; classic script builds retain the explicit/local vendor path.
+  if (typeof __PLENIX_PACKAGE__ !== 'undefined' && __PLENIX_PACKAGE__) { // eslint-disable-line no-undef
+    const bundled = Promise.resolve().then(() => __PLENIX_TIPTAP_LOAD__(w)).catch(error => { loading.delete(w); throw error; }); // eslint-disable-line no-undef
+    loading.set(w, bundled);
+    return bundled;
+  } else {
+    if (w.PlenixTiptap) return Promise.resolve(w.PlenixTiptap);
+    const doc = w.document;
+    const p = new Promise((resolve, reject) => {
+      const script = doc.createElement('script');
+      let base;
+      try { base = vendorBase(); } catch (error) { reject(error); return; }
+      script.src = base + 'tiptap/tiptap.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'tiptap');
+      script.onload = () => { if (w.PlenixTiptap) resolve(w.PlenixTiptap); else { loading.delete(w); script.remove(); reject(new Error('Tiptap did not load from ' + script.src)); } };
+      script.onerror = () => { loading.delete(w); script.remove(); reject(new Error('Tiptap could not be loaded from ' + script.src)); };
+      doc.head.appendChild(script);
+    });
+    const pending = p.catch(error => { loading.delete(w); throw error; });
+    loading.set(w, pending);
+    return pending;
+  }
 }
