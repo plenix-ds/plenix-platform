@@ -7523,11 +7523,11 @@
       "$type": "color"
     },
     "text-body-font-family": {
-      "$value": "{plx-sys.font-body}",
+      "$value": "{plx-sys.text-body-font-family}",
       "$type": "fontFamily"
     },
     "text-body-font-size": {
-      "$value": "{plx-ref.font-size-13}",
+      "$value": "{plx-sys.text-body-font-size}",
       "$type": "dimension"
     },
     "text-secondary-text": {
@@ -7535,11 +7535,11 @@
       "$type": "color"
     },
     "text-secondary-font-family": {
-      "$value": "{plx-sys.font-body}",
+      "$value": "{plx-sys.text-secondary-font-family}",
       "$type": "fontFamily"
     },
     "text-secondary-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.text-secondary-font-size}",
       "$type": "dimension"
     },
     "text-caption-text": {
@@ -7547,19 +7547,19 @@
       "$type": "color"
     },
     "text-caption-font-family": {
-      "$value": "{plx-sys.font-body}",
+      "$value": "{plx-sys.text-caption-font-family}",
       "$type": "fontFamily"
     },
     "text-caption-font-size": {
-      "$value": "{plx-ref.font-size-11}",
+      "$value": "{plx-sys.text-caption-font-size}",
       "$type": "dimension"
     },
     "text-data-font-family": {
-      "$value": "{plx-sys.font-data}",
+      "$value": "{plx-sys.text-data-font-family}",
       "$type": "fontFamily"
     },
     "text-data-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.text-data-font-size}",
       "$type": "dimension",
       "$description": "The data role on its own: the secondary size (12px), the meta line it usually sits in; inside other text it takes that text's size"
     },
@@ -7568,15 +7568,15 @@
       "$type": "color"
     },
     "text-label-font-family": {
-      "$value": "{plx-sys.font-label}",
+      "$value": "{plx-sys.text-label-font-family}",
       "$type": "fontFamily"
     },
     "text-label-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.text-label-font-size}",
       "$type": "dimension"
     },
     "text-label-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-label-font-weight}",
       "$type": "fontWeight"
     },
     "text-strong-font-weight": {
@@ -7588,15 +7588,15 @@
       "$type": "color"
     },
     "text-title-font-family": {
-      "$value": "{plx-sys.font-heading}",
+      "$value": "{plx-sys.text-title-font-family}",
       "$type": "fontFamily"
     },
     "text-title-font-size": {
-      "$value": "{plx-ref.font-size-20}",
+      "$value": "{plx-sys.text-title-font-size}",
       "$type": "dimension"
     },
     "text-title-font-weight": {
-      "$value": "{plx-sys.font-weight-bold}",
+      "$value": "{plx-sys.text-title-font-weight}",
       "$type": "fontWeight"
     },
     "text-heading-text": {
@@ -7604,15 +7604,15 @@
       "$type": "color"
     },
     "text-heading-font-family": {
-      "$value": "{plx-sys.font-label}",
+      "$value": "{plx-sys.text-heading-font-family}",
       "$type": "fontFamily"
     },
     "text-heading-font-size": {
-      "$value": "{plx-ref.font-size-13}",
+      "$value": "{plx-sys.text-heading-font-size}",
       "$type": "dimension"
     },
     "text-heading-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-heading-font-weight}",
       "$type": "fontWeight"
     },
     "text-eyebrow-text": {
@@ -7620,19 +7620,19 @@
       "$type": "color"
     },
     "text-eyebrow-font-family": {
-      "$value": "{plx-sys.font-label}",
+      "$value": "{plx-sys.text-eyebrow-font-family}",
       "$type": "fontFamily"
     },
     "text-eyebrow-font-size": {
-      "$value": "{plx-ref.font-size-11}",
+      "$value": "{plx-sys.text-eyebrow-font-size}",
       "$type": "dimension"
     },
     "text-eyebrow-font-weight": {
-      "$value": "{plx-sys.font-weight-bold}",
+      "$value": "{plx-sys.text-eyebrow-font-weight}",
       "$type": "fontWeight"
     },
     "text-eyebrow-letter-spacing": {
-      "$value": "{plx-sys.letter-spacing-widest}",
+      "$value": "{plx-sys.text-eyebrow-letter-spacing}",
       "$type": "dimension"
     },
     "text-danger-text": {

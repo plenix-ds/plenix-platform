@@ -32,9 +32,26 @@ const toJson = (v) => String(v).replace(/var\(--(plx-(?:ref|sys|comp))-([a-z0-9-
 const refsOf = (v) => [...String(v).matchAll(/\{(plx-(?:ref|sys|comp))\.([a-z0-9-]+)\}/g)].map((m) => '--' + m[1] + '-' + m[2]);
 
 // a set's tokens in order: [{ name: '--plx-…', token }]
+// a text role (Styling Standard 6) is a W3C "typography" composite: its five members, and its word spacing as the
+// companion in $extensions.plenix.wordSpacing. It is written as six longhand tokens, --plx-sys-text-<role>-font-family …
+// -word-spacing, so a component applies a role with coordinated longhand declarations
+const TYPE_MEMBERS = [['fontFamily', 'font-family', 'fontFamily'], ['fontSize', 'font-size', 'dimension'], ['fontWeight', 'font-weight', 'fontWeight'],
+  ['letterSpacing', 'letter-spacing', 'dimension'], ['lineHeight', 'line-height', 'number']];
+function expandTypography(name, token) {
+  const v = token.$value, x = (token.$extensions && token.$extensions.plenix) || {};
+  const missing = TYPE_MEMBERS.filter(([k]) => v[k] === undefined).map(([k]) => k).concat(x.wordSpacing === undefined ? ['$extensions.plenix.wordSpacing'] : []);
+  if (missing.length) throw new Error(name + ': a text role needs every member: missing ' + missing.join(', '));
+  const role = name.replace(/^--plx-sys-/, '');
+  return TYPE_MEMBERS.map(([k, prop, type], i) => ({ name: name + '-' + prop, token: Object.assign({ $value: v[k], $type: type, $description: (i ? '' : (token.$description ? token.$description + ' ' : '')) + 'The ' + role + ' role\'s ' + prop.replace('-', ' ') + '.' }, i || !token.$extensions ? {} : { $extensions: { [EXT]: token.$extensions[EXT] } }) }))
+    .concat([{ name: name + '-word-spacing', token: { $value: x.wordSpacing, $type: 'dimension', $description: 'The ' + role + ' role\'s word spacing (the companion of the typography token).' } }]);
+}
 function tokensOf(set) {
   const out = [];
-  for (const tier of TIERS) for (const [key, token] of Object.entries(set[tier] || {})) out.push({ name: '--' + tier + '-' + key, token, order: (token.$extensions && token.$extensions[EXT] && token.$extensions[EXT].order) || 0 });
+  for (const tier of TIERS) for (const [key, token] of Object.entries(set[tier] || {})) {
+    const order = (token.$extensions && token.$extensions[EXT] && token.$extensions[EXT].order) || 0;
+    if (token.$type === 'typography' && token.$value && typeof token.$value === 'object') { for (const t of expandTypography('--' + tier + '-' + key, token)) out.push(Object.assign(t, { order })); continue; }
+    out.push({ name: '--' + tier + '-' + key, token, order });
+  }
   return out.sort((a, b) => a.order - b.order);
 }
 

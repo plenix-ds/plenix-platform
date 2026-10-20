@@ -262,7 +262,12 @@ height, the focus border, a font family, internal paddings. Plenix's own applica
   - the data and code roles carry the fitted word spacing (`--plx-sys-font-data-word-spacing`);
   - the DM Sans roles carry `normal`.
 - The generator writes each role as coordinated longhand declarations, the companion word spacing included.
-- The roles are generated from the existing tokens, not maintained by hand.
+- The roles are generated from the existing tokens, not maintained by hand: `platform/tokens/semantic/typography.tokens.json`
+  holds them (body, secondary, caption, label, heading, title, eyebrow, display, lead, data, code), and `build-tokens.js`
+  writes each as six longhand tokens, `--plx-sys-text-<role>-font-family`, `-font-size`, `-font-weight`,
+  `-letter-spacing`, `-line-height` and `-word-spacing`.
+- A component that establishes a role declares all six, from that role (directly or through its own tokens, which
+  reference the role).
 
 **Three contracts.** Each component documents which one it has:
 
@@ -279,6 +284,13 @@ The word-spacing leak happened exactly there.
 - A parent sets only its own text context. It never targets a child's class to change its text.
 - A word spacing written in em turns into pixels where it is declared, and descendants inherit those pixels. A role
   applied at its own size reads the token again, at its own size.
+
+**Declared contracts.** `platform/standards/text-contracts.json` declares the contract of every part that sets
+typography (by its class without the modifier): `establishes` with its role, or `adjusts` with the properties it sets.
+A part that is not listed follows its context. The check-system rule `text-contract` fails when a part's rules set other
+properties than its declaration says (a contract changes on purpose, with its declaration), when a rule sets a font
+family without its word spacing, and when a part changes the font family without the whole role. The parts that still
+do are the migration list, `check-system.text-contract.json`, which only shrinks.
 
 ## 7. Layout, spacing and framing
 

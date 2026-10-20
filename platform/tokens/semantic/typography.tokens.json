@@ -1,0 +1,71 @@
+{
+  "$description": "Text roles (Plenix Styling Standard, section 6): each a W3C typography composite of existing tokens, with its word spacing as the companion ($extensions.plenix.wordSpacing). build-tokens.js writes each as six longhand tokens (--plx-sys-text-<role>-font-family, -font-size, -font-weight, -letter-spacing, -line-height, -word-spacing). A component that establishes a role applies all six; one that adjusts a role sets only the properties its contract names.",
+  "plx-sys": {
+    "text-body": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-13}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "Running text: the page's body text.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-secondary": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "Supporting text one step below the body: descriptions, metadata in words.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-caption": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-11}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "The smallest running text: captions, hints, help under a field.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-label": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-label}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-semibold}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "A label: names a field, a group or a value.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-heading": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-heading}", "fontSize": "{plx-ref.font-size-13}", "fontWeight": "{plx-sys.font-weight-semibold}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "A section heading inside a page or a card.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-title": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-heading}", "fontSize": "{plx-ref.font-size-20}", "fontWeight": "{plx-sys.font-weight-bold}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "A page's title.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-eyebrow": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-label}", "fontSize": "{plx-ref.font-size-11}", "fontWeight": "{plx-sys.font-weight-bold}", "letterSpacing": "{plx-sys.letter-spacing-widest}", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "A small spaced label above a heading.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-display": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-heading}", "fontSize": "{plx-ref.font-size-20}", "fontWeight": "{plx-sys.font-weight-semibold}", "letterSpacing": "{plx-sys.letter-spacing-tight}", "lineHeight": "{plx-ref.line-height-tight}" },
+      "$description": "The largest style: one key figure or a sign-in heading.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-lead": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-15}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-relaxed}" },
+      "$description": "Body text one step up: the opening paragraph of a page.",
+      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+    },
+    "text-data": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-data}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "A technical value (IDs, file names, dates and times, sizes, counts): Reddit Mono, fitted to DM Sans.",
+      "$extensions": { "plenix": { "wordSpacing": "{plx-sys.font-data-word-spacing}" } }
+    },
+    "text-code": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{plx-sys.font-code}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$description": "Code: Reddit Mono, fitted to DM Sans.",
+      "$extensions": { "plenix": { "wordSpacing": "{plx-sys.font-data-word-spacing}" } }
+    }
+  }
+}

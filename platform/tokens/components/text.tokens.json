@@ -7,27 +7,27 @@
       "$description": "Display: the text color (one key figure or a sign-in or welcome heading)."
     },
     "text-display-font-family": {
-      "$value": "{plx-sys.font-heading}",
+      "$value": "{plx-sys.text-display-font-family}",
       "$type": "fontFamily",
       "$description": "Display: the heading font."
     },
     "text-display-font-size": {
-      "$value": "{plx-ref.font-size-20}",
+      "$value": "{plx-sys.text-display-font-size}",
       "$type": "dimension",
       "$description": "Display: the top step of the type scale (20px today; a larger display step of the scale goes here when the scale gets one)."
     },
     "text-display-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-display-font-weight}",
       "$type": "fontWeight",
       "$description": "Display: semibold."
     },
     "text-display-letter-spacing": {
-      "$value": "{plx-sys.letter-spacing-tight}",
+      "$value": "{plx-sys.text-display-letter-spacing}",
       "$type": "dimension",
       "$description": "Display: tight letter spacing, as large type needs."
     },
     "text-display-line-height": {
-      "$value": "{plx-ref.line-height-tight}",
+      "$value": "{plx-sys.text-display-line-height}",
       "$type": "number",
       "$description": "Display: a tight line height, so a two-line statement stays one block."
     },
@@ -37,17 +37,17 @@
       "$description": "Lead (body-lg): the text color."
     },
     "text-lead-font-family": {
-      "$value": "{plx-sys.font-body}",
+      "$value": "{plx-sys.text-lead-font-family}",
       "$type": "fontFamily",
       "$description": "Lead: the body font."
     },
     "text-lead-font-size": {
-      "$value": "{plx-ref.font-size-15}",
+      "$value": "{plx-sys.text-lead-font-size}",
       "$type": "dimension",
       "$description": "Lead: one step above the body size."
     },
     "text-lead-line-height": {
-      "$value": "{plx-ref.line-height-relaxed}",
+      "$value": "{plx-sys.text-lead-line-height}",
       "$type": "number",
       "$description": "Lead: a relaxed line height for an opening paragraph."
     },
