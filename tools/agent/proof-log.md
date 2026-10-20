@@ -14,3 +14,4 @@ is listed here when it is dispatched; all results are read and explained togethe
 | 39353433570 | 2124327b row label end line (approved VISUAL fix: every Table/DataGrid with a row label gains its line) | Table, DataGrid | table, data-grid, button / settings, dam | no |
 | 39354884978 | d0332225 row label line = the grid's column line (approved VISUAL: tables with a row label; supersedes 2124327b's border) | Table, DataGrid | table, data-grid, button / settings, dam | no |
 | 39357539407 | 39eb7d90 DataGrid and Table corners 2px (approved VISUAL: every table and grid frame) | DataGrid, Table | table, data-grid / files, settings, dam | no |
+| 39357801822 | a75429c0 DT-25 row-menu solid, DT-26 checkbox line (approved VISUAL: RedSave fixes) | DataGrid | data-grid, table / files, projects, dam | no |
