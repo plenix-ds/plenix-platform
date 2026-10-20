@@ -1,0 +1,12 @@
+AssertionError [ERR_ASSERTION]: unchanged parent render must reuse custom cell output
+
+18 !== 12
+
+    at C:\Users\Administrator\Documents\Plenix-Codex-Tools\workspaces\task149-base\tests\data-grid-cell-187.test.js:5:319 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 18,
+  expected: 12,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
