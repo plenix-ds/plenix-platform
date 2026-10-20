@@ -125,7 +125,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const optId = (i) => auto + '-o' + i;
   return (
     <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
-      <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
+      <div className={cx('plx-combobox__field', 'plx-input', disabled && 'is-disabled')} aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
           return <Tag key={v} onRemove={() => onChange(chosen.filter((x) => x !== v))} removeLabel={'Remove ' + t}>{t}</Tag>; }) : null}
         <input ref={input} id={id} size={size === 'sm' || size === 'md' ? undefined : size} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"

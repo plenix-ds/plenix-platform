@@ -18,8 +18,8 @@
 .plx-chat__time{font-family:var(--plx-comp-chat-time-font-family);font-variant-numeric:tabular-nums;word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* the time is quieter on the others' messages; on your own (white on the accent) it stays full white for contrast (batch 212) */
 .plx-chat__message:not(.plx-chat__message--mine) .plx-chat__time{opacity:var(--plx-comp-chat-message-others-time-opacity);}
-.plx-chat__composer{align-items:flex-end;border-block-start-color:var(--plx-comp-chat-composer-border-block-start-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-composer-border-block-start-width);column-gap:var(--plx-comp-chat-composer-gap);display:flex;padding-block-end:var(--plx-comp-chat-composer-padding-block);padding-block-start:var(--plx-comp-chat-composer-padding-block);padding-inline-end:var(--plx-comp-chat-composer-padding-inline);padding-inline-start:var(--plx-comp-chat-composer-padding-inline);}
-.plx-chat__field{flex-basis:0%;flex-grow:1;min-inline-size:0;resize:none;}
+.plx-chat__composer{--plx-comp-input-context-resize:none;align-items:flex-end;border-block-start-color:var(--plx-comp-chat-composer-border-block-start-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-composer-border-block-start-width);column-gap:var(--plx-comp-chat-composer-gap);display:flex;padding-block-end:var(--plx-comp-chat-composer-padding-block);padding-block-start:var(--plx-comp-chat-composer-padding-block);padding-inline-end:var(--plx-comp-chat-composer-padding-inline);padding-inline-start:var(--plx-comp-chat-composer-padding-inline);}
+.plx-chat__field{flex-basis:0%;flex-grow:1;}
 /* the thread scrolls and is in the Tab order: the focus ring, as every control (batch 215) */
 .plx-chat__thread:focus-visible{outline-color:var(--plx-comp-chat-thread-focus-outline-color);outline-offset:var(--plx-comp-chat-thread-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-chat-thread-focus-outline-width);}
 

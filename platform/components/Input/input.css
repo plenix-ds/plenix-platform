@@ -8,12 +8,15 @@
      border      invalid, then focused, then hovered (an enabled field), then at rest
      background  the color well (always clear), then disabled, read-only, invalid, filled, at rest
      text        disabled, then filled, then at rest
-   The Select control also wears plx-input; its own rules below are the rollout backlog (Styling Standard 13). */
+   Context hooks (Styling Standard 4.1), set by a parent on its own element for the field inside it (Select, Combobox,
+   Chat, InputGroup): --plx-comp-input-context-padding-inline-start|-end, -padding-block, -radius-start|-end,
+   -border-start-width|-end-width (a joined side), -resize (a text area), -min-height, -max-width. A field that is not
+   a form control (Combobox's field) takes focus from what it holds (:focus-within) and is disabled with .is-disabled. */
 /* the state variables: the colors this field's state chose; never inherited (Styling Standard 4.1) */
 @property --plx-state-input-background{syntax:"*";inherits:false;}
 @property --plx-state-input-border{syntax:"*";inherits:false;}
 @property --plx-state-input-text{syntax:"*";inherits:false;}
-.plx-input{appearance:none;background-color:var(--plx-state-input-background,var(--plx-comp-input-background));border-bottom-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-left-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-right-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-top-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-bottom-width:var(--plx-comp-input-border-width);border-left-width:var(--plx-comp-input-border-width);border-right-width:var(--plx-comp-input-border-width);border-top-width:var(--plx-comp-input-border-width);color:var(--plx-state-input-text,var(--plx-comp-input-text));margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;max-inline-size:var(--plx-comp-input-context-max-width,min(var(--plx-comp-input-max-width),100%));min-inline-size:0;}
+.plx-input{appearance:none;background-color:var(--plx-state-input-background,var(--plx-comp-input-background));border-bottom-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-left-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-right-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-top-color:var(--plx-state-input-border,var(--plx-comp-input-border-color));border-block-end-width:var(--plx-comp-input-border-width);border-block-start-width:var(--plx-comp-input-border-width);border-inline-end-width:var(--plx-comp-input-context-border-end-width,var(--plx-comp-input-border-width));border-inline-start-width:var(--plx-comp-input-context-border-start-width,var(--plx-comp-input-border-width));color:var(--plx-state-input-text,var(--plx-comp-input-text));margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;max-inline-size:var(--plx-comp-input-context-max-width,min(var(--plx-comp-input-max-width),100%));min-inline-size:0;}
 .plx-input::placeholder{color:var(--plx-comp-input-placeholder-text);}
 /* the text: the input font, or the data font (plx-input--data) */
 .plx-input:where(:not(.plx-input--data)){font-family:var(--plx-comp-input-font-family);word-spacing:normal;}
@@ -23,11 +26,11 @@
 .plx-input:where(:not(.plx-input--textarea)){font-size:var(--plx-comp-input-font-size);line-height:var(--plx-comp-input-line-height);min-block-size:var(--plx-comp-input-context-min-height,var(--plx-comp-input-min-height));}
 .plx-input--textarea{font-size:var(--plx-comp-textarea-font-size);line-height:var(--plx-comp-textarea-line-height);min-block-size:var(--plx-comp-textarea-min-height);padding-block-end:var(--plx-comp-textarea-padding-block);padding-block-start:var(--plx-comp-textarea-padding-block);}
 /* the outline field's shape (every kind but the color well) */
-.plx-input:where(:not([type="color"])){border-bottom-left-radius:var(--plx-comp-input-radius);border-bottom-right-radius:var(--plx-comp-input-radius);border-bottom-style:solid;border-left-style:solid;border-right-style:solid;border-top-left-radius:var(--plx-comp-input-radius);border-top-right-radius:var(--plx-comp-input-radius);border-top-style:solid;outline-style:none;padding-inline-end:var(--plx-comp-input-padding-inline);padding-inline-start:var(--plx-comp-input-padding-inline);}
-.plx-input:where(:not([type="color"], .plx-input--textarea)){padding-block-end:0;padding-block-start:0;}
+.plx-input:where(:not([type="color"])){border-bottom-style:solid;border-end-end-radius:var(--plx-comp-input-context-radius-end,var(--plx-comp-input-radius));border-end-start-radius:var(--plx-comp-input-context-radius-start,var(--plx-comp-input-radius));border-left-style:solid;border-right-style:solid;border-start-end-radius:var(--plx-comp-input-context-radius-end,var(--plx-comp-input-radius));border-start-start-radius:var(--plx-comp-input-context-radius-start,var(--plx-comp-input-radius));border-top-style:solid;outline-style:none;padding-inline-end:var(--plx-comp-input-context-padding-inline-end,var(--plx-comp-input-padding-inline));padding-inline-start:var(--plx-comp-input-context-padding-inline-start,var(--plx-comp-input-padding-inline));}
+.plx-input:where(:not([type="color"], .plx-input--textarea)){padding-block-end:var(--plx-comp-input-context-padding-block,0);padding-block-start:var(--plx-comp-input-context-padding-block,0);}
 /* the text area resizes up and down, unless it grows with its content (autoGrow): sized to its content up to the
    maximum, then it scrolls; no resize handle */
-.plx-input--textarea:where(:not(.plx-input--auto-grow)){resize:vertical;}
+.plx-input--textarea:where(:not(.plx-input--auto-grow)){resize:var(--plx-comp-input-context-resize,vertical);}
 .plx-input--auto-grow{field-sizing:content;max-block-size:var(--plx-comp-textarea-auto-grow-max-height);overflow-y:auto;resize:none;}
 /* widths: natural, or a role's width, or the whole width of its container (P-52); the color well keeps its square */
 .plx-input:where(:not(.plx-input--width-xs, .plx-input--width-sm, .plx-input--width-md, .plx-input--width-lg, .plx-input--width-fill, [type="color"])){inline-size:auto;}
@@ -39,18 +42,18 @@
 /* the border: invalid, focused, hovered (an enabled field), at rest (the fallback). Focus and hover recolor the border
    only; an invalid field has a 2px danger border (its border and a line inside it) on the lightest red fill (owner, 2026-10-16) */
 .plx-input[aria-invalid="true"]{--plx-state-input-border:var(--plx-comp-input-invalid-border-color);box-shadow:inset 0 0 0 var(--plx-comp-input-invalid-inner-width) var(--plx-comp-input-invalid-border-color);}
-.plx-input:is(:focus-visible, :focus, .is-focused, .is-focus-visible):where(:not([aria-invalid="true"])){--plx-state-input-border:var(--plx-comp-input-focus-border-color);}
-.plx-input:is(:hover, .is-hover):where(:not([aria-invalid="true"], :focus-visible, :focus, .is-focused, .is-focus-visible, :disabled)){--plx-state-input-border:var(--plx-comp-input-hover-border-color);}
+.plx-input:is(:focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible):where(:not([aria-invalid="true"])){--plx-state-input-border:var(--plx-comp-input-focus-border-color);}
+.plx-input:is(:hover, .is-hover):where(:not([aria-invalid="true"], :focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible, :disabled, [aria-disabled="true"], .is-disabled)){--plx-state-input-border:var(--plx-comp-input-hover-border-color);}
 /* the background: the color well, disabled, read-only, invalid, filled, at rest (the fallback). The filled appearance
    (owner, 2026-10-16): the outline field's border and corners, a gray fill and the value in dark gray; there is no
    underline appearance */
-.plx-input:disabled:where(:not([type="color"])){--plx-state-input-background:var(--plx-comp-input-disabled-background);cursor:not-allowed;}
-.plx-input[readonly]:where(:not([type="color"], :disabled)){--plx-state-input-background:var(--plx-comp-input-readonly-background);}
-.plx-input[aria-invalid="true"]:where(:not([type="color"], :disabled, [readonly])){--plx-state-input-background:var(--plx-comp-input-invalid-background);}
-.plx-input--filled:where(:not([type="color"], :disabled, [readonly], [aria-invalid="true"])){--plx-state-input-background:var(--plx-comp-input-filled-background);}
+.plx-input:is(:disabled, [aria-disabled="true"], .is-disabled):where(:not([type="color"])){--plx-state-input-background:var(--plx-comp-input-disabled-background);cursor:not-allowed;}
+.plx-input[readonly]:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled)){--plx-state-input-background:var(--plx-comp-input-readonly-background);}
+.plx-input[aria-invalid="true"]:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled, [readonly])){--plx-state-input-background:var(--plx-comp-input-invalid-background);}
+.plx-input--filled:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled, [readonly], [aria-invalid="true"])){--plx-state-input-background:var(--plx-comp-input-filled-background);}
 /* the text: disabled, filled, at rest (the fallback) */
-.plx-input:disabled{--plx-state-input-text:var(--plx-comp-input-disabled-text);}
-.plx-input--filled:where(:not(:disabled)){--plx-state-input-text:var(--plx-comp-input-filled-text);}
+.plx-input:is(:disabled, [aria-disabled="true"], .is-disabled){--plx-state-input-text:var(--plx-comp-input-disabled-text);}
+.plx-input--filled:where(:not(:disabled, [aria-disabled="true"], .is-disabled)){--plx-state-input-text:var(--plx-comp-input-filled-text);}
 /* the color well (owner, batch 275: "just a square swatch, no outline container around it"): a square of the field
    height, the swatch's compact corners, no border or padding; it shows the outline ring while focused */
 .plx-input[type="color"]{--plx-state-input-background:transparent;block-size:var(--plx-comp-input-color-height);border-bottom-left-radius:var(--plx-comp-input-color-radius);border-bottom-right-radius:var(--plx-comp-input-color-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-input-color-radius);border-top-right-radius:var(--plx-comp-input-color-radius);border-top-style:none;cursor:pointer;flex-shrink:0;inline-size:var(--plx-comp-input-color-width);padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
@@ -60,26 +63,27 @@
 .plx-input[type="color"]:where(:not(:focus-visible, .is-focus-visible)){outline-style:none;}
 .plx-input[type="color"]:is(:focus-visible, .is-focus-visible){outline-color:var(--plx-comp-input-color-focus-outline-color);outline-offset:var(--plx-comp-input-color-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-input-color-focus-outline-width);}
 .plx-input--size-sm{--plx-comp-input-min-height:var(--plx-comp-input-small-min-height);--plx-comp-input-color-height:var(--plx-comp-input-small-min-height);--plx-comp-input-color-width:var(--plx-comp-input-small-min-height);}
-/* the Select: its control wears plx-input (the rollout backlog: Select, Combobox and Chat become fields of their own) */
-.plx-select.is-focused .plx-select__control{border-bottom-color:var(--plx-comp-input-focus-border-color);border-left-color:var(--plx-comp-input-focus-border-color);border-right-color:var(--plx-comp-input-focus-border-color);border-top-color:var(--plx-comp-input-focus-border-color);}
-.plx-select{display:inline-flex;inline-size:auto;max-inline-size:min(var(--plx-comp-select-max-width),100%);min-inline-size:0;position:relative;}
+/* the Select: a wrapper (its arrow) around a control that wears plx-input; the wrapper sets the field's hooks */
+.plx-select{--plx-comp-input-context-padding-inline-end:var(--plx-comp-select-control-padding-inline-end);max-inline-size:min(var(--plx-comp-select-max-width),100%);min-inline-size:0;position:relative;}
+.plx-select:where(:not(.plx-select--block)){display:inline-flex;}
+.plx-select:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg, .plx-select--width-fill)){inline-size:auto;}
 /* block: the select takes its own line (InlineEdit) */
 .plx-select--block{display:block;}
 .plx-select::after{-webkit-mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:var(--plx-comp-select-after-background);block-size:var(--plx-comp-select-after-height);content:"";inline-size:var(--plx-comp-select-after-width);inset-block-start:50%;inset-inline-end:var(--plx-comp-select-after-inset-inline-end);mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;pointer-events:none;position:absolute;transform:translateY(-50%);}
-.plx-select__control{cursor:pointer;padding-inline-end:var(--plx-comp-select-control-padding-inline-end);}
+.plx-select__control:where(:not(:disabled)){cursor:pointer;}
 /* Optional small fields follow the existing small Button role; default sizes are unchanged. */
-.plx-select--size-sm .plx-select__control{--plx-comp-input-min-height:var(--plx-comp-select-small-min-height);}
+.plx-select--size-sm{--plx-comp-input-context-min-height:var(--plx-comp-select-small-min-height);}
 /* Select joined (an InputGroup): its control's corners square where it meets the field; a seam drops that border; the
    select keeps its content's width and is raised while focused */
-.plx-select--joined-start-square>.plx-select__control,.plx-select--joined-start-seam>.plx-select__control{border-end-start-radius:var(--plx-comp-select-joined-radius);border-start-start-radius:var(--plx-comp-select-joined-radius);}
-.plx-select--joined-end-square>.plx-select__control,.plx-select--joined-end-seam>.plx-select__control{border-end-end-radius:var(--plx-comp-select-joined-radius);border-start-end-radius:var(--plx-comp-select-joined-radius);}
-.plx-select--joined-start-seam>.plx-select__control{border-inline-start-width:0;}
-.plx-select--joined-end-seam>.plx-select__control{border-inline-end-width:0;}
-.plx-select--joined{flex-shrink:0;inline-size:auto;}
+.plx-select--joined-start-square,.plx-select--joined-start-seam{--plx-comp-input-context-radius-start:var(--plx-comp-select-joined-radius);}
+.plx-select--joined-end-square,.plx-select--joined-end-seam{--plx-comp-input-context-radius-end:var(--plx-comp-select-joined-radius);}
+.plx-select--joined-start-seam{--plx-comp-input-context-border-start-width:0;}
+.plx-select--joined-end-seam{--plx-comp-input-context-border-end-width:0;}
+.plx-select--joined:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg)){flex-shrink:0;}
 .plx-select--joined:focus-within{position:relative;z-index:var(--plx-comp-select-joined-focus-layer);}
 /* width (P-52, owner 2026-10-19): a select by its role, or the whole width */
-.plx-select.plx-select--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
-.plx-select.plx-select--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
-.plx-select.plx-select--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
-.plx-select.plx-select--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
-.plx-select.plx-select--width-fill{inline-size:100%;}
+.plx-select--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-select--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-select--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-select--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-select--width-fill{inline-size:100%;}

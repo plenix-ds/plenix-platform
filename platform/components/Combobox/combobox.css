@@ -1,8 +1,10 @@
-/* Plenix · Combobox (platform/components/Combobox). The field reuses .plx-input; the list is a menu surface (border only). */
-.plx-combobox{display:block;max-inline-size:min(var(--plx-comp-combobox-max-width),100%);min-inline-size:0;position:relative;}
-.plx-combobox__field{align-items:center;column-gap:var(--plx-comp-combobox-field-gap);cursor:text;display:flex;flex-wrap:wrap;padding-inline-end:var(--plx-comp-combobox-field-padding-inline-end);position:relative;row-gap:var(--plx-comp-combobox-field-row-gap);}
-.plx-combobox--multiple .plx-combobox__field{padding-block-end:var(--plx-comp-combobox-multiple-field-padding-block);padding-block-start:var(--plx-comp-combobox-multiple-field-padding-block);padding-inline-start:var(--plx-comp-combobox-multiple-field-padding-inline-start);}
-.plx-combobox__field:focus-within{border-bottom-color:var(--plx-comp-combobox-field-focus-border-color);border-left-color:var(--plx-comp-combobox-field-focus-border-color);border-right-color:var(--plx-comp-combobox-field-focus-border-color);border-top-color:var(--plx-comp-combobox-field-focus-border-color);}
+/* Plenix · Combobox (platform/components/Combobox). The field is an Input (plx-input): it takes the Input's border, focus
+   (from the input it holds) and disabled looks; the root sets its padding through Input's context hooks. The list is a
+   menu surface (border only). */
+.plx-combobox{--plx-comp-input-context-padding-inline-end:var(--plx-comp-combobox-field-padding-inline-end);display:block;max-inline-size:min(var(--plx-comp-combobox-max-width),100%);min-inline-size:0;position:relative;}
+.plx-combobox__field:where(:not(.is-disabled)){cursor:text;}
+.plx-combobox__field{align-items:center;column-gap:var(--plx-comp-combobox-field-gap);display:flex;flex-wrap:wrap;position:relative;row-gap:var(--plx-comp-combobox-field-row-gap);}
+.plx-combobox--multiple{--plx-comp-input-context-padding-block:var(--plx-comp-combobox-multiple-field-padding-block);--plx-comp-input-context-padding-inline-start:var(--plx-comp-combobox-multiple-field-padding-inline-start);}
 /* the input fills the field's height (its text stays centered), and with touch reaches over the field's border, so the whole
    44px field is its target (Platforms Standard 3.1; --plx-comp-combobox-input-margin-block) */
 .plx-combobox__input{align-self:stretch;background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:inherit;flex-basis:var(--plx-comp-combobox-input-flex-basis);flex-grow:1;font-family:inherit;font-size:inherit;margin-block-end:var(--plx-comp-combobox-input-margin-block);margin-block-start:var(--plx-comp-combobox-input-margin-block);min-block-size:var(--plx-comp-combobox-input-min-height);min-inline-size:0;outline-style:none;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
@@ -14,7 +16,6 @@
 .plx-combobox__option.is-selected{color:var(--plx-comp-combobox-option-selected-text);font-weight:var(--plx-comp-combobox-option-selected-font-weight);}
 .plx-combobox__create{color:var(--plx-comp-combobox-create-text);font-weight:var(--plx-comp-combobox-create-font-weight);}
 .plx-combobox__empty{color:var(--plx-comp-combobox-empty-text);font-size:var(--plx-comp-combobox-empty-font-size);padding-block-end:var(--plx-comp-combobox-empty-padding-block);padding-block-start:var(--plx-comp-combobox-empty-padding-block);padding-inline-end:var(--plx-comp-combobox-empty-padding-inline);padding-inline-start:var(--plx-comp-combobox-empty-padding-inline);}
-.plx-combobox.is-disabled .plx-combobox__field{background-color:var(--plx-comp-combobox-disabled-field-background);color:var(--plx-comp-combobox-disabled-field-text);cursor:not-allowed;}
 /* a group heading in the list (options[].group) */
 .plx-combobox__group{color:var(--plx-comp-combobox-group-text);font-family:var(--plx-comp-combobox-group-font-family);font-size:var(--plx-comp-combobox-group-font-size);font-weight:var(--plx-comp-combobox-group-font-weight);padding-block-end:var(--plx-comp-combobox-group-padding-block-end);padding-block-start:var(--plx-comp-combobox-group-padding-block-start);padding-inline-end:var(--plx-comp-combobox-group-padding-inline);padding-inline-start:var(--plx-comp-combobox-group-padding-inline);text-transform:uppercase;word-spacing:normal;}
 /* option marks (marks="checkbox" | "radio", library wave 6): the Checkbox or Radio control before the label, not a target of its own */

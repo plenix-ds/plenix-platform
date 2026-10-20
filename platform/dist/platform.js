@@ -22983,7 +22983,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     ref: wrap,
     className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-combobox__field plx-input",
+    className: (0, _cx.cx)('plx-combobox__field', 'plx-input', disabled && 'is-disabled'),
     "aria-invalid": invalid || undefined,
     onClick: () => {
       if (!disabled && input.current) input.current.focus();

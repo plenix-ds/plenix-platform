@@ -178,8 +178,6 @@
    "combinator | .plx-columns--collapse-below-medium.plx-columns--divided>*+*": 1
   },
   "platform/components/Combobox/combobox.css": {
-   "combinator | .plx-combobox--multiple .plx-combobox__field": 1,
-   "combinator | .plx-combobox.is-disabled .plx-combobox__field": 1,
    "combinator | .plx-combobox--marks .plx-combobox__option": 1
   },
   "platform/components/CopyButton/copy-button.css": {
@@ -894,14 +892,6 @@
    "combinator | .plx-input-group>:not(.plx-input-group__box)": 1,
    "combinator | .plx-input-group--compact>.plx-input-group__box": 1,
    "combinator | .plx-input-group--compact .plx-input-group__input": 1
-  },
-  "platform/components/Input/input.css": {
-   "combinator | .plx-select.is-focused .plx-select__control": 1,
-   "combinator | .plx-select--size-sm .plx-select__control": 1,
-   "combinator | .plx-select--joined-start-square>.plx-select__control": 1,
-   "combinator | .plx-select--joined-start-seam>.plx-select__control": 2,
-   "combinator | .plx-select--joined-end-square>.plx-select__control": 1,
-   "combinator | .plx-select--joined-end-seam>.plx-select__control": 2
   },
   "platform/components/Link/link.css": {
    "combinator | .plx-link--inline>.plx-link__icon": 1,
