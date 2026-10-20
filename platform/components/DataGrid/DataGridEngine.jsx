@@ -109,6 +109,8 @@ function NextEngine(props) {
   const sortingRef=React.useRef(sorting);sortingRef.current=sorting;
   const remoteMode=typeof props.fetchRows==='function'&&(mode==='pages'||mode==='load-more'),incoming=remoteMode?(remote?.rows||EMPTY_ROWS):data;
   const source=edited?.input===incoming?edited.rows:incoming,canonical=React.useMemo(()=>recordsOf(source,index,childField),[source,index,childField]);
+  // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
+  const recordFilter=React.useMemo(()=>{const results=new WeakMap();return row=>{if(typeof deferredFilter!=='function')return true;const record=row.original;if(!results.has(record))results.set(record,!!deferredFilter(record));return results.get(record);};},[deferredFilter,source]);
   const recordPositions=React.useMemo(()=>new Map(canonical.map((record,i)=>[record,i])),[canonical]);
   const recordsByKey=React.useMemo(()=>new Map(canonical.map(record=>[recordKey(record[index]),record])),[canonical,index]);
   const replaceData=rows=>new Promise(resolve=>{mutations.current.push(resolve);setEdited({input:incoming,rows:rows.slice()});});
@@ -135,7 +137,7 @@ function NextEngine(props) {
     state:{expanded:printing?true:expanded,sorting,columnOrder,columnVisibility,columnSizing:sizing,columnFilters:filters,globalFilter:deferredFilter,pagination:{pageIndex:page,pageSize},rowSelection:selection},
     onSortingChange:changeSort,
     onColumnVisibilityChange:update=>{setHiddenOwner(hiddenSignal);setVisibility(typeof update==='function'?update(columnVisibility):update);},onColumnOrderChange:update=>{setOrderOwner(orderSignal);setOrder(typeof update==='function'?update(columnOrder):update);},onColumnSizingChange:setSizing,onColumnFiltersChange:update=>{setFilters(update);setPage(0);},
-    getColumnCanGlobalFilter:()=>true,globalFilterFn:(row,id,fn)=>typeof fn!=='function'||!!fn(row.original),globalFilter:deferredFilter,
+    getColumnCanGlobalFilter:()=>true,globalFilterFn:recordFilter,globalFilter:deferredFilter,
     manualPagination:remoteMode,manualSorting:remoteMode,manualFiltering:remoteMode,pageCount:remoteMode?Math.ceil((remote?.total||0)/pageSize):undefined,
     getExpandedRowModel:getExpandedRowModel(),getCoreRowModel:getCoreRowModel(),getFilteredRowModel:getFilteredRowModel(),getSortedRowModel:getSortedRowModel(),
     getPaginationRowModel:mode==='pages'?getPaginationRowModel():undefined,autoResetPageIndex:false});
