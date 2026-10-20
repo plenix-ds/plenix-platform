@@ -1,0 +1,168 @@
+[
+  {
+    "dir": "ltr",
+    "name": "scroll",
+    "scroll": 300,
+    "headerScroll": 300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true,
+    "pinned": 0
+  },
+  {
+    "dir": "ltr",
+    "name": "resize wider",
+    "scroll": 362,
+    "headerScroll": 362,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "ltr",
+    "name": "resize narrower",
+    "scroll": 362,
+    "headerScroll": 362,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "ltr",
+    "name": "sort",
+    "scroll": 362,
+    "headerScroll": 362,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "ltr",
+    "name": "hide column",
+    "scroll": 322,
+    "headerScroll": 322,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "ltr",
+    "name": "reorder columns",
+    "scroll": 322,
+    "headerScroll": 322,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "ltr",
+    "name": "resize column",
+    "scroll": 322,
+    "headerScroll": 322,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "ltr",
+    "name": "multiple frozen columns and custom link",
+    "scroll": 322,
+    "headerScroll": 322,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true,
+    "movingC": 0,
+    "linkDisplay": "inline-flex"
+  },
+  {
+    "dir": "rtl",
+    "name": "scroll",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true,
+    "pinned": 0
+  },
+  {
+    "dir": "rtl",
+    "name": "resize wider",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "rtl",
+    "name": "resize narrower",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "rtl",
+    "name": "sort",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "rtl",
+    "name": "hide column",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "rtl",
+    "name": "reorder columns",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "rtl",
+    "name": "resize column",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true
+  },
+  {
+    "dir": "rtl",
+    "name": "multiple frozen columns and custom link",
+    "scroll": -300,
+    "headerScroll": -300,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": true,
+    "movingC": 0,
+    "linkDisplay": "inline-flex"
+  }
+]

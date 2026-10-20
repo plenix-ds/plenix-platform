@@ -3,10 +3,12 @@
    Usage: Imported by the Platform stylesheet.
    Props: Plenix grid classes, density, row height and layout attributes.
    Behavior: Fixed token rows, sticky headers/columns and native scrolling; no engine vendor stylesheet.
-   Notes: Visual declarations reuse the owner's existing table styling. */
+   Notes: The outer header clips and scrolls with the body; its contents expose their full width so frozen columns
+     share that scroll container instead of a second clipping ancestor (task 147).
+     Visual declarations reuse the owner's existing table styling. */
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid{position:relative;overflow:hidden;text-align:start;transform:translateZ(0);}
-.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-header{position:relative;overflow:hidden;white-space:nowrap;user-select:none;}
-.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-header-contents{position:relative;overflow:hidden;}
+.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-header{position:relative;box-sizing:border-box;overflow:hidden;white-space:nowrap;user-select:none;}
+.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-header-contents{position:relative;overflow:visible;}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-headers{display:inline-flex;position:relative;}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-col{display:inline-flex;flex-direction:column;flex-shrink:0;overflow:visible;vertical-align:bottom;}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-col-content{position:relative;}
@@ -644,3 +646,10 @@
 .plx-data-grid__grid-row[data-plx-unread]::before{content:"";--plx-state-data-grid-unread-bar-width:var(--plx-comp-data-grid-unread-bar-width);position:absolute;inset-block-start:0;inset-block-end:0;inset-inline-start:0;inline-size:var(--plx-state-data-grid-unread-bar-width);background-color:var(--plx-comp-data-grid-unread-bar-color);pointer-events:none;z-index:var(--plx-sys-layer-sticky);}
 
 @property --plx-state-data-grid-unread-bar-width{syntax:"*";inherits:false;}
+
+/* Content bidi must not choose the sticky edge of the containing grid cell. */
+.plx-data-grid__cell-direction{display:contents;}
+
+/* Frozen fields paint above the scrolling fields and keep their row state background. */
+.plx-data-grid__grid-col.plx-data-grid__grid-frozen{z-index:var(--plx-sys-layer-raised);}
+.plx-data-grid__grid-cell.plx-data-grid__grid-frozen{background-color:inherit;}

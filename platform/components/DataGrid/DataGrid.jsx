@@ -76,6 +76,8 @@
    Behavior:
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
+     Horizontal body scrolling moves the column headers by the same amount; frozen headers and cells stay pinned.
+       Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
        row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
