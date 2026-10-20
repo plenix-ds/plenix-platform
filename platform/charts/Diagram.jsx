@@ -182,7 +182,7 @@ export function Diagram({ title, description, nodes = [], edges = [], variant = 
   };
 
   return (
-    <ChartFrame title={title} description={description} size={size} margin={Object.assign({ top: 0, end: 0, bottom: 0, start: 0 }, margin)} table={table}
+    <ChartFrame clip title={title} description={description} size={size} margin={Object.assign({ top: 0, end: 0, bottom: 0, start: 0 }, margin)} table={table}
       interaction={interactive ? iaz : undefined} actions={interactive ? gv.actions : null} strings={frameStrings} fitHeight={(w) => layout.height * Math.min(1, w / layout.width)}
       className={cx('plx-diagram', 'plx-diagram--' + (boxes ? 'boxes' : 'flowchart'), !interactive && 'plx-diagram--read-only', className)}>
       {draw}

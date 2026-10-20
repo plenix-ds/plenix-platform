@@ -17,6 +17,8 @@
      onExpandedChange(ids): runs when items open or close
      className: more classes on the tree
    Behavior:
+     Each item passes its own open/selected state to Icon.filled; child icons do not follow an ancestor item.
+     Forced-color selection publishes --plx-comp-icon-forced-color from the selected row.
      The tree is one Tab stop.
      Arrow Up and Down move through the visible items.
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
@@ -32,7 +34,7 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+const asIcon = (i, filled) => (typeof i === 'string' ? <Icon name={i} filled={filled} /> : React.isValidElement(i) && i.type === Icon ? React.cloneElement(i, { filled: filled || i.props.filled }) : i);
 // the icon an open item shows: its own openIcon, else an open folder for a folder
 const OPEN_ICONS = { folder: 'folder-open' };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || (typeof n.icon === 'string' && OPEN_ICONS[n.icon]) || n.icon : n.icon);
@@ -83,7 +85,7 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
         <div className="plx-tree__row" onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
             onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined} />
-          {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || n.id === selected))}</span> : null}
+          {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)}</span> : null}
           <span className="plx-tree__label">{n.label}</span>
           {n.meta !== undefined ? <span className="plx-tree__meta">{n.meta}</span> : null}
         </div>

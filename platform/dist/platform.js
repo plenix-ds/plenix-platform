@@ -96,6 +96,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        danger: "Error", neutral: "Note" }
      StatusIcon.className: more classes on the status icon
    Behavior:
+     filled={false} explicitly keeps the outline, including inside a selected ancestor (Tree owns each item state).
+     Omitting filled keeps automatic selection behavior; filled={true} explicitly fills it.
      The filled version is also drawn automatically inside a current or selected element: aria-current, aria-pressed,
        aria-selected, .is-selected, .is-current.
      A pinned item shows the filled pin, not a filled row.
@@ -113,7 +115,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 function Icon({
   name,
   size,
-  filled = false,
+  filled,
   label,
   className,
   ...rest
@@ -125,6 +127,7 @@ function Icon({
   });
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled && 'plx-icon--filled', className),
+    "data-plx-icon-fill": filled === false ? 'outline' : undefined,
     role: label ? 'img' : undefined,
     "aria-label": label,
     "aria-hidden": label ? undefined : true
@@ -922,8 +925,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Card.href: makes the title a link
      Card.onOpen(): makes the title a button that runs this
      Card.headingLevel: the heading level of the title (default 3)
+     Card.layout: "default" (default) | "media-first" (body above heading) | "media-start" (body beside heading and meta)
+     Card.bodyLayout: "default" (default) | "stack" (vertical body with a gap)
+     Card.titleWrap: whether the title wraps instead of truncating (default false)
      Card.children: the body
-     Card.className: more classes on the <article>
+     Card.className: layout integration classes on the <article>; Card owns its internal parts
+     Card public hooks: --plx-comp-card-layout-gap (media-start column gap; defaults to card-header-gap),
+       --plx-comp-card-body-gap (stack body gap; defaults to card-row-gap). Both accept length tokens, inherit to every
+       Card in the supplying context including nested Cards, and apply across themes/densities without affecting states.
+       FeatureCard supplies layout and wrap props; UserCard supplies the stack body. Patterns own only their content.
      Card.surface: "flat" (default) | "glow" (the surface in the middle fading to a rim one step off it) | "inset" (a soft
        12px inner edge in the rim color) (owner, 2026-10-15, the card builder)
      Card.elevation: "outline" (default: the 1px border) | "halo" (a thin even shadow) | "lifted" (a fuller even shadow,
@@ -1106,6 +1116,9 @@ function Card({
   strings,
   className,
   children,
+  layout = 'default',
+  bodyLayout = 'default',
+  titleWrap = false,
   ...rest
 }) {
   const interactive = !!(href || onOpen);
@@ -1121,7 +1134,11 @@ function Card({
   return /*#__PURE__*/_react.default.createElement("article", _extends({
     className: (0, _cx.cx)('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className),
     "data-plx-color": accent || undefined
-  }, rest), title || expandable ? /*#__PURE__*/_react.default.createElement("div", {
+  }, rest, {
+    "data-plx-layout": layout,
+    "data-plx-body-layout": bodyLayout,
+    "data-plx-title-wrap": titleWrap || undefined
+  }), title || expandable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__header"
   }, title ? /*#__PURE__*/_react.default.createElement(H, {
     level: headingLevel,
@@ -2163,6 +2180,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        index is the active value (pointer or keyboard) or null; hover(i) from a mark's pointer events (null on leave);
        describe(i) is said for each value; strings: the interaction's words (CHART_INTERACTION_STRINGS)
    Behavior:
+     Context hooks on a containing SVG group: --plx-comp-chart-pattern-vector-effect and
+       --plx-comp-chart-keys-vector-effect (default none), --plx-comp-chart-keys-linejoin (default miter).
+       GeoMap sets non-scaling-stroke and round on its view; these parts own the resulting declarations.
      The SVG stays one image to assistive technology; the keyboard reading is ChartFrame's interactive plot (one Tab stop,
        the arrow keys, Home and End, Escape; each value said in the live region), the same on every Plenix chart. The chart
        draws its tooltip (and a ring) at index, so sighted keyboard users see the same value.
@@ -5117,6 +5137,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
    Behavior:
+     Select.data applies the same technical-value font variant as Input.data to its native control.
      Inside a Field, the label, description and error are connected for you.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
@@ -5222,6 +5243,7 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   appearance,
   size,
   joined,
+  data = false,
   block = false,
   className,
   children,
@@ -5232,7 +5254,7 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
     ref: ref,
     size: size === 'sm' || size === 'md' ? undefined : size,
-    className: (0, _cx.cx)('plx-input', 'plx-select__control', look(appearance)),
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance)),
     "aria-invalid": invalid || undefined
   }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o.value,
@@ -18726,6 +18748,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        one Tab stop named "{title}, interactive chart" with the keyboard hint as its description, and hands its keys and
        the pointer (in plot coordinates) to the interaction; a Reset zoom button shows above the plot while it is zoomed
      actions: controls above the plot, at its end (a network graph's zoom buttons); Buttons of size sm
+     clip: clips the SVG at its viewport (default false); Diagram and NetworkGraph opt in instead of styling its parts.
      fitHeight: (width) => the plot's height in pixels for its width, for a chart whose height follows its content (a
        diagram drawn at its own size); the plot's height is then the SVG's, not the size's
      children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
@@ -18734,6 +18757,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        interaction's words are the interaction's strings)
      className: more classes on the figure
    Behavior:
+     Point dimming publishes --plx-comp-chart-dim-opacity on the plot; dim marks read it with opacity 1 as fallback.
      The plot fills its container's width and follows it when it resizes; the chart is drawn once the size is known.
      The SVG is one image to assistive technology (role img, named by the title and described by the description);
        its marks are hidden from it, so the table carries the values.
@@ -18771,6 +18795,7 @@ function ChartFrame({
   interaction,
   actions,
   fitHeight,
+  clip = false,
   strings,
   className,
   children
@@ -18882,7 +18907,7 @@ function ChartFrame({
     id: hintId,
     className: "plx-visually-hidden"
   }, ia.hint) : null, box.width > 0 && height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
-    className: "plx-chart__svg",
+    className: (0, _cx.cx)('plx-chart__svg', clip && 'plx-chart__svg--clipped'),
     width: box.width,
     height: height,
     viewBox: '0 0 ' + box.width + ' ' + height,
@@ -20415,6 +20440,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      size: "sm" | "md" (default) | "lg": the tiles' minimum width
      className: more classes on the group
    Behavior:
+     Public context --plx-comp-radio-tiles-legend-line-height applies to legends inside its containing element; fallback inherit.
      A native radio group: Tab moves into it, the arrow keys move the choice, Space chooses.
      The chosen tile shows the selected border and a check; a focused tile shows the focus ring.
    Notes:
@@ -20990,6 +21016,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        chosen color when it is one of them), each with its swatch and name
        ColorPicker.className: more classes on the group
    Behavior:
+     unavailable marks the swatch cursor; callers still supply aria-disabled and prevent unavailable choices.
+     Labeled swatches pass pressed state to their chip; the chip owns its selected shadow.
      With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
      With showLabel the color's name is text beside it, read as text; the swatch itself stays decorative.
      A swatch button's target is at least 24px (44px with touch) whatever its size: it extends invisibly past the swatch
@@ -21008,6 +21036,7 @@ function ColorSwatch({
   pressed,
   label,
   showLabel = false,
+  unavailable = false,
   onClick,
   className,
   ...rest
@@ -21027,7 +21056,9 @@ function ColorSwatch({
       category: category,
       tone: tone,
       size: size,
-      shape: shape
+      shape: shape,
+      pressed: !!onClick && !!pressed,
+      unavailable: unavailable
     });
     const text = /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-color-swatch-label__text"
@@ -21035,10 +21066,12 @@ function ColorSwatch({
     return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
       type: "button",
       className: (0, _cx.cx)('plx-color-swatch-label', className),
+      "data-plx-unavailable": unavailable ? '' : undefined,
       "aria-pressed": !!pressed,
       onClick: onClick
     }, rest), chip, text) : /*#__PURE__*/_react.default.createElement("span", _extends({
-      className: (0, _cx.cx)('plx-color-swatch-label', className)
+      className: (0, _cx.cx)('plx-color-swatch-label', className),
+      "data-plx-unavailable": unavailable ? '' : undefined
     }, rest), chip, text);
   }
   const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
@@ -21047,6 +21080,7 @@ function ColorSwatch({
     className: cls,
     "data-plx-color": color || undefined,
     "data-plx-category": category || undefined,
+    "data-plx-unavailable": unavailable ? '' : undefined,
     "aria-pressed": !!pressed,
     "aria-label": label,
     onClick: onClick
@@ -21054,6 +21088,8 @@ function ColorSwatch({
     className: cls,
     "data-plx-color": color || undefined,
     "data-plx-category": category || undefined,
+    "data-plx-unavailable": unavailable ? '' : undefined,
+    "data-plx-selected": pressed ? '' : undefined,
     "aria-hidden": "true"
   }, rest));
 }
@@ -27054,6 +27090,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      onExpandedChange(ids): runs when items open or close
      className: more classes on the tree
    Behavior:
+     Each item passes its own open/selected state to Icon.filled; child icons do not follow an ancestor item.
+     Forced-color selection publishes --plx-comp-icon-forced-color from the selected row.
      The tree is one Tab stop.
      Arrow Up and Down move through the visible items.
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
@@ -27064,8 +27102,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      is open or selected (batch 241), by the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
 
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
+const asIcon = (i, filled) => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i,
+  filled: filled
+}) : /*#__PURE__*/_react.default.isValidElement(i) && i.type === _Icon.Icon ? /*#__PURE__*/_react.default.cloneElement(i, {
+  filled: filled || i.props.filled
 }) : i;
 // the icon an open item shows: its own openIcon, else an open folder for a folder
 const OPEN_ICONS = {
@@ -27167,7 +27208,7 @@ function Tree({
       } : undefined
     }), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__icon"
-    }, asIcon(iconOf(n, isOpen || n.id === selected))) : null, /*#__PURE__*/_react.default.createElement("span", {
+    }, asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__label"
     }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__meta"
@@ -27324,6 +27365,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      onTimeChange(seconds), onError(event): media events; strings: rate, transcript, hideTranscript, pip, exitPip,
        unsupported, failed, pipFailed, seek, fallback, audioFailed, volume, mute; className; ref: the HTMLMediaElement.
    Behavior:
+     fill (default false) occupies a constrained stage; the media flexes and contains its picture above the controls.
+
      Browser controls provide play, pause, seek, volume and caption selection. Nothing autoplays.
      A silent video has no native volume control: separate sound adds the existing Slider and a Mute toggle.
      Transcript buttons seek only after media metadata is available. Failed PiP requests stay recoverable.
@@ -27350,7 +27393,8 @@ const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef
   onTimeChange,
   onError,
   strings,
-  className
+  className,
+  fill = false
 }, ref) {
   const t = Object.assign({
     rate: 'Playback speed',
@@ -27419,7 +27463,8 @@ const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef
   };
   const Tag = kind === 'audio' ? 'audio' : 'video';
   return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
-    className: (0, _cx.cx)('plx-media-player', className)
+    className: (0, _cx.cx)('plx-media-player', className),
+    "data-plx-fill": fill ? '' : undefined
   }, /*#__PURE__*/_react.default.createElement(Tag, {
     key: kind + ':' + src,
     ref: media,
@@ -27667,6 +27712,7 @@ function MediaViewer({
       if (event.target.closest('video,audio,button,input,select,a')) event.stopPropagation();
     }
   }, item.kind === 'video' ? /*#__PURE__*/_react.default.createElement(_MediaPlayer.MediaPlayer, {
+    fill: true,
     key: at,
     src: item.src,
     audio: item.audio,
@@ -34418,6 +34464,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onError: called when it cannot load
      className: more classes on the frame
    Behavior:
+     Public context --plx-comp-image-zoom applies to every Image in the containing element; fallback 1.
+     DocumentViewer supplies its stepped zoom without selecting Image anatomy.
      The frame keeps its space before the picture arrives (a ratio, or width and height), so nothing moves when it loads.
      While loading the frame shows its placeholder; the picture fades in over it once loaded (no fade with reduced motion).
      When the picture fails, the frame keeps its size and shows the fallback; a picture that loaded from the cache shows
@@ -47327,6 +47375,8 @@ function FeatureCard({
     className: "plx-feature-card__tile"
   });
   return /*#__PURE__*/_react.default.createElement(_Card.Card, _extends({
+    layout: v === 'horizontal' ? 'media-start' : 'media-first',
+    titleWrap: true,
     title: title,
     meta: description,
     href: href,
@@ -47436,6 +47486,7 @@ function UserCard({
   const withCover = !compact && !!cover;
   const hasActions = actions !== undefined && actions !== null && actions !== false;
   return /*#__PURE__*/_react.default.createElement(_Card.Card, _extends({
+    bodyLayout: "stack",
     className: (0, _cx.cx)('plx-user-card', 'plx-user-card--' + (compact ? 'compact' : 'default'), withCover && 'plx-user-card--cover', hasActions && 'plx-user-card--actions', className)
   }, rest), withCover ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-user-card__cover"
@@ -51465,6 +51516,7 @@ function NetworkGraph({
     }) : null);
   };
   return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    clip: true,
     title: title,
     description: description,
     size: size,
@@ -51898,6 +51950,7 @@ function Diagram({
     }) : null);
   };
   return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    clip: true,
     title: title,
     description: description,
     size: size,
@@ -66083,7 +66136,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      label; thumbnails: true; initialPage: 1; initialZoom: 100 (50,75,100,125,150,200);
      pdfModuleUrl/pdfWorkerUrl: optional URLs when serving the vendor files separately; strings: previous,next,page,zoom,
        thumbnails,loading,failed,empty,retry; onPageChange(page); className.
-   Behavior: Navigation clamps to available pages. PDF loading and rendering are cancellable; stale loads cannot replace
+   Behavior: Image zoom is published on the viewport; the zoom Select uses its own data prop.
+     Navigation clamps to available pages. PDF loading and rendering are cancellable; stale loads cannot replace
      a newer document. Errors offer Retry. PDF text is exposed alongside the canvas for assistive technology.
    Notes: PDF.js 4.10.38 (Apache-2.0) is vendored beside this component. URLs must obey the application CSP/CORS policy.
      PDF canvas dimensions are document geometry, never an inline style. No remote PDF code is downloaded.
@@ -66285,7 +66339,7 @@ function DocumentViewer({
   }, t.next), /*#__PURE__*/_react.default.createElement(_Field.Field, {
     label: t.zoom
   }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
-    className: "plx-document-viewer__zoom",
+    data: true,
     value: zoom,
     onChange: e => setZoom(Number(e.target.value)),
     options: ZOOMS.map(z => ({
@@ -66770,8 +66824,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      disabled: turns every control off (default false)
      strings: the words, for other languages: { chosen: "{label}:" (the option's name before its value), unavailable: "Out of stock", quantity: "Quantity", quantityOf: "Quantity,
        {product}", unavailableName: "{label}, out of stock", none: "None chosen" }
-     className: more classes on the group
+     className: layout integration on the root; placement only, not appearance
    Behavior:
+     The sizes slot publishes RadioTiles legend line height; swatches receive their own unavailable prop.
      Size buttons are RadioTiles: one radio group, Tab reaches the chosen tile, the arrow keys move and choose; an out of
        stock size is a disabled radio with its note under it, which the arrow keys skip.
      Color swatches are ColorSwatch buttons in a group named by the option (aria-pressed on the chosen one); each is named
@@ -66884,6 +66939,7 @@ function ProductOptions({
           color: v.color,
           label: swatchLabels ? labelOf(v) : name,
           showLabel: swatchLabels,
+          unavailable: off,
           pressed: value[o.name] === v.value,
           onClick: () => {
             if (!off && !disabled) pick(o.name, v.value);
@@ -67232,6 +67288,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      See Commerce.jsx (ProductListing, ProductDiscovery, ProductDetail).
    Behavior:
+     ProductOptions accepts the commerce options placement class on its documented root.
+
      See Commerce.jsx.
 */
 const LISTING_STRINGS = {
@@ -67787,6 +67845,7 @@ function ProductDetail({
   })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-commerce__stock"
   }, status), options.length || onAddToCart ? /*#__PURE__*/_react.default.createElement(_ProductOptions.ProductOptions, {
+    className: "plx-commerce__options",
     product: p.title,
     options: options,
     value: choice,

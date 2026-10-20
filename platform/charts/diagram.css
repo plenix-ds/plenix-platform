@@ -2,7 +2,7 @@
    box), their wrapped labels, the elbow connectors with their arrowheads and branch labels, group containers, the shape
    in focus, and the plot that clips the zoomed diagram. Every value is a --plx-comp-diagram-* token; no color carries
    meaning (the shapes and the labels do). */
-.plx-diagram .plx-chart__svg{overflow-x:hidden;overflow-y:hidden;}
+/* ChartFrame owns SVG clipping through its clip prop. */
 .plx-diagram__shape{fill:var(--plx-comp-diagram-shape-background);stroke:var(--plx-comp-diagram-shape-border-color);stroke-width:var(--plx-comp-diagram-shape-border-width);}
 .plx-diagram__node--process .plx-diagram__shape,.plx-diagram__node--box .plx-diagram__shape{rx:var(--plx-comp-diagram-shape-radius);}
 .plx-diagram__node--terminal .plx-diagram__shape{rx:var(--plx-comp-diagram-terminal-radius);}

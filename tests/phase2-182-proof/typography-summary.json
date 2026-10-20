@@ -1,0 +1,308 @@
+{
+  "base": "e9782b790039f5cdaea852cfe016eca3ef4b387d",
+  "head": "aa32c09936c35a999ce6067f9386b7244c8da791",
+  "browser": "Chrome/155.0.8059.80",
+  "cases": [
+    {
+      "route": "foundations/design-tokens",
+      "mode": "light",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "foundations/design-tokens",
+      "mode": "dark",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "foundations/color",
+      "mode": "light",
+      "base": 0,
+      "head": 0,
+      "added": 0
+    },
+    {
+      "route": "layout/dashboard-grid",
+      "mode": "light",
+      "base": 3,
+      "head": 3,
+      "added": 0
+    },
+    {
+      "route": "layout/dashboard-grid",
+      "mode": "dark",
+      "base": 3,
+      "head": 3,
+      "added": 0
+    },
+    {
+      "route": "content/text",
+      "mode": "light",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "content/text",
+      "mode": "dark",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "content/code-block",
+      "mode": "light",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "content/code-block",
+      "mode": "dark",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "actions/button",
+      "mode": "light",
+      "base": 5,
+      "head": 5,
+      "added": 0
+    },
+    {
+      "route": "actions/button",
+      "mode": "dark",
+      "base": 5,
+      "head": 5,
+      "added": 0
+    },
+    {
+      "route": "actions/toolbar",
+      "mode": "light",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "actions/toolbar",
+      "mode": "dark",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "forms/text-field",
+      "mode": "light",
+      "base": 3,
+      "head": 3,
+      "added": 0
+    },
+    {
+      "route": "forms/text-field",
+      "mode": "dark",
+      "base": 3,
+      "head": 3,
+      "added": 0
+    },
+    {
+      "route": "navigation/application-header",
+      "mode": "light",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "navigation/application-header",
+      "mode": "dark",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "navigation/side-navigation",
+      "mode": "light",
+      "base": 4,
+      "head": 4,
+      "added": 0
+    },
+    {
+      "route": "navigation/side-navigation",
+      "mode": "dark",
+      "base": 4,
+      "head": 4,
+      "added": 0
+    },
+    {
+      "route": "data-display/badge",
+      "mode": "light",
+      "base": 4,
+      "head": 4,
+      "added": 0
+    },
+    {
+      "route": "data-display/badge",
+      "mode": "dark",
+      "base": 4,
+      "head": 4,
+      "added": 0
+    },
+    {
+      "route": "overlays/side-drawer",
+      "mode": "light",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "overlays/side-drawer",
+      "mode": "dark",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "patterns/filter-and-sort-workflow",
+      "mode": "light",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "patterns/filter-and-sort-workflow",
+      "mode": "dark",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "page-structures/application-shell",
+      "mode": "light",
+      "base": 5,
+      "head": 5,
+      "added": 0
+    },
+    {
+      "route": "page-structures/application-shell",
+      "mode": "dark",
+      "base": 5,
+      "head": 5,
+      "added": 0
+    },
+    {
+      "route": "specialized/typing-indicator",
+      "mode": "light",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "interaction/focus-ring",
+      "mode": "light",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "interaction/focus-ring",
+      "mode": "dark",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "implementation/css-architecture",
+      "mode": "light",
+      "base": 4,
+      "head": 4,
+      "added": 0
+    },
+    {
+      "route": "implementation/css-architecture",
+      "mode": "dark",
+      "base": 4,
+      "head": 4,
+      "added": 0
+    },
+    {
+      "route": "foundations/color",
+      "mode": "dark",
+      "base": 0,
+      "head": 0,
+      "added": 0
+    },
+    {
+      "route": "layout/panel",
+      "mode": "light",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "layout/panel",
+      "mode": "dark",
+      "base": 1,
+      "head": 1,
+      "added": 0
+    },
+    {
+      "route": "data-display/card",
+      "mode": "light",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "data-display/card",
+      "mode": "dark",
+      "base": 2,
+      "head": 2,
+      "added": 0
+    },
+    {
+      "route": "data-display/feature-card",
+      "mode": "light",
+      "base": 0,
+      "head": 0,
+      "added": 0
+    },
+    {
+      "route": "data-display/feature-card",
+      "mode": "dark",
+      "base": 0,
+      "head": 0,
+      "added": 0
+    },
+    {
+      "route": "content/user-card",
+      "mode": "light",
+      "base": 0,
+      "head": 0,
+      "added": 0
+    },
+    {
+      "route": "content/user-card",
+      "mode": "dark",
+      "base": 0,
+      "head": 0,
+      "added": 0
+    },
+    {
+      "route": "data-display/media-card",
+      "mode": "light",
+      "base": 5,
+      "head": 5,
+      "added": 0
+    },
+    {
+      "route": "data-display/media-card",
+      "mode": "dark",
+      "base": 5,
+      "head": 5,
+      "added": 0
+    }
+  ]
+}

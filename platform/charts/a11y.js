@@ -27,6 +27,9 @@
        index is the active value (pointer or keyboard) or null; hover(i) from a mark's pointer events (null on leave);
        describe(i) is said for each value; strings: the interaction's words (CHART_INTERACTION_STRINGS)
    Behavior:
+     Context hooks on a containing SVG group: --plx-comp-chart-pattern-vector-effect and
+       --plx-comp-chart-keys-vector-effect (default none), --plx-comp-chart-keys-linejoin (default miter).
+       GeoMap sets non-scaling-stroke and round on its view; these parts own the resulting declarations.
      The SVG stays one image to assistive technology; the keyboard reading is ChartFrame's interactive plot (one Tab stop,
        the arrow keys, Home and End, Escape; each value said in the live region), the same on every Plenix chart. The chart
        draws its tooltip (and a ring) at index, so sighted keyboard users see the same value.

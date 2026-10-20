@@ -14,6 +14,7 @@
      size: "sm" | "md" (default) | "lg": the tiles' minimum width
      className: more classes on the group
    Behavior:
+     Public context --plx-comp-radio-tiles-legend-line-height applies to legends inside its containing element; fallback inherit.
      A native radio group: Tab moves into it, the arrow keys move the choice, Space chooses.
      The chosen tile shows the selected border and a check; a focused tile shows the focus ring.
    Notes:

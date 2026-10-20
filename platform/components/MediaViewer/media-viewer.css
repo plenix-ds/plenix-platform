@@ -25,11 +25,8 @@
 
 /* Native video controls stay reachable when a tall preview exceeds the stage. */
 .plx-media-viewer__stage--video{overflow-y:auto;}
-.plx-media-viewer__stage--video>.plx-media-player{max-inline-size:100%;min-block-size:0;min-inline-size:0;}
 
 /* Definite preview bounds also support SVGs without intrinsic dimensions and video controls. */
 .plx-media-viewer__figure{block-size:100%;inline-size:100%;}
 .plx-media-viewer__stage{flex-basis:0%;flex-grow:1;flex-shrink:1;inline-size:100%;}
 .plx-media-viewer__image{block-size:100%;inline-size:100%;}
-.plx-media-viewer__stage--video>.plx-media-player{block-size:100%;inline-size:100%;}
-.plx-media-viewer__stage--video .plx-media-player__media{flex-basis:0%;flex-grow:1;flex-shrink:1;min-block-size:0;object-fit:contain;}

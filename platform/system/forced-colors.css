@@ -1,4 +1,5 @@
 /* Plenix · Forced colors and more contrast (platform/system/forced-colors.css; library wave 2, foundation forced-colors)
+   Icon reads --plx-comp-icon-forced-color from the owning selected slot (CanvasText by default).
    Two requests a person makes of their system, honored by every Platform page:
    1. Forced colors (Windows High Contrast and other contrast themes; @media (forced-colors: active)): the browser
       replaces every color with the person's few system colors and removes shadows and background images. Whatever the
@@ -28,9 +29,8 @@
 .plx-menu,.plx-combobox__list,.plx-dialog,.plx-sheet,.plx-tooltip,.plx-toast,.plx-card,.plx-media-card{outline-color:CanvasText;outline-style:solid;outline-width:var(--plx-sys-border-width-thin);}
 /* icons: an icon is a mask filled with a background color, which forced colors would turn to Canvas (an invisible icon):
    it takes the system color of the text it sits in */
-.plx-icon{background-color:CanvasText;}
-:is(button,a,[role="option"],[role="tab"],[role="treeitem"],[role="row"],[role="gridcell"],[role="menuitemradio"],[role="radio"]):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],[aria-current="true"],[aria-checked="true"],.is-selected,.is-current) .plx-icon,
-.plx-tree__item.is-selected>.plx-tree__row .plx-icon,.plx-tag--selected .plx-icon{background-color:HighlightText;}
+.plx-icon{background-color:var(--plx-comp-icon-forced-color,CanvasText);}
+:is(button,a,[role="option"],[role="tab"],[role="treeitem"],[role="row"],[role="gridcell"],[role="menuitemradio"],[role="radio"]):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],[aria-current="true"],[aria-checked="true"],.is-selected,.is-current) .plx-icon{background-color:HighlightText;}
 :is(button,a,[role="button"],[role="option"],[role="menuitem"],[role="tab"]):is(:disabled,[aria-disabled="true"]) .plx-icon,.is-disabled .plx-icon{background-color:GrayText;}
 a:link .plx-icon,a:visited .plx-icon{background-color:LinkText;}
 /* on and off: a checked switch, a progress fill, the spinner's gap */

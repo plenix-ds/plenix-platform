@@ -27,6 +27,7 @@
        one Tab stop named "{title}, interactive chart" with the keyboard hint as its description, and hands its keys and
        the pointer (in plot coordinates) to the interaction; a Reset zoom button shows above the plot while it is zoomed
      actions: controls above the plot, at its end (a network graph's zoom buttons); Buttons of size sm
+     clip: clips the SVG at its viewport (default false); Diagram and NetworkGraph opt in instead of styling its parts.
      fitHeight: (width) => the plot's height in pixels for its width, for a chart whose height follows its content (a
        diagram drawn at its own size); the plot's height is then the SVG's, not the size's
      children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
@@ -35,6 +36,7 @@
        interaction's words are the interaction's strings)
      className: more classes on the figure
    Behavior:
+     Point dimming publishes --plx-comp-chart-dim-opacity on the plot; dim marks read it with opacity 1 as fallback.
      The plot fills its container's width and follows it when it resizes; the chart is drawn once the size is known.
      The SVG is one image to assistive technology (role img, named by the title and described by the description);
        its marks are hidden from it, so the table carries the values.
@@ -61,7 +63,7 @@ import { snapToGrid } from '../utils/grid.js';
 const STRINGS = { showData: 'Show the data', table: '{title}: data' };
 const MARGIN_TOKENS = { top: '--plx-comp-chart-margin-block-start', end: '--plx-comp-chart-margin-inline-end', bottom: '--plx-comp-chart-margin-block-end', start: '--plx-comp-chart-margin-inline-start' };
 
-export function ChartFrame({ title, description, hideCaption = false, size = 'md', margin, legend, legendPosition = 'bottom', table, interaction, actions, fitHeight, strings, className, children }) {
+export function ChartFrame({ title, description, hideCaption = false, size = 'md', margin, legend, legendPosition = 'bottom', table, interaction, actions, fitHeight, clip = false, strings, className, children }) {
   const t = Object.assign({}, STRINGS, strings);
   const uid = 'plx-chart' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const frame = React.useRef(null), plot = React.useRef(null);
@@ -123,7 +125,7 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
     <div ref={plot} className={cx('plx-chart__plot', fit && 'plx-chart__plot--fit', ia && 'plx-chart__plot--interactive', ia && ia.mode === 'point' && ia.active && 'plx-chart__plot--dimming')} {...plotProps}>
       {ia ? <span id={hintId} className="plx-visually-hidden">{ia.hint}</span> : null}
       {box.width > 0 && height > 0 ? (
-        <svg className="plx-chart__svg" width={box.width} height={height} viewBox={'0 0 ' + box.width + ' ' + height}
+        <svg className={cx('plx-chart__svg', clip && 'plx-chart__svg--clipped')} width={box.width} height={height} viewBox={'0 0 ' + box.width + ' ' + height}
           role="img" aria-labelledby={titleId} aria-describedby={description ? descId : undefined} focusable="false">
           <g transform={'translate(' + left + ',' + m.top + ')'} aria-hidden="true">
             {typeof children === 'function' ? children(dims) : children}

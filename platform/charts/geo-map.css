@@ -7,7 +7,6 @@
 .plx-geo-map__surface--movable{cursor:grab;}
 .plx-geo-map__region{--plx-comp-geo-map-region-fill:var(--plx-comp-geo-map-land);fill:var(--plx-comp-geo-map-region-fill);stroke:var(--plx-comp-geo-map-border-color);stroke-linejoin:round;stroke-width:var(--plx-comp-geo-map-border-width);vector-effect:non-scaling-stroke;}
 .plx-geo-map__region[data-plx-dataviz]{--plx-comp-geo-map-region-fill:var(--plx-comp-data-color);stroke:var(--plx-comp-geo-map-gap-color);}
-.plx-geo-map__view .plx-chart-pattern{vector-effect:non-scaling-stroke;}
-.plx-geo-map__view .plx-chart-keys__ring{stroke-linejoin:round;vector-effect:non-scaling-stroke;}
+.plx-geo-map__view{--plx-comp-chart-pattern-vector-effect:non-scaling-stroke;--plx-comp-chart-keys-vector-effect:non-scaling-stroke;--plx-comp-chart-keys-linejoin:round;}
 .plx-geo-map__marker{--plx-comp-geo-map-marker-color:var(--plx-comp-geo-map-default-color);fill:var(--plx-comp-geo-map-marker-color);r:var(--plx-comp-geo-map-marker-radius);stroke:var(--plx-comp-geo-map-marker-outline);stroke-width:var(--plx-comp-geo-map-marker-outline-width);}
 .plx-geo-map__marker[data-plx-dataviz]{--plx-comp-geo-map-marker-color:var(--plx-comp-data-color);}

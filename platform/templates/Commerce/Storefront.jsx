@@ -12,6 +12,8 @@
    Props:
      See Commerce.jsx (ProductListing, ProductDiscovery, ProductDetail).
    Behavior:
+     ProductOptions accepts the commerce options placement class on its documented root.
+
      See Commerce.jsx.
 */
 import React from 'react';
@@ -242,7 +244,7 @@ export function ProductDetail({ product, value, defaultValue, onChange, quantity
           ) : null}
           <span className="plx-commerce__price" aria-live="polite"><ProductPrice price={price} currency={p.currency} compareAtPrice={p.compareAtPrice} /></span>
           <span className="plx-commerce__stock">{status}</span>
-          {options.length || onAddToCart ? <ProductOptions product={p.title} options={options} value={choice} onChange={set} errors={errors}
+          {options.length || onAddToCart ? <ProductOptions className="plx-commerce__options" product={p.title} options={options} value={choice} onChange={set} errors={errors}
             quantity={qty} onQuantityChange={setQty} max={maxQuantity || (typeof stock === 'number' && stock > 0 ? stock : 99)} sizeGuide={p.sizeGuide} /> : null}
           <span className="plx-commerce__add">
             <Button variant="primary" size="lg" icon="plus" disabled={out} onClick={add}>{t.addToCart}</Button>

@@ -1,0 +1,3 @@
+SCOPE a11y: changed since e9782b790 (45 files) · 0 app pages, 1 of 767 design-system pages
+  NEW design-system #/data-display/card: aria-prohibited-attr (serious) 0 -> 5 · Elements must only use permitted ARIA attributes · e.g. .ds-variant-preview > .ds-v2.ds-demo-box[data-ds-wrap="true"] > .plx-stack.plx-stack--gap-lg > .plx-code-block.plx-code-block--none > pre
+A11Y_FAIL 1 new issues; 5 known elements on 1 pages
