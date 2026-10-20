@@ -1,17 +1,17 @@
 /* Plenix · Text (platform/components/Text): text roles from the type tokens. */
 .plx-text{margin-block-end:0;margin-block-start:0;padding-inline-end:0;padding-inline-start:0;}
-.plx-text--body{color:var(--plx-comp-text-body-text);font-family:var(--plx-comp-text-body-font-family);font-size:var(--plx-comp-text-body-font-size);word-spacing:normal;}
+.plx-text--body{color:var(--plx-comp-text-body-text);font-family:var(--plx-comp-text-body-font-family);font-size:var(--plx-comp-text-body-font-size);font-weight:var(--plx-sys-text-body-font-weight);letter-spacing:var(--plx-sys-text-body-letter-spacing);line-height:var(--plx-sys-text-body-line-height);word-spacing:normal;}
 .plx-text--secondary{color:var(--plx-comp-text-secondary-text);font-family:var(--plx-comp-text-secondary-font-family);font-size:var(--plx-comp-text-secondary-font-size);word-spacing:normal;}
-.plx-text--caption{color:var(--plx-comp-text-caption-text);font-family:var(--plx-comp-text-caption-font-family);font-size:var(--plx-comp-text-caption-font-size);word-spacing:normal;}
+.plx-text--caption{color:var(--plx-comp-text-caption-text);font-family:var(--plx-comp-text-caption-font-family);font-size:var(--plx-comp-text-caption-font-size);font-weight:var(--plx-sys-text-caption-font-weight);letter-spacing:var(--plx-sys-text-caption-letter-spacing);line-height:var(--plx-sys-text-caption-line-height);word-spacing:normal;}
 /* data: the data font (Reddit Mono) for technical values; on its own at the secondary size, inside other text (a sentence, a
    caption) at that text's size, so the two share a baseline (owner, 2026-10-11) */
 .plx-text--data{font-family:var(--plx-comp-text-data-font-family);font-size:var(--plx-comp-text-data-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-text .plx-text--data,p .plx-text--data{font-size:inherit;}
-.plx-text--label{color:var(--plx-comp-text-label-text);font-family:var(--plx-comp-text-label-font-family);font-size:var(--plx-comp-text-label-font-size);font-weight:var(--plx-comp-text-label-font-weight);word-spacing:normal;}
+.plx-text--label{color:var(--plx-comp-text-label-text);font-family:var(--plx-comp-text-label-font-family);font-size:var(--plx-comp-text-label-font-size);font-weight:var(--plx-comp-text-label-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-sys-text-label-line-height);word-spacing:normal;}
 .plx-text--strong{font-weight:var(--plx-comp-text-strong-font-weight);}
-.plx-text--title{color:var(--plx-comp-text-title-text);font-family:var(--plx-comp-text-title-font-family);font-size:var(--plx-comp-text-title-font-size);font-weight:var(--plx-comp-text-title-font-weight);word-spacing:normal;}
+.plx-text--title{color:var(--plx-comp-text-title-text);font-family:var(--plx-comp-text-title-font-family);font-size:var(--plx-comp-text-title-font-size);font-weight:var(--plx-comp-text-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-sys-text-title-line-height);word-spacing:normal;}
 .plx-text--truncate{display:block;min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-text--heading{color:var(--plx-comp-text-heading-text);font-family:var(--plx-comp-text-heading-font-family);font-size:var(--plx-comp-text-heading-font-size);font-weight:var(--plx-comp-text-heading-font-weight);word-spacing:normal;}
+.plx-text--heading{color:var(--plx-comp-text-heading-text);font-family:var(--plx-comp-text-heading-font-family);font-size:var(--plx-comp-text-heading-font-size);font-weight:var(--plx-comp-text-heading-font-weight);letter-spacing:var(--plx-sys-text-heading-letter-spacing);line-height:var(--plx-sys-text-heading-line-height);word-spacing:normal;}
 .plx-text--eyebrow{color:var(--plx-comp-text-eyebrow-text);font-family:var(--plx-comp-text-eyebrow-font-family);font-size:var(--plx-comp-text-eyebrow-font-size);font-weight:var(--plx-comp-text-eyebrow-font-weight);letter-spacing:var(--plx-comp-text-eyebrow-letter-spacing);text-transform:uppercase;word-spacing:normal;}
 .plx-text--danger{color:var(--plx-comp-text-danger-text);}
 .plx-text--success{color:var(--plx-comp-text-success-text);}
@@ -27,7 +27,7 @@
 /* display and lead (library wave 2): the largest style, for one key figure or a sign-in heading; and body text one step
    up, for the opening paragraph of a page */
 .plx-text--display{color:var(--plx-comp-text-display-text);font-family:var(--plx-comp-text-display-font-family);font-size:var(--plx-comp-text-display-font-size);font-weight:var(--plx-comp-text-display-font-weight);letter-spacing:var(--plx-comp-text-display-letter-spacing);line-height:var(--plx-comp-text-display-line-height);word-spacing:normal;}
-.plx-text--lead{color:var(--plx-comp-text-lead-text);font-family:var(--plx-comp-text-lead-font-family);font-size:var(--plx-comp-text-lead-font-size);line-height:var(--plx-comp-text-lead-line-height);word-spacing:normal;}
+.plx-text--lead{color:var(--plx-comp-text-lead-text);font-family:var(--plx-comp-text-lead-font-family);font-size:var(--plx-comp-text-lead-font-size);font-weight:var(--plx-sys-text-lead-font-weight);letter-spacing:var(--plx-sys-text-lead-letter-spacing);line-height:var(--plx-comp-text-lead-line-height);word-spacing:normal;}
 /* tabular figures: digits of equal width, so numbers line up down a column and do not shift as they change */
 .plx-text--tabular{font-variant-numeric:tabular-nums;}
 /* lines={2|3|4}: at most that many lines, the last one cut with an ellipsis; the whole text stays in the page */

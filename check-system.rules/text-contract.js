@@ -66,13 +66,19 @@ function roleOf(idx) {
     seen.add(name); const r = (t.refs || []).map((x) => find(x, seen)).find(Boolean) || null;
     return (memo[name] = r);
   };
-  return (value) => { const m = /var\((--plx-[a-z0-9-]+)/.exec(value || ''); return m ? find(m[1], new Set()) : null; };
+  // a keyword (normal) is no token: it matches every role whose value for that property is the same keyword
+  const roles = {}; for (const t of idx) { const m = t.name.match(/^--plx-sys-text-([a-z]+)-(letter-spacing|word-spacing)$/); if (m) (roles[m[2]] = roles[m[2]] || {})[m[1]] = String(Object.values(t.resolved)[0]); }
+  return (value, prop) => {
+    const m = /var\((--plx-[a-z0-9-]+)/.exec(value || ''); if (m) return find(m[1], new Set());
+    const same = Object.entries(roles[prop] || {}).filter(([, v]) => v === String(value).trim()).map(([r]) => r);
+    return same.length ? same : null;
+  };
 }
 // the part a selector alternative styles: the first Plenix class of its last compound, without its modifier
 function partOf(sel) {
   const last = sel.replace(/:(?:not|is|where|has)\((?:[^()]|\([^()]*\))*\)/g, '').trim().split(/\s+|>|\+|~/).filter(Boolean).pop() || '';
   const m = last.match(/\.(plx-[a-z0-9]+(?:-[a-z0-9]+)*(?:__[a-z0-9]+(?:-[a-z0-9]+)*)?)/);
-  if (m) return m[1].replace(/--[a-z0-9-]+$/, '');
+  if (m) { const mod = last.match(new RegExp('\\.(' + m[1].replace(/--[a-z0-9-]+$/, '') + '--[a-z0-9]+(?:-[a-z0-9]+)*)')); return mod ? mod[1] : m[1]; }
   const el = last.match(/^([a-z][a-z0-9]*)/); return el ? '<' + el[1] + '>' : null;
 }
 const splitList = (list) => { const out = []; let depth = 0, from = 0; for (let i = 0; i < list.length; i++) { const c = list[i]; if (c === '(') depth++; else if (c === ')') depth--; else if (c === ',' && !depth) { out.push(list.slice(from, i)); from = i + 1; } } out.push(list.slice(from)); return out.map((s) => s.trim()).filter(Boolean); };
@@ -96,19 +102,32 @@ function measure() {
     for (const r of rules(fs.readFileSync(f, 'utf8'), file)) {
       const ff = /var\((--plx-[a-z0-9-]+)\)/.exec(r.decl['font-family'] || '');
       if (ff && FONTS[ff[1]] && r.decl['word-spacing'] === undefined) boundary.push({ file, line: r.line, text: 'sets a font without its word spacing: add ' + (FONTS[ff[1]] === 'mono' ? MONO_DECL : SANS_DECL) + ' (Reddit Mono fitted to DM Sans, docs/font-study/playground)' });
-      if (!contract || !Object.keys(r.decl).length) continue;
+      if (!contract || !Object.values(r.decl).some((v) => !/^inherit$/.test(v))) continue;
       for (const p of r.parts) {
-        const x = parts[p] = parts[p] || { props: new Set(), roles: new Set(), family: false, where: file + ':' + r.line };
-        for (const [k, v] of Object.entries(r.decl)) { x.props.add(k); if (!/^(inherit|normal|initial|unset)$/.test(v)) { const role = ROLE(v); x.roles.add(role || 'none'); } }
+        const x = parts[p] = parts[p] || { props: new Set(), byProp: {}, family: false, where: file + ':' + r.line };
+        // inherit is following the context for that property, not a value of the part's own
+        for (const [k, v] of Object.entries(r.decl)) { if (/^inherit$/.test(v)) continue; x.props.add(k); const s = x.byProp[k] = x.byProp[k] || new Set(); const role = ROLE(v, k); if (Array.isArray(role)) s.add('any:' + role.join(',')); else s.add(role || 'none'); }
         if (r.decl['font-family'] !== undefined && !/^inherit$/.test(r.decl['font-family'])) x.family = true;
       }
     }
   }
+  // establishes: all six declared, from one role apart from the properties the part sets to its own values (its adjusts:
+  // a data value at 11px is the data role at its own size). Otherwise it adjusts what it declares.
+  // a variant (plx-tabs__tab--segmented) is judged with its part's own rules (plx-tabs__tab): together they are what its
+  // element computes
   const declared = {}, incomplete = {};
   for (const [p, x] of Object.entries(parts).sort()) {
-    const props = PROPS.filter((k) => x.props.has(k)), roles = [...x.roles];
-    declared[p] = props.length === PROPS.length && roles.length === 1 && roles[0] !== 'none' ? { contract: 'establishes', role: roles[0] } : { contract: 'adjusts', props };
-    if (x.family && declared[p].contract !== 'establishes') incomplete[p] = 'changes the font family without the whole role (' + PROPS.filter((k) => !x.props.has(k)).join(', ') + (roles.length > 1 || roles[0] === 'none' ? (PROPS.every((k) => x.props.has(k)) ? 'all set, but not from one text role' : '; not from a text role') : '') + ')';
+    const base = p.includes('--') ? parts[p.replace(/--[a-z0-9-]+$/, '')] : null;
+    const eff = { props: new Set([...x.props, ...(base ? base.props : [])]), byProp: {} };
+    for (const src of [base, x]) if (src) for (const [k, set] of Object.entries(src.byProp)) { eff.byProp[k] = eff.byProp[k] || new Set(); for (const r of set) eff.byProp[k].add(r); }
+    const own = PROPS.filter((k) => x.props.has(k)), all = PROPS.filter((k) => eff.props.has(k));
+    const fromRole = {}; for (const [k, set] of Object.entries(eff.byProp)) for (const r of set) if (r !== 'none' && !r.startsWith('any:')) (fromRole[r] = fromRole[r] || new Set()).add(k);
+    const role = Object.keys(fromRole).sort((a, b) => fromRole[b].size - fromRole[a].size)[0];
+    // a property is the role's when every value it is given comes from that role (a keyword matching the role counts)
+    const isRole = (k) => [...(eff.byProp[k] || [])].every((r) => r === role || (r.startsWith('any:') && r.slice(4).split(',').includes(role)));
+    const adj = role ? PROPS.filter((k) => x.props.has(k) && !isRole(k)) : own;
+    declared[p] = all.length === PROPS.length && role ? Object.assign({ contract: 'establishes', role }, adj.length ? { adjusts: adj } : {}) : { contract: 'adjusts', props: own };
+    if ((x.family || (base && base.family)) && declared[p].contract !== 'establishes') incomplete[p] = 'changes the font family without the whole role (missing ' + PROPS.filter((k) => !eff.props.has(k)).join(', ') + (all.length === PROPS.length ? '; none from a text role' : '') + ')';
   }
   return { boundary, declared, incomplete, where: Object.fromEntries(Object.entries(parts).map(([p, x]) => [p, x.where])) };
 }

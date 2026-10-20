@@ -2,7 +2,7 @@
    result bar, results. */
 .plx-search-ws{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-block-size:0;min-inline-size:0;row-gap:var(--plx-comp-search-ws-row-gap);}
 .plx-search-ws__head{align-items:center;column-gap:var(--plx-comp-search-ws-head-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-search-ws-head-row-gap);}
-.plx-search-ws__title{color:var(--plx-comp-search-ws-title-text);font-family:var(--plx-comp-search-ws-title-font-family);font-size:var(--plx-comp-search-ws-title-font-size);font-weight:var(--plx-comp-search-ws-title-font-weight);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;word-spacing:normal;}
+.plx-search-ws__title{color:var(--plx-comp-search-ws-title-text);font-family:var(--plx-comp-search-ws-title-font-family);font-size:var(--plx-comp-search-ws-title-font-size);font-weight:var(--plx-comp-search-ws-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-sys-text-title-line-height);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;word-spacing:normal;}
 .plx-search-ws__count,.plx-search-ws__results{color:var(--plx-comp-search-ws-count-text);font-size:var(--plx-comp-search-ws-count-font-size);}
 .plx-search-ws__spacer{flex-basis:0%;flex-grow:1;}
 .plx-search-ws__query{max-inline-size:var(--plx-comp-search-ws-query-max-width);}

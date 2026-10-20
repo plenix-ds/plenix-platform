@@ -13,7 +13,7 @@
 /* collapsed: the rail on the pane's surface */
 .plx-nav-pane-rail{align-self:stretch;background-color:var(--plx-comp-nav-pane-background);flex-shrink:0;}
 /* the title row: Collapse, the pane’s title (filling the row, cut with an ellipsis), its actions; then the optional second row */
-.plx-nav-pane__title{color:var(--plx-comp-nav-pane-title-text);flex-basis:0%;flex-grow:1;font-family:var(--plx-comp-nav-pane-title-font-family);font-size:var(--plx-comp-nav-pane-title-font-size);font-weight:var(--plx-comp-nav-pane-title-font-weight);min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;word-spacing:normal;}
+.plx-nav-pane__title{color:var(--plx-comp-nav-pane-title-text);flex-basis:0%;flex-grow:1;font-family:var(--plx-comp-nav-pane-title-font-family);font-size:var(--plx-comp-nav-pane-title-font-size);font-weight:var(--plx-comp-nav-pane-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-sys-text-title-line-height);min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;word-spacing:normal;}
 .plx-nav-pane__actions{align-items:center;column-gap:var(--plx-comp-nav-pane-actions-gap);display:inline-flex;flex-shrink:0;}
 .plx-nav-pane__subheader{align-items:center;column-gap:var(--plx-comp-nav-pane-subheader-gap);display:flex;flex-shrink:0;padding-block-start:var(--plx-comp-nav-pane-subheader-padding-block-start);padding-inline-end:var(--plx-comp-nav-pane-subheader-padding-inline);padding-inline-start:var(--plx-comp-nav-pane-subheader-padding-inline);}
 /* Narrow (Platforms Standard 4.1, 6.4; batch 311): the pane is a screen of its own over the main region, never a drawer:

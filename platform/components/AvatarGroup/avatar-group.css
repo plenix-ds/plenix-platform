@@ -10,7 +10,7 @@
 /* grid: spaced, wrapping to more rows */
 .plx-avatar-group--grid{column-gap:var(--plx-comp-avatar-group-gap);flex-wrap:wrap;row-gap:var(--plx-comp-avatar-group-gap);}
 /* the +N tile: the neutral fill, the count in the data font */
-.plx-avatar.plx-avatar-group__more{background-color:var(--plx-comp-avatar-group-more-background);color:var(--plx-comp-avatar-group-more-text);font-family:var(--plx-comp-avatar-group-more-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-avatar.plx-avatar-group__more{background-color:var(--plx-comp-avatar-group-more-background);color:var(--plx-comp-avatar-group-more-text);font-family:var(--plx-comp-avatar-group-more-font-family);letter-spacing:var(--plx-sys-text-title-letter-spacing);word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* the +N tile as a button (onMore): no frame of its own; focus changes the tile's ring to the focus color */
 .plx-avatar-group__more-button{background-color:transparent;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;cursor:pointer;display:inline-flex;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-avatar-group__more-button:focus-visible{outline-style:none;}

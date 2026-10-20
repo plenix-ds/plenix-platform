@@ -9,7 +9,7 @@
 /* the value column shrinks with its pane (batch 292): a value wraps, it is never cut by the pane's edge */
 /* a technical value (a size, a date, an ID, a file name) (owner, 2026-10-11): the data font, Reddit Mono, at the value size, so
    Reddit Mono and DM Sans values share one baseline; Text inside a value or a description takes its size */
-.plx-property-list__value--data{font-family:var(--plx-comp-property-list-value-data-font-family);font-size:var(--plx-comp-property-list-value-data-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-property-list__value--data{font-family:var(--plx-comp-property-list-value-data-font-family);font-size:var(--plx-comp-property-list-value-data-font-size);font-weight:var(--plx-sys-text-data-font-weight);letter-spacing:var(--plx-sys-text-data-letter-spacing);line-height:var(--plx-sys-text-data-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* columns (batches 269-270): every item shares one label column as wide as the longest label (a label is at most
    --plx-ref-size-160px), the values take the rest and wrap between words only. When the list is narrow the label column
    gives way: a label cut short ends in an ellipsis and shows in full in a Tooltip. Only below 180px (the value of

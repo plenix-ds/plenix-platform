@@ -17,30 +17,16 @@
     "word-spacing"
    ]
   },
-  "<code>": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size"
-   ]
-  },
   "plx-activity-list__meta": {
    "contract": "adjusts",
    "props": [
     "font-size"
    ]
   },
-  "plx-activity-list__opener": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight"
-   ]
-  },
   "plx-activity-list__time": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
@@ -65,16 +51,9 @@
   "plx-app-header__brand": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
     "font-weight",
     "letter-spacing"
-   ]
-  },
-  "plx-app-header__item": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
    ]
   },
   "plx-app-header__name": {
@@ -189,10 +168,59 @@
    "contract": "adjusts",
    "props": [
     "font-family",
-    "font-size",
     "font-weight",
+    "letter-spacing",
     "line-height",
     "word-spacing"
+   ]
+  },
+  "plx-avatar--20": {
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
+    "font-size"
+   ]
+  },
+  "plx-avatar--24": {
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
+    "font-size"
+   ]
+  },
+  "plx-avatar--28": {
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
+    "font-size"
+   ]
+  },
+  "plx-avatar--32": {
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
+    "font-size"
+   ]
+  },
+  "plx-avatar--40": {
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
+    "font-size"
+   ]
+  },
+  "plx-avatar--48": {
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
+    "font-size"
+   ]
+  },
+  "plx-avatar--64": {
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
+    "font-size"
    ]
   },
   "plx-avatar-upload__hint": {
@@ -207,6 +235,12 @@
     "font-size",
     "font-weight",
     "line-height"
+   ]
+  },
+  "plx-badge--sm": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
    ]
   },
   "plx-banner": {
@@ -266,7 +300,25 @@
     "word-spacing"
    ]
   },
-  "plx-brand-lockup": {
+  "plx-brand-lockup--size-lg": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-brand-lockup--size-md": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-brand-lockup--size-sm": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-brand-lockup--size-xl": {
    "contract": "adjusts",
    "props": [
     "font-size"
@@ -298,19 +350,18 @@
    ]
   },
   "plx-button": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "body",
+   "adjusts": [
     "font-family",
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-calendar__day": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
@@ -349,14 +400,6 @@
     "font-size"
    ]
   },
-  "plx-card__opener": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight"
-   ]
-  },
   "plx-card__title": {
    "contract": "adjusts",
    "props": [
@@ -375,13 +418,6 @@
    "props": [
     "font-size",
     "font-weight"
-   ]
-  },
-  "plx-cascader__trigger": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size"
    ]
   },
   "plx-chart-annotation__label": {
@@ -464,8 +500,13 @@
   "plx-chart-tooltip__title": {
    "contract": "adjusts",
    "props": [
+    "font-weight"
+   ]
+  },
+  "plx-chart-tooltip__title--data": {
+   "contract": "adjusts",
+   "props": [
     "font-family",
-    "font-weight",
     "word-spacing"
    ]
   },
@@ -520,12 +561,12 @@
    ]
   },
   "plx-chat__header-title": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
     "font-family",
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-chat__meta": {
@@ -553,12 +594,6 @@
     "font-size"
    ]
   },
-  "plx-check__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-choice-list__legend": {
    "contract": "adjusts",
    "props": [
@@ -572,12 +607,6 @@
     "font-size"
    ]
   },
-  "plx-choice__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-choice__label": {
    "contract": "adjusts",
    "props": [
@@ -589,21 +618,13 @@
    "contract": "adjusts",
    "props": [
     "font-family",
-    "font-size",
-    "line-height",
     "word-spacing"
    ]
   },
-  "plx-code-block__code": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size"
-   ]
-  },
   "plx-code-block__pre": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "code",
+   "adjusts": [
     "font-family",
     "font-size",
     "line-height",
@@ -611,8 +632,9 @@
    ]
   },
   "plx-code-block__title": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "code",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
@@ -656,16 +678,9 @@
     "word-spacing"
    ]
   },
-  "plx-color-swatch": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-color-swatch-label": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
     "line-height"
    ]
@@ -689,13 +704,6 @@
     "font-size",
     "font-weight",
     "word-spacing"
-   ]
-  },
-  "plx-combobox__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size"
    ]
   },
   "plx-combobox__loading": {
@@ -755,7 +763,7 @@
     "word-spacing"
    ]
   },
-  "plx-commerce-summary__row": {
+  "plx-commerce-summary__row--total": {
    "contract": "adjusts",
    "props": [
     "font-weight"
@@ -879,7 +887,7 @@
     "word-spacing"
    ]
   },
-  "plx-contextual-help": {
+  "plx-contextual-help--inline": {
    "contract": "adjusts",
    "props": [
     "font-size",
@@ -892,7 +900,7 @@
     "font-weight"
    ]
   },
-  "plx-count": {
+  "plx-count--pill": {
    "contract": "adjusts",
    "props": [
     "font-size",
@@ -900,7 +908,13 @@
     "line-height"
    ]
   },
-  "plx-data-grid__cell": {
+  "plx-count--plain": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-data-grid__cell--name": {
    "contract": "adjusts",
    "props": [
     "font-weight"
@@ -958,12 +972,6 @@
    "props": [
     "font-size",
     "font-weight"
-   ]
-  },
-  "plx-data-grid__grid-data-tree-control": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
    ]
   },
   "plx-data-grid__grid-footer": {
@@ -1069,10 +1077,14 @@
   "plx-data-pill": {
    "contract": "adjusts",
    "props": [
-    "font-family",
-    "font-size",
     "font-weight",
-    "line-height",
+    "line-height"
+   ]
+  },
+  "plx-data-pill--data": {
+   "contract": "adjusts",
+   "props": [
+    "font-family",
     "word-spacing"
    ]
   },
@@ -1084,12 +1096,12 @@
    ]
   },
   "plx-date-badge__weekday": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "caption",
+   "adjusts": [
     "font-family",
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-delete-flow__more": {
@@ -1114,6 +1126,12 @@
     "font-size",
     "line-height",
     "word-spacing"
+   ]
+  },
+  "plx-details--inline": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
    ]
   },
   "plx-details__summary": {
@@ -1201,12 +1219,6 @@
     "word-spacing"
    ]
   },
-  "plx-drag-handle": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-duplicate-action__source": {
    "contract": "adjusts",
    "props": [
@@ -1214,7 +1226,13 @@
     "line-height"
    ]
   },
-  "plx-empty-state": {
+  "plx-empty-state--inline": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-empty-state--page": {
    "contract": "adjusts",
    "props": [
     "font-size"
@@ -1284,25 +1302,18 @@
    ]
   },
   "plx-entity-header__title": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
     "font-family",
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-entity-picker__description": {
    "contract": "adjusts",
    "props": [
-    "font-size"
-   ]
-  },
-  "plx-entity-picker__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
     "font-size"
    ]
   },
@@ -1320,19 +1331,9 @@
     "font-weight"
    ]
   },
-  "plx-error-summary__title": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
-    "line-height"
-   ]
-  },
   "plx-event-chip": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size"
    ]
   },
@@ -1390,13 +1391,13 @@
    ]
   },
   "plx-field__label": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "label",
+   "adjusts": [
     "font-family",
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-fieldset__legend": {
@@ -1428,12 +1429,6 @@
     "word-spacing"
    ]
   },
-  "plx-file-input__native": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-file-input__size": {
    "contract": "adjusts",
    "props": [
@@ -1445,8 +1440,13 @@
   "plx-file-input__summary": {
    "contract": "adjusts",
    "props": [
+    "font-size"
+   ]
+  },
+  "plx-file-input__summary--file": {
+   "contract": "adjusts",
+   "props": [
     "font-family",
-    "font-size",
     "word-spacing"
    ]
   },
@@ -1517,6 +1517,13 @@
     "font-size",
     "font-weight",
     "line-height",
+    "word-spacing"
+   ]
+  },
+  "plx-file__name--data": {
+   "contract": "adjusts",
+   "props": [
+    "font-family",
     "word-spacing"
    ]
   },
@@ -1594,10 +1601,41 @@
    "contract": "adjusts",
    "props": [
     "font-family",
-    "font-size",
-    "font-weight",
+    "letter-spacing",
     "line-height",
     "word-spacing"
+   ]
+  },
+  "plx-heading--size-1": {
+   "contract": "establishes",
+   "role": "heading",
+   "adjusts": [
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-heading--size-2": {
+   "contract": "establishes",
+   "role": "heading",
+   "adjusts": [
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-heading--size-3": {
+   "contract": "establishes",
+   "role": "heading",
+   "adjusts": [
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-heading--size-4": {
+   "contract": "establishes",
+   "role": "heading",
+   "adjusts": [
+    "font-size",
+    "font-weight"
    ]
   },
   "plx-heat-map-scale": {
@@ -1626,7 +1664,6 @@
   "plx-image-editor__preset": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size"
    ]
   },
@@ -1643,6 +1680,12 @@
     "font-size",
     "font-weight",
     "word-spacing"
+   ]
+  },
+  "plx-image-editor__text--bold": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
    ]
   },
   "plx-image-upload__limits": {
@@ -1702,9 +1745,32 @@
    "props": [
     "font-family",
     "font-size",
-    "font-weight",
+    "letter-spacing",
     "line-height",
     "word-spacing"
+   ]
+  },
+  "plx-input--data": {
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
+    "font-family",
+    "letter-spacing",
+    "word-spacing"
+   ]
+  },
+  "plx-input--emphasis": {
+   "contract": "establishes",
+   "role": "label",
+   "adjusts": [
+    "font-weight"
+   ]
+  },
+  "plx-input--textarea": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "line-height"
    ]
   },
   "plx-input-group__affix": {
@@ -1717,8 +1783,9 @@
    ]
   },
   "plx-kbd": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "code",
+   "adjusts": [
     "font-family",
     "font-size",
     "line-height",
@@ -1733,27 +1800,18 @@
     "word-spacing"
    ]
   },
-  "plx-list": {
+  "plx-link--standalone": {
    "contract": "adjusts",
    "props": [
-    "font-family",
-    "font-size"
+    "font-weight"
    ]
   },
   "plx-list__item": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
     "font-weight",
     "line-height"
-   ]
-  },
-  "plx-list__text": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size"
    ]
   },
   "plx-load-more__count": {
@@ -1785,23 +1843,17 @@
    ]
   },
   "plx-media-card__meta": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
    ]
   },
-  "plx-media-card__select": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-media-card__title": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
@@ -1809,7 +1861,6 @@
   "plx-media-viewer__control": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size"
    ]
   },
@@ -1863,7 +1914,6 @@
   "plx-menu__item": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size"
    ]
   },
@@ -1994,8 +2044,9 @@
    ]
   },
   "plx-metric__change": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
@@ -2020,13 +2071,13 @@
    ]
   },
   "plx-metric__value": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "label",
+   "adjusts": [
     "font-family",
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-miller-columns": {
@@ -2080,24 +2131,23 @@
   "plx-nav-list__item": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
   },
-  "plx-nav-list__pin": {
+  "plx-nav-list__item--group": {
    "contract": "adjusts",
    "props": [
-    "font-family"
+    "font-weight"
    ]
   },
   "plx-nav-pane__title": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
     "font-family",
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-network-graph__edge-label": {
@@ -2152,7 +2202,12 @@
   "plx-pagination__page": {
    "contract": "adjusts",
    "props": [
-    "font-family",
+    "font-size"
+   ]
+  },
+  "plx-pagination__page--step": {
+   "contract": "adjusts",
+   "props": [
     "font-size",
     "line-height"
    ]
@@ -2166,7 +2221,6 @@
   "plx-pagination__select": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size"
    ]
   },
@@ -2177,18 +2231,12 @@
    ]
   },
   "plx-panel__title": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
     "font-family",
     "font-size",
-    "font-weight",
-    "word-spacing"
-   ]
-  },
-  "plx-panel__toggle": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
+    "font-weight"
    ]
   },
   "plx-people-group__description": {
@@ -2305,15 +2353,6 @@
     "word-spacing"
    ]
   },
-  "plx-product-card__opener": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
-    "line-height"
-   ]
-  },
   "plx-product-card__price": {
    "contract": "adjusts",
    "props": [
@@ -2366,8 +2405,9 @@
    ]
   },
   "plx-progress-bar__value": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
@@ -2380,12 +2420,6 @@
     "font-size",
     "line-height",
     "word-spacing"
-   ]
-  },
-  "plx-progress-steps__button": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
    ]
   },
   "plx-progress-steps__count": {
@@ -2436,6 +2470,13 @@
   "plx-property-list__value": {
    "contract": "adjusts",
    "props": [
+    "font-size"
+   ]
+  },
+  "plx-property-list__value--data": {
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
@@ -2517,12 +2558,6 @@
     "font-size"
    ]
   },
-  "plx-radio-tile__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-radio-tile__label": {
    "contract": "adjusts",
    "props": [
@@ -2531,19 +2566,18 @@
    ]
   },
   "plx-radio-tiles__legend": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "label",
+   "adjusts": [
     "font-family",
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-rating__star": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
     "line-height"
    ]
@@ -2556,12 +2590,12 @@
    ]
   },
   "plx-record-page__title": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
     "font-family",
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-relative-date-input__range": {
@@ -2611,14 +2645,6 @@
     "font-weight"
    ]
   },
-  "plx-resource-list__opener": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight"
-   ]
-  },
   "plx-review-flow__detail": {
    "contract": "adjusts",
    "props": [
@@ -2654,6 +2680,20 @@
     "font-weight",
     "line-height",
     "word-spacing"
+   ]
+  },
+  "plx-rich-text--article": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "line-height"
+   ]
+  },
+  "plx-rich-text--compact": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "line-height"
    ]
   },
   "plx-rich-text-editor__mention": {
@@ -2708,16 +2748,6 @@
     "word-spacing"
    ]
   },
-  "plx-row-button": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
-    "letter-spacing",
-    "line-height"
-   ]
-  },
   "plx-sankey-diagram__label": {
    "contract": "adjusts",
    "props": [
@@ -2754,14 +2784,6 @@
     "font-size"
    ]
   },
-  "plx-search-result__opener": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight"
-   ]
-  },
   "plx-search-result__path": {
    "contract": "adjusts",
    "props": [
@@ -2794,12 +2816,12 @@
    ]
   },
   "plx-search-ws__title": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "title",
+   "adjusts": [
     "font-family",
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-search__input": {
@@ -2855,18 +2877,27 @@
     "word-spacing"
    ]
   },
+  "plx-section-heading--level-2": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-section-heading--level-3": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-section-heading--level-4": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
   "plx-section-heading__actions": {
    "contract": "adjusts",
    "props": [
-    "letter-spacing"
-   ]
-  },
-  "plx-section-heading__toggle": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
     "letter-spacing"
    ]
   },
@@ -2877,6 +2908,12 @@
     "font-size",
     "font-weight",
     "word-spacing"
+   ]
+  },
+  "plx-segmented__item--sm": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
    ]
   },
   "plx-selection-summary__count": {
@@ -2938,20 +2975,26 @@
    ]
   },
   "plx-settings__section-title": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
-    "word-spacing"
-   ]
-  },
-  "plx-settings__section-toggle": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "heading",
+   "adjusts": [
     "font-family",
     "font-size",
     "font-weight"
+   ]
+  },
+  "plx-settings__section-title--level-3": {
+   "contract": "establishes",
+   "role": "heading",
+   "adjusts": [
+    "font-size"
+   ]
+  },
+  "plx-settings__section-title--level-4": {
+   "contract": "establishes",
+   "role": "heading",
+   "adjusts": [
+    "font-size"
    ]
   },
   "plx-sheet__title": {
@@ -2970,12 +3013,6 @@
     "font-weight"
    ]
   },
-  "plx-slider__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-slider__label": {
    "contract": "adjusts",
    "props": [
@@ -2983,8 +3020,9 @@
    ]
   },
   "plx-slider__mark": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "line-height",
@@ -2992,8 +3030,9 @@
    ]
   },
   "plx-slider__value": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
@@ -3011,25 +3050,19 @@
     "font-size"
    ]
   },
-  "plx-switch__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
-  "plx-table__cell": {
+  "plx-table__cell--name": {
    "contract": "adjusts",
    "props": [
     "font-weight"
    ]
   },
   "plx-table__empty": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "body",
+   "adjusts": [
     "font-family",
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-table__filter-label": {
@@ -3075,12 +3108,6 @@
    "props": [
     "font-size",
     "font-weight"
-   ]
-  },
-  "plx-table__grid-data-tree-control": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
    ]
   },
   "plx-table__grid-footer": {
@@ -3183,55 +3210,48 @@
     "line-height"
    ]
   },
-  "plx-tabs__tab": {
+  "plx-tabs__tab--contained": {
    "contract": "adjusts",
    "props": [
-    "font-family",
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-tabs__tab--folder": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-tabs__tab--segmented": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-tabs__tab--vertical": {
+   "contract": "adjusts",
+   "props": [
     "font-size",
     "font-weight"
    ]
   },
   "plx-tag": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "body",
+   "adjusts": [
     "font-family",
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
-   ]
-  },
-  "plx-tag__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
     "line-height"
    ]
   },
   "plx-tag__remove": {
    "contract": "adjusts",
    "props": [
-    "font-family",
     "font-size",
-    "line-height"
-   ]
-  },
-  "plx-tag__rename": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
-    "line-height"
-   ]
-  },
-  "plx-tag__toggle": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
     "line-height"
    ]
   },
@@ -3251,29 +3271,89 @@
     "word-spacing"
    ]
   },
-  "plx-text": {
+  "plx-text--accent": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-text--body": {
+   "contract": "establishes",
+   "role": "body"
+  },
+  "plx-text--caption": {
+   "contract": "establishes",
+   "role": "caption"
+  },
+  "plx-text--data": {
+   "contract": "adjusts",
+   "props": [
+    "font-family",
+    "font-size",
+    "word-spacing"
+   ]
+  },
+  "plx-text--display": {
+   "contract": "establishes",
+   "role": "display"
+  },
+  "plx-text--eyebrow": {
    "contract": "adjusts",
    "props": [
     "font-family",
     "font-size",
     "font-weight",
     "letter-spacing",
-    "line-height",
     "word-spacing"
    ]
+  },
+  "plx-text--heading": {
+   "contract": "establishes",
+   "role": "heading"
+  },
+  "plx-text--label": {
+   "contract": "establishes",
+   "role": "label"
+  },
+  "plx-text--lead": {
+   "contract": "establishes",
+   "role": "lead"
+  },
+  "plx-text--link": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-text--secondary": {
+   "contract": "adjusts",
+   "props": [
+    "font-family",
+    "font-size",
+    "word-spacing"
+   ]
+  },
+  "plx-text--strong": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-text--title": {
+   "contract": "establishes",
+   "role": "title"
   },
   "plx-time": {
    "contract": "adjusts",
    "props": [
     "font-family",
-    "font-size",
-    "line-height",
     "word-spacing"
    ]
   },
   "plx-time-grid__hour": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "data",
+   "adjusts": [
     "font-family",
     "font-size",
     "word-spacing"
@@ -3284,13 +3364,6 @@
    "props": [
     "font-family",
     "word-spacing"
-   ]
-  },
-  "plx-time-picker__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size"
    ]
   },
   "plx-time-picker__option": {
@@ -3355,22 +3428,10 @@
     "font-size"
    ]
   },
-  "plx-toast__close": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-toast__message": {
    "contract": "adjusts",
    "props": [
     "line-height"
-   ]
-  },
-  "plx-tool-rail__item": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
    ]
   },
   "plx-tool-rail__label": {
@@ -3380,12 +3441,20 @@
    ]
   },
   "plx-tooltip__bubble": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "caption",
+   "adjusts": [
     "font-family",
     "font-size",
-    "line-height",
-    "word-spacing"
+    "line-height"
+   ]
+  },
+  "plx-tooltip__bubble--rich": {
+   "contract": "establishes",
+   "role": "caption",
+   "adjusts": [
+    "font-size",
+    "line-height"
    ]
   },
   "plx-tooltip__title": {
@@ -3766,19 +3835,43 @@
     "font-size"
    ]
   },
-  "plx-widget-grid__handle": {
-   "contract": "adjusts",
-   "props": [
-    "font-family"
-   ]
-  },
   "plx-word-cloud__word": {
    "contract": "adjusts",
    "props": [
     "font-family",
-    "font-size",
     "font-weight",
     "word-spacing"
+   ]
+  },
+  "plx-word-cloud__word--1": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-word-cloud__word--2": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-word-cloud__word--3": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-word-cloud__word--4": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-word-cloud__word--5": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
    ]
   }
  }
