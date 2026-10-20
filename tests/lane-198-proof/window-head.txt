@@ -1,0 +1,19 @@
+[
+  {
+    "room": 560,
+    "pane": 560,
+    "viewport": 525,
+    "rows": 20,
+    "total": 19800,
+    "height": "100%"
+  },
+  {
+    "room": 560,
+    "pane": 560,
+    "viewport": 524,
+    "rows": 20,
+    "total": 19800,
+    "height": "automatic"
+  }
+]
+GRID_WINDOW_OK

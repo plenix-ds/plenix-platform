@@ -1,0 +1,12 @@
+AssertionError [ERR_ASSERTION]: equivalent sort values must not re-sort
+
+18 !== 12
+
+    at C:\Users\Administrator\Documents\Plenix-Codex-Tools\workspaces\task149-base\tests\data-grid-sort-185.test.js:7:163 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 18,
+  expected: 12,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
