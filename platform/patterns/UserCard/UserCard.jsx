@@ -62,7 +62,7 @@ export function UserCard({ name, src, color, secondary, role, presence, details,
   const withCover = !compact && !!cover;
   const hasActions = actions !== undefined && actions !== null && actions !== false;
   return (
-    <Card className={cx('plx-user-card', 'plx-user-card--' + (compact ? 'compact' : 'default'), withCover && 'plx-user-card--cover', hasActions && 'plx-user-card--actions', className)} {...rest}>
+    <Card bodyLayout="stack" className={cx('plx-user-card', 'plx-user-card--' + (compact ? 'compact' : 'default'), withCover && 'plx-user-card--cover', hasActions && 'plx-user-card--actions', className)} {...rest}>
       {withCover ? <span className="plx-user-card__cover"><Image src={cover} alt="" ratio="21-9" className="plx-user-card__cover-image" /></span> : null}
       <div className="plx-user-card__identity">
         <Avatar name={name} src={src} color={color} presence={p || undefined} size={compact ? 'lg' : '2xl'} className="plx-user-card__avatar" />

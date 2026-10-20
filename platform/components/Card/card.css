@@ -114,3 +114,14 @@
 .plx-media-card__media[data-plx-aspect="16/9"]{aspect-ratio:var(--plx-comp-media-card-aspect-16-9);}
 .plx-media-card__media[data-plx-aspect="9/16"]{aspect-ratio:var(--plx-comp-media-card-aspect-9-16);}
 .plx-media-card__media[data-plx-aspect="3/4"]{aspect-ratio:var(--plx-comp-media-card-aspect-3-4);}
+
+/* Card owns its layout and parts. Media layouts keep the body first; a stack body arranges composed content.
+   Public gap hooks are inherited context, read only here with Card-token defaults. */
+.plx-card[data-plx-layout="media-first"]>.plx-card__body,
+.plx-card[data-plx-layout="media-start"]>.plx-card__body{display:flex;order:-1;}
+.plx-card[data-plx-title-wrap]>.plx-card__header>.plx-card__title{white-space:normal;}
+.plx-card[data-plx-layout="media-start"]{align-items:start;column-gap:var(--plx-comp-card-layout-gap,var(--plx-comp-card-header-gap));display:grid;grid-template-areas:"media header" "media meta";grid-template-columns:auto minmax(0, 1fr);}
+.plx-card[data-plx-layout="media-start"]>.plx-card__header{grid-area:header;}
+.plx-card[data-plx-layout="media-start"]>.plx-card__meta{grid-area:meta;}
+.plx-card[data-plx-layout="media-start"]>.plx-card__body{grid-area:media;}
+.plx-card[data-plx-body-layout="stack"]>.plx-card__body{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-card-body-gap,var(--plx-comp-card-row-gap));}

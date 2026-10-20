@@ -33,8 +33,15 @@
      Card.href: makes the title a link
      Card.onOpen(): makes the title a button that runs this
      Card.headingLevel: the heading level of the title (default 3)
+     Card.layout: "default" (default) | "media-first" (body above heading) | "media-start" (body beside heading and meta)
+     Card.bodyLayout: "default" (default) | "stack" (vertical body with a gap)
+     Card.titleWrap: whether the title wraps instead of truncating (default false)
      Card.children: the body
-     Card.className: more classes on the <article>
+     Card.className: layout integration classes on the <article>; Card owns its internal parts
+     Card public hooks: --plx-comp-card-layout-gap (media-start column gap; defaults to card-header-gap),
+       --plx-comp-card-body-gap (stack body gap; defaults to card-row-gap). Both accept length tokens, inherit to every
+       Card in the supplying context including nested Cards, and apply across themes/densities without affecting states.
+       FeatureCard supplies layout and wrap props; UserCard supplies the stack body. Patterns own only their content.
      Card.surface: "flat" (default) | "glow" (the surface in the middle fading to a rim one step off it) | "inset" (a soft
        12px inner edge in the rim color) (owner, 2026-10-15, the card builder)
      Card.elevation: "outline" (default: the 1px border) | "halo" (a thin even shadow) | "lifted" (a fuller even shadow,
@@ -141,7 +148,7 @@ function Opener({ href, onOpen, current, className, children }) {
 }
 
 export function Card({ title, meta, actions, surface = 'flat', elevation = 'outline', selected = false, href, onOpen, headingLevel = 3, accent, expandable = false, defaultExpanded = false, expanded, onToggle,
-  strings, className, children, ...rest }) {
+  strings, className, children, layout = 'default', bodyLayout = 'default', titleWrap = false, ...rest }) {
   const interactive = !!(href || onOpen);
   const t = Object.assign({}, CARD_STRINGS, strings);
   const id = useUid('plx-card');
@@ -150,7 +157,7 @@ export function Card({ title, meta, actions, surface = 'flat', elevation = 'outl
   const toggle = () => { if (expanded === undefined) setOwn(!open); if (onToggle) onToggle(!open); };
   const hasBody = children !== undefined && children !== null;
   return (
-    <article className={cx('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)} data-plx-color={accent || undefined} {...rest}>
+    <article className={cx('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)} data-plx-color={accent || undefined} {...rest} data-plx-layout={layout} data-plx-body-layout={bodyLayout} data-plx-title-wrap={titleWrap || undefined}>
       {title || expandable ? (
         <div className="plx-card__header">
           {title ? <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} current={selected} className="plx-card__opener">{title}</Opener></H> : null}

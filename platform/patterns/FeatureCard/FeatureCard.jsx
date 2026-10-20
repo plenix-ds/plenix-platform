@@ -44,7 +44,7 @@ export function FeatureCard({ title, description, variant = 'icon', icon, hue, t
     ? <Image src={image} alt={imageAlt} ratio={v === 'image' ? '16-9' : '1-1'} rounded={v === 'horizontal'} className="plx-feature-card__image" />
     : <IconTile icon={icon || 'sparkle'} hue={hue} tone={tone} size="md" className="plx-feature-card__tile" />;
   return (
-    <Card title={title} meta={description} href={href} onOpen={onOpen} headingLevel={headingLevel}
+    <Card layout={v === 'horizontal' ? 'media-start' : 'media-first'} titleWrap title={title} meta={description} href={href} onOpen={onOpen} headingLevel={headingLevel}
       className={cx('plx-feature-card', 'plx-feature-card--' + v, className)} {...rest}>
       <span className={cx('plx-feature-card__media', picture && 'plx-feature-card__media--image')}>{media}</span>
     </Card>

@@ -43,16 +43,6 @@
       "[data-plx-density=\"comfortable\"] .plx-tree__item[aria-expanded=\"true\"]>.plx-tree__row .plx-tree__icon .plx-icon": 1,
       "[data-plx-density=\"comfortable\"] .plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon": 1
     },
-    "platform/patterns/FeatureCard/feature-card.css": {
-      ".plx-feature-card > .plx-card__body": 1,
-      ".plx-feature-card .plx-card__title": 1,
-      ".plx-feature-card--horizontal > .plx-card__header": 1,
-      ".plx-feature-card--horizontal > .plx-card__meta": 1,
-      ".plx-feature-card--horizontal > .plx-card__body": 1
-    },
-    "platform/patterns/UserCard/user-card.css": {
-      ".plx-user-card > .plx-card__body": 1
-    },
     "platform/system/forced-colors.css": {
       ".plx-tree__item.is-selected>.plx-tree__row .plx-icon": 1,
       ".plx-tag--selected .plx-icon": 1
