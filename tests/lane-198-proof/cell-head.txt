@@ -1,0 +1,1 @@
+GRID_CELL_MEMO_OK parent reuse, selection, edit and lazy row menu
