@@ -1,0 +1,33 @@
+[
+  {
+    "pane": true,
+    "want": false,
+    "actual": false,
+    "width": 558,
+    "threshold": "600px"
+  },
+  {
+    "pane": true,
+    "narrow": "list",
+    "want": true,
+    "actual": true,
+    "width": 558,
+    "threshold": "600px"
+  },
+  {
+    "pane": true,
+    "narrow": "table",
+    "want": false,
+    "actual": false,
+    "width": 558,
+    "threshold": "600px"
+  },
+  {
+    "pane": false,
+    "want": true,
+    "actual": true,
+    "width": 558,
+    "threshold": "600px"
+  }
+]
+GRID_NARROW_OK pane default, explicit list/table, standalone default
