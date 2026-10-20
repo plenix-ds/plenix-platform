@@ -1,0 +1,8 @@
+SCOPE labs: changed since f500fa5ea (16 files) · 1 of 1 labs
+  FAIL text-field: 2364 checks, 24 tokens
+       xs/default/invalid/value bg: --plx-comp-input-background set to rgb(1, 2, 3) but background-color reads rgb(253, 231, 231) (was rgb(253, 231, 231))
+       xs/default/invalid/placeholder bg: --plx-comp-input-background set to rgb(1, 2, 3) but background-color reads rgb(253, 231, 231) (was rgb(253, 231, 231))
+       xs/data/invalid/value bg: --plx-comp-input-background set to rgb(1, 2, 3) but background-color reads rgb(253, 231, 231) (was rgb(253, 231, 231))
+       xs/data/invalid/placeholder bg: --plx-comp-input-background set to rgb(1, 2, 3) but background-color reads rgb(253, 231, 231) (was rgb(253, 231, 231))
+       xs/emphasis/invalid/value bg: --plx-comp-input-background set to rgb(1, 2, 3) but background-color reads rgb(253, 231, 231) (was rgb(253, 231, 231))
+LABS_FAIL 0/1 labs

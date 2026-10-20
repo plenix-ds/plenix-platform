@@ -1,0 +1,2 @@
+SCOPE reflow: changed since f500fa5ea (16 files) · 21 app pages, 14 of 14 sampled design-system pages
+REFLOW_OK 0 known findings on 36 pages at 320px (13 exempt two-dimensional scrollers)

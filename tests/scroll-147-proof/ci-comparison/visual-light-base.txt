@@ -1,0 +1,8 @@
+SCOPE task147-visual-light.cjs: full · every Button
+  light|compact|group|b border-top-left-radius: 0px -> 4px
+  light|compact|group|c border-top-left-radius: 0px -> 4px
+  light|standard|group|b border-top-left-radius: 0px -> 6px
+  light|standard|group|c border-top-left-radius: 0px -> 6px
+  light|comfortable|group|b border-top-left-radius: 0px -> 6px
+  light|comfortable|group|c border-top-left-radius: 0px -> 6px
+VISUAL_FAIL 6 differences in 74583 values (2529 buttons)

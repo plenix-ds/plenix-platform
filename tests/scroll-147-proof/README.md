@@ -27,3 +27,5 @@ CI run 39358268885 passes build, accessibility, labs 2 and 3, and GRID_SCROLL_OK
 The full unchanged DataGrid assertions were run on the same local Node 22 / Chrome runner against exact base f500fa5e and freshly rebuilt source head 96e77dd4. Both produce DATA_GRIDS_FAIL 26/42 table views. All per-view success/failure lines and contract-check results match exactly; no new table finding appears on head. See base-all-grids.txt and head-all-grids.txt. Head additionally passes GRID_SCROLL_OK 18 cases. No assertion, tolerance or baseline was relaxed.
 
 The earlier sampled-head run used a restored generated bundle and is superseded by this freshly rebuilt full comparison. The other CI groups have not been fully attributed against this exact base; this evidence only establishes the existing table-suite failures. System and specification gates pass (1056 files; 1171 leaves, 767 records).
+
+The remaining light-mode CI groups have now been compared; see [ci-comparison/README.md](ci-comparison/README.md) for results and raw logs. This supersedes the pending-attribution note above.
