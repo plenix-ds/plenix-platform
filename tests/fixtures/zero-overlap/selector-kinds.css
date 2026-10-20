@@ -1,0 +1,51 @@
+/* Plenix tests · the selector-kinds fixtures (tests/selector-kinds.test.js; the Plenix Styling Standard, 3.6).
+   One rule per line, after the kind it must be classified as ("expect: component") or the finding it must produce
+   ("expect: fail combinator"). Never loaded by a page. */
+/* expect: component */ .plx-button{background-color:var(--plx-state-button-background, var(--plx-comp-button-background));}
+/* expect: component */ .plx-button--ghost{--plx-state-button-hover-background:var(--plx-comp-button-ghost-hover-background);}
+/* expect: component */ .plx-button:is(:hover, .is-hover):where(:not(:active, .is-pointer-down, :disabled, [aria-disabled="true"])){--plx-state-button-background:var(--plx-comp-button-hover-background);}
+/* expect: component */ .plx-button:is(:disabled, [aria-disabled="true"]){cursor:not-allowed;}
+/* expect: component */ .plx-button__caret::after{content:"";}
+/* expect: component */ .plx-nav-list__item.is-current[aria-current="page"]{font-weight:600;}
+/* expect: component */ .plx-input[type="color"]:dir(rtl){scale:-1 1;}
+/* expect: component */ button.plx-button{cursor:pointer;}
+/* expect: component */ .plx-u-hidden{display:none;}
+/* expect: component */ .ds-sample-frame{display:block;}
+/* expect: component */ .plx-avatar:where(:not(.plx-avatar--24, .plx-avatar--28)){--plx-state-avatar-size:var(--plx-comp-avatar-32-size);}
+/* expect: behavior */ [data-plx-floating]{position:fixed;}
+/* expect: behavior */ [data-plx-floating-placement="top"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block;}
+/* expect: behavior */ [data-plx-dnd-handle]:disabled{cursor:default;}
+/* expect: foundation */ :root{--plx-ref-space-4px:0.25rem;color-scheme:light;}
+/* expect: foundation */ :root[data-plx-mode="dark"]{--plx-sys-surface-default:var(--plx-ref-color-gray-900);}
+/* expect: foundation */ [data-plx-density="compact"]{--plx-sys-control-height-standard:var(--plx-ref-space-28px);}
+/* expect: foundation */ [data-plx-theme="default"][data-plx-mode="light"]{--plx-sys-surface-default:var(--plx-ref-color-white);}
+/* expect: base */ :where(button:not([class*="plx-"]), input:not([class*="plx-"])){font-family:inherit;}
+/* expect: base */ h1:not([class*="plx-"]){margin-block-start:0;}
+/* expect: base */ *{box-sizing:border-box;}
+/* expect: base */ *::before{box-sizing:border-box;}
+/* expect: base */ body{margin-block-start:0;}
+/* expect: base */ html{font-size:100%;}
+/* expect: condition */ @media (prefers-reduced-motion: reduce){:root{--plx-ref-motion-duration-fast:0s;}}
+/* expect: condition */ @media (forced-colors: active){:root{--plx-sys-focus-color:Highlight;}}
+/* expect: condition */ :root[data-plx-density-changing]{--plx-ref-motion-duration-fast:0s;}
+/* expect: fail combinator */ .plx-card .plx-card__title{font-weight:600;}
+/* expect: fail combinator */ .plx-toolbar > .plx-button{flex-shrink:0;}
+/* expect: fail combinator */ .plx-tabs__tab + .plx-tabs__tab{margin-inline-start:0;}
+/* expect: fail combinator */ [data-plx-surface="inverse"] .plx-button--primary{box-shadow:none;}
+/* expect: fail combinator */ [aria-current="page"] .plx-icon{--plx-comp-icon-url:var(--plx-comp-icon-filled);}
+/* expect: fail combinator */ .plx-icon:where(:not([data-plx-density="comfortable"] *)){--plx-comp-icon-url:var(--plx-comp-icon-outline);}
+/* expect: fail relational */ .plx-check:has(.plx-check__input:disabled){cursor:not-allowed;}
+/* expect: fail cross-block */ .plx-input.plx-textarea{resize:vertical;}
+/* expect: fail cross-block */ .plx-nav-list__item:not(.plx-menu__item){color:inherit;}
+/* expect: fail unowned */ .is-focus-visible{outline-style:solid;}
+/* expect: fail unowned */ :focus-visible{outline-style:solid;}
+/* expect: fail unowned */ [aria-disabled="true"]{cursor:not-allowed;}
+/* expect: fail base-unguarded */ img{max-inline-size:100%;}
+/* expect: fail base-unguarded */ :where(button, input){font-family:inherit;}
+/* expect: fail foundation-property */ [data-plx-density]{font-size:var(--plx-sys-font-size-body);}
+/* expect: fail mixed-behavior */ [data-plx-floating][data-plx-dnd-handle]{cursor:grab;}
+/* expect: fail condition-not-token */ @media (prefers-reduced-motion: reduce){*{transition-duration:0s;}}
+/* expect: fail condition-not-token */ @media (forced-colors: active){.plx-button{outline-color:Highlight;}}
+/* expect: fail condition-not-token */ @media (prefers-reduced-motion: reduce){:root{color:red;}}
+/* expect: fail nesting */ .plx-card{color:red; .plx-card__title{font-weight:600;}}
+/* expect: fail nesting */ .plx-card{&:hover{color:blue;}}

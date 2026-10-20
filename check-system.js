@@ -154,7 +154,8 @@ for (const { file } of files) {
     // tokens
     for (const m of line.matchAll(/var\(\s*(--[a-z][a-z0-9-]*)/g)) {
       // the design system's samples (--ds-sample-<property>) are set at run time by DS.sample (ds.js)
-      if (/^--plx-(ref|sys|comp)-/.test(m[1]) || own.has(m[1]) || (SPEC_PAGE.test(file) && /^--ds-sample-[a-z-]+$/.test(m[1]))) continue;
+      // the three token tiers, and the state variables (Styling Standard 4.1: --plx-state-<component>-…, never inherited)
+      if (/^--plx-(ref|sys|comp|state)-/.test(m[1]) || own.has(m[1]) || (SPEC_PAGE.test(file) && /^--ds-sample-[a-z-]+$/.test(m[1]))) continue;
       add('tokens', file, n, m[1] + ' in: ' + line);
     }
     // hex colors: a # with 3, 4, 6 or 8 hex digits where a value starts (after : ( , = or a quote), not in comments or

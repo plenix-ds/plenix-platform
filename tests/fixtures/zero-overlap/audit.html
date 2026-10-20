@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-expect="--r">
+<head>
+<meta charset="utf-8">
+<title>Zero-overlap audit fixtures</title>
+<!-- Plenix tests · the runtime audit's fixtures (tests/zero-overlap.test.js; the Plenix Styling Standard 3.5). Each
+     element with data-expect lists the properties the strict audit must report as overlapping on it (empty: none);
+     data-expect-deps lists the inherited variables it must report as dependencies; data-force names the pseudo-class
+     the test forces on it. Never loaded by an application. -->
+<style>
+:root{--r:1;}
+:root{--r:2;}
+*{box-sizing:border-box;}
+@property --st{syntax:"*";inherits:false;}
+/* two rules, two values */
+.f-a{color:red;}
+.f-a{color:blue;}
+/* two rules, one value: still two declarations */
+.f-b{color:red;}
+.f-b.f-b2{color:red;}
+/* a base and its hover, both applying while hovered */
+.f-c{background-color:red;}
+.f-c:hover{background-color:blue;}
+/* the property once; hover assigns its variable, the default is the fallback */
+.f-d{background-color:var(--s, red);}
+.f-d:hover{--s:blue;}
+/* exclusive assignments: not hovered and hovered */
+.f-r{color:var(--v);}
+.f-r:where(:not(:hover)){--v:red;}
+.f-r:hover{--v:blue;}
+/* one custom property, two rules */
+.f-e{--x:1px;}
+.f-e.f-e2{--x:2px;}
+/* a context variable set on the parent and read by the child: a dependency, not an overlap */
+.f-p{--ctx:red;}
+.f-k{color:var(--ctx);}
+/* a shorthand and its longhand */
+.f-g{border-color:red;}
+.f-g{border-top-color:blue;}
+/* the reset and a component setting what the reset owns */
+.f-h{box-sizing:content-box;}
+/* a drawn pseudo-element */
+.f-i::before{color:red;content:"";}
+.f-i::before{color:blue;}
+/* a pseudo-element that is not drawn (no content) */
+.f-j::before{color:red;}
+.f-j.f-j2::before{color:blue;}
+/* two classes on one element, different properties */
+.f-l{color:red;}
+.f-l2{background-color:blue;}
+/* a registered non-inheriting variable: the child reads its own fallback */
+.f-m{--st:blue;}
+.f-n{color:var(--st, red);}
+/* a rule whose condition is false */
+@media (max-width: 10px){.f-o{color:red;}}
+.f-o{color:blue;}
+</style>
+</head>
+<body>
+<div class="f-a" data-expect="color">a</div>
+<div class="f-b f-b2" data-expect="color">b</div>
+<div class="f-c" data-force="hover" data-expect="background-color">c</div>
+<div class="f-d" data-force="hover" data-expect="">d</div>
+<div class="f-r" data-force="hover" data-expect="">r hovered</div>
+<div class="f-r" data-expect="">r</div>
+<div class="f-e f-e2" data-expect="--x">e</div>
+<div class="f-p" data-expect=""><span class="f-k" data-expect="" data-expect-deps="--ctx">k</span></div>
+<div class="f-g" data-expect="border-top-color">g</div>
+<div class="f-h" data-expect="box-sizing">h</div>
+<div class="f-i" data-expect="color::before">i</div>
+<div class="f-j f-j2" data-expect="">j</div>
+<div class="f-l f-l2" data-expect="">l</div>
+<div class="f-m" data-expect=""><span class="f-n" data-expect="" data-expect-deps="--st">n</span></div>
+<div class="f-o" data-expect="">o</div>
+</body>
+</html>
