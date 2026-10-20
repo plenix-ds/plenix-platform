@@ -71,12 +71,13 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
 7. **Update the component's header comment** (its state order) and its JSX header (new classes).
 8. **Icons the component draws in its own state** are filled by the component: `stateIcon(icon, on)` from
    `components/Icon/Icon.jsx` (Button, NavList, Tabs, SegmentedControl, AppHeader, ToolRail already do). Still on the
-   transitional ancestor rule (found on the spec pages, 2026-10-20): RadioTiles (the check), CommandMenu (item icon,
-   chevron), ProgressSteps (marker), Card (toggle), CollapsibleSection (chevron), DragHandle, EntityPicker (search),
-   and the design-system labs that write this markup as HTML (add `plx-icon--filled` or `plx-icon--outline`).
-   **Content inside a selected row** (DataGrid cells, ResourceList and SearchResult thumbnails, MediaCard badge and
-   placeholder, FileRow's file icon) also fills today only through the ancestor: leave these as they are; the owner
-   decides whether they should.
+   transitional ancestor rule (measured on the 13 app pages and all 767 spec pages, 2026-10-20: no application icon
+   depends on it): RadioTiles (the check), CollapsibleSection (the chevron of a current section), and spec samples
+   that force a state on a root (AppHeader with aria-current on the header). The design-system labs that write this
+   markup as HTML add `plx-icon--filled` or `plx-icon--outline`.
+   **Content inside a selected row** (DataGrid cells, MediaCard's placeholder, the content a RowButton holds) also
+   fills today only through the ancestor: leave these as they are; the owner decides whether they should. The rule
+   retires once both lists are empty.
 
 ## Proof (for every change)
 
