@@ -22,4 +22,4 @@
 .plx-keylines-content:dir(rtl){background-position-x:right var(--plx-sys-space-inset-md),right calc(var(--plx-sys-space-inset-md) + var(--plx-sys-icon-size-md) + var(--plx-sys-space-inline-sm));}
 
 /* the dev overlay: every icon square outlined (the icon reads the outline style; none without the overlay) */
-:root[data-plx-keylines="on"]{--plx-comp-icon-context-keyline-style:var(--plx-sys-border-style-solid);}
+:root[data-plx-keylines="on"]{--plx-comp-icon-context-keyline-color:var(--plx-sys-feedback-danger-solid);--plx-comp-icon-context-keyline-offset:calc(-1 * var(--plx-sys-border-width-thin));--plx-comp-icon-context-keyline-style:var(--plx-sys-border-style-solid);--plx-comp-icon-context-keyline-width:var(--plx-sys-border-width-thin);}
