@@ -1,0 +1,138 @@
+{
+  "inspectorSha256": "ce1a7569c12b1d1e61c8275ee26477b926f3e732d04534d9a8143a15cfe74c75",
+  "browser": "Chrome/155.0.8059.80",
+  "results": [
+    {
+      "route": "data-display/feature-card",
+      "mode": "coarse",
+      "base": {
+        "fail": [],
+        "covered": 0,
+        "n": 7
+      },
+      "head": {
+        "fail": [],
+        "covered": 0,
+        "n": 7
+      },
+      "added": []
+    },
+    {
+      "route": "content/user-card",
+      "mode": "coarse",
+      "base": {
+        "fail": [],
+        "covered": 0,
+        "n": 12
+      },
+      "head": {
+        "fail": [],
+        "covered": 0,
+        "n": 12
+      },
+      "added": []
+    },
+    {
+      "route": "data-display/card",
+      "mode": "coarse",
+      "base": {
+        "fail": [],
+        "covered": 0,
+        "n": 3
+      },
+      "head": {
+        "fail": [],
+        "covered": 0,
+        "n": 3
+      },
+      "added": []
+    },
+    {
+      "route": "data-display/media-card",
+      "mode": "coarse",
+      "base": {
+        "fail": [
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16"
+        ],
+        "covered": 0,
+        "n": 12
+      },
+      "head": {
+        "fail": [
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16",
+          "input.plx-media-card__select[Select Cross 014.png] 16x16"
+        ],
+        "covered": 0,
+        "n": 12
+      },
+      "added": []
+    },
+    {
+      "route": "data-display/feature-card",
+      "mode": "fine",
+      "base": {
+        "fail": [],
+        "covered": 0,
+        "n": 7
+      },
+      "head": {
+        "fail": [],
+        "covered": 0,
+        "n": 7
+      },
+      "added": []
+    },
+    {
+      "route": "content/user-card",
+      "mode": "fine",
+      "base": {
+        "fail": [],
+        "covered": 0,
+        "n": 12
+      },
+      "head": {
+        "fail": [],
+        "covered": 0,
+        "n": 12
+      },
+      "added": []
+    },
+    {
+      "route": "data-display/card",
+      "mode": "fine",
+      "base": {
+        "fail": [],
+        "covered": 0,
+        "n": 3
+      },
+      "head": {
+        "fail": [],
+        "covered": 0,
+        "n": 3
+      },
+      "added": []
+    },
+    {
+      "route": "data-display/media-card",
+      "mode": "fine",
+      "base": {
+        "fail": [],
+        "covered": 0,
+        "n": 12
+      },
+      "head": {
+        "fail": [],
+        "covered": 0,
+        "n": 12
+      },
+      "added": []
+    }
+  ]
+}

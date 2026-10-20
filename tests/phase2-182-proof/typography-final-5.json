@@ -1,0 +1,236 @@
+{
+  "baseRoot": "C:\\Users\\Administrator\\Documents\\Plenix-Codex-Tools\\workspaces\\task182-base",
+  "headRoot": "C:\\Users\\Administrator\\Documents\\Plenix-Codex-Tools\\workspaces\\task182",
+  "inspectorSha256": "411b59d3624906809b3a1fa9e3471ff03f9a72a779a72fb34e65d02169f3abc3",
+  "browser": "Chrome/155.0.8059.80",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "results": [
+    {
+      "route": "data-display/feature-card",
+      "mode": "dark",
+      "base": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "baseFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "head": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "headFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "added": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "removed": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      }
+    },
+    {
+      "route": "content/user-card",
+      "mode": "light",
+      "base": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "baseFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "head": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "headFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "added": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "removed": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      }
+    },
+    {
+      "route": "content/user-card",
+      "mode": "dark",
+      "base": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "baseFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "head": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "headFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "added": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "removed": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      }
+    },
+    {
+      "route": "data-display/media-card",
+      "mode": "light",
+      "base": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\"1\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"selecting\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Mouse and touch\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px",
+          "\"--plx-sys-content-muted\" (a.plx-link.plx-link--inline, \"Reddit Mono\" 12px) vs \"Contrast\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "baseFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "head": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\"1\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"selecting\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Mouse and touch\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px",
+          "\"--plx-sys-content-muted\" (a.plx-link.plx-link--inline, \"Reddit Mono\" 12px) vs \"Contrast\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "headFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "added": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "removed": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      }
+    },
+    {
+      "route": "data-display/media-card",
+      "mode": "dark",
+      "base": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\"1\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"selecting\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Mouse and touch\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px",
+          "\"--plx-sys-content-muted\" (a.plx-link.plx-link--inline, \"Reddit Mono\" 12px) vs \"Contrast\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "baseFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "head": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\"1\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"selecting\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Mouse and touch\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px",
+          "\"--plx-sys-content-muted\" (a.plx-link.plx-link--inline, \"Reddit Mono\" 12px) vs \"Contrast\" (span.plx-data-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "headFonts": {
+        "root": "16px",
+        "loaded": "loaded",
+        "theme": "default",
+        "density": "compact"
+      },
+      "added": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      },
+      "removed": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": []
+      }
+    }
+  ]
+}
