@@ -4,12 +4,12 @@
      Collapse all and Expand all at the top.
    Usage:
      const [groups, setGroups] = React.useState([]);
-     <GroupPanel fields={fields.filter((f) => f.kind === 'select')} value={groups} onChange={setGroups} />
-     <DataGrid … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} />
+     <GroupPanel fields={fields} value={groups} onChange={setGroups} />
+     <DataGrid … groupBy={groups} sort={groups.concat(sort)} />
      (or useCollectionView)
    Props:
-     fields: the fields rows can be grouped by (utils/fields.js); usually the select fields
-     value: the levels: [{ field, dir: "asc" | "desc", hideEmpty }], the first the outer group
+     fields: the fields rows can be grouped by (utils/fields.js); groupable: false excludes a field; date fields offer UTC calendar periods
+     value: the levels: [{ field, dir: "asc" | "desc", hideEmpty, interval: "day" | "week" | "month" | "year", range }], the first the outer group
      onChange(value): runs on every change
      table: the table controller, or a ref to it: Collapse all and Expand all close and open its
        groups; without it they are disabled
@@ -47,6 +47,7 @@ const eachGroup = (t, fn) => {
 };
 
 export function GroupPanel({ fields = [], value = [], onChange, table, inline = false, strings }) {
+  fields = fields.filter(f => f.groupable !== false);
   const t = Object.assign({}, STRINGS, strings);
   const levels = value;
   const ro = useReorder(levels, onChange, (l) => fieldOf(fields, l.field).label, t);
@@ -65,9 +66,10 @@ export function GroupPanel({ fields = [], value = [], onChange, table, inline = 
           const f = fieldOf(fields, l.field), words = DIRECTIONS[kindOf(f)];
           return (
             <div key={l.field} {...ro.rowProps(i, f.label)}>
-              <Pick label={t.field} value={l.field} options={fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption)} onChange={(v) => put(i, { field: v })} />
+              <Pick label={t.field} value={l.field} options={fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption)} onChange={(v) => put(i, { field: v, interval: fields.find(f => f.value === v)?.kind === 'date' ? 'day' : undefined, range: undefined })} />
               <Pick label={t.order} size="dir" value={l.dir || 'asc'} options={[{ value: 'asc', label: words[0] }, { value: 'desc', label: words[1] }]} onChange={(v) => put(i, { dir: v })} />
               <Menu label={fill(t.more, { name: f.label })} placement="bottom-end" trigger={<Button variant="ghost" icon="more" iconOnly label={fill(t.more, { name: f.label })} />}>
+                {f.kind === 'date' ? ['day', 'week', 'month', 'year'].map(interval => <MenuItem key={interval} checked={(l.interval || 'day') === interval} keepOpen onSelect={() => put(i, { interval })}>{interval[0].toUpperCase() + interval.slice(1)}</MenuItem>) : null}
                 <MenuItem checked={!!l.hideEmpty} keepOpen onSelect={() => put(i, { hideEmpty: !l.hideEmpty })}>{t.hideEmpty}</MenuItem>
               </Menu>
               <Tooltip content={t.removeTip}><Button variant="ghost" icon="trash" iconOnly label={fill(t.remove, { name: f.label })} onClick={() => onChange(levels.filter((_, j) => j !== i))} /></Tooltip>
@@ -78,7 +80,7 @@ export function GroupPanel({ fields = [], value = [], onChange, table, inline = 
         {ro.status}
       </div>
       <div className="plx-find-panel__add">
-        <Button size="sm" variant="ghost" icon="plus" disabled={!free.length} onClick={() => onChange(levels.concat({ field: free[0].value, dir: 'asc' }))}>{levels.length ? t.addSub : t.add}</Button>
+        <Button size="sm" variant="ghost" icon="plus" disabled={!free.length} onClick={() => onChange(levels.concat({ field: free[0].value, dir: 'asc', interval: free[0].kind === 'date' ? 'day' : undefined, range: free[0].groupRange }))}>{levels.length ? t.addSub : t.add}</Button>
       </div>
     </div>
   );

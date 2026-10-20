@@ -26,6 +26,8 @@
        type: "text" (default) | "number" | "currency" | "date" | "select" | "checkbox" | "file" | "image" | "link" |
          "person" | "long-text" | "bytes" (file sizes; filters take "> 2 MB") | "multi" (several values: a grouped table
          puts the record in each of its groups): the header icon and the sort words
+       groupable: false disables header grouping; groupRange: positive numeric bucket width; groupBucket(value): custom bucket label.
+       groupBy also accepts [{ field, interval: "day" | "week" | "month" | "year", range }]; calendar periods use UTC, weeks start Monday.
        render(record): the cell as a React element; sorter: "string" | "number" | "date" | a compare function
          sorter(valueA, valueB, recordA, recordB, field, direction) returns ascending order; direction lets a fixed
          category order (such as folders first) compensate for the descending inversion
