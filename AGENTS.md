@@ -56,6 +56,8 @@ changes inside `platform/design-system/` at `lanes/<task>/design-system/<the sam
 
 ## House rules (strict; the checks enforce most of them)
 
+- **Dark mode is last priority (owner, 2026-10-19).** Do not fix, tune or check dark-mode looks in any task; check and prove
+  in light only. A dark-mode problem you notice goes as a comment on #205 (the dark-mode to-do), never into your PR.
 - Nothing hard-coded: every value is a token. Tokens are JSON (`platform/tokens/*.tokens.json`,
   `platform/tokens/components/<name>.tokens.json`); the build generates the CSS. Tiers: `--plx-ref-` (the palette),
   `--plx-sys-` (theme roles), `--plx-comp-<component>-<role>` (pointing to plx-sys roles). Never add a palette color;
