@@ -1,7 +1,7 @@
 // Plenix tests · every page loads clean: each app page, the design system home, every built item (and its variant pages)
 // and every placeholder item. A console error (the style audit reports inline styles as errors), a page error, a
 // failed request, a <table> that is not a DataGrid, or three framed boxes nested (owner, batch 250: containers nest two deep,
-// never three; platform/system/nesting.css) fails it. Only the work log is allowed to be missing: it lives outside this repository.
+// never three; the pattern chooses the unframed presentation) fails it. Only the work log is allowed to be missing: it lives outside this repository.
 //   node tests/pages.test.js                  the pages of what changed (tests/changed.js)
 //   TEST_SCOPE=full node tests/pages.test.js  every page (the final gate)   TEST_PORT=8901: another port
 const { serve, launch, sleep, at } = require('./lib.js');

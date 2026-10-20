@@ -14,7 +14,7 @@
       "$extensions": {
         "com.plenix": {
           "before": [
-            "  color-scheme: dark;",
+            "  --plx-sys-color-scheme: dark;",
             "  /* surfaces, states, content, borders, actions, feedback, focus */"
           ]
         },

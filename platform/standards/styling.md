@@ -294,7 +294,8 @@ The word-spacing leak happened exactly there.
   - Framed containers (Panel, Card, a contained Tabs panel, CodeBlock, Notice, Fieldset, DropZone, Table, DataGrid)
     expose a framed and an unframed presentation where both are valid.
   - The pattern chooses the presentation, and a composition check flags a third frame.
-  - `nesting.css` stays only as a defensive fallback until every pattern chooses explicitly.
+  - No stylesheet hides a third frame: the composition check (`tests/pages.test.js`) fails any page with three framed
+    boxes nested.
 
 ## 8. Precedence: cascade layers, no `!important`
 

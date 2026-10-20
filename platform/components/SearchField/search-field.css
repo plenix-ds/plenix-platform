@@ -42,8 +42,10 @@
 .plx-search__remove-cell{align-items:center;display:inline-flex;flex-shrink:0;}
 /* the command bar's search (owner, 2026-10-14): one fixed width in every bar, never squeezed; the find field of a panel
    fills it. Narrow, the search icon opens the field across the bar (the nearest positioned box), over its controls */
-.plx-search--bar{flex-grow:0;flex-shrink:0;inline-size:var(--plx-comp-search-bar-width);}
-.plx-search--fill{inline-size:100%;}
+@property --plx-state-search-flex-shrink{syntax:"*";inherits:false;}
+@property --plx-state-search-inline-size{syntax:"*";inherits:false;}
+.plx-search--bar{--plx-state-search-flex-shrink:0;--plx-state-search-inline-size:var(--plx-comp-search-bar-width);flex-grow:0;}
+.plx-search--fill{--plx-state-search-inline-size:100%;}
 .plx-search__over{align-items:center;background-color:var(--plx-comp-search-over-background);border-radius:var(--plx-comp-search-over-radius);display:flex;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;padding-inline-end:var(--plx-comp-search-over-padding-inline);padding-inline-start:var(--plx-comp-search-over-padding-inline);position:absolute;z-index:var(--plx-comp-search-over-z-index);}
 
 /* Search already uses the toolbar height by default; this makes the shared small-size API explicit. */
@@ -56,3 +58,5 @@
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-search__clear{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
 .plx-search__clear:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
+/* the width its pattern gives it (layout-modes.css), else its own */
+.plx-search:where(:not(.plx-search--width-xs, .plx-search--width-sm, .plx-search--width-md, .plx-search--width-lg)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-search-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-search-inline-size,auto)));}

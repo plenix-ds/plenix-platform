@@ -1,2 +1,2 @@
 /* Plenix · MentionInput: composed regions use existing spacing roles. */
-.plx-mention-input{row-gap:var(--plx-comp-mention-input-gap);}
+.plx-mention-input{flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));row-gap:var(--plx-comp-mention-input-gap);}

@@ -11,3 +11,9 @@ body{background-color:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-
 :where(h1:not([class*="plx-"]), h2:not([class*="plx-"]), h3:not([class*="plx-"]), h4:not([class*="plx-"])){break-after:var(--plx-sys-print-keep,auto);}
 /* a raw external link prints its address inside plx-print-urls (print.css; Link prints its own) */
 a[href^="http"]:not([class*="plx-"])::after{color:var(--plx-sys-print-url-text);content:var(--plx-comp-link-context-url-before) attr(href) var(--plx-comp-link-context-url-after);font-family:var(--plx-sys-font-data);word-spacing:var(--plx-sys-font-data-word-spacing);}
+/* a hybrid page (layout-modes.css) keeps raw paragraphs and forms at a readable width */
+p:not([class*="plx-"]){max-inline-size:var(--plx-comp-app-shell-context-prose-max-width,none);}
+form:not([class*="plx-"]){max-inline-size:var(--plx-comp-app-shell-context-form-max-width,none);}
+/* the color scheme (the browser's own controls and scrollbars) follows the mode: the theme sets --plx-sys-color-scheme;
+   the root reads it here, a theme zone and a portal (the other elements that carry a mode) in their own rules */
+html{color-scheme:var(--plx-sys-color-scheme,light);}

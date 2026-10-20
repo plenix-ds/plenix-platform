@@ -53,6 +53,8 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
   const setOpen = (next) => { const list = Array.from(next); if (expanded === undefined) setOwnOpen(list); if (onExpandedChange) onExpandedChange(list); };
   const flat = visible(nodes, open, null, []);
   const [focusId, setFocusId] = React.useState(null);
+  // the item whose focus the keyboard moved (:focus-visible): its row draws the focus ring
+  const [ringId, setRingId] = React.useState(null);
   const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.some((v) => v.node.id === selected) ? selected : (flat[0] && flat[0].node.id));
   const refs = React.useRef({});
   const moveTo = (id) => { setFocusId(id); if (refs.current[id]) refs.current[id].focus(); };
@@ -80,8 +82,9 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
       <li key={n.id} ref={(el) => { refs.current[n.id] = el; }} id={base + '-' + n.id} role="treeitem" aria-level={level}
         aria-expanded={kids ? !!isOpen : undefined} aria-selected={n.id === selected} tabIndex={n.id === active ? 0 : -1}
         className={cx('plx-tree__item', n.id === selected && 'is-selected')}
-        onFocus={(e) => { if (e.target === e.currentTarget) setFocusId(n.id); }}>
-        <div className="plx-tree__row" onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
+        onFocus={(e) => { if (e.target === e.currentTarget) { setFocusId(n.id); setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null); } }}
+        onBlur={(e) => { if (e.target === e.currentTarget) setRingId(null); }}>
+        <div className={cx('plx-tree__row', n.id === selected && 'is-selected', n.id === ringId && 'is-focus-visible')} data-plx-level={Math.min(level, 12)} onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
             onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined} />
           {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)}</span> : null}

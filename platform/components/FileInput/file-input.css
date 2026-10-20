@@ -1,7 +1,7 @@
 /* Plenix · FileInput (platform/components/FileInput). The native file input is visually hidden but stays the control; a
    secondary Button's look draws it (the button's own tokens) and shows its focus ring. The summary line and the list are
    secondary text; file names and sizes are in the data font. */
-.plx-file-input{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-file-input-row-gap);}
+.plx-file-input{display:flex;flex-direction:column;flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));min-inline-size:0;row-gap:var(--plx-comp-file-input-row-gap);}
 .plx-file-input__row{align-items:center;column-gap:var(--plx-comp-file-input-gap);display:flex;flex-wrap:wrap;min-inline-size:0;row-gap:var(--plx-comp-file-input-gap);}
 .plx-file-input__trigger{display:inline-flex;flex-shrink:0;position:relative;}
 .plx-file-input__button{cursor:pointer;}

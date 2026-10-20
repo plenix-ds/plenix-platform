@@ -6385,15 +6385,19 @@ function AppShell({
     className: "plx-app-shell__parent-slot"
   }) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-shell__body"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-app-shell__side plx-app-shell__side--start"
   }, sideNav || /*#__PURE__*/_react.default.createElement("div", {
     ref: setSlotEl,
     className: "plx-app-shell__slot"
-  }), /*#__PURE__*/_react.default.createElement("main", {
+  })), /*#__PURE__*/_react.default.createElement("main", {
     id: mainId,
     tabIndex: -1,
     className: (0, _cx.cx)('plx-app-shell__main', mainClassName),
     "data-plx-layout": LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'
-  }, children), panel), footer, narrow && hasSide ? /*#__PURE__*/_react.default.createElement("div", {
+  }, children), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-app-shell__side plx-app-shell__side--end"
+  }, panel)), footer, narrow && hasSide ? /*#__PURE__*/_react.default.createElement("div", {
     ref: setBarEl,
     className: "plx-app-shell__bar-slot"
   }) : null));
@@ -27208,6 +27212,8 @@ function Tree({
   };
   const flat = visible(nodes, open, null, []);
   const [focusId, setFocusId] = _react.default.useState(null);
+  // the item whose focus the keyboard moved (:focus-visible): its row draws the focus ring
+  const [ringId, setRingId] = _react.default.useState(null);
   const active = flat.some(v => v.node.id === focusId) ? focusId : flat.some(v => v.node.id === selected) ? selected : flat[0] && flat[0].node.id;
   const refs = _react.default.useRef({});
   const moveTo = id => {
@@ -27255,10 +27261,17 @@ function Tree({
       tabIndex: n.id === active ? 0 : -1,
       className: (0, _cx.cx)('plx-tree__item', n.id === selected && 'is-selected'),
       onFocus: e => {
-        if (e.target === e.currentTarget) setFocusId(n.id);
+        if (e.target === e.currentTarget) {
+          setFocusId(n.id);
+          setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null);
+        }
+      },
+      onBlur: e => {
+        if (e.target === e.currentTarget) setRingId(null);
       }
     }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-tree__row",
+      className: (0, _cx.cx)('plx-tree__row', n.id === selected && 'is-selected', n.id === ringId && 'is-focus-visible'),
+      "data-plx-level": Math.min(level, 12),
       onClick: () => {
         moveTo(n.id);
         if (onSelect) onSelect(n.id);
@@ -44938,6 +44951,7 @@ function TreeSelect({
     return Array.from(out);
   });
   const [focusId, setFocusId] = _react.default.useState(null);
+  const [ringId, setRingId] = _react.default.useState(null);
   const refs = _react.default.useRef({}),
     searchRef = _react.default.useRef(null),
     firstRef = _react.default.useRef(null);
@@ -45023,7 +45037,13 @@ function TreeSelect({
       tabIndex: n.id === active ? 0 : -1,
       className: (0, _cx.cx)('plx-tree__item', !multiple && state === 'true' && 'is-selected'),
       onFocus: e => {
-        if (e.target === e.currentTarget) setFocusId(n.id);
+        if (e.target === e.currentTarget) {
+          setFocusId(n.id);
+          setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null);
+        }
+      },
+      onBlur: e => {
+        if (e.target === e.currentTarget) setRingId(null);
       },
       onClick: e => {
         if (e.target.closest('[role="treeitem"]') !== e.currentTarget) return;
@@ -45031,7 +45051,8 @@ function TreeSelect({
         choose(n);
       }
     }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-tree__row"
+      className: (0, _cx.cx)('plx-tree__row', !multiple && state === 'true' && 'is-selected', n.id === ringId && 'is-focus-visible'),
+      "data-plx-level": Math.min(level, 12)
     }, /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf'),
       "aria-hidden": "true",

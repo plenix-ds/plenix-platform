@@ -2,7 +2,8 @@
    tokens) around the field and its affixes, so they read as one control: the border turns the focus color while the
    field has focus (no ring outside it), the danger color when it is invalid. Attached buttons and selects meet the box
    with square corners and share its edge (their border on that side is dropped), as a button group’s buttons do. */
-.plx-input-group{align-items:stretch;display:flex;inline-size:100%;max-inline-size:var(--plx-comp-input-group-max-width);min-inline-size:0;}
+@property --plx-state-input-group-inline-size{syntax:"*";inherits:false;}
+.plx-input-group{align-items:stretch;display:flex;max-inline-size:var(--plx-comp-input-group-max-width);min-inline-size:0;}
 .plx-input-group.plx-input-group--width-xs{flex-shrink:0;inline-size:var(--plx-comp-input-group-width-xs-width);}
 .plx-input-group.plx-input-group--width-sm{flex-shrink:0;inline-size:var(--plx-comp-input-group-width-sm-width);}
 .plx-input-group.plx-input-group--width-md{flex-shrink:0;inline-size:var(--plx-comp-input-group-width-md-width);}
@@ -31,8 +32,10 @@
 /* attached buttons and selects keep their width; their joined edges are their own (Button and Select joined) */
 .plx-input-group>:not(.plx-input-group__box){flex-shrink:0;}
 /* compact: a short box (a count between its minus and plus: NumberInput quantity), the value centered */
-.plx-input-group--compact{inline-size:auto;}
+.plx-input-group--compact{--plx-state-input-group-inline-size:auto;}
 .plx-input-group--compact>.plx-input-group__box{flex-basis:auto;flex-grow:0;inline-size:var(--plx-comp-input-group-compact-box-width);}
 .plx-input-group--compact .plx-input-group__input{padding-inline-end:var(--plx-comp-input-group-compact-padding-inline);padding-inline-start:var(--plx-comp-input-group-compact-padding-inline);text-align:center;}
 /* width fill (P-52): the whole width (the group's default; named for a pattern that sets widths explicitly) */
 .plx-input-group.plx-input-group--width-fill{inline-size:100%;}
+/* the width its pattern gives it (layout-modes.css), else its own */
+.plx-input-group:where(:not(.plx-input-group--width-xs, .plx-input-group--width-sm, .plx-input-group--width-md, .plx-input-group--width-lg, .plx-input-group--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-input-group-inline-size,100%)));}

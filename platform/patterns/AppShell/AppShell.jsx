@@ -161,9 +161,9 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
         {header}
         {narrow && hasSide ? <div ref={setParentEl} className="plx-app-shell__parent-slot" /> : null}
         <div className="plx-app-shell__body">
-          {sideNav || <div ref={setSlotEl} className="plx-app-shell__slot" />}
+          <div className="plx-app-shell__side plx-app-shell__side--start">{sideNav || <div ref={setSlotEl} className="plx-app-shell__slot" />}</div>
           <main id={mainId} tabIndex={-1} className={cx('plx-app-shell__main', mainClassName)} data-plx-layout={LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'}>{children}</main>
-          {panel}
+          <div className="plx-app-shell__side plx-app-shell__side--end">{panel}</div>
         </div>
         {footer}
         {narrow && hasSide ? <div ref={setBarEl} className="plx-app-shell__bar-slot" /> : null}

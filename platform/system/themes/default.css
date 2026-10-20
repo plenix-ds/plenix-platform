@@ -54,7 +54,7 @@
   --plx-sys-focus-ring-offset: 2px;
 }
 :root:not([data-plx-mode="dark"], [data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="light"]{
-  color-scheme: light;
+  --plx-sys-color-scheme: light;
   /* surfaces, states, content, borders, actions, feedback, focus */
   --plx-sys-surface-canvas: var(--plx-ref-color-gray-75);
   --plx-sys-surface-default: var(--plx-ref-color-white);
@@ -419,7 +419,7 @@
   }
 }
 :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"]{
-  color-scheme: dark;
+  --plx-sys-color-scheme: dark;
   /* surfaces, states, content, borders, actions, feedback, focus */
   --plx-sys-surface-canvas: var(--plx-ref-color-black);
   --plx-sys-surface-default: var(--plx-ref-color-gray-800);

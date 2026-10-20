@@ -91,6 +91,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
     const out = new Set(); chosen.forEach((c) => ancestors(byId, c).forEach((a) => out.add(a))); return Array.from(out);
   });
   const [focusId, setFocusId] = React.useState(null);
+  const [ringId, setRingId] = React.useState(null);
   const refs = React.useRef({}), searchRef = React.useRef(null), firstRef = React.useRef(null);
   const q = text.trim().toLowerCase();
   const shownNodes = q ? filterNodes(nodes, q) : nodes;
@@ -137,9 +138,10 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
       <li key={n.id} ref={(el) => { refs.current[n.id] = el; }} id={base + '-' + n.id} role="treeitem" aria-level={level}
         aria-expanded={kids ? !!isOpen : undefined} aria-selected={multiple ? undefined : state === 'true'} aria-checked={multiple ? state : undefined}
         tabIndex={n.id === active ? 0 : -1} className={cx('plx-tree__item', !multiple && state === 'true' && 'is-selected')}
-        onFocus={(e) => { if (e.target === e.currentTarget) setFocusId(n.id); }}
+        onFocus={(e) => { if (e.target === e.currentTarget) { setFocusId(n.id); setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null); } }}
+        onBlur={(e) => { if (e.target === e.currentTarget) setRingId(null); }}
         onClick={(e) => { if (e.target.closest('[role="treeitem"]') !== e.currentTarget) return; moveTo(n.id); choose(n); }}>
-        <div className="plx-tree__row">
+        <div className={cx('plx-tree__row', !multiple && state === 'true' && 'is-selected', n.id === ringId && 'is-focus-visible')} data-plx-level={Math.min(level, 12)}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
             onClick={kids ? (e) => { e.stopPropagation(); toggleOpen(n.id); moveTo(n.id); } : undefined} />
           {multiple ? <input type="checkbox" className="plx-check__input plx-tree-select__mark" tabIndex={-1} aria-hidden="true" inert="" readOnly checked={state === 'true'}

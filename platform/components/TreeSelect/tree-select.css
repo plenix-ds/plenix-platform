@@ -20,3 +20,5 @@
 .plx-tree-select.plx-tree-select--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
 .plx-tree-select.plx-tree-select--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
 .plx-tree-select.plx-tree-select--width-fill{inline-size:100%;}
+/* the width its pattern gives it (layout-modes.css), else its own */
+.plx-tree-select:where(:not(.plx-tree-select--width-xs, .plx-tree-select--width-sm, .plx-tree-select--width-md, .plx-tree-select--width-lg, .plx-tree-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));}

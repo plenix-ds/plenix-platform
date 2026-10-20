@@ -1,7 +1,7 @@
 /* Plenix · Field (platform/components/Field). Gaps from the form spacing tokens (density); no outer margin. */
 /* hooks a container sets on its own element: a settings card's rows (a separator under each field but the last;
    --plx-comp-field-row-*), the inline label's size there, and the inline columns of a narrow page (-inline-context-*) */
-.plx-field{border-bottom-color:var(--plx-comp-field-row-separator-color,currentcolor);border-bottom-style:var(--plx-comp-field-row-separator-style,none);border-bottom-width:var(--plx-comp-field-row-separator-width,medium);display:grid;min-inline-size:0;padding-block-end:var(--plx-comp-field-row-padding-block,0);padding-block-start:var(--plx-comp-field-row-padding-block,0);}
+.plx-field{border-bottom-color:var(--plx-comp-field-row-separator-color,currentcolor);border-bottom-style:var(--plx-comp-field-row-separator-style,none);border-bottom-width:var(--plx-comp-field-row-separator-width,medium);display:grid;max-inline-size:var(--plx-comp-app-shell-context-form-max-width,none);min-inline-size:0;padding-block-end:var(--plx-comp-field-row-padding-block,0);padding-block-start:var(--plx-comp-field-row-padding-block,0);}
 .plx-field:last-child{--plx-comp-field-row-separator-style:none;--plx-comp-field-row-separator-width:0;}
 .plx-field--stacked{row-gap:var(--plx-comp-field-label-control-gap);}
 .plx-field--inline{align-items:center;column-gap:var(--plx-comp-field-inline-gap);grid-template-columns:var(--plx-comp-field-grid-columns,var(--plx-comp-field-inline-context-columns,var(--plx-comp-field-inline-grid-template-columns)));row-gap:var(--plx-comp-field-grid-row-gap,var(--plx-comp-field-inline-context-row-gap,normal));}

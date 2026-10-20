@@ -2135,12 +2135,6 @@
    "combinator | .plx-transfer-list__list:focus-visible .plx-transfer-list__option.is-selected.is-active": 1,
    "combinator | .plx-transfer-list.is-disabled .plx-transfer-list__option": 1
   },
-  "platform/components/Tree/tree.css": {
-   "combinator | .plx-tree__item.is-selected>.plx-tree__row": 1,
-   "combinator | .plx-tree__item:focus-visible>.plx-tree__row": 1,
-   "combinator | .plx-tree__item.is-focus-visible>.plx-tree__row": 1,
-   "combinator | .plx-tree__item:not(.is-selected)>.plx-tree__row:active": 1
-  },
   "platform/components/VersionLabel/version-label.css": {
    "combinator | .plx-version-label--md .plx-version-label__number": 1,
    "combinator | .plx-version-label--sm .plx-version-label__number": 1
@@ -2561,39 +2555,6 @@
   "platform/patterns/WidgetGrid/widget-grid.css": {
    "combinator | .plx-widget-grid__item.is-dragging *": 1,
    "cross-block | .plx-widget-grid__menu.plx-menu-anchor:not(.plx-widget-grid__menu--inline)": 1
-  },
-  "platform/system/layout-modes.css": {
-   "combinator | :is(.plx-form,.plx-form-section,.plx-fieldset,.plx-field,.plx-settings__row,.plx-dialog,.plx-sheet,.plx-side-panel,.plx-popover,.plx-inline-edit,.plx-find-panel,.plx-wizard) :is(.plx-input:not([class*=\"plx-input--width-\"]),.plx-select:not([class*=\"plx-input--width-\"]),.plx-combobox:not([class*=\"plx-input--width-\"]),.plx-search:not([class*=\"plx-input--width-\"]),.plx-number-input:not([class*=\"plx-input--width-\"]),.plx-date-picker:not([class*=\"plx-input--width-\"]),.plx-time-picker:not([class*=\"plx-input--width-\"]),.plx-tree-select:not([class*=\"plx-input--width-\"]),.plx-country-select:not([class*=\"plx-input--width-\"]),.plx-entity-picker:not([class*=\"plx-input--width-\"]),.plx-relative-date-input:not([class*=\"plx-input--width-\"]),.plx-input-group:not([class*=\"plx-input--width-\"]),.plx-file-input:not([class*=\"plx-input--width-\"]),.plx-mention-input:not([class*=\"plx-input--width-\"]))": 1,
-   "combinator | :is(.plx-command-bar,.plx-toolbar,.plx-data-toolbar,.plx-filter-bar,.plx-action-bar,.plx-app-header) :is(.plx-input:not([class*=\"plx-input--width-\"]),.plx-select:not([class*=\"plx-input--width-\"]),.plx-combobox:not([class*=\"plx-input--width-\"]),.plx-search:not([class*=\"plx-input--width-\"]),.plx-number-input:not([class*=\"plx-input--width-\"]),.plx-date-picker:not([class*=\"plx-input--width-\"]),.plx-time-picker:not([class*=\"plx-input--width-\"]),.plx-tree-select:not([class*=\"plx-input--width-\"]),.plx-country-select:not([class*=\"plx-input--width-\"]),.plx-entity-picker:not([class*=\"plx-input--width-\"]),.plx-relative-date-input:not([class*=\"plx-input--width-\"]),.plx-input-group:not([class*=\"plx-input--width-\"]),.plx-file-input:not([class*=\"plx-input--width-\"]),.plx-mention-input:not([class*=\"plx-input--width-\"]))": 1,
-   "combinator | .plx-app-shell[data-plx-layout=\"contained\"] :is(.plx-page-content,.plx-settings__content)": 1,
-   "combinator | .plx-app-shell[data-plx-layout=\"hybrid\"] .plx-page-content>p": 1,
-   "combinator | .plx-app-shell[data-plx-layout=\"hybrid\"] .plx-page-content>:is(form,.plx-fieldset,.plx-field)": 1,
-   "combinator | .plx-app-shell[data-plx-layout=\"multi-pane\"] .plx-app-shell__main": 1,
-   "combinator | .plx-app-shell[data-plx-layout=\"multi-pane\"] .plx-app-shell__main>*": 1,
-   "relational | .plx-app-shell[data-plx-layout=\"focus\"] .plx-app-shell__body>:not(.plx-app-shell__main):has(~.plx-app-shell__main)": 1,
-   "combinator | .plx-app-shell[data-plx-layout=\"focus\"] .plx-app-shell__main~*": 1
-  },
-  "platform/system/nesting.css": {
-   "combinator | :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid)": 1
-  },
-  "platform/system/steps.css": {
-   "combinator | .plx-tree__item>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"1\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"2\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"3\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"4\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"5\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"6\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"7\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"8\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"9\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"10\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"11\"]>.plx-tree__row": 1,
-   "combinator | .plx-tree__item[aria-level=\"12\"]>.plx-tree__row": 1
-  },
-  "platform/system/themes/default.css": {
-   "foundation-property | [data-plx-theme=\"default\"][data-plx-mode=\"light\"]": 1,
-   "foundation-property | [data-plx-theme=\"default\"][data-plx-mode=\"dark\"]": 1
   },
   "platform/templates/Commerce/commerce.css": {
    "combinator | .plx-commerce-summary__row--total .plx-commerce-summary__label": 1

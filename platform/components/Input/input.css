@@ -34,7 +34,6 @@
 .plx-input--textarea:where(:not(.plx-input--auto-grow)){resize:var(--plx-comp-input-context-resize,vertical);}
 .plx-input--auto-grow{field-sizing:content;max-block-size:var(--plx-comp-textarea-auto-grow-max-height);overflow-y:auto;resize:none;}
 /* widths: natural, or a role's width, or the whole width of its container (P-52); the color well keeps its square */
-.plx-input:where(:not(.plx-input--width-xs, .plx-input--width-sm, .plx-input--width-md, .plx-input--width-lg, .plx-input--width-fill, [type="color"])){inline-size:auto;}
 .plx-input--width-xs:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-xs-width);}
 .plx-input--width-sm:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-sm-width);}
 .plx-input--width-md:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-md-width);}
@@ -62,7 +61,11 @@
 .plx-input:is([readonly], [aria-readonly="true"]):where(:not(:disabled, [aria-disabled="true"], .is-disabled, .plx-input--filled)){--plx-state-input-text:var(--plx-comp-input-context-readonly-text);}
 /* the color well (owner, batch 275: "just a square swatch, no outline container around it"): a square of the field
    height, the swatch's compact corners, no border or padding; it shows the outline ring while focused */
-.plx-input[type="color"]{--plx-state-input-background:transparent;block-size:var(--plx-comp-input-color-height);border-bottom-left-radius:var(--plx-comp-input-color-radius);border-bottom-right-radius:var(--plx-comp-input-color-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-input-color-radius);border-top-right-radius:var(--plx-comp-input-color-radius);border-top-style:none;cursor:pointer;flex-shrink:0;inline-size:var(--plx-comp-input-color-width);padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+@property --plx-state-input-flex-shrink{syntax:"*";inherits:false;}
+@property --plx-state-input-inline-size{syntax:"*";inherits:false;}
+/* a field takes the width its pattern gives it (layout-modes.css), else its own: auto, a color well its well */
+.plx-input:where(:not(.plx-input--width-xs, .plx-input--width-sm, .plx-input--width-md, .plx-input--width-lg, .plx-input--width-fill), [type="color"]){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-input-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-input-inline-size,auto)));}
+.plx-input[type="color"]{--plx-state-input-flex-shrink:0;--plx-state-input-inline-size:var(--plx-comp-input-color-width);--plx-state-input-background:transparent;block-size:var(--plx-comp-input-color-height);border-bottom-left-radius:var(--plx-comp-input-color-radius);border-bottom-right-radius:var(--plx-comp-input-color-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-input-color-radius);border-top-right-radius:var(--plx-comp-input-color-radius);border-top-style:none;cursor:pointer;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-input[type="color"]::-webkit-color-swatch-wrapper{padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-input[type="color"]::-webkit-color-swatch{border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:inherit;border-top-right-radius:inherit;border-top-style:none;}
 .plx-input[type="color"]::-moz-color-swatch{border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:inherit;border-top-right-radius:inherit;border-top-style:none;}
@@ -72,7 +75,8 @@
 /* the Select: a wrapper (its arrow) around a control that wears plx-input; the wrapper sets the field's hooks */
 .plx-select{--plx-comp-input-context-padding-inline-end:var(--plx-comp-select-control-padding-inline-end);max-inline-size:min(var(--plx-comp-select-max-width),100%);min-inline-size:0;position:relative;}
 .plx-select:where(:not(.plx-select--block)){display:inline-flex;}
-.plx-select:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg, .plx-select--width-fill)){inline-size:auto;}
+@property --plx-state-select-flex-shrink{syntax:"*";inherits:false;}
+.plx-select:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg, .plx-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-select-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));}
 /* block: the select takes its own line (InlineEdit) */
 .plx-select--block{display:block;}
 .plx-select::after{-webkit-mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:var(--plx-comp-select-after-background);block-size:var(--plx-comp-select-after-height);content:"";inline-size:var(--plx-comp-select-after-width);inset-block-start:50%;inset-inline-end:var(--plx-comp-select-after-inset-inline-end);mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;pointer-events:none;position:absolute;transform:translateY(-50%);}
@@ -85,13 +89,13 @@
 .plx-select--joined-end-square,.plx-select--joined-end-seam{--plx-comp-input-context-radius-end:var(--plx-comp-select-joined-radius);}
 .plx-select--joined-start-seam{--plx-comp-input-context-border-start-width:0;}
 .plx-select--joined-end-seam{--plx-comp-input-context-border-end-width:0;}
-.plx-select--joined:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg)){flex-shrink:0;}
+.plx-select--joined{--plx-state-select-flex-shrink:0;}
 .plx-select--joined:focus-within{position:relative;z-index:var(--plx-comp-select-joined-focus-layer);}
 /* width (P-52, owner 2026-10-19): a select by its role, or the whole width */
 .plx-select--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
 .plx-select--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
 .plx-select--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
 .plx-select--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
-.plx-select--width-fill{inline-size:100%;}
+.plx-select--width-fill{flex-shrink:var(--plx-state-select-flex-shrink,1);inline-size:100%;}
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-input{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

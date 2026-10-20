@@ -1,5 +1,5 @@
 /* Plenix · Fieldset (platform/components/Fieldset). */
-.plx-fieldset{border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-fieldset{border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;max-inline-size:var(--plx-comp-app-shell-context-form-max-width,none);min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-fieldset__legend{color:var(--plx-comp-fieldset-legend-text);font-size:var(--plx-comp-fieldset-legend-font-size);margin-block-end:var(--plx-comp-fieldset-legend-margin-block-end);padding-inline-end:0;padding-inline-start:0;}
 /* the field group (layout="row", library wave 6): the controls side by side, aligned at their tops, wrapping when the row is narrow */
 .plx-fieldset--row{align-items:flex-start;column-gap:var(--plx-comp-fieldset-row-column-gap);display:flex;flex-direction:row;flex-wrap:wrap;row-gap:var(--plx-comp-fieldset-row-row-gap);}

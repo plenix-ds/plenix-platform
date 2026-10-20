@@ -9,7 +9,7 @@
 //   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataGrid's
 //               stylesheets (DataGrid, Table) also restyle their engine's tabulator-… classes, there only)
 //   imports     every component and pattern stylesheet is imported by platform.css
-//   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css)
+//   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css, system/nesting.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
 //   icon-size   no icon size written as a number (<Icon size={14}>, <Ico size={13}>, <Avatar size={28}>): an icon takes its
 //               control's grid icon (--plx-sys-control-icon-<role>) or a size token from CSS, so it sits on the 4px grid
@@ -251,7 +251,7 @@ for (const f of require('./build-tokens.js')(ROOT, { check: true }).stale) add('
 for (const f of require('./build-spec-parts.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/design-system/parts: run node build-app.js');
 for (const f of require('./build-exports.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ': its library block differs from platform/exports: run node build-app.js');
 // legacy files stay gone
-for (const f of [path.join(ROOT, 'shared'), path.join(ROOT, 'platform', 'system', 'tokens', 'legacy.css'), path.join(DAM, 'plenix.css'), path.join(DAM, 'demo.css')]) {
+for (const f of [path.join(ROOT, 'shared'), path.join(ROOT, 'platform', 'system', 'tokens', 'legacy.css'), path.join(DAM, 'plenix.css'), path.join(DAM, 'demo.css'), path.join(ROOT, 'platform', 'system', 'nesting.css')]) {
   if (fs.existsSync(f)) add('legacy', f, 0, 'retired file or folder is back');
 }
 

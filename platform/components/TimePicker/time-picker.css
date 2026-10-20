@@ -1,7 +1,8 @@
 /* Plenix · TimePicker (platform/components/TimePicker). The field reuses .plx-input (focus and invalid change only its
    border color) with a clock icon at its end; the time is a technical value, in the data font. The list is a menu surface
    of times; the segments are spin buttons that take the selected fill while focused. Anatomy and API: TimePicker.jsx. */
-.plx-time-picker{display:inline-block;inline-size:var(--plx-comp-time-picker-width);max-inline-size:100%;position:relative;vertical-align:top;}
+@property --plx-state-time-picker-inline-size{syntax:"*";inherits:false;}
+.plx-time-picker{display:inline-block;max-inline-size:100%;position:relative;vertical-align:top;}
 .plx-time-picker__field{align-items:center;column-gap:var(--plx-comp-time-picker-field-gap);display:flex;font-family:var(--plx-comp-time-picker-field-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-time-picker__field:focus-within,
 .plx-time-picker__field.is-focus-within{border-bottom-color:var(--plx-comp-time-picker-field-focus-within-border-color);border-left-color:var(--plx-comp-time-picker-field-focus-within-border-color);border-right-color:var(--plx-comp-time-picker-field-focus-within-border-color);border-top-color:var(--plx-comp-time-picker-field-focus-within-border-color);}
@@ -17,7 +18,7 @@
 .plx-time-picker__option:hover{background-color:var(--plx-comp-time-picker-option-active-background);}
 .plx-time-picker__option.is-selected{color:var(--plx-comp-time-picker-option-selected-text);font-weight:var(--plx-comp-time-picker-option-selected-font-weight);}
 /* segments: hour, minute and period as spin buttons */
-.plx-time-picker--segments{inline-size:auto;}
+.plx-time-picker--segments{--plx-state-time-picker-inline-size:auto;}
 .plx-time-picker__segments{column-gap:0;cursor:default;}
 .plx-time-picker__segment{border-bottom-left-radius:var(--plx-comp-time-picker-segment-radius);border-bottom-right-radius:var(--plx-comp-time-picker-segment-radius);border-top-left-radius:var(--plx-comp-time-picker-segment-radius);border-top-right-radius:var(--plx-comp-time-picker-segment-radius);cursor:text;min-inline-size:var(--plx-comp-time-picker-segment-min-width);outline-style:none;padding-inline-end:var(--plx-comp-time-picker-segment-padding-inline);padding-inline-start:var(--plx-comp-time-picker-segment-padding-inline);text-align:center;}
 .plx-time-picker__segment:focus,
@@ -32,3 +33,5 @@
 .plx-time-picker.plx-time-picker--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
 .plx-time-picker.plx-time-picker--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
 .plx-time-picker.plx-time-picker--width-fill{inline-size:100%;}
+/* the width its pattern gives it (layout-modes.css), else its own */
+.plx-time-picker:where(:not(.plx-time-picker--width-xs, .plx-time-picker--width-sm, .plx-time-picker--width-md, .plx-time-picker--width-lg, .plx-time-picker--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-time-picker-inline-size,var(--plx-comp-time-picker-width))));}
