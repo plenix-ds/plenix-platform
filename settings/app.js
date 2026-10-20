@@ -386,6 +386,7 @@ const CAL_EVENTS = exports.CAL_EVENTS = [{
 const CONTACTS = exports.CONTACTS = [{
   id: 1,
   name: "Maya Chen",
+  gender: "female",
   role: "Creative Director",
   co: "Apex Co",
   av: "M",
@@ -395,6 +396,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 2,
   name: "Jeff Torres",
+  gender: "male",
   role: "Plumber",
   co: "ABC Plumbing",
   av: "J",
@@ -404,6 +406,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 3,
   name: "Luis Herrera",
+  gender: "male",
   role: "CPA",
   co: "Herrera Tax",
   av: "L",
@@ -413,6 +416,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 4,
   name: "James Whitfield",
+  gender: "male",
   role: "CEO",
   co: "Apex Co",
   av: "J",
@@ -422,6 +426,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 5,
   name: "Sarah Morgan",
+  gender: "female",
   role: "Friend",
   co: "",
   av: "S",
@@ -2116,7 +2121,7 @@ function Suite({
   // the page header background (Settings › Appearance): read by EntityHeader from the page root
   React.useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'none');
     root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
   }, [prefs.headerTint, prefs.headerTintStyle]);
   // the appearance (Settings › Mode: system, light or dark; Platforms Standard 1.6): theme-boot keeps it for every page
@@ -4146,7 +4151,7 @@ function Settings({
         v: "red",
         l: "Red"
       }],
-      val: prefs.headerTint || "blue",
+      val: prefs.headerTint || "none",
       onChange: v => set("headerTint", v)
     })), /*#__PURE__*/React.createElement(Row, {
       label: "Page header tint",

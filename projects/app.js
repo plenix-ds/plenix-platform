@@ -386,6 +386,7 @@ const CAL_EVENTS = exports.CAL_EVENTS = [{
 const CONTACTS = exports.CONTACTS = [{
   id: 1,
   name: "Maya Chen",
+  gender: "female",
   role: "Creative Director",
   co: "Apex Co",
   av: "M",
@@ -395,6 +396,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 2,
   name: "Jeff Torres",
+  gender: "male",
   role: "Plumber",
   co: "ABC Plumbing",
   av: "J",
@@ -404,6 +406,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 3,
   name: "Luis Herrera",
+  gender: "male",
   role: "CPA",
   co: "Herrera Tax",
   av: "L",
@@ -413,6 +416,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 4,
   name: "James Whitfield",
+  gender: "male",
   role: "CEO",
   co: "Apex Co",
   av: "J",
@@ -422,6 +426,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 5,
   name: "Sarah Morgan",
+  gender: "female",
   role: "Friend",
   co: "",
   av: "S",

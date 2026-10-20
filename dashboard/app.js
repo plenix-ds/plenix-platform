@@ -386,6 +386,7 @@ const CAL_EVENTS = exports.CAL_EVENTS = [{
 const CONTACTS = exports.CONTACTS = [{
   id: 1,
   name: "Maya Chen",
+  gender: "female",
   role: "Creative Director",
   co: "Apex Co",
   av: "M",
@@ -395,6 +396,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 2,
   name: "Jeff Torres",
+  gender: "male",
   role: "Plumber",
   co: "ABC Plumbing",
   av: "J",
@@ -404,6 +406,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 3,
   name: "Luis Herrera",
+  gender: "male",
   role: "CPA",
   co: "Herrera Tax",
   av: "L",
@@ -413,6 +416,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 4,
   name: "James Whitfield",
+  gender: "male",
   role: "CEO",
   co: "Apex Co",
   av: "J",
@@ -422,6 +426,7 @@ const CONTACTS = exports.CONTACTS = [{
 }, {
   id: 5,
   name: "Sarah Morgan",
+  gender: "female",
   role: "Friend",
   co: "",
   av: "S",
@@ -2116,7 +2121,7 @@ function Suite({
   // the page header background (Settings › Appearance): read by EntityHeader from the page root
   React.useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'none');
     root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
   }, [prefs.headerTint, prefs.headerTintStyle]);
   // the appearance (Settings › Mode: system, light or dark; Platforms Standard 1.6): theme-boot keeps it for every page
@@ -3021,9 +3026,12 @@ function ProjectContent({
         icon: 'briefcase',
         hue: proj.color
       },
-      context: proj.tags[0],
+      subtitle: proj.desc,
       status: statusOf(proj.status),
-      description: proj.desc,
+      facts: proj.tags[0] ? [{
+        label: 'Tag',
+        value: proj.tags[0]
+      }] : [],
       actions: [{
         icon: 'flag',
         label: 'Update status',
@@ -3123,8 +3131,14 @@ function ProjectContent({
       icon: 'circle-check',
       hue: proj.color
     },
-    context: proj.name,
-    facts: [pTasks.length + ' tasks', doneT + ' done'],
+    subtitle: proj.name,
+    facts: [{
+      label: 'Tasks',
+      value: pTasks.length
+    }, {
+      label: 'Done',
+      value: doneT
+    }],
     actions: [{
       icon: 'share',
       label: 'Share'
@@ -3152,8 +3166,11 @@ function ProjectContent({
       icon: 'doc-text',
       hue: proj.color
     },
-    context: proj.name,
-    facts: [pNotes.length + ' notes'],
+    subtitle: proj.name,
+    facts: [{
+      label: 'Notes',
+      value: pNotes.length
+    }],
     actions: [{
       icon: 'share',
       label: 'Share'
@@ -3188,8 +3205,11 @@ function ProjectContent({
       icon: 'folder',
       hue: proj.color
     },
-    context: proj.name,
-    facts: [pFiles.length + ' files'],
+    subtitle: proj.name,
+    facts: [{
+      label: 'Files',
+      value: pFiles.length
+    }],
     actions: [{
       icon: 'share',
       label: 'Share'
