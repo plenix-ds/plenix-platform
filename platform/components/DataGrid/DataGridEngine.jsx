@@ -65,6 +65,8 @@ const Width = React.forwardRef(function Width({ as: Element='div', width, frozen
 // Compatibility cell adapters read through a live ref; retain custom output until its record, column or row state changes.
 function RowMenuContent({build,items,record,rowApi}){return build(typeof items==='function'?items(record):items||[],record,rowApi);}
 const CustomCell=React.memo(function CustomCell({column,record,cell,block}){const content=column.render(record,cell);return React.isValidElement(content)?content:<span className={block+'__value'}>{content}</span>;},(a,b)=>a.column===b.column&&a.record===b.record&&a.rowId===b.rowId&&a.selected===b.selected&&a.block===b.block);
+// Window-only updates reuse complete record rows; view, selection and edit changes invalidate their closures.
+const MemoGridRow=React.memo(function MemoGridRow({row,render}){return render(row);},(a,b)=>a.row===b.row&&a.version===b.version&&a.selected===b.selected);
 const RowTarget=React.forwardRef(function RowTarget({onAttach,...props},forwarded){return <div {...props} ref={node=>{onAttach?.(node);if(typeof forwarded==='function')forwarded(node);else if(forwarded)forwarded.current=node;}}/>;});
 function NextEngine(props) {
   const inPane=React.useContext(GridPane);
@@ -215,7 +217,7 @@ function NextEngine(props) {
   const selectAll=value=>{const next={...selection};selectionRows.forEach(r=>{if(value)next[r.id]=true;else delete next[r.id];});notifySelection(next);};
   const pickCheckbox=(row,event)=>{
     const wanted=event.target.checked,from=selectionRows.findIndex(r=>r.id===selectionAnchor.current),to=selectionRows.indexOf(row);
-    if((event.nativeEvent?.shiftKey||event.shiftKey)&&from>=0&&to>=0){const next={...selection};selectionRows.slice(Math.min(from,to),Math.max(from,to)+1).forEach(record=>{if(wanted)next[record.id]=true;else delete next[record.id];});notifySelection(next);}
+    if((event.nativeEvent?.shiftKey||event.shiftKey)&&from>=0&&to>=0){const next={...live.current.selection};selectionRows.slice(Math.min(from,to),Math.max(from,to)+1).forEach(record=>{if(wanted)next[record.id]=true;else delete next[record.id];});notifySelection(next);}
     else pick(row.id,wanted);
     selectionAnchor.current=row.id;
   };
@@ -263,6 +265,8 @@ function NextEngine(props) {
     {rowMenu&&rowMenuButton?<Width width={metrics.menu} className={`${B}__grid-cell ${B}__cell--row-menu`} role="gridcell"><Menu label={S.rowActions} trigger={<Button className={B+'__row-menu'} variant="ghost" size="xs" iconOnly icon="more" label={S.rowActions}/>}>
       <RowMenuContent build={menuItems} items={rowMenu} record={record} rowApi={rowApi}/></Menu></Width>:null}
   </RowTarget>;return rowMenu?<ContextMenu key={row.displayKey||row.id} target={node} label={S.rowActions}><RowMenuContent build={menuItems} items={rowMenu} record={record} rowApi={rowApi}/></ContextMenu>:node;};
+  const rowVersion=React.useMemo(()=>({}),[props,source,model,editing,metrics,autoSizing,sizing,columnOrder,columnVisibility,sorting,expanded,page,pageSize,isNarrow,collapsed,printing,filterField,groupBy,loaded]);
+  const renderRow=row=>row.original?<MemoGridRow key={row.displayKey||row.id} row={row} render={rowNode} selected={!!selection[row.id]} version={(props.movableRows??options.movableRows)?{}:rowVersion}/>:rowNode(row);
   const priorGroups=model.slice(0,first).filter(row=>row.__group).map(row=>row.__group),currentGroup=model[first]?.__group||priorGroups[priorGroups.length-1];
   const stickyGroups=currentGroup?priorGroups.filter((group,i)=>group.path.every((part,depth)=>JSON.stringify(part)===JSON.stringify(currentGroup.path[depth]))&&!priorGroups.slice(i+1).some(next=>next.depth===group.depth)):[];
   const failed=error||remoteError;
@@ -275,7 +279,7 @@ function NextEngine(props) {
           {['short','medium','tall','extra-tall'].map(step=><MenuItem key={step} checked={effectiveStep===step} onSelect={()=>setRowHeight(step)}>{S[step]}</MenuItem>)}<MenuDivider/><MenuItem checked={effectiveWrap} onSelect={()=>setWrapHeaders(v=>!v)}>{S.wrapHeaders}</MenuItem></Menu></div>:null}{rowMenu&&rowMenuButton?<Width width={metrics.menu} className={`${B}__grid-col`} role="columnheader" aria-label={S.rowActions}/>:null}
       </div></div></div>
       <div id={viewportId} ref={holder} className={`${B}__grid-tableholder`} role="rowgroup" tabIndex={isStatic?undefined:0} onKeyDown={event=>{if(event.target===event.currentTarget&&event.key==='ArrowDown'){event.preventDefault();focusCell(first,0);}}} onScroll={e=>{if(header.current)header.current.scrollLeft=e.currentTarget.scrollLeft;if(mode==='load-more'&&e.currentTarget.scrollHeight-e.currentTarget.scrollTop-e.currentTarget.clientHeight<tokenPixels('--plx-ref-size-200px',frame.current)){if(remoteMode&&!fetching.current&&source.length<(remote?.total||0)){fetching.current=true;setPage(n=>n+1);}else if(!remoteMode)setLoaded(n=>Math.min(allRows.length,n+pageSize));}}}>
-        <div {...rowDnd.listProps} className={`${B}__grid-table`} role="presentation">{stickyGroups.length?<div className={B+'__sticky-groups'} aria-hidden="true" inert="">{stickyGroups.map(group=>React.cloneElement(groupNode(group),{key:'sticky:'+group.id,className:B+'__sticky-group '+B+'__grid-group-level-'+group.depth,role:undefined,tabIndex:-1,'aria-expanded':undefined,'aria-rowindex':undefined,'aria-level':undefined,onKeyDown:undefined}))}</div>:null}<RowGap rows={model.slice(0,first)}/>{shown.map(rowNode)}<RowGap rows={model.slice(last)}/></div>
+        <div {...rowDnd.listProps} className={`${B}__grid-table`} role="presentation">{stickyGroups.length?<div className={B+'__sticky-groups'} aria-hidden="true" inert="">{stickyGroups.map(group=>React.cloneElement(groupNode(group),{key:'sticky:'+group.id,className:B+'__sticky-group '+B+'__grid-group-level-'+group.depth,role:undefined,tabIndex:-1,'aria-expanded':undefined,'aria-rowindex':undefined,'aria-level':undefined,onKeyDown:undefined}))}</div>:null}<RowGap rows={model.slice(0,first)}/>{shown.map(renderRow)}<RowGap rows={model.slice(last)}/></div>
         {!model.length?<div className={`${B}__grid-placeholder`}><div className={`${B}__grid-placeholder-contents`}><span className={B+'__empty'}>{remoteMode&&remoteBusy?S.loading:empty||S.empty}</span></div></div>:null}
       </div>
     </div>

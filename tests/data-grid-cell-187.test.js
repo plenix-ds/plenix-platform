@@ -7,5 +7,9 @@ await page.evaluate(()=>window.__cell187.api.selectRow(2));await page.waitForFun
 await page.evaluate(()=>window.__cell187.api.updateData([{id:1,n:4}]));await page.waitForFunction(()=>[...document.querySelectorAll('.plx-data-grid__portal')].some(e=>e.textContent==='4'));
 assert.ok((await page.evaluate(()=>window.__cell187.calls))<=before+2,'only edited/selected records rerender');assert.equal(await page.evaluate(()=>window.__cell187.menuCalls),0,'closed row menus must not build their items');
 await page.click('.plx-data-grid__row-menu');await page.waitForSelector('[role="menuitem"]');assert.equal(await page.evaluate(()=>window.__cell187.menuCalls),1);await page.click('[role="menuitem"]');assert.equal(await page.evaluate(()=>window.__cell187.action),1);
-console.log('GRID_CELL_MEMO_OK parent reuse, selection, edit and lazy row menu');
+await page.evaluate(()=>{window.__cell187.api.deselectRow([1,2,3]);window.__cell187.api.selectRow(3);});
+await page.click('.plx-data-grid__grid-row[data-plx-record="number:1"] input[type="checkbox"]');
+await page.keyboard.down('Shift');await page.click('.plx-data-grid__grid-row[data-plx-record="number:2"] input[type="checkbox"]');await page.keyboard.up('Shift');
+assert.deepEqual(await page.evaluate(()=>window.__cell187.api.getSelectedData().map(r=>r.id).sort()),[1,2,3],'range selection preserves a selected row outside the range');
+console.log('GRID_CELL_MEMO_OK parent reuse, selection, edit, lazy menu and range selection');
 }finally{if(browser)await browser.close();server.close();}})().catch(e=>{console.error(e);process.exit(1)});
