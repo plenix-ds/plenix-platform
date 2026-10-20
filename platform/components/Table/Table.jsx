@@ -10,15 +10,16 @@
        icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
        pill: false (as DataGrid).
      Table.preload(): compatibility no-op; the renderer is already bundled.
+   Props: unread(record), unreadKeys and onUnreadChange match DataGrid; static rows never mark themselves read.
    Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
      Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row. The table grows with its rows and never scrolls internally.
    Notes: Existing Table tokens preserve the static-table look; use DataGrid for records people work with. */
 import React from 'react';
 import { DataGridEngine } from '../DataGrid/DataGridEngine.jsx';
 
-export function Table({ label, data, columns = [], index, empty, narrow = 'table', headerVisible = true, cells = 'text', className }) {
+export function Table({ label, data, columns = [], index, empty, narrow = 'table', headerVisible = true, cells = 'text', className, unread, unreadKeys, onUnreadChange }) {
   const staticColumns = React.useMemo(() => columns.map(({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty }) =>
     ({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty, headerSort: false, resizable: false })), [columns]);
-  return <DataGridEngine isStatic label={label} data={data} columns={staticColumns} index={index} empty={empty} narrow={narrow} headerVisible={headerVisible} cells={cells} className={className} headerMenu={false} />;
+  return <DataGridEngine isStatic unread={unread} unreadKeys={unreadKeys} onUnreadChange={onUnreadChange} label={label} data={data} columns={staticColumns} index={index} empty={empty} narrow={narrow} headerVisible={headerVisible} cells={cells} className={className} headerMenu={false} />;
 }
 Table.preload = () => {};

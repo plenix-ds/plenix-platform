@@ -78,7 +78,7 @@ const VIEWS = STATES.filter((s) => inScope(s[0]) && (!ONLY || ONLY.test(s[0])));
 if (!VIEWS.length) changed.none('DATA_GRIDS_OK 0/0 table views');
 changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
 if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
-  for (const regression of ['data-grid-search-149.test.js', 'data-grid-window-184.test.js', 'data-grid-sort-185.test.js', 'data-grid-cell-187.test.js', 'data-grid-select-167.test.js', 'data-grid-pane-150.test.js', 'data-grid-narrow-168.test.js', 'data-grid-state-169.test.js', 'data-grid-view-169.test.js', 'data-grid-group-165.test.js', 'data-grid-group-browser-165.test.js']) {
+  for (const regression of ['data-grid-search-149.test.js', 'data-grid-window-184.test.js', 'data-grid-sort-185.test.js', 'data-grid-cell-187.test.js', 'data-grid-select-167.test.js', 'data-grid-pane-150.test.js', 'data-grid-narrow-168.test.js', 'data-grid-state-169.test.js', 'data-grid-view-169.test.js', 'data-grid-group-165.test.js', 'data-grid-group-browser-165.test.js', 'data-grid-unread-164.test.js']) {
   const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, regression)], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
   }

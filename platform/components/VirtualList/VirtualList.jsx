@@ -15,6 +15,7 @@
      groups: instead of items, rows under headers: [{ id, label, items }]; each header stays at the top while its group
        scrolls and says how many items it holds
      count: instead of items, how many rows there are; renderItem(undefined, index) draws each one (rows built on demand)
+     unread(item) or unreadKeys with onUnreadChange(keys, {unreadCount}): key-based unread state. onItemOpen(item) enables click/Enter opening; markReadOnOpen and readDelay match DataGrid.
      renderItem(item, index): draws a row's content (default: the row of icon, label, description and meta)
      getKey(item, index): a stable key for a row (default item.id, else its index)
      mode: "fixed" (default: every row one line at the list row height, cut with an ellipsis) | "variable" (rows take
@@ -40,6 +41,7 @@
        every row matters, unless the page offers its own search. Tables are the DataGrid, which has its own rendering.
 */
 import React from 'react';
+import { useUnread } from '../DataGrid/unread.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
@@ -68,7 +70,7 @@ function Row({ item }) {
 }
 
 export const VirtualList = React.forwardRef(function VirtualList({ label, items, groups, count, renderItem, getKey, mode = 'fixed', height = 'md',
-  showCount = false, loading = false, onEndReached, overscan, strings, className, ...rest }, ref) {
+  showCount = false, loading = false, onEndReached, overscan, strings, className, unread: unreadPredicate, unreadKeys, onUnreadChange, markReadOnOpen, readDelay, onItemOpen, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
   // the rows in order: a group's header, then its items
   const rows = React.useMemo(() => {
@@ -79,6 +81,9 @@ export const VirtualList = React.forwardRef(function VirtualList({ label, items,
     }
     return items ? items.map((it) => ({ item: it })) : null;
   }, [items, groups]);
+  const unreadRecords=React.useMemo(()=>rows?rows.filter(row=>!row.header).map(row=>row.item):[],[rows]);
+  const unreadKey=React.useCallback(item=>getKey?getKey(item,unreadRecords.indexOf(item)):item?.id??unreadRecords.indexOf(item),[getKey,unreadRecords]);
+  const unread=useUnread(unreadRecords,unreadKey,{unread:unreadPredicate,unreadKeys,onUnreadChange,markReadOnOpen,readDelay});
   const total = rows ? rows.length : Math.max(0, count || 0);
   const itemCount = groups ? groups.reduce((n, g) => n + (g.items || []).length, 0) : total;
   const sticky = React.useMemo(() => (groups && rows ? rows.reduce((l, r, i) => (r.header ? l.concat(i) : l), []) : undefined), [groups, rows]);
@@ -105,7 +110,7 @@ export const VirtualList = React.forwardRef(function VirtualList({ label, items,
     const item = r ? r.item : undefined;
     const key = getKey ? getKey(item, index) : item && typeof item === 'object' && item.id !== undefined ? item.id : index;
     return (
-      <div key={key} role="listitem" className="plx-virtual-list__item" {...v.itemProps(index)}>
+      <div key={key} role="listitem" className="plx-virtual-list__item" data-plx-unread={unread.has(item)||undefined} aria-label={unread.has(item)?String(item?.label??key)+', unread':undefined} tabIndex={onItemOpen?0:undefined} onClick={()=>{if(onItemOpen){onItemOpen(item);unread.open(item);}}} onKeyDown={event=>{if(onItemOpen&&event.key==='Enter'&&event.target===event.currentTarget){onItemOpen(item);unread.open(item);}}} {...v.itemProps(index)}>
         {renderItem ? renderItem(item, index) : <Row item={item} />}
       </div>
     );
