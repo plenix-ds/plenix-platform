@@ -1,0 +1,5 @@
+SCOPE task212-pages-compare.cjs: full · 14 app pages, 3 of 2759 design-system pages
+FAIL design system home
+     404 http://127.0.0.1:9791/Plenix/platform/components/DataGrid/data-grid-static.css
+     Failed to load resource: the server responded with a status of 404 (Not Found)
+PAGES_FAIL 3/4
