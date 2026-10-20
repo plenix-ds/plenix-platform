@@ -1,0 +1,59 @@
+# Zero overlap: the rollout recipe
+
+The rule is the Plenix Styling Standard (`platform/standards/styling.md`), sections 3.3 (exclusive assignments), 3.5
+(the definition) and 3.6 (the five selector kinds). The pilot (commit d5135035: Button, Input, NavList, Icon, Floating,
+reduced motion, the reset) is the worked example: read its diff before starting a component.
+
+## The definition
+
+For every element and pseudo-element, in each condition, at most one Plenix declaration assigns a property, custom
+properties included. Inheritance is not an overlap. There are no exceptions; what is not done yet is the backlog.
+
+## The two backlogs (they only shrink)
+
+- `check-system.selector-kinds.json`: every selector that is not one of the five kinds (component, behavior, foundation,
+  base, condition). `node check-system.rules/selector-kinds.js` fails on anything new; after a repair run
+  `node check-system.rules/selector-kinds.js --shrink`. Never run `--baseline`: Claude records it.
+- `tests/baselines/overlap-strict.json`: every runtime overlap on the 14 application pages.
+  `node tests/clash-audit.js --strict --check --pages <names>` fails on anything new and lists what is gone.
+
+## How to repair a component
+
+1. **Dump its rules** one declaration per line and list its runtime pairs (the audit's `--strict` output, or the
+   pilot's `pilot-pairs.js` approach: mark the component's elements and audit them).
+2. **Flat selectors.** No descendant, child or sibling combinator, no `:has()`, no `&`.
+   - A part that changes with its root's state takes the state as **its own class** from the JSX
+     (`plx-button__caret--open`, `plx-nav-list__icon--muted`, `plx-popover__arrow--top`).
+   - A pointer state of the root (hover, focus-within) reaches its parts as a **context variable** set on the element
+     that holds them (`.plx-nav-list__entry:is(:hover, :focus-within){--plx-comp-nav-list-context-pin-opacity:1}`), read
+     with a fallback (`opacity:var(--plx-comp-nav-list-context-pin-opacity,0)`). A component that can contain itself
+     uses the class, never the variable.
+   - A colored surface reaches its children through `SurfaceContext` (Button reads it), never `[data-…] .child`.
+3. **Each property once.** The element's own rule declares it, reading a state variable with its default as the fallback:
+   `background-color:var(--plx-state-button-background,var(--plx-comp-button-background))`.
+   - State variables are named `--plx-state-<component>-<what>` and registered in the same stylesheet:
+     `@property --plx-state-button-background{syntax:"*";inherits:false;}`.
+4. **Exclusive assignments.** Variants, sizes and states assign the variable (or a property no other rule sets) under
+   conditions that cannot both hold: put the exclusions in `:where(:not(…))` so specificity stays at 0,2,0 or less.
+   - Order the states as the Standard's matrix says: disabled > pressed > hover > selected > rest (a component may
+     refine it in its header comment). The assignment is exclusive, not the states.
+   - Exclusive kinds (a text area against a text field, a color well) declare their own sizes and padding.
+   - A default size or variant: either the fallback, or `:where(:not(.x--sm, .x--lg))`.
+   - `:disabled` and `[aria-disabled="true"]` together: `:is(:disabled, [aria-disabled="true"])`.
+5. **What a component never declares:** `box-sizing` (the reset owns it on every element) and `scrollbar-color` /
+   `scrollbar-width` (the base owns them). A component on a raw tag sets its own margins and padding: the reset reaches
+   raw elements only.
+6. **Two classes on one element** only when they set different properties. A component that wears another block's class
+   (the Select control's `plx-input`) gets its own class and its own rules on shared tokens.
+7. **Update the component's header comment** (its state order) and its JSX header (new classes).
+
+## Proof (for every change)
+
+- `node build-app.js`, `node check-system.js` (SYSTEM_OK, apart from findings that are not yours), `node check-spec.js`
+  (a new modifier needs a variant card or a `NOT_VARIANTS` reason).
+- `node tests/selector-kinds.test.js` and `node tests/zero-overlap.test.js` stay OK.
+- `node tests/clash-audit.js --strict --check --pages <the pages that use it>`.
+- **No visual change** except the matrix corrections the Standard requires (a hovered disabled control stays disabled);
+  list each one in the PR with before and after. Compare computed styles before and after on the component's spec pages
+  and the application pages that use it (`tests/compare-styles.js`, or the styling-proof workflow).
+- Dispatch the **Styling proof** workflow and list the run in the PR. Never wait for it.

@@ -58,6 +58,9 @@ changes inside `platform/design-system/` at `lanes/<task>/design-system/<the sam
 
 - **Dark mode is last priority (owner, 2026-10-19).** Do not fix, tune or check dark-mode looks in any task; check and prove
   in light only. A dark-mode problem you notice goes as a comment on #205 (the dark-mode to-do), never into your PR.
+- **Zero overlap (owner, 2026-10-19/20).** Every stylesheet you touch follows `tools/agent/zero-overlap.md`: flat selectors
+  (one of the five kinds), each property declared once, values under mutually exclusive conditions, state variables
+  `--plx-state-<component>-…` registered `inherits: false`. Nothing new may enter the two backlogs; lanes #207–#210.
 - Nothing hard-coded: every value is a token. Tokens are JSON (`platform/tokens/*.tokens.json`,
   `platform/tokens/components/<name>.tokens.json`); the build generates the CSS. Tiers: `--plx-ref-` (the palette),
   `--plx-sys-` (theme roles), `--plx-comp-<component>-<role>` (pointing to plx-sys roles). Never add a palette color;
