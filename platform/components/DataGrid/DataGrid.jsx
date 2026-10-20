@@ -67,6 +67,8 @@
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
+     Horizontal body scrolling moves the column headers by the same amount; frozen headers and cells stay pinned.
+       Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
        row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
