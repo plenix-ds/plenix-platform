@@ -1409,6 +1409,7 @@ class PlenixRadius {
   static const double radiusCard4px = 4;
   static const double radiusCard6px = 6;
   static const double radiusCard12px = 12;
+  static const double radiusTable2px = 2;
   static const double radiusMenu8px = 8;
   static const double radiusDialog8px = 8;
   static const double radiusAvatar4px = 4;

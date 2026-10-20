@@ -373,6 +373,7 @@ object PlenixRadius {
     val radiusCard4px = 4.dp
     val radiusCard6px = 6.dp
     val radiusCard12px = 12.dp
+    val radiusTable2px = 2.dp
     val radiusMenu8px = 8.dp
     val radiusDialog8px = 8.dp
     val radiusAvatar4px = 4.dp
@@ -650,7 +651,7 @@ object PlenixComponent {
     val switchTrackHeight = 20.dp
     val switchTrackWidth = 36.dp
     val tableCellPaddingInline = 8.dp
-    val tableRadius = 8.dp
+    val tableRadius = 2.dp
     val timelineItemGap = 12.dp
     const val toastAnimationDuration = 250
     val toastBorderInlineStartWidth = 3.dp

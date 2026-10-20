@@ -16,6 +16,7 @@
     <dimen name="plx_radius_radius_card_4px">4dp</dimen>
     <dimen name="plx_radius_radius_card_6px">6dp</dimen>
     <dimen name="plx_radius_radius_card_12px">12dp</dimen>
+    <dimen name="plx_radius_radius_table_2px">2dp</dimen>
     <dimen name="plx_radius_radius_menu_8px">8dp</dimen>
     <dimen name="plx_radius_radius_dialog_8px">8dp</dimen>
     <dimen name="plx_radius_radius_avatar_4px">4dp</dimen>
@@ -243,7 +244,7 @@
     <dimen name="plx_component_switch_track_height">20dp</dimen>
     <dimen name="plx_component_switch_track_width">36dp</dimen>
     <dimen name="plx_component_table_cell_padding_inline">8dp</dimen>
-    <dimen name="plx_component_table_radius">8dp</dimen>
+    <dimen name="plx_component_table_radius">2dp</dimen>
     <dimen name="plx_component_timeline_item_gap">12dp</dimen>
     <dimen name="plx_component_toast_border_inline_start_width">3dp</dimen>
     <dimen name="plx_component_toast_close_height">24dp</dimen>

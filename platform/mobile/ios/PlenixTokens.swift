@@ -374,6 +374,7 @@ public enum Plenix {
         public static let radiusCard4px: CGFloat = 4
         public static let radiusCard6px: CGFloat = 6
         public static let radiusCard12px: CGFloat = 12
+        public static let radiusTable2px: CGFloat = 2
         public static let radiusMenu8px: CGFloat = 8
         public static let radiusDialog8px: CGFloat = 8
         public static let radiusAvatar4px: CGFloat = 4
@@ -643,7 +644,7 @@ public enum Plenix {
         public static let switchTrackHeight: CGFloat = 20
         public static let switchTrackWidth: CGFloat = 36
         public static let tableCellPaddingInline: CGFloat = 8
-        public static let tableRadius: CGFloat = 8
+        public static let tableRadius: CGFloat = 2
         public static let timelineItemGap: CGFloat = 12
         public static let toastAnimationDuration: Double = 0.25
         public static let toastBorderInlineStartWidth: CGFloat = 3
