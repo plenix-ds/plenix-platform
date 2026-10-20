@@ -26,6 +26,8 @@
        type: "text" (default) | "number" | "currency" | "date" | "select" | "checkbox" | "file" | "image" | "link" |
          "person" | "long-text" | "bytes" (file sizes; filters take "> 2 MB") | "multi" (several values: a grouped table
          puts the record in each of its groups): the header icon and the sort words
+       groupable: false disables header grouping; groupRange: positive numeric bucket width; groupBucket(value): custom bucket label.
+       groupBy also accepts [{ field, interval: "day" | "week" | "month" | "year", range }]; calendar periods use UTC, weeks start Monday.
        render(record): the cell as a React element; sorter: "string" | "number" | "date" | a compare function
          sorter(valueA, valueB, recordA, recordB, field, direction) returns ascending order; direction lets a fixed
          category order (such as folders first) compensate for the descending inversion
@@ -39,6 +41,9 @@
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
+     unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
+     markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
+     unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
@@ -62,11 +67,15 @@
        Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
      fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
        { rows, total }; search: the page's search text
-     storageKey: keeps the person's view (sort, widths, order, hidden columns, row height, wrap, groups) in this browser
-     narrow: "list" (default: under narrowAt, 600px of its own width, a list of keyColumns) | "table" | "auto"
+     storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
+     onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+       useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
+     narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
+     Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
+     Width conversions are shared across cells and refreshed when the measured token environment changes.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
        row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.

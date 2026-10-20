@@ -150,6 +150,21 @@
       "$value": "{plx-sys.content-muted}",
       "$type": "color",
       "$description": "DataGrid column header: the column menu's chevron button (the thin outline chevron, muted; owner, 2026-10-14), shown while the header is hovered."
+    },
+    "data-grid-unread-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Unread record unread-font-weight (task 164)."
+    },
+    "data-grid-unread-bar-width": {
+      "$value": "{plx-sys.border-width-thick}",
+      "$type": "dimension",
+      "$description": "Unread record unread-bar-width (task 164)."
+    },
+    "data-grid-unread-bar-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "Unread record unread-bar-color (task 164)."
     }
   }
 }

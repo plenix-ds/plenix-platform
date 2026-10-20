@@ -39,6 +39,7 @@
      data grid's (data-grid-border, shape-md, border-width-thin).
 */
 import React from 'react';
+import { GridPane } from '../../components/DataGrid/room.js';
 import { cx } from '../../utils/cx.js';
 import { Resizable } from '../../components/Resizable/Resizable.jsx';
 
@@ -52,12 +53,12 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
     ? { axis: 'horizontal', defaultWidth: defaultSize != null ? defaultSize : start, width: size, minWidth: minSize || lo, maxWidth: maxSize || hi, onResize: onSizeChange ? (s) => onSizeChange(s.width) : undefined }
     : { axis: 'vertical', defaultHeight: defaultSize != null ? defaultSize : start, height: size, minHeight: minSize || lo, maxHeight: maxSize || hi, onResize: onSizeChange ? (s) => onSizeChange(s.height) : undefined };
   return (
-    <div role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>
+    <GridPane.Provider value={true}><div role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>
       <div className="plx-split-view__panels">
         <Resizable label={firstLabel} steps={steps} variant="divider" fill className="plx-split-view__first" {...box}>{first}</Resizable>
         <div className="plx-split-view__second">{second}</div>
       </div>
-    </div>
+    </div></GridPane.Provider>
   );
 }
 

@@ -175,6 +175,21 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension",
       "$description": "VirtualList: empty list padding (space-inset-sm)."
+    },
+    "virtual-list-unread-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Unread record unread-font-weight (task 164)."
+    },
+    "virtual-list-unread-bar-width": {
+      "$value": "{plx-sys.border-width-thick}",
+      "$type": "dimension",
+      "$description": "Unread record unread-bar-width (task 164)."
+    },
+    "virtual-list-unread-bar-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "Unread record unread-bar-color (task 164)."
     }
   }
 }

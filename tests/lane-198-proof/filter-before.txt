@@ -1,0 +1,10 @@
+{"localeCalls":0,"tokenReads":2,"filterCalls":6500,"value":"Record 59","elapsedMs":485}
+AssertionError [ERR_ASSERTION]: each query evaluates the predicate at most once per record
+    at C:\Users\Administrator\Documents\Plenix-Codex-Tools\workspaces\task149\tests\data-grid-search-149.test.js:22:82 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
