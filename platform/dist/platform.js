@@ -68,6 +68,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Icon = Icon;
 exports.StatusIcon = StatusIcon;
+exports.stateIcon = stateIcon;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
@@ -133,6 +134,24 @@ function Icon({
     "aria-label": label,
     "aria-hidden": label ? undefined : true
   }, rest));
+}
+
+// stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
+// Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
+// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
+// the Icon (a size), given only where the caller set none.
+function stateIcon(icon, on, extra) {
+  if (typeof icon === 'string') return /*#__PURE__*/_react.default.createElement(Icon, _extends({
+    name: icon,
+    filled: !!on
+  }, extra));
+  if (/*#__PURE__*/_react.default.isValidElement(icon) && icon.type === Icon) {
+    const add = {};
+    if (icon.props.filled === undefined) add.filled = !!on;
+    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = extra[k];
+    return Object.keys(add).length ? /*#__PURE__*/_react.default.cloneElement(icon, add) : icon;
+  }
+  return icon;
 }
 
 // StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
@@ -3093,12 +3112,7 @@ const STRINGS = {
 
 // the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
 // open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = (i, on) => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i,
-  filled: on
-}) : /*#__PURE__*/_react.default.isValidElement(i) && i.type === _Icon.Icon && i.props.filled === undefined ? /*#__PURE__*/_react.default.cloneElement(i, {
-  filled: on
-}) : i;
+const asIcon = _Icon.stateIcon;
 const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
   variant = 'secondary',
   size = 'md',
@@ -26924,12 +26938,7 @@ const STRINGS = {
 
 // the icon takes the row's state as its own (Styling Standard 3.6): filled on the current row; an Icon element the caller
 // gives keeps its own fill when it sets one
-const asIcon = (i, on) => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i,
-  filled: on
-}) : /*#__PURE__*/_react.default.isValidElement(i) && i.type === _Icon.Icon && i.props.filled === undefined ? /*#__PURE__*/_react.default.cloneElement(i, {
-  filled: on
-}) : i;
+const asIcon = _Icon.stateIcon;
 // the current item is the open one: a folder shows as an open folder (filled, like every current icon)
 const OPEN_ICONS = {
   folder: 'folder-open'
@@ -28605,9 +28614,10 @@ AppHeader.Item = /*#__PURE__*/_react.default.forwardRef(function AppHeaderItem({
   ...rest
 }, ref) {
   // the header's icon size is the icon's own prop (lg, 24px; owner 2026-10-18), unless the icon names one
-  const icon = /*#__PURE__*/_react.default.isValidElement(iconProp) && iconProp.type === _Icon.Icon && !iconProp.props.size ? /*#__PURE__*/_react.default.cloneElement(iconProp, {
+  // an icon without a size is drawn at lg; the current item's icon is filled (the item owns its state)
+  const icon = (0, _Icon.stateIcon)(iconProp, current, {
     size: 'lg'
-  }) : iconProp;
+  });
   const props = {
     ref,
     className: (0, _cx.cx)('plx-app-header__item', current && 'is-current', className),
@@ -30647,9 +30657,7 @@ ToolRail.Item = function ToolRailItem({
     "aria-pressed": pressed === undefined ? undefined : !!pressed,
     disabled: disabled || undefined,
     onClick: onClick
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon, labels ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.stateIcon)(icon, pressed), labels ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-tool-rail__label"
   }, label) : null);
   return labels ? button : /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {

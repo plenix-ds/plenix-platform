@@ -23,3 +23,6 @@
 .plx-segmented__item::before{content:"";inset-block-end:var(--plx-comp-segmented-item-target-inset-block);inset-block-start:var(--plx-comp-segmented-item-target-inset-block);inset-inline-end:0;inset-inline-start:0;position:absolute;}
 .plx-segmented__item:first-child::before{inset-inline-start:var(--plx-comp-segmented-item-target-inset-outer);}
 .plx-segmented__item:last-child::before{inset-inline-end:var(--plx-comp-segmented-item-target-inset-outer);}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-segmented__item{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-segmented__item:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}

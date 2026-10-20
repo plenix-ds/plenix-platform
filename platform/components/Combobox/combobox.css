@@ -34,3 +34,8 @@
 .plx-combobox.plx-combobox--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
 .plx-combobox.plx-combobox--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
 .plx-combobox.plx-combobox--width-fill{inline-size:100%;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-combobox__option{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-combobox__list{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-pop-in;animation-timing-function:var(--plx-sys-motion-ease-enter);}
+/* the list opens from its top (moved from motion.css) */
+:where(.plx-combobox__list){transform-origin:top center;}

@@ -42,3 +42,5 @@
 /* a switch without a visible label: the same invisible target layer, centered on the track (Platforms Standard 3.1) */
 .plx-switch:not(:has(.plx-switch__label))::before{content:"";inset-block-end:var(--plx-comp-switch-target-inset);inset-block-start:var(--plx-comp-switch-target-inset);inset-inline-end:var(--plx-comp-switch-target-inset);inset-inline-start:var(--plx-comp-switch-target-inset);position:absolute;}
 .plx-check:not(:has(.plx-check__text))::before{content:"";inset-block-end:var(--plx-comp-check-target-inset);inset-block-start:var(--plx-comp-check-target-inset);inset-inline-end:var(--plx-comp-check-target-inset);inset-inline-start:var(--plx-comp-check-target-inset);position:absolute;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-choice{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

@@ -125,3 +125,6 @@
 .plx-card[data-plx-layout="media-start"]>.plx-card__meta{grid-area:meta;}
 .plx-card[data-plx-layout="media-start"]>.plx-card__body{grid-area:media;}
 .plx-card[data-plx-body-layout="stack"]>.plx-card__body{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-card-body-gap,var(--plx-comp-card-row-gap));}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-panel__toggle{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-media-card{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

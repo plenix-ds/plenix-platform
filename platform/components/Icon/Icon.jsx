@@ -52,6 +52,21 @@ export function Icon({ name, size, filled, label, className, ...rest }) {
   );
 }
 
+// stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
+// Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
+// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
+// the Icon (a size), given only where the caller set none.
+export function stateIcon(icon, on, extra) {
+  if (typeof icon === 'string') return <Icon name={icon} filled={!!on} {...extra} />;
+  if (React.isValidElement(icon) && icon.type === Icon) {
+    const add = {};
+    if (icon.props.filled === undefined) add.filled = !!on;
+    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = extra[k];
+    return Object.keys(add).length ? React.cloneElement(icon, add) : icon;
+  }
+  return icon;
+}
+
 // StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
 const STATUS_ICONS = { info: 'circle-info', success: 'circle-check', warning: 'warning', danger: 'alert', neutral: 'circle-info' };
 const STATUS_WORDS = { info: 'Information', success: 'Success', warning: 'Warning', danger: 'Error', neutral: 'Note' };

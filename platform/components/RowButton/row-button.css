@@ -7,3 +7,6 @@
 .plx-row-button:focus-visible,
 .plx-row-button.is-focus-visible{outline-color:var(--plx-comp-row-button-focus-outline-color);outline-offset:var(--plx-comp-row-button-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-row-button-focus-outline-width);}
 .plx-row-button:disabled{color:var(--plx-comp-row-button-disabled-text);cursor:default;}
+/* pressed (batch 238; moved from motion.css): a step darker than its hover while held. The rollout joins it to this
+   component's state order (tools/agent/zero-overlap.md) */
+.plx-row-button--hover:active:not(.is-selected){background-color:var(--plx-sys-state-pressed);}

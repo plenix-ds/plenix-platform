@@ -30,3 +30,6 @@
 .plx-media-viewer__figure{block-size:100%;inline-size:100%;}
 .plx-media-viewer__stage{flex-basis:0%;flex-grow:1;flex-shrink:1;inline-size:100%;}
 .plx-media-viewer__image{block-size:100%;inline-size:100%;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-media-viewer__control{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-media-viewer__control:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}

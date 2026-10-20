@@ -48,3 +48,15 @@ button.plx-tag--chip:not(.plx-tag--add)::before,.plx-tag__toggle::before{content
 
 /* Selected chips publish Icon's forced-color context from their own element. */
 @media (forced-colors: active){.plx-tag--selected{--plx-comp-icon-forced-color:HighlightText;}}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-tag--chip{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-tag__toggle{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-tag__remove{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-tag__rename{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-tag--chip:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
+.plx-tag__toggle:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
+.plx-tag__remove:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
+/* pressed (batch 238; moved from motion.css): a step darker than its hover while held. The rollout joins it to this
+   component's state order (tools/agent/zero-overlap.md) */
+.plx-tag--chip:active:not(.plx-tag--selected){background-color:var(--plx-sys-fill-neutral-pressed);}
+.plx-tag--chip.plx-tag--selected:active{background-color:var(--plx-sys-action-primary-background-pressed);}

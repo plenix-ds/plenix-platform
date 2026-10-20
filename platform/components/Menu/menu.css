@@ -38,3 +38,18 @@
 .plx-menu-sub__arrow{--plx-comp-icon-size:var(--plx-comp-menu-sub-arrow-size);color:var(--plx-comp-menu-sub-arrow-color);display:inline-flex;flex-shrink:0;}
 .plx-menu-sub__list:not([popover]){inset-block-start:var(--plx-comp-menu-sub-fallback-inset-block-start);inset-inline-start:var(--plx-comp-menu-sub-fallback-inset-inline-start);}
 .plx-menu-sub__list[popover]{margin-inline-start:var(--plx-comp-menu-sub-offset);position-anchor:--plx-menu-sub;position-area:inline-end span-block-end;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-menu__item{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-menu{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-pop-in;animation-timing-function:var(--plx-sys-motion-ease-enter);}
+/* pressed (batch 238; moved from motion.css): a step darker than its hover while held. The rollout joins it to this
+   component's state order (tools/agent/zero-overlap.md) */
+.plx-menu__item:active:not([aria-disabled="true"]){background-color:var(--plx-sys-state-pressed);}
+/* it opens from the corner nearest its trigger (moved from motion.css) */
+:where(.plx-menu--bottom-start){transform-origin:top left;}
+:where(.plx-menu--bottom-end){transform-origin:top right;}
+:where(.plx-menu--top-start){transform-origin:bottom left;}
+:where(.plx-menu--top-end){transform-origin:bottom right;}
+:where(.plx-menu--bottom-start:dir(rtl)){transform-origin:top right;}
+:where(.plx-menu--bottom-end:dir(rtl)){transform-origin:top left;}
+:where(.plx-menu--top-start:dir(rtl)){transform-origin:bottom right;}
+:where(.plx-menu--top-end:dir(rtl)){transform-origin:bottom left;}

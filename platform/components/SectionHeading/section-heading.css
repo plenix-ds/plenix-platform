@@ -14,3 +14,5 @@
 .plx-section-heading__actions{align-items:center;column-gap:var(--plx-comp-section-heading-actions-gap);display:inline-flex;flex-shrink:0;letter-spacing:normal;text-transform:none;}
 /* the toggle shows the focus ring, as every control (batch 213) */
 .plx-section-heading__toggle:focus-visible{outline-color:var(--plx-comp-section-heading-toggle-focus-outline-color);outline-offset:var(--plx-comp-section-heading-toggle-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-section-heading-toggle-focus-outline-width);}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-section-heading__toggle{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

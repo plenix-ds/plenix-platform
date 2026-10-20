@@ -19,3 +19,6 @@
 .plx-radio-tile__check{block-size:var(--plx-comp-radio-tile-check-height);color:var(--plx-comp-radio-tile-check-text);inline-size:var(--plx-comp-radio-tile-check-width);}
 /* its own font (Styling Standard 3.4: raw-element rules do not reach component elements) */
 .plx-radio-tile__input{font-family:inherit;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-radio-tile{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-radio-tile:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}

@@ -16,3 +16,6 @@
 .plx-toast__close.is-focus-visible{outline-color:var(--plx-comp-toast-close-focus-outline-color);outline-offset:var(--plx-comp-toast-close-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-toast-close-focus-outline-width);}
 /* the action (Undo, View): a Platform Button (size xs) between the message and the Dismiss button (wave 4) */
 .plx-toast__action{flex-shrink:0;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-toast__close{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-toast__close:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}

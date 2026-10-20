@@ -100,7 +100,7 @@ import { devWarn } from '../../utils/devWarn.js';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
-import { Icon } from '../../components/Icon/Icon.jsx';
+import { Icon, stateIcon } from '../../components/Icon/Icon.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
 import { BrandMark } from '../../components/Brand/Brand.jsx';
 import { Count } from '../../components/Count/Count.jsx';
@@ -238,7 +238,8 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
 
 AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon: iconProp, label, current = false, count, href, onClick, tooltip = true, className, ...rest }, ref) {
   // the header's icon size is the icon's own prop (lg, 24px; owner 2026-10-18), unless the icon names one
-  const icon = React.isValidElement(iconProp) && iconProp.type === Icon && !iconProp.props.size ? React.cloneElement(iconProp, { size: 'lg' }) : iconProp;
+  // an icon without a size is drawn at lg; the current item's icon is filled (the item owns its state)
+  const icon = stateIcon(iconProp, current, { size: 'lg' });
   const props = { ref, className: cx('plx-app-header__item', current && 'is-current', className), 'aria-label': label, 'aria-current': current ? 'page' : undefined, onClick, ...rest };
   const content = (
     <>

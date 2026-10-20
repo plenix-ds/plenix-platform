@@ -23,3 +23,5 @@
 .plx-preview--cover .plx-preview__media,.plx-preview--contain .plx-preview__media{block-size:100%;inline-size:100%;}
 .plx-preview--cover .plx-preview__media{object-fit:cover;}
 .plx-preview--contain .plx-preview__media{object-fit:contain;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-preview--button{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

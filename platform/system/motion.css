@@ -33,34 +33,8 @@
    fades in. Drawers and toasts keep their slides.
    The application switcher (the brand) takes none of it: it opens on a click, without hover or press motion (owner,
    batch 289).
-   All of it is written with :where(), so a component's own transition or transform still wins, and reduced motion (above)
-   sets every duration to 0s. Button owns its own fade and press (button.css). */
-:where(.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input){transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
-:where(.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile):active:not(:disabled):not([aria-disabled="true"]){transform:scale(var(--plx-sys-motion-press-scale));}
-/* Pressed fill (batch 238): rows, menu items and list items go a step darker than their hover while held (the
-   -pressed roles; Button has its own pressed tokens). Selected and current items keep their own fill. Written with
-   real specificity and loaded after the components, so it wins over their hover rules while the pointer is down. */
-.plx-menu__item:active:not([aria-disabled="true"]),
-.plx-tree__item:not(.is-selected)>.plx-tree__row:active,
-.plx-row-button--hover:active:not(.is-selected),
-.plx-activity-list__item.is-interactive:active:not(.is-selected),
-.plx-nav-list__item:active:not(.is-current):not(.plx-nav-list__entry--actions>.plx-nav-list__item),
-.plx-nav-list__entry--actions:active:not(:has(>.plx-nav-list__item.is-current)),
-.plx-tool-rail__item:active:not(:disabled):not(.is-pressed){background-color:var(--plx-sys-state-pressed);}
-.plx-pagination__page:active:not(:disabled):not([aria-current]){background-color:var(--plx-sys-state-selected-pressed);}
-.plx-tag--chip:active:not(.plx-tag--selected){background-color:var(--plx-sys-fill-neutral-pressed);}
-.plx-tag--chip.plx-tag--selected:active{background-color:var(--plx-sys-action-primary-background-pressed);}
-:where(.plx-menu,.plx-combobox__list,.plx-dialog){animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-pop-in;animation-timing-function:var(--plx-sys-motion-ease-enter);}
-:where(.plx-menu--bottom-start){transform-origin:top left;}
-:where(.plx-menu--bottom-end){transform-origin:top right;}
-:where(.plx-menu--top-start){transform-origin:bottom left;}
-:where(.plx-menu--top-end){transform-origin:bottom right;}
-:where(.plx-menu--bottom-start:dir(rtl)){transform-origin:top right;}
-:where(.plx-menu--bottom-end:dir(rtl)){transform-origin:top left;}
-:where(.plx-menu--top-start:dir(rtl)){transform-origin:bottom right;}
-:where(.plx-menu--top-end:dir(rtl)){transform-origin:bottom left;}
-:where(.plx-combobox__list){transform-origin:top center;}
-:where(.plx-modal-layer)::before{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-fade-in;animation-timing-function:var(--plx-sys-motion-ease-standard);}
+   Reduced motion sets every duration to 0s (the tokens). Each component owns its own fade, press, pressed fill and opening: the rules are in its
+   stylesheet (zero overlap, Styling Standard 3.6). */
 
 /* ── Loading motion (library wave 2, foundation loading-motion) ──
    The three loading animations as classes, timed by the loading tokens (semantic/motion-loading.tokens.json):
@@ -68,9 +42,9 @@
    the gradient and its size); plx-motion-progress runs an indeterminate fill (a third of its track) from start to end,
    toward the left in right-to-left pages. plx-motion-delayed, on a wrapper, keeps an indicator hidden for
    --plx-sys-motion-loading-delay so a fast answer never flashes it.
-   Reduced motion: each one stands still (no animation at all, rather than one jump to its last frame): the spinner shows
-   its ring, the skeleton its flat fill and the indeterminate fill sits at the start of its track. A label says what is
-   loading either way. */
+   Reduced motion: each one stands still: its durations are the loop tokens, 0s then (no fill mode, so a zero-length
+   animation leaves the element as it is): the spinner shows its ring, the skeleton its flat fill and the indeterminate
+   fill sits at the start of its track. A label says what is loading either way. */
 @keyframes motion-progress-run{from{transform:translateX(-100%);}to{transform:translateX(300%);}}
 @keyframes motion-progress-run-rtl{from{transform:translateX(100%);}to{transform:translateX(-300%);}}
 .plx-motion-spin{animation-duration:var(--plx-sys-motion-loading-spin-duration);animation-iteration-count:infinite;animation-name:motion-spin;animation-timing-function:var(--plx-sys-motion-loading-spin-easing);}
@@ -79,6 +53,4 @@
 .plx-motion-progress{animation-duration:var(--plx-sys-motion-loading-progress-duration);animation-iteration-count:infinite;animation-name:motion-progress-run;animation-timing-function:var(--plx-sys-motion-loading-progress-easing);}
 .plx-motion-progress:dir(rtl){animation-name:motion-progress-run-rtl;}
 .plx-motion-delayed{animation-delay:var(--plx-sys-motion-loading-delay);animation-duration:var(--plx-sys-motion-duration-instant);animation-fill-mode:both;animation-name:motion-fade-in;}
-@media(prefers-reduced-motion:reduce){
-.plx-motion-spin,.plx-motion-shimmer,.plx-motion-shimmer:dir(rtl),.plx-motion-progress,.plx-motion-progress:dir(rtl){animation-name:none;}
-}
+

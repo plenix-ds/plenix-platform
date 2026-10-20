@@ -51,7 +51,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
 
@@ -59,7 +59,7 @@ const STRINGS = { working: 'Working' };
 
 // the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
 // open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = (i, on) => (typeof i === 'string' ? <Icon name={i} filled={on} /> : React.isValidElement(i) && i.type === Icon && i.props.filled === undefined ? React.cloneElement(i, { filled: on }) : i);
+const asIcon = stateIcon;
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
   expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, className, children, onClick, strings, ...rest }, ref) {

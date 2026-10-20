@@ -43,14 +43,14 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 
 const STRINGS = { pin: 'Pin', unpin: 'Unpin', pinItem: 'Pin {label}', unpinItem: 'Unpin {label}' };
 
 // the icon takes the row's state as its own (Styling Standard 3.6): filled on the current row; an Icon element the caller
 // gives keeps its own fill when it sets one
-const asIcon = (i, on) => (typeof i === 'string' ? <Icon name={i} filled={on} /> : React.isValidElement(i) && i.type === Icon && i.props.filled === undefined ? React.cloneElement(i, { filled: on }) : i);
+const asIcon = stateIcon;
 // the current item is the open one: a folder shows as an open folder (filled, like every current icon)
 const OPEN_ICONS = { folder: 'folder-open' };
 const iconOf = (icon, on) => (on && typeof icon === 'string' && OPEN_ICONS[icon]) || icon;

@@ -33,3 +33,7 @@
 .plx-modal-layer--non-modal{pointer-events:none;}
 .plx-modal-layer--non-modal::before{content:none;}
 .plx-dialog--non-modal{pointer-events:auto;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-dialog{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-pop-in;animation-timing-function:var(--plx-sys-motion-ease-enter);}
+/* the modal backdrop fades in (moved from motion.css; Sheet and CommandPalette use the same layer) */
+:where(.plx-modal-layer)::before{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-fade-in;animation-timing-function:var(--plx-sys-motion-ease-standard);}

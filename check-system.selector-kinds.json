@@ -2145,7 +2145,8 @@
   "platform/components/Tree/tree.css": {
    "combinator | .plx-tree__item.is-selected>.plx-tree__row": 2,
    "combinator | .plx-tree__item:focus-visible>.plx-tree__row": 1,
-   "combinator | .plx-tree__item.is-focus-visible>.plx-tree__row": 1
+   "combinator | .plx-tree__item.is-focus-visible>.plx-tree__row": 1,
+   "combinator | .plx-tree__item:not(.is-selected)>.plx-tree__row:active": 1
   },
   "platform/components/VersionLabel/version-label.css": {
    "combinator | .plx-version-label--md .plx-version-label__number": 1,
@@ -2655,19 +2656,6 @@
    "combinator | .plx-app-shell[data-plx-layout=\"multi-pane\"] .plx-app-shell__main>*": 1,
    "relational | .plx-app-shell[data-plx-layout=\"focus\"] .plx-app-shell__body>:not(.plx-app-shell__main):has(~.plx-app-shell__main)": 1,
    "combinator | .plx-app-shell[data-plx-layout=\"focus\"] .plx-app-shell__main~*": 1
-  },
-  "platform/system/motion.css": {
-   "cross-block | :where(.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input)": 1,
-   "cross-block | :where(.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile):active:not(:disabled):not([aria-disabled=\"true\"])": 1,
-   "combinator | .plx-tree__item:not(.is-selected)>.plx-tree__row:active": 1,
-   "combinator | .plx-nav-list__item:active:not(.is-current):not(.plx-nav-list__entry--actions>.plx-nav-list__item)": 1,
-   "relational | .plx-nav-list__entry--actions:active:not(:has(>.plx-nav-list__item.is-current))": 1,
-   "cross-block | :where(.plx-menu,.plx-combobox__list,.plx-dialog)": 1,
-   "condition-not-token | .plx-motion-spin": 1,
-   "condition-not-token | .plx-motion-shimmer": 1,
-   "condition-not-token | .plx-motion-shimmer:dir(rtl)": 1,
-   "condition-not-token | .plx-motion-progress": 1,
-   "condition-not-token | .plx-motion-progress:dir(rtl)": 1
   },
   "platform/system/nesting.css": {
    "combinator | :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid)": 1

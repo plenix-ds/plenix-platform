@@ -53,3 +53,6 @@
 .plx-search.plx-search--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
 .plx-search.plx-search--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
 .plx-search.plx-search--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-search__clear{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-search__clear:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}

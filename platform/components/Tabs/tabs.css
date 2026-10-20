@@ -74,3 +74,5 @@
 .plx-tabs--vertical .plx-tabs__tab.is-selected:hover,
 .plx-tabs--vertical .plx-tabs__tab.is-selected.is-hover{background-color:var(--plx-comp-tabs-vertical-tab-selected-background);box-shadow:var(--plx-comp-tabs-vertical-tab-selected-shadow);color:var(--plx-comp-tabs-vertical-tab-selected-text);font-weight:var(--plx-comp-tabs-vertical-tab-selected-font-weight);}
 .plx-tabs--vertical>.plx-tabs__panel{flex-basis:0%;flex-grow:1;min-inline-size:0;}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-tabs__tab{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

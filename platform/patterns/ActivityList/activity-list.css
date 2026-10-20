@@ -30,3 +30,8 @@
    keeps room for its hover and selected fill: a small inset, pulled back by the same token, so its content still lines up
    and only the fill reaches past the edge. */
 .plx-activity-list__item.is-interactive{margin-inline-end:var(--plx-comp-activity-list-item-interactive-margin-inline);margin-inline-start:var(--plx-comp-activity-list-item-interactive-margin-inline);padding-inline-end:var(--plx-comp-activity-list-item-interactive-padding-inline);padding-inline-start:var(--plx-comp-activity-list-item-interactive-padding-inline);}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-activity-list__item{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+/* pressed (batch 238; moved from motion.css): a step darker than its hover while held. The rollout joins it to this
+   component's state order (tools/agent/zero-overlap.md) */
+.plx-activity-list__item.is-interactive:active:not(.is-selected){background-color:var(--plx-sys-state-pressed);}

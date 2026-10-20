@@ -49,3 +49,5 @@
 :is(.plx-field--inline.plx-field--label-sm,.plx-field--inline){--plx-comp-field-grid-columns:minmax(0,1fr);--plx-comp-field-grid-row-gap:var(--plx-comp-stack-field-inline-row-gap);}
 .plx-field--inline .plx-field__label{--plx-comp-field-grid-label-white-space:normal;}
 }
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-field__info{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

@@ -10,3 +10,6 @@
 .plx-event-chip--interactive.is-focus-visible{outline-color:var(--plx-comp-event-chip-interactive-focus-outline-color);outline-offset:var(--plx-comp-event-chip-interactive-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-event-chip-interactive-focus-outline-width);}
 /* the event's data color (batch 280) */
 .plx-event-chip[data-plx-color]{--plx-comp-event-chip-color:var(--plx-comp-data-color);}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-event-chip--interactive{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-event-chip--interactive:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}

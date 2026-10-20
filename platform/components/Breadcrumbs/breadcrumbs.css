@@ -14,3 +14,5 @@
 .plx-breadcrumbs__link.is-focus-visible{outline-color:var(--plx-comp-breadcrumbs-link-focus-outline-color);outline-offset:var(--plx-comp-breadcrumbs-link-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-breadcrumbs-link-focus-outline-width);}
 .plx-breadcrumbs__text{color:var(--plx-comp-breadcrumbs-text-text);}
 .plx-breadcrumbs__current{color:var(--plx-comp-breadcrumbs-current-text);}
+/* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
+.plx-breadcrumbs__link{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
