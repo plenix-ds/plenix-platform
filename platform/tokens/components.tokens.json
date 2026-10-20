@@ -1271,12 +1271,14 @@
       "$type": "dimension"
     },
     "data-grid-radius": {
-      "$value": "{plx-sys.shape-md}",
-      "$type": "dimension"
+      "$value": "{plx-sys.radius-table-2px}",
+      "$type": "dimension",
+      "$description": "DataGrid: the frame corner, 2px (owner, 2026-10-19)."
     },
     "table-radius": {
-      "$value": "{plx-sys.shape-md}",
-      "$type": "dimension"
+      "$value": "{plx-sys.radius-table-2px}",
+      "$type": "dimension",
+      "$description": "Table: the frame corner, 2px (owner, 2026-10-19)."
     },
     "data-grid-border-width": {
       "$value": "{plx-sys.border-width-thin}",

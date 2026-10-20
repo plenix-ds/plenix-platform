@@ -312,8 +312,8 @@
   --plx-comp-field-info-text-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-field-info-text-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-field-inline-label-sm-grid-template-columns: var(--plx-sys-label-width-sm) minmax(0,1fr);
-  --plx-comp-data-grid-radius: var(--plx-sys-shape-md);
-  --plx-comp-table-radius: var(--plx-sys-shape-md);
+  --plx-comp-data-grid-radius: var(--plx-sys-radius-table-2px);
+  --plx-comp-table-radius: var(--plx-sys-radius-table-2px);
   --plx-comp-data-grid-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-table-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-data-grid-font-family: var(--plx-sys-typeface-sans);

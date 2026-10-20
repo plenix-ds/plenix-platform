@@ -58,6 +58,7 @@
   --plx-sys-radius-card-4px: var(--plx-sys-shape-xs);
   --plx-sys-radius-card-6px: var(--plx-sys-shape-sm);
   --plx-sys-radius-card-12px: var(--plx-sys-shape-lg);
+  --plx-sys-radius-table-2px: var(--plx-ref-radius-2px);
   --plx-sys-radius-menu-8px: var(--plx-sys-shape-md);
   --plx-sys-radius-dialog-8px: var(--plx-sys-shape-md);
   --plx-sys-radius-avatar-4px: var(--plx-sys-shape-xs);
