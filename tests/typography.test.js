@@ -4,7 +4,7 @@
 // always at its neighbors' size and line height so Mono and Sans share a baseline. On every app page and a sample of the
 // design system's pages (the first of each group and the pages of tokens, tables and values), in light and dark, with the
 // fonts loaded:
-//   role      an element marked as code or data (code, kbd, pre, samp, Text "data", a data field (Input/Textarea data), a DataTable or
+//   role      an element marked as code or data (code, kbd, pre, samp, Text "data", a data field (Input/Textarea data), a DataGrid or
 //             Table column of kind "data", a PropertyList value marked data) computes to Reddit Mono
 //   prose     text in Reddit Mono is a code or data value, never a sentence (four or more plain words, no code characters)
 //   pattern   visible text that is wholly a technical value (2026-10-11, Oct 11, 2026, 10:42 AM, 12 MB, 1.2 GB, 640×480,
@@ -37,7 +37,7 @@ changed.noPartialUpdate();
 if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0 on 0 pages');
 // design-system pages: the first item of each group (section and subgroup), and these, where tables of tokens, sizes and
 // values are
-const DS_TITLES = ['Typography', 'Design tokens', 'Color', 'Spacing', 'Radius', 'Text', 'Table', 'Data table', 'Property list', 'Code block', 'Keyboard shortcut', 'Metric', 'Activity list', 'File list', 'Button', 'Badge'];
+const DS_TITLES = ['Typography', 'Design tokens', 'Color', 'Spacing', 'Radius', 'Text', 'Table', 'Data grid', 'Property list', 'Code block', 'Keyboard shortcut', 'Metric', 'Activity list', 'File list', 'Button', 'Badge'];
 const CHECKS = ['role', 'prose', 'pattern', 'baseline'];
 
 // runs in the page: the findings of each check
@@ -47,9 +47,9 @@ async function inspect() {
   const fam = (el) => getComputedStyle(el).fontFamily;
   const isMono = (el) => MONO.test(fam(el));
   // marked as code or data: the elements and classes of the code and data roles
-  const ROLE = 'code, kbd, pre, samp, .plx-text--data, .plx-input--data, .plx-data-table__group-count, .plx-data-table__group-summary-value, [data-plx-kind="data"], [class*="__cell--data"], .plx-property-list__value--data';
+  const ROLE = 'code, kbd, pre, samp, .plx-text--data, .plx-input--data, .plx-data-grid__group-count, .plx-data-grid__group-summary-value, [data-plx-kind="data"], [class*="__cell--data"], .plx-property-list__value--data';
   // components that keep their own typography (a label inside a control or a pill), and specimens
-  const OWN = '.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-count, .plx-avatar, .plx-status-dot, input, textarea, select, option, button, [role="menuitem"], [role="option"], [role="tab"], .plx-data-table__grid-header, .ds-vis, .ds-specimens, .ds-type, svg';
+  const OWN = '.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-count, .plx-avatar, .plx-status-dot, input, textarea, select, option, button, [role="menuitem"], [role="option"], [role="tab"], .plx-data-grid__grid-header, .ds-vis, .ds-specimens, .ds-type, svg';
   // titles and headings
   const TITLE = 'h1, h2, h3, h4, h5, h6, [class*="__title"], .plx-text--title, .plx-text--heading, .plx-text--eyebrow';
   const shown = (el) => { if (!el.getClientRects().length) return false; const c = getComputedStyle(el); return c.visibility !== 'hidden' && !el.closest('[hidden], [aria-hidden="true"], .plx-visually-hidden, .plx-u-sr-only'); };
@@ -91,7 +91,7 @@ async function inspect() {
     if (!x.mono && !own && !x.el.closest('[role="menu"], [role="listbox"], nav, .plx-tooltip, [role="tooltip"], ' + TITLE) && TECH.test(x.t)) out.pattern.push(say(x.el, x.t));
   }
   // baseline: each Mono text against the Sans texts on its line in the same row
-  const ROW = '.plx-data-table__grid-row, .plx-property-list__item, tr, li, [role="row"], p, dd, dt, label';
+  const ROW = '.plx-data-grid__grid-row, .plx-property-list__item, tr, li, [role="row"], p, dd, dt, label';
   // a text's baseline: the top of its first line box plus its font's ascent (canvas metrics, fonts loaded), centered in the
   // box as the browser lays the content area out; nothing is added to the page
   const ctx = document.createElement('canvas').getContext('2d');
@@ -106,9 +106,9 @@ async function inspect() {
   const seen = new Set();
   for (const m of monos) {
     const row = rowOf(m); if (!row || seen.has(row)) continue;
-    // a DataTable row taller than one line (a wrapped cell): every cell has vertical alignment: middle (owner,
+    // a DataGrid row taller than one line (a wrapped cell): every cell has vertical alignment: middle (owner,
     // 2026-10-13), so a one-line cell sits in the middle of the row, not on the first line of the wrapped one
-    if (row.classList.contains('plx-data-table__grid-row')) { const c = row.querySelector('.plx-data-table__grid-cell'); if (c && row.getBoundingClientRect().height > (parseFloat(getComputedStyle(c).minHeight) || 0) + (parseFloat(getComputedStyle(row).borderBottomWidth) || 0) + 1) continue; }
+    if (row.classList.contains('plx-data-grid__grid-row')) { const c = row.querySelector('.plx-data-grid__grid-cell'); if (c && row.getBoundingClientRect().height > (parseFloat(getComputedStyle(c).minHeight) || 0) + (parseFloat(getComputedStyle(row).borderBottomWidth) || 0) + 1) continue; }
     const lm = line(m); if (!lm) continue;
     const sans = texts.filter((s) => !s.mono && row.contains(s.n) && !s.el.closest(OWN));
     for (const s of sans) {

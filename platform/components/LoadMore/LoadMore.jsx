@@ -32,7 +32,7 @@
      With hasMore false the button gives way to the end message (muted text, not a status badge).
    Notes:
      Prefer the button for results people compare and come back to; keep infinite for streams people browse, with no
-       footer under them that people need to reach. For "page 3", use Pagination. DataTable has its own load more.
+       footer under them that people need to reach. For "page 3", use Pagination. DataGrid has its own load more.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';

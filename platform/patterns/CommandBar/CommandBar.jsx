@@ -42,7 +42,7 @@
      end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
        fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
        items are Menu children or MenuItem descriptors, including checked toggles.
-     selection.hidden: how many selected records are hidden by filters (DataTable onSelectionChange supplies it)
+     selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
      selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
        while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends

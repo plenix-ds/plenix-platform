@@ -70,7 +70,7 @@ jobs:
           - { name: typography, tests: typography, shard: '' }
           - { name: 'targets and reflow', tests: targets reflow, shard: '' }
           - { name: fixtures, tests: visual density layout theme high-contrast utilities keyboard, shard: '' }
-          - { name: behavior, tests: data-table focus-order semantic-html navigation, shard: '' }
+          - { name: behavior, tests: data-grid focus-order semantic-html navigation, shard: '' }
     env:
       TEST_SHARD: ${{ matrix.shard }}
       TEST_TIMEOUT_MS: '5400000'

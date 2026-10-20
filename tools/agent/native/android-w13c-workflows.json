@@ -138,7 +138,7 @@
       ]
     }
   },
-  "android-data-display|Data table": {
+  "android-data-display|Data grid": {
     "summary": "Read immutable actor, time, action and target events and inspect their changes.",
     "variants": [
       {
@@ -157,10 +157,10 @@
       }
     ],
     "anatomy": [
-      "Audit DataTable",
+      "Audit DataGrid",
       "Actor Persona",
       "Timestamp Time",
-      "Optional before-and-after Dialog DataTable"
+      "Optional before-and-after Dialog DataGrid"
     ],
     "attributes": [
       {

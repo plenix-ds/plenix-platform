@@ -1,7 +1,7 @@
 /* Plenix · AreaChart
    Summary: An area chart (07 Data Display › Charts › Area chart): a line chart whose lines are filled down to the zero
      baseline, to show a volume over time; stacked, the series pile up so the top edge is their total; percent, each
-     column adds up to 100% and the areas show the shares. Built on LineChart's engine: the same axes, data table,
+     column adds up to 100% and the areas show the shares. Built on LineChart's engine: the same axes, data grid,
      interaction (one Tab stop, crosshair, shared tooltip, live region, legend toggles, zoom) and props.
    Usage:
      <AreaChart title="Storage by file type" description="Video takes most of the growth." data={weeks} x="week"

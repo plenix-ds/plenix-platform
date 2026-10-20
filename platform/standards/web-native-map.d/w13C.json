@@ -22,7 +22,7 @@
         "ios-data-display|Lists and tables"
       ],
       "android": [
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "specialized|Approval workflow": {

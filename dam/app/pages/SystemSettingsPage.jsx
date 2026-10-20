@@ -6,10 +6,10 @@
    Every screen is a column of SettingsSection cards (owner, 2026-10-13: "all the settings pages to have the cards view"):
    static cards for what people use, collapsible cards for long or rarely used parts (one per asset type, group and
    permission area; the views, publishing, events and scripts not built yet); their open state is remembered per page.
-   Fields are Fields (a visible label) with their control at a standard width; tables are DataTables; technical values
+   Fields are Fields (a visible label) with their control at a standard width; tables are DataGrids; technical values
    (templates, paths, keys, numbers) are in the data font. */
 import React from 'react';
-import { SettingsLayout, SettingsSection, SettingsRow, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, DataTable, Table, Badge, Icon, Menu, MenuItem, SearchField, Dialog, Toolbar, EmptyState, useToast, NavPane, Stack, Inline, Text, CodeBlock, useScreenLocation, useUnsavedGuard } from 'plenix-platform';
+import { SettingsLayout, SettingsSection, SettingsRow, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, DataGrid, Table, Badge, Icon, Menu, MenuItem, SearchField, Dialog, Toolbar, EmptyState, useToast, NavPane, Stack, Inline, Text, CodeBlock, useScreenLocation, useUnsavedGuard } from 'plenix-platform';
 import { AssetPage } from '../shell/AssetShell.jsx';
 import * as D from './systemSettingsData.js';
 
@@ -63,7 +63,7 @@ function useToggles(list) {
   const [on, setOn] = React.useState(list.map((r) => r[1]));
   return list.map((r, i) => ({ id: i, name: r[0], on: on[i], toggle: () => setOn(on.map((v, j) => (j === i ? !v : v))) }));
 }
-// a name/value list as a table with a header (owner, 2026-10-09: every name/value list in the DataTable's look); values are technical
+// a name/value list as a table with a header (owner, 2026-10-09: every name/value list in the DataGrid's look); values are technical
 const facts = (label, list) => <Table label={label} headerMenu={false} data={list.map(([k, v], i) => ({ id: i, name: k, value: v }))}
   columns={[{ title: 'Name', field: 'name', kind: 'name', rowLabel: true, headerSort: false }, { title: 'Value', field: 'value', kind: 'data', headerSort: false }]} />;
 // the form's buttons: in an ActionBar (on the right, sticky at the bottom), a destructive action first, the primary last
@@ -114,17 +114,17 @@ function Properties({ act }) {
           <Field label="AI search contains" layout="inline"><Textarea {...text('aiSearchContains', { placeholder: 'AI search contains' })} /></Field>
         </Section>
         <Section title="Enabled for" collapsible description="Groups and roles that can use this module.">
-          <DataTable label="Enabled for" data={enabled} columns={[roleCol, switchCol('Enabled')]} />
+          <DataGrid label="Enabled for" data={enabled} columns={[roleCol, switchCol('Enabled')]} />
         </Section>
         <Section title="Actions" collapsible defaultExpanded={false} description="The actions of this module and the roles that may run them.">
-          <DataTable label="Actions" data={rowsOf(D.ACTIONS, ['name', 'roles'])}
+          <DataGrid label="Actions" data={rowsOf(D.ACTIONS, ['name', 'roles'])}
             columns={[{ title: 'Action', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Roles', field: 'roles', filter: true }, { title: 'Status', field: 'status', kind: 'center', headerSort: false, render: () => <Badge tone="success">Active</Badge> }]} />
         </Section>
         <Section title="View all folders" collapsible defaultExpanded={false} description="Groups and roles that can view all folders for this module.">
-          <DataTable label="View all folders" data={viewAll} columns={[roleCol, switchCol('View all')]} />
+          <DataGrid label="View all folders" data={viewAll} columns={[roleCol, switchCol('View all')]} />
         </Section>
         <Section title="Edit all folders" collapsible defaultExpanded={false} description="Groups and roles that can edit all folders for this module.">
-          <DataTable label="Edit all folders" data={editAll} columns={[roleCol, switchCol('Edit all')]} />
+          <DataGrid label="Edit all folders" data={editAll} columns={[roleCol, switchCol('Edit all')]} />
         </Section>
         <Actions act={act} />
       </Screen>
@@ -144,7 +144,7 @@ function Fields({ act }) {
       </Section>
       <Section title="All fields" description={D.FIELD_TOTAL + ' fields in the registry'}>
         <Bar label="Field actions"><Search value={q} onChange={setQ} label={'Search ' + D.FIELD_TOTAL + ' fields'} /></Bar>
-        <DataTable label="Fields" data={rows} empty="No fields match" columns={[{ title: 'Field name', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'ID', field: 'id2', kind: 'data' }, { title: 'Field type', field: 'type', kind: 'data', filter: 'list' }]} />
+        <DataGrid label="Fields" data={rows} empty="No fields match" columns={[{ title: 'Field name', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'ID', field: 'id2', kind: 'data' }, { title: 'Field type', field: 'type', kind: 'data', filter: 'list' }]} />
         <CountNote shown={rows.length} total={D.FIELD_TOTAL} what="fields" />
       </Section>
       <Planned title="Edit views">Configure which fields appear on the asset edit form, and in what order.</Planned>
@@ -195,7 +195,7 @@ function Transcoding({ act }) {
     <Screen id="transcoding" title="Transcoding" description="Conversion presets generated for each uploaded asset, by media type."
       actions={<B icon="add" label="Add new conversion" act={act} />}>
       <Section title="Preset configuration">
-        <DataTable label="Conversion presets" data={rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media'])} columns={[
+        <DataGrid label="Conversion presets" data={rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media'])} columns={[
           { title: 'Conversion', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Generated file', field: 'file', kind: 'data' }, { title: 'System defined', field: 'system', filter: 'list' },
           { title: 'On import', field: 'onImport', filter: 'list' }, { title: 'Media type', field: 'media', filter: 'list' }]} />
       </Section>
@@ -214,7 +214,7 @@ function Users({ act }) {
           <ButtonGroup label="Maintenance"><B icon="import" label="Import / Export" act={act} /><B icon="refresh" label="Reindex" tone="info" act={act} /></ButtonGroup>
           <Search value={q} onChange={setQ} label="Search users" />
         </Bar>
-        <DataTable label="Users" empty="No users match" data={rowsOf(D.USERS.filter((r) => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login'])} columns={[
+        <DataGrid label="Users" empty="No users match" data={rowsOf(D.USERS.filter((r) => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login'])} columns={[
           { title: 'Username', field: 'user', kind: 'name', frozen: true, filter: true }, { title: 'Name', field: 'name', filter: true }, { title: 'Email', field: 'email', filter: true },
           { title: 'Role', field: 'role', kind: 'center', filter: 'list', render: (r) => (r.role ? <Badge tone="active">{r.role}</Badge> : '—') },
           { title: 'Created', field: 'created', kind: 'data' }, { title: 'Last login', field: 'login', kind: 'data' }]} />
@@ -274,7 +274,7 @@ function EmailTemplates({ act }) {
   return (
     <Screen id="email-templates" title="Email templates" description="The notification emails the catalog sends, and the template file behind each one.">
       <Section title="Templates">
-        <DataTable label="Email templates" data={rowsOf(D.EMAIL_TEMPLATES, ['name', 'file'])} columns={[
+        <DataGrid label="Email templates" data={rowsOf(D.EMAIL_TEMPLATES, ['name', 'file'])} columns={[
           { title: 'Template', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'File', field: 'file', kind: 'data' },
           { title: 'Actions', field: 'actions', kind: 'center', headerSort: false, render: (r) => <Button size="xs" variant="ghost" aria-label={'Edit ' + r.name} onClick={act('Edit ' + r.file, 'info')}>Edit</Button> }]} />
       </Section>
@@ -290,7 +290,7 @@ function CatalogParameters({ act }) {
       <Screen id="catalog-parameters" title="Catalog parameters" description="Catalog-wide configuration keys — storage, AI providers, and access defaults.">
         <Section title="Parameters" description={D.CATALOG_TOTAL + ' catalog settings'}>
           <Bar label="Parameter actions"><Search value={q} onChange={setQ} label="Search catalog settings" /></Bar>
-          <DataTable label="Catalog parameters" empty="No settings match" data={rows.map(([label, id, value, kind]) => ({ id, label, key: id, value, kind }))} columns={[
+          <DataGrid label="Catalog parameters" empty="No settings match" data={rows.map(([label, id, value, kind]) => ({ id, label, key: id, value, kind }))} columns={[
             { title: 'Setting', field: 'label', kind: 'name', frozen: true, filter: true }, { title: 'Key', field: 'key', kind: 'data', filter: true },
             { title: 'Value', field: 'value', render: (r) => (r.kind !== 'text' ? <Text variant="data">{r.value}</Text> : r.value) }]} />
           <CountNote shown={rows.length} total={D.CATALOG_TOTAL} what="catalog settings" />
@@ -334,9 +334,9 @@ function Database({ act }) {
   const [expanded, setExpanded] = React.useState(false);
   const rows = D.DB_ROWS.filter((r) => match(q, r)).map((r, i) => Object.assign({ id: i }, ...D.DB_COLUMNS.map((c, j) => ({ ['c' + j]: r[j] }))));
   const columns = D.DB_COLUMNS.map((c, j) => ({ title: c, field: 'c' + j, frozen: j === 0, filter: true, kind: c === 'Asset title' ? 'name' : c === 'Created on' ? 'data' : undefined }));
-  const grid = (label) => <DataTable label={label} data={rows} columns={columns} empty="No records match" />;
+  const grid = (label) => <DataGrid label={label} data={rows} columns={columns} empty="No records match" />;
   return (
-    <Screen id="database" title="Database" description="Browse, edit, import, or export any underlying data table." actions={<B icon="add" label="New table" tone="info" act={act} />}>
+    <Screen id="database" title="Database" description="Browse, edit, import, or export any underlying data grid." actions={<B icon="add" label="New table" tone="info" act={act} />}>
       <Section title="Table">
         <Field label="Table" layout="inline"><Combobox options={D.DB_TABLES.map((t) => ({ value: t, label: t }))} value={table} onChange={setTable} /></Field>
       </Section>
@@ -375,7 +375,7 @@ function Customizations({ act }) {
           <ButtonGroup label="Transfer"><B icon="export" label="Export" tone="info" act={act} /><B icon="import" label="Import" act={act} /></ButtonGroup>
           <B icon="trash" label="Delete" tone="warning" variant="danger-secondary" act={act} />
         </Bar>
-        <DataTable label="Customizations" selectable selected={sel} onSelectionChange={setSel} data={rows} columns={[
+        <DataGrid label="Customizations" selectable selected={sel} onSelectionChange={setSel} data={rows} columns={[
           { title: 'Type', field: 'type', filter: 'list' }, { title: 'Customization', field: 'name', kind: 'name', filter: true }, { title: 'Modules', field: 'modules', kind: 'data' }, { title: 'Date', field: 'date', kind: 'data' }]} />
       </Section>
     </Screen>
@@ -387,7 +387,7 @@ function Scheduler({ act }) {
     <Screen id="scheduler" title="Scheduler" description="Recurring background tasks, the events that trigger them, and the scripts they run."
       actions={<B icon="refresh" label="Refresh" tone="info" act={act} />}>
       <Section title="Scheduled tasks">
-        <DataTable label="Scheduled tasks" data={rowsOf(D.SCHEDULED, ['name', 'path', 'status'])} columns={[
+        <DataGrid label="Scheduled tasks" data={rowsOf(D.SCHEDULED, ['name', 'path', 'status'])} columns={[
           { title: 'Name', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Path', field: 'path', kind: 'data' }, { title: 'Status', field: 'status', filter: 'list' }]} />
       </Section>
       <Planned title="Events">Events that trigger scripts to run, such as an asset upload or a metadata change.</Planned>

@@ -21,7 +21,7 @@
    Behavior:
      A node's height is the larger of what flows into it and out of it; nodes with no flow out sit in the last column.
      Hover a band: it darkens and the tooltip says "Source → Target" and its amount; hover a node: its bands darken and the
-       tooltip gives its total. The data table lists every flow: the chart's keyboard and screen reader view.
+       tooltip gives its total. The data grid lists every flow: the chart's keyboard and screen reader view.
    Notes:
      A band takes its source node's data-viz color at the low opacity (the middle opacity when highlighted); node names
        are UI text with a halo in the surface color, totals the data font (sankey-diagram tokens). Group small flows:

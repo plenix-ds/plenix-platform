@@ -2,7 +2,7 @@
    Summary: Key measures against their targets (07 Data Display › Charts › Bullet chart): for each measure a short value
      bar over bands that mark its qualitative ranges (poor, fair, good, in three neutral shades) and a line across at its
      target, on one value axis from zero; horizontal (rows) or vertical (columns). Takes far less room than a gauge, so a
-     dashboard can stack several. Drawn in ChartFrame with a tooltip and the data table.
+     dashboard can stack several. Drawn in ChartFrame with a tooltip and the data grid.
    Usage:
      <BulletChart title="Quarter against targets" description="Uploads and reviews are on target; approvals are behind."
        items={[{ id: 'up', label: 'Uploads', value: 820, target: 750, ranges: [400, 700, 1000] },
@@ -21,7 +21,7 @@
        good: "Good" } and ChartFrame's strings
    Behavior:
      Every measure shares one value axis from zero: give measures of different units their own chart.
-     Hover a measure: the tooltip lists its value, its target and the range it is in. The data table lists them all.
+     Hover a measure: the tooltip lists its value, its target and the range it is in. The data grid lists them all.
    Notes:
      The value bar is the frame's mark (the first categorical color); the ranges are three neutral surface and border
        shades and the target the default content color (bullet-chart tokens): color is not the only cue, the target is

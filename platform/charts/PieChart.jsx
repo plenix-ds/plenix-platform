@@ -2,7 +2,7 @@
    Summary: The shares of a few parts in one whole (07 Data Display › Charts › Pie chart, Donut chart): a circle cut into
      slices from 12 o'clock, largest first, clockwise (pie); a ring with the total or a key value in its hollow center
      (donut); or a half ring across the top with its value under it (half). Small parts are grouped into Other. Drawn in
-     ChartFrame with a legend that gives each part's share, a tooltip and the data table.
+     ChartFrame with a legend that gives each part's share, a tooltip and the data grid.
    Usage:
      <PieChart title="Storage by file type" description="Videos take more than half of the storage."
        data={[{ id: 'video', label: 'Videos', value: 540 }, { id: 'img', label: 'Images', value: 260 }, { id: 'doc', label: 'Documents', value: 120 }]} />
@@ -27,7 +27,7 @@
      strings: { part: "Part", value: "Value", share: "Share", total: "Total", other: "Other" } and ChartFrame's strings
    Behavior:
      A part keeps its color by its order in the data, not by its size; Other takes the neutral categorical color.
-     Hover a slice: the tooltip shows its name, value and share. The legend and the data table carry every part's value
+     Hover a slice: the tooltip shows its name, value and share. The legend and the data grid carry every part's value
        and share: the chart's keyboard and screen reader view.
    Notes:
      Two to five parts read best; for many parts or parts of similar size use a bar chart. Slices are parted by a thin line

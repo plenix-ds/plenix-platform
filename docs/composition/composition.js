@@ -16,7 +16,7 @@ const {
   Stack,
   Text,
   Panel,
-  DataTable,
+  DataGrid,
   CommandBar,
   CommandBarSearch,
   FilterPanel,
@@ -266,7 +266,7 @@ function Posts() {
     view: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SortPanel, v.sortProps), /*#__PURE__*/React.createElement(GroupPanel, v.groupProps), /*#__PURE__*/React.createElement(ColumnsMenu, v.columnsProps), /*#__PURE__*/React.createElement(ViewMenu, _extends({}, v.viewProps, {
       gallery: false
     })))
-  }), /*#__PURE__*/React.createElement(DataTable, _extends({
+  }), /*#__PURE__*/React.createElement(DataGrid, _extends({
     label: "Posts",
     data: rows
   }, v.tableProps, {

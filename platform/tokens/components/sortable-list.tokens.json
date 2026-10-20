@@ -9,7 +9,7 @@
     "sortable-list-item-radius": { "$value": "{plx-sys.radius-control-4px}", "$type": "dimension", "$description": "SortableList item: its corners (the control radius)." },
     "sortable-list-item-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "SortableList item: its text." },
     "sortable-list-item-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "SortableList item: the space between the handle, the content and the move buttons." },
-    "sortable-list-item-min-height": { "$value": "{plx-sys.data-table-row-height}", "$type": "dimension", "$description": "SortableList item: its least height (a data row's: it follows the density)." },
+    "sortable-list-item-min-height": { "$value": "{plx-sys.data-grid-row-height}", "$type": "dimension", "$description": "SortableList item: its least height (a data row's: it follows the density)." },
     "sortable-list-item-padding-block": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "SortableList item: the space above and below its content." },
     "sortable-list-item-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "SortableList item: the space at its start and end." },
     "sortable-list-buttons-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "SortableList move buttons: the space between Move up and Move down." },

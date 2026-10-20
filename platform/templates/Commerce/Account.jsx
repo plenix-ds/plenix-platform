@@ -1,6 +1,6 @@
 /* Plenix · Commerce templates: after the order
    Summary: The pages that manage orders and plans (platform/templates/Commerce): order management (OrderManagement: the
-     orders in the DataTable with the command bar's search, filter, status and selection actions; OrderDetail: one order's
+     orders in the DataGrid with the command bar's search, filter, status and selection actions; OrderDetail: one order's
      header, lines, totals, delivery, payment and history), subscription management (SubscriptionManagement: the plan,
      changing it, the payment method, pausing or canceling, and the billing history, in settings cards) and returns
      (Returns: the Wizard's items, reason, resolution and return method, the review with the refund, then the return's
@@ -28,7 +28,7 @@ import { EntityHeader } from '../../patterns/EntityHeader/EntityHeader.jsx';
 import { PropertyList } from '../../patterns/PropertyList/PropertyList.jsx';
 import { Wizard } from '../../patterns/Wizard/Wizard.jsx';
 import { SettingsSection } from '../../patterns/SettingsLayout/SettingsLayout.jsx';
-import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
+import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
@@ -110,7 +110,7 @@ export function OrderManagement({ orders = [], currency = 'USD', onOpen, onFulfi
         selection={{ count: chosen.length, noun: t.noun, plural: t.plural, onClear: () => setSelected([]), actions: [
           { id: 'fulfill', label: t.fulfill, icon: 'circle-check', disabled: !chosen.every(canFulfill), why: t.notFulfillable, onSelect: () => fulfill(chosen) },
           { id: 'cancel', label: t.cancelMany, icon: 'do-not-disturb', danger: true, disabled: !chosen.every(canCancel), why: t.notCancelable, onSelect: () => setAsking(chosen) }] }} />
-      <DataTable label={t.label} data={rows} columns={columns}
+      <DataGrid label={t.label} data={rows} columns={columns}
         selectable selected={selected} onSelectionChange={setSelected} filter={v.test}
         rowMenu={(o) => [
           { label: t.open, icon: 'open', onSelect: () => onOpen && onOpen(o) },
@@ -274,7 +274,7 @@ export function SubscriptionManagement({ subscription = {}, plans = [], history 
       ) : null}
       {history.length ? (
         <SettingsSection title={t.history}>
-          <DataTable label={t.history} data={history} columns={columns} />
+          <DataGrid label={t.history} data={history} columns={columns} />
         </SettingsSection>
       ) : null}
       <ConfirmDialog open={!!dialog} title={dialog ? dialog.title : ''} message={dialog ? dialog.message : ''} confirmLabel={dialog ? dialog.confirm : ''} cancelLabel={t.keep}

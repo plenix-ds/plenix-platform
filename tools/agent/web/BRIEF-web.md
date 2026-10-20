@@ -14,7 +14,7 @@ You fix the items in your task, in the files your task names. Other writers work
 - New token: add it to the right platform/tokens/*.tokens.json with a $description; component tokens are
   --plx-comp-<component>-<role>, pointing to plx-sys roles. Never add a palette (plx-ref) color.
 - American English, sentence case for UI text. Focused fields change only their border color (no outer ring).
-- Containers nest 2 deep at most. Every table is the DataTable.
+- Containers nest 2 deep at most. Every table is the DataGrid.
 - A new component needs an inventory record (platform/design-system/inventory.js, attached to its taxonomy leaf in
   inventory-taxonomy.js) with its written sections, like its neighbors.
 - Keep the code style of the file you edit (comments, naming, density). Header comments: Summary / Usage / Props /
@@ -25,7 +25,7 @@ You fix the items in your task, in the files your task names. Other writers work
 - node check-system.js   → SYSTEM_OK
 - node check-spec.js     → SPEC_OK
 - node tests/pages.test.js → PAGES_OK (slow: run once at the end)
-- the tests for what you touched: tests/keyboard.test.js, tests/layout.test.js, tests/data-table.test.js,
+- the tests for what you touched: tests/keyboard.test.js, tests/layout.test.js, tests/data-grid.test.js,
   tests/a11y.test.js (must not get worse), tests/theme.test.js, tests/density.test.js, tests/visual.test.js.
   Use a free port if a test takes one (several writers run tests at the same time; tests/lib.js serve(PORT): if a port is
   busy, set the env or edit nothing — wait and rerun).

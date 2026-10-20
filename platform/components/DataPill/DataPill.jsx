@@ -31,7 +31,7 @@
      The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
    Notes:
      Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
-     DataTable: a column's pill option draws each value as a DataPill (DataTable.jsx).
+     DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';

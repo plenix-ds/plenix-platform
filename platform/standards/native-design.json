@@ -4064,12 +4064,12 @@
     ]
    }
   },
-  "android-data-display|Data table": {
-   "summary": "Plenix on Android shows files people compare by column the way the web’s file table does: a header row of column names that sort, then a row per file with its name and its facts in Reddit Mono, the owner, and the status as a badge with its icon. Material 3 has no data table component; Plenix builds it from a lazy list of rows with fixed columns on wide windows, and on a phone it becomes the list of each file’s name, size and date (the web’s narrow table). It keeps Android’s touch targets, its selection with a long press and TalkBack’s row and column reading, and changes the look: Plenix colors, DM Sans and Reddit Mono, the Plenix row height and the lines between rows.",
+  "android-data-display|Data grid": {
+   "summary": "Plenix on Android shows files people compare by column the way the web’s file table does: a header row of column names that sort, then a row per file with its name and its facts in Reddit Mono, the owner, and the status as a badge with its icon. Material 3 has no data grid component; Plenix builds it from a lazy list of rows with fixed columns on wide windows, and on a phone it becomes the list of each file’s name, size and date (the web’s narrow table). It keeps Android’s touch targets, its selection with a long press and TalkBack’s row and column reading, and changes the look: Plenix colors, DM Sans and Reddit Mono, the Plenix row height and the lines between rows.",
    "variants": [
     {
      "name": "File table",
-     "material": "No Material data table: a LazyColumn of rows",
+     "material": "No Material data grid: a LazyColumn of rows",
      "web": "specialized|File list",
      "background": "plx-comp-file-row-background",
      "content": "plx-comp-file-row-cell-text",
@@ -4141,10 +4141,10 @@
      "name": "Selection",
      "about": "A checkbox in the first column; a long press starts selecting."
     },
-    "Audit DataTable",
+    "Audit DataGrid",
     "Actor Persona",
     "Timestamp Time",
-    "Optional before-and-after Dialog DataTable"
+    "Optional before-and-after Dialog DataGrid"
    ],
    "attributes": [
     {
@@ -13257,7 +13257,7 @@
     "Explicit Choose action",
     "Rendition name",
     "Format and byte size",
-    "DataTable or download menu",
+    "DataGrid or download menu",
     "Page navigation",
     "Stepped zoom",
     "Page thumbnails",
@@ -16889,7 +16889,7 @@
    }
   },
   "ios-data-display|Lists and tables": {
-   "summary": "A Plenix list on iOS is the system List (UICollectionView with a list layout), kept native in behavior: swipe actions, editing and reordering, disclosure into a detail view, section headers, Dynamic Type and VoiceOver. Plenix changes the look to match the Web List and DataTable: rows of at least 44 points on the table surface with table lines drawn the full width, DM Sans titles at the body text role and muted subtitles at the secondary role, muted section headers, an 8-point rounded frame for grouped sections, and the Plenix selected colors for the chosen row. A multicolumn table on iPad and the Mac uses the same tokens.",
+   "summary": "A Plenix list on iOS is the system List (UICollectionView with a list layout), kept native in behavior: swipe actions, editing and reordering, disclosure into a detail view, section headers, Dynamic Type and VoiceOver. Plenix changes the look to match the Web List and DataGrid: rows of at least 44 points on the table surface with table lines drawn the full width, DM Sans titles at the body text role and muted subtitles at the secondary role, muted section headers, an 8-point rounded frame for grouped sections, and the Plenix selected colors for the chosen row. A multicolumn table on iPad and the Mac uses the same tokens.",
    "variants": [
     {
      "name": "Row",
@@ -16919,8 +16919,8 @@
      "name": "Selected row",
      "apple": "Row with a checkmark (system selection)",
      "web": "data-display|Selectable list",
-     "background": "plx-sys-data-table-row-selected",
-     "content": "plx-sys-data-table-row-selected-text",
+     "background": "plx-sys-data-grid-row-selected",
+     "content": "plx-sys-data-grid-row-selected-text",
      "border": "plx-sys-table-line",
      "swiftui": "List(selection:) or a checkmark in the trailing edge",
      "uikit": "UICellAccessory.checkmark() and state.isSelected",
@@ -17006,10 +17006,10 @@
      "name": "Separator",
      "about": "The table line between rows, drawn the full width of the section."
     },
-    "Audit DataTable",
+    "Audit DataGrid",
     "Actor Persona",
     "Timestamp Time",
-    "Optional before-and-after Dialog DataTable"
+    "Optional before-and-after Dialog DataGrid"
    ],
    "attributes": [
     {
@@ -17125,10 +17125,10 @@
     {
      "part": "C",
      "attribute": "Selected row",
-     "token": "plx-sys-data-table-row-selected, plx-sys-data-table-row-selected-text",
-     "value": "Plenix.Colors.dataTableRowSelected with Plenix.Colors.dataTableRowSelectedText; a checkmark for chosen options",
+     "token": "plx-sys-data-grid-row-selected, plx-sys-data-grid-row-selected-text",
+     "value": "Plenix.Colors.dataGridRowSelected with Plenix.Colors.dataGridRowSelectedText; a checkmark for chosen options",
      "apple": "The system gray highlight, a tint checkmark",
-     "swiftui": ".listRowBackground(Plenix.Colors.dataTableRowSelected) when selected",
+     "swiftui": ".listRowBackground(Plenix.Colors.dataGridRowSelected) when selected",
      "uikit": "background.backgroundColor for state.isSelected; UICellAccessory.checkmark()",
      "appkit": "A custom NSTableRowView drawSelection(in:)",
      "follows": "Best practices"
@@ -17151,14 +17151,14 @@
     },
     {
      "state": "Pressed",
-     "token": "plx-sys-data-table-row-hover",
+     "token": "plx-sys-data-grid-row-hover",
      "swiftui": "Drawn by the list",
      "uikit": "state.isHighlighted",
      "appkit": "Drawn by the table"
     },
     {
      "state": "Selected",
-     "token": "plx-sys-data-table-row-selected, plx-sys-data-table-row-selected-text",
+     "token": "plx-sys-data-grid-row-selected, plx-sys-data-grid-row-selected-text",
      "swiftui": "List(selection:)",
      "uikit": "state.isSelected",
      "appkit": "selectedRowIndexes"
@@ -17199,8 +17199,8 @@
      "    func body(content: Content) -> some View {",
      "        content",
      "            .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body).monospacedDigit())",
-     "            .foregroundStyle(selected ? Plenix.Colors.dataTableRowSelectedText : Plenix.Colors.tableText)",
-     "            .listRowBackground(selected ? Plenix.Colors.dataTableRowSelected : Plenix.Colors.tableSurface)",
+     "            .foregroundStyle(selected ? Plenix.Colors.dataGridRowSelectedText : Plenix.Colors.tableText)",
+     "            .listRowBackground(selected ? Plenix.Colors.dataGridRowSelected : Plenix.Colors.tableSurface)",
      "            .listRowSeparatorTint(Plenix.Colors.tableLine)",
      "            .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }   // Plenix table lines run the full width",
      "            .listRowInsets(EdgeInsets(top: 0, leading: Plenix.Space.spaceInsetLg, bottom: 0, trailing: Plenix.Space.spaceInsetLg))",
@@ -17271,12 +17271,12 @@
      "        content.secondaryText = file.detail",
      "        content.textProperties.font = title",
      "        content.textProperties.lineBreakMode = .byTruncatingMiddle",
-     "        content.textProperties.color = UIColor(state.isSelected ? Plenix.Colors.dataTableRowSelectedText : Plenix.Colors.tableText)",
+     "        content.textProperties.color = UIColor(state.isSelected ? Plenix.Colors.dataGridRowSelectedText : Plenix.Colors.tableText)",
      "        content.secondaryTextProperties.font = subtitle",
      "        content.secondaryTextProperties.color = UIColor(Plenix.Colors.tableTextMuted)",
      "        cell.contentConfiguration = content",
      "        var background = UIBackgroundConfiguration.listGroupedCell().updated(for: state)",
-     "        background.backgroundColor = UIColor(state.isSelected ? Plenix.Colors.dataTableRowSelected : (state.isHighlighted ? Plenix.Colors.dataTableRowHover : Plenix.Colors.tableSurface))",
+     "        background.backgroundColor = UIColor(state.isSelected ? Plenix.Colors.dataGridRowSelected : (state.isHighlighted ? Plenix.Colors.dataGridRowHover : Plenix.Colors.tableSurface))",
      "        cell.backgroundConfiguration = background",
      "    }",
      "}"
@@ -17301,7 +17301,7 @@
      "",
      "final class PlenixRowView: NSTableRowView {",
      "    override func drawSelection(in dirtyRect: NSRect) {",
-     "        NSColor(Plenix.Colors.dataTableRowSelected).setFill()",
+     "        NSColor(Plenix.Colors.dataGridRowSelected).setFill()",
      "        bounds.fill()",
      "    }",
      "}"
@@ -26028,7 +26028,7 @@
     "Explicit Choose action",
     "Rendition name",
     "Format and byte size",
-    "DataTable or download menu",
+    "DataGrid or download menu",
     "Page navigation",
     "Stepped zoom",
     "Page thumbnails",

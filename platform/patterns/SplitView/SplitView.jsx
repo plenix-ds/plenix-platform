@@ -7,14 +7,14 @@
    Usage:
      <AppShell page="master-detail" …>
        <SplitView label="Inbox" orientation="side-by-side" firstLabel="Message list" defaultSize={560}
-         first={<DataTable label="Inbox" … />}
+         first={<DataGrid label="Inbox" … />}
          second={<ReadingPane label={item.subject} actions={<Toolbar …/>}>…</ReadingPane>} />
      </AppShell>
      <SplitView orientation="stacked" defaultSize={320} first={…} second={…} />
    Props:
      orientation: "side-by-side" (default; the first panel at the start, the divider between, the second fills the rest)
        | "stacked" (the first on top; both the full width)
-     first, second: the two panels' content (the first is usually a DataTable, which brings its own frame; the second a
+     first, second: the two panels' content (the first is usually a DataGrid, which brings its own frame; the second a
        ReadingPane)
      label: the split view's accessible name (a group); firstLabel: what the divider resizes ("Message list"; default
        "First panel"), its name is "{firstLabel} width" or "… height"
@@ -36,7 +36,7 @@
    Notes:
      Built on Resizable (the first panel); the divider's look is SplitView's (split-view.css). Colors, sizes and spacing
      are --plx-comp-split-view-* and --plx-comp-reading-pane-* tokens on existing roles; the reading pane's frame is the
-     data table's (data-table-border, shape-md, border-width-thin).
+     data grid's (data-grid-border, shape-md, border-width-thin).
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';

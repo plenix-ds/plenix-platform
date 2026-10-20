@@ -54,9 +54,10 @@
 @import url("components/Toast/toast.css");
 @import url("components/Tabs/tabs.css");
 @import url("components/Card/card.css");
-@import url("components/DataTableNext/data-table-next.css");
-@import url("components/DataTableNext/data-table-static.css");
-@import url("components/DataTableNext/data-table-static-steps.css");
+@import url("components/DataGrid/data-grid.css");
+@import url("components/Table/table-base.css");
+@import url("components/Table/table.css");
+@import url("components/Table/table-steps.css");
 @import url("patterns/ActionBar/action-bar.css");
 @import url("components/NavList/nav-list.css");
 @import url("components/Tree/tree.css");

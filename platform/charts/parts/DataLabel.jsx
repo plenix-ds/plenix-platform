@@ -16,7 +16,7 @@
    Behavior:
      The label sits --plx-comp-chart-data-label-offset from its anchor (top, end), or on it (center); the halo is a stroke
        in the surface color painted under the text, so it stays readable over a mark or a line.
-     Hidden from assistive technology with the rest of the plot: the data table carries the values.
+     Hidden from assistive technology with the rest of the plot: the data grid carries the values.
    Notes:
      Label the marks people compare, not every mark: a few labeled values (the last, the highest) read better than a full
        set. Values are technical: the data font; no color is written (the label's tokens).

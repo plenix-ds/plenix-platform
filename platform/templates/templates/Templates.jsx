@@ -4,11 +4,11 @@
    Props:
      title: page title; description: supporting text; actions: existing Platform actions; children: page content.
      header, sideNav, footer: AppShell slots; mainId: unique skip-link target when embedded.
-     rows, columns: DataTable data; items: feature cards; onOpen: card action; empty: custom empty state.
+     rows, columns: DataGrid data; items: feature cards; onOpen: card action; empty: custom empty state.
      initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel: FormFlow contract; fields: render function.
      pane, paneTitle, detailOpen, onBack: SecondaryPane master-detail contract.
      SplitWorkspace: the list and the chosen item in a SplitView (02 Page structures › Split workspace): rows and columns
-       (the list as a DataTable, which brings its own frame) or pane (framed as a ReadingPane titled paneTitle); the
+       (the list as a DataGrid, which brings its own frame) or pane (framed as a ReadingPane titled paneTitle); the
        item is children, shown in a ReadingPane while detailOpen (default true), else empty (default: an EmptyState);
        actions: the reading pane's actions row; toolbar: a CommandBar above both; orientation, defaultSize, size,
        onSizeChange: SplitView's.
@@ -28,7 +28,7 @@ import { Auth } from '../../patterns/Auth/Auth.jsx';
 import { SearchWorkspace } from '../../patterns/SearchWorkspace/SearchWorkspace.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { ContentGrid } from '../../patterns/ContentGrid/ContentGrid.jsx';
-import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
+import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Link } from '../../components/Link/Link.jsx';
@@ -43,7 +43,7 @@ function Frame({ page = 'workspace', title, description, actions, header, sideNa
 }
 function Cards({ items = [], onOpen }) { return <ContentGrid>{items.map(item => <FeatureCard key={item.id} title={item.title} description={item.description} icon={item.icon || 'folder'} href={item.href} onOpen={!item.href && onOpen ? () => onOpen(item) : undefined} />)}</ContentGrid>; }
 function NoRecords({ strings, empty }) { const t = { ...WORDS, ...strings }; return empty || <EmptyState title={t.empty}>{t.emptyDescription}</EmptyState>; }
-export function ListingPage({ rows = [], columns = [], empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{rows.length ? <DataTable data={rows} columns={columns} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
+export function ListingPage({ rows = [], columns = [], empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{rows.length ? <DataGrid data={rows} columns={columns} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
 export function ContentManagementPage({ items = [], onOpen, empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{items.length ? <Cards items={items} onOpen={onOpen} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
 export function LandingPage({ items = [], onOpen, children, ...rest }) { return <Frame {...rest}><Stack gap="lg">{children}<Cards items={items} onOpen={onOpen} /></Stack></Frame>; }
 export function HomePage(props) { return <LandingPage {...props} page="dashboard" />; }
@@ -58,7 +58,7 @@ export function MasterDetailPage({ pane, paneTitle, detailOpen = false, onBack, 
 }
 export function SplitWorkspace({ pane, paneTitle, rows, columns, detailOpen = true, title, actions, toolbar, empty, orientation, defaultSize, size, onSizeChange, strings, children, header, sideNav, footer, mainId }) {
   const t = { ...WORDS, ...strings }, id = React.useId(), list = paneTitle || t.pane;
-  const first = columns ? <DataTable label={list} data={rows || []} columns={columns} /> : <ReadingPane label={list}>{pane}</ReadingPane>;
+  const first = columns ? <DataGrid label={list} data={rows || []} columns={columns} /> : <ReadingPane label={list}>{pane}</ReadingPane>;
   const second = <ReadingPane label={title || t.detail} actions={detailOpen ? actions : null} empty={empty || <EmptyState title={t.noSelection}>{t.noSelectionDescription}</EmptyState>}>{detailOpen ? children : null}</ReadingPane>;
   return <AppShell page="master-detail" header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}><PageContent>{toolbar}<SplitView label={title || list} firstLabel={list} orientation={orientation} defaultSize={defaultSize} size={size} onSizeChange={onSizeChange} first={first} second={second} /></PageContent></AppShell>;
 }
@@ -78,7 +78,7 @@ export function DetailPage({ sections = [], strings, children, title, descriptio
 }
 export function SearchResultsPage({ query = '', onQueryChange, rows = [], columns = [], strings, children, title, ...rest }) {
   const t = { ...WORDS, ...strings };
-  return <Frame {...rest}><SearchWorkspace title={title || t.search} query={query} onQueryChange={onQueryChange} count={rows.length}>{children}{rows.length ? <DataTable data={rows} columns={columns} /> : <NoRecords strings={strings} />}</SearchWorkspace></Frame>;
+  return <Frame {...rest}><SearchWorkspace title={title || t.search} query={query} onQueryChange={onQueryChange} count={rows.length}>{children}{rows.length ? <DataGrid data={rows} columns={columns} /> : <NoRecords strings={strings} />}</SearchWorkspace></Frame>;
 }
 export function AuthenticationPage({ auth, form, children, header, footer, mainId }) { return <Frame header={header} footer={footer} mainId={mainId} page="form"><Auth {...auth}>{form || children}</Auth></Frame>; }
 export function ErrorPage({ error = 404, onRetry, homeHref, strings, ...rest }) {

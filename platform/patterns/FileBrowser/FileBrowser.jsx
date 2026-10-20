@@ -20,7 +20,7 @@
      view: "list" (a FileList) | "grid" (MediaCards in a ContentGrid), kept by the page
      defaultView: the first view when the browser keeps it (default "list"; View in the bar changes it)
      onViewChange(view): runs when people choose another view
-     listView: the list's look: "list" (default: FileRows) | "table" (the DataTable)
+     listView: the list's look: "list" (default: FileRows) | "table" (the DataGrid)
      tree: the folder tree at the start, its width resizable (default false); hidden on a narrow browser (under 600px of
        its own width), where the breadcrumbs lead
      breadcrumbs: the location above the bar (default true)

@@ -1,6 +1,6 @@
 /* Plenix · FileList
    Summary: Many files and folders at once (12 Specialized › Files, assets, and DAM › File list): a list of FileRows (list),
-     the same files as a DataTable people sort, filter and resize by column (table), or the list with its own Sort menu
+     the same files as a DataGrid people sort, filter and resize by column (table), or the list with its own Sort menu
      above the rows, by name, size, date or owner, folders first (sortable). Every row selects, opens, downloads, renames
      and deletes the same way (FileRow, RenameAction, DeleteFlow); files can be dragged onto folders (the drag-and-drop
      engine) with Move to as the way without dragging. Built from Platform components only.
@@ -14,7 +14,7 @@
        ("YYYY-MM-DD" or a Date), owner, status: { tone, icon, label } (a Badge), type (MIME), src (a small picture) }]
        (required)
      label: the list's or the table's accessible name ("Files in Brand kit") (required)
-     view: "list" (default: FileRows) | "table" (the DataTable)
+     view: "list" (default: FileRows) | "table" (the DataGrid)
      sortable: the list draws its Sort menu above the rows (the field and the direction) with the count; the table always
        sorts by its headers (default false)
      sort: the order, kept by the page: { field: "name" | "size" | "modified" | "owner", dir: "asc" | "desc" }; folders
@@ -52,9 +52,9 @@
        never one big target; the row takes the hover and selected fills.
      Sort reorders the rows at once, folders first, and says the order in its button ("Sort by size"); the direction is
        its own choice in the menu.
-     The table is the DataTable: the name, then the facts in the data font (the size from bytes, the date in the reader's
+     The table is the DataGrid: the name, then the facts in the data font (the size from bytes, the date in the reader's
        locale), the owner and the status Badge; its headers sort, its right-click menu opens, downloads, renames and
-       deletes; selected rows take the DataTable's selected fill.
+       deletes; selected rows take the DataGrid's selected fill.
      Dragging (dragType, onMove): a file follows the pointer and a folder it can go to shows the drop outline; Escape puts
        it back. Every move is announced, and Move to in More actions does the same without dragging.
      Rename and Delete open their dialogs once, at the list's level, and say what happened in a toast.
@@ -69,7 +69,7 @@ import { cx } from '../../utils/cx.js';
 import { formatBytes, formatDate, formatNumber } from '../../utils/format.js';
 import { File } from '../../components/File/File.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
-import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
+import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
@@ -193,7 +193,7 @@ export function FileList({ files = [], label, view = 'list', sortable = false, s
       onRename ? [{ label: t.rename, icon: 'rename', onSelect: () => setAsk({ kind: 'rename', file: f }) }] : [],
       onDelete ? [{ separator: true }, { label: t.delete, icon: 'trash', danger: true, onSelect: () => setAsk({ kind: 'delete', file: f }) }] : []);
     body = (
-      <DataTable label={label} index="id" data={rows.map((f) => Object.assign({}, f, { id: idOf(f), statusLabel: f.status ? f.status.label : '' }))} columns={cols}
+      <DataGrid label={label} index="id" data={rows.map((f) => Object.assign({}, f, { id: idOf(f), statusLabel: f.status ? f.status.label : '' }))} columns={cols}
         selectable={selectable} selected={selectable ? keys : undefined} onSelectionChange={selectable ? onSelectionChange : undefined}
         sort={[{ field: order.field === 'owner' ? 'owner' : order.field, dir: order.dir }]} rowHeight={rowHeight}
         rowMenu={onOpen || onDownload || onRename || onDelete ? menu : undefined} />

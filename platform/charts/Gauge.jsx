@@ -24,7 +24,7 @@
      className: more classes on the figure
    Behavior:
      Static: it has no keyboard stop of its own; the meter's value text says the value, its label and its range's name
-       ("86%, of 100 GB, Nearly full"). The data table under it lists the value, the ends and the thresholds.
+       ("86%, of 100 GB, Nearly full"). The data grid under it lists the value, the ends and the thresholds.
      The status badge pairs the range's color with its name and icon, so color is never the only cue.
    Notes:
      The track, the fill and the bands are SVG paths (geometry only) colored by classes: the fill the first categorical

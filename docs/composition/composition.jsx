@@ -2,7 +2,7 @@
    build publishes from platform/standards/layout.json (PAGE_LAYOUTS, PAGE_REGIONS, COMPOSITION_GUIDE, FIELD_RULES), and
    the reference screen built on it (posts.html: RedSave's Posts screen as a workspace page). Two pages, no switches.
    Compiled to composition.js with tools/agent/build-study.js. */
-const { AppShell, AppHeader, NavPane, NavList, StatusBar, SessionProvider, PageContent, Stack, Text, Panel, DataTable, CommandBar, CommandBarSearch,
+const { AppShell, AppHeader, NavPane, NavList, StatusBar, SessionProvider, PageContent, Stack, Text, Panel, DataGrid, CommandBar, CommandBarSearch,
   FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, EntityHeader, useCollectionView, PAGE_LAYOUTS, PAGE_REGIONS, COMPOSITION_GUIDE, FIELD_RULES, Table } = Plenix;
 const { useState } = React;
 const POSTS = /posts\.html$/.test(location.pathname);
@@ -76,7 +76,7 @@ function Posts() {
           find={<><CommandBarSearch {...v.searchProps} placeholder="Search posts" /><FilterPanel {...v.filterProps} /></>}
           quickFilters={[quick('community', 'Community', 'settings-users', COMMUNITIES), quick('tags', 'Tags', 'tags', TAGS), quick('collection', 'Collection', 'folder', COLLECTIONS)]}
           view={<><SortPanel {...v.sortProps} /><GroupPanel {...v.groupProps} /><ColumnsMenu {...v.columnsProps} /><ViewMenu {...v.viewProps} gallery={false} /></>} />
-        <DataTable label="Posts" data={rows} {...v.tableProps} columns={[
+        <DataGrid label="Posts" data={rows} {...v.tableProps} columns={[
           { title: 'Title', field: 'title', kind: 'name' }, { title: 'Community', field: 'community' }, { title: 'Tags', field: 'tags' }, { title: 'Collection', field: 'collection' },
           { title: 'Score', field: 'score', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: 'number' }, { title: 'Posted', field: 'posted', kind: 'data' }]} />
       </Stack>

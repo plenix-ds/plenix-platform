@@ -1795,13 +1795,13 @@
         }
       }
     },
-    "data-table-surface": {
+    "data-grid-surface": {
       "$value": "{plx-ref.color-gray-950}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: the surface."
+          "purpose": "DataGrid: the surface."
         }
       }
     },
@@ -1815,13 +1815,13 @@
         }
       }
     },
-    "data-table-header-background": {
+    "data-grid-header-background": {
       "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: the header row’s fill."
+          "purpose": "DataGrid: the header row’s fill."
         }
       }
     },
@@ -1835,13 +1835,13 @@
         }
       }
     },
-    "data-table-header-line": {
+    "data-grid-header-line": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: the line under the header."
+          "purpose": "DataGrid: the line under the header."
         }
       }
     },
@@ -1855,13 +1855,13 @@
         }
       }
     },
-    "data-table-line": {
+    "data-grid-line": {
       "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: the lines between cells."
+          "purpose": "DataGrid: the lines between cells."
         }
       }
     },
@@ -1875,13 +1875,13 @@
         }
       }
     },
-    "data-table-border": {
+    "data-grid-border": {
       "$value": "{plx-ref.color-gray-800}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: the outer edge."
+          "purpose": "DataGrid: the outer edge."
         }
       }
     },
@@ -1895,13 +1895,13 @@
         }
       }
     },
-    "data-table-text": {
+    "data-grid-text": {
       "$value": "{plx-ref.color-gray-200}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: cell text."
+          "purpose": "DataGrid: cell text."
         }
       }
     },
@@ -1915,13 +1915,13 @@
         }
       }
     },
-    "data-table-text-muted": {
+    "data-grid-text-muted": {
       "$value": "{plx-ref.color-gray-400}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: secondary cell text."
+          "purpose": "DataGrid: secondary cell text."
         }
       }
     },
@@ -1935,77 +1935,77 @@
         }
       }
     },
-    "data-table-text-subtle": {
+    "data-grid-text-subtle": {
       "$value": "{plx-ref.color-gray-500}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: tertiary cell text."
+          "purpose": "DataGrid: tertiary cell text."
         }
       }
     },
-    "data-table-row-hover": {
+    "data-grid-row-hover": {
       "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: a row under the pointer."
+          "purpose": "DataGrid: a row under the pointer."
         }
       }
     },
-    "data-table-row-selected": {
+    "data-grid-row-selected": {
       "$value": "{plx-ref.color-blue-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: a selected row."
+          "purpose": "DataGrid: a selected row."
         }
       }
     },
-    "data-table-row-selected-hover": {
+    "data-grid-row-selected-hover": {
       "$value": "{plx-ref.color-blue-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: a selected row under the pointer."
+          "purpose": "DataGrid: a selected row under the pointer."
         }
       }
     },
-    "data-table-row-selected-text": {
+    "data-grid-row-selected-text": {
       "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: text of a selected row."
+          "purpose": "DataGrid: text of a selected row."
         }
       }
     },
-    "data-table-accent": {
+    "data-grid-accent": {
       "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: the sort indicator and accents."
+          "purpose": "DataGrid: the sort indicator and accents."
         }
       }
     },
-    "data-table-danger": {
+    "data-grid-danger": {
       "$value": "{plx-ref.color-red-500}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataTable: an error in a cell."
+          "purpose": "DataGrid: an error in a cell."
         }
       }
     },
-    "data-table-menu-shadow": {
+    "data-grid-menu-shadow": {
       "$value": "0 {plx-ref.space-8px} {plx-ref.space-24px} {plx-ref.color-black-alpha-50}",
       "$type": "shadow"
     },

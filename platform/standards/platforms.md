@@ -167,7 +167,7 @@ width; native iOS apps read the size class and apply the matching row. Inside Wi
 1024, 1440 and 1920px for workspace arrangements.
 
 **Containers** decide how each component arranges itself: a component adapts to the space of the region it sits in,
-not to the window. A data table in a 350px side panel lays out for 350px even in a 1920px window. On the web this is
+not to the window. A data grid in a 350px side panel lays out for 350px even in a 1920px window. On the web this is
 done with container queries (`platform/system/grid.css` and the component stylesheets); natively, with the size the
 parent offers (`GeometryReader`, `BoxWithConstraints`, `LayoutBuilder`).
 
@@ -188,7 +188,7 @@ width helps, decided by the kind of the value, not by the element:
 
 The rule holds everywhere, table cells and property-list values included; names, descriptions and statuses beside a
 technical value stay DM Sans. The data role is the only way to get Reddit Mono outside code, and a component chooses it by
-the value's kind: a DataTable or Table column of kind `data` (`["name", "data"]` for a row named by its file name), a
+the value's kind: a DataGrid or Table column of kind `data` (`["name", "data"]` for a row named by its file name), a
 PropertyList item marked `data`, Text variant `data`, Kbd and code. No component sets a font family outside its tokens.
 Reddit Mono always takes its neighbors' size and line height: the table's size in a table, the value size in a property
 list, the size of the text around it inside a sentence or a line of facts (on its own, the secondary size). So Reddit Mono
@@ -197,7 +197,7 @@ uses the platform's Reddit Mono: `Plenix.Font.mono` (SwiftUI), `PlenixFonts.MONO
 
 Checks: `tests/typography.test.js` (every app page and a sample of the design system, light and dark: the data role is
 Reddit Mono, Reddit Mono is never prose, a technical value on its own is Reddit Mono, and Mono and Sans in a row share a baseline),
-`tests/data-table.test.js` (data columns Reddit Mono at the table's size, other cells DM Sans) and the native check (the
+`tests/data-grid.test.js` (data columns Reddit Mono at the table's size, other cells DM Sans) and the native check (the
 data role uses Reddit Mono in its code).
 
 | Platform | Scales with | Default body | Minimum | Source |
@@ -237,7 +237,7 @@ Plenix role with a style is a Plenix rule.
 
 | Topic | Web | iOS | Android | Source |
 |---|---|---|---|---|
-| Reflow | Content reflows at a width equal to 320 CSS px (for example 1280px at 400% zoom) without scrolling in two directions; content that needs two dimensions, such as data tables, maps and diagrams, is exempt | — | — | Rule: WCAG 2.2 SC 1.4.10, AA |
+| Reflow | Content reflows at a width equal to 320 CSS px (for example 1280px at 400% zoom) without scrolling in two directions; content that needs two dimensions, such as data grids, maps and diagrams, is exempt | — | — | Rule: WCAG 2.2 SC 1.4.10, AA |
 | Orientation | Both orientations | Both, unless one is essential | Both, unless one is essential | Rule: WCAG 2.2 SC 1.3.4, AA |
 | Keyboard | The right `type`, `inputmode` and `autocomplete`; the focused field stays visible above the keyboard | The keyboard type that fits the content; the focused field stays visible | The keyboard type that fits the content; window insets keep the field visible | Rule: Apple HIG › Text fields |
 | Edges and insets | `env(safe-area-inset-*)` with `viewport-fit=cover` | Safe area layout guides | Edge to edge: enforced for apps targeting API 35 or later on Android 15 or later, and without any opt-out for apps targeting API 36 on Android 16. Content draws behind the system bars; window insets keep controls clear of them | Rule: Android › Edge-to-edge; Android 16 behavior changes (enforced by the OS) |
@@ -521,7 +521,7 @@ changes structure rather than shrinking.
 | Sheet and inspector | Side panel | `.sheet` with detents; inspector on iPad | `ModalBottomSheet`; side sheet on medium and up |
 | Tooltip | Hover and focus tooltip | No hover on touch: the help text is shown in the screen; `.help` on iPad with a pointer | `TooltipBox` on long press |
 | Feedback message | Toast | An inline banner in the screen | `Snackbar` |
-| Data table | Plenix DataTable | On Narrow, a List or List-detail (5.2) with the key columns; a table on iPad | On compact, a list or list-detail with the key columns |
+| Data grid | Plenix DataGrid | On Narrow, a List or List-detail (5.2) with the key columns; a table on iPad | On compact, a list or list-detail with the key columns |
 | Tree | Plenix Tree | `OutlineGroup`, or a sidebar with disclosure groups | Expandable list |
 | File upload | File input and drop zone | `.fileImporter`, `PhotosPicker` | System file picker and photo picker |
 | Progress | Progress bar and spinner | `ProgressView` | `LinearProgressIndicator`, `CircularProgressIndicator` |

@@ -3,7 +3,7 @@
      chart, Histogram): one bar per category along a value axis that starts at zero, horizontal (bars: long names,
      ranking) or vertical (columns: periods), one series or several side by side (grouped), stacked into a total
      (stacked), or as shares of each category's total (percent); and the histogram, touching columns that count how
-     many values fall in each range. Drawn in ChartFrame with its axes, grid lines, legend, tooltip and data table.
+     many values fall in each range. Drawn in ChartFrame with its axes, grid lines, legend, tooltip and data grid.
    Usage:
      <BarChart title="Storage by team" description="Design uses the most storage." categories={['Design', 'Marketing', 'Sales']}
        series={[{ id: 'gb', label: 'Storage (GB)', values: [420, 310, 120] }]} valueLabel="Storage (GB)" showValues />
@@ -35,7 +35,7 @@
      The value axis starts at zero (negative values go the other way from a zero line); stacked bars stack positive values
        up and negative values down; percent stacks only positive values.
      Hover a bar: the tooltip shows its value (grouped), its category's values (stacked, percent: with each share) or its
-       range and count (histogram). The data table lists every value: the chart's keyboard and screen reader view.
+       range and count (histogram). The data grid lists every value: the chart's keyboard and screen reader view.
      Histogram bins touch (no gap: the range is continuous) and have equal widths on round edges.
    Notes:
      Colors come from the data-viz scales (seriesColor by the series' order); stacked segments and bins are parted by a

@@ -2,7 +2,7 @@
   "$description": "ResourceList (platform/patterns/ResourceList, library wave 8, lane C): its component tokens, the header, the groups and the rows. The checkboxes, pictures, headings and the command bar are Checkbox's, Thumbnail's, Avatar's, SectionHeading's and CommandBar's own.",
   "plx-comp": {
     "resource-list-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "ResourceList: the space between the bar, the header and the groups." },
-    "resource-list-header-min-height": { "$value": "{plx-sys.data-table-row-height}", "$type": "dimension", "$description": "ResourceList: the header's height (select all and the count), a data row's height (it follows the density)." },
+    "resource-list-header-min-height": { "$value": "{plx-sys.data-grid-row-height}", "$type": "dimension", "$description": "ResourceList: the header's height (select all and the count), a data row's height (it follows the density)." },
     "resource-list-header-border-bottom-color": { "$value": "{plx-sys.border-divider}", "$type": "color", "$description": "ResourceList: the line under the header." },
     "resource-list-header-border-bottom-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "ResourceList: the header line's width." },
     "resource-list-count-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "ResourceList: the count in the header and after a group's heading." },
@@ -11,7 +11,7 @@
     "resource-list-group-count-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "ResourceList: a group's count (a technical value: Reddit Mono)." },
     "resource-list-group-count-margin-inline-start": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "ResourceList: the space between a group's heading and its count." },
     "resource-list-item-gap": { "$value": "{plx-sys.space-inline-md}", "$type": "dimension", "$description": "ResourceList: the space between the checkbox, the picture, the text, the details and the actions." },
-    "resource-list-item-min-height": { "$value": "{plx-sys.data-table-row-height}", "$type": "dimension", "$description": "ResourceList: a row's least height (a data row's: it follows the density)." },
+    "resource-list-item-min-height": { "$value": "{plx-sys.data-grid-row-height}", "$type": "dimension", "$description": "ResourceList: a row's least height (a data row's: it follows the density)." },
     "resource-list-item-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "ResourceList: the space above and under a row's content." },
     "resource-list-item-border-bottom-color": { "$value": "{plx-sys.border-divider}", "$type": "color", "$description": "ResourceList: the line between rows." },
     "resource-list-item-border-bottom-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "ResourceList: the line's width." },

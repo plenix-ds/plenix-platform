@@ -1,16 +1,16 @@
 {
-  "$description": "SplitView and ReadingPane (platform/patterns/SplitView; owner, 2026-10-16): two panels sharing their room, side by side or stacked, with a divider between (a line and a centered pill, the whole gap the target), and the reading pane's frame (the data table's).",
+  "$description": "SplitView and ReadingPane (platform/patterns/SplitView; owner, 2026-10-16): two panels sharing their room, side by side or stacked, with a divider between (a line and a centered pill, the whole gap the target), and the reading pane's frame (the data grid's).",
   "plx-comp": {
     "split-view-gap": { "$value": "{plx-sys.space-layout-md}", "$type": "dimension", "$description": "The gap between the panels; the whole gap is the divider's target." },
     "split-view-second-min-width": { "$value": "{plx-ref.size-320px}", "$type": "dimension", "$description": "Side by side: the second panel never gets narrower than this (under the split view's 900px they stack)." },
-    "reading-pane-background": { "$value": "{plx-sys.data-table-surface}", "$type": "color", "$description": "The reading pane's surface (the data table's)." },
-    "reading-pane-border-color": { "$value": "{plx-sys.data-table-border}", "$type": "color", "$description": "The reading pane's frame (the data table's)." },
+    "reading-pane-background": { "$value": "{plx-sys.data-grid-surface}", "$type": "color", "$description": "The reading pane's surface (the data grid's)." },
+    "reading-pane-border-color": { "$value": "{plx-sys.data-grid-border}", "$type": "color", "$description": "The reading pane's frame (the data grid's)." },
     "reading-pane-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "The reading pane's frame and the actions row's line." },
-    "reading-pane-radius": { "$value": "{plx-sys.shape-md}", "$type": "dimension", "$description": "The reading pane's corners (the data table's)." },
+    "reading-pane-radius": { "$value": "{plx-sys.shape-md}", "$type": "dimension", "$description": "The reading pane's corners (the data grid's)." },
     "reading-pane-actions-gap": { "$value": "{plx-ref.space-8px}", "$type": "dimension", "$description": "Between the actions in their row." },
     "reading-pane-actions-padding-block": { "$value": "{plx-ref.space-12px}", "$type": "dimension", "$description": "The actions row's room above and below." },
     "reading-pane-actions-padding-inline": { "$value": "{plx-ref.space-16px}", "$type": "dimension", "$description": "The actions row's room at its ends." },
-    "reading-pane-rule-color": { "$value": "{plx-sys.data-table-border}", "$type": "color", "$description": "The thin line under the actions." },
+    "reading-pane-rule-color": { "$value": "{plx-sys.data-grid-border}", "$type": "color", "$description": "The thin line under the actions." },
     "reading-pane-rule-inset": { "$value": "{plx-ref.space-16px}", "$type": "dimension", "$description": "The line under the actions stops this far from each edge (owner: it does not touch the edges)." },
     "reading-pane-body-padding": { "$value": "{plx-ref.space-24px}", "$type": "dimension", "$description": "Room around the item." }
   }

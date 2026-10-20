@@ -130,7 +130,7 @@ changed.report(WANTED.join(', '));
   at('command bar'); await open('#/patterns/command-bar');
   // the page's live examples build their tables after the route changes: wait until every one is built (the bars measure
   // themselves again as the page settles)
-  await page.waitForFunction(() => { const t = document.querySelectorAll('main .plx-data-table'); return t.length > 0 && document.querySelectorAll('main .plx-data-table .plx-data-table__grid-tableholder').length >= t.length; }, { timeout: 15000 }).catch(() => {});
+  await page.waitForFunction(() => { const t = document.querySelectorAll('main .plx-data-grid'); return t.length > 0 && document.querySelectorAll('main .plx-data-grid .plx-data-grid__grid-tableholder').length >= t.length; }, { timeout: 15000 }).catch(() => {});
   await sleep(500);
   const row = 'main .plx-command-bar__row';
   const tb = await page.evaluate((sel) => { const t = document.querySelector(sel); if (!t) return null; const items = [...t.querySelectorAll('button,input')].filter((e) => e.offsetParent && !e.disabled); return { n: items.length, tabbable: items.filter((e) => e.tabIndex === 0).length }; }, row);

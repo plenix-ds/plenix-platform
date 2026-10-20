@@ -1,7 +1,7 @@
 {
   "$description": "ChartFrame and the chart marks (platform/charts, library wave 7, lane C: the chart foundations): their component tokens. Marks take their colors from the data-viz scales (--plx-sys-dataviz-*, through data-plx-dataviz); everything else is an existing role.",
   "plx-comp": {
-    "chart-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "Chart: the space between the caption, the plot and the data table." },
+    "chart-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "Chart: the space between the caption, the plot and the data grid." },
     "chart-caption-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "Chart: the space between the title and the description." },
     "chart-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Chart: the title." },
     "chart-title-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "Chart: the title's typeface (UI text)." },

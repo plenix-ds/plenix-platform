@@ -839,7 +839,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "data-display|Comparison table": {
@@ -848,7 +848,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "data-display|Compact table": {
@@ -857,7 +857,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "data-display|Responsive table": {
@@ -866,7 +866,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "data-display|Filterable table": {
@@ -875,7 +875,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "data-display|Selectable table": {
@@ -884,7 +884,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "data-display|Expandable table": {
@@ -893,7 +893,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "data-display|Editable table": {
@@ -902,7 +902,7 @@
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "feedback|Callout": {

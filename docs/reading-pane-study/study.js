@@ -10,7 +10,7 @@ const {
   NavList,
   StatusBar,
   SessionProvider,
-  DataTable,
+  DataGrid,
   CommandBar,
   Toolbar,
   Button,
@@ -106,7 +106,7 @@ function Mail() {
       onClear: () => setSel(open ? [open] : [])
     } : undefined
   });
-  const table = /*#__PURE__*/React.createElement(DataTable, {
+  const table = /*#__PURE__*/React.createElement(DataGrid, {
     label: "Inbox",
     data: ITEMS,
     columns: COLUMNS,

@@ -5,7 +5,7 @@
    Usage:
      const [groups, setGroups] = React.useState([]);
      <GroupPanel fields={fields.filter((f) => f.kind === 'select')} value={groups} onChange={setGroups} />
-     <DataTable … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} />
+     <DataGrid … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} />
      (or useCollectionView)
    Props:
      fields: the fields rows can be grouped by (utils/fields.js); usually the select fields
@@ -23,7 +23,7 @@
        (trash) and the handle; a field is used once. Rows move by drag, the handle's menu or Alt + Arrow Up / Down,
        announced. The groups' order follows their levels' order (the page sorts by the levels first).
    Notes:
-     The panel holds the levels; the page applies them (DataTable groupBy, nested with several levels). */
+     The panel holds the levels; the page applies them (DataGrid groupBy, nested with several levels). */
 import React from 'react';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';

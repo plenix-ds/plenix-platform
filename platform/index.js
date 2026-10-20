@@ -55,7 +55,9 @@ export { Sheet } from './components/Sheet/Sheet.jsx';
 export { ToastProvider, useToast } from './components/Toast/Toast.jsx';
 export { Tabs, tabsPanelId } from './components/Tabs/Tabs.jsx';
 export { Panel, Card, MediaCard } from './components/Card/Card.jsx';
-export { DataTable } from './components/DataTableNext/DataTablePublic.jsx';
+export { DataGrid } from './components/DataGrid/DataGrid.jsx';
+// DataTable: the grid's former name (owner, 2026-10-19: Table is static, DataGrid is the grid); kept one release, then removed
+export { DataGrid as DataTable } from './components/DataGrid/DataGrid.jsx';
 export { Table } from './components/Table/Table.jsx';
 export { ActionBar } from './patterns/ActionBar/ActionBar.jsx';
 export { NavList } from './components/NavList/NavList.jsx';
@@ -341,5 +343,5 @@ export { browserSupport } from './utils/browserSupport.js';
 export { LocaleProvider, useLocale, createTranslator } from './providers/LocaleProvider.jsx';
 export { SplitView, ReadingPane } from './patterns/SplitView/SplitView.jsx';
 export { Heading } from './components/Heading/Heading.jsx';
-export { DataTableNext } from './components/DataTableNext/DataTableNext.jsx';
+export { DataGridEngine } from './components/DataGrid/DataGridEngine.jsx';
 /* END library parts */

@@ -10,7 +10,7 @@ the DS… many things not matching such as the form fields". Card kinds: collaps
 - [ ] Every settings page in cards: the Plenix Settings app (every category, Features, Documentation), the DAM's System
   settings and My account.
 - [ ] Conformance: every control as its design-system page defines it (fields with labels, standard widths, nothing cut
-  off; selects, segmented controls, switches, buttons, notices, empty states, DataTables).
+  off; selects, segmented controls, switches, buttons, notices, empty states, DataGrids).
 - [ ] Checks: the settings pages in the layout, typography, targets and a11y tests; a rule against sections not in cards
   and fields not built from Field and Input.
 
@@ -35,7 +35,7 @@ Owner: "I am building this as a cdn so that any app i build will use whatever is
   Done: wave 0 (0.31.41), wave 1 (0.31.42), wave 2 (0.31.43).
 - [ ] Adoption (after the waves that add foundations): RowButton, MediaCard and Tree on usePressable/useFocusable/useSelection;
   Toolbar on useFocusGroup; Sheet and MediaViewer on useGesture; the form controls on useReadOnly; Skeleton, Spinner and
-  ProgressBar on the loading motion; Toast on announce; DataTable counts and the shortcuts dialog on announce and the hotkey
+  ProgressBar on the loading motion; Toast on announce; DataGrid counts and the shortcuts dialog on announce and the hotkey
   registry; layer.js on useScrollLock; Field and Tooltip on useDescribedBy; Menu, Tooltip and Popover on useFloating;
   DirectionProvider at the app roots; Text variant=link uses to Link; the heading levels skipped on Calendar and Bookmarks.
 - [ ] Owner: visited links look the same as unvisited (a new color role would be needed); SectionHeading levels drawn from the
@@ -53,7 +53,7 @@ its anatomy, every attribute from token to code) and the web meets the Plenix Pl
 - [x] (0.31.39) Data values outside tables (slider and progress values) are Reddit Mono, the data role, on every platform: the
   Platforms Standard 3.4 and the font-roles rule agree (tables and property lists are DM Sans).
 - [x] (0.31.39) Owner: on mobile, a conflict follows the platform's own guidelines: the iOS alert keeps Apple's width.
-- [x] (0.31.36) Web wave A: drag alternatives, error states, the narrow DataTable, its kept view, focus not obscured, touch
+- [x] (0.31.36) Web wave A: drag alternatives, error states, the narrow DataGrid, its kept view, focus not obscured, touch
   tooltips, system appearance, input hints, reflow and target tests.
 - [x] (0.31.38) Web wave B: a URL and history entry per screen, the unsaved-changes guard, list-detail at Narrow, view
   restoration, the Sheet, the inspector and search at Narrow; touch targets 907 → 366 under 44px, fine pointer 29 → 13.
@@ -66,7 +66,7 @@ its anatomy, every attribute from token to code) and the web meets the Plenix Pl
   (0 findings on 80 pages) and the flipped table test fail the build on any slip; native check.js the same.
 - [ ] Owner: counts inside phrases ("7 files", "4,546 assets | 12.4 GB" in the DAM status bar): Mono for the number only, or
   wording in Sans as today?
-- [x] (0.31.38) The token rename: 137 component tokens named from selector fragments (data-table-background-2,
+- [x] (0.31.38) The token rename: 137 component tokens named from selector fragments (data-grid-background-2,
   pagination-page-hover-not-disabled-not-aria-current-…) now say what they style; values unchanged (visual test OK).
 
 ## Strict DS: no inline styles, no exceptions (added 2026-10-09)
@@ -89,8 +89,8 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
   row menus anchored to their button (no coordinates), column resize by switching the width class (snaps to tokens),
   paging (10 per page). How: renderVertical "basic"; Tabulator's own geometry writes switched off (cell and column
   width/height, header vertical align, row height normalising, holder sizing, frozen-rows holder width) and the tree's
-  row layout replaced by one without indent. To do: move this into DataTable and Table, a test that fails if a
-  Tabulator update writes a style again, then the real tables (25 data-table views, the reference test).
+  row layout replaced by one without indent. To do: move this into DataGrid and Table, a test that fails if a
+  Tabulator update writes a style again, then the real tables (25 data-grid views, the reference test).
 - [x] 6c. (batch 286, 0.25.1) The design system lab builds its grid as table markup and hands it to DS.table() (component-lab.js: the
   matrix and the properties table; Codex M-03): hand the rows to the Platform Table directly, with no markup
 - [x] 7. (batch 283, 0.24.0) check-system rejects every style attribute, custom properties included; and a runtime test (Codex,
@@ -166,12 +166,12 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [ ] Owner: set up Proxmox backups (where to: local, the Storage pool or a Proxmox Backup Server; how many to keep; when). Container 104 (Authentik) first.
 - [ ] Single sign-on plan: every Plenix app and the design system's Save sign in through Authentik; Admins / Editors / Users drive permissions.
 
-Every table is a Tabulator DataTable (owner, 2026-10-08: "every table rebuilt"; the style: docs/data-table-reference.html)
-- [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataTable component (Tabulator's own column definitions), data-table.css from the reference with tokens only, table tokens, icons; 180/180 parts match the reference.
-- [x] 2. (batch 226) The apps' tables rewritten as DataTables: 22 grid views (Files, Projects, Search workspace, Settings, the Asset Manager's home, system settings and field dialogs); tests/data-table.test.js.
-- [x] 3. (batch 226) The design system's own tables as DataTables: the spec pages' React tables, DS.table for every table a page or lab builds (the button matrix in its frame too); 149 pages, no <table> left.
-- [x] 4. (batch 226) Table, system/table.css and the 33 table tokens removed; ActivityList and PropertyList on the grid tokens; check-system rule tables and a pages-test check reject any table that is not a DataTable.
-- [x] 5. (batch 226) The Data table page (#/data-display/data-table): the rule, how to apply it, every part of the style with its tokens, density, light and dark, one live grid.
+Every table is a Tabulator DataGrid (owner, 2026-10-08: "every table rebuilt"; the style: docs/data-grid-reference.html)
+- [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataGrid component (Tabulator's own column definitions), data-grid.css from the reference with tokens only, table tokens, icons; 180/180 parts match the reference.
+- [x] 2. (batch 226) The apps' tables rewritten as DataGrids: 22 grid views (Files, Projects, Search workspace, Settings, the Asset Manager's home, system settings and field dialogs); tests/data-grid.test.js.
+- [x] 3. (batch 226) The design system's own tables as DataGrids: the spec pages' React tables, DS.table for every table a page or lab builds (the button matrix in its frame too); 149 pages, no <table> left.
+- [x] 4. (batch 226) Table, system/table.css and the 33 table tokens removed; ActivityList and PropertyList on the grid tokens; check-system rule tables and a pages-test check reject any table that is not a DataGrid.
+- [x] 5. (batch 226) The Data grid page (#/data-display/data-grid): the rule, how to apply it, every part of the style with its tokens, density, light and dark, one live grid.
 
 Themes and components (owner, 2026-10-08: "do the foundations and then the components")
 - [x] Themes defined in the design system (platform/standards/themes.json), the current look as the "default" theme, switching (batch 219).
@@ -184,7 +184,7 @@ Phase 3 · editable and governed
 - [x] 10. Contribution model (batch 210): CONTRIBUTING.md (stages, who decides, the rules, the review checklist), a Component proposal issue form and a pull request checklist on GitHub.
 
 Phase 4 · grow
-- [x] 12. (batch 251) Starter template: plenix-ds/plenix-starter, a CDN starter (plain HTML, no build) and a Vite + React + TypeScript starter on the npm packages; both draw the same shell, navigation, DataTable and ActionBar, tested in Chrome. Fixed on the way: the npm package's DataTable found no Tabulator in a bundled app; it now loads the release's CDN copy.
+- [x] 12. (batch 251) Starter template: plenix-ds/plenix-starter, a CDN starter (plain HTML, no build) and a Vite + React + TypeScript starter on the npm packages; both draw the same shell, navigation, DataGrid and ActionBar, tested in Chrome. Fixed on the way: the npm package's DataGrid found no Tabulator in a bundled app; it now loads the release's CDN copy.
 - [x] (2026-10-09) CI ran nothing since batch 234: a colon in a step name broke ci.yml; fixed, and the tests now run with reduced motion (CI had read the start of batch 236's fades).
 
 ## Own mirror of the Plenix packages (owner chose option A, 2026-10-11)

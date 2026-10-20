@@ -35,7 +35,7 @@ It writes only these generated files, each starting with `GENERATED FILE — DO 
 - `<app>/app.js`: each suite application's page script (dashboard, projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings), from `<app>/main.jsx`
 - `dam/app/assets.js`: the Asset Manager's page script (React islands)
 
-Source files use `import`/`export`; `react`, `react-dom` and `plenix-platform` resolve to the scripts already on the page. React and ReactDOM are vendored in `platform/vendor/` (see its README), so nothing needs the network and the dashboard still opens from `file://`. The build fails and writes nothing if a file does not compile, an import does not resolve, or a public export is missing. Page script order: `platform.css`, `platform/vendor/react-loader.js` (production React; `?react=dev` for the development build), `platform/dist/platform.js`, then the application bundle. The DataTable renderer and its dependencies are bundled with the Platform. CSS needs no build. The window.* data in `suite/plenix-app-data.js` needs no build.
+Source files use `import`/`export`; `react`, `react-dom` and `plenix-platform` resolve to the scripts already on the page. React and ReactDOM are vendored in `platform/vendor/` (see its README), so nothing needs the network and the dashboard still opens from `file://`. The build fails and writes nothing if a file does not compile, an import does not resolve, or a public export is missing. Page script order: `platform.css`, `platform/vendor/react-loader.js` (production React; `?react=dev` for the development build), `platform/dist/platform.js`, then the application bundle. The DataGrid renderer and its dependencies are bundled with the Platform. CSS needs no build. The window.* data in `suite/plenix-app-data.js` needs no build.
 
 ## System Rules
 
@@ -80,6 +80,6 @@ Z:\Plenix\
 │   ├── terminology.md       # Product terminology
 │   └── <name>/              # One folder per capability
 │       └── <name>-prd.md    # PRD file (future: schema, API spec, UI spec)
-├── docs/                    # plenix-docs.html (the PRD viewer, built from capabilities/), plenix-data.js, data-table-reference.html
+├── docs/                    # plenix-docs.html (the PRD viewer, built from capabilities/), plenix-data.js, data-grid-reference.html
 └── Archived/                # Outdated or unused files and folders (metadata/, architecture/, old docs), on disk only (not in git)
 ```

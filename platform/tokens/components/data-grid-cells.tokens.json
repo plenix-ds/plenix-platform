@@ -1,0 +1,15 @@
+{
+  "$description": "DataGrid cell additions use existing roles.",
+  "plx-comp": {
+    "data-grid-cell-rich-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Spacing within inert rich cells."
+    },
+    "data-grid-cell-deleted-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
+      "$type": "color",
+      "$description": "Muted text for a deleted value; italic is also used."
+    }
+  }
+}

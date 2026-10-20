@@ -12,9 +12,9 @@ import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
 // the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session; an action, so a Button
 const SIGN_OUT="/outpost.goauthentik.io/sign_out";
-// a name/value table as a static Table (batches 229, 234: every table runs on DataTable): rows [name, value, technical?]; the names
+// a name/value table as a static Table (batches 229, 234: every table runs on DataGrid): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
-// name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
+// name/value facts as the defined data grid, with a header row (owner, 2026-10-09: all name/value lists in the DataGrid's look)
 const facts=(label,rows)=>{const list=rows.filter(Boolean);return <Table label={label} headerMenu={false}
   data={list.map((r,i)=>({id:i,name:r[0],value:typeof r[1]==="string"||typeof r[1]==="number"?String(r[1]):""}))}
   columns={[{title:"Name",field:"name",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px",headerSort:false},
@@ -242,7 +242,7 @@ function DocsPanel({docSection,setDocSection}){
   );
 
   if(docSection==="terminology"){
-    // a layer's table: its headers as DataTable columns (c0, c1…), its rows as grid rows; the first column names the row
+    // a layer's table: its headers as DataGrid columns (c0, c1…), its rows as grid rows; the first column names the row
     const tableColumns=t=>t.headers.map((h,j)=>({title:h,field:"c"+j,kind:"wrap",rowLabel:j===0,width:j===0?"--plx-ref-size-240px":undefined}));
     const tableRows=t=>t.rows.map((r,i)=>Object.assign({id:i},...r.map((v,j)=>({["c"+j]:v}))));
     return(

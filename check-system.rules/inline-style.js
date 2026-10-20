@@ -24,8 +24,8 @@
 //   el.style.setProperty('--plx-x', 'var(--plx-y)')    ok      el.style.setProperty('margin', '8px')         finding
 //   style={{ inlineSize: w }}                          ok      style={{ fontSize: 14 }}                      finding
 //   style={{ color: 'var(--plx-sys-text)' }}           ok      <div style="color: red">                      finding
-// Owner decisions that stay: a DataTable's row height and cell padding are the density's (tokens and classes); no code
-// writes them (the style audit and the pages test check the DataTable at run time).
+// Owner decisions that stay: a DataGrid's row height and cell padding are the density's (tokens and classes); no code
+// writes them (the style audit and the pages test check the DataGrid at run time).
 // A line of prose that names the rule (documentation) carries plx-allow-style (check-system.js leaves it alone).
 // The rule is a module check-system.js runs (every file of check-system.rules/):
 //   require('./check-system.rules/inline-style.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)

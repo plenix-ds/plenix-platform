@@ -1,0 +1,10 @@
+{
+  "$description": "DataGrid row menu column: the existing lead target and spacing roles.",
+  "plx-comp": {
+    "data-grid-row-menu-width": {
+      "$value": "{plx-comp.data-grid-lead-column-width}",
+      "$type": "dimension",
+      "$description": "Matches the selection column, including its touch target."
+    }
+  }
+}

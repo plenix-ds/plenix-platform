@@ -15,7 +15,7 @@
      color: the data-viz step of the marks ("categorical-1" by default)
      showValues: writes each value at the end of its stem (DataLabel; default false)
      format: (value) => text for values in the axis, the tooltip and the labels (default the scale's / formatNumber)
-     categoryTitle, valueTitle: the data table's column names; valueTitle (the measure, with its unit) also names the value
+     categoryTitle, valueTitle: the data grid's column names; valueTitle (the measure, with its unit) also names the value
        in the tooltip
      size: the plot's height, as ChartFrame ("sm" | "md" default | "lg")
      strings: the words it says, for other languages: { category: "Category", value: "Value", hint } (hint: the chart interaction's)

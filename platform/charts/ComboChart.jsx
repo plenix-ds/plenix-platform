@@ -2,7 +2,7 @@
    Summary: Two related measures on one category axis (07 Data Display › Charts › Combo chart): columns for the primary
      measure (an amount from zero) and a line with points for the second (a rate, a target, a running figure), on one
      shared value axis or on two (the columns' on the start side, the line's on the end side) when their units differ.
-     Drawn in ChartFrame with both legends, a shared tooltip per category and the data table.
+     Drawn in ChartFrame with both legends, a shared tooltip per category and the data grid.
    Usage:
      <ComboChart title="Uploads and approval rate" description="Uploads doubled while the approval rate held near 90%."
        categories={months} bars={[{ id: 'up', label: 'Uploads', values: […] }]}

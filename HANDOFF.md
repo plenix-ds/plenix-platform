@@ -11,7 +11,7 @@ memory folder; this file says where the work stands and how to run it on the VM.
     orange, away yellow, SegmentedControl look A. Spec: `docs/pills-and-colors.md`.
   - 0.31.65: the command bar standard: `platform/patterns/CommandBar/`, the find panels (Filter, Sort, Group, Columns,
     View, QuickFilter), the selection bar (BulkActions: actions, Select all, Clear, "N selected" at the end), the
-    search rule (240px, collapses to an icon when narrow), the thin chevron caret, no view button on DataTable.
+    search rule (240px, collapses to an icon when narrow), the thin chevron caret, no view button on DataGrid.
 - The decision study: `docs/command-bar-study/` (open `index.html` through a local server; "Decided so far" lists
   every rule). Decision record: memory `plenix-command-bar-study.md`.
 

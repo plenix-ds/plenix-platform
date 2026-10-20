@@ -3,7 +3,7 @@
    2026-10-14: "i want to see all the options! … based on the various standards"). A study, not a Platform part.
    Compiled to samples.js with @babel/standalone (scratchpad build-study.js). */
 const { Toolbar, Button, SplitButton, SearchField, Menu, MenuItem, MenuDivider, MenuRadioGroup, MenuGroup, Badge, Icon, VisuallyHidden, Dialog, RadioGroup, ContentGrid, MediaCard,
-  Text, Stack, Inline, Columns, DataTable, BulkActions, Divider, AppShell, AppHeader, NavPane, NavList, PageContent, StatusBar,
+  Text, Stack, Inline, Columns, DataGrid, BulkActions, Divider, AppShell, AppHeader, NavPane, NavList, PageContent, StatusBar,
   SessionProvider, RecordPage, Tooltip, Popover, SidePanel, Checkbox, Select, Input, ButtonGroup, Field,
   Breadcrumbs, Table, Persona, Details, Textarea } = Plenix;
 const { useState } = React;
@@ -32,7 +32,7 @@ const noop = () => {};
 const PART_A = 'study-part--actions', PART_F = 'study-part--find';
 
 function AssetTable({ sel, setSel, data = ASSETS, columns = COLUMNS, ...rest }) {
-  return <DataTable viewMenu={false} label="Assets" data={data} columns={columns} selectable selected={sel} onSelectionChange={setSel} {...rest} />;
+  return <DataGrid viewMenu={false} label="Assets" data={data} columns={columns} selectable selected={sel} onSelectionChange={setSel} {...rest} />;
 }
 
 /* ───────────── shared parts ───────────── */
@@ -615,7 +615,7 @@ const EARLIER = [
   { id: '5b', name: 'Filter chips', step: 'filters' },
   { id: '7b', name: 'Three bars, narrow', step: 'narrow' }, { id: '7c', name: 'Buttons above the bar, narrow', step: 'narrow' },
   { id: '7d', name: 'Filter chips, narrow', step: 'narrow' },
-  { id: '8a', name: 'Carbon data table toolbar (IBM)', step: 'enterprise' },
+  { id: '8a', name: 'Carbon data grid toolbar (IBM)', step: 'enterprise' },
   { id: '8b', name: 'OneDrive / SharePoint (Microsoft)', step: 'enterprise' },
   { id: '8d', name: 'Dynamics 365 (Microsoft)', step: 'enterprise' },
   { id: '8g', name: 'Lightning list view (Salesforce)', step: 'enterprise' },
@@ -953,7 +953,7 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
         {view.layout === 'gallery'
           ? <div className={'study-gallery-room' + (fixed ? ' study-gallery-room--fill' : '')}><ContentGrid size={view.size === 's' ? 'xs' : view.size === 'l' ? 'md' : 'sm'} label={c.title}>
               {data.map((a) => <MediaCard key={a.id} icon={typeIcon(a.type)} title={a.name} meta={a.size} />)}</ContentGrid></div>
-          : <DataTable viewMenu={false} key={JSON.stringify([gb, hidden, view.height])} label={c.title} data={data} columns={shownCols}
+          : <DataGrid viewMenu={false} key={JSON.stringify([gb, hidden, view.height])} label={c.title} data={data} columns={shownCols}
               selectable={c.selectable} selected={c.selectable ? sel : undefined} onSelectionChange={c.selectable ? setSel : undefined} height={fixed ? '100%' : height}
               rowHeight={view.height} options={gb ? { groupBy: gb } : {}} rowMenu={rowMenu} empty={'No ' + c.nouns + ' match these filters'} onReady={(t) => { table.current = t; }} />}
       </div>
@@ -1442,9 +1442,9 @@ const DECISIONS = [
 const STILL_OPEN = [
   'The pill border for category-colored pills: the category colors have no darker shade for the two-shades-darker border (Controls, side by side).',
 ];
-// for the Platform later (owner, 2026-10-14): the DataTable's viewMenu default goes off, or the view button is removed
+// for the Platform later (owner, 2026-10-14): the DataGrid's viewMenu default goes off, or the view button is removed
 const PLATFORM_LATER = [
-  'DataTable: the viewMenu default goes off (or the header view button is removed); row height lives in the page\'s View menu only.',
+  'DataGrid: the viewMenu default goes off (or the header view button is removed); row height lives in the page\'s View menu only.',
   'SearchField: the fixed bar width (240px) and the collapse-to-icon behavior at narrow widths.',
   'BulkActions / SelectionSummary: the count becomes "N selected" at the end of the bar (the number in Reddit Mono, no noun); the actions come first, then Select all and Clear.',
 ];

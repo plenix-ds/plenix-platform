@@ -2,7 +2,7 @@
    Summary: When things happened and how long they lasted, on one time axis (07 Data Display › Specialized displays ›
      Timeline visualization): events as points at their date, periods as bars from their start to their end, on one
      track or on several lanes (one per asset, team or category), each with its short name, under a time axis on
-     calendar steps and an optional today line. Drawn in ChartFrame with a tooltip and the data table.
+     calendar steps and an optional today line. Drawn in ChartFrame with a tooltip and the data grid.
    Usage:
      <TimelineChart title="Campaign assets" description="The video ran past its review; the banners shipped early."
        lanes={[{ id: 'video', label: 'Video' }, { id: 'banners', label: 'Banners' }]}
@@ -26,7 +26,7 @@
    Behavior:
      Lanes share the time axis; their names are the start axis. Items keep the data's order inside a lane; names that
        would overlap are better kept short (a noun phrase) or left to the tooltip (labels={false}).
-     Hover an item: the tooltip gives its name and full dates. The data table lists every item, its lane and dates.
+     Hover an item: the tooltip gives its name and full dates. The data grid lists every item, its lane and dates.
    Notes:
      Bars and points are the frame's marks and points in their lane's data-viz color; names are UI text with a halo
        (timeline-chart tokens); the today line is a ReferenceLine. For tasks with dependencies use a Gantt chart; for a

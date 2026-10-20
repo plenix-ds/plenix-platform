@@ -6,7 +6,7 @@
      2. undefined custom property: a style attribute that sets a custom property other than a Platform one (--plx-…;
         the design system page's own --ds-… names on that page);
      3. font written inline: a font family that is not a Platform token reference (a font is never computed on the spot);
-     4. DataTable density: an inline height, min-height, max-height, line-height or padding on a DataTable row or cell that does not equal a token
+     4. DataGrid density: an inline height, min-height, max-height, line-height or padding on a DataGrid row or cell that does not equal a token
         (token-sized native geometry is allowed; arbitrary density overrides remain errors; owner, 2026-10-16);
      User content (an element inside .plx-user-content: the RichTextEditor's area and RichText showing saved HTML) may carry
      the person's own formatting, as Tiptap stores it: color, background-color, font-family, font-size and text-align
@@ -34,12 +34,12 @@
   var total = 0, contexts = new WeakMap();
   // Each audit batch reads the computed token context once per grid, after the engine has drawn.
   function context(el) {
-    var at = el.closest && el.closest('.plx-data-table') || document.documentElement, cached = contexts.get(at);
+    var at = el.closest && el.closest('.plx-data-grid') || document.documentElement, cached = contexts.get(at);
     if (cached) return cached;
     var cs = getComputedStyle(at), root = getComputedStyle(document.documentElement), step = parseFloat(cs.getPropertyValue('--plx-ref-space-4px')) || 4, lengths = new Set([0]);
     if (/rem$/.test(cs.getPropertyValue('--plx-ref-space-4px').trim())) step *= parseFloat(root.fontSize) || 16;
     for (var i = 0; i < cs.length; i++) {
-      var name = cs[i]; if (!/^--plx-(?:ref-(?:size|space)-|(?:sys|comp)-data-table-.*(?:height|padding|size|width))/.test(name)) continue;
+      var name = cs[i]; if (!/^--plx-(?:ref-(?:size|space)-|(?:sys|comp)-data-grid-.*(?:height|padding|size|width))/.test(name)) continue;
       var value = cs.getPropertyValue(name).trim(), match = /^(-?\d*\.?\d+)(px|rem)$/.exec(value);
       if (!match) continue;
       var px = +match[1] * (match[2] === 'rem' ? parseFloat(root.fontSize) || 16 : 1);
@@ -83,7 +83,7 @@
   var DENSITY = /^(height|min-height|max-height|line-height|padding(-(top|right|bottom|left|block|inline)(-(start|end))?)?)$/;
   function inlineFinding(el) {
     if (el.isConnected === false) return null;   // an element already gone from the page
-    var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-table .plx-data-table__grid-row, .plx-data-table .plx-data-table__grid-cell')), user = userContent(el);
+    var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-grid .plx-data-grid__grid-row, .plx-data-grid .plx-data-grid__grid-cell')), user = userContent(el);
     for (var i = 0; i < st.length; i++) {
       var p = st[i], v = st.getPropertyValue(p);
       if (user && USER_FORMAT.test(p)) continue;

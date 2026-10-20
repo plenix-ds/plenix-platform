@@ -18,7 +18,7 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
-import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
+import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
@@ -55,7 +55,7 @@ export function ImportWizard({ open, title, onClose, fields = [], onRead, onImpo
           { id: 'mapping', label: t.mapping, validate, content: <Stack>{fields.map((f) => <Field key={f.id} label={f.label} required={f.required}>
             <Select value={mapping[f.id] || ''} options={[{ value: '', label: t.choose }].concat(data.columns.map((c) => ({ value: c.id, label: c.label })))}
               onChange={(e) => setMapping({ ...mapping, [f.id]: e.target.value })} /></Field>)}</Stack> },
-          { id: 'review', label: t.review, content: <DataTable label={t.review} index="_plxRow" data={mapped}
+          { id: 'review', label: t.review, content: <DataGrid label={t.review} index="_plxRow" data={mapped}
             columns={fields.map((f) => ({ field: f.id, title: f.label, kind: 'wrap' }))} headerMenu={false} /> }
         ]} />}
     </Stack>

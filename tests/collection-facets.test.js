@@ -49,7 +49,7 @@ module.exports = async function facets(page) {
       const listeners = new Map(); let data = rows;
       const table = { getData: () => rows.concat(rows), plxData: () => data, on: (event, callback) => listeners.set(event, callback), off: event => listeners.delete(event) };
       await change(() => v.tableProps.onReady(table));
-      check(count('color', 'red') === 2 && count('color', 'blue') === 2, 'ready DataTable supplies canonical rows rather than multi-group display duplicates');
+      check(count('color', 'red') === 2 && count('color', 'blue') === 2, 'ready DataGrid supplies canonical rows rather than multi-group display duplicates');
       data = rows.slice(0, 1); await change(() => listeners.get('dataChanged')());
       check(count('color', 'red') === 1 && count('color', 'blue') === 0, 'live dataChanged refreshes facet counts');
       data = rows; await change(() => listeners.get('dataLoaded')());

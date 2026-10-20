@@ -3,7 +3,7 @@
 //   page-scroll   the page itself scrolls sideways (the document is wider than the window)
 //   scroller      an area inside the page scrolls sideways (overflow-x auto or scroll, and wider content)
 //   cut-off       visible text or a control reaches past the window's edge where nothing scrolls to it (lost content)
-// Content that needs two dimensions is exempt, as WCAG allows: data tables (the DataTable and Table, Tabulator), the
+// Content that needs two dimensions is exempt, as WCAG allows: data grids (the DataGrid and Table, Tabulator), the
 // calendar's time grid, maps and diagrams (svg, canvas), images and the image editor's canvas, preformatted code (the
 // CodeBlock), and the design system's specimen stages. Each exempt sideways scroller is listed under "exempt" so it stays visible in the report.
 // Known findings are kept in tests/baselines/reflow.json (page -> finding -> number of elements); the test fails only on a
@@ -27,9 +27,9 @@ const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts'
 const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
 changed.noPartialUpdate();
 if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('REFLOW_OK 0 known findings on 0 pages at 320px (0 exempt two-dimensional scrollers)');
-// the two-dimensional content WCAG exempts (Understanding 1.4.10: data tables, maps, diagrams, images, editors' canvases),
+// the two-dimensional content WCAG exempts (Understanding 1.4.10: data grids, maps, diagrams, images, editors' canvases),
 // and preformatted code (the CodeBlock's pre: code keeps its lines, Understanding 1.4.10 "Content exceptions")
-const EXEMPT = '.plx-data-table, .plx-data-table__grid, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
+const EXEMPT = '.plx-data-grid, .plx-data-grid__grid, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
 
 // runs in the page: the findings at the current width
 function measure(EXEMPT) {

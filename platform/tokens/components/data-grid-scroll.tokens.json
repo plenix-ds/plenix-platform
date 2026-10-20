@@ -1,0 +1,25 @@
+{
+  "$description": "DataGrid: its floating scrollbars (owner, 2026-10-15: the table body's scrollbars float over the rows and take no room).",
+  "plx-comp": {
+    "data-grid-scroll-size": {
+      "$value": "{plx-ref.size-8px}",
+      "$type": "dimension",
+      "$description": "The thickness of a floating track and its thumb."
+    },
+    "data-grid-scroll-thumb-color": {
+      "$value": "{plx-sys.scrollbar-thumb}",
+      "$type": "color",
+      "$description": "The thumb: the color of every Plenix scrollbar."
+    },
+    "data-grid-scroll-thumb-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension",
+      "$description": "The thumb's ends, fully round as the browsers' thin thumbs."
+    },
+    "data-grid-scroll-layer": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "The tracks sit over the rows (and their sticky columns)."
+    }
+  }
+}

@@ -18,7 +18,7 @@
    Behavior:
      A point note sits at the end of a leader line 24px above (or under) the ring; a range is shaded down the whole plot,
        behind the marks (draw it before them), its name at its top start.
-     Hidden from assistive technology with the plot: put the same note in the chart's description or the data table.
+     Hidden from assistive technology with the plot: put the same note in the chart's description or the data grid.
    Notes:
      One or two notes per chart; more becomes noise. No color is written: the ring, the leader, the shade and the note take
        the chart-parts tokens (existing roles: content colors and the sunken surface).

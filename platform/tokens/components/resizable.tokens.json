@@ -67,7 +67,7 @@
       "$description": "Resizable (both): the corner the pointer drags in both directions."
     },
     "resizable-divider-size": { "$value": "{plx-sys.space-layout-md}", "$type": "dimension", "$description": "Resizable divider: the width of the gap the edge fills; a container sets it on its own element (SplitView: its gap)." },
-    "resizable-divider-line-color": { "$value": "{plx-sys.data-table-border}", "$type": "color", "$description": "Resizable divider: the line down the middle of the gap (the panels' frame color)." },
+    "resizable-divider-line-color": { "$value": "{plx-sys.data-grid-border}", "$type": "color", "$description": "Resizable divider: the line down the middle of the gap (the panels' frame color)." },
     "resizable-divider-line-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Resizable divider: the line." },
     "resizable-divider-handle-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "Resizable divider: the pill centered on the line, at rest." },
     "resizable-divider-handle-hover-color": { "$value": "{plx-sys.border-strong}", "$type": "color", "$description": "Resizable divider: the pill while the divider is hovered." },

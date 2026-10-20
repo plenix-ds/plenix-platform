@@ -881,9 +881,9 @@ var _shared = require("./shared.jsx");
 /* Plenix suite · capture (suite/capture.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the files as RadioTiles, the chosen one as a PropertyList, the proposal as a CodeBlock with its parts as Tags. */
 
-// a name/value table as a static Table (batches 229, 234: every table runs on DataTable): rows [name, value, technical?]; the names
+// a name/value table as a static Table (batches 229, 234: every table runs on DataGrid): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
-// name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
+// name/value facts as the defined data grid, with a header row (owner, 2026-10-09: all name/value lists in the DataGrid's look)
 const facts = (label, rows) => {
   const list = rows.filter(Boolean);
   return /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
@@ -1425,8 +1425,8 @@ const PRI = {
   low: "Low"
 };
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataTable column
-// definitions for the DataTable; a grid row is the source row's cells with its key as id, its name and its facets)
+// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataGrid column
+// definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
 const FIND_SOURCES = exports.FIND_SOURCES = {
   projects: {
     label: "Projects",
@@ -1890,7 +1890,7 @@ function FindWorkspace({
       icon: "sparkle",
       onClick: () => onAskAI(query)
     }, "Ask AI") : null
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
     label: (app === "home" ? "Everything" : src.label) + " search results",
     columns: src.columns,
     data: found.map(r => ({
@@ -2520,7 +2520,7 @@ var _plenixPlatform = require("plenix-platform");
 var _classification = require("../suite/classification.jsx");
 var _shared = require("../suite/shared.jsx");
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · files (files/files.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
-   the files in a DataTable (batch 226) under the command bar (owner, 2026-10-14: search, Filter, Type, Sort, Columns, View),
+   the files in a DataGrid (batch 226) under the command bar (owner, 2026-10-14: search, Filter, Type, Sort, Columns, View),
    the open one in a SidePanel.
    Screens (Platforms Standard 4.3): the list (#/) and an open file (#/file/<n>), a history entry each: Back closes the
    file; closing the panel goes to the list. */
@@ -2620,7 +2620,7 @@ function FilesScreen({
     })), /*#__PURE__*/React.createElement(_plenixPlatform.ViewMenu, _extends({}, v.viewProps, {
       gallery: false
     })))
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, _extends({
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, _extends({
     label: "Files",
     data: ROWS,
     selected: sel === null ? [] : [sel],

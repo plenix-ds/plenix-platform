@@ -13,7 +13,7 @@ const URLS = ['platform/design-system/', 'platform/design-system/#/implementatio
       await page.goto(BASE + u, { waitUntil: 'networkidle0' }); await sleep(1500);
       const r = await page.evaluate(() => {
         const SEL = 'a[href], button, input, select, textarea, [role="tab"], [role="button"], [tabindex]:not([tabindex="-1"])';
-        const ext = '.plx-breadcrumbs__link, .plx-data-table__portal>a.plx-text--link';
+        const ext = '.plx-breadcrumbs__link, .plx-data-grid__portal>a.plx-text--link';
         const bad = [];
         for (const el of document.querySelectorAll(SEL)) {
           if (!el.offsetParent) continue;

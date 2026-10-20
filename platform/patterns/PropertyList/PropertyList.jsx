@@ -17,8 +17,8 @@
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
-     A list of name/value facts shown as reference (a component's details, a capability's facts) is the defined data table
-       with a header row (Table / DataTable), not a PropertyList (owner, 2026-10-09, replacing batch 296's rule); a
+     A list of name/value facts shown as reference (a component's details, a capability's facts) is the defined data grid
+       with a header row (Table / DataGrid), not a PropertyList (owner, 2026-10-09, replacing batch 296's rule); a
        PropertyList is for an item's own details in a panel (an inspector, a form's summary).
      Other props (aria-label) reach the <dl>.
 */

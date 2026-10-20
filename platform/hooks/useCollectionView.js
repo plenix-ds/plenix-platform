@@ -1,5 +1,5 @@
 /* Plenix · useCollectionView (platform/hooks/useCollectionView.js)
-   Summary: The state of a collection's command bar, and the DataTable props that apply it (owner, 2026-10-14: the panels
+   Summary: The state of a collection's command bar, and the DataGrid props that apply it (owner, 2026-10-14: the panels
      drive the table through its APIs): the search text, the filter, the quick filters, the sort and group levels, the
      columns and the view.
    Usage:
@@ -9,10 +9,10 @@
          <QuickFilter label="Category" icon="settings-categories" options={…} {...v.quickProps('category')} /></>}
        view={<><SortPanel {...v.sortProps} /><GroupPanel {...v.groupProps} /><ColumnsMenu {...v.columnsProps} />
          <ViewMenu {...v.viewProps} /></>} />
-     <DataTable label="Assets" data={rows} columns={columns} {...v.tableProps} />
+     <DataGrid label="Assets" data={rows} columns={columns} {...v.tableProps} />
    Props:
      fields: the collection's fields (utils/fields.js)
-     options.data: optional source rows for immediate facet counts; otherwise the ready DataTable supplies its data
+     options.data: optional source rows for immediate facet counts; otherwise the ready DataGrid supplies its data
      options.text(row): the text the search looks in (without it there is no search)
      options.quick: the quick filters, by field: "list" (the row's value is one of the chosen) | "date" (a date range), or { kind: "single", required: true }.
        Single choices use field.options (or quick descriptor.options); required choices default to the first option.
@@ -23,7 +23,7 @@
      options.today: the ISO date "today" is, for the date presets (default the current date)
    Returns:
      { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
-       setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataTable's
+       setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataGrid's
        table controller), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
        tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, onReady } }
    Notes:

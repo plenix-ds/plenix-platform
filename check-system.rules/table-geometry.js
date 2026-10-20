@@ -1,4 +1,4 @@
-// Plenix · check-system rule "table-geometry" (the DataTable geometry split, owner 2026-10-13): the table renderer measures and
+// Plenix · check-system rule "table-geometry" (the DataGrid geometry split, owner 2026-10-13): the table renderer measures and
 // writes a column's width (a JavaScript adjustment from measured layout, allowed by the inline-style rule); the row
 // height and the cell padding are the density's (tokens and classes), never measured and never written. No Platform or
 // application source asks the table renderer for a forced redraw (redraw(true)): it measures every row again, which nothing needs
@@ -6,7 +6,7 @@
 // cells re-measure only their columns).
 //   table.redraw()                 ok
 //   table.redraw(true)             finding
-// The style audit and the pages test check at run time that no DataTable row or cell carries an inline height or padding.
+// The style audit and the pages test check at run time that no DataGrid row or cell carries an inline height or padding.
 // The rule is a module check-system.js runs (every file of check-system.rules/):
 //   require('./check-system.rules/table-geometry.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)
 // Alone: node check-system.rules/table-geometry.js     -> TABLE_GEOMETRY_OK, or the findings and exit 1
@@ -32,7 +32,7 @@ function check({ files, add }) {
     if (!/\.(jsx|js)$/.test(file) || SKIP_FILE.test(file)) continue;
     const text = fs.readFileSync(file, 'utf8');
     if (text.indexOf('redraw(') < 0) continue;
-    scan(text).forEach((x) => add(NAME, file, x.line, 'a forced redraw measures every row again: ' + x.text + ' (use redraw(), or the DataTable\'s own re-measure of column widths)'));
+    scan(text).forEach((x) => add(NAME, file, x.line, 'a forced redraw measures every row again: ' + x.text + ' (use redraw(), or the DataGrid\'s own re-measure of column widths)'));
   }
 }
 

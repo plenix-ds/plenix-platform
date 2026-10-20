@@ -312,72 +312,72 @@
   --plx-comp-field-info-text-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-field-info-text-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-field-inline-label-sm-grid-template-columns: var(--plx-sys-label-width-sm) minmax(0,1fr);
-  --plx-comp-data-table-radius: var(--plx-sys-shape-md);
+  --plx-comp-data-grid-radius: var(--plx-sys-shape-md);
   --plx-comp-table-radius: var(--plx-sys-shape-md);
-  --plx-comp-data-table-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-data-grid-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-table-border-width: var(--plx-sys-border-width-thin);
-  --plx-comp-data-table-font-family: var(--plx-sys-typeface-sans);
+  --plx-comp-data-grid-font-family: var(--plx-sys-typeface-sans);
   --plx-comp-table-font-family: var(--plx-sys-typeface-sans);
-  --plx-comp-data-table-data-font-family: var(--plx-sys-font-data);
+  --plx-comp-data-grid-data-font-family: var(--plx-sys-font-data);
   --plx-comp-table-data-font-family: var(--plx-sys-font-data);
-  --plx-comp-data-table-font-size: var(--plx-sys-data-table-font-size);
+  --plx-comp-data-grid-font-size: var(--plx-sys-data-grid-font-size);
   --plx-comp-table-font-size: var(--plx-sys-table-font-size);
-  --plx-comp-data-table-header-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-data-grid-header-font-size: var(--plx-ref-font-size-12);
   --plx-comp-table-header-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-data-table-header-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-data-grid-header-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-table-header-font-weight: var(--plx-sys-font-weight-semibold);
-  --plx-comp-data-table-data-font-size: var(--plx-sys-data-table-font-size);
+  --plx-comp-data-grid-data-font-size: var(--plx-sys-data-grid-font-size);
   --plx-comp-table-data-font-size: var(--plx-sys-table-font-size);
-  --plx-comp-data-table-name-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-data-grid-name-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-table-name-font-weight: var(--plx-sys-font-weight-medium);
-  --plx-comp-data-table-wrap-line-height: var(--plx-ref-line-height-snug);
+  --plx-comp-data-grid-wrap-line-height: var(--plx-ref-line-height-snug);
   --plx-comp-table-wrap-line-height: var(--plx-ref-line-height-snug);
-  --plx-comp-data-table-cell-padding-inline: var(--plx-ref-space-8px);
+  --plx-comp-data-grid-cell-padding-inline: var(--plx-ref-space-8px);
   --plx-comp-table-cell-padding-inline: var(--plx-ref-space-8px);
-  --plx-comp-data-table-header-line-inset: 0;
+  --plx-comp-data-grid-header-line-inset: 0;
   --plx-comp-table-header-line-inset: 0;
-  --plx-comp-data-table-column-line-inset: 0;
+  --plx-comp-data-grid-column-line-inset: 0;
   --plx-comp-table-column-line-inset: 0;
-  --plx-comp-data-table-line-width: var(--plx-sys-border-width-thin);
+  --plx-comp-data-grid-line-width: var(--plx-sys-border-width-thin);
   --plx-comp-table-line-width: var(--plx-sys-border-width-thin);
-  --plx-comp-data-table-lead-column-width: var(--plx-ref-size-36px);
-  --plx-comp-data-table-mark-size: var(--plx-ref-size-16px);
+  --plx-comp-data-grid-lead-column-width: var(--plx-ref-size-36px);
+  --plx-comp-data-grid-mark-size: var(--plx-ref-size-16px);
   --plx-comp-table-mark-size: var(--plx-ref-size-16px);
-  --plx-comp-data-table-header-icon-size: var(--plx-ref-glyph-size-14px);
-  --plx-comp-data-table-sorter-inset: var(--plx-ref-space-6px);
-  --plx-comp-data-table-popup-button-inset: var(--plx-ref-space-20px);
-  --plx-comp-data-table-popup-button-radius: var(--plx-sys-shape-xs);
-  --plx-comp-data-table-title-reserve: var(--plx-ref-size-36px);
-  --plx-comp-data-table-resize-mark-width: var(--plx-sys-border-width-medium);
-  --plx-comp-data-table-duration: var(--plx-sys-motion-duration-quick);
-  --plx-comp-data-table-editing-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-data-table-tree-indent: var(--plx-ref-size-18px);
-  --plx-comp-data-table-tree-control-size: var(--plx-ref-glyph-size-14px);
-  --plx-comp-data-table-tree-control-radius: var(--plx-sys-shape-xs);
-  --plx-comp-data-table-tree-control-gap: var(--plx-ref-space-6px);
-  --plx-comp-data-table-group-font-weight: var(--plx-sys-font-weight-semibold);
-  --plx-comp-data-table-group-count-gap: var(--plx-ref-space-6px);
-  --plx-comp-data-table-menu-radius: var(--plx-sys-shape-md);
-  --plx-comp-data-table-menu-padding: var(--plx-ref-space-4px);
-  --plx-comp-data-table-menu-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-data-table-menu-item-radius: var(--plx-sys-shape-xs);
-  --plx-comp-data-table-menu-item-padding-block: var(--plx-ref-space-6px);
-  --plx-comp-data-table-menu-item-padding-inline-start: var(--plx-ref-space-8px);
-  --plx-comp-data-table-menu-item-padding-inline-end: var(--plx-ref-space-12px);
-  --plx-comp-data-table-menu-item-gap: var(--plx-ref-space-10px);
-  --plx-comp-data-table-menu-icon-size: var(--plx-ref-size-16px);
-  --plx-comp-data-table-menu-separator-margin: var(--plx-ref-space-4px);
-  --plx-comp-data-table-menu-disabled-opacity: var(--plx-ref-opacity-45);
-  --plx-comp-data-table-placeholder-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-data-grid-header-icon-size: var(--plx-ref-glyph-size-14px);
+  --plx-comp-data-grid-sorter-inset: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-popup-button-inset: var(--plx-ref-space-20px);
+  --plx-comp-data-grid-popup-button-radius: var(--plx-sys-shape-xs);
+  --plx-comp-data-grid-title-reserve: var(--plx-ref-size-36px);
+  --plx-comp-data-grid-resize-mark-width: var(--plx-sys-border-width-medium);
+  --plx-comp-data-grid-duration: var(--plx-sys-motion-duration-quick);
+  --plx-comp-data-grid-editing-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-data-grid-tree-indent: var(--plx-ref-size-18px);
+  --plx-comp-data-grid-tree-control-size: var(--plx-ref-glyph-size-14px);
+  --plx-comp-data-grid-tree-control-radius: var(--plx-sys-shape-xs);
+  --plx-comp-data-grid-tree-control-gap: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-group-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-data-grid-group-count-gap: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-menu-radius: var(--plx-sys-shape-md);
+  --plx-comp-data-grid-menu-padding: var(--plx-ref-space-4px);
+  --plx-comp-data-grid-menu-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-data-grid-menu-item-radius: var(--plx-sys-shape-xs);
+  --plx-comp-data-grid-menu-item-padding-block: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-menu-item-padding-inline-start: var(--plx-ref-space-8px);
+  --plx-comp-data-grid-menu-item-padding-inline-end: var(--plx-ref-space-12px);
+  --plx-comp-data-grid-menu-item-gap: var(--plx-ref-space-10px);
+  --plx-comp-data-grid-menu-icon-size: var(--plx-ref-size-16px);
+  --plx-comp-data-grid-menu-separator-margin: var(--plx-ref-space-4px);
+  --plx-comp-data-grid-menu-disabled-opacity: var(--plx-ref-opacity-45);
+  --plx-comp-data-grid-placeholder-font-size: var(--plx-ref-font-size-14);
   --plx-comp-table-placeholder-font-size: var(--plx-ref-font-size-14);
-  --plx-comp-data-table-placeholder-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-data-grid-placeholder-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-table-placeholder-font-weight: var(--plx-sys-font-weight-medium);
-  --plx-comp-data-table-footer-font-weight: var(--plx-sys-font-weight-medium);
-  --plx-comp-data-table-filter-gap: var(--plx-ref-space-6px);
-  --plx-comp-data-table-filter-padding: var(--plx-ref-space-6px);
-  --plx-comp-data-table-filter-min-width: var(--plx-ref-size-220px);
-  --plx-comp-data-table-filter-label-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-data-table-filter-label-letter-spacing: var(--plx-sys-letter-spacing-caps);
+  --plx-comp-data-grid-footer-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-data-grid-filter-gap: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-filter-padding: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-filter-min-width: var(--plx-ref-size-220px);
+  --plx-comp-data-grid-filter-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-data-grid-filter-label-letter-spacing: var(--plx-sys-letter-spacing-caps);
   --plx-comp-action-bar-background: var(--plx-sys-surface-canvas);
   --plx-comp-action-bar-line: var(--plx-sys-border-divider);
   --plx-comp-action-bar-line-width: var(--plx-sys-border-width-thin);
@@ -1240,67 +1240,67 @@
   --plx-comp-combobox-group-padding-block-end: var(--plx-sys-space-inset-xs);
   --plx-comp-combobox-group-padding-block-start: var(--plx-sys-space-inset-sm);
   --plx-comp-combobox-group-padding-inline: var(--plx-sys-space-inset-sm);
-  --plx-comp-data-table-background: var(--plx-sys-data-table-surface);
-  --plx-comp-data-table-border-color: var(--plx-sys-data-table-border);
-  --plx-comp-data-table-empty-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-text: var(--plx-sys-data-table-text);
-  --plx-comp-data-table-focus-outline-color: var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-header-background: var(--plx-sys-data-table-header-background);
-  --plx-comp-data-table-border-bottom-color: var(--plx-sys-data-table-header-line);
-  --plx-comp-data-table-header-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-header-column-line: var(--plx-sys-data-table-header-line);
-  --plx-comp-data-table-height: var(--plx-sys-data-table-row-height);
-  --plx-comp-data-table-hover-background: var(--plx-sys-data-table-line);
-  --plx-comp-data-table-sort-arrow-color: var(--plx-sys-data-table-text-subtle);
-  --plx-comp-data-table-sort-arrow-ascending-color: var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-sort-arrow-descending-color: var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-header-popup-button-text: var(--plx-sys-data-table-text-subtle);
-  --plx-comp-data-table-filtered-text: var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-hover-text: var(--plx-sys-data-table-text);
-  --plx-comp-data-table-hover-background-image: linear-gradient(var(--plx-sys-data-table-accent),var(--plx-sys-data-table-accent));
-  --plx-comp-data-table-row-line: var(--plx-sys-data-table-line);
-  --plx-comp-data-table-min-height: var(--plx-sys-data-table-row-height);
-  --plx-comp-data-table-row-hover-background: var(--plx-sys-data-table-row-hover);
-  --plx-comp-data-table-row-selected-background: var(--plx-sys-data-table-row-selected);
-  --plx-comp-data-table-row-selected-hover-background: var(--plx-sys-data-table-row-selected-hover);
-  --plx-comp-data-table-line-height: var(--plx-sys-data-table-row-height);
-  --plx-comp-data-table-column-line: var(--plx-sys-data-table-line);
-  --plx-comp-data-table-outline-color: var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-invalid-outline-color: var(--plx-sys-data-table-danger);
-  --plx-comp-data-table-checkbox-accent-color: var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-cell-icon-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-cell-icon-hover-background: var(--plx-sys-data-table-line);
-  --plx-comp-data-table-cell-wrap-padding-bottom: calc((var(--plx-sys-data-table-row-height) - 1lh) / 2);
-  --plx-comp-data-table-cell-wrap-padding-top: calc((var(--plx-sys-data-table-row-height) - 1lh) / 2);
-  --plx-comp-data-table-row-label-background: var(--plx-sys-data-table-header-background);
-  --plx-comp-data-table-row-label-border-right-color: var(--plx-sys-data-table-header-line);
-  --plx-comp-data-table-row-label-name-text: var(--plx-sys-data-table-row-selected-text);
-  --plx-comp-data-table-tree-control-mark: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-tree-branch-color: var(--plx-sys-data-table-header-line);
-  --plx-comp-data-table-group-count-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-group-count-font-weight: var(--plx-sys-font-weight-regular);
-  --plx-comp-data-table-border-left-color: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-border-top-color: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-footer-line: var(--plx-sys-data-table-line);
-  --plx-comp-data-table-moving-row-border-color: var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-shadow: var(--plx-sys-data-table-menu-shadow);
-  --plx-comp-data-table-menu-icon-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-menu-item-danger-text: var(--plx-sys-data-table-danger);
-  --plx-comp-data-table-filter-label-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-w-fill-flex-basis: var(--plx-ref-size-80px);
-  --plx-comp-data-table-w-fill-width: var(--plx-ref-size-80px);
-  --plx-comp-data-table-w-fill-min-width: var(--plx-ref-size-80px);
-  --plx-comp-data-table-resize-width: var(--plx-ref-size-8px);
-  --plx-comp-data-table-resize-z-index: var(--plx-sys-layer-raised);
-  --plx-comp-data-table-resize-hover-background-image: linear-gradient(var(--plx-sys-data-table-accent),var(--plx-sys-data-table-accent));
-  --plx-comp-data-table-drop-shadow: inset 0 var(--plx-sys-border-width-medium) 0 0 var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-column-drop-shadow: inset var(--plx-sys-border-width-medium) 0 0 0 var(--plx-sys-data-table-accent);
-  --plx-comp-data-table-list-intrinsic-width: var(--plx-ref-size-720px);
-  --plx-comp-data-table-list-padding-block: var(--plx-sys-space-inset-sm);
-  --plx-comp-data-table-list-row-gap: var(--plx-sys-space-stack-xs);
-  --plx-comp-data-table-list-line-height: var(--plx-ref-line-height-normal);
-  --plx-comp-data-table-list-detail-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-resize-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-data-grid-background: var(--plx-sys-data-grid-surface);
+  --plx-comp-data-grid-border-color: var(--plx-sys-data-grid-border);
+  --plx-comp-data-grid-empty-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-text: var(--plx-sys-data-grid-text);
+  --plx-comp-data-grid-focus-outline-color: var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-header-background: var(--plx-sys-data-grid-header-background);
+  --plx-comp-data-grid-border-bottom-color: var(--plx-sys-data-grid-header-line);
+  --plx-comp-data-grid-header-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-header-column-line: var(--plx-sys-data-grid-header-line);
+  --plx-comp-data-grid-height: var(--plx-sys-data-grid-row-height);
+  --plx-comp-data-grid-hover-background: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-sort-arrow-color: var(--plx-sys-data-grid-text-subtle);
+  --plx-comp-data-grid-sort-arrow-ascending-color: var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-sort-arrow-descending-color: var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-header-popup-button-text: var(--plx-sys-data-grid-text-subtle);
+  --plx-comp-data-grid-filtered-text: var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-hover-text: var(--plx-sys-data-grid-text);
+  --plx-comp-data-grid-hover-background-image: linear-gradient(var(--plx-sys-data-grid-accent),var(--plx-sys-data-grid-accent));
+  --plx-comp-data-grid-row-line: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-min-height: var(--plx-sys-data-grid-row-height);
+  --plx-comp-data-grid-row-hover-background: var(--plx-sys-data-grid-row-hover);
+  --plx-comp-data-grid-row-selected-background: var(--plx-sys-data-grid-row-selected);
+  --plx-comp-data-grid-row-selected-hover-background: var(--plx-sys-data-grid-row-selected-hover);
+  --plx-comp-data-grid-line-height: var(--plx-sys-data-grid-row-height);
+  --plx-comp-data-grid-column-line: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-outline-color: var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-invalid-outline-color: var(--plx-sys-data-grid-danger);
+  --plx-comp-data-grid-checkbox-accent-color: var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-cell-icon-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-cell-icon-hover-background: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-cell-wrap-padding-bottom: calc((var(--plx-sys-data-grid-row-height) - 1lh) / 2);
+  --plx-comp-data-grid-cell-wrap-padding-top: calc((var(--plx-sys-data-grid-row-height) - 1lh) / 2);
+  --plx-comp-data-grid-row-label-background: var(--plx-sys-data-grid-header-background);
+  --plx-comp-data-grid-row-label-border-right-color: var(--plx-sys-data-grid-header-line);
+  --plx-comp-data-grid-row-label-name-text: var(--plx-sys-data-grid-row-selected-text);
+  --plx-comp-data-grid-tree-control-mark: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-tree-branch-color: var(--plx-sys-data-grid-header-line);
+  --plx-comp-data-grid-group-count-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-group-count-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-data-grid-border-left-color: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-border-top-color: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-footer-line: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-moving-row-border-color: var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-shadow: var(--plx-sys-data-grid-menu-shadow);
+  --plx-comp-data-grid-menu-icon-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-menu-item-danger-text: var(--plx-sys-data-grid-danger);
+  --plx-comp-data-grid-filter-label-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-w-fill-flex-basis: var(--plx-ref-size-80px);
+  --plx-comp-data-grid-w-fill-width: var(--plx-ref-size-80px);
+  --plx-comp-data-grid-w-fill-min-width: var(--plx-ref-size-80px);
+  --plx-comp-data-grid-resize-width: var(--plx-ref-size-8px);
+  --plx-comp-data-grid-resize-z-index: var(--plx-sys-layer-raised);
+  --plx-comp-data-grid-resize-hover-background-image: linear-gradient(var(--plx-sys-data-grid-accent),var(--plx-sys-data-grid-accent));
+  --plx-comp-data-grid-drop-shadow: inset 0 var(--plx-sys-border-width-medium) 0 0 var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-column-drop-shadow: inset var(--plx-sys-border-width-medium) 0 0 0 var(--plx-sys-data-grid-accent);
+  --plx-comp-data-grid-list-intrinsic-width: var(--plx-ref-size-720px);
+  --plx-comp-data-grid-list-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-data-grid-list-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-data-grid-list-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-data-grid-list-detail-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-resize-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-date-badge-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-date-badge-weekday-text: var(--plx-sys-content-muted);
   --plx-comp-date-badge-weekday-font-family: var(--plx-sys-font-label);
@@ -1853,7 +1853,7 @@
   --plx-comp-activity-list-item-border-bottom-color: var(--plx-sys-border-divider);
   --plx-comp-activity-list-item-border-bottom-width: var(--plx-sys-border-width-thin);
   --plx-comp-activity-list-item-gap: var(--plx-sys-space-inline-sm);
-  --plx-comp-activity-list-item-min-height: var(--plx-sys-data-table-row-height);
+  --plx-comp-activity-list-item-min-height: var(--plx-sys-data-grid-row-height);
   --plx-comp-activity-list-item-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-activity-list-item-interactive-hover-background: var(--plx-sys-state-hover);
   --plx-comp-activity-list-item-interactive-opener-focus-outline-color: var(--plx-sys-focus-ring-color);
@@ -2393,7 +2393,7 @@
   --plx-comp-field-info-before-inset-block-start: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-comp-field-info-before-inset-inline-end: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-comp-field-info-before-inset-inline-start: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
-  --plx-comp-data-table-lead-column-width: var(--plx-sys-control-target-min);
+  --plx-comp-data-grid-lead-column-width: var(--plx-sys-control-target-min);
   --plx-comp-tag-list-gap: calc(var(--plx-sys-control-target-min) - var(--plx-comp-tag-remove-width));
   --plx-comp-tag-list-row-gap: var(--plx-ref-space-24px);
   --plx-comp-tag-list-padding-block: calc((var(--plx-sys-control-target-min) - var(--plx-sys-label-height-20px)) / 2);
@@ -3214,6 +3214,79 @@
   --plx-comp-country-select-max-width: var(--plx-sys-field-width-lg);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-grid-footer-border-color: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-footer-text: var(--plx-sys-content-muted);
+  --plx-comp-data-grid-footer-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-data-grid-footer-gap: var(--plx-sys-space-cluster-md);
+  --plx-comp-data-grid-footer-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-data-grid-footer-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-data-grid-footer-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-data-grid-footer-label-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-data-grid-fit-max-height: 100dvh;
+  --plx-comp-data-grid-record-height: var(--plx-sys-data-grid-row-height);
+  --plx-comp-data-grid-row-height-medium: var(--plx-ref-size-56px);
+  --plx-comp-data-grid-row-height-tall: var(--plx-ref-size-88px);
+  --plx-comp-data-grid-row-height-extra-tall: var(--plx-ref-size-128px);
+  --plx-comp-data-grid-cell-padding-block: calc((var(--plx-sys-data-grid-row-height) - var(--plx-comp-data-grid-text-line-height)) / 2);
+  --plx-comp-data-grid-group-header-height: calc(var(--plx-sys-data-grid-row-height) + var(--plx-ref-size-16px));
+  --plx-comp-data-grid-group-eyebrow-line-height: var(--plx-ref-size-16px);
+  --plx-comp-data-grid-group-gap: var(--plx-ref-size-24px);
+  --plx-comp-data-grid-group-background: var(--plx-sys-surface-sunken);
+  --plx-comp-data-grid-grouped-column-background: var(--plx-sys-surface-sunken);
+  --plx-comp-data-grid-group-indent: var(--plx-ref-size-16px);
+  --plx-comp-data-grid-group-chevron-size: var(--plx-ref-size-16px);
+  --plx-comp-data-grid-group-chevron-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-group-gap-inline: var(--plx-ref-space-8px);
+  --plx-comp-data-grid-group-summary-gap: var(--plx-ref-space-4px);
+  --plx-comp-data-grid-group-summary-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-add-row-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-header-wrap-height: calc(var(--plx-sys-data-grid-row-height) + var(--plx-ref-size-16px));
+  --plx-comp-data-grid-header-title-line-height: var(--plx-ref-size-16px);
+  --plx-comp-data-grid-header-type-icon-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-menu-chevron-text: var(--plx-sys-content-muted);
+}
+:root,[data-plx-density="standard"]{
+  --plx-comp-data-grid-text-line-height: var(--plx-ref-size-20px);
+  --plx-comp-data-grid-header-type-icon-size: var(--plx-ref-glyph-size-14px);
+  --plx-comp-data-grid-header-type-icon-gap: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-view-column-width: var(--plx-ref-size-36px);
+}
+[data-plx-density="compact"],:root[data-plx-density-policy="compact"]:not([data-plx-density]){
+  --plx-comp-data-grid-text-line-height: var(--plx-ref-size-16px);
+  --plx-comp-data-grid-header-type-icon-size: 0;
+  --plx-comp-data-grid-header-type-icon-gap: 0;
+  --plx-comp-data-grid-view-column-width: var(--plx-ref-size-36px);
+}
+[data-plx-density="comfortable"],:root[data-plx-density-policy="comfortable"]:not([data-plx-density]){
+  --plx-comp-data-grid-text-line-height: var(--plx-ref-size-20px);
+  --plx-comp-data-grid-header-type-icon-size: var(--plx-ref-glyph-size-14px);
+  --plx-comp-data-grid-header-type-icon-gap: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-view-column-width: var(--plx-ref-size-36px);
+}
+:root[data-plx-interaction="touch"],:root[data-plx-interaction="touch"] [data-plx-density]{
+  --plx-comp-data-grid-header-type-icon-size: var(--plx-ref-glyph-size-14px);
+  --plx-comp-data-grid-header-type-icon-gap: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-view-column-width: var(--plx-ref-size-48px);
+}
+:root[data-plx-interaction="mobile"],:root[data-plx-interaction="mobile"] [data-plx-density]{
+  --plx-comp-data-grid-header-type-icon-size: var(--plx-ref-glyph-size-14px);
+  --plx-comp-data-grid-header-type-icon-gap: var(--plx-ref-space-6px);
+  --plx-comp-data-grid-view-column-width: var(--plx-ref-size-48px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-grid-cell-rich-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-data-grid-cell-deleted-text: var(--plx-sys-data-grid-text-muted);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-grid-row-menu-width: var(--plx-comp-data-grid-lead-column-width);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-grid-scroll-size: var(--plx-ref-size-8px);
+  --plx-comp-data-grid-scroll-thumb-color: var(--plx-sys-scrollbar-thumb);
+  --plx-comp-data-grid-scroll-thumb-radius: var(--plx-sys-shape-pill);
+  --plx-comp-data-grid-scroll-layer: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-pill-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-data-pill-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-data-pill-gap: var(--plx-sys-space-inline-xs);
@@ -3223,79 +3296,6 @@
   --plx-comp-data-pill-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-data-pill-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-data-pill-data-font-family: var(--plx-sys-font-data);
-}
-:root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-data-table-footer-border-color: var(--plx-sys-data-table-line);
-  --plx-comp-data-table-footer-text: var(--plx-sys-content-muted);
-  --plx-comp-data-table-footer-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-data-table-footer-gap: var(--plx-sys-space-cluster-md);
-  --plx-comp-data-table-footer-row-gap: var(--plx-sys-space-stack-xs);
-  --plx-comp-data-table-footer-padding-block: var(--plx-sys-space-inset-xs);
-  --plx-comp-data-table-footer-padding-inline: var(--plx-sys-space-inset-sm);
-  --plx-comp-data-table-footer-label-gap: var(--plx-sys-space-inline-sm);
-  --plx-comp-data-table-fit-max-height: 100dvh;
-  --plx-comp-data-table-record-height: var(--plx-sys-data-table-row-height);
-  --plx-comp-data-table-row-height-medium: var(--plx-ref-size-56px);
-  --plx-comp-data-table-row-height-tall: var(--plx-ref-size-88px);
-  --plx-comp-data-table-row-height-extra-tall: var(--plx-ref-size-128px);
-  --plx-comp-data-table-cell-padding-block: calc((var(--plx-sys-data-table-row-height) - var(--plx-comp-data-table-text-line-height)) / 2);
-  --plx-comp-data-table-group-header-height: calc(var(--plx-sys-data-table-row-height) + var(--plx-ref-size-16px));
-  --plx-comp-data-table-group-eyebrow-line-height: var(--plx-ref-size-16px);
-  --plx-comp-data-table-group-gap: var(--plx-ref-size-24px);
-  --plx-comp-data-table-group-background: var(--plx-sys-surface-sunken);
-  --plx-comp-data-table-grouped-column-background: var(--plx-sys-surface-sunken);
-  --plx-comp-data-table-group-indent: var(--plx-ref-size-16px);
-  --plx-comp-data-table-group-chevron-size: var(--plx-ref-size-16px);
-  --plx-comp-data-table-group-chevron-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-group-gap-inline: var(--plx-ref-space-8px);
-  --plx-comp-data-table-group-summary-gap: var(--plx-ref-space-4px);
-  --plx-comp-data-table-group-summary-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-add-row-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-header-wrap-height: calc(var(--plx-sys-data-table-row-height) + var(--plx-ref-size-16px));
-  --plx-comp-data-table-header-title-line-height: var(--plx-ref-size-16px);
-  --plx-comp-data-table-header-type-icon-text: var(--plx-sys-data-table-text-muted);
-  --plx-comp-data-table-menu-chevron-text: var(--plx-sys-content-muted);
-}
-:root,[data-plx-density="standard"]{
-  --plx-comp-data-table-text-line-height: var(--plx-ref-size-20px);
-  --plx-comp-data-table-header-type-icon-size: var(--plx-ref-glyph-size-14px);
-  --plx-comp-data-table-header-type-icon-gap: var(--plx-ref-space-6px);
-  --plx-comp-data-table-view-column-width: var(--plx-ref-size-36px);
-}
-[data-plx-density="compact"],:root[data-plx-density-policy="compact"]:not([data-plx-density]){
-  --plx-comp-data-table-text-line-height: var(--plx-ref-size-16px);
-  --plx-comp-data-table-header-type-icon-size: 0;
-  --plx-comp-data-table-header-type-icon-gap: 0;
-  --plx-comp-data-table-view-column-width: var(--plx-ref-size-36px);
-}
-[data-plx-density="comfortable"],:root[data-plx-density-policy="comfortable"]:not([data-plx-density]){
-  --plx-comp-data-table-text-line-height: var(--plx-ref-size-20px);
-  --plx-comp-data-table-header-type-icon-size: var(--plx-ref-glyph-size-14px);
-  --plx-comp-data-table-header-type-icon-gap: var(--plx-ref-space-6px);
-  --plx-comp-data-table-view-column-width: var(--plx-ref-size-36px);
-}
-:root[data-plx-interaction="touch"],:root[data-plx-interaction="touch"] [data-plx-density]{
-  --plx-comp-data-table-header-type-icon-size: var(--plx-ref-glyph-size-14px);
-  --plx-comp-data-table-header-type-icon-gap: var(--plx-ref-space-6px);
-  --plx-comp-data-table-view-column-width: var(--plx-ref-size-48px);
-}
-:root[data-plx-interaction="mobile"],:root[data-plx-interaction="mobile"] [data-plx-density]{
-  --plx-comp-data-table-header-type-icon-size: var(--plx-ref-glyph-size-14px);
-  --plx-comp-data-table-header-type-icon-gap: var(--plx-ref-space-6px);
-  --plx-comp-data-table-view-column-width: var(--plx-ref-size-48px);
-}
-:root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-data-table-cell-rich-gap: var(--plx-sys-space-inline-xs);
-  --plx-comp-data-table-cell-deleted-text: var(--plx-sys-data-table-text-muted);
-}
-:root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-data-table-row-menu-width: var(--plx-comp-data-table-lead-column-width);
-}
-:root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-data-table-scroll-size: var(--plx-ref-size-8px);
-  --plx-comp-data-table-scroll-thumb-color: var(--plx-sys-scrollbar-thumb);
-  --plx-comp-data-table-scroll-thumb-radius: var(--plx-sys-shape-pill);
-  --plx-comp-data-table-scroll-layer: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-date-picker-width: var(--plx-ref-size-160px);
@@ -4701,7 +4701,7 @@
   --plx-comp-resizable-edge-z-index: var(--plx-comp-panel-splitter-z-index);
   --plx-comp-resizable-corner-size: var(--plx-ref-size-16px);
   --plx-comp-resizable-divider-size: var(--plx-sys-space-layout-md);
-  --plx-comp-resizable-divider-line-color: var(--plx-sys-data-table-border);
+  --plx-comp-resizable-divider-line-color: var(--plx-sys-data-grid-border);
   --plx-comp-resizable-divider-line-width: var(--plx-sys-border-width-thin);
   --plx-comp-resizable-divider-handle-color: var(--plx-sys-border-default);
   --plx-comp-resizable-divider-handle-hover-color: var(--plx-sys-border-strong);
@@ -4712,7 +4712,7 @@
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-resource-list-gap: var(--plx-sys-space-stack-sm);
-  --plx-comp-resource-list-header-min-height: var(--plx-sys-data-table-row-height);
+  --plx-comp-resource-list-header-min-height: var(--plx-sys-data-grid-row-height);
   --plx-comp-resource-list-header-border-bottom-color: var(--plx-sys-border-divider);
   --plx-comp-resource-list-header-border-bottom-width: var(--plx-sys-border-width-thin);
   --plx-comp-resource-list-count-text: var(--plx-sys-content-muted);
@@ -4721,7 +4721,7 @@
   --plx-comp-resource-list-group-count-font-family: var(--plx-sys-font-data);
   --plx-comp-resource-list-group-count-margin-inline-start: var(--plx-sys-space-inline-xs);
   --plx-comp-resource-list-item-gap: var(--plx-sys-space-inline-md);
-  --plx-comp-resource-list-item-min-height: var(--plx-sys-data-table-row-height);
+  --plx-comp-resource-list-item-min-height: var(--plx-sys-data-grid-row-height);
   --plx-comp-resource-list-item-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-resource-list-item-border-bottom-color: var(--plx-sys-border-divider);
   --plx-comp-resource-list-item-border-bottom-width: var(--plx-sys-border-width-thin);
@@ -4862,7 +4862,7 @@
   --plx-comp-rich-text-editor-swatches-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-rich-text-editor-hex-width: var(--plx-ref-size-120px);
   --plx-comp-rich-text-editor-picker-width: var(--plx-sys-control-height-toolbar);
-  --plx-comp-rich-text-editor-selected-cell-background: var(--plx-comp-data-table-row-selected-background);
+  --plx-comp-rich-text-editor-selected-cell-background: var(--plx-comp-data-grid-row-selected-background);
   --plx-comp-rich-text-editor-selected-node-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-rich-text-editor-selected-node-outline-width: var(--plx-comp-link-focus-outline-width);
 }
@@ -5054,7 +5054,7 @@
   --plx-comp-sortable-list-item-radius: var(--plx-sys-radius-control-4px);
   --plx-comp-sortable-list-item-text: var(--plx-sys-content-default);
   --plx-comp-sortable-list-item-gap: var(--plx-sys-space-inline-sm);
-  --plx-comp-sortable-list-item-min-height: var(--plx-sys-data-table-row-height);
+  --plx-comp-sortable-list-item-min-height: var(--plx-sys-data-grid-row-height);
   --plx-comp-sortable-list-item-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-sortable-list-item-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-sortable-list-buttons-gap: var(--plx-sys-space-inline-xs);
@@ -5086,14 +5086,14 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-split-view-gap: var(--plx-sys-space-layout-md);
   --plx-comp-split-view-second-min-width: var(--plx-ref-size-320px);
-  --plx-comp-reading-pane-background: var(--plx-sys-data-table-surface);
-  --plx-comp-reading-pane-border-color: var(--plx-sys-data-table-border);
+  --plx-comp-reading-pane-background: var(--plx-sys-data-grid-surface);
+  --plx-comp-reading-pane-border-color: var(--plx-sys-data-grid-border);
   --plx-comp-reading-pane-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-reading-pane-radius: var(--plx-sys-shape-md);
   --plx-comp-reading-pane-actions-gap: var(--plx-ref-space-8px);
   --plx-comp-reading-pane-actions-padding-block: var(--plx-ref-space-12px);
   --plx-comp-reading-pane-actions-padding-inline: var(--plx-ref-space-16px);
-  --plx-comp-reading-pane-rule-color: var(--plx-sys-data-table-border);
+  --plx-comp-reading-pane-rule-color: var(--plx-sys-data-grid-border);
   --plx-comp-reading-pane-rule-inset: var(--plx-ref-space-16px);
   --plx-comp-reading-pane-body-padding: var(--plx-ref-space-24px);
 }

@@ -1,6 +1,6 @@
 /* Plenix · FileList (platform/patterns/FileList): many files at once. The list (FileRows in a FileRowList), the table (the
-   DataTable) or the sortable list (a bar above the rows: the count in the data font at the start, the Sort menu at the
-   end). The rows are FileRow's, the table the DataTable's, the menu Menu's. Anatomy and API: FileList.jsx. */
+   DataGrid) or the sortable list (a bar above the rows: the count in the data font at the start, the Sort menu at the
+   end). The rows are FileRow's, the table the DataGrid's, the menu Menu's. Anatomy and API: FileList.jsx. */
 .plx-file-list{container-type:inline-size;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-file-list-gap);}
 .plx-file-list--list,.plx-file-list--table{row-gap:var(--plx-comp-file-list-gap);}
 .plx-file-list--sortable{row-gap:var(--plx-comp-file-list-sortable-gap);}

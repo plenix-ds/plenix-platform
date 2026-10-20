@@ -123,7 +123,7 @@ const blocksOf = (r) => r.blocks || (r.src && /^(components|patterns)\//.test(r.
 // classes that look like variants but are not chosen by whoever uses the component (each has its reason; they are
 // documented under the component's Behavior or Names)
 const NOT_VARIANTS = {
-  'plx-data-table--fill': 'a sizing state the height prop sets (height="100%": the grid fills its container), not a look',
+  'plx-data-grid--fill': 'a sizing state the height prop sets (height="100%": the grid fills its container), not a look',
   'plx-button--joined': 'set by a group (ButtonGroup, InputGroup, CopyButton field); shown on its page',
   'plx-button--joined-start-square': 'set by a group',
   'plx-button--joined-start-seam': 'set by a group',
@@ -140,6 +140,11 @@ const NOT_VARIANTS = {
   'plx-nav-pane--screen': 'a responsive mode the shell sets (Narrow windows: the pane is a screen of its own; Platforms Standard 4.1)',
   'plx-side-panel--overlay': 'a responsive mode the shell sets (the inspector opens over the main region)',
   'plx-app-header__item--account': 'AppHeader.Account sets it on its own item (no fill around the picture)',
+  'plx-table--fill': 'the grid’s modes in Table’s generated base (table-base.css from data-grid.css); a static Table never sets them',
+  'plx-table--pages': 'the grid’s modes in Table’s generated base; a static Table never sets them',
+  'plx-table--load-more': 'the grid’s modes in Table’s generated base; a static Table never sets them',
+  'plx-table--list': 'a responsive mode the renderer sets under narrowAt when narrow is list (Table’s default is table)',
+  'plx-table--narrow': 'a responsive mode the renderer sets under narrowAt',
   'plx-side-panel--resized': 'a state the panel sets once someone drags its edge (the resizable card shows it)',
 };
 const ICON_NAMES = new Set(Object.keys(JSON.parse(read(path.join(PLATFORM, 'icons', 'map.json'))).map).map((n) => 'plx-icon--' + n));
@@ -154,7 +159,7 @@ recs.forEach((r) => {
   const shown = new Set();
   (r.examples || []).forEach((e) => { if (Array.isArray(e[1])) e[1].forEach((v) => { if (v[2]) [].concat(v[2]).forEach((c) => shown.add(c)); }); });
   const own = r.variantClasses ? new Set(r.variantClasses) : null;
-  // a modifier another record claims as its block (Table: plx-data-table--static) is shown on that record's page
+  // a modifier another record claims as its block (a block claimed by two records) is shown on that record's page
   const missing = [...mods].filter((m) => !shown.has(m) && !claimedMods.has(m) && !NOT_VARIANTS[m] && !ICON_NAMES.has(m) && (!own || own.has(m)));
   if (missing.length) add('variants', r.id + ': no card for ' + missing.join(', '));
 });

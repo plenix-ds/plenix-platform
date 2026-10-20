@@ -8,7 +8,7 @@
    Behavior:
      A named Checkbox at each intersection updates an immutable draft; locked subjects cannot change.
      Optional Save waits for persistence, preserves the draft on failure and guards unsaved navigation.
-     The selected subject has a PermissionSummary. The matrix is a Platform DataTable.
+     The selected subject has a PermissionSummary. The matrix is a Platform DataGrid.
    Notes:
      Permissions are UI data, never authorization. Validate grants and locked roles on the server.
 */
@@ -17,7 +17,7 @@ import { Stack } from '../../components/Stack/Stack.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
-import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
+import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { PermissionSummary } from '../PermissionSummary/PermissionSummary.jsx';
@@ -46,7 +46,7 @@ export function PermissionsEditor({ subjects = [], capabilities = [], value = {}
     try { await onSave(value); setSaved(value); } catch (e) { setError(t.failed); } finally { lock.current = false; setBusy(false); }
   };
   return <Stack className={cx('plx-permissions-editor', className)} aria-busy={busy}>
-    <DataTable label={t.label} data={capabilities} columns={columns} index="id" headerMenu={false} />
+    <DataGrid label={t.label} data={capabilities} columns={columns} index="id" headerMenu={false} />
     <Field label={t.subject}><Select value={subject?.id || ''} options={subjects.map((s) => ({ value: s.id, label: s.label }))} onChange={(e) => setSelected(e.target.value)} /></Field>
     {subject ? <PermissionSummary access={subject.label} icon={mode === 'people' ? 'person' : 'settings-permissions'}
       can={capabilities.filter((c) => (value[subject.id] || []).includes(c.id)).map((c) => c.label)}

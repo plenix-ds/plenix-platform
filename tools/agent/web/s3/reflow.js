@@ -3,7 +3,7 @@
 //   page-scroll   the page itself scrolls sideways (the document is wider than the window)
 //   scroller      an area inside the page scrolls sideways (overflow-x auto or scroll, and wider content)
 //   cut-off       visible text or a control reaches past the window's edge where nothing scrolls to it (lost content)
-// Content that needs two dimensions is exempt, as WCAG allows: data tables (the DataTable and Table, Tabulator), the
+// Content that needs two dimensions is exempt, as WCAG allows: data grids (the DataGrid and Table, Tabulator), the
 // calendar's time grid, maps and diagrams (svg, canvas), images and the image editor's canvas, preformatted code (the
 // CodeBlock), and the design system's specimen stages. Each exempt sideways scroller is listed under "exempt" so it stays visible in the report.
 // Known findings are kept in tests/baselines/reflow.json (page -> finding -> number of elements); the test fails only on a
@@ -19,9 +19,9 @@ const BASELINE = 'C:/Users/AdminMan/AppData/Local/Temp/claude/D--Documents-Proje
 const WIDTH = 320, HEIGHT = 640;
 const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html']);
-// the two-dimensional content WCAG exempts (Understanding 1.4.10: data tables, maps, diagrams, images, editors' canvases),
+// the two-dimensional content WCAG exempts (Understanding 1.4.10: data grids, maps, diagrams, images, editors' canvases),
 // and preformatted code (the CodeBlock's pre: code keeps its lines, Understanding 1.4.10 "Content exceptions")
-const EXEMPT = '.plx-data-table, .plx-table, .tabulator, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
+const EXEMPT = '.plx-data-grid, .plx-table, .tabulator, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
 
 // runs in the page: the findings at the current width
 function measure(EXEMPT) {

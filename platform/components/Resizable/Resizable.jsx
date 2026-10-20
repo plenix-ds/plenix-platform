@@ -39,7 +39,7 @@
    Notes:
      The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token (never a style
        attribute). The content fits itself: it wraps, or scrolls in a region of its own.
-     A table's column widths are the DataTable's own; a pane of the shell uses PanelSplitter through its pattern.
+     A table's column widths are the DataGrid's own; a pane of the shell uses PanelSplitter through its pattern.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';

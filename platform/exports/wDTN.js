@@ -1,1 +1,1 @@
-export { DataTableNext } from '../components/DataTableNext/DataTableNext.jsx';
+export { DataGridEngine } from '../components/DataGrid/DataGridEngine.jsx';

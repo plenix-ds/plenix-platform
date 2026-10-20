@@ -32,7 +32,7 @@
     "test:focus-order": "node tests/focus-order.test.js",
     "test:semantic-html": "node tests/semantic-html.test.js",
     "test:brand-rules": "node tests/brand-rules.test.js",
-    "test:data-table": "node tests/data-table.test.js",
+    "test:data-grid": "node tests/data-grid.test.js",
     "test:navigation": "node tests/navigation.test.js"
   },
   "devDependencies": {

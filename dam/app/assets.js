@@ -885,7 +885,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Every screen is a column of SettingsSection cards (owner, 2026-10-13: "all the settings pages to have the cards view"):
    static cards for what people use, collapsible cards for long or rarely used parts (one per asset type, group and
    permission area; the views, publishing, events and scripts not built yet); their open state is remembered per page.
-   Fields are Fields (a visible label) with their control at a standard width; tables are DataTables; technical values
+   Fields are Fields (a visible label) with their control at a standard width; tables are DataGrids; technical values
    (templates, paths, keys, numbers) are in the data font. */
 const NAV = [{
   heading: 'Content',
@@ -1075,7 +1075,7 @@ function useToggles(list) {
     toggle: () => setOn(on.map((v, j) => j === i ? !v : v))
   }));
 }
-// a name/value list as a table with a header (owner, 2026-10-09: every name/value list in the DataTable's look); values are technical
+// a name/value list as a table with a header (owner, 2026-10-09: every name/value list in the DataGrid's look); values are technical
 const facts = (label, list) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
   label: label,
   headerMenu: false,
@@ -1277,7 +1277,7 @@ function Properties({
     title: "Enabled for",
     collapsible: true,
     description: "Groups and roles that can use this module."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Enabled for",
     data: enabled,
     columns: [roleCol, switchCol('Enabled')]
@@ -1286,7 +1286,7 @@ function Properties({
     collapsible: true,
     defaultExpanded: false,
     description: "The actions of this module and the roles that may run them."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Actions",
     data: rowsOf(D.ACTIONS, ['name', 'roles']),
     columns: [{
@@ -1313,7 +1313,7 @@ function Properties({
     collapsible: true,
     defaultExpanded: false,
     description: "Groups and roles that can view all folders for this module."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "View all folders",
     data: viewAll,
     columns: [roleCol, switchCol('View all')]
@@ -1322,7 +1322,7 @@ function Properties({
     collapsible: true,
     defaultExpanded: false,
     description: "Groups and roles that can edit all folders for this module."
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Edit all folders",
     data: editAll,
     columns: [roleCol, switchCol('Edit all')]
@@ -1367,7 +1367,7 @@ function Fields({
     value: q,
     onChange: setQ,
     label: 'Search ' + D.FIELD_TOTAL + ' fields'
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Fields",
     data: rows,
     empty: "No fields match",
@@ -1526,7 +1526,7 @@ function Transcoding({
     })
   }, /*#__PURE__*/_react.default.createElement(Section, {
     title: "Preset configuration"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Conversion presets",
     data: rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media']),
     columns: [{
@@ -1590,7 +1590,7 @@ function Users({
     value: q,
     onChange: setQ,
     label: "Search users"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Users",
     empty: "No users match",
     data: rowsOf(D.USERS.filter(r => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login']),
@@ -1737,7 +1737,7 @@ function EmailTemplates({
     description: "The notification emails the catalog sends, and the template file behind each one."
   }, /*#__PURE__*/_react.default.createElement(Section, {
     title: "Templates"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Email templates",
     data: rowsOf(D.EMAIL_TEMPLATES, ['name', 'file']),
     columns: [{
@@ -1785,7 +1785,7 @@ function CatalogParameters({
     value: q,
     onChange: setQ,
     label: "Search catalog settings"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Catalog parameters",
     empty: "No settings match",
     data: rows.map(([label, id, value, kind]) => ({
@@ -1928,7 +1928,7 @@ function Database({
     filter: true,
     kind: c === 'Asset title' ? 'name' : c === 'Created on' ? 'data' : undefined
   }));
-  const grid = label => /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  const grid = label => /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: label,
     data: rows,
     columns: columns,
@@ -1937,7 +1937,7 @@ function Database({
   return /*#__PURE__*/_react.default.createElement(Screen, {
     id: "database",
     title: "Database",
-    description: "Browse, edit, import, or export any underlying data table.",
+    description: "Browse, edit, import, or export any underlying data grid.",
     actions: /*#__PURE__*/_react.default.createElement(B, {
       icon: "add",
       label: "New table",
@@ -2078,7 +2078,7 @@ function Customizations({
     tone: "warning",
     variant: "danger-secondary",
     act: act
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Customizations",
     selectable: true,
     selected: sel,
@@ -2119,7 +2119,7 @@ function Scheduler({
     })
   }, /*#__PURE__*/_react.default.createElement(Section, {
     title: "Scheduled tasks"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Scheduled tasks",
     data: rowsOf(D.SCHEDULED, ['name', 'path', 'status']),
     columns: [{
@@ -3369,7 +3369,7 @@ function FieldVisibilityDialog({
     value: q,
     onChange: e => setQ(e.target.value),
     onClear: () => setQ('')
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: title,
     data: rows,
     empty: EMPTY_TEXT,
@@ -3480,7 +3480,7 @@ function CatEditFieldsDialog({
     label: "Edit for all users",
     checked: forAll,
     onChange: e => setForAll(e.target.checked)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Edit fields",
     data: fields.map(f => ({
       id: f.name,
@@ -6683,7 +6683,7 @@ function HomePage() {
         danger: label === 'Delete',
         onSelect: act(msg, 'info')
       }, label)))
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, _extends({
       label: "Categories",
       data: D.CATEGORY_CARDS,
       selectable: true,
@@ -6729,7 +6729,7 @@ function HomePage() {
       title: c.name,
       meta: c.count + ' assets',
       onOpen: () => openCategory(c.name)
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, _extends({
       label: "Collections",
       data: D.COLLECTION_CARDS,
       onRowClick: record => openCategory(record.name)
@@ -6779,7 +6779,7 @@ function HomePage() {
       selectLabel: 'Select ' + a.name,
       onOpen: () => openAsset(a.id),
       "aria-current": asset === a.id ? 'true' : undefined
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, _extends({
       label: "Search results",
       data: list,
       selectable: true,

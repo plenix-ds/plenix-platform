@@ -1,0 +1,25 @@
+{
+  "$description": "DataGrid: its tokens at the compact density.",
+  "plx-comp": {
+    "data-grid-text-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "DataGrid: a line of cell text in taller rows (and the line P is measured against): 16px at Compact."
+    },
+    "data-grid-header-type-icon-size": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "DataGrid column header type icon: hidden in Compact (a 28px header row is too small for it)."
+    },
+    "data-grid-header-type-icon-gap": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "DataGrid column header: no gap where the type icon is hidden (Compact)."
+    },
+    "data-grid-view-column-width": {
+      "$value": "{plx-ref.size-36px}",
+      "$type": "dimension",
+      "$description": "DataGrid: the view column at the end of the header (the view menu's button): as wide as the checkbox column."
+    }
+  }
+}

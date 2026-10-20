@@ -47,7 +47,7 @@ edit('platform/components/Text/text.css', [
    an invisible extension centered on it reaches the minimum target (24px with a mouse, 44px with touch) without changing
    the look; the cell (positioned, overflow hidden) clips it, so it never reaches a neighbor row or column (Platforms
    Standard 3.1, 3.2) */
-.plx-data-table__portal>a.plx-text--link:only-child{position:relative;}
-.plx-data-table__portal>a.plx-text--link:only-child::before{content:"";inset-block-end:var(--plx-comp-text-link-target-inset-block);inset-block-start:var(--plx-comp-text-link-target-inset-block);inset-inline-end:var(--plx-comp-text-link-target-inset-inline);inset-inline-start:var(--plx-comp-text-link-target-inset-inline);position:absolute;}`],
+.plx-data-grid__portal>a.plx-text--link:only-child{position:relative;}
+.plx-data-grid__portal>a.plx-text--link:only-child::before{content:"";inset-block-end:var(--plx-comp-text-link-target-inset-block);inset-block-start:var(--plx-comp-text-link-target-inset-block);inset-inline-end:var(--plx-comp-text-link-target-inset-inline);inset-inline-start:var(--plx-comp-text-link-target-inset-inline);position:absolute;}`],
 ]);
 console.log('ok');

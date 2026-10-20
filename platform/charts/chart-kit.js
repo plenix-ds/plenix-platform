@@ -17,7 +17,7 @@
      withColors(series): the series with an id and a data-viz step each (seriesColor by their order in the data)
      legendItems(series, value?): the ChartLegend items of the series; value(s, i) adds a figure after a name
    Behavior:
-     Pointer only: keyboard and screen reader people read the values in the chart's data table ("Show the data"). The
+     Pointer only: keyboard and screen reader people read the values in the chart's data grid ("Show the data"). The
        chart interaction foundation (wave 9, lane A) replaces useChartHover with the keyboard, the pointer and a live
        region in one hook.
    Notes:

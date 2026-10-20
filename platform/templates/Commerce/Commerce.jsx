@@ -5,7 +5,7 @@
      and payment (form; payment is form UI only: nothing is charged, sent or kept by the template), the order confirmation
      (detail), order management (workspace, with the order's own page: detail), subscription management (settings) and
      returns (form). Every amount is written by formatCurrency in the data font, every status is a Badge with its icon,
-     every table is the DataTable, and every change goes to the page through a handler.
+     every table is the DataGrid, and every change goes to the page through a handler.
    Usage:
      <ProductDiscovery products={products} categories={CATEGORIES} recommended={picks} hrefFor={(p) => '#/p/' + p.id} onAddToCart={add} />
      <ProductListing title="Candles" products={candles} categories={CATEGORIES} hrefFor={…} onAddToCart={add} />
@@ -90,7 +90,7 @@
        named as people type; Pay shows its spinner and refuses a second press until the page answers; a decline keeps
        every field and says what to try.
      Order confirmation: the heading takes the focus when the page opens; the order number is in the data font with Copy.
-     Order management: the DataTable's selection swaps the bar to Fulfill and Cancel orders; an action the status does
+     Order management: the DataGrid's selection swaps the bar to Fulfill and Cancel orders; an action the status does
        not allow is disabled with its reason; Cancel asks first; every change is announced.
      Subscription management: changing the plan, pausing and canceling each say their effect and date before they run;
        canceling is as easy as the other actions and says when access ends.

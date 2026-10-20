@@ -210,27 +210,27 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color statusBarBackground;
   final Color statusBarContent;
   final Color statusBarEdge;
-  final Color dataTableSurface;
+  final Color dataGridSurface;
   final Color tableSurface;
-  final Color dataTableHeaderBackground;
+  final Color dataGridHeaderBackground;
   final Color tableHeaderBackground;
-  final Color dataTableHeaderLine;
+  final Color dataGridHeaderLine;
   final Color tableHeaderLine;
-  final Color dataTableLine;
+  final Color dataGridLine;
   final Color tableLine;
-  final Color dataTableBorder;
+  final Color dataGridBorder;
   final Color tableBorder;
-  final Color dataTableText;
+  final Color dataGridText;
   final Color tableText;
-  final Color dataTableTextMuted;
+  final Color dataGridTextMuted;
   final Color tableTextMuted;
-  final Color dataTableTextSubtle;
-  final Color dataTableRowHover;
-  final Color dataTableRowSelected;
-  final Color dataTableRowSelectedHover;
-  final Color dataTableRowSelectedText;
-  final Color dataTableAccent;
-  final Color dataTableDanger;
+  final Color dataGridTextSubtle;
+  final Color dataGridRowHover;
+  final Color dataGridRowSelected;
+  final Color dataGridRowSelectedHover;
+  final Color dataGridRowSelectedText;
+  final Color dataGridAccent;
+  final Color dataGridDanger;
   final Color dataColorBlue;
   final Color dataColorBlueSoft;
   final Color dataColorBlueOnSoft;
@@ -554,27 +554,27 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.statusBarBackground,
     required this.statusBarContent,
     required this.statusBarEdge,
-    required this.dataTableSurface,
+    required this.dataGridSurface,
     required this.tableSurface,
-    required this.dataTableHeaderBackground,
+    required this.dataGridHeaderBackground,
     required this.tableHeaderBackground,
-    required this.dataTableHeaderLine,
+    required this.dataGridHeaderLine,
     required this.tableHeaderLine,
-    required this.dataTableLine,
+    required this.dataGridLine,
     required this.tableLine,
-    required this.dataTableBorder,
+    required this.dataGridBorder,
     required this.tableBorder,
-    required this.dataTableText,
+    required this.dataGridText,
     required this.tableText,
-    required this.dataTableTextMuted,
+    required this.dataGridTextMuted,
     required this.tableTextMuted,
-    required this.dataTableTextSubtle,
-    required this.dataTableRowHover,
-    required this.dataTableRowSelected,
-    required this.dataTableRowSelectedHover,
-    required this.dataTableRowSelectedText,
-    required this.dataTableAccent,
-    required this.dataTableDanger,
+    required this.dataGridTextSubtle,
+    required this.dataGridRowHover,
+    required this.dataGridRowSelected,
+    required this.dataGridRowSelectedHover,
+    required this.dataGridRowSelectedText,
+    required this.dataGridAccent,
+    required this.dataGridDanger,
     required this.dataColorBlue,
     required this.dataColorBlueSoft,
     required this.dataColorBlueOnSoft,
@@ -899,27 +899,27 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusBarBackground: Color(0xFF000000),
     statusBarContent: Color(0xFFD0D0D0),
     statusBarEdge: Color(0xFFD0D0D0),
-    dataTableSurface: Color(0xFFFFFFFF),
+    dataGridSurface: Color(0xFFFFFFFF),
     tableSurface: Color(0xFFFFFFFF),
-    dataTableHeaderBackground: Color(0xFFF3F3F3),
+    dataGridHeaderBackground: Color(0xFFF3F3F3),
     tableHeaderBackground: Color(0xFFF3F3F3),
-    dataTableHeaderLine: Color(0xFFD0D0D0),
+    dataGridHeaderLine: Color(0xFFD0D0D0),
     tableHeaderLine: Color(0xFFD0D0D0),
-    dataTableLine: Color(0xFFE8E9EC),
+    dataGridLine: Color(0xFFE8E9EC),
     tableLine: Color(0xFFE8E9EC),
-    dataTableBorder: Color(0xFFD0D0D0),
+    dataGridBorder: Color(0xFFD0D0D0),
     tableBorder: Color(0xFFD0D0D0),
-    dataTableText: Color(0xFF000000),
+    dataGridText: Color(0xFF000000),
     tableText: Color(0xFF000000),
-    dataTableTextMuted: Color(0xFF56585E),
+    dataGridTextMuted: Color(0xFF56585E),
     tableTextMuted: Color(0xFF56585E),
-    dataTableTextSubtle: Color(0xFF8E9094),
-    dataTableRowHover: Color(0xFFE8E9EC),
-    dataTableRowSelected: Color(0xFFC8DFF7),
-    dataTableRowSelectedHover: Color(0xFFF3F3F3),
-    dataTableRowSelectedText: Color(0xFF1F5BB8),
-    dataTableAccent: Color(0xFF2A6FDB),
-    dataTableDanger: Color(0xFFB70000),
+    dataGridTextSubtle: Color(0xFF8E9094),
+    dataGridRowHover: Color(0xFFE8E9EC),
+    dataGridRowSelected: Color(0xFFC8DFF7),
+    dataGridRowSelectedHover: Color(0xFFF3F3F3),
+    dataGridRowSelectedText: Color(0xFF1F5BB8),
+    dataGridAccent: Color(0xFF2A6FDB),
+    dataGridDanger: Color(0xFFB70000),
     dataColorBlue: Color(0xFF2A6FDB),
     dataColorBlueSoft: Color(0xFFEBF0F7),
     dataColorBlueOnSoft: Color(0xFF005A9E),
@@ -1244,27 +1244,27 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusBarBackground: Color(0xFF000000),
     statusBarContent: Color(0xFFD0D0D0),
     statusBarEdge: Color(0xFF56585E),
-    dataTableSurface: Color(0xFF1E1F22),
+    dataGridSurface: Color(0xFF1E1F22),
     tableSurface: Color(0xFF1E1F22),
-    dataTableHeaderBackground: Color(0xFF34363B),
+    dataGridHeaderBackground: Color(0xFF34363B),
     tableHeaderBackground: Color(0xFF34363B),
-    dataTableHeaderLine: Color(0xFF56585E),
+    dataGridHeaderLine: Color(0xFF56585E),
     tableHeaderLine: Color(0xFF56585E),
-    dataTableLine: Color(0xFF34363B),
+    dataGridLine: Color(0xFF34363B),
     tableLine: Color(0xFF34363B),
-    dataTableBorder: Color(0xFF444444),
+    dataGridBorder: Color(0xFF444444),
     tableBorder: Color(0xFF444444),
-    dataTableText: Color(0xFFE8E9EC),
+    dataGridText: Color(0xFFE8E9EC),
     tableText: Color(0xFFE8E9EC),
-    dataTableTextMuted: Color(0xFFA3A6AD),
+    dataGridTextMuted: Color(0xFFA3A6AD),
     tableTextMuted: Color(0xFFA3A6AD),
-    dataTableTextSubtle: Color(0xFF8E9094),
-    dataTableRowHover: Color(0xFF34363B),
-    dataTableRowSelected: Color(0xFF1F2A3A),
-    dataTableRowSelectedHover: Color(0xFF1F2A3A),
-    dataTableRowSelectedText: Color(0xFFA2C0E3),
-    dataTableAccent: Color(0xFFA2C0E3),
-    dataTableDanger: Color(0xFFF60000),
+    dataGridTextSubtle: Color(0xFF8E9094),
+    dataGridRowHover: Color(0xFF34363B),
+    dataGridRowSelected: Color(0xFF1F2A3A),
+    dataGridRowSelectedHover: Color(0xFF1F2A3A),
+    dataGridRowSelectedText: Color(0xFFA2C0E3),
+    dataGridAccent: Color(0xFFA2C0E3),
+    dataGridDanger: Color(0xFFF60000),
     dataColorBlue: Color(0xFF2A6FDB),
     dataColorBlueSoft: Color(0xFFEBF0F7),
     dataColorBlueOnSoft: Color(0xFF005A9E),

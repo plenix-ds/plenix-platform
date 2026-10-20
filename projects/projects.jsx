@@ -1,11 +1,11 @@
 /* Plenix · projects (projects/projects.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: the projects in the shell's NavPane, a project's capabilities in a SecondaryPane, its home as a record page
-   header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a DataTable, the
+   header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a DataGrid, the
    capabilities to come as EmptyStates, and the new-project dialog from Fields, Fieldsets and Checkboxes.
    Screens (Platforms Standard 4.3): a project and its capability (#/project/<id>/<capability>, e.g. #/project/3/tasks), a
    history entry each, on the projects page and on the dashboard. The new-project dialog asks before closing with
    unsaved entries (useUnsavedGuard). */
-import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataTable, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState } from 'plenix-platform';
+import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
@@ -171,7 +171,7 @@ export function ProjectContent({ proj, panel }) {
     <PageContent>
       <Stack gap="md">
         <EntityHeader title="Files" media={{ icon: 'folder', hue: proj.color }} subtitle={proj.name} facts={[{ label: 'Files', value: pFiles.length }]} actions={[{ icon: 'share', label: 'Share' }]} />
-        <DataTable label="Files" data={pFiles.map((f, i) => ({ ...f, id: i }))} empty="No files attached. Connect OneDrive in Settings to link files." columns={[
+        <DataGrid label="Files" data={pFiles.map((f, i) => ({ ...f, id: i }))} empty="No files attached. Connect OneDrive in Settings to link files." columns={[
           { title: 'Name', field: 'name', kind: ['name', 'data'], filter: true, width: '--plx-ref-size-320px' },
           { title: 'Type', field: 't', kind: 'data', filter: 'list' },
           { title: 'Size', field: 's', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },

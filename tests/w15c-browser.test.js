@@ -40,7 +40,7 @@ if (!fs.existsSync(path.join(__dirname, '../platform/design-system/index.html'))
       const module = await import('/Plenix/packages/web-components/index.js');
       check(module.elementNames.includes('Button') && module.elementNames.includes('Input') && module.elementNames.length > 100, 'Package contains the generated React component registrations');
       module.defineElements({ React: R, ReactDOM: D, Plenix: P });
-      check(customElements.get('plx-button') && customElements.get('plx-data-table'), 'Actual custom elements register without fetching peers');
+      check(customElements.get('plx-button') && customElements.get('plx-data-grid'), 'Actual custom elements register without fetching peers');
       const early = document.createElement('plx-upgrade-input'); early.value = 'Preserved before registration'; document.body.appendChild(early);
       module.defineElement('plx-upgrade-input', P.Input, { React: R, ReactDOM: D, formControl: true }); await wait();
       check(early.shadowRoot.querySelector('input').value === 'Preserved before registration', 'Pre-upgrade properties pass through the upgraded React element'); early.remove();

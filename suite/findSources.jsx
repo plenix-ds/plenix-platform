@@ -2,14 +2,14 @@
    the main work area: inside an application (Notes, Files…) it searches only that application, with that application's
    filters; on the dashboard home it searches everything, with a Section filter. Each source says what its rows are, which
    text is searched, its filters and its result columns; FindWorkspace draws them with the Platform SearchWorkspace. */
-import { SearchWorkspace, DataTable, Tag, Badge, Button, Text } from 'plenix-platform';
+import { SearchWorkspace, DataGrid, Tag, Badge, Button, Text } from 'plenix-platform';
 import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, CAL_EVENTS, CONTACTS, PROJECTS, THREADS } from './shared.jsx';
 const {useState}=React;
 
 const PRI={high:"High",med:"Medium",low:"Low"};
 const cap=(s)=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
-// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataTable column
-// definitions for the DataTable; a grid row is the source row's cells with its key as id, its name and its facets)
+// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataGrid column
+// definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
 export const FIND_SOURCES={
   projects:{label:"Projects",noun:"project",filters:[{id:"status",label:"Status"},{id:"tags",label:"Tags",multiple:true}],
     columns:[{title:"Project",field:"name",kind:"name"},{title:"Status",field:"status",kind:"center",render:r=><Badge tone={r.status==="Active"?"success":"neutral"}>{r.status}</Badge>},{title:"Tags",field:"tags"},{title:"Files",field:"files",kind:"data",hozAlign:"right",headerHozAlign:"right"}],
@@ -82,7 +82,7 @@ export function FindWorkspace({app,query,onQuery,onOpen,onAskAI}){
         filters={defs} onFilterChange={(id,v)=>setFilters({...filters,[id]:v})} onClearAll={()=>setFilters({})}
         sort={{value:sort,options:["Relevance","Name A–Z","Name Z–A"],onChange:setSort}}
         headEnd={app==="home"&&onAskAI?<Button size="sm" icon="sparkle" onClick={()=>onAskAI(query)}>Ask AI</Button>:null}>
-        <DataTable label={(app==="home"?"Everything":src.label)+" search results"} columns={src.columns}
+        <DataGrid label={(app==="home"?"Everything":src.label)+" search results"} columns={src.columns}
           data={found.map(r=>({...r.cells,id:r.key,name:r.name,facets:r.facets}))}
           onRowClick={record=>{const r=found.find(x=>x.key===record.id);if(r)onOpen(r,r.app||app);}}/>
       </SearchWorkspace>

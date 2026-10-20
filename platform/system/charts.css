@@ -26,5 +26,5 @@
    axis's centered under it */
 .plx-chart__tick-label--y{dominant-baseline:central;text-anchor:end;}
 .plx-chart__tick-label--x{dominant-baseline:hanging;text-anchor:middle;}
-/* the data table under the chart */
+/* the data grid under the chart */
 .plx-chart__data{min-inline-size:0;}

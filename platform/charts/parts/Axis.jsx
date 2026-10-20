@@ -22,7 +22,7 @@
      Each tick label sits at its value (the middle of a band on a band scale), at the --plx-comp-chart-axis-tick-offset
        distance from the plot: under it (bottom), above it (top), ending before it (left) or starting after it (right).
      The axis title is centered along the axis at the margin's edge; on the left and right it reads along the axis.
-     Hidden from assistive technology with the rest of the plot: the chart's data table carries the values.
+     Hidden from assistive technology with the rest of the plot: the chart's data grid carries the values.
    Notes:
      No color, size or font is written: the axis line and tick labels take the frame's classes (plx-chart__axis-line,
        plx-chart__tick-label), the offset and the title their tokens (chart-parts.css).

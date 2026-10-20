@@ -144,9 +144,9 @@
   --plx-sys-space-region-space-sm: var(--plx-ref-space-24px);
   --plx-sys-space-region-space-md: var(--plx-ref-space-32px);
   --plx-sys-space-region-space-lg: var(--plx-ref-space-48px);
-  --plx-sys-data-table-row-height: var(--plx-ref-size-32px);
+  --plx-sys-data-grid-row-height: var(--plx-ref-size-32px);
   --plx-sys-table-row-height: var(--plx-ref-size-32px);
-  --plx-sys-data-table-font-size: var(--plx-ref-font-size-13);
+  --plx-sys-data-grid-font-size: var(--plx-ref-font-size-13);
   --plx-sys-table-font-size: var(--plx-ref-font-size-13);
 }
 [data-plx-density="compact"],:root[data-plx-density-policy="compact"]:not([data-plx-density]){
@@ -182,9 +182,9 @@
   --plx-sys-space-region-space-sm: var(--plx-ref-space-16px);
   --plx-sys-space-region-space-md: var(--plx-ref-space-24px);
   --plx-sys-space-region-space-lg: var(--plx-ref-space-32px);
-  --plx-sys-data-table-row-height: var(--plx-ref-size-28px);
+  --plx-sys-data-grid-row-height: var(--plx-ref-size-28px);
   --plx-sys-table-row-height: var(--plx-ref-size-28px);
-  --plx-sys-data-table-font-size: var(--plx-ref-font-size-12);
+  --plx-sys-data-grid-font-size: var(--plx-ref-font-size-12);
   --plx-sys-table-font-size: var(--plx-ref-font-size-12);
 }
 [data-plx-density="comfortable"],:root[data-plx-density-policy="comfortable"]:not([data-plx-density]){
@@ -219,9 +219,9 @@
   --plx-sys-space-region-space-sm: var(--plx-ref-space-32px);
   --plx-sys-space-region-space-md: var(--plx-ref-space-48px);
   --plx-sys-space-region-space-lg: var(--plx-ref-space-64px);
-  --plx-sys-data-table-row-height: var(--plx-ref-size-40px);
+  --plx-sys-data-grid-row-height: var(--plx-ref-size-40px);
   --plx-sys-table-row-height: var(--plx-ref-size-40px);
-  --plx-sys-data-table-font-size: var(--plx-ref-font-size-13);
+  --plx-sys-data-grid-font-size: var(--plx-ref-font-size-13);
   --plx-sys-table-font-size: var(--plx-ref-font-size-13);
 }
 :root[data-plx-interaction="touch"],:root[data-plx-interaction="touch"] [data-plx-density]{
@@ -238,7 +238,7 @@
   --plx-sys-control-icon-dialog: var(--plx-ref-size-20px);
   --plx-sys-control-height-dialog-destructive: var(--plx-ref-control-size-44px);
   --plx-sys-control-icon-dialog-destructive: var(--plx-ref-size-20px);
-  --plx-sys-data-table-row-height: var(--plx-ref-size-44px);
+  --plx-sys-data-grid-row-height: var(--plx-ref-size-44px);
   --plx-sys-table-row-height: var(--plx-ref-size-44px);
 }
 :root[data-plx-interaction="mobile"],:root[data-plx-interaction="mobile"] [data-plx-density]{
@@ -255,7 +255,7 @@
   --plx-sys-control-icon-dialog: var(--plx-ref-size-20px);
   --plx-sys-control-height-dialog-destructive: var(--plx-ref-control-size-44px);
   --plx-sys-control-icon-dialog-destructive: var(--plx-ref-size-20px);
-  --plx-sys-data-table-row-height: var(--plx-ref-size-44px);
+  --plx-sys-data-grid-row-height: var(--plx-ref-size-44px);
   --plx-sys-table-row-height: var(--plx-ref-size-44px);
 }
 :root:not([data-plx-interaction]){

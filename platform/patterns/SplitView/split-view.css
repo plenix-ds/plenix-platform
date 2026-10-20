@@ -23,7 +23,7 @@
   .plx-split-view--side-by-side .plx-split-view__second{min-inline-size:0;}
 }
 
-/* the reading pane: the data table's frame, an actions row with a thin inset line under it, the item scrolling below */
+/* the reading pane: the data grid's frame, an actions row with a thin inset line under it, the item scrolling below */
 .plx-reading-pane{background-color:var(--plx-comp-reading-pane-background);border-color:var(--plx-comp-reading-pane-border-color);border-radius:var(--plx-comp-reading-pane-radius);border-style:solid;border-width:var(--plx-comp-reading-pane-border-width);box-sizing:border-box;display:flex;flex-direction:column;min-block-size:0;min-inline-size:0;overflow-x:hidden;overflow-y:auto;}
 .plx-reading-pane__actions{align-items:center;display:flex;flex-shrink:0;gap:var(--plx-comp-reading-pane-actions-gap);padding-block:var(--plx-comp-reading-pane-actions-padding-block);padding-inline:var(--plx-comp-reading-pane-actions-padding-inline);position:relative;}
 .plx-reading-pane__actions::after{background-color:var(--plx-comp-reading-pane-rule-color);block-size:var(--plx-comp-reading-pane-border-width);content:"";inset-block-end:0;inset-inline-end:var(--plx-comp-reading-pane-rule-inset);inset-inline-start:var(--plx-comp-reading-pane-rule-inset);position:absolute;}

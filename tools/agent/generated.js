@@ -13,7 +13,7 @@ const GENERATED = [
   /(^|\/)app\.js$/, /^dam\/app\/assets\.js$/,
   /^platform\/components\/Icon\/icon\.css$/, /^platform\/components\/Brand\/brand\.css$/,
   /^platform\/components\/ColorSwatch\/(categoryColors|dataColors)\.js$/,
-  /^platform\/components\/(DataTable\/data-table|Table\/table)-steps\.css$/,
+  /^platform\/components\/(DataGrid\/data-grid|Table\/table)-steps\.css$/,
   /^platform\/patterns\/ImageEditor\/imageEditorSteps\.js$/, /^platform\/utils\/sizeSteps\.js$/,
   /^platform\/providers\/(pageLayouts|themes)\.js$/,
   /^platform\/mobile\//, /^packages\//,
@@ -35,7 +35,7 @@ if (require.main === module) {
   if (arg === '--list') { GENERATED.forEach((re) => console.log(re.source)); process.exit(0); }
   if (arg === '--check') {
     const base = process.argv[3]; if (!base) { console.error('usage: --check <base ref>'); process.exit(2); }
-    const changed = sh('git diff --name-only ' + base + '...HEAD').split('\n').filter(Boolean).filter((file) => isGenerated(file) && !(file === 'platform/components/DataTable/data-table-steps.css' && sh('git diff --diff-filter=D --name-only ' + base + '...HEAD -- platform/components/DataTable/DataTable.jsx').trim() && sh('git diff --diff-filter=D --name-only ' + base + '...HEAD -- platform/components/DataTable/data-table-steps.css').trim()));
+    const changed = sh('git diff --name-only ' + base + '...HEAD').split('\n').filter(Boolean).filter((file) => isGenerated(file) && !(file === 'platform/components/DataGrid/data-grid-steps.css' && sh('git diff --diff-filter=D --name-only ' + base + '...HEAD -- platform/components/DataGrid/DataGrid.jsx').trim() && sh('git diff --diff-filter=D --name-only ' + base + '...HEAD -- platform/components/DataGrid/data-grid-steps.css').trim()));
     for (const file of PARTIAL) if (generatedBlock(sh('git show ' + base + ':' + file)) !== generatedBlock(sh('git show HEAD:' + file))) changed.push(file);
     if (changed.length) {
       console.log('GENERATED_FAIL: this branch commits generated files (the integrator rebuilds them at merge):\n  ' + changed.join('\n  ') +
@@ -53,7 +53,7 @@ if (require.main === module) {
       const current = require('fs').readFileSync(full, 'utf8'), committed = generatedBlock(sh('git show HEAD:' + file));
       require('fs').writeFileSync(full, current.replace(BLOCK, () => committed));
     }
-    for (const { file } of files.filter((x) => x.file !== 'platform/components/DataTable/data-table-steps.css' || require('fs').existsSync(path.join(ROOT, 'platform/components/DataTable/DataTable.jsx')) || require('fs').existsSync(path.join(ROOT, x.file)))) sh('git checkout -- "' + file + '"');
+    for (const { file } of files.filter((x) => x.file !== 'platform/components/DataGrid/data-grid-steps.css' || require('fs').existsSync(path.join(ROOT, 'platform/components/DataGrid/DataGrid.jsx')) || require('fs').existsSync(path.join(ROOT, x.file)))) sh('git checkout -- "' + file + '"');
     console.log(files.length ? 'restored: ' + files.map((x) => x.file).join(', ') : 'nothing to restore'); process.exit(0);
   }
   console.error('usage: node tools/agent/generated.js --check <base> | --restore | --list'); process.exit(2);

@@ -22,7 +22,7 @@
    Behavior:
      A horizontal line's label sits above the line at its end; a vertical line's label at the top of the plot, after it.
      A value outside the scale's domain draws nothing. Hidden from assistive technology with the plot: say the reference in
-       the chart's description ("The target is 250") and give it a row or a column in the data table.
+       the chart's description ("The target is 250") and give it a row or a column in the data grid.
    Notes:
      The dash pattern tells a reference from a series (series are solid); a threshold's color is the alert scale's, never
        a series color, and its name says what it is, so color is not the only cue.

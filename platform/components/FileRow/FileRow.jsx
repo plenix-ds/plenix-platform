@@ -49,7 +49,7 @@
      During a transfer the bar is a progressbar named "{label} {name}"; the percent beside it is in the data font.
    Notes:
      Rows go in a FileRowList (as="li": a <ul> without bullets, a line above the first row) for uploads, attachments
-       and pickers. Files people compare by column (size, date, owner, sorted and filtered) belong in the DataTable.
+       and pickers. Files people compare by column (size, date, owner, sorted and filtered) belong in the DataGrid.
      Other props pass through to the row element.
 */
 import React from 'react';

@@ -47,7 +47,7 @@ export const CONTRAST_PAIRS = Object.freeze([
   { fg: 'tooltip-content', bg: 'tooltip-background', rule: T, use: 'Tooltip text' },
   { fg: 'toast-content', bg: 'toast-background', rule: T, use: 'Toast text' },
   { fg: 'status-bar-content', bg: 'status-bar-background', rule: T, use: 'Status bar text' },
-  { fg: 'data-table-text', bg: 'data-table-surface', rule: T, use: 'Table cells' },
+  { fg: 'data-grid-text', bg: 'data-grid-surface', rule: T, use: 'Table cells' },
   { fg: 'avatar-content', bg: 'avatar-background', rule: T, use: 'Avatar initials' },
   { fg: 'feedback-info-content', bg: 'feedback-info-soft', rule: T, use: 'Info message text' },
   { fg: 'feedback-success-content', bg: 'feedback-success-soft', rule: T, use: 'Success message text' },

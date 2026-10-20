@@ -98,7 +98,7 @@ export const PAGE_REGIONS = {
   "collection": {
     "use": "The list itself: a table, cards, or a grid of media",
     "patterns": [
-      "DataTable",
+      "DataGrid",
       "ContentGrid",
       "Card"
     ]
@@ -135,7 +135,7 @@ export const PAGE_REGIONS = {
       "Panel",
       "PropertyList",
       "ActivityList",
-      "DataTable"
+      "DataGrid"
     ]
   },
   "widgets": {

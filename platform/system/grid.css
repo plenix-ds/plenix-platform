@@ -4,7 +4,7 @@
      2 Layout       this file                                            shell regions, columns, spans, max-widths
      3 Density      platform/system/density.css                                   row and control heights, gaps, gutters, panel widths
      4 Interaction  platform/system/interaction.css                               pointer / touch / mobile, targets, hover, focus
-     5 Data tables   platform/components/DataTableNext/data-table-next.css                    every table: a DataTable (DataTable); columns, pinning, scroll, row height by density
+     5 Data grids   platform/components/DataGrid/data-grid.css                    every table: a DataGrid (DataGrid); columns, pinning, scroll, row height by density
    Rules of this layer:
    - The shell owns navigation, filter and inspector panels, the header and overlays. The content grid lives only inside
      the main region (.plx-shell-main), and responds to the main region's width (a container query), not the viewport's.

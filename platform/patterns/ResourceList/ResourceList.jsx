@@ -3,7 +3,7 @@
      Object list): each row the record's picture (a thumbnail or an avatar), its name, which opens it, a line about it,
      its details and a few actions; rows can be selected with a checkbox for actions on several at once, and grouped
      under headings. For records people scan and open one at a time; records people compare by column belong in the
-     DataTable.
+     DataGrid.
    Usage:
      const [sel, setSel] = React.useState([]);
      <ResourceList label="Projects" noun="project" selectable selected={sel} onSelectionChange={setSel}
@@ -47,7 +47,7 @@
    Notes:
      Composed of Platform parts only: Checkbox, Thumbnail, Avatar, SectionHeading, Count, Text, and the CommandBar the
        caller passes in bar. The selection model is useSelection.
-     A pattern of the Polaris resource list. Use the DataTable when people compare records by column or sort by a column.
+     A pattern of the Polaris resource list. Use the DataGrid when people compare records by column or sort by a column.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';

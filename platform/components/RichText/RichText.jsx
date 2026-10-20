@@ -30,7 +30,7 @@
        background-color, font-family, font-size and text-align on its text, as the RichTextEditor stores them) the style
        audit and the page checks allow there; the rest follows the type styles.
      It uses the elements' own styles from Link, Code and Blockquote, so a link in prose looks like <Link>.
-     Tables of data are not prose: show them with the DataTable. A table written in the RichTextEditor shows here in the
+     Tables of data are not prose: show them with the DataGrid. A table written in the RichTextEditor shows here in the
        Plenix table's look (its surface, header and full inside lines).
      Keep the real heading levels and list markup: screen readers move through them.
      Other props pass through to the container.

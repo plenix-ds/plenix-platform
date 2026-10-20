@@ -12,7 +12,7 @@
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
 import React from 'react';
-import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, useSelection, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
+import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataGrid, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, useSelection, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -240,7 +240,7 @@ export function HomePage() {
         ))}
       </ContentGrid>
     ) : (
-      <DataTable label="Categories" data={D.CATEGORY_CARDS} selectable selected={selCats} onSelectionChange={setSelCats} onRowClick={(record) => openCategory(record.name)} {...tableProps} columns={[
+      <DataGrid label="Categories" data={D.CATEGORY_CARDS} selectable selected={selCats} onSelectionChange={setSelCats} onRowClick={(record) => openCategory(record.name)} {...tableProps} columns={[
         { title: 'Category name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Modified', field: 'modified', kind: 'data', sorter: byDate },
         { title: 'Status', field: 'status', kind: 'center', render: (r) => <Badge tone="success">{r.status}</Badge> }]} />
@@ -251,7 +251,7 @@ export function HomePage() {
         {shown(D.COLLECTION_CARDS).map((c) => <MediaCard key={c.id} icon="briefcase" title={c.name} meta={c.count + ' assets'} onOpen={() => openCategory(c.name)} />)}
       </ContentGrid>
     ) : (
-      <DataTable label="Collections" data={D.COLLECTION_CARDS} onRowClick={(record) => openCategory(record.name)} {...tableProps} columns={[
+      <DataGrid label="Collections" data={D.COLLECTION_CARDS} onRowClick={(record) => openCategory(record.name)} {...tableProps} columns={[
         { title: 'Collection name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
         { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Updated', field: 'updated', kind: 'data', sorter: byDate }, { title: 'Owner', field: 'owner' }]} />
     );
@@ -266,7 +266,7 @@ export function HomePage() {
         ))}
       </ContentGrid>
     ) : (
-      <DataTable label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} onRowClick={(record) => openAsset(record.id)} {...tableProps} columns={[
+      <DataGrid label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} onRowClick={(record) => openAsset(record.id)} {...tableProps} columns={[
         { title: 'Name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Category', field: 'cat', kind: 'center', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
         { title: 'Type', field: 'badge', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: bySize },

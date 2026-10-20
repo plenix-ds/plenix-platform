@@ -23,7 +23,7 @@
      It does not take the pointer (pointer-events none), so moving along the chart keeps reaching the marks under it.
      The tooltip goes after the point when it is in the first half of the plot and before it in the second half, so it
        stays inside the chart.
-     It shows values already in the chart's data table; with the plot it is hidden from assistive technology. The chart
+     It shows values already in the chart's data grid; with the plot it is hidden from assistive technology. The chart
        interaction (useChartInteraction, platform/charts/interaction.js) moves it with the pointer and the arrow keys and
        says the same values in the live region: chartTooltipText({ title, items }) is that sentence ("March 2026: Web
        150, iOS 130, Android 90"), so the tooltip and the announcement never differ.

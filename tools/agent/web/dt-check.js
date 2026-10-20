@@ -1,4 +1,4 @@
-// DataTable / WidgetGrid / PanelSplitter / EmptyState checks for the drag-alternative work
+// DataGrid / WidgetGrid / PanelSplitter / EmptyState checks for the drag-alternative work
 const path = require('path');
 const ROOT = 'D:/Documents/Projects/Projects_Applications/Plenix';
 const { serve, launch, sleep } = require(path.join(ROOT, 'tests/lib.js'));
@@ -14,10 +14,10 @@ const OUT = __dirname;
     // 1. Files app table at 1440: header menu items, grip keyboard
     await page.setViewport({ width: 1440, height: 900 });
     await page.goto(BASE + 'files/index.html', { waitUntil: 'networkidle0' }); await sleep(800);
-    log('grips:', await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table__resize')).map((g) => g.getAttribute('role') + ':' + g.getAttribute('aria-label') + ':' + g.getAttribute('aria-valuenow')).slice(0, 4)));
-    const w0 = await page.evaluate(() => { const g = document.querySelector('.plx-data-table__resize'); g.focus(); return g.closest('.tabulator-col').getBoundingClientRect().width; });
+    log('grips:', await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-grid__resize')).map((g) => g.getAttribute('role') + ':' + g.getAttribute('aria-label') + ':' + g.getAttribute('aria-valuenow')).slice(0, 4)));
+    const w0 = await page.evaluate(() => { const g = document.querySelector('.plx-data-grid__resize'); g.focus(); return g.closest('.tabulator-col').getBoundingClientRect().width; });
     await page.keyboard.press('ArrowRight'); await sleep(100); await page.keyboard.press('ArrowRight'); await sleep(100);
-    const w1 = await page.evaluate(() => document.querySelector('.plx-data-table__resize').closest('.tabulator-col').getBoundingClientRect().width);
+    const w1 = await page.evaluate(() => document.querySelector('.plx-data-grid__resize').closest('.tabulator-col').getBoundingClientRect().width);
     log('grip keyboard width', w0, '->', w1);
     // the header menu
     const col = await page.$('.tabulator-col:not(.tabulator-row-header) .tabulator-col-title');
@@ -28,7 +28,7 @@ const OUT = __dirname;
     // 2. Files at 400px: Narrow list
     await page.setViewport({ width: 400, height: 800 });
     await page.goto(BASE + 'files/index.html', { waitUntil: 'networkidle0' }); await sleep(1000);
-    log('narrow:', await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table')).map((g) => ({ list: g.classList.contains('plx-data-table--list'), w: Math.round(g.getBoundingClientRect().width), header: getComputedStyle(g.querySelector('.tabulator-header')).display, row: (() => { const r = g.querySelector('.tabulator-row'); return r ? getComputedStyle(r).display + ' ' + Math.round(r.getBoundingClientRect().height) : null; })(), visibleCells: (() => { const r = g.querySelector('.tabulator-row'); return r ? Array.from(r.querySelectorAll('.tabulator-cell')).filter((c) => getComputedStyle(c).display !== 'none').map((c) => c.textContent.trim().slice(0, 20)) : null; })() }))));
+    log('narrow:', await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-grid')).map((g) => ({ list: g.classList.contains('plx-data-grid--list'), w: Math.round(g.getBoundingClientRect().width), header: getComputedStyle(g.querySelector('.tabulator-header')).display, row: (() => { const r = g.querySelector('.tabulator-row'); return r ? getComputedStyle(r).display + ' ' + Math.round(r.getBoundingClientRect().height) : null; })(), visibleCells: (() => { const r = g.querySelector('.tabulator-row'); return r ? Array.from(r.querySelectorAll('.tabulator-cell')).filter((c) => getComputedStyle(c).display !== 'none').map((c) => c.textContent.trim().slice(0, 20)) : null; })() }))));
     await page.screenshot({ path: path.join(OUT, 'dt-narrow.png') });
     // 3. engine failure: error state and Retry
     await page.setViewport({ width: 1200, height: 800 });
@@ -39,12 +39,12 @@ const OUT = __dirname;
     p2.on('request', (r) => { if (block && /tabulator\.min\.js/.test(r.url())) r.abort(); else r.continue(); });
     await p2.setViewport({ width: 1200, height: 800 });
     await p2.goto(BASE + 'files/index.html', { waitUntil: 'networkidle0' }); await sleep(800);
-    log('error state:', await p2.evaluate(() => { const e = document.querySelector('.plx-data-table .plx-empty-state'); return e ? e.getAttribute('role') + ' | ' + e.textContent.trim() : 'none'; }));
+    log('error state:', await p2.evaluate(() => { const e = document.querySelector('.plx-data-grid .plx-empty-state'); return e ? e.getAttribute('role') + ' | ' + e.textContent.trim() : 'none'; }));
     await p2.screenshot({ path: path.join(OUT, 'dt-error.png') });
     block = false;
-    await p2.evaluate(() => { const b = Array.from(document.querySelectorAll('.plx-data-table .plx-empty-state button')).find((x) => /Retry/.test(x.textContent)); if (b) b.click(); });
+    await p2.evaluate(() => { const b = Array.from(document.querySelectorAll('.plx-data-grid .plx-empty-state button')).find((x) => /Retry/.test(x.textContent)); if (b) b.click(); });
     await sleep(2000);
-    log('after retry:', await p2.evaluate(() => ({ rows: document.querySelectorAll('.plx-data-table .tabulator-row').length, err: !!document.querySelector('.plx-data-table .plx-empty-state--error') })));
+    log('after retry:', await p2.evaluate(() => ({ rows: document.querySelectorAll('.plx-data-grid .tabulator-row').length, err: !!document.querySelector('.plx-data-grid .plx-empty-state--error') })));
     await p2.close();
     // 4. dashboard: widget handle menu
     await page.setViewport({ width: 1440, height: 900 });

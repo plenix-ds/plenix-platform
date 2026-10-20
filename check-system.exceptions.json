@@ -71,7 +71,7 @@
     }
   },
   "important": {
-    "platform/components/DataTableNext/data-table-next.css": 1,
+    "platform/components/DataGrid/data-grid.css": 1,
     "platform/system/density.css": 1,
     "platform/system/motion.css": 4,
     "platform/system/utilities.css": 413,

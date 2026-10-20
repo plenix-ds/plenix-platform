@@ -6,7 +6,7 @@
    Usage:
      const [filter, setFilter] = React.useState({ join: 'and', items: [] });
      <FilterPanel fields={fields} value={filter} onChange={setFilter} />
-     <DataTable … filter={(row) => matchesFilter(filter, row, fields)} />      (or useCollectionView)
+     <DataGrid … filter={(row) => matchesFilter(filter, row, fields)} />      (or useCollectionView)
    Props:
      fields: the collection's fields: [{ value, label, kind: "text" | "select" | "multi" | "number" | "date", options, get }]
        (utils/fields.js)
@@ -29,7 +29,7 @@
      Rows move by drag, by the handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused row; each move is
        announced. A condition left unfinished does not filter.
    Notes:
-     The panel holds the conditions; the page applies them (DataTable filter, or matchesFilter on its rows). */
+     The panel holds the conditions; the page applies them (DataGrid filter, or matchesFilter on its rows). */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../../components/Button/Button.jsx';

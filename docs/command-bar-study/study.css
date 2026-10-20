@@ -28,7 +28,7 @@
 /* the study's label above each screen: which standard, when to use it */
 .study-note{background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);padding:var(--plx-ref-space-16px);}
 /* compare view: only the bars; each layout's page header and table are hidden; the floating bar sits in the flow */
-.study-compare .plx-data-table,.study-compare:not(.study-compare--ent) .plx-record-page__header:not(:has(button)){display:none;}
+.study-compare .plx-data-grid,.study-compare:not(.study-compare--ent) .plx-record-page__header:not(:has(button)){display:none;}
 /* compare view: each variation in its own bordered frame, with wide space between the frames */
 .study-compare{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-card-12px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding-block:var(--plx-sys-space-layout-md);padding-inline:var(--plx-sys-space-layout-md);}
 
@@ -60,7 +60,7 @@
 .study-built--fixed,.study-built--fixed>.study-built__stack{block-size:var(--plx-ref-size-560px);}
 .study-built--fixed .study-table-room{flex:1 1 auto;min-block-size:0;}
 .study-saved-note{align-items:start;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);display:flex;gap:var(--plx-ref-space-12px);justify-content:space-between;padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-12px);}
-.study-peek .plx-data-table{display:none;}
+.study-peek .plx-data-grid{display:none;}
 
 /* segmented controls, look A (decided, owner 2026-10-14): a ButtonGroup of pressed Buttons, bordered and joined, at the
    buttons' own height; the chosen segment takes the selected tint (blue text and icon) and keeps the group's border */

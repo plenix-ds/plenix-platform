@@ -1,5 +1,5 @@
 /* Plenix · AuditLog
-   Summary: A read-only audit DataTable with actor, timestamp, action, target and optional before/after differences.
+   Summary: A read-only audit DataGrid with actor, timestamp, action, target and optional before/after differences.
    Usage: <AuditLog entries={events} variant="diff" label="Workspace history" />
    Props:
      entries: [{ id, actor: { name, src }, at, action, target, changes: [{ field, before, after }] }].
@@ -10,7 +10,7 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
-import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
+import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Time } from '../../components/Time/Time.jsx';
 import { Button } from '../../components/Button/Button.jsx';
@@ -32,9 +32,9 @@ export function AuditLog({ entries = [], variant = 'table', label, strings, clas
     render: (a) => a.changes?.length ? <Button size="xs" onClick={() => setActive(a.id)}>{t.view}</Button> : null });
   const changes = (entry?.changes || []).map((a, i) => ({ id: i, field: a.field, before: display(a.before), after: display(a.after) }));
   return <Stack className={cx('plx-audit-log', className)}>
-    <DataTable label={label} data={entries} columns={columns} headerMenu={false} />
+    <DataGrid label={label} data={entries} columns={columns} headerMenu={false} />
     <Dialog open={!!entry} title={t.changes} onClose={() => setActive(null)} size="lg" footer={<Button onClick={() => setActive(null)}>{t.close}</Button>}>
-      <DataTable label={t.changes} data={changes} headerMenu={false} columns={[{ field: 'field', title: t.field }, { field: 'before', title: t.before, kind: 'wrap' }, { field: 'after', title: t.after, kind: 'wrap' }]} />
+      <DataGrid label={t.changes} data={changes} headerMenu={false} columns={[{ field: 'field', title: t.field }, { field: 'before', title: t.before, kind: 'wrap' }, { field: 'after', title: t.after, kind: 'wrap' }]} />
     </Dialog>
   </Stack>;
 }

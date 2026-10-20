@@ -5,7 +5,7 @@
    Usage:
      const [sort, setSort] = React.useState([]);
      <SortPanel fields={fields} value={sort} onChange={setSort} grouped={groups.length > 0} />
-     <DataTable … sort={sort} />      (or useCollectionView)
+     <DataGrid … sort={sort} />      (or useCollectionView)
    Props:
      fields: the collection's fields (utils/fields.js)
      value: the levels: [{ field, dir: "asc" | "desc" }], the first the main sort
@@ -21,7 +21,7 @@
        offer the fields not yet used. Rows move by drag, the handle's menu or Alt + Arrow Up / Down, announced.
      The panel opens with the focus on its first row (else the Add button).
    Notes:
-     The panel holds the levels; the page applies them (DataTable sort, or compareLevels on its rows). */
+     The panel holds the levels; the page applies them (DataGrid sort, or compareLevels on its rows). */
 import React from 'react';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';

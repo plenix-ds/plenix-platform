@@ -44,7 +44,7 @@
     "rich-text-editor-swatches-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "RichTextEditor color field: the space between the suggested color swatches." },
     "rich-text-editor-hex-width": { "$value": "{plx-ref.size-120px}", "$type": "dimension", "$description": "RichTextEditor color field: the width of the hex value field." },
     "rich-text-editor-picker-width": { "$value": "{plx-sys.control-height-toolbar}", "$type": "dimension", "$description": "RichTextEditor color field: the width of the browser's color input (a square at the control height)." },
-    "rich-text-editor-selected-cell-background": { "$value": "{plx-comp.data-table-row-selected-background}", "$type": "color", "$description": "RichTextEditor table: the cells of a table selection (the selected row fill of the Plenix table)." },
+    "rich-text-editor-selected-cell-background": { "$value": "{plx-comp.data-grid-row-selected-background}", "$type": "color", "$description": "RichTextEditor table: the cells of a table selection (the selected row fill of the Plenix table)." },
     "rich-text-editor-selected-node-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "RichTextEditor image: the outline of a selected image (the focus color)." },
     "rich-text-editor-selected-node-outline-width": { "$value": "{plx-comp.link-focus-outline-width}", "$type": "dimension", "$description": "RichTextEditor image: the width of a selected image's outline (the focus outline width)." }
   }

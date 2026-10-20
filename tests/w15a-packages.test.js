@@ -6,7 +6,7 @@ async function main(){
  let checks=0;const ok=(value,msg)=>{assert.ok(value,msg);checks++;},read=f=>JSON.parse(fs.readFileSync(path.join(PKG,f),'utf8'));
  const schema=read('angular/components.json'),types=fs.readFileSync(path.join(PKG,'angular/index.d.ts'),'utf8'),react=fs.readFileSync(path.join(PKG,'react/index.d.ts'),'utf8');
  const names=[...react.matchAll(/export declare const (\w+): React\.ComponentType</g)].map(m=>m[1]);assert.deepEqual(Object.keys(schema),names);checks++;
- for(const n of ['Input','Checkbox','Button','DataTable']){ok(schema[n],'adapter '+n);ok(types.includes('class '+n+' '),'typed '+n);}
+ for(const n of ['Input','Checkbox','Button','DataGrid']){ok(schema[n],'adapter '+n);ok(types.includes('class '+n+' '),'typed '+n);}
  ok(schema.Input.inputs.includes('value'),'typed value input');ok(schema.Button.events.some(e=>e.output==='plxClick'),'click output');ok(schema.Input.events.some(e=>e.output==='plxBlur'),'touch output');
  const mapping=read('figma/code-connect.json'),variables=read('figma/variables.json'),native=read('figma/native-designs.json'),original=JSON.parse(fs.readFileSync(path.join(ROOT,'platform/standards/figma-map.json'),'utf8'));
  const nodes=Object.values(original.pages).flatMap(p=>p.components||[]);assert.equal(mapping.mappings.length,nodes.length);checks++;

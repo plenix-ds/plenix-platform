@@ -6,8 +6,8 @@
 //               file declares for itself (e.g. --ds-r on the spec page); no old names
 //   hex         no raw hex colors outside the reference token file and the themes (colors come from tokens)
 //   font-size   no font size written as a number: font sizes come from --plx-ref-font-size-* tokens
-//   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataTable's
-//               stylesheets (DataTable, Table) also restyle their engine's tabulator-… classes, there only)
+//   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataGrid's
+//               stylesheets (DataGrid, Table) also restyle their engine's tabulator-… classes, there only)
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
@@ -19,7 +19,7 @@
 //               and no hard-coded design value written by code (a color, a length with a unit, a font, a bare number) in
 //               el.style.x =, style.setProperty(…), setAttribute('style', …), cssText, style={{…}} or style: {…}. A
 //               JavaScript adjustment is allowed anywhere (React's style prop included): a var(--plx-…) reference or a value
-//               computed from tokens, defined styles or measured layout. A DataTable's row height and cell padding stay the
+//               computed from tokens, defined styles or measured layout. A DataGrid's row height and cell padding stay the
 //               density's (tokens and classes): the style audit and the pages test check them at run time.
 //   generated   the token stylesheets and the standards' code (build-standards.js: providers/pageLayouts.js, system/layout-modes.css)
 //               are exactly what is generated from their JSON (platform/tokens/*.tokens.json, platform/standards/*.json);
@@ -34,8 +34,8 @@
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
-//   tables      every table is a DataTable (the React renderer in the Plenix table style): no <table>, no table element made in code, no
-//               PropertyList table variant: every table is a Table (static) or a DataTable, both on the React renderer (batches
+//   tables      every table is a DataGrid (the React renderer in the Plenix table style): no <table>, no table element made in code, no
+//               PropertyList table variant: every table is a Table (static) or a DataGrid, both on the React renderer (batches
 //               226, 229, 234)
 //   fonts       no call to Google Fonts: DM Sans and Reddit Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
@@ -102,7 +102,7 @@ for (const { file } of files) {
   for (const m of text.matchAll(/(--plx-[\w-]+)\s*:/g)) PLX.add(m[1]);
   for (const m of text.matchAll(/["'](--plx-[\w-]+)["']\s*[:,)]/g)) PLX.add(m[1]);
 }
-// tables, in stylesheets: no rule for the retired PropertyList table variant (every table is a Table or a DataTable on
+// tables, in stylesheets: no rule for the retired PropertyList table variant (every table is a Table or a DataGrid on
 // the React renderer, batches 226, 229, 234)
 for (const { file } of files) {
   if (!/\.css$/.test(file)) continue;
@@ -121,16 +121,16 @@ for (const { file } of files) {
   if (!/[\\/]platform[\\/]/.test(file) && !/(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/<AppShell\b[^>]*?\blayout\s*=|\bdata-plx-layout\s*=|['"]data-plx-layout['"]/g)) add('page-layout', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
   }
-  // tables: every table is a DataTable (the React renderer in the Plenix table style, batch 226): no <table>, no table element made
+  // tables: every table is a DataGrid (the React renderer in the Plenix table style, batch 226): no <table>, no table element made
   // in code, no retired Table component or its classes. The design system's builders draw a table and hand it to DS.table
   // at once (tests/pages.test.js fails any table left on a page); generated bundles are checked through their sources.
-  // a name/value table is a DataTable too: no PropertyList table variant anywhere, the design system included (batch 229)
+  // a name/value table is a DataGrid too: no PropertyList table variant anywhere, the design system included (batch 229)
   if (!/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
-    for (const m of text.matchAll(/<PropertyList\b[^>]*\bvariant=["'{]+table|PropertyList,\s*\{\s*variant:\s*["']table|\bplx-property-list--table\b/g)) add('tables', file, lineOf(m.index), 'not a DataTable: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
+    for (const m of text.matchAll(/<PropertyList\b[^>]*\bvariant=["'{]+table|PropertyList,\s*\{\s*variant:\s*["']table|\bplx-property-list--table\b/g)) add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
   }
   if (!SPEC_PAGE.test(file) && !/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/<table[\s>]|createElement\(\s*['"]table['"]|\bel\(\s*['"]table['"]|\bh\(\s*['"]table['"]/g)) {
-      add('tables', file, lineOf(m.index), 'not a DataTable: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
+      add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
     }
   }
   // fonts: the typefaces are hosted with the Platform (platform/fonts, system/fonts.css, batch 227): no page calls Google
@@ -201,7 +201,7 @@ for (const { file } of files) {
     const sel = css.replace(/\{[^{}]*\}/g, '{}');
     for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
       if (/^(plx-|is-)/.test(m[1])) continue;
-      // the DataTable's stylesheet restyles the classes its engine writes (the React renderer, platform/vendor/tabulator): there only
+      // the DataGrid's stylesheet restyles the classes its engine writes (the React renderer, platform/vendor/tabulator): there only
       // the RichTextEditor's stylesheet styles the classes its engine writes (ProseMirror and prosemirror-tables, platform/vendor/tiptap):
       // the separator image, the hidden selection, a selected node and the cells of a table selection; there only
       if (/^(ProseMirror-(separator|hideselection|selectednode)|selectedCell)$/.test(m[1]) && /[\\/]components[\\/]RichTextEditor[\\/]rich-text-editor\.css$/.test(file)) continue;

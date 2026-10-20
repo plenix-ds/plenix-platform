@@ -5,7 +5,7 @@
    Usage:
      const [view, setView] = React.useState({ layout: 'list', size: 'm', height: 'short' });
      <ViewMenu value={view} onChange={setView} />
-     {view.layout === 'list' ? <DataTable … rowHeight={view.height} /> : <ContentGrid size={…}>…</ContentGrid>}
+     {view.layout === 'list' ? <DataGrid … rowHeight={view.height} /> : <ContentGrid size={…}>…</ContentGrid>}
    Props:
      value: { layout: "list" | "gallery", size: "s" | "m" | "l", height: "short" | "medium" | "tall" | "extra-tall" }
      onReset(): optional Reset view action (useCollectionView supplies it)

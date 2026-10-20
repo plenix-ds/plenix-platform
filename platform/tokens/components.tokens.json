@@ -1270,7 +1270,7 @@
       "$value": "{plx-sys.label-width-sm} minmax(0,1fr)",
       "$type": "dimension"
     },
-    "data-table-radius": {
+    "data-grid-radius": {
       "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
@@ -1278,7 +1278,7 @@
       "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
-    "data-table-border-width": {
+    "data-grid-border-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
@@ -1286,7 +1286,7 @@
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "data-table-font-family": {
+    "data-grid-font-family": {
       "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
@@ -1294,7 +1294,7 @@
       "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
-    "data-table-data-font-family": {
+    "data-grid-data-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily",
       "$description": "A column of kind \"data\" (IDs, file names, paths, versions, dates, sizes, counts): the data font, Reddit Mono, at the table's own size and line height so it shares the row's baseline (owner, 2026-10-11)"
@@ -1304,15 +1304,15 @@
       "$type": "fontFamily",
       "$description": "A column of kind \"data\": the data font, Reddit Mono, at the table's own size and line height (owner, 2026-10-11)"
     },
-    "data-table-font-size": {
-      "$value": "{plx-sys.data-table-font-size}",
+    "data-grid-font-size": {
+      "$value": "{plx-sys.data-grid-font-size}",
       "$type": "dimension"
     },
     "table-font-size": {
       "$value": "{plx-sys.table-font-size}",
       "$type": "dimension"
     },
-    "data-table-header-font-size": {
+    "data-grid-header-font-size": {
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },
@@ -1320,7 +1320,7 @@
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },
-    "data-table-header-font-weight": {
+    "data-grid-header-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
@@ -1328,15 +1328,15 @@
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
-    "data-table-data-font-size": {
-      "$value": "{plx-sys.data-table-font-size}",
+    "data-grid-data-font-size": {
+      "$value": "{plx-sys.data-grid-font-size}",
       "$type": "dimension"
     },
     "table-data-font-size": {
       "$value": "{plx-sys.table-font-size}",
       "$type": "dimension"
     },
-    "data-table-name-font-weight": {
+    "data-grid-name-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
@@ -1344,7 +1344,7 @@
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "data-table-wrap-line-height": {
+    "data-grid-wrap-line-height": {
       "$value": "{plx-ref.line-height-snug}",
       "$type": "number"
     },
@@ -1352,7 +1352,7 @@
       "$value": "{plx-ref.line-height-snug}",
       "$type": "number"
     },
-    "data-table-cell-padding-inline": {
+    "data-grid-cell-padding-inline": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
@@ -1360,7 +1360,7 @@
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
-    "data-table-header-line-inset": {
+    "data-grid-header-line-inset": {
       "$value": "0",
       "$type": "dimension",
       "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
@@ -1370,7 +1370,7 @@
       "$type": "dimension",
       "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
     },
-    "data-table-column-line-inset": {
+    "data-grid-column-line-inset": {
       "$value": "0",
       "$type": "dimension",
       "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
@@ -1380,7 +1380,7 @@
       "$type": "dimension",
       "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
     },
-    "data-table-line-width": {
+    "data-grid-line-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
@@ -1388,11 +1388,11 @@
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "data-table-lead-column-width": {
+    "data-grid-lead-column-width": {
       "$value": "{plx-ref.size-36px}",
       "$type": "dimension"
     },
-    "data-table-mark-size": {
+    "data-grid-mark-size": {
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
@@ -1400,107 +1400,107 @@
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
-    "data-table-header-icon-size": {
+    "data-grid-header-icon-size": {
       "$value": "{plx-ref.glyph-size-14px}",
       "$type": "dimension"
     },
-    "data-table-sorter-inset": {
+    "data-grid-sorter-inset": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-table-popup-button-inset": {
+    "data-grid-popup-button-inset": {
       "$value": "{plx-ref.space-20px}",
       "$type": "dimension"
     },
-    "data-table-popup-button-radius": {
+    "data-grid-popup-button-radius": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "data-table-title-reserve": {
+    "data-grid-title-reserve": {
       "$value": "{plx-ref.size-36px}",
       "$type": "dimension"
     },
-    "data-table-resize-mark-width": {
+    "data-grid-resize-mark-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "data-table-duration": {
+    "data-grid-duration": {
       "$value": "{plx-sys.motion-duration-quick}",
       "$type": "duration"
     },
-    "data-table-editing-outline-width": {
+    "data-grid-editing-outline-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "data-table-tree-indent": {
+    "data-grid-tree-indent": {
       "$value": "{plx-ref.size-18px}",
       "$type": "dimension"
     },
-    "data-table-tree-control-size": {
+    "data-grid-tree-control-size": {
       "$value": "{plx-ref.glyph-size-14px}",
       "$type": "dimension"
     },
-    "data-table-tree-control-radius": {
+    "data-grid-tree-control-radius": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "data-table-tree-control-gap": {
+    "data-grid-tree-control-gap": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-table-group-font-weight": {
+    "data-grid-group-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
-    "data-table-group-count-gap": {
+    "data-grid-group-count-gap": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-table-menu-radius": {
+    "data-grid-menu-radius": {
       "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
-    "data-table-menu-padding": {
+    "data-grid-menu-padding": {
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"
     },
-    "data-table-menu-font-size": {
+    "data-grid-menu-font-size": {
       "$value": "{plx-ref.font-size-13}",
       "$type": "dimension"
     },
-    "data-table-menu-item-radius": {
+    "data-grid-menu-item-radius": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "data-table-menu-item-padding-block": {
+    "data-grid-menu-item-padding-block": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-table-menu-item-padding-inline-start": {
+    "data-grid-menu-item-padding-inline-start": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
-    "data-table-menu-item-padding-inline-end": {
+    "data-grid-menu-item-padding-inline-end": {
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension"
     },
-    "data-table-menu-item-gap": {
+    "data-grid-menu-item-gap": {
       "$value": "{plx-ref.space-10px}",
       "$type": "dimension"
     },
-    "data-table-menu-icon-size": {
+    "data-grid-menu-icon-size": {
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
-    "data-table-menu-separator-margin": {
+    "data-grid-menu-separator-margin": {
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"
     },
-    "data-table-menu-disabled-opacity": {
+    "data-grid-menu-disabled-opacity": {
       "$value": "{plx-ref.opacity-45}",
       "$type": "number"
     },
-    "data-table-placeholder-font-size": {
+    "data-grid-placeholder-font-size": {
       "$value": "{plx-ref.font-size-14}",
       "$type": "dimension"
     },
@@ -1508,7 +1508,7 @@
       "$value": "{plx-ref.font-size-14}",
       "$type": "dimension"
     },
-    "data-table-placeholder-font-weight": {
+    "data-grid-placeholder-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
@@ -1516,27 +1516,27 @@
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "data-table-footer-font-weight": {
+    "data-grid-footer-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "data-table-filter-gap": {
+    "data-grid-filter-gap": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-table-filter-padding": {
+    "data-grid-filter-padding": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-table-filter-min-width": {
+    "data-grid-filter-min-width": {
       "$value": "{plx-ref.size-220px}",
       "$type": "dimension"
     },
-    "data-table-filter-label-font-size": {
+    "data-grid-filter-label-font-size": {
       "$value": "{plx-ref.font-size-11}",
       "$type": "dimension"
     },
-    "data-table-filter-label-letter-spacing": {
+    "data-grid-filter-label-letter-spacing": {
       "$value": "{plx-sys.letter-spacing-caps}",
       "$type": "dimension"
     },
@@ -5092,252 +5092,252 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "data-table-background": {
-      "$value": "{plx-sys.data-table-surface}",
+    "data-grid-background": {
+      "$value": "{plx-sys.data-grid-surface}",
       "$type": "color"
     },
-    "data-table-border-color": {
-      "$value": "{plx-sys.data-table-border}",
+    "data-grid-border-color": {
+      "$value": "{plx-sys.data-grid-border}",
       "$type": "color"
     },
-    "data-table-empty-text": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-empty-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-text": {
-      "$value": "{plx-sys.data-table-text}",
+    "data-grid-text": {
+      "$value": "{plx-sys.data-grid-text}",
       "$type": "color"
     },
-    "data-table-focus-outline-color": {
-      "$value": "{plx-sys.data-table-accent}",
+    "data-grid-focus-outline-color": {
+      "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-table-header-background": {
-      "$value": "{plx-sys.data-table-header-background}",
+    "data-grid-header-background": {
+      "$value": "{plx-sys.data-grid-header-background}",
       "$type": "color"
     },
-    "data-table-border-bottom-color": {
-      "$value": "{plx-sys.data-table-header-line}",
+    "data-grid-border-bottom-color": {
+      "$value": "{plx-sys.data-grid-header-line}",
       "$type": "color"
     },
-    "data-table-header-text": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-header-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-header-column-line": {
-      "$value": "{plx-sys.data-table-header-line}",
+    "data-grid-header-column-line": {
+      "$value": "{plx-sys.data-grid-header-line}",
       "$type": "color"
     },
-    "data-table-height": {
-      "$value": "{plx-sys.data-table-row-height}",
+    "data-grid-height": {
+      "$value": "{plx-sys.data-grid-row-height}",
       "$type": "dimension"
     },
-    "data-table-hover-background": {
-      "$value": "{plx-sys.data-table-line}",
+    "data-grid-hover-background": {
+      "$value": "{plx-sys.data-grid-line}",
       "$type": "color"
     },
-    "data-table-sort-arrow-color": {
-      "$value": "{plx-sys.data-table-text-subtle}",
+    "data-grid-sort-arrow-color": {
+      "$value": "{plx-sys.data-grid-text-subtle}",
       "$type": "color"
     },
-    "data-table-sort-arrow-ascending-color": {
-      "$value": "{plx-sys.data-table-accent}",
+    "data-grid-sort-arrow-ascending-color": {
+      "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-table-sort-arrow-descending-color": {
-      "$value": "{plx-sys.data-table-accent}",
+    "data-grid-sort-arrow-descending-color": {
+      "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-table-header-popup-button-text": {
-      "$value": "{plx-sys.data-table-text-subtle}",
+    "data-grid-header-popup-button-text": {
+      "$value": "{plx-sys.data-grid-text-subtle}",
       "$type": "color"
     },
-    "data-table-filtered-text": {
-      "$value": "{plx-sys.data-table-accent}",
+    "data-grid-filtered-text": {
+      "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-table-hover-text": {
-      "$value": "{plx-sys.data-table-text}",
+    "data-grid-hover-text": {
+      "$value": "{plx-sys.data-grid-text}",
       "$type": "color"
     },
-    "data-table-hover-background-image": {
-      "$value": "linear-gradient({plx-sys.data-table-accent},{plx-sys.data-table-accent})",
+    "data-grid-hover-background-image": {
+      "$value": "linear-gradient({plx-sys.data-grid-accent},{plx-sys.data-grid-accent})",
       "$type": "color"
     },
-    "data-table-row-line": {
-      "$value": "{plx-sys.data-table-line}",
+    "data-grid-row-line": {
+      "$value": "{plx-sys.data-grid-line}",
       "$type": "color"
     },
-    "data-table-min-height": {
-      "$value": "{plx-sys.data-table-row-height}",
+    "data-grid-min-height": {
+      "$value": "{plx-sys.data-grid-row-height}",
       "$type": "dimension"
     },
-    "data-table-row-hover-background": {
-      "$value": "{plx-sys.data-table-row-hover}",
+    "data-grid-row-hover-background": {
+      "$value": "{plx-sys.data-grid-row-hover}",
       "$type": "color"
     },
-    "data-table-row-selected-background": {
-      "$value": "{plx-sys.data-table-row-selected}",
+    "data-grid-row-selected-background": {
+      "$value": "{plx-sys.data-grid-row-selected}",
       "$type": "color"
     },
-    "data-table-row-selected-hover-background": {
-      "$value": "{plx-sys.data-table-row-selected-hover}",
+    "data-grid-row-selected-hover-background": {
+      "$value": "{plx-sys.data-grid-row-selected-hover}",
       "$type": "color"
     },
-    "data-table-line-height": {
-      "$value": "{plx-sys.data-table-row-height}",
+    "data-grid-line-height": {
+      "$value": "{plx-sys.data-grid-row-height}",
       "$type": "number"
     },
-    "data-table-column-line": {
-      "$value": "{plx-sys.data-table-line}",
+    "data-grid-column-line": {
+      "$value": "{plx-sys.data-grid-line}",
       "$type": "color"
     },
-    "data-table-outline-color": {
-      "$value": "{plx-sys.data-table-accent}",
+    "data-grid-outline-color": {
+      "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-table-invalid-outline-color": {
-      "$value": "{plx-sys.data-table-danger}",
+    "data-grid-invalid-outline-color": {
+      "$value": "{plx-sys.data-grid-danger}",
       "$type": "color"
     },
-    "data-table-checkbox-accent-color": {
-      "$value": "{plx-sys.data-table-accent}",
+    "data-grid-checkbox-accent-color": {
+      "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-table-cell-icon-text": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-cell-icon-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-cell-icon-hover-background": {
-      "$value": "{plx-sys.data-table-line}",
+    "data-grid-cell-icon-hover-background": {
+      "$value": "{plx-sys.data-grid-line}",
       "$type": "color"
     },
-    "data-table-cell-wrap-padding-bottom": {
-      "$value": "calc(({plx-sys.data-table-row-height} - 1lh) / 2)",
+    "data-grid-cell-wrap-padding-bottom": {
+      "$value": "calc(({plx-sys.data-grid-row-height} - 1lh) / 2)",
       "$type": "dimension"
     },
-    "data-table-cell-wrap-padding-top": {
-      "$value": "calc(({plx-sys.data-table-row-height} - 1lh) / 2)",
+    "data-grid-cell-wrap-padding-top": {
+      "$value": "calc(({plx-sys.data-grid-row-height} - 1lh) / 2)",
       "$type": "dimension"
     },
-    "data-table-row-label-background": {
-      "$value": "{plx-sys.data-table-header-background}",
+    "data-grid-row-label-background": {
+      "$value": "{plx-sys.data-grid-header-background}",
       "$type": "color"
     },
-    "data-table-row-label-border-right-color": {
-      "$value": "{plx-sys.data-table-header-line}",
+    "data-grid-row-label-border-right-color": {
+      "$value": "{plx-sys.data-grid-header-line}",
       "$type": "color"
     },
-    "data-table-row-label-name-text": {
-      "$value": "{plx-sys.data-table-row-selected-text}",
+    "data-grid-row-label-name-text": {
+      "$value": "{plx-sys.data-grid-row-selected-text}",
       "$type": "color"
     },
-    "data-table-tree-control-mark": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-tree-control-mark": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-tree-branch-color": {
-      "$value": "{plx-sys.data-table-header-line}",
+    "data-grid-tree-branch-color": {
+      "$value": "{plx-sys.data-grid-header-line}",
       "$type": "color"
     },
-    "data-table-group-count-text": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-group-count-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-group-count-font-weight": {
+    "data-grid-group-count-font-weight": {
       "$value": "{plx-sys.font-weight-regular}",
       "$type": "fontWeight"
     },
-    "data-table-border-left-color": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-border-left-color": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-border-top-color": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-border-top-color": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-footer-line": {
-      "$value": "{plx-sys.data-table-line}",
+    "data-grid-footer-line": {
+      "$value": "{plx-sys.data-grid-line}",
       "$type": "color"
     },
-    "data-table-moving-row-border-color": {
-      "$value": "{plx-sys.data-table-accent}",
+    "data-grid-moving-row-border-color": {
+      "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-table-shadow": {
-      "$value": "{plx-sys.data-table-menu-shadow}",
+    "data-grid-shadow": {
+      "$value": "{plx-sys.data-grid-menu-shadow}",
       "$type": "shadow"
     },
-    "data-table-menu-icon-text": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-menu-icon-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-menu-item-danger-text": {
-      "$value": "{plx-sys.data-table-danger}",
+    "data-grid-menu-item-danger-text": {
+      "$value": "{plx-sys.data-grid-danger}",
       "$type": "color"
     },
-    "data-table-filter-label-text": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-filter-label-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color"
     },
-    "data-table-w-fill-flex-basis": {
+    "data-grid-w-fill-flex-basis": {
       "$value": "{plx-ref.size-80px}",
       "$type": "dimension"
     },
-    "data-table-w-fill-width": {
+    "data-grid-w-fill-width": {
       "$value": "{plx-ref.size-80px}",
       "$type": "dimension"
     },
-    "data-table-w-fill-min-width": {
+    "data-grid-w-fill-min-width": {
       "$value": "{plx-ref.size-80px}",
       "$type": "dimension"
     },
-    "data-table-resize-width": {
+    "data-grid-resize-width": {
       "$value": "{plx-ref.size-8px}",
       "$type": "dimension"
     },
-    "data-table-resize-z-index": {
+    "data-grid-resize-z-index": {
       "$value": "{plx-sys.layer-raised}",
       "$type": "number"
     },
-    "data-table-resize-hover-background-image": {
-      "$value": "linear-gradient({plx-sys.data-table-accent},{plx-sys.data-table-accent})",
+    "data-grid-resize-hover-background-image": {
+      "$value": "linear-gradient({plx-sys.data-grid-accent},{plx-sys.data-grid-accent})",
       "$type": "color"
     },
-    "data-table-drop-shadow": {
-      "$value": "inset 0 {plx-sys.border-width-medium} 0 0 {plx-sys.data-table-accent}",
+    "data-grid-drop-shadow": {
+      "$value": "inset 0 {plx-sys.border-width-medium} 0 0 {plx-sys.data-grid-accent}",
       "$type": "shadow"
     },
-    "data-table-column-drop-shadow": {
-      "$value": "inset {plx-sys.border-width-medium} 0 0 0 {plx-sys.data-table-accent}",
+    "data-grid-column-drop-shadow": {
+      "$value": "inset {plx-sys.border-width-medium} 0 0 0 {plx-sys.data-grid-accent}",
       "$type": "shadow"
     },
-    "data-table-list-intrinsic-width": {
+    "data-grid-list-intrinsic-width": {
       "$value": "{plx-ref.size-720px}",
       "$type": "dimension",
       "$description": "The width a grid that can become a Narrow list asks for where its container takes the width of its content (a size container has no content width of its own): wide enough to stay a table."
     },
-    "data-table-list-padding-block": {
+    "data-grid-list-padding-block": {
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension",
       "$description": "A Narrow grid's list item (platforms.md 6.5): the space above and below its lines."
     },
-    "data-table-list-row-gap": {
+    "data-grid-list-row-gap": {
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension",
       "$description": "A Narrow grid's list item: the space between its title line and the lines under it."
     },
-    "data-table-list-line-height": {
+    "data-grid-list-line-height": {
       "$value": "{plx-ref.line-height-normal}",
       "$type": "number",
       "$description": "A Narrow grid's list item: the line height of each key column's line."
     },
-    "data-table-list-detail-text": {
-      "$value": "{plx-sys.data-table-text-muted}",
+    "data-grid-list-detail-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color",
       "$description": "A Narrow grid's list item: the lines under the title (the key columns after the first)."
     },
-    "data-table-resize-focus-outline-width": {
+    "data-grid-resize-focus-outline-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension",
       "$description": "A column's resize grip while it has the keyboard focus: the width of its outline."
@@ -7579,7 +7579,7 @@
       "$type": "dimension"
     },
     "activity-list-item-min-height": {
-      "$value": "{plx-sys.data-table-row-height}",
+      "$value": "{plx-sys.data-grid-row-height}",
       "$type": "dimension"
     },
     "activity-list-item-padding-block": {

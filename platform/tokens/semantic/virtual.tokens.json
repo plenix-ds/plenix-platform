@@ -4,7 +4,7 @@
     "virtual-item-size": {
       "$value": "{plx-ref.size-32px}",
       "$type": "dimension",
-      "$description": "One item's size along the scroll axis (a row's height, a column's width); a virtualized container sets it to its own item size (for a list: --plx-sys-data-table-row-height)"
+      "$description": "One item's size along the scroll axis (a row's height, a column's width); a virtualized container sets it to its own item size (for a list: --plx-sys-data-grid-row-height)"
     },
     "virtual-item-gap": {
       "$value": "0px",

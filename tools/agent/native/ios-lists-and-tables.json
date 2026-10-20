@@ -1,6 +1,6 @@
 {
  "ios-data-display|Lists and tables": {
-  "summary": "A Plenix list on iOS is the system List (UICollectionView with a list layout), kept native in behavior: swipe actions, editing and reordering, disclosure into a detail view, section headers, Dynamic Type and VoiceOver. Plenix changes the look to match the Web List and DataTable: rows of at least 44 points on the table surface with table lines drawn the full width, DM Sans titles at the body text role and muted subtitles at the secondary role, muted section headers, an 8-point rounded frame for grouped sections, and the Plenix selected colors for the chosen row. A multicolumn table on iPad and the Mac uses the same tokens.",
+  "summary": "A Plenix list on iOS is the system List (UICollectionView with a list layout), kept native in behavior: swipe actions, editing and reordering, disclosure into a detail view, section headers, Dynamic Type and VoiceOver. Plenix changes the look to match the Web List and DataGrid: rows of at least 44 points on the table surface with table lines drawn the full width, DM Sans titles at the body text role and muted subtitles at the secondary role, muted section headers, an 8-point rounded frame for grouped sections, and the Plenix selected colors for the chosen row. A multicolumn table on iPad and the Mac uses the same tokens.",
   "variants": [
    {
     "name": "Row",
@@ -30,8 +30,8 @@
     "name": "Selected row",
     "apple": "Row with a checkmark (system selection)",
     "web": "data-display|Selectable list",
-    "background": "plx-sys-data-table-row-selected",
-    "content": "plx-sys-data-table-row-selected-text",
+    "background": "plx-sys-data-grid-row-selected",
+    "content": "plx-sys-data-grid-row-selected-text",
     "border": "plx-sys-table-line",
     "swiftui": "List(selection:) or a checkmark in the trailing edge",
     "uikit": "UICellAccessory.checkmark() and state.isSelected",
@@ -216,10 +216,10 @@
    {
     "part": "C",
     "attribute": "Selected row",
-    "token": "plx-sys-data-table-row-selected, plx-sys-data-table-row-selected-text",
-    "value": "Plenix.Colors.dataTableRowSelected with Plenix.Colors.dataTableRowSelectedText; a checkmark for chosen options",
+    "token": "plx-sys-data-grid-row-selected, plx-sys-data-grid-row-selected-text",
+    "value": "Plenix.Colors.dataGridRowSelected with Plenix.Colors.dataGridRowSelectedText; a checkmark for chosen options",
     "apple": "The system gray highlight, a tint checkmark",
-    "swiftui": ".listRowBackground(Plenix.Colors.dataTableRowSelected) when selected",
+    "swiftui": ".listRowBackground(Plenix.Colors.dataGridRowSelected) when selected",
     "uikit": "background.backgroundColor for state.isSelected; UICellAccessory.checkmark()",
     "appkit": "A custom NSTableRowView drawSelection(in:)",
     "follows": "Best practices"
@@ -235,14 +235,14 @@
    },
    {
     "state": "Pressed",
-    "token": "plx-sys-data-table-row-hover",
+    "token": "plx-sys-data-grid-row-hover",
     "swiftui": "Drawn by the list",
     "uikit": "state.isHighlighted",
     "appkit": "Drawn by the table"
    },
    {
     "state": "Selected",
-    "token": "plx-sys-data-table-row-selected, plx-sys-data-table-row-selected-text",
+    "token": "plx-sys-data-grid-row-selected, plx-sys-data-grid-row-selected-text",
     "swiftui": "List(selection:)",
     "uikit": "state.isSelected",
     "appkit": "selectedRowIndexes"
@@ -279,8 +279,8 @@
     "    func body(content: Content) -> some View {",
     "        content",
     "            .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body).monospacedDigit())",
-    "            .foregroundStyle(selected ? Plenix.Colors.dataTableRowSelectedText : Plenix.Colors.tableText)",
-    "            .listRowBackground(selected ? Plenix.Colors.dataTableRowSelected : Plenix.Colors.tableSurface)",
+    "            .foregroundStyle(selected ? Plenix.Colors.dataGridRowSelectedText : Plenix.Colors.tableText)",
+    "            .listRowBackground(selected ? Plenix.Colors.dataGridRowSelected : Plenix.Colors.tableSurface)",
     "            .listRowSeparatorTint(Plenix.Colors.tableLine)",
     "            .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }   // Plenix table lines run the full width",
     "            .listRowInsets(EdgeInsets(top: 0, leading: Plenix.Space.spaceInsetLg, bottom: 0, trailing: Plenix.Space.spaceInsetLg))",
@@ -351,12 +351,12 @@
     "        content.secondaryText = file.detail",
     "        content.textProperties.font = title",
     "        content.textProperties.lineBreakMode = .byTruncatingMiddle",
-    "        content.textProperties.color = UIColor(state.isSelected ? Plenix.Colors.dataTableRowSelectedText : Plenix.Colors.tableText)",
+    "        content.textProperties.color = UIColor(state.isSelected ? Plenix.Colors.dataGridRowSelectedText : Plenix.Colors.tableText)",
     "        content.secondaryTextProperties.font = subtitle",
     "        content.secondaryTextProperties.color = UIColor(Plenix.Colors.tableTextMuted)",
     "        cell.contentConfiguration = content",
     "        var background = UIBackgroundConfiguration.listGroupedCell().updated(for: state)",
-    "        background.backgroundColor = UIColor(state.isSelected ? Plenix.Colors.dataTableRowSelected : (state.isHighlighted ? Plenix.Colors.dataTableRowHover : Plenix.Colors.tableSurface))",
+    "        background.backgroundColor = UIColor(state.isSelected ? Plenix.Colors.dataGridRowSelected : (state.isHighlighted ? Plenix.Colors.dataGridRowHover : Plenix.Colors.tableSurface))",
     "        cell.backgroundConfiguration = background",
     "    }",
     "}"
@@ -381,7 +381,7 @@
     "",
     "final class PlenixRowView: NSTableRowView {",
     "    override func drawSelection(in dirtyRect: NSRect) {",
-    "        NSColor(Plenix.Colors.dataTableRowSelected).setFill()",
+    "        NSColor(Plenix.Colors.dataGridRowSelected).setFill()",
     "        bounds.fill()",
     "    }",
     "}"

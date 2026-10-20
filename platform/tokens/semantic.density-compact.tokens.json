@@ -136,7 +136,7 @@
       "$value": "{plx-ref.space-32px}",
       "$type": "dimension"
     },
-    "data-table-row-height": {
+    "data-grid-row-height": {
       "$value": "{plx-ref.size-28px}",
       "$type": "dimension"
     },
@@ -144,7 +144,7 @@
       "$value": "{plx-ref.size-28px}",
       "$type": "dimension"
     },
-    "data-table-font-size": {
+    "data-grid-font-size": {
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },

@@ -43,7 +43,7 @@
      Pointer: moving over the plot shows the nearest value (mode "x": the nearest column); a click selects it; with
        zoom, a drag across the plot marks a range and zooms to it when released.
      The tooltip and the ring stay inside the plot; they are hidden from assistive technology like the rest of the plot:
-       the live region and the data table carry the values. Leaving the plot or Escape clears them.
+       the live region and the data grid carry the values. Leaving the plot or Escape clears them.
    Notes:
      Geometry stays in the chart: register() gives the interaction the chart's nearest() and columnAt() for the
        pointer; the interaction keeps indices, so a resize or a zoom never loses the value in focus.

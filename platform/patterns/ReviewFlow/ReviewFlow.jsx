@@ -3,7 +3,7 @@
      its icon, the reviewers and their decisions, a comment, and the decisions in order (Reject, Request changes, Approve
      last); Reject and Request changes need a reason, said under the comment field. Its history lists every decision.
      kind="human" is the human review of generated content: a notice says a person must check it first. ReviewQueue is
-     the data review workflow: a DataTable of items waiting for review under a CommandBar whose selection holds Approve,
+     the data review workflow: a DataGrid of items waiting for review under a CommandBar whose selection holds Approve,
      Request changes and Reject; the bulk decisions that need a reason ask for it with the count ("Reject 2 items?").
      WorkflowStatus is the status badge they share (10 Patterns › Review and approval).
    Usage:
@@ -65,7 +65,7 @@ import { Persona } from '../../components/Persona/Persona.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { PromptDialog } from '../../components/Dialog/Dialog.jsx';
-import { DataTable } from '../../components/DataTableNext/DataTablePublic.jsx';
+import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';
@@ -213,7 +213,7 @@ export function ReviewQueue({ items = [], label = 'Waiting for review', noun = '
           { id: 'changes', label: t.changes, icon: 'alert', onSelect: () => setAsk('changes-requested') },
           { id: 'reject', label: t.reject, icon: 'close', danger: true, onSelect: () => setAsk('rejected') },
         ] }} />
-      <DataTable label={label} data={items} index="id" selectable selected={sel} onSelectionChange={setSel} columns={columns} />
+      <DataGrid label={label} data={items} index="id" selectable selected={sel} onSelectionChange={setSel} columns={columns} />
       <PromptDialog open={!!ask} title={fill(ask === 'rejected' ? t.rejectTitle : t.changesTitle, { what: what(sel.length) })}
         label={ask === 'rejected' ? t.reason : t.changesLabel} description={t.reasonHint}
         confirmLabel={ask === 'rejected' ? t.reject : t.changes} validate={(v) => (v.trim() ? '' : t.needReason)}

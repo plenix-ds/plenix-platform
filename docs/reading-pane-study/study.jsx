@@ -1,7 +1,7 @@
 /* Reading pane demo (docs/reading-pane-study/study.jsx): the Outlook-style layout on the Platform's SplitView (owner,
    2026-10-16): header row · navigation pane | table | the selected item. Two pages, no switches: index.html side by
    side, stacked.html stacked. Compiled to study.js with tools/agent/build-study.js. */
-const { AppShell, AppHeader, NavPane, NavList, StatusBar, SessionProvider, DataTable, CommandBar, Toolbar, Button, Text, Stack,
+const { AppShell, AppHeader, NavPane, NavList, StatusBar, SessionProvider, DataGrid, CommandBar, Toolbar, Button, Text, Stack,
   Inline, EmptyState, Badge, Persona, Divider, SplitView, ReadingPane } = Plenix;
 const { useState } = React;
 
@@ -31,7 +31,7 @@ function Mail() {
   const count = sel.length;
   const bar = <CommandBar label="Inbox" actions={[{ id: 'new', label: 'New mail', icon: 'plus', primary: true }, { id: 'sweep', label: 'Sweep', icon: 'trash-simple' }]}
     selection={count > 1 ? { count, noun: 'item', actions: [{ id: 'read', label: 'Mark as read', icon: 'mark-unread' }, { id: 'archive', label: 'Archive', icon: 'archive' }, { id: 'delete', label: 'Delete', icon: 'trash', danger: true }], onClear: () => setSel(open ? [open] : []) } : undefined} />;
-  const table = <DataTable label="Inbox" data={ITEMS} columns={COLUMNS} mode="fill" selectable selected={sel} narrow="table" viewMenu={false}
+  const table = <DataGrid label="Inbox" data={ITEMS} columns={COLUMNS} mode="fill" selectable selected={sel} narrow="table" viewMenu={false}
     onSelectionChange={(k) => { setSel(k); if (k.length === 1) setOpen(k[0]); }} on={{ rowClick: (e, row) => { const id = row.getData().id; setOpen(id); setSel([id]); } }} />;
   const reading = (
     <ReadingPane label={count > 1 ? count + ' items selected' : item ? item.subject : 'Nothing selected'}

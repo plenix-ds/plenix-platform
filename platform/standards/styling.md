@@ -226,7 +226,7 @@ The word-spacing leak happened exactly there.
 - **Composition:** the composition standard stays the source: page kinds, regions, patterns per region, and fields
   sized by the pattern around them.
 - **Framing as a composition choice:**
-  - Framed containers (Panel, Card, a contained Tabs panel, CodeBlock, Notice, Fieldset, DropZone, Table, DataTable)
+  - Framed containers (Panel, Card, a contained Tabs panel, CodeBlock, Notice, Fieldset, DropZone, Table, DataGrid)
     expose a framed and an unframed presentation where both are valid.
   - The pattern chooses the presentation, and a composition check flags a third frame.
   - `nesting.css` stays only as a defensive fallback until every pattern chooses explicitly.
@@ -424,7 +424,7 @@ one owner, instead of once per page. Pages then have nothing to override, so the
 1. **Choose the template.** It fixes the page kind (AppShell `page`), the regions (header, navigation pane, main,
    footer) and how the page scrolls.
 2. **Fill each region with the pattern the template names for it:** EntityHeader for the page header, CommandBar for
-   the commands, DataTable or ContentGrid for a collection, Form for data entry, SettingsSection for settings, and so
+   the commands, DataGrid or ContentGrid for a collection, Form for data entry, SettingsSection for settings, and so
    on.
 3. **Arrange inside a slot with layout primitives** only where the pattern leaves the arrangement open: Stack, Inline,
    Columns, Center, ContentGrid. Spacing comes from their `gap` prop; widths and tracks from their props.

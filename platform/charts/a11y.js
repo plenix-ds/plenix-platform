@@ -2,7 +2,7 @@
    Summary: The helpers behind the chart accessibility rules (07 Data Display › Charts › Chart accessibility): a summary
      sentence of a series for the chart's description (summarizeSeries), textures that tell series apart without their
      color (ChartPatterns, chartPattern), and keyboard reading of a chart's points one at a time, each value spoken
-     (useChartPoints, on the standard chart interaction). ChartFrame already gives every chart its name, its description and its data table.
+     (useChartPoints, on the standard chart interaction). ChartFrame already gives every chart its name, its description and its data grid.
    Usage:
      const summary = summarizeSeries(values, { labels: months });      // "Up 133% from 120 to 280; lowest 120 (Jan), highest 310 (May)."
      <ChartFrame title="Sign-ups" description={summary} table={…}>…</ChartFrame>

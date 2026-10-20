@@ -1,6 +1,6 @@
 /* Plenix · LineChart
    Summary: A line chart (07 Data Display › Charts › Line chart, and its Step chart variant): one line per series through
-     its values over an ordered range, usually time, drawn in ChartFrame with its axes, grid lines and data table. Lines
+     its values over an ordered range, usually time, drawn in ChartFrame with its axes, grid lines and data grid. Lines
      are straight between values (curve "linear") or hold each value until the next change (curve "step"); points mark
      the values when there are few of them. It is interactive: one Tab stop, the arrow keys and the pointer move a
      crosshair with the shared tooltip, the value is said in the live region, the legend shows and hides series, and a

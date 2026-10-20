@@ -34,7 +34,7 @@
      Long names and lines wrap in the default card and are cut with an ellipsis in the compact row (full text on hover).
      The cover keeps its frame before it loads and is decorative.
    Notes:
-     A list of people in a table is the DataTable with Persona in its name column; a person inline is Persona; a person's
+     A list of people in a table is the DataGrid with Persona in its name column; a person inline is Persona; a person's
        preview on hover is the hover card. Other props pass through to Card's <article>.
 */
 import React from 'react';

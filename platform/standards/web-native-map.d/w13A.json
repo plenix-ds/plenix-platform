@@ -10,7 +10,7 @@
     "specialized|Checkout": { "ios": ["ios-specialized|Apple Pay", "ios-forms|Entering data"], "android": ["android-patterns|Step flow", "android-forms|Form screen"] },
     "specialized|Payment": { "ios": ["ios-specialized|Apple Pay", "ios-specialized|Wallet"], "android": ["android-forms|Form screen", "android-forms|Keyboard types"] },
     "specialized|Order confirmation": { "ios": ["ios-feedback|Feedback"], "android": ["android-feedback|Error state", "android-screen-structures|Detail"] },
-    "specialized|Order management": { "ios": ["ios-data-display|Lists and tables", "ios-data-display|Outline views"], "android": ["android-data-display|Data table", "android-actions|Multiple selection"] },
+    "specialized|Order management": { "ios": ["ios-data-display|Lists and tables", "ios-data-display|Outline views"], "android": ["android-data-display|Data grid", "android-actions|Multiple selection"] },
     "specialized|Subscription management": { "ios": ["ios-specialized|Apple In-App Purchase", "ios-patterns|Managing accounts"], "android": ["android-screen-structures|Settings"] },
     "specialized|Returns": { "ios": ["ios-forms|Entering data", "ios-patterns|Managing accounts"], "android": ["android-patterns|Step flow", "android-patterns|Form"] }
   }

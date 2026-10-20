@@ -120,7 +120,7 @@
       "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
       "$type": "dimension"
     },
-    "data-table-lead-column-width": {
+    "data-grid-lead-column-width": {
       "$value": "{plx-sys.control-target-min}",
       "$type": "dimension",
       "$description": "With touch the lead column (the selection checkbox, a mark, a row handle) is the minimum target wide; the checkbox's label fills the cell (Platforms Standard 3.1)"

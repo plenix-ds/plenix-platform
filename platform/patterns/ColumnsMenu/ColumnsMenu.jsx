@@ -7,7 +7,7 @@
      const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
      <ColumnsMenu fields={fields} value={columns} onChange={setColumns} />
      <ManageColumnsDialog fields={fields} value={columns} onChange={setColumns} />
-     <DataTable … columnOrder={columns.order} hiddenColumns={columns.hidden} />      (or useCollectionView)
+     <DataGrid … columnOrder={columns.order} hiddenColumns={columns.hidden} />      (or useCollectionView)
    Props:
      fields: the columns: [{ value, label }] (the collection's fields)
      value: { order: [field…], hidden: [field…] }; the first of the order is the first column (never hidden)

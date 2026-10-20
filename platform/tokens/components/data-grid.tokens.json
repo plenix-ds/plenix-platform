@@ -1,0 +1,155 @@
+{
+  "$description": "DataGrid (platform/components/DataGrid): its own tokens beside the shared set: the footer of the modes \"pages\" and \"load-more\" (owner, 2026-10-14), the row height steps, the padding and lines of taller rows, the Airtable-style group rows, the column header type icons and wrapped headers (owner, 2026-10-14). The grid's other tokens are in the shared set.",
+  "plx-comp": {
+    "data-grid-footer-border-color": {
+      "$value": "{plx-sys.data-grid-line}",
+      "$type": "color",
+      "$description": "DataGrid footer: the line above it (a row's line)."
+    },
+    "data-grid-footer-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "DataGrid footer: its text (the range or the count, the rows-per-page label), as Pagination's."
+    },
+    "data-grid-footer-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "DataGrid footer: its text size (Pagination's)."
+    },
+    "data-grid-footer-gap": {
+      "$value": "{plx-sys.space-cluster-md}",
+      "$type": "dimension",
+      "$description": "DataGrid footer: the space between its parts (Pagination's gap)."
+    },
+    "data-grid-footer-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "DataGrid footer: the space between its lines when the parts wrap in a narrow grid."
+    },
+    "data-grid-footer-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "DataGrid footer: the space above and below its controls."
+    },
+    "data-grid-footer-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "DataGrid footer: the space at its start and end."
+    },
+    "data-grid-footer-label-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "DataGrid footer: the space between the rows-per-page label and its Select (Pagination's per-page gap)."
+    },
+    "data-grid-fit-max-height": {
+      "$value": "100dvh",
+      "$type": "dimension",
+      "$description": "DataGrid (fill, load-more): the body is at most one screen tall until the grid has measured the room left under where it starts (then that room, written on the body)."
+    },
+    "data-grid-record-height": {
+      "$value": "{plx-sys.data-grid-row-height}",
+      "$type": "dimension",
+      "$description": "DataGrid: a record row's height. The row height step Short is the density's row height (28 / 32 / 40); the grid's rowHeight sets the other steps on its frame (data-plx-row-height). Only record rows take it: the header row, group rows, the add row and the group gap keep their own heights."
+    },
+    "data-grid-row-height-medium": {
+      "$value": "{plx-ref.size-56px}",
+      "$type": "dimension",
+      "$description": "DataGrid row height step Medium: 56px at every density."
+    },
+    "data-grid-row-height-tall": {
+      "$value": "{plx-ref.size-88px}",
+      "$type": "dimension",
+      "$description": "DataGrid row height step Tall: 88px at every density."
+    },
+    "data-grid-row-height-extra-tall": {
+      "$value": "{plx-ref.size-128px}",
+      "$type": "dimension",
+      "$description": "DataGrid row height step Extra tall: 128px at every density."
+    },
+    "data-grid-cell-padding-block": {
+      "$value": "calc(({plx-sys.data-grid-row-height} - {plx-comp.data-grid-text-line-height}) / 2)",
+      "$type": "dimension",
+      "$description": "DataGrid: P, the minimum room above and below a cell's content: a Short row's own vertical padding, (the density row height − the text line height) / 2 (6px at Standard). Taller rows start their content P from the top and keep at least P at the bottom."
+    },
+    "data-grid-group-header-height": {
+      "$value": "calc({plx-sys.data-grid-row-height} + {plx-ref.size-16px})",
+      "$type": "dimension",
+      "$description": "DataGrid group header row: the density row height + 16px (44 / 48 / 56), the same at every row height step: the eyebrow line and the value line with P above and below."
+    },
+    "data-grid-group-eyebrow-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "DataGrid group header: the line of the eyebrow that names the grouped-by field."
+    },
+    "data-grid-group-gap": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "DataGrid: the band between two groups (lines above and below it), shown whether the groups are open or closed."
+    },
+    "data-grid-group-background": {
+      "$value": "{plx-sys.surface-sunken}",
+      "$type": "color",
+      "$description": "DataGrid group header row: the neutral sunken surface."
+    },
+    "data-grid-grouped-column-background": {
+      "$value": "{plx-sys.surface-sunken}",
+      "$type": "color",
+      "$description": "DataGrid: the grouped-by column (its header and its cells) is tinted with the neutral sunken surface."
+    },
+    "data-grid-group-indent": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "DataGrid: a nested group's header is indented one step per level."
+    },
+    "data-grid-group-chevron-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "DataGrid group header: the chevron that opens and closes the group."
+    },
+    "data-grid-group-chevron-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
+      "$type": "color",
+      "$description": "DataGrid group header: the chevron's color."
+    },
+    "data-grid-group-gap-inline": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension",
+      "$description": "DataGrid group header: the space between the chevron, the eyebrow and value, and the count."
+    },
+    "data-grid-group-summary-gap": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "DataGrid group header: the space between a summary's name and its value."
+    },
+    "data-grid-group-summary-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
+      "$type": "color",
+      "$description": "DataGrid group header: a column summary's name (Sum, Average…)."
+    },
+    "data-grid-add-row-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
+      "$type": "color",
+      "$description": "DataGrid add row: the + and its words at the end of a group."
+    },
+    "data-grid-header-wrap-height": {
+      "$value": "calc({plx-sys.data-grid-row-height} + {plx-ref.size-16px})",
+      "$type": "dimension",
+      "$description": "DataGrid with Wrap headers: the column header row, two lines tall (a fixed height, never measured)."
+    },
+    "data-grid-header-title-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "DataGrid with Wrap headers: the line of a column title that wraps onto two lines."
+    },
+    "data-grid-header-type-icon-text": {
+      "$value": "{plx-sys.data-grid-text-muted}",
+      "$type": "color",
+      "$description": "DataGrid column header: the type icon's color."
+    },
+    "data-grid-menu-chevron-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "DataGrid column header: the column menu's chevron button (the thin outline chevron, muted; owner, 2026-10-14), shown while the header is hovered."
+    }
+  }
+}

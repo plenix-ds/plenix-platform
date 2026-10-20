@@ -3881,7 +3881,7 @@
           "property": "Accessible description",
           "ios": "accessibilityChartDescriptor(_:) (Audio Graphs)",
           "android": "Modifier.semantics { contentDescription }",
-          "web": "role=\"img\" with aria-label plus a text summary or data table"
+          "web": "role=\"img\" with aria-label plus a text summary or data grid"
         }
       ],
       "web": [
@@ -4557,43 +4557,43 @@
           "property": "Rows",
           "ios": "List / UITableView dataSource",
           "android": "LazyColumn with ListItem",
-          "web": "List, or DataTable data"
+          "web": "List, or DataGrid data"
         },
         {
           "property": "Columns",
           "ios": "Table with TableColumn",
           "android": "— (custom Row per item)",
-          "web": "DataTable columns"
+          "web": "DataGrid columns"
         },
         {
           "property": "Style",
           "ios": "listStyle(_:) (plain, grouped, insetGrouped) / UITableView.Style",
           "android": "ListItem colors and dividers",
-          "web": "Table or DataTable; List"
+          "web": "Table or DataGrid; List"
         },
         {
           "property": "Selection",
           "ios": "List(selection:) / allowsSelection, allowsMultipleSelection",
           "android": "custom selected state",
-          "web": "DataTable selectable, selected, onSelectionChange"
+          "web": "DataGrid selectable, selected, onSelectionChange"
         },
         {
           "property": "Sorting",
           "ios": "Table sortOrder",
           "android": "—",
-          "web": "DataTable columns[].sorter"
+          "web": "DataGrid columns[].sorter"
         },
         {
           "property": "Edit and reorder",
           "ios": "onDelete(perform:), onMove(perform:), EditButton / isEditing",
           "android": "SwipeToDismissBox; custom drag",
-          "web": "DataTable rowHandle (drag) and editor"
+          "web": "DataGrid rowHandle (drag) and editor"
         },
         {
           "property": "Row actions",
           "ios": "swipeActions(edge:allowsFullSwipe:content:), contextMenu(menuItems:)",
           "android": "SwipeToDismissBox; DropdownMenu",
-          "web": "DataTable rowMenu"
+          "web": "DataGrid rowMenu"
         },
         {
           "property": "Row content",
@@ -4604,14 +4604,14 @@
       ],
       "web": [
         "data-display|Table",
-        "data-display|Data table",
+        "data-display|Data grid",
         "data-display|List",
         "data-display|Grouped list",
         "data-display|Sortable table"
       ],
       "android": [
         "android-data-display|List",
-        "android-data-display|Data table"
+        "android-data-display|Data grid"
       ]
     },
     "ios-data-display|Lockups": {
@@ -4723,7 +4723,7 @@
           "property": "Hierarchy",
           "ios": "OutlineGroup or List(_:children:) / — (macOS: NSOutlineView)",
           "android": "custom expandable rows in LazyColumn",
-          "web": "Tree nodes, or DataTable with options.dataTree"
+          "web": "Tree nodes, or DataGrid with options.dataTree"
         },
         {
           "property": "Expanded rows",
@@ -4741,7 +4741,7 @@
           "property": "Columns and sorting",
           "ios": "Table with TableColumn (children rows)",
           "android": "—",
-          "web": "DataTable columns with sorter"
+          "web": "DataGrid columns with sorter"
         }
       ],
       "web": [
@@ -5268,7 +5268,7 @@
           "property": "Items",
           "ios": "contextMenu(menuItems:) / UIContextMenuInteraction with UIMenu",
           "android": "Modifier.combinedClickable(onLongClick) opening a DropdownMenu",
-          "web": "Menu items in a context menu; DataTable rowMenu"
+          "web": "Menu items in a context menu; DataGrid rowMenu"
         },
         {
           "property": "Destructive item",

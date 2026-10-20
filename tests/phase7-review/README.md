@@ -35,7 +35,7 @@ The before assets come from commit `fa67741b`; after uses this branch. Each stat
 
 ## Behavior and build proof
 
-- Combined table acceptance: `DATA_TABLES_OK 17/17`, including canonical groups (62), remaining contracts (43), saved views (18), and high-impact regressions (31).
+- Combined table acceptance: `DATA_GRIDS_OK 17/17`, including canonical groups (62), remaining contracts (43), saved views (18), and high-impact regressions (31).
 - Keyboard: 27/27; navigation: `NAVIGATION_OK`.
 - Independent renderer: 54 modules, 600 records, 18 drawn rows, no legacy constructor access or requests.
 - Capabilities: 52 checks; static Table: all rows, ignored interactions, live nodes, folders first, no internal scrolling at 320/560/1000.

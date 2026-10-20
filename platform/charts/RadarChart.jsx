@@ -2,7 +2,7 @@
    Summary: The profile of one item, or of two or three compared, across several measures on one scale (07 Data Display ›
      Charts › Radar chart): one spoke per measure from the center (zero) to the scale's end, rings at the scale's ticks,
      and each item a closed shape through its values, its outline in the series' color and its area lightly filled so
-     overlapping shapes stay visible. Drawn in ChartFrame with a legend (compare), a tooltip and the data table.
+     overlapping shapes stay visible. Drawn in ChartFrame with a legend (compare), a tooltip and the data grid.
    Usage:
      <RadarChart title="Asset quality" description="The hero image scores high on every measure but file size."
        axes={[{ key: 'res', label: 'Resolution' }, { key: 'color', label: 'Color' }, { key: 'meta', label: 'Metadata' }, { key: 'size', label: 'File size' }, { key: 'rights', label: 'Rights' }]}
@@ -21,7 +21,7 @@
      strings: { measure: "Measure" } and ChartFrame's strings
    Behavior:
      Every measure shares the scale: normalize measures of different units first (to a score, a percentage), or use bars.
-     Hover a point: the tooltip shows the item and the measure's value. The data table lists every value.
+     Hover a point: the tooltip shows the item and the measure's value. The data grid lists every value.
    Notes:
      Shapes' outlines and points take the series' data-viz color (the frame's line and point); the area takes the same
        color at the low opacity (radar-chart tokens). Spokes and rings are the frame's grid lines; the measures' names are

@@ -1,6 +1,6 @@
 // Plenix tests · every page loads clean: each app page, the design system home, every built item (and its variant pages)
 // and every placeholder item. A console error (the style audit reports inline styles as errors), a page error, a
-// failed request, a <table> that is not a DataTable, or three framed boxes nested (owner, batch 250: containers nest two deep,
+// failed request, a <table> that is not a DataGrid, or three framed boxes nested (owner, batch 250: containers nest two deep,
 // never three; platform/system/nesting.css) fails it. Only the work log is allowed to be missing: it lives outside this repository.
 //   node tests/pages.test.js                  the pages of what changed (tests/changed.js)
 //   TEST_SCOPE=full node tests/pages.test.js  every page (the final gate)   TEST_PORT=8901: another port
@@ -24,10 +24,10 @@ let current = '';   // the design-system page being checked
   page.on('pageerror', (e) => errs.push('page error: ' + String(e).slice(0, 200)));
   page.on('response', (r) => { if (r.status() >= 400 && !ALLOWED_MISSING.test(r.url()) && !/favicon/.test(r.url())) errs.push(r.status() + ' ' + r.url()); });
   const failed = []; let n = 0;
-  // every table is a DataTable (batch 226): a <table> left on the page or in its frames (Tabulator draws with divs) fails it;
+  // every table is a DataGrid (batch 226): a <table> left on the page or in its frames (Tabulator draws with divs) fails it;
   // a table a person wrote in their own content (inside .plx-user-content: the rich-text editor, RichText showing saved HTML) is content, not interface
   const tables = async () => { const left = await page.evaluate(() => [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean))
-    .reduce((n, d) => n + [...d.querySelectorAll('table')].filter((t) => !t.closest('.plx-user-content')).length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataTable'); };
+    .reduce((n, d) => n + [...d.querySelectorAll('table')].filter((t) => !t.closest('.plx-user-content')).length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataGrid'); };
   // containers nest two deep, never three (batch 250): a framed box is one larger than a control that draws a border on three
   // or more sides (inset shadows count as the sides they draw) or an outer shadow; a one-sided divider is not a frame.
   // Specimens are the subject on show, not page structure: anything in a design-system sample stage, a variant card's Preview
@@ -59,7 +59,7 @@ let current = '';   // the design-system page being checked
   // inline styles at run time (owner, 2026-10-13): JavaScript may write inline styles for on-the-spot adjustments from
   // tokens and defined styles; whether a value is a token or a literal is checked in the source (check-system,
   // inline-style). Here, in the page and its frames: no custom property that is not a Platform one (--plx-…; --ds-… on the
-  // design system), no font family that is not a token, and no height, line height or padding on a DataTable row or cell
+  // design system), no font family that is not a token, and no height, line height or padding on a DataGrid row or cell
   // (the density's), and every inline length a token or a whole number of grid steps (the base spacing token; owner: the
   // output "has to conform to fit into the grid system")
   const styles = async () => { const r = await page.evaluate(() => {
@@ -73,7 +73,7 @@ let current = '';   // the design-system page being checked
     // user content (.plx-user-content: the rich-text editor's area, RichText showing saved HTML) keeps the person's own
     // formatting, as Tiptap stores it: these properties only (owner, 2026-10-14)
     const USER_FORMAT = /^(color|background-color|font-family|font-size|text-align)$/;
-    const wrong = (el) => { const table = el.matches('.plx-data-table .plx-data-table__grid-row, .plx-data-table .plx-data-table__grid-cell'), user = !!el.closest('.plx-user-content');
+    const wrong = (el) => { const table = el.matches('.plx-data-grid .plx-data-grid__grid-row, .plx-data-grid .plx-data-grid__grid-cell'), user = !!el.closest('.plx-user-content');
       return Array.from(el.style).filter((p) => !(user && USER_FORMAT.test(p)) && (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
         || offGrid(el, el.style.getPropertyValue(p))).map((p) => p + ': ' + el.style.getPropertyValue(p)); };
     docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { const bad = wrong(el); if (!bad.length || el.closest('[data-plx-probe]')) return; out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' ' + bad.join(', ')); }));

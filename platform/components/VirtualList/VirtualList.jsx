@@ -37,7 +37,7 @@
      onEndReached runs when the last rows come into the drawn window and nothing is loading; again after more rows arrive.
    Notes:
      Not for short lists (under a few hundred rows): use List or render them all. Not where browser find (Ctrl F) across
-       every row matters, unless the page offers its own search. Tables are the DataTable, which has its own rendering.
+       every row matters, unless the page offers its own search. Tables are the DataGrid, which has its own rendering.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
