@@ -57,7 +57,7 @@
 .plx-button[aria-expanded="true"] .plx-button__caret{transform:rotate(180deg);}
 .plx-button-group{display:inline-flex;}
 /* the joins on the inline sides (logical, so a right-to-left group joins on the mirrored side; batch 213) */
-.plx-button--ghost:disabled,.plx-button--ghost[aria-disabled="true"]{background-color:var(--plx-comp-button-disabled-quiet-background);border-bottom-color:var(--plx-comp-button-disabled-quiet-border);border-left-color:var(--plx-comp-button-disabled-quiet-border);border-right-color:var(--plx-comp-button-disabled-quiet-border);border-top-color:var(--plx-comp-button-disabled-quiet-border);box-shadow:none;}
+.plx-button--ghost:disabled,.plx-button--ghost[aria-disabled="true"]{background-color:var(--plx-comp-button-disabled-quiet-background);border-bottom-color:var(--plx-comp-button-disabled-quiet-border);border-left-color:var(--plx-comp-button-disabled-quiet-border);border-right-color:var(--plx-comp-button-disabled-quiet-border);border-top-color:var(--plx-comp-button-disabled-quiet-border);}
 /* Buttons on a colored surface: the surface sets data-plx-surface on itself (TeachingBubble "inverse", the accent
    AppHeader "accent"); every button inside takes these looks, as a theme zone does. Pressed on accent is a step past
    hover (batch 238). */

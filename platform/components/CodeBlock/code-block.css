@@ -7,7 +7,7 @@
 .plx-code-block--tall .plx-code-block__pre{max-block-size:var(--plx-comp-code-block-tall-pre-max-height);}
 .plx-code-block__pre:focus-visible,
 .plx-code-block__pre.is-focus-visible{outline-color:var(--plx-comp-code-block-pre-focus-outline-color);outline-offset:var(--plx-comp-code-block-pre-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-code-block-pre-focus-outline-width);}
-.plx-code-block__pre code{background-color:transparent;font-family:inherit;font-size:inherit;}
+.plx-code-block__code{background-color:transparent;font-family:inherit;font-size:inherit;}
 /* syntax colors: one role per kind of token (--plx-sys-code-*) */
 .plx-code-block__tok--keyword{color:var(--plx-comp-code-block-tok-keyword-text);}
 .plx-code-block__tok--string{color:var(--plx-comp-code-block-tok-string-text);}

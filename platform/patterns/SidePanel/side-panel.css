@@ -12,5 +12,5 @@
 .plx-side-panel__footer{align-items:center;box-shadow:var(--plx-comp-side-panel-footer-shadow);box-sizing:border-box;column-gap:var(--plx-comp-side-panel-footer-gap);display:flex;justify-content:flex-end;flex-shrink:0;min-block-size:var(--plx-comp-pane-footer-height);padding-block-end:var(--plx-comp-side-panel-footer-padding-block);padding-block-start:var(--plx-comp-side-panel-footer-padding-block);padding-inline-end:var(--plx-comp-side-panel-footer-padding-inline);padding-inline-start:var(--plx-comp-side-panel-footer-padding-inline);}
 /* resizable (batch 259): its start edge is dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
    -max; the width reaches the stylesheet as --plx-comp-side-panel-width (no style is written) */
-.plx-side-panel--resizable{position:relative;}
+.plx-side-panel--resizable{}
 .plx-side-panel--resized{inline-size:var(--plx-comp-side-panel-width);}

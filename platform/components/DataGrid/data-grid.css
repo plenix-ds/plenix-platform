@@ -287,11 +287,10 @@
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-row.plx-data-grid__grid-moving,.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid-row.plx-data-grid__grid-moving *{cursor:grabbing;}
 
 
-.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-header{overflow-x:hidden;}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-header .plx-data-grid__grid-headers{display:flex;inline-size:max-content;min-inline-size:100%;}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-tableholder .plx-data-grid__grid-table{display:block;inline-size:max-content;min-inline-size:100%;}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row{display:flex;}
-.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-header .plx-data-grid__grid-col,.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row .plx-data-grid__grid-cell{box-sizing:border-box;flex-grow:0;flex-shrink:0;}
+.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-header .plx-data-grid__grid-col,.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row .plx-data-grid__grid-cell{flex-grow:0;}
 
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-col.plx-data-grid__hidden,.plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-cell.plx-data-grid__hidden{display:none;}
 
@@ -635,3 +634,5 @@
    at its start edge for what scrolls under it (RedSave DT-25, 2026-10-19) */
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row .plx-data-grid__grid-cell.plx-data-grid__cell--row-menu{background-color:inherit;z-index:var(--plx-sys-layer-raised);}
 .plx-data-grid[data-plx-engine="next"] .plx-data-grid__grid .plx-data-grid__grid-row .plx-data-grid__grid-cell.plx-data-grid__cell--row-menu::before{background-color:var(--plx-comp-data-grid-column-line);content:"";inline-size:var(--plx-comp-data-grid-line-width);inset-block-end:var(--plx-comp-data-grid-column-line-inset);inset-block-start:var(--plx-comp-data-grid-column-line-inset);inset-inline-start:0;position:absolute;}
+/* its own font (Styling Standard 3.4: raw-element rules do not reach component elements) */
+.plx-data-grid__grid-data-tree-control{font-family:inherit;}

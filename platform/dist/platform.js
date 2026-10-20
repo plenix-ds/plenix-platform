@@ -15562,7 +15562,7 @@ function Pagination({
     className: "plx-pagination__pages"
   }, /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
-    className: "plx-pagination__page plx-pagination__step",
+    className: "plx-pagination__page plx-pagination__page--step",
     "aria-label": t.previous,
     disabled: page <= 1,
     onClick: () => go(page - 1)
@@ -15581,7 +15581,7 @@ function Pagination({
     onClick: () => go(p)
   }, p)), /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
-    className: "plx-pagination__page plx-pagination__step",
+    className: "plx-pagination__page plx-pagination__page--step",
     "aria-label": t.next,
     disabled: page >= pageCount,
     onClick: () => go(page + 1)
@@ -21733,6 +21733,7 @@ function CodeBlock({
     tabIndex: 0,
     "aria-label": label || title || t.code
   }, /*#__PURE__*/_react.default.createElement("code", {
+    className: "plx-code-block__code",
     "data-plx-language": lang
   }, colored)));
 }

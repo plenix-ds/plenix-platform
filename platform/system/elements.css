@@ -1,6 +1,7 @@
-/* Element defaults: controls take the page font; code and headings use their
-   font roles; buttons and labels use the label font. */
-button,input,textarea,select{font-family:inherit;}
-code,pre,kbd,samp{font-family:var(--plx-sys-font-code);word-spacing:var(--plx-sys-font-data-word-spacing);}
-h1,h2,h3,h4,h5,h6{font-family:var(--plx-sys-font-heading);word-spacing:normal;}
-label{font-family:var(--plx-sys-font-label);word-spacing:normal;}
+/* Element defaults for raw HTML only (Styling Standard 3.4): an element with a Plenix class belongs to its component, which
+   sets its own font; these rules never reach it (zero specificity, elements without a plx- class). Controls take the
+   page font; code and headings use their font roles; labels the label font. */
+:where(button:not([class*="plx-"]),input:not([class*="plx-"]),textarea:not([class*="plx-"]),select:not([class*="plx-"])){font-family:inherit;}
+:where(code:not([class*="plx-"]),pre:not([class*="plx-"]),kbd:not([class*="plx-"]),samp:not([class*="plx-"])){font-family:var(--plx-sys-font-code);word-spacing:var(--plx-sys-font-data-word-spacing);}
+:where(h1:not([class*="plx-"]),h2:not([class*="plx-"]),h3:not([class*="plx-"]),h4:not([class*="plx-"]),h5:not([class*="plx-"]),h6:not([class*="plx-"])){font-family:var(--plx-sys-font-heading);word-spacing:normal;}
+:where(label:not([class*="plx-"])){font-family:var(--plx-sys-font-label);word-spacing:normal;}

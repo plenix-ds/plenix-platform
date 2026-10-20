@@ -105,7 +105,7 @@ export function CodeBlock({ title, maxHeight = 'none', copy = true, label, langu
           {copy ? <VisuallyHidden role="status">{said}</VisuallyHidden> : null}
         </div>
       ) : null}
-      <pre className="plx-code-block__pre" tabIndex={0} aria-label={label || title || t.code}><code data-plx-language={lang}>{colored}</code></pre>
+      <pre className="plx-code-block__pre" tabIndex={0} aria-label={label || title || t.code}><code className="plx-code-block__code" data-plx-language={lang}>{colored}</code></pre>
     </div>
   );
 }

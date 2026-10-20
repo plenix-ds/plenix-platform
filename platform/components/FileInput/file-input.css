@@ -16,3 +16,5 @@
 .plx-file-input__size{color:var(--plx-comp-file-input-summary-text);flex-shrink:0;font-family:var(--plx-comp-file-input-data-font-family);font-size:var(--plx-comp-file-input-name-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* hideSummary: the summary is not shown (it still describes the input); a parent that shows the file itself */
 .plx-file-input--hide-summary .plx-file-input__summary{display:none;}
+/* its own font (Styling Standard 3.4: raw-element rules do not reach component elements) */
+.plx-file-input__native{font-family:inherit;}

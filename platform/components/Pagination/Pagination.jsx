@@ -43,11 +43,11 @@ export function Pagination({ page = 1, pageCount = 1, onPageChange, total, perPa
     <nav className={cx('plx-pagination', className)} aria-label={label || t.label} {...rest}>
       {total ? <div className="plx-pagination__info">{fill(t.range, { first, last, total })}</div> : null}
       <div className="plx-pagination__pages">
-        <button type="button" className="plx-pagination__page plx-pagination__step" aria-label={t.previous} disabled={page <= 1} onClick={() => go(page - 1)}>‹</button>
+        <button type="button" className="plx-pagination__page plx-pagination__page--step" aria-label={t.previous} disabled={page <= 1} onClick={() => go(page - 1)}>‹</button>
         {pagesToShow(page, pageCount).map((p) => typeof p === 'string'
           ? <span key={p} className="plx-pagination__gap" aria-hidden="true">…</span>
           : <button type="button" key={p} className="plx-pagination__page" aria-current={p === page ? 'page' : undefined} aria-label={fill(t.page, { n: p })} onClick={() => go(p)}>{p}</button>)}
-        <button type="button" className="plx-pagination__page plx-pagination__step" aria-label={t.next} disabled={page >= pageCount} onClick={() => go(page + 1)}>›</button>
+        <button type="button" className="plx-pagination__page plx-pagination__page--step" aria-label={t.next} disabled={page >= pageCount} onClick={() => go(page + 1)}>›</button>
       </div>
       {perPageOptions && onPerPageChange ? (
         <label className="plx-pagination__per-page">

@@ -283,11 +283,10 @@
 .plx-table[data-plx-engine="next"] .plx-table__grid-row.plx-table__grid-moving,.plx-table[data-plx-engine="next"] .plx-table__grid-row.plx-table__grid-moving *{cursor:grabbing;}
 
 
-.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header{overflow-x:hidden;}
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header .plx-table__grid-headers{display:flex;inline-size:max-content;min-inline-size:100%;}
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-tableholder .plx-table__grid-table{display:block;inline-size:max-content;min-inline-size:100%;}
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row{display:flex;}
-.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header .plx-table__grid-col,.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell{box-sizing:border-box;flex-grow:0;flex-shrink:0;}
+.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header .plx-table__grid-col,.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell{flex-grow:0;}
 
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-col.plx-table__hidden,.plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-cell.plx-table__hidden{display:none;}
 
@@ -631,3 +630,5 @@
    at its start edge for what scrolls under it (RedSave DT-25, 2026-10-19) */
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-menu{background-color:inherit;z-index:var(--plx-sys-layer-raised);}
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-menu::before{background-color:var(--plx-comp-data-grid-column-line);content:"";inline-size:var(--plx-comp-data-grid-line-width);inset-block-end:var(--plx-comp-data-grid-column-line-inset);inset-block-start:var(--plx-comp-data-grid-column-line-inset);inset-inline-start:0;position:absolute;}
+/* its own font (Styling Standard 3.4: raw-element rules do not reach component elements) */
+.plx-table__grid-data-tree-control{font-family:inherit;}

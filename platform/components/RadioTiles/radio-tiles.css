@@ -17,3 +17,5 @@
 .plx-radio-tile__label{color:var(--plx-comp-radio-tile-label-text);font-size:var(--plx-comp-radio-tile-label-font-size);font-weight:var(--plx-comp-radio-tile-label-font-weight);}
 .plx-radio-tile__description{color:var(--plx-comp-radio-tile-description-text);font-size:var(--plx-comp-radio-tile-description-font-size);}
 .plx-radio-tile__check{block-size:var(--plx-comp-radio-tile-check-height);color:var(--plx-comp-radio-tile-check-text);inline-size:var(--plx-comp-radio-tile-check-width);}
+/* its own font (Styling Standard 3.4: raw-element rules do not reach component elements) */
+.plx-radio-tile__input{font-family:inherit;}
