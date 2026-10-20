@@ -72,9 +72,9 @@
       "$description": "Chart legend: the names' line height."
     },
     "chart-legend-value-text": {
-      "$value": "{plx-sys.content-subtle}",
+      "$value": "{plx-sys.content-muted}",
       "$type": "color",
-      "$description": "Chart legend: a series' value after its name (secondary text)."
+      "$description": "Chart legend: a series' value after its name (secondary text). content-muted (2026-10-19): the same gray as subtle in light, the readable light gray in dark (subtle read 3.05:1 on a dark card)."
     },
     "chart-legend-value-font-family": {
       "$value": "{plx-sys.font-data}",

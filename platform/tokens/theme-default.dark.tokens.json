@@ -2021,7 +2021,7 @@
       }
     },
     "data-color-blue-soft": {
-      "$value": "{plx-ref.color-blue-100}",
+      "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
       "$description": "A data color (batch 280): blue, a soft fill (an avatar).",
       "$extensions": {
@@ -2032,7 +2032,7 @@
       }
     },
     "data-color-blue-on-soft": {
-      "$value": "{plx-ref.color-blue-700}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
       "$description": "A data color (batch 280): blue, text on its soft fill.",
       "$extensions": {
@@ -2054,7 +2054,7 @@
       }
     },
     "data-color-green-soft": {
-      "$value": "{plx-ref.color-green-100}",
+      "$value": "{plx-ref.color-green-700}",
       "$type": "color",
       "$description": "A data color (batch 280): green, a soft fill (an avatar).",
       "$extensions": {
@@ -2065,7 +2065,7 @@
       }
     },
     "data-color-green-on-soft": {
-      "$value": "{plx-ref.color-green-700}",
+      "$value": "{plx-ref.color-green-300}",
       "$type": "color",
       "$description": "A data color (batch 280): green, text on its soft fill.",
       "$extensions": {
@@ -2087,7 +2087,7 @@
       }
     },
     "data-color-purple-soft": {
-      "$value": "{plx-ref.color-blue-100}",
+      "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
       "$description": "A data color (batch 280): purple, a soft fill (an avatar).",
       "$extensions": {
@@ -2098,7 +2098,7 @@
       }
     },
     "data-color-purple-on-soft": {
-      "$value": "{plx-ref.color-blue-900}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
       "$description": "A data color (batch 280): purple, text on its soft fill.",
       "$extensions": {
@@ -2120,7 +2120,7 @@
       }
     },
     "data-color-red-soft": {
-      "$value": "{plx-ref.color-red-100}",
+      "$value": "{plx-ref.color-red-700}",
       "$type": "color",
       "$description": "A data color (batch 280): red, a soft fill (an avatar).",
       "$extensions": {
@@ -2131,7 +2131,7 @@
       }
     },
     "data-color-red-on-soft": {
-      "$value": "{plx-ref.color-red-700}",
+      "$value": "{plx-ref.color-red-300}",
       "$type": "color",
       "$description": "A data color (batch 280): red, text on its soft fill.",
       "$extensions": {
@@ -2153,7 +2153,7 @@
       }
     },
     "data-color-brown-soft": {
-      "$value": "{plx-ref.color-orange-100}",
+      "$value": "{plx-ref.color-orange-700}",
       "$type": "color",
       "$description": "A data color (batch 280): brown, a soft fill (an avatar).",
       "$extensions": {
@@ -2164,7 +2164,7 @@
       }
     },
     "data-color-brown-on-soft": {
-      "$value": "{plx-ref.color-brown-700}",
+      "$value": "{plx-ref.color-brown-300}",
       "$type": "color",
       "$description": "A data color (batch 280): brown, text on its soft fill.",
       "$extensions": {
@@ -2186,7 +2186,7 @@
       }
     },
     "data-color-gray-soft": {
-      "$value": "{plx-ref.color-gray-100}",
+      "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
       "$description": "A data color (batch 280): gray, a soft fill (an avatar).",
       "$extensions": {
@@ -2197,7 +2197,7 @@
       }
     },
     "data-color-gray-on-soft": {
-      "$value": "{plx-ref.color-gray-800}",
+      "$value": "{plx-ref.color-gray-300}",
       "$type": "color",
       "$description": "A data color (batch 280): gray, text on its soft fill.",
       "$extensions": {
@@ -2230,7 +2230,7 @@
       }
     },
     "category-red-soft": {
-      "$value": "{plx-ref.color-red-100}",
+      "$value": "{plx-ref.color-red-700}",
       "$type": "color",
       "$description": "The red category pill background: red-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2241,7 +2241,7 @@
       }
     },
     "category-red-soft-border": {
-      "$value": "{plx-ref.color-red-200}",
+      "$value": "{plx-ref.color-red-500}",
       "$type": "color",
       "$description": "The red category pill border, 1px: red-200 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2252,7 +2252,7 @@
       }
     },
     "category-red-on-soft": {
-      "$value": "{plx-ref.color-red-800}",
+      "$value": "{plx-ref.color-red-300}",
       "$type": "color",
       "$description": "The red category pill text, AA on its background: red-800 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2285,7 +2285,7 @@
       }
     },
     "category-green-soft": {
-      "$value": "{plx-ref.color-green-100}",
+      "$value": "{plx-ref.color-green-700}",
       "$type": "color",
       "$description": "The green category pill background: green-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2296,7 +2296,7 @@
       }
     },
     "category-green-soft-border": {
-      "$value": "{plx-ref.color-green-200}",
+      "$value": "{plx-ref.color-green-500}",
       "$type": "color",
       "$description": "The green category pill border, 1px: green-200 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2307,7 +2307,7 @@
       }
     },
     "category-green-on-soft": {
-      "$value": "{plx-ref.color-green-700}",
+      "$value": "{plx-ref.color-green-300}",
       "$type": "color",
       "$description": "The green category pill text, AA on its background: green-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2340,7 +2340,7 @@
       }
     },
     "category-yellow-soft": {
-      "$value": "{plx-ref.color-yellow-100}",
+      "$value": "{plx-ref.color-yellow-700}",
       "$type": "color",
       "$description": "The yellow category pill background: yellow-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2351,7 +2351,7 @@
       }
     },
     "category-yellow-soft-border": {
-      "$value": "{plx-ref.color-yellow-300}",
+      "$value": "{plx-ref.color-yellow-500}",
       "$type": "color",
       "$description": "The yellow category pill border, 1px: yellow-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2362,7 +2362,7 @@
       }
     },
     "category-yellow-on-soft": {
-      "$value": "{plx-ref.color-brown-600}",
+      "$value": "{plx-ref.color-brown-300}",
       "$type": "color",
       "$description": "The yellow category pill text, AA on its background: yellow-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2395,7 +2395,7 @@
       }
     },
     "category-blue-soft": {
-      "$value": "{plx-ref.color-blue-100}",
+      "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
       "$description": "The blue category pill background: blue-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2406,7 +2406,7 @@
       }
     },
     "category-blue-soft-border": {
-      "$value": "{plx-ref.color-blue-300}",
+      "$value": "{plx-ref.color-blue-500}",
       "$type": "color",
       "$description": "The blue category pill border, 1px: blue-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2417,7 +2417,7 @@
       }
     },
     "category-blue-on-soft": {
-      "$value": "{plx-ref.color-blue-700}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
       "$description": "The blue category pill text, AA on its background: blue-800 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2450,7 +2450,7 @@
       }
     },
     "category-orange-soft": {
-      "$value": "{plx-ref.color-orange-100}",
+      "$value": "{plx-ref.color-orange-700}",
       "$type": "color",
       "$description": "The orange category pill background: orange-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2461,7 +2461,7 @@
       }
     },
     "category-orange-soft-border": {
-      "$value": "{plx-ref.color-orange-300}",
+      "$value": "{plx-ref.color-orange-500}",
       "$type": "color",
       "$description": "The orange category pill border, 1px: orange-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2472,7 +2472,7 @@
       }
     },
     "category-orange-on-soft": {
-      "$value": "{plx-ref.color-brown-700}",
+      "$value": "{plx-ref.color-brown-300}",
       "$type": "color",
       "$description": "The orange category pill text, AA on its background: orange-800 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2505,7 +2505,7 @@
       }
     },
     "category-purple-soft": {
-      "$value": "{plx-ref.color-purple-100}",
+      "$value": "{plx-ref.color-purple-700}",
       "$type": "color",
       "$description": "The purple category pill background: purple-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2516,7 +2516,7 @@
       }
     },
     "category-purple-soft-border": {
-      "$value": "{plx-ref.color-purple-300}",
+      "$value": "{plx-ref.color-purple-500}",
       "$type": "color",
       "$description": "The purple category pill border, 1px: purple-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2527,7 +2527,7 @@
       }
     },
     "category-purple-on-soft": {
-      "$value": "{plx-ref.color-purple-700}",
+      "$value": "{plx-ref.color-purple-300}",
       "$type": "color",
       "$description": "The purple category pill text, AA on its background: purple-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2560,7 +2560,7 @@
       }
     },
     "category-cyan-soft": {
-      "$value": "{plx-ref.color-cyan-100}",
+      "$value": "{plx-ref.color-cyan-700}",
       "$type": "color",
       "$description": "The cyan category pill background: cyan-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2571,7 +2571,7 @@
       }
     },
     "category-cyan-soft-border": {
-      "$value": "{plx-ref.color-cyan-700}",
+      "$value": "{plx-ref.color-cyan-500}",
       "$type": "color",
       "$description": "Category border: next darker same-family shade when the base and border coincide (owner, 2026-10-16).",
       "$extensions": {
@@ -2582,7 +2582,7 @@
       }
     },
     "category-cyan-on-soft": {
-      "$value": "{plx-ref.color-cyan-700}",
+      "$value": "{plx-ref.color-cyan-300}",
       "$type": "color",
       "$description": "The cyan category pill text, AA on its background: cyan-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2615,7 +2615,7 @@
       }
     },
     "category-magenta-soft": {
-      "$value": "{plx-ref.color-magenta-100}",
+      "$value": "{plx-ref.color-magenta-700}",
       "$type": "color",
       "$description": "The magenta category pill background: magenta-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2626,7 +2626,7 @@
       }
     },
     "category-magenta-soft-border": {
-      "$value": "{plx-ref.color-magenta-300}",
+      "$value": "{plx-ref.color-magenta-500}",
       "$type": "color",
       "$description": "The magenta category pill border, 1px: magenta-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2637,7 +2637,7 @@
       }
     },
     "category-magenta-on-soft": {
-      "$value": "{plx-ref.color-magenta-700}",
+      "$value": "{plx-ref.color-magenta-300}",
       "$type": "color",
       "$description": "The magenta category pill text, AA on its background: magenta-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2670,7 +2670,7 @@
       }
     },
     "category-lime-soft": {
-      "$value": "{plx-ref.color-green-100}",
+      "$value": "{plx-ref.color-green-700}",
       "$type": "color",
       "$description": "The lime category pill background: green-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2681,7 +2681,7 @@
       }
     },
     "category-lime-soft-border": {
-      "$value": "{plx-ref.color-green-200}",
+      "$value": "{plx-ref.color-green-500}",
       "$type": "color",
       "$description": "The lime category pill border, 1px: green-200 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2692,7 +2692,7 @@
       }
     },
     "category-lime-on-soft": {
-      "$value": "{plx-ref.color-green-700}",
+      "$value": "{plx-ref.color-green-300}",
       "$type": "color",
       "$description": "The lime category pill text, AA on its background: green-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2725,7 +2725,7 @@
       }
     },
     "category-pink-soft": {
-      "$value": "{plx-ref.color-pink-100}",
+      "$value": "{plx-ref.color-pink-700}",
       "$type": "color",
       "$description": "The pink category pill background: pink-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2747,7 +2747,7 @@
       }
     },
     "category-pink-on-soft": {
-      "$value": "{plx-ref.color-pink-700}",
+      "$value": "{plx-ref.color-pink-300}",
       "$type": "color",
       "$description": "The pink category pill text, AA on its background: pink-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2780,7 +2780,7 @@
       }
     },
     "category-teal-soft": {
-      "$value": "{plx-ref.color-teal-100}",
+      "$value": "{plx-ref.color-teal-700}",
       "$type": "color",
       "$description": "The teal category pill background: teal-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2791,7 +2791,7 @@
       }
     },
     "category-teal-soft-border": {
-      "$value": "{plx-ref.color-teal-300}",
+      "$value": "{plx-ref.color-teal-500}",
       "$type": "color",
       "$description": "The teal category pill border, 1px: teal-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2802,7 +2802,7 @@
       }
     },
     "category-teal-on-soft": {
-      "$value": "{plx-ref.color-teal-700}",
+      "$value": "{plx-ref.color-teal-300}",
       "$type": "color",
       "$description": "The teal category pill text, AA on its background: teal-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2835,7 +2835,7 @@
       }
     },
     "category-lavender-soft": {
-      "$value": "{plx-ref.color-purple-100}",
+      "$value": "{plx-ref.color-purple-700}",
       "$type": "color",
       "$description": "The lavender category pill background: purple-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2857,7 +2857,7 @@
       }
     },
     "category-lavender-on-soft": {
-      "$value": "{plx-ref.color-purple-700}",
+      "$value": "{plx-ref.color-purple-300}",
       "$type": "color",
       "$description": "The lavender category pill text, AA on its background: purple-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2950,7 +2950,7 @@
       }
     },
     "category-beige-soft": {
-      "$value": "{plx-ref.color-yellow-100}",
+      "$value": "{plx-ref.color-yellow-700}",
       "$type": "color",
       "$description": "The beige category pill background: yellow-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2961,7 +2961,7 @@
       }
     },
     "category-beige-soft-border": {
-      "$value": "{plx-ref.color-orange-200}",
+      "$value": "{plx-ref.color-orange-500}",
       "$type": "color",
       "$description": "The beige category pill border, 1px: yellow-250 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -2972,7 +2972,7 @@
       }
     },
     "category-beige-on-soft": {
-      "$value": "{plx-ref.color-brown-600}",
+      "$value": "{plx-ref.color-brown-300}",
       "$type": "color",
       "$description": "The beige category pill text, AA on its background: yellow-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3005,7 +3005,7 @@
       }
     },
     "category-maroon-soft": {
-      "$value": "{plx-ref.color-red-100}",
+      "$value": "{plx-ref.color-red-700}",
       "$type": "color",
       "$description": "The maroon category pill background: red-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3016,7 +3016,7 @@
       }
     },
     "category-maroon-soft-border": {
-      "$value": "{plx-ref.color-red-200}",
+      "$value": "{plx-ref.color-red-500}",
       "$type": "color",
       "$description": "The maroon category pill border, 1px: red-200 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3027,7 +3027,7 @@
       }
     },
     "category-maroon-on-soft": {
-      "$value": "{plx-ref.color-red-800}",
+      "$value": "{plx-ref.color-red-300}",
       "$type": "color",
       "$description": "The maroon category pill text, AA on its background: red-800 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3060,7 +3060,7 @@
       }
     },
     "category-mint-soft": {
-      "$value": "{plx-ref.color-green-100}",
+      "$value": "{plx-ref.color-green-700}",
       "$type": "color",
       "$description": "The mint category pill background: green-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3071,7 +3071,7 @@
       }
     },
     "category-mint-soft-border": {
-      "$value": "{plx-ref.color-green-200}",
+      "$value": "{plx-ref.color-green-500}",
       "$type": "color",
       "$description": "The mint category pill border, 1px: green-200 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3082,7 +3082,7 @@
       }
     },
     "category-mint-on-soft": {
-      "$value": "{plx-ref.color-green-700}",
+      "$value": "{plx-ref.color-green-300}",
       "$type": "color",
       "$description": "The mint category pill text, AA on its background: green-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3115,7 +3115,7 @@
       }
     },
     "category-olive-soft": {
-      "$value": "{plx-ref.color-yellow-100}",
+      "$value": "{plx-ref.color-yellow-700}",
       "$type": "color",
       "$description": "The olive category pill background: yellow-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3126,7 +3126,7 @@
       }
     },
     "category-olive-soft-border": {
-      "$value": "{plx-ref.color-orange-200}",
+      "$value": "{plx-ref.color-orange-500}",
       "$type": "color",
       "$description": "The olive category pill border, 1px: yellow-250 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3137,7 +3137,7 @@
       }
     },
     "category-olive-on-soft": {
-      "$value": "{plx-ref.color-brown-600}",
+      "$value": "{plx-ref.color-brown-300}",
       "$type": "color",
       "$description": "The olive category pill text, AA on its background: yellow-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3170,7 +3170,7 @@
       }
     },
     "category-apricot-soft": {
-      "$value": "{plx-ref.color-orange-100}",
+      "$value": "{plx-ref.color-orange-700}",
       "$type": "color",
       "$description": "The apricot category pill background: orange-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3181,7 +3181,7 @@
       }
     },
     "category-apricot-soft-border": {
-      "$value": "{plx-ref.color-orange-300}",
+      "$value": "{plx-ref.color-orange-500}",
       "$type": "color",
       "$description": "The apricot category pill border, 1px: orange-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3192,7 +3192,7 @@
       }
     },
     "category-apricot-on-soft": {
-      "$value": "{plx-ref.color-brown-700}",
+      "$value": "{plx-ref.color-brown-300}",
       "$type": "color",
       "$description": "The apricot category pill text, AA on its background: brown-800 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3225,7 +3225,7 @@
       }
     },
     "category-navy-soft": {
-      "$value": "{plx-ref.color-blue-100}",
+      "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
       "$description": "The navy category pill background: blue-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3236,7 +3236,7 @@
       }
     },
     "category-navy-soft-border": {
-      "$value": "{plx-ref.color-blue-300}",
+      "$value": "{plx-ref.color-blue-500}",
       "$type": "color",
       "$description": "The navy category pill border, 1px: blue-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3247,7 +3247,7 @@
       }
     },
     "category-navy-on-soft": {
-      "$value": "{plx-ref.color-blue-700}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
       "$description": "The navy category pill text, AA on its background: blue-800 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3280,7 +3280,7 @@
       }
     },
     "category-grey-soft": {
-      "$value": "{plx-ref.color-gray-100}",
+      "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
       "$description": "The grey category pill background: gray-100 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3291,7 +3291,7 @@
       }
     },
     "category-grey-soft-border": {
-      "$value": "{plx-ref.color-gray-300}",
+      "$value": "{plx-ref.color-gray-500}",
       "$type": "color",
       "$description": "The grey category pill border, 1px: gray-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {
@@ -3302,7 +3302,7 @@
       }
     },
     "category-grey-on-soft": {
-      "$value": "{plx-ref.color-gray-700}",
+      "$value": "{plx-ref.color-gray-300}",
       "$type": "color",
       "$description": "The grey category pill text, AA on its background: gray-700 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
       "$extensions": {

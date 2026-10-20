@@ -2875,7 +2875,7 @@
   --plx-comp-chart-legend-label-font-family: var(--plx-sys-font-label);
   --plx-comp-chart-legend-label-font-size: var(--plx-ref-font-size-12);
   --plx-comp-chart-legend-label-line-height: var(--plx-sys-label-height-16px);
-  --plx-comp-chart-legend-value-text: var(--plx-sys-content-subtle);
+  --plx-comp-chart-legend-value-text: var(--plx-sys-content-muted);
   --plx-comp-chart-legend-value-font-family: var(--plx-sys-font-data);
   --plx-comp-chart-legend-swatch-size: var(--plx-ref-size-12px);
   --plx-comp-chart-legend-swatch-radius: var(--plx-sys-shape-2xs);
