@@ -29,6 +29,25 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
      with a fallback (`opacity:var(--plx-comp-nav-list-context-pin-opacity,0)`). A component that can contain itself
      uses the class, never the variable.
    - A colored surface reaches its children through `SurfaceContext` (Button reads it), never `[data-…] .child`.
+   - A root modifier that changes the parts (a variant, a size): **every part carries it as its own class**
+     (`plx-tabs__tab--segmented`, `plx-segmented__item--sm`). A part inside another instance of the same component then
+     never takes the outer one's look (the spec's sample tabs sat inside its folder tabs and wore the folder look).
+   - Position in a row (ends, joins): the JSX marks it (`plx-tabs__tab--first|--last|--joined`), or the part's own
+     `:first-child` / `:not(:first-child)` / `:last-child` sets a state variable. A pseudo-element reads its element's
+     value through a context variable (`--plx-comp-<c>-context-…`, unregistered): registered state variables do not
+     inherit into `::before` / `::after`.
+   - A part that shows its item's keyboard focus (a tree row for its focused item): the component sets
+     `is-focus-visible` on the part from the item's `:focus-visible` (Tree, TreeSelect).
+   - A pattern that sizes the fields in it publishes context values, it never reaches into them:
+     `--plx-comp-field-context-stretch-inline-size` (a form, a dialog) and `--plx-comp-field-context-content-…` (a
+     toolbar, the header). Each field reads them in one rule its width props leave alone, content over stretch over its
+     own: `inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto))`.
+   - The page's modes (layout-modes.css, generated) are context values the main region or the shell publishes; AppShell,
+     PageContent and Settings read them.
+   - Paper: no rule for print. The owner reads a print token with its screen value as the fallback
+     (`display:var(--plx-sys-print-hidden,flex)`, `break-inside:var(--plx-sys-print-keep,auto)`).
+   - Width ranges are exclusive: `@media (600px <= width < 840px)`, `@container main-region (1024px <= width < 1440px)`;
+     never a cascade of `min-width` blocks over a base rule.
 3. **Each property once.** The element's own rule declares it, reading a state variable with its default as the fallback:
    `background-color:var(--plx-state-button-background,var(--plx-comp-button-background))`.
    - State variables are named `--plx-state-<component>-<what>` and registered in the same stylesheet:
@@ -40,6 +59,10 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
    - Exclusive kinds (a text area against a text field, a color well) declare their own sizes and padding.
    - A default size or variant: either the fallback, or `:where(:not(.x--sm, .x--lg))`.
    - `:disabled` and `[aria-disabled="true"]` together: `:is(:disabled, [aria-disabled="true"])`.
+   - Write a pointer state with its documentation twin in one list, `:is(:hover, .is-hover)`, and a selected or
+     current part with the state class on the part itself (`.plx-tree__row.is-selected`, `.plx-app-switcher__open.is-current`),
+     not a modifier: the spec's state reader (spec.js) finds `.is-…` and the pseudo-classes, and draws its state samples
+     from them.
 5. **What a component never declares:** `box-sizing` (the reset owns it on every element) and `scrollbar-color` /
    `scrollbar-width` (the base owns them). A component on a raw tag sets its own margins and padding: the reset reaches
    raw elements only.

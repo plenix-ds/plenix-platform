@@ -191,7 +191,7 @@ function StatusIcon({
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
   }, rest), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-status-icon__glyph"
+    className: (0, _cx.cx)('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)
   }, /*#__PURE__*/_react.default.createElement(Icon, {
     name: STATUS_ICONS[t],
     size: size,

@@ -77,7 +77,7 @@ export function StatusIcon({ tone = 'info', size = 'md', label, children, string
   const shown = children !== undefined && children !== null && children !== false;
   return (
     <span className={cx('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)} {...rest}>
-      <span className="plx-status-icon__glyph"><Icon name={STATUS_ICONS[t]} size={size} label={shown ? undefined : (label || words[t])} /></span>
+      <span className={cx('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)}><Icon name={STATUS_ICONS[t]} size={size} label={shown ? undefined : (label || words[t])} /></span>
       {shown ? <span className="plx-status-icon__label">{children}</span> : null}
     </span>
   );
