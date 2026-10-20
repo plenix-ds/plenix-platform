@@ -54,7 +54,7 @@ export function gapPieces(count) {
 export function VirtualGap({ count, axis = 'y' }) {
   if (!count) return null;
   return React.createElement('div', { className: 'plx-virtual-gap', 'data-plx-axis': axis, 'aria-hidden': 'true' },
-    gapPieces(count).map((p, i) => React.createElement('div', { key: i, className: 'plx-virtual-gap__piece', 'data-plx-span': String(p) })));
+    gapPieces(count).map((p, i) => React.createElement('div', { key: i, className: 'plx-virtual-gap__piece', 'data-plx-axis': axis, 'data-plx-span': String(p) })));
 }
 
 export function VirtualProbe({ axis = 'y' }) {

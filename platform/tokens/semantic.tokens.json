@@ -589,6 +589,78 @@
           "forcedColors": "1"
         }
       }
+    },
+    "print-hidden": {
+      "$value": "initial",
+      "$description": "On paper the chrome is left out (the app header, the navigation pane, the skip link, the scrim, the floating action button, toasts, the spotlight): their display reads it. Not set on screen (initial: the element keeps its own).",
+      "$extensions": {
+        "com.plenix": {
+          "print": "none"
+        }
+      }
+    },
+    "print-block-size": {
+      "$value": "initial",
+      "$description": "On paper the shell is as tall as its content: the shell's fixed heights read it. Not set on screen.",
+      "$extensions": {
+        "com.plenix": {
+          "print": "auto"
+        }
+      }
+    },
+    "print-overflow": {
+      "$value": "initial",
+      "$description": "On paper nothing scrolls: the shell's scrolling regions read it. Not set on screen.",
+      "$extensions": {
+        "com.plenix": {
+          "print": "visible"
+        }
+      }
+    },
+    "print-position": {
+      "$value": "initial",
+      "$description": "On paper the shell's positioned regions take their place in the flow. Not set on screen.",
+      "$extensions": {
+        "com.plenix": {
+          "print": "static"
+        }
+      }
+    },
+    "print-shown": {
+      "$value": "initial",
+      "$description": "On paper what Show print marks is shown: its box reads it. Not set on screen (initial: hidden).",
+      "$extensions": {
+        "com.plenix": {
+          "print": "contents"
+        }
+      }
+    },
+    "print-keep": {
+      "$value": "initial",
+      "$description": "On paper cards, notices and figures are not split across two sheets and headings stay with what follows them: their break-inside and break-after read it. Not set on screen (initial: auto).",
+      "$extensions": {
+        "com.plenix": {
+          "print": "avoid"
+        }
+      }
+    },
+    "print-url-before": {
+      "$value": "initial",
+      "$description": "On paper inside plx-print-urls, the text before an external link's address. Not set on screen (initial: no address).",
+      "$extensions": {
+        "com.plenix": {
+          "print": "\" (\""
+        }
+      }
+    },
+    "print-url-after": {
+      "$value": "initial",
+      "$description": "On paper inside plx-print-urls, the text after an external link's address. Not set on screen.",
+      "$extensions": {
+        "com.plenix": {
+          "print": "\")\""
+        }
+      }
     }
   }
 }

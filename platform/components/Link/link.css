@@ -21,3 +21,5 @@
 /* content that follows the surrounding text (Styling Standard 6): a container declares data-plx-text-follow="size family
    weight" (any of them) on its own element; inside it this component takes those from the text around it */
 [data-plx-text-follow~="weight"] .plx-link{font-weight:inherit;}
+/* on paper inside plx-print-urls (print.css) an external link prints its address after its text */
+.plx-link[href^="http"]::after{color:var(--plx-sys-print-url-text);content:var(--plx-comp-link-context-url-before) attr(href) var(--plx-comp-link-context-url-after);font-family:var(--plx-sys-font-data);word-spacing:var(--plx-sys-font-data-word-spacing);}

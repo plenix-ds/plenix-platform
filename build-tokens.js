@@ -178,7 +178,7 @@ function generate(manifest) {
         // a token with a motion-off value ("reducedMotion": "0s") is written under exclusive conditions instead (below)
         if (x.reducedMotion !== undefined) { (x.before || []).forEach((l) => lines.push(l)); still.push({ name, token, x }); continue; }
         // a token with a value for forced colors or more contrast is written under exclusive conditions instead (below)
-        if (x.forcedColors !== undefined || x.contrastMore !== undefined) { (x.before || []).forEach((l) => lines.push(l)); cond.push({ name, token, x }); continue; }
+        if (x.forcedColors !== undefined || x.contrastMore !== undefined || x.print !== undefined) { (x.before || []).forEach((l) => lines.push(l)); cond.push({ name, token, x }); continue; }
         (x.before || []).forEach((l) => lines.push(l));
         written.push({ name, file: o.file, set: s.tokens, selector: ext.selector, line: text.split('\n').length + lines.length + 1 });
         if (count[name] > 1) { (layered[name] = layered[name] || new Set()).add(layer); ctxLines.push('  ' + ctxName(layer, name) + ': ' + toCss(token.$value) + ';' + (x.after || '')); continue; }
@@ -200,10 +200,14 @@ function generate(manifest) {
         const both = cond.filter((t) => t.x.forcedColors !== undefined && t.x.contrastMore !== undefined);
         const forcedOnly = cond.filter((t) => t.x.forcedColors !== undefined && t.x.contrastMore === undefined);
         const moreOnly = cond.filter((t) => t.x.forcedColors === undefined && t.x.contrastMore !== undefined);
+        // paper (print): its own tokens, never also a contrast token
+        const paper = cond.filter((t) => t.x.print !== undefined);
+        if (paper.some((t) => t.x.forcedColors !== undefined || t.x.contrastMore !== undefined)) throw new Error('a token with a print value has no contrast values: ' + paper.map((t) => t.name).join(', '));
         text += '\n/* the person\'s contrast settings: forced colors, then more contrast, else the values above */'
           + block('not (' + FORCED + ' or ' + MORE + ')', (t) => t.token.$value, both) + block(FORCED, (t) => t.x.forcedColors, both) + block(MORE + ' and (not ' + FORCED + ')', (t) => t.x.contrastMore, both)
           + block('not ' + FORCED, (t) => t.token.$value, forcedOnly) + block(FORCED, (t) => t.x.forcedColors, forcedOnly)
-          + block('not ' + MORE, (t) => t.token.$value, moreOnly) + block(MORE, (t) => t.x.contrastMore, moreOnly);
+          + block('not ' + MORE, (t) => t.token.$value, moreOnly) + block(MORE, (t) => t.x.contrastMore, moreOnly)
+          + block('not print', (t) => t.token.$value, paper) + block('print', (t) => t.x.print, paper);
         cond.forEach((t) => written.push({ name: t.name, file: o.file, set: s.tokens, selector: ext.selector, line: text.split('\n').length }));
       }
       if (still.length) {

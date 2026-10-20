@@ -2410,9 +2410,6 @@
    "combinator | .plx-app-header__brand--switch .plx-app-header__app": 1,
    "combinator | .plx-search-view__field>*": 1
   },
-  "platform/patterns/AppShell/app-shell.css": {
-   "combinator | :root.is-resizing-columns body": 1
-  },
   "platform/patterns/Auth/auth.css": {
    "cross-block | .plx-form.plx-auth__form": 1
   },
@@ -2565,40 +2562,6 @@
    "combinator | .plx-widget-grid__item.is-dragging *": 1,
    "cross-block | .plx-widget-grid__menu.plx-menu-anchor:not(.plx-widget-grid__menu--inline)": 1
   },
-  "platform/system/charts.css": {
-   "combinator | .plx-chart--sm .plx-chart__plot": 1,
-   "combinator | .plx-chart--lg .plx-chart__plot": 1
-  },
-  "platform/system/dnd.css": {
-   "combinator | :root[data-plx-dnd-active=\"pointer\"] body": 1,
-   "combinator | [data-plx-dnd-orientation=\"horizontal\"]>.plx-dnd-item[data-plx-drop]::before": 1,
-   "combinator | [data-plx-dnd-orientation=\"grid\"]>.plx-dnd-item[data-plx-drop]::before": 1,
-   "combinator | [data-plx-dnd-orientation=\"horizontal\"]>.plx-dnd-item[data-plx-drop=\"before\"]::before": 1,
-   "combinator | [data-plx-dnd-orientation=\"grid\"]>.plx-dnd-item[data-plx-drop=\"before\"]::before": 1,
-   "combinator | [data-plx-dnd-orientation=\"horizontal\"]>.plx-dnd-item[data-plx-drop=\"after\"]::before": 1,
-   "combinator | [data-plx-dnd-orientation=\"grid\"]>.plx-dnd-item[data-plx-drop=\"after\"]::before": 1
-  },
-  "platform/system/focus-order.css": {
-   "combinator | .plx-focus-order__stop--warning>.plx-focus-order__outline": 1,
-   "combinator | .plx-focus-order__stop--warning>.plx-focus-order__badge": 1,
-   "combinator | .plx-focus-order__stop--warning>.plx-focus-order__number": 1,
-   "combinator | .plx-focus-order__stop.is-current>.plx-focus-order__outline": 1
-  },
-  "platform/system/grid.css": {
-   "combinator | .plx-page-grid>*": 1,
-   "combinator | .plx-workspace-4-8-4>:last-child": 2,
-   "combinator | .plx-workspace-4-8-4>:first-child": 1,
-   "combinator | .plx-workspace-4-12>:first-child": 1,
-   "combinator | .plx-workspace-12-4>:last-child": 1
-  },
-  "platform/system/interaction.css": {
-   "combinator | :root[data-plx-interaction=\"touch\"] [data-plx-hover-reveal]": 1,
-   "combinator | :root[data-plx-interaction=\"mobile\"] [data-plx-hover-reveal]": 1
-  },
-  "platform/system/keylines.css": {
-   "combinator | .plx-keylines>*": 1,
-   "combinator | :root[data-plx-keylines=\"on\"] .plx-icon": 1
-  },
   "platform/system/layout-grid.css": {
    "combinator | .plx-layout-grid>.plx-layout-grid__column:nth-child(n+5)": 2,
    "combinator | .plx-layout-grid>.plx-layout-grid__column:nth-child(n+9)": 2,
@@ -2620,16 +2583,6 @@
   },
   "platform/system/nesting.css": {
    "combinator | :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid) :is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-grid)": 1
-  },
-  "platform/system/portal.css": {
-   "combinator | .plx-portal--top>*": 1
-  },
-  "platform/system/print.css": {
-   "base-unguarded | h1": 1,
-   "base-unguarded | h2": 1,
-   "base-unguarded | h3": 1,
-   "base-unguarded | h4": 1,
-   "combinator | .plx-print-urls a[href^=\"http\"]::after": 1
   },
   "platform/system/read-only.css": {
    "combinator | [data-plx-readonly=\"true\"] .plx-input[readonly]": 1,
@@ -2658,29 +2611,6 @@
   "platform/system/themes/default.css": {
    "foundation-property | [data-plx-theme=\"default\"][data-plx-mode=\"light\"]": 1,
    "foundation-property | [data-plx-theme=\"default\"][data-plx-mode=\"dark\"]": 1
-  },
-  "platform/system/virtual.css": {
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"1\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"2\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"4\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"8\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"16\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"32\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"64\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"128\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"256\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"512\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"1024\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"2048\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"4096\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"8192\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"16384\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"32768\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"65536\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"131072\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"262144\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"524288\"]": 1,
-   "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"1048576\"]": 1
   },
   "platform/templates/Commerce/commerce.css": {
    "combinator | .plx-commerce-summary__row--total .plx-commerce-summary__label": 1

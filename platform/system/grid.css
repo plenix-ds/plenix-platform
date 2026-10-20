@@ -13,10 +13,20 @@
    - Density changes gutters and margins (12/16/24px), never the column count or the shell's structure.
    - Every page picks a layout mode with AppShell's layout prop ("fluid | contained | hybrid | multi-pane | focus"); it is
      data-plx-layout on the shell and the main region, and patterns/AppShell/app-shell.css draws each mode (batch 217).
+   - A child places itself: plx-span-full or plx-span-N (never wider than the grid's columns), or a bounded-content
+     class; a composition's side regions are its plx-workspace__start and plx-workspace__end elements.
+   - The widths are exclusive ranges: each rule sets a state the grid reads, so no two rules meet (Styling Standard 3.5).
    Loaded after density.css. */
 
-/* ── the application shell: header across, then navigation | main | inspector ── */
-.plx-shell{display:grid;grid-template-areas:"header header header" "nav main inspector";grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);min-block-size:100dvh;}
+/* ── the application shell: header across, then navigation | main | inspector; a Narrow window (under 600px,
+   --plx-sys-shell-phone-below) collapses it to the header and the main region ── */
+.plx-shell{display:grid;grid-template-rows:auto minmax(0,1fr);min-block-size:100dvh;}
+@media (width >= 600px){
+  .plx-shell{grid-template-areas:"header header header" "nav main inspector";grid-template-columns:auto minmax(0,1fr) auto;}
+}
+@media (width < 600px){
+  .plx-shell{grid-template-areas:"header" "main";grid-template-columns:minmax(0,1fr);}
+}
 .plx-shell-header{grid-area:header;}
 .plx-shell-nav{grid-area:nav;inline-size:var(--plx-sys-shell-nav-width);min-inline-size:0;}
 .plx-shell-filters{inline-size:var(--plx-sys-panel-filter-width);min-inline-size:0;}
@@ -24,25 +34,28 @@
 /* the main region: the container every content-grid decision is measured against */
 .plx-shell-main{container-name:main-region;container-type:inline-size;}
 
-/* ── the content grid: 4 / 8 / 12 / 16 columns by main-region width ── */
-.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-4);--plx-comp-page-grid-gutter:var(--plx-ref-grid-gutter-12px);--plx-comp-page-grid-page-margin:var(--plx-ref-grid-margin-16px);box-sizing:border-box;column-gap:var(--plx-comp-page-grid-gutter);display:grid;grid-auto-rows:min-content;grid-template-columns:repeat(var(--plx-comp-page-grid-columns),minmax(0,1fr));inline-size:100%;min-inline-size:0;padding-inline-end:var(--plx-comp-page-grid-page-margin);padding-inline-start:var(--plx-comp-page-grid-page-margin);row-gap:0;}
-/* a child spans every column unless it says otherwise (.span-*): page parts stack as before */
-.plx-page-grid>*{grid-column:1 / -1;min-inline-size:0;}
-@container main-region (min-width: 600px){.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-8);--plx-comp-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-comp-page-grid-page-margin:var(--plx-ref-grid-margin-24px);}}
-@container main-region (min-width: 1024px){.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-12);--plx-comp-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-comp-page-grid-page-margin:var(--plx-sys-page-margin-desktop);}}
-@container main-region (min-width: 1440px){.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-16);--plx-comp-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-comp-page-grid-page-margin:var(--plx-sys-page-margin-wide);}}
-@container main-region (min-width: 1920px){.plx-page-grid[data-plx-ultra-wide="comfortable"]{--plx-comp-page-grid-gutter:var(--plx-ref-grid-gutter-24px);}}
+/* ── the content grid: 4 / 8 / 12 / 16 columns by main-region width (4 outside a main region). The grid publishes its
+   columns, gutter and page margin to what it holds (the spans, the compositions) ── */
+@property --plx-state-page-grid-columns{syntax:"*";inherits:false;}
+@property --plx-state-page-grid-gutter{syntax:"*";inherits:false;}
+@property --plx-state-page-grid-page-margin{syntax:"*";inherits:false;}
+.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-state-page-grid-columns,var(--plx-ref-grid-columns-4));--plx-comp-page-grid-gutter:var(--plx-state-page-grid-gutter,var(--plx-ref-grid-gutter-12px));--plx-comp-page-grid-page-margin:var(--plx-state-page-grid-page-margin,var(--plx-ref-grid-margin-16px));column-gap:var(--plx-comp-page-grid-gutter);display:grid;grid-auto-rows:min-content;grid-template-columns:repeat(var(--plx-comp-page-grid-columns),minmax(0,1fr));inline-size:100%;min-inline-size:0;padding-inline-end:var(--plx-comp-page-grid-page-margin);padding-inline-start:var(--plx-comp-page-grid-page-margin);row-gap:0;}
+@container main-region (600px <= width < 1024px){.plx-page-grid{--plx-state-page-grid-columns:var(--plx-ref-grid-columns-8);--plx-state-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-state-page-grid-page-margin:var(--plx-ref-grid-margin-24px);}}
+@container main-region (1024px <= width < 1440px){.plx-page-grid{--plx-state-page-grid-columns:var(--plx-ref-grid-columns-12);--plx-state-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-state-page-grid-page-margin:var(--plx-sys-page-margin-desktop);}}
+@container main-region (1440px <= width < 1920px){.plx-page-grid{--plx-state-page-grid-columns:var(--plx-ref-grid-columns-16);--plx-state-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-state-page-grid-page-margin:var(--plx-sys-page-margin-wide);}}
+/* 1920px and wider: still 16 columns; data-plx-ultra-wide="comfortable" widens the gutter */
+@container main-region (width >= 1920px){
+  .plx-page-grid:where(:not([data-plx-ultra-wide="comfortable"])){--plx-state-page-grid-columns:var(--plx-ref-grid-columns-16);--plx-state-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-state-page-grid-page-margin:var(--plx-sys-page-margin-wide);}
+  .plx-page-grid[data-plx-ultra-wide="comfortable"]{--plx-state-page-grid-columns:var(--plx-ref-grid-columns-16);--plx-state-page-grid-gutter:var(--plx-ref-grid-gutter-24px);--plx-state-page-grid-page-margin:var(--plx-sys-page-margin-wide);}
+}
 
-/* ── spans ── */
-.plx-span-full{grid-column:1 / -1;}
-.plx-span-1{grid-column:span 1;}.plx-span-2{grid-column:span 2;}.plx-span-3{grid-column:span 3;}.plx-span-4{grid-column:span 4;}
-.plx-span-5{grid-column:span 5;}.plx-span-6{grid-column:span 6;}.plx-span-7{grid-column:span 7;}.plx-span-8{grid-column:span 8;}
-.plx-span-9{grid-column:span 9;}.plx-span-10{grid-column:span 10;}.plx-span-11{grid-column:span 11;}.plx-span-12{grid-column:span 12;}
-.plx-span-13{grid-column:span 13;}.plx-span-14{grid-column:span 14;}.plx-span-15{grid-column:span 15;}.plx-span-16{grid-column:span 16;}
-/* a span never asks for more columns than the grid has */
-@container main-region (max-width: 1439px){.plx-span-13,.plx-span-14,.plx-span-15,.plx-span-16{grid-column:1 / -1;}}
-@container main-region (max-width: 1023px){.plx-span-tablet-full,.plx-span-9,.plx-span-10,.plx-span-11,.plx-span-12{grid-column:1 / -1;}}
-@container main-region (max-width: 599px){.plx-span-mobile-full,.plx-span-5,.plx-span-6,.plx-span-7,.plx-span-8{grid-column:1 / -1;}}
+/* ── spans: a child of the grid takes the full width or N columns, never more than the grid has (a span of 13 in a
+   12-column grid is the full width); outside a content grid N is N ── */
+.plx-span-full{grid-column:1 / -1;min-inline-size:0;}
+.plx-span-1{grid-column:span min(1,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-2{grid-column:span min(2,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-3{grid-column:span min(3,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-4{grid-column:span min(4,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}
+.plx-span-5{grid-column:span min(5,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-6{grid-column:span min(6,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-7{grid-column:span min(7,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-8{grid-column:span min(8,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}
+.plx-span-9{grid-column:span min(9,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-10{grid-column:span min(10,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-11{grid-column:span min(11,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-12{grid-column:span min(12,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}
+.plx-span-13{grid-column:span min(13,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-14{grid-column:span min(14,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-15{grid-column:span min(15,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}.plx-span-16{grid-column:span min(16,var(--plx-comp-page-grid-columns,16));min-inline-size:0;}
 
 /* ── bounded content: readable widths that do not stretch with the screen ── */
 .plx-content-prose{grid-column:1 / -1;inline-size:min(100%,var(--plx-ref-content-max-760px));}
@@ -51,12 +64,21 @@
 .plx-content-editor{grid-column:1 / -1;inline-size:min(100%,var(--plx-ref-content-max-1600px));}
 .plx-content-workspace{grid-column:1 / -1;inline-size:100%;min-inline-size:0;}
 
-/* ── compositions: 4+8+4 (tree/filter, work surface, context), 4+12, 12+4, 8+8 ── */
+/* ── compositions: 4+8+4 (tree/filter, work surface, context), 4+12, 12+4, 8+8. Below their usable width the side
+   regions (plx-workspace__start, plx-workspace__end) leave the composition; they must stay reachable (drawer, overlay
+   or a button) ── */
+@property --plx-state-workspace-columns{syntax:"*";inherits:false;}
 .plx-workspace-4-8-4,.plx-workspace-4-12,.plx-workspace-12-4,.plx-workspace-8-8{column-gap:var(--plx-comp-page-grid-gutter);display:grid;grid-column:1 / -1;min-inline-size:0;}
-.plx-workspace-4-8-4{grid-template-columns:minmax(0,4fr) minmax(0,8fr) minmax(0,4fr);}
-.plx-workspace-4-12{grid-template-columns:minmax(0,4fr) minmax(0,12fr);}
-.plx-workspace-12-4{grid-template-columns:minmax(0,12fr) minmax(0,4fr);}
-.plx-workspace-8-8{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
-/* below their usable width the side regions leave the composition; they must stay reachable (drawer, overlay or a button) */
-@container main-region (max-width: 1439px){.plx-workspace-4-8-4{grid-template-columns:minmax(0,1fr) minmax(0,2fr);}.plx-workspace-4-8-4>:last-child{display:none;}}
-@container main-region (max-width: 1023px){.plx-workspace-4-8-4,.plx-workspace-4-12,.plx-workspace-12-4,.plx-workspace-8-8{grid-template-columns:minmax(0,1fr);}.plx-workspace-4-8-4>:first-child,.plx-workspace-4-8-4>:last-child,.plx-workspace-4-12>:first-child,.plx-workspace-12-4>:last-child{display:none;}}
+.plx-workspace-4-8-4{grid-template-columns:var(--plx-state-workspace-columns,minmax(0,4fr) minmax(0,8fr) minmax(0,4fr));}
+.plx-workspace-4-12{grid-template-columns:var(--plx-state-workspace-columns,minmax(0,4fr) minmax(0,12fr));}
+.plx-workspace-12-4{grid-template-columns:var(--plx-state-workspace-columns,minmax(0,12fr) minmax(0,4fr));}
+.plx-workspace-8-8{grid-template-columns:var(--plx-state-workspace-columns,minmax(0,1fr) minmax(0,1fr));}
+.plx-workspace__start{display:var(--plx-comp-workspace-context-start-display,block);min-inline-size:0;}
+.plx-workspace__end{display:var(--plx-comp-workspace-context-end-display,block);min-inline-size:0;}
+@container main-region (1024px <= width < 1440px){.plx-workspace-4-8-4{--plx-comp-workspace-context-end-display:none;--plx-state-workspace-columns:minmax(0,1fr) minmax(0,2fr);}}
+@container main-region (width < 1024px){
+  .plx-workspace-4-8-4{--plx-comp-workspace-context-end-display:none;--plx-comp-workspace-context-start-display:none;--plx-state-workspace-columns:minmax(0,1fr);}
+  .plx-workspace-4-12{--plx-comp-workspace-context-start-display:none;--plx-state-workspace-columns:minmax(0,1fr);}
+  .plx-workspace-12-4{--plx-comp-workspace-context-end-display:none;--plx-state-workspace-columns:minmax(0,1fr);}
+  .plx-workspace-8-8{--plx-state-workspace-columns:minmax(0,1fr);}
+}

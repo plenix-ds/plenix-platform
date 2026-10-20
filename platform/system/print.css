@@ -5,24 +5,10 @@
      cards, figures and notices are not split across two sheets; headings stay with what follows them
      inside plx-print-urls, an external link prints its address after its text
      the paper's margins are --plx-sys-print-page-margin
+   Every component reads the print tokens (system tokens print-hidden, print-shown, print-block-size, print-overflow,
+   print-position, print-keep, print-url-before, print-url-after): set only on paper, so no rule here or in a component
+   is written for print (zero overlap, Styling Standard 3.5).
    The light theme on paper is usePrint's (hooks/usePrint.js): it sets data-plx-mode="light" on <html> before printing
    and puts the mode back after, so the tokens are the light theme's (black text on white). */
-@media print{
-  @page{margin:var(--plx-sys-print-page-margin);}
-  .plx-app-header,
-  .plx-nav-pane,
-  .plx-app-shell__skip,
-  .plx-app-shell__scrim,
-  .plx-floating-action-button,
-  .plx-toast-region,
-  .plx-spotlight{display:none;}
-  .plx-app-shell,
-  .plx-app-shell__body,
-  .plx-app-shell__main,
-  .plx-app-shell__page{block-size:auto;max-block-size:none;overflow-x:visible;overflow-y:visible;position:static;}
-  .plx-card,
-  .plx-notice,
-  .plx-figure{break-inside:avoid;}
-  h1,h2,h3,h4{break-after:avoid;}
-  .plx-print-urls a[href^="http"]::after{content:" (" attr(href) ")";color:var(--plx-sys-print-url-text);font-family:var(--plx-sys-font-data);word-spacing:var(--plx-sys-font-data-word-spacing);}
-}
+@page{margin:var(--plx-sys-print-page-margin);}
+.plx-print-urls{--plx-comp-link-context-url-after:var(--plx-sys-print-url-after);--plx-comp-link-context-url-before:var(--plx-sys-print-url-before);}

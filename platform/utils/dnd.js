@@ -461,7 +461,7 @@ export function useSortable(options) {
   });
   return {
     listProps: { ref: listRef, 'data-plx-dnd-list': listId, 'data-plx-dnd-orientation': orientation },
-    itemProps: (i) => Object.assign({ className: 'plx-dnd-item', 'data-plx-dnd-owner': listId, 'data-plx-dnd-state': stateOf(getId(items[i])), 'data-plx-drop': markFor(i) },
+    itemProps: (i) => Object.assign({ className: 'plx-dnd-item', 'data-plx-dnd-orientation': orientation, 'data-plx-dnd-owner': listId, 'data-plx-dnd-state': stateOf(getId(items[i])), 'data-plx-drop': markFor(i) },
       useHandle ? null : Object.assign(handlers(i), { tabIndex: o.disabled ? undefined : 0, 'aria-label': fill(t.handle, { name: getName(items[i]) }) })),
     handleProps: (i) => (useHandle ? Object.assign(handlers(i), { 'aria-label': fill(t.handle, { name: getName(items[i]) }), disabled: o.disabled || undefined }) : {}),
     moveTo, canMove,

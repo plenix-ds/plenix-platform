@@ -97,9 +97,11 @@
       var r = s.rect, warn = s.outOfOrder || s.positive, x = rtl ? r.right : r.left, y = r.top;
       points.push(x + ',' + y);
       var g = node('g', {}, 'plx-focus-order__stop' + (warn ? ' plx-focus-order__stop--warning' : '') + (s.el === document.activeElement ? ' is-current' : ''), marks);
-      node('rect', { x: r.left, y: r.top, width: Math.max(r.width, 1), height: Math.max(r.height, 1) }, 'plx-focus-order__outline', g);
-      node('circle', { cx: x, cy: y }, 'plx-focus-order__badge', g);
-      node('text', { x: x, y: y, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, 'plx-focus-order__number', g).textContent = String(s.n);
+      // each part takes the warning and current marks as its own classes (system/focus-order.css)
+      var mod = function (part, current) { return 'plx-focus-order__' + part + (warn ? ' plx-focus-order__' + part + '--warning' : '') + (current && s.el === document.activeElement ? ' plx-focus-order__' + part + '--current' : ''); };
+      node('rect', { x: r.left, y: r.top, width: Math.max(r.width, 1), height: Math.max(r.height, 1) }, mod('outline', true), g);
+      node('circle', { cx: x, cy: y }, mod('badge'), g);
+      node('text', { x: x, y: y, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, mod('number'), g).textContent = String(s.n);
     });
     if (points.length > 1) node('polyline', { points: points.join(' ') }, 'plx-focus-order__line', path);
   }

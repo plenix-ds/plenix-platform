@@ -7,9 +7,9 @@
 .plx-chart__title{color:var(--plx-comp-chart-title-text);font-family:var(--plx-comp-chart-title-font-family);font-size:var(--plx-comp-chart-title-font-size);font-weight:var(--plx-comp-chart-title-font-weight);line-height:var(--plx-comp-chart-title-line-height);word-spacing:normal;}
 .plx-chart__description{color:var(--plx-comp-chart-description-text);font-size:var(--plx-comp-chart-description-font-size);line-height:var(--plx-comp-chart-description-line-height);}
 /* the plot: the container's width, a height by size; the SVG is drawn at the measured size */
-.plx-chart__plot{block-size:var(--plx-comp-chart-plot-height-md);min-inline-size:0;position:relative;}
-.plx-chart--sm .plx-chart__plot{block-size:var(--plx-comp-chart-plot-height-sm);}
-.plx-chart--lg .plx-chart__plot{block-size:var(--plx-comp-chart-plot-height-lg);}
+.plx-chart__plot{block-size:var(--plx-comp-chart-context-plot-height,var(--plx-comp-chart-plot-height-md));min-inline-size:0;position:relative;}
+.plx-chart--sm{--plx-comp-chart-context-plot-height:var(--plx-comp-chart-plot-height-sm);}
+.plx-chart--lg{--plx-comp-chart-context-plot-height:var(--plx-comp-chart-plot-height-lg);}
 .plx-chart__svg{display:block;overflow:visible;}
 .plx-chart__svg--clipped{overflow-x:hidden;overflow-y:hidden;}
 /* marks: filled shapes (bars, areas, slices), lines and points, colored by their data-viz step */

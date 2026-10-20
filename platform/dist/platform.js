@@ -8199,6 +8199,7 @@ function useSortable(options) {
     },
     itemProps: i => Object.assign({
       className: 'plx-dnd-item',
+      'data-plx-dnd-orientation': orientation,
       'data-plx-dnd-owner': listId,
       'data-plx-dnd-state': stateOf(getId(items[i])),
       'data-plx-drop': markFor(i)
@@ -15151,6 +15152,7 @@ function VirtualGap({
   }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
     key: i,
     className: 'plx-virtual-gap__piece',
+    'data-plx-axis': axis,
     'data-plx-span': String(p)
   })));
 }

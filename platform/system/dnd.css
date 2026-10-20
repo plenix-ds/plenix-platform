@@ -11,17 +11,20 @@
 .plx-dnd-item[data-plx-dnd-state="dragging"]{background-color:var(--plx-sys-dnd-dragging-background);box-shadow:var(--plx-sys-dnd-dragging-shadow);cursor:grabbing;opacity:var(--plx-sys-dnd-dragging-opacity);pointer-events:none;z-index:var(--plx-sys-dnd-dragging-z-index);}
 .plx-dnd-item[data-plx-dnd-state="picked"]{background-color:var(--plx-sys-dnd-dragging-background);box-shadow:var(--plx-sys-dnd-dragging-shadow);z-index:var(--plx-sys-dnd-dragging-z-index);}
 /* the handle (or an item that drags as a whole) takes the press itself: no text selection, no browser pan on the handle */
-[data-plx-dnd-handle]{cursor:grab;user-select:none;-webkit-user-select:none;}
+[data-plx-dnd-handle]{user-select:none;-webkit-user-select:none;}
 button[data-plx-dnd-handle],.plx-dnd-move{touch-action:none;}
+[data-plx-dnd-handle]:where(:not(:disabled)){cursor:grab;}
 [data-plx-dnd-handle]:disabled{cursor:not-allowed;}
-:root[data-plx-dnd-active="pointer"] body{cursor:grabbing;user-select:none;-webkit-user-select:none;}
+/* while a pointer drags, the whole page shows the grabbing pointer and selects no text (the body reads both, base.css) */
+:root[data-plx-dnd-active="pointer"]{--plx-sys-page-drag-cursor:grabbing;--plx-sys-page-drag-user-select:none;}
 /* the insertion line: across the gap before or after the item (a vertical list), beside it (a row or a grid) */
-.plx-dnd-item[data-plx-drop]::before{background-color:var(--plx-sys-dnd-indicator-color);block-size:var(--plx-sys-dnd-indicator-width);content:"";inset-inline-end:0;inset-inline-start:0;pointer-events:none;position:absolute;}
-.plx-dnd-item[data-plx-drop="before"]::before{inset-block-start:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
-.plx-dnd-item[data-plx-drop="after"]::before{inset-block-end:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
-[data-plx-dnd-orientation="horizontal"]>.plx-dnd-item[data-plx-drop]::before,[data-plx-dnd-orientation="grid"]>.plx-dnd-item[data-plx-drop]::before{block-size:auto;inline-size:var(--plx-sys-dnd-indicator-width);inset-block-end:0;inset-block-start:0;inset-inline-end:auto;inset-inline-start:auto;}
-[data-plx-dnd-orientation="horizontal"]>.plx-dnd-item[data-plx-drop="before"]::before,[data-plx-dnd-orientation="grid"]>.plx-dnd-item[data-plx-drop="before"]::before{inset-inline-start:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
-[data-plx-dnd-orientation="horizontal"]>.plx-dnd-item[data-plx-drop="after"]::before,[data-plx-dnd-orientation="grid"]>.plx-dnd-item[data-plx-drop="after"]::before{inset-inline-end:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+.plx-dnd-item[data-plx-drop]::before{background-color:var(--plx-sys-dnd-indicator-color);content:"";pointer-events:none;position:absolute;}
+.plx-dnd-item[data-plx-drop]:where(:not([data-plx-dnd-orientation="horizontal"], [data-plx-dnd-orientation="grid"]))::before{block-size:var(--plx-sys-dnd-indicator-width);inset-inline-end:0;inset-inline-start:0;}
+.plx-dnd-item[data-plx-drop="before"]:where(:not([data-plx-dnd-orientation="horizontal"], [data-plx-dnd-orientation="grid"]))::before{inset-block-start:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+.plx-dnd-item[data-plx-drop="after"]:where(:not([data-plx-dnd-orientation="horizontal"], [data-plx-dnd-orientation="grid"]))::before{inset-block-end:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+.plx-dnd-item[data-plx-drop]:is([data-plx-dnd-orientation="horizontal"], [data-plx-dnd-orientation="grid"])::before{inline-size:var(--plx-sys-dnd-indicator-width);inset-block-end:0;inset-block-start:0;}
+.plx-dnd-item[data-plx-drop="before"]:is([data-plx-dnd-orientation="horizontal"], [data-plx-dnd-orientation="grid"])::before{inset-inline-start:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
+.plx-dnd-item[data-plx-drop="after"]:is([data-plx-dnd-orientation="horizontal"], [data-plx-dnd-orientation="grid"])::before{inset-inline-end:calc(var(--plx-sys-dnd-indicator-offset) * -1);}
 /* a drop target */
 .plx-dnd-target[data-plx-drop-state="over"]{background-color:var(--plx-sys-dnd-target-background);outline-color:var(--plx-sys-dnd-target-outline-color);outline-offset:var(--plx-sys-dnd-target-outline-offset);outline-style:dashed;outline-width:var(--plx-sys-dnd-target-outline-width);}
 .plx-dnd-target[data-plx-drop-state="reject"]{cursor:not-allowed;outline-color:var(--plx-sys-dnd-target-reject-outline-color);outline-offset:var(--plx-sys-dnd-target-outline-offset);outline-style:dashed;outline-width:var(--plx-sys-dnd-target-outline-width);}

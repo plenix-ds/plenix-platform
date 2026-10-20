@@ -177,8 +177,10 @@ Every selector is one of five kinds. A selector that is none of them fails the s
 - **A parent never targets a child.** A root's state that changes one of its own parts reaches the part either as the
   part's own state (a class or attribute set from the component's script), or as a context variable (4.1) set on the
   element that holds the part. A component that can contain itself uses the first way.
-- **Print:** a print rule belongs to the component it changes, in its own stylesheet, and the screen value it replaces
-  is written under `@media not print`.
+- **Print:** no rule is written for print. What changes on paper is a system token with a `print` value
+  (`print-hidden`, `print-shown`, `print-block-size`, `print-overflow`, `print-position`, `print-keep`,
+  `print-url-before`, `print-url-after`), set only under `@media print` and unset on screen. The component that owns the
+  element reads it, with its screen value as the fallback: `display: var(--plx-sys-print-hidden, flex)`.
 
 ## 4. How a parent changes a child
 

@@ -123,6 +123,30 @@
     --plx-sys-icon-forced-stroke: 1;
   }
 }
+@media not print {
+  :root {
+    --plx-sys-print-hidden: initial;
+    --plx-sys-print-block-size: initial;
+    --plx-sys-print-overflow: initial;
+    --plx-sys-print-position: initial;
+    --plx-sys-print-shown: initial;
+    --plx-sys-print-keep: initial;
+    --plx-sys-print-url-before: initial;
+    --plx-sys-print-url-after: initial;
+  }
+}
+@media print {
+  :root {
+    --plx-sys-print-hidden: none;
+    --plx-sys-print-block-size: auto;
+    --plx-sys-print-overflow: visible;
+    --plx-sys-print-position: static;
+    --plx-sys-print-shown: contents;
+    --plx-sys-print-keep: avoid;
+    --plx-sys-print-url-before: " (";
+    --plx-sys-print-url-after: ")";
+  }
+}
 [data-plx-density="standard"],[data-plx-density="comfortable"],:root[data-plx-density-policy="standard"]:not([data-plx-density]),:root[data-plx-density-policy="comfortable"]:not([data-plx-density]),:root:not([data-plx-density], [data-plx-density-policy]){
   --plx-ctx-density-plx-sys-radius-control: var(--plx-sys-radius-control-6px);
 }

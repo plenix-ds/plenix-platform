@@ -1,14 +1,14 @@
 /* Plenix · AppShell. */
-.plx-app-shell{block-size:100dvh;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:hidden;}
+.plx-app-shell{block-size:var(--plx-sys-print-block-size,100dvh);display:flex;flex-direction:column;}
 .plx-app-shell__main{display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-block-size:0;min-inline-size:0;}
 .plx-app-shell__main:focus,
 .plx-app-shell__main.is-focused{outline-style:none;}
-.plx-app-shell__skip{background-color:var(--plx-comp-app-shell-skip-background);border-bottom-color:var(--plx-comp-app-shell-skip-border-color);border-bottom-left-radius:var(--plx-comp-app-shell-skip-radius);border-bottom-right-radius:var(--plx-comp-app-shell-skip-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-app-shell-skip-border-width);border-left-color:var(--plx-comp-app-shell-skip-border-color);border-left-style:solid;border-left-width:var(--plx-comp-app-shell-skip-border-width);border-right-color:var(--plx-comp-app-shell-skip-border-color);border-right-style:solid;border-right-width:var(--plx-comp-app-shell-skip-border-width);border-top-color:var(--plx-comp-app-shell-skip-border-color);border-top-left-radius:var(--plx-comp-app-shell-skip-radius);border-top-right-radius:var(--plx-comp-app-shell-skip-radius);border-top-style:solid;border-top-width:var(--plx-comp-app-shell-skip-border-width);color:var(--plx-comp-app-shell-skip-text);font-size:var(--plx-comp-app-shell-skip-font-size);inset-block-start:var(--plx-comp-app-shell-skip-inset-block-start);inset-inline-start:var(--plx-comp-app-shell-skip-inset-inline-start);padding-block-end:var(--plx-comp-app-shell-skip-padding-block);padding-block-start:var(--plx-comp-app-shell-skip-padding-block);padding-inline-end:var(--plx-comp-app-shell-skip-padding-inline);padding-inline-start:var(--plx-comp-app-shell-skip-padding-inline);position:fixed;z-index:var(--plx-comp-app-shell-skip-z-index);}
+.plx-app-shell__skip{background-color:var(--plx-comp-app-shell-skip-background);border-bottom-color:var(--plx-comp-app-shell-skip-border-color);border-bottom-left-radius:var(--plx-comp-app-shell-skip-radius);border-bottom-right-radius:var(--plx-comp-app-shell-skip-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-app-shell-skip-border-width);border-left-color:var(--plx-comp-app-shell-skip-border-color);border-left-style:solid;border-left-width:var(--plx-comp-app-shell-skip-border-width);border-right-color:var(--plx-comp-app-shell-skip-border-color);border-right-style:solid;border-right-width:var(--plx-comp-app-shell-skip-border-width);border-top-color:var(--plx-comp-app-shell-skip-border-color);border-top-left-radius:var(--plx-comp-app-shell-skip-radius);border-top-right-radius:var(--plx-comp-app-shell-skip-radius);border-top-style:solid;border-top-width:var(--plx-comp-app-shell-skip-border-width);color:var(--plx-comp-app-shell-skip-text);display:var(--plx-sys-print-hidden,inline);font-size:var(--plx-comp-app-shell-skip-font-size);inset-block-start:var(--plx-comp-app-shell-skip-inset-block-start);inset-inline-start:var(--plx-comp-app-shell-skip-inset-inline-start);padding-block-end:var(--plx-comp-app-shell-skip-padding-block);padding-block-start:var(--plx-comp-app-shell-skip-padding-block);padding-inline-end:var(--plx-comp-app-shell-skip-padding-inline);padding-inline-start:var(--plx-comp-app-shell-skip-padding-inline);position:fixed;z-index:var(--plx-comp-app-shell-skip-z-index);}
 .plx-app-shell__skip:focus,
 .plx-app-shell__skip.is-focused{inset-block-start:var(--plx-comp-app-shell-skip-focus-inset-block-start);}
 /* the body: the side navigation, the main area and the panel, between the header and the footer (overlays stay in here) */
-.plx-app-shell__body{display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-block-size:0;min-inline-size:0;position:relative;}
-.plx-app-shell__scrim{background-color:var(--plx-comp-app-shell-scrim-background);inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;opacity:var(--plx-comp-app-shell-scrim-opacity);position:absolute;z-index:var(--plx-comp-app-shell-scrim-z-index);}
+.plx-app-shell__body{display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-block-size:0;min-inline-size:0;position:var(--plx-sys-print-position,relative);}
+.plx-app-shell__scrim{background-color:var(--plx-comp-app-shell-scrim-background);display:var(--plx-sys-print-hidden,block);inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;opacity:var(--plx-comp-app-shell-scrim-opacity);position:absolute;z-index:var(--plx-comp-app-shell-scrim-z-index);}
 /* the splitter on a resizable area's inner edge: a wide hit area, a line on hover and focus */
 .plx-panel-splitter{cursor:col-resize;inline-size:var(--plx-comp-panel-splitter-width);inset-block-end:0;inset-block-start:0;position:absolute;touch-action:none;z-index:var(--plx-comp-panel-splitter-z-index);}
 .plx-panel-splitter--end{inset-inline-end:var(--plx-comp-panel-splitter-end-inset-inline-end);}
@@ -21,12 +21,13 @@
 /* the side-navigation area a screen fills through SideNavPortal: it lays out as if its child were the body's */
 .plx-app-shell__slot{display:contents;}
 /* an application's main column inside the main region: fills it, stacks its content, never scrolls sideways */
-.plx-app-shell__page{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;}
+.plx-app-shell__page{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:var(--plx-sys-print-overflow,hidden);overflow-y:var(--plx-sys-print-overflow,hidden);}
 /* the content column of a page (PageContent) and a row of panes beside it */
 .plx-page-content{--plx-comp-action-bar-stick:calc(var(--plx-sys-space-layout-sm) * -1);display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-block-size:0;min-inline-size:0;overflow-y:auto;padding-block-end:var(--plx-comp-page-content-padding-block);padding-block-start:var(--plx-comp-page-content-padding-block);padding-inline-end:var(--plx-comp-page-content-padding-inline);padding-inline-start:var(--plx-comp-page-content-padding-inline);position:relative;row-gap:var(--plx-comp-page-content-row-gap);}
 .plx-page-panes{display:flex;flex-basis:0%;flex-grow:1;min-block-size:0;min-inline-size:0;}
-/* while a pane splitter is dragged the whole page shows the resize pointer (PanelSplitter sets the state on the root) */
-:root.is-resizing-columns body{cursor:col-resize;}
+/* while a pane splitter is dragged the whole page shows the resize pointer (PanelSplitter sets the state on the root;
+   the body reads it, base.css) */
+:root.is-resizing-columns{--plx-sys-page-resize-cursor:col-resize;}
 /* the layout modes (data-plx-layout, from the page's kind) are drawn by system/layout-modes.css, generated from the
    design system's layout standard (platform/standards/layout.json; batch 218) */
 
@@ -37,15 +38,15 @@
 .plx-app-shell__parent-slot,.plx-app-shell__bar-slot{display:contents;}
 /* Narrow: the shell is clipped, never scrolled: a tooltip or menu reaching past the window's edge cannot shift the page
    sideways when focus moves (hidden can still be scrolled by focus; clip cannot) */
+@media (width >= 600px){
+  .plx-app-shell{overflow-x:var(--plx-sys-print-overflow,hidden);overflow-y:var(--plx-sys-print-overflow,hidden);}
+}
 @media (width < 600px){
-  .plx-app-shell{overflow-x:clip;overflow-y:clip;}
+  .plx-app-shell{overflow-x:var(--plx-sys-print-overflow,clip);overflow-y:var(--plx-sys-print-overflow,clip);}
 }
 
 /* responsive visibility (Show / Hide): by width they render or not; on paper their box toggles. The box adds nothing to
    the layout (display: contents) */
-.plx-visibility{display:contents;}
-.plx-visibility--print-only{display:none;}
-@media print{
-  .plx-visibility--print-only{display:contents;}
-  .plx-visibility--no-print{display:none;}
-}
+.plx-visibility:where(:not(.plx-visibility--print-only, .plx-visibility--no-print)){display:contents;}
+.plx-visibility--print-only{display:var(--plx-sys-print-shown,none);}
+.plx-visibility--no-print{display:var(--plx-sys-print-hidden,contents);}

@@ -1,6 +1,6 @@
 /* Plenix · Figure (platform/components/Figure). The media and its caption: the caption under the media in the secondary
    style with the credit after it, or a short caption on a solid media band over the picture's bottom edge. */
-.plx-figure{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;row-gap:var(--plx-comp-figure-gap);}
+.plx-figure{break-inside:var(--plx-sys-print-keep,auto);display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;row-gap:var(--plx-comp-figure-gap);}
 .plx-figure__media{min-inline-size:0;position:relative;}
 .plx-figure__caption{color:var(--plx-comp-figure-caption-text);display:flex;flex-direction:column;font-family:var(--plx-comp-figure-caption-font-family);font-size:var(--plx-comp-figure-caption-font-size);line-height:var(--plx-comp-figure-caption-line-height);row-gap:var(--plx-comp-figure-caption-gap);word-spacing:normal;}
 .plx-figure__credit{color:var(--plx-comp-figure-credit-text);font-size:var(--plx-comp-figure-credit-font-size);}

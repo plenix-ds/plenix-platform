@@ -3,9 +3,9 @@
    density, theme and direction of the place the Portal was written, so its tokens resolve as they would there.
    The containers take no space of their own: what is drawn in them positions itself (a fixed overlay, a floating menu).
    layer="top" puts the container in the browser's top layer (a manual popover, plx-portal--top): above every dialog,
-   pane and stacking context; it covers the window without catching the pointer, so only its content does. */
+   pane and stacking context. It is a point at the window's corner (no area, nothing clipped): it never catches the
+   pointer, and its content positions itself (fixed). Hidden while closed by the browser (a closed popover). */
 .plx-portal-root{display:contents;}
 .plx-portal{display:contents;}
-.plx-portal--top{background-color:transparent;block-size:100%;border-bottom-width:0;border-left-width:0;border-right-width:0;border-top-width:0;color:inherit;display:block;inline-size:100%;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;max-block-size:none;max-inline-size:none;overflow-x:visible;overflow-y:visible;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;pointer-events:none;position:fixed;z-index:var(--plx-sys-layer-popover);}
-.plx-portal--top:not(:popover-open){display:none;}
-.plx-portal--top>*{pointer-events:auto;}
+.plx-portal--top{background-color:transparent;block-size:0;border-bottom-width:0;border-left-width:0;border-right-width:0;border-top-width:0;color:inherit;inline-size:0;inset-block-start:0;inset-inline-start:0;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;max-block-size:none;max-inline-size:none;overflow-x:visible;overflow-y:visible;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:fixed;z-index:var(--plx-sys-layer-popover);}
+.plx-portal--top:popover-open{display:block;}
