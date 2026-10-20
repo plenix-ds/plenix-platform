@@ -2692,16 +2692,6 @@
    "foundation-property | [data-plx-theme=\"default\"][data-plx-mode=\"light\"]": 1,
    "foundation-property | [data-plx-theme=\"default\"][data-plx-mode=\"dark\"]": 1
   },
-  "platform/system/tokens/components.css": {
-   "combinator | :root[data-plx-interaction=\"touch\"] [data-plx-density]": 2,
-   "combinator | :root[data-plx-interaction=\"mobile\"] [data-plx-density]": 2,
-   "foundation-property | [data-plx-density]": 1,
-   "foundation-property | [data-plx-interaction]": 1
-  },
-  "platform/system/tokens/semantic.css": {
-   "combinator | :root[data-plx-interaction=\"touch\"] [data-plx-density]": 1,
-   "combinator | :root[data-plx-interaction=\"mobile\"] [data-plx-density]": 1
-  },
   "platform/system/virtual.css": {
    "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"1\"]": 1,
    "combinator | .plx-virtual-gap[data-plx-axis=\"x\"]>.plx-virtual-gap__piece[data-plx-span=\"2\"]": 1,

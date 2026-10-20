@@ -44,11 +44,32 @@ function tokensOf(set) {
 // and a theme value never writes a color literal (colors come from the palette, by reference).
 const COLOR_LITERAL = /#[0-9a-f]{3,8}\b|\b(?:rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color)\(/i;
 function themeSelectors(name, isDefault) {
-  const t = '[data-plx-theme="' + name + '"]';
+  const t = '[data-plx-theme="' + name + '"]', other = '[data-plx-theme]:not(' + t + ')';
+  // light and dark are what the index reads; css* are what the stylesheet writes: exclusive, so an element takes one
+  // theme's light or dark set, never two (zero overlap, Styling Standard 3.5)
   return isDefault
-    ? { light: ':root,' + t + '[data-plx-mode="light"]', dark: ':root[data-plx-mode="dark"],' + t + '[data-plx-mode="dark"]' }
-    : { light: t + ',' + t + '[data-plx-mode="light"]', dark: t + '[data-plx-mode="dark"]' };
+    ? { light: ':root,' + t + '[data-plx-mode="light"]', dark: ':root[data-plx-mode="dark"],' + t + '[data-plx-mode="dark"]',
+      cssLight: ':root:not([data-plx-mode="dark"], ' + other + '),' + t + '[data-plx-mode="light"]', cssDark: ':root[data-plx-mode="dark"]:not(' + other + '),' + t + '[data-plx-mode="dark"]',
+      cssFoundations: ':root:not(' + other + '),' + t }
+    : { light: t + ',' + t + '[data-plx-mode="light"]', dark: t + '[data-plx-mode="dark"]',
+      cssLight: t + ':not([data-plx-mode="dark"])', cssDark: t + '[data-plx-mode="dark"]', cssFoundations: t };
 }
+// the selector a token set is written under (zero overlap, Styling Standard 3.5): an element matches one density set
+// and one interaction set at most. A density set: the element's own density, else its root's policy, else standard. An
+// interaction set: the root alone (its values inherit, so a density context under it needs no rule of its own).
+function cssSelectorOf(sel) {
+  const items = sel.split(',').map((s) => s.trim());
+  if (/data-plx-interaction="/.test(sel)) return items.filter((i) => !/\s/.test(i)).join(',');
+  const dens = [...new Set(items.flatMap((i) => [...i.matchAll(/data-plx-density(?:-policy)?="([a-z]+)"/g)].map((m) => m[1])))];
+  if (!dens.length) return sel;
+  const parts = dens.map((d) => '[data-plx-density="' + d + '"]').concat(dens.map((d) => ':root[data-plx-density-policy="' + d + '"]:not([data-plx-density])'));
+  if (dens.includes('standard')) parts.push(':root:not([data-plx-density], [data-plx-density-policy])');
+  return parts.join(',');
+}
+// the layer a set writes for a token that several sets declare (it then writes --plx-ctx-<layer>-<token>, and one rule
+// per context picks: interaction, then density, then the base value)
+const layerOf = (sel) => (/:root(\[data-plx-interaction="|:not\(\[data-plx-interaction\]\))/.test(sel) ? 'interaction' : /data-plx-density(-policy)?="/.test(sel) ? 'density' : 'base');
+const ctxName = (layer, name) => '--plx-ctx-' + layer + '-' + name.slice(2);
 const NL = String.fromCharCode(10);
 function themeOutputs(root) {
   const std = JSON.parse(fs.readFileSync(path.join(root, 'platform', 'standards', 'themes.json'), 'utf8'));
@@ -64,9 +85,9 @@ function themeOutputs(root) {
     // dark, so they sit on the theme alone (batch 220); every theme defines the same scales as the default theme
     if (!th.foundations) errors.push(name + ': no foundations token file');
     else {
-      const fsel = name === std.default ? ':root,[data-plx-theme="' + name + '"]' : '[data-plx-theme="' + name + '"]';
+      const fsel = name === std.default ? ':root,[data-plx-theme="' + name + '"]' : '[data-plx-theme="' + name + '"]', fcss = sel.cssFoundations;
       const data = JSON.parse(fs.readFileSync(path.join(SRC, th.foundations), 'utf8'));
-      data.$extensions = data.$extensions || {}; data.$extensions[EXT] = Object.assign({}, data.$extensions[EXT], { output: 'platform/system/themes/' + name + '.css', selector: fsel, opener: fsel + '{' });
+      data.$extensions = data.$extensions || {}; data.$extensions[EXT] = Object.assign({}, data.$extensions[EXT], { output: 'platform/system/themes/' + name + '.css', selector: fsel, opener: fcss + '{' });
       const toks = tokensOf(data), list = toks.map((x) => x.name).sort().join(',');
       toks.forEach((x) => { if (COLOR_LITERAL.test(String(x.token.$value))) errors.push(th.foundations + ': ' + x.name + ' writes a color (' + x.token.$value + ')'); });
       if (scales === null) scales = list; else if (list !== scales) errors.push(th.foundations + ': does not define the same foundations as the default theme');
@@ -75,7 +96,7 @@ function themeOutputs(root) {
     for (const mode of ['light', 'dark']) {
       if (!th[mode]) { errors.push(name + ': no ' + mode + ' token file'); continue; }
       const data = JSON.parse(fs.readFileSync(path.join(SRC, th[mode]), 'utf8'));
-      data.$extensions = data.$extensions || {}; data.$extensions[EXT] = Object.assign({}, data.$extensions[EXT], { output: 'platform/system/themes/' + name + '.css', selector: sel[mode], opener: sel[mode] + '{' });
+      data.$extensions = data.$extensions || {}; data.$extensions[EXT] = Object.assign({}, data.$extensions[EXT], { output: 'platform/system/themes/' + name + '.css', selector: sel[mode], opener: sel[mode === 'light' ? 'cssLight' : 'cssDark'] + '{' });
       const toks = tokensOf(data);
       toks.forEach((x) => { if (COLOR_LITERAL.test(String(x.token.$value))) errors.push(th[mode] + ': ' + x.name + ' writes a color (' + x.token.$value + '): point to a palette color, e.g. {plx-ref.color-blue-400}'); });
       const names2 = toks.map((x) => x.name).sort().join(',');
@@ -142,8 +163,15 @@ function generate(manifest) {
   const files = {}, written = [];
   for (const o of manifest.outputs) {
     let text = o.prologue;
+    // the tokens several of this stylesheet's sets declare: each set writes its layer's variable instead
+    // (a theme's light and dark sets are alternatives, never layers: an element takes one of them)
+    const count = {}; if (!o.file.includes('/themes/')) for (const s of o.sets) for (const { name } of tokensOf(s.data)) count[name] = (count[name] || 0) + 1;
+    const layered = {};
     for (const s of o.sets) {
       const ext = s.data.$extensions[EXT];
+      // a token only this set declares keeps the set's own selector (on :root it is every density's default); a layered
+      // token's variable goes under the exclusive selector, after the set's block
+      const css = cssSelectorOf(ext.selector), layer = layerOf(ext.selector), ctxLines = [];
       const lines = [], still = [];
       for (const { name, token } of tokensOf(s.data)) {
         const x = (token.$extensions && token.$extensions[EXT]) || {};
@@ -151,10 +179,13 @@ function generate(manifest) {
         if (x.reducedMotion !== undefined) { (x.before || []).forEach((l) => lines.push(l)); still.push({ name, token, x }); continue; }
         (x.before || []).forEach((l) => lines.push(l));
         written.push({ name, file: o.file, set: s.tokens, selector: ext.selector, line: text.split('\n').length + lines.length + 1 });
+        if (count[name] > 1) { (layered[name] = layered[name] || new Set()).add(layer); ctxLines.push('  ' + ctxName(layer, name) + ': ' + toCss(token.$value) + ';' + (x.after || '')); continue; }
         lines.push('  ' + name + ': ' + toCss(token.$value) + ';' + (x.after || ''));
       }
       (ext.tail || []).forEach((l) => lines.push(l));
-      text += s.before + ext.opener + '\n' + lines.join('\n') + '\n}';
+      const own = lines.some((l) => /^\s*--/.test(l));
+      if (own) text += s.before + ext.opener + '\n' + lines.join('\n') + '\n}';
+      if (ctxLines.length) text += (own ? '\n' : s.before) + css + '{\n' + ctxLines.join('\n') + '\n}';
       // Motion off (Styling Standard 3.6, condition): the motion values apply only while the person has not asked for
       // reduced motion and no density change is in progress; otherwise the same tokens are 0s. The three blocks are
       // mutually exclusive, so each token has one declaration in every condition, and every component reads the tokens.
@@ -166,6 +197,13 @@ function generate(manifest) {
           + '\n@media (prefers-reduced-motion: reduce) {\n  :root {\n' + decl((t) => toCss(t.x.reducedMotion)) + '\n  }\n}';
         still.forEach((t) => written.push({ name: t.name, file: o.file, set: s.tokens, selector: ':root', line: text.split('\n').length }));
       }
+    }
+    // each layered token, declared once per context: the interaction value, else the density value, else the base value
+    const names = Object.keys(layered);
+    if (names.length) {
+      const pick = (n) => ['interaction', 'density', 'base'].filter((l) => layered[n].has(l)).reduceRight((acc, l) => (acc ? 'var(' + ctxName(l, n) + ', ' + acc + ')' : 'var(' + ctxName(l, n) + ')'), '');
+      text += '\n/* the tokens several sets declare (zero overlap: each set writes its layer; interaction, then density, then base) */\n'
+        + ':root,[data-plx-density],[data-plx-interaction]{\n' + names.map((n) => '  ' + n + ': ' + pick(n) + ';').join('\n') + '\n}';
     }
     files[o.file] = text + o.epilogue;
   }

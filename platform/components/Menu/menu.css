@@ -45,10 +45,10 @@
    component's state order (tools/agent/zero-overlap.md) */
 .plx-menu__item:active:not([aria-disabled="true"]){background-color:var(--plx-sys-state-pressed);}
 /* it opens from the corner nearest its trigger (moved from motion.css) */
-:where(.plx-menu--bottom-start){transform-origin:top left;}
-:where(.plx-menu--bottom-end){transform-origin:top right;}
-:where(.plx-menu--top-start){transform-origin:bottom left;}
-:where(.plx-menu--top-end){transform-origin:bottom right;}
+:where(.plx-menu--bottom-start:dir(ltr)){transform-origin:top left;}
+:where(.plx-menu--bottom-end:dir(ltr)){transform-origin:top right;}
+:where(.plx-menu--top-start:dir(ltr)){transform-origin:bottom left;}
+:where(.plx-menu--top-end:dir(ltr)){transform-origin:bottom right;}
 :where(.plx-menu--bottom-start:dir(rtl)){transform-origin:top right;}
 :where(.plx-menu--bottom-end:dir(rtl)){transform-origin:top left;}
 :where(.plx-menu--top-start:dir(rtl)){transform-origin:bottom right;}
