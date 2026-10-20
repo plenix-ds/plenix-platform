@@ -1,0 +1,1594 @@
+{
+  "dashboard/index.html": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"Mar 10\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Get second plumbing quote\" (span.plx-check__label, \"DM Sans\" 12px): 3.50px",
+        "\"Mar 15\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Confirm countertop material\" (span.plx-check__label, \"DM Sans\" 12px): 3.50px",
+        "\"Mar 8\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Deliver logo concepts round \" (span.plx-check__label, \"DM Sans\" 12px): 3.50px",
+        "\"Mar 12\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Set up brand asset folder\" (span.plx-check__label, \"DM Sans\" 12px): 3.50px",
+        "\"Mar 20\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Book Madrid hotel — Chueca\" (span.plx-check__label, \"DM Sans\" 12px): 3.50px",
+        "\"Mar 15\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"File Q1 estimated tax paymen\" (span.plx-check__label, \"DM Sans\" 12px): 3.50px",
+        "\"Mar 10\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Upload expense receipts Jan–\" (span.plx-check__label, \"DM Sans\" 12px): 3.50px"
+      ]
+    }
+  },
+  "design-system home": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/design-tokens": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"--plx-ref-\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Raw values; the name carries\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"tokens/semantic*.tokens.json\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Roles by intent: surfaces, c\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px"
+      ]
+    }
+  },
+  "design-system #/foundations/color": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"platform/system/motion.css\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Reduced motion\" (strong, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/foundations/typography": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"md.sys.typescale\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Android\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/foundations/spacing": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/border": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/radius": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/icon": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/motion": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/layers": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/breakpoints": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/themes": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/layout/grid": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/layout/dashboard-grid": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\".plx-widget-grid__handle col\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"onReorder\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Mouse and touch\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/layout/panel": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\")\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/layout/responsive-grid": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/content/text": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/content/code-block": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/content/avatar": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/content/property-list": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/actions/button": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"))\" (span, \"Reddit Mono\" 12px) vs \"Disabled\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"plx-button\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"System: SwiftUI\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"--plx-sys-control-height-sta\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"System:\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"--plx-comp-button-size-*\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Token: 16dp (small) · 12 (XS\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"--plx-sys-control-icon-stand\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Token: 20dp; 8dp between ico\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"--plx-comp-button-cluster-ga\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Rule: about 12 pt around a b\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px"
+      ]
+    }
+  },
+  "design-system #/actions/toolbar": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/actions/action-menu": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Pressed (held)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/forms/fieldset": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/forms/text-field": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"plx-input\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"System: SwiftUI\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/forms/native-select": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/forms/checkbox": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/forms/color-swatch": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"button.plx-color-swatch-labe\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected (pressed)\" (span.plx-table__value, \"DM Sans\" 12px): 6.41px"
+      ]
+    }
+  },
+  "design-system #/forms/drop-zone": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-drop-zone border-color \" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Active\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/forms/slider": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\")\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Disabled\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"onCommit\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Keyboard\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/navigation/application-header": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"label\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Accessible name\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/navigation/side-navigation": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected (current)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"TabView\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"System:\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"CupertinoTabBar\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Token: bar 80dp; active indi\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/navigation/breadcrumbs": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/navigation/tabs": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\".plx-tabs__tab--vertical:whe\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 6.41px",
+        "\".plx-tabs__panel outline-sty\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-tabs__tab:is(.plx-tabs_\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-table__value, \"DM Sans\" 12px): 6.41px",
+        "\"rotate(180deg)\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Expanded\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/navigation/filter-bar": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/data-display/badge": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"blue-100\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"in progress, current, inform\" (span.plx-table__value, \"DM Sans\" 12px): 2.00px",
+        "\"orange-100\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"action or correction require\" (span.plx-table__value, \"DM Sans\" 12px): 2.00px"
+      ]
+    }
+  },
+  "design-system #/data-display/metric": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/data-display/interactive-list": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-row-button --plx-state-\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Disabled\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"expanded\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Screen-reader announcements\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/data-display/card": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"MediaCard.onSelectChange(che\" (span.plx-table__value, \"Reddit Mono\" 12px) vs \"the event carries Shift, Ctr\" (span.plx-table__value, \"DM Sans\" 12px): 3.19px",
+        "\".plx-card__toggle color:\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-media-card border-color\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/content/thumbnail": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/specialized/preview": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/data-display/calendar-view": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/data-display/table": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/data-display/data-grid": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"fetchRows({ page, size, sort\" (span.plx-table__value, \"Reddit Mono\" 12px) vs \"rows from a server for \"page\" (span.plx-table__value, \"DM Sans\" 12px): 3.19px"
+      ]
+    }
+  },
+  "design-system #/feedback/notice": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/feedback/status-dot": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/feedback/spinner": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"ProgressView\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \",\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px"
+      ]
+    }
+  },
+  "design-system #/feedback/empty-state": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/overlays/dialog": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/overlays/side-drawer": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"size\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Responsive\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/overlays/tooltip": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\".help\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Tooltip\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/overlays/expandable-section": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"rotate(0deg)\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Expanded\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/overlays/media-lightbox": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/patterns/bulk-selection": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/patterns/filter-and-sort-workflow": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/page-structures/application-shell": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"TabView\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"HIG › Tab bars, Sidebars; Ma\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"NavigationStack\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"An app with one main task an\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"label\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Accessible name\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/page-structures/record-page": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/page-structures/content-template": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/page-structures/master-detail-workspace": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"List\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"A stream of cards: activity,\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"NavigationSplitView\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"One pane for dense content; \" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"NavigationStack\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Detail\" (strong, \"DM Sans\" 12px): 8.39px",
+        "\"ScrollView\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \",\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/specialized/typing-indicator": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/interaction/focus-ring": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"plx-input\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"System: SwiftUI\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"autocomplete\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Keyboard\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/interaction/visually-hidden": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/interaction/overlay-manager": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/implementation/react": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/implementation/css-architecture": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"elements.css\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"A baseline for raw HTML insi\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\".is-…\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Component\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"[data-plx-floating-placement\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Only the properties the beha\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\":where(<element>:not([class*\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Raw elements' baseline (3.4)\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"@media (prefers-reduced-moti\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"inside a global condition: r\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"selector-max-id: 0\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Specificity ceiling\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"!important\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Any, except the listed vendo\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px"
+      ]
+    }
+  },
+  "design-system #/implementation/component-lifecycle": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)",
+        "\"2026-10-05\" (span.plx-table__value, \"DM Sans\" 12px)"
+      ],
+      "baseline": []
+    }
+  },
+  "design-system #/content/content-skip-link": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"label\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Accessible name\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/actions/actions-modal-trigger": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/overlays/overlays-focus-trap": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/implementation/implementation-web": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"platform/system/motion.css\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Reduced motion\" (strong, \"DM Sans\" 12px): 8.41px",
+        "\"CupertinoSwitch\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"A number recorded for design\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px",
+        "\"--plx-comp-dialog-action-gap\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Web · coarse pointer\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px",
+        "\"env(safe-area-inset-*)\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Rule: Android › Edge-to-edge\" (span.plx-table__value, \"DM Sans\" 12px): 8.39px"
+      ]
+    }
+  },
+  "design-system #/foundations/numbers-and-units": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/aspect-ratio-scale": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"--plx-ref-ratio\" (a.plx-link.plx-link--inline, \"Reddit Mono\" 12px) vs \"Overview\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+      ]
+    }
+  },
+  "design-system #/foundations/interaction-states": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-state.is-selected backg\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Pressed (held)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-state border-color (all\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Selected (pressed)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-state background-color:\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Selected (current)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\".plx-state background-color:\" (span.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Disabled\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/foundations/logo": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/patterns/patterns-contextual-education": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/actions/copy-button": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/patterns/inline-editing": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/navigation/mobile-app-bar": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": [
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Hover\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+        "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Selected (current)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px"
+      ]
+    }
+  },
+  "design-system #/data-display/chart-foundations": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/patterns/compare": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/specialized/human-review": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/patterns/sign-in": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/patterns/trial-upgrade": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/specialized/file-list": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/specialized/product-options": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/content-style": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  },
+  "design-system #/foundations/design-principles": {
+    "light": {
+      "role": [],
+      "prose": [],
+      "pattern": [],
+      "baseline": []
+    }
+  }
+}
