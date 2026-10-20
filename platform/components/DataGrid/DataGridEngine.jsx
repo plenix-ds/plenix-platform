@@ -5,7 +5,8 @@
      groupBy, tree/childrenField/treeColumn, editable columns, row menus, storageKey, fetchRows and loading/error state.
      onRowClick(record,event), onRowDoubleClick(record,event), onCellEdit(record,change) receive application records.
    Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
-     token-sized CSS gaps represent missing rows. Opening saved state is supplied on the very first render.
+     token-sized CSS gaps represent missing rows. An automatic viewport is bounded by its allocated pane as well as the browser. Opening saved state is supplied on the very first render. Search filtering is deferred so typing stays responsive;
+     controlled sort state and the numeric text collator are reused across search updates.
    Notes: Own Plenix markup and stylesheet use the existing table tokens. Applications use the public DataGrid entry point. */
 import React from 'react';
 import { flushSync } from 'react-dom';
@@ -46,15 +47,17 @@ const kinds = c => [].concat(c.kind || []);
 const typeOf = c => c.type || (kinds(c).includes('wrap') ? 'long-text' : c.sorter === 'number' ? 'number' : c.sorter === 'date' ? 'date' : 'text');
 const sorted = s => s.map(x => ({ field: x.id, dir: x.desc ? 'desc' : 'asc' }));
 const lengthName = v => { const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || '')); return match?.[1]; };
-const compare = (a, b, id) => { const x=a.getValue(id), y=b.getValue(id); if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1; return valueText(x).localeCompare(valueText(y), undefined, { numeric: true }); };
+const sortCollator = new Intl.Collator(undefined, { numeric: true });
+const compare = (a, b, id) => { const x=a.getValue(id), y=b.getValue(id); if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1; return sortCollator.compare(valueText(x),valueText(y)); };
 function Gap({ count, kind='record' }) { return count > 0 ? <div className={'plx-data-grid__gap plx-data-grid__gap--'+kind} aria-hidden="true">{gapPieces(count).map((n,i)=><div key={i} className="plx-virtual-gap__piece" data-plx-span={String(n)} />)}</div> : null; }
 function RowGap({ rows }) { const counts=rows.reduce((all,row)=>{all[row.__group?row.__group.separated?'separated':'group':row.__gap?'band':row.__add?'add':'record']++;return all;},{record:0,group:0,separated:0,band:0,add:0});return <div aria-hidden="true">{Object.entries(counts).map(([kind,count])=><Gap key={kind} kind={kind} count={count}/>)}</div>; }
 function CellEditor({ column,value,onCommit,onCancel }) { const [draft,setDraft]=React.useState(value??''),done=React.useRef(false);const finish=()=>{if(done.current)return;done.current=true;onCommit(column.editor==='number'?draft===''?null:Number(draft):draft);};return <input autoFocus className="plx-data-grid__editor" aria-label={'Edit '+column.title} type={column.editor==='number'?'number':'text'} value={draft} onChange={e=>setDraft(e.target.value)} onBlur={finish} onKeyDown={e=>{e.stopPropagation();if(e.key==='Escape'){done.current=true;onCancel();}else if(e.key==='Enter'){e.preventDefault();finish();}}}/>; }
 function Check({ checked, mixed, label, onChange }) { const ref=React.useRef(null); React.useLayoutEffect(()=>{if(ref.current)ref.current.indeterminate=!!mixed;},[mixed]); return <label className={GRID+'__check'} onClick={e=>e.stopPropagation()}><input ref={ref} type="checkbox" checked={!!checked} aria-label={label} onChange={onChange} onClick={e=>e.stopPropagation()}/></label>; }
+const WidthPixels=React.createContext(null);
 // Calculate token widths during React's read-only render, then let React batch all style writes at commit.
 // Reading the grid in a separate layout effect for every new cell alternates reads and writes and forces layout.
 const Width = React.forwardRef(function Width({ as: Element='div', width, frozenOffset, children, onAttach, ...props }, forwarded) {
-  const ref=React.useRef(null),style=width==null?undefined:{width:gridPx(width,{el:ref.current||document.documentElement}),...(frozenOffset==null?{}:{insetInlineStart:gridPx(frozenOffset,{el:ref.current||document.documentElement})})};
+  const ref=React.useRef(null),pixels=React.useContext(WidthPixels),length=value=>pixels?pixels(value):gridPx(value,{el:ref.current||document.documentElement}),style=width==null?undefined:{width:length(width),...(frozenOffset==null?{}:{insetInlineStart:length(frozenOffset)})};
   return <Element {...props} style={style} ref={node=>{ref.current=node;onAttach?.(node);if(typeof forwarded==='function')forwarded(node);else if(forwarded)forwarded.current=node;}}>{children}</Element>;
 });
 
@@ -86,12 +89,17 @@ function NextEngine(props) {
   const [remoteBusy,setRemoteBusy]=React.useState(false);
   const [remote,setRemote]=React.useState(null),[remoteError,setRemoteError]=React.useState(null),[retry,setRetry]=React.useState(0);
   const [metrics,setMetrics]=React.useState({row:0,line:0,lead:0,menu:0,min:0,space:0,room:0}),[isNarrow,setNarrow]=React.useState(false),[message,setMessage]=React.useState('');
+  // One conversion per distinct width and measured environment, shared by every visible cell.
+  const widthPixels=React.useMemo(()=>{const cache=new Map();return value=>{if(!cache.has(value))cache.set(value,gridPx(value,{el:frame.current||document.documentElement}));return cache.get(value);};},[metrics]);
   const effectiveStep=props.rowHeight || rowHeight, effectiveWrap=props.wrapHeaders ?? wrapHeaders;
   const selection=Array.isArray(selected)?Object.fromEntries(selected.map(k=>[recordKey(k),true])):ownSelection;
-  const initiallyControlledSort=React.useRef(!!props.sort?.length),appliedSort=React.useRef(false);if(props.sort?.length&&(initiallyControlledSort.current||JSON.stringify(normalizeSort(props.sort))!==JSON.stringify(initial.sorting)))appliedSort.current=true;
+  const controlledSort=React.useMemo(()=>normalizeSort(props.sort),[sortSignal]);
+  const deferredFilter=React.useDeferredValue(props.filter);
+  const initiallyControlledSort=React.useRef(!!props.sort?.length),appliedSort=React.useRef(false);if(props.sort?.length&&(initiallyControlledSort.current||JSON.stringify(controlledSort)!==JSON.stringify(initial.sorting)))appliedSort.current=true;
   React.useEffect(()=>{if(props.sort?.length&&sortOwner!==sortSignal)setSortOwner(null);},[sortSignal]);
-  const sorting=sortOwner===sortSignal||(!props.sort?.length&&sortOwner!==null)?localSort:props.sort?.length?normalizeSort(props.sort):appliedSort.current?[]:localSort;
+  const sorting=sortOwner===sortSignal||(!props.sort?.length&&sortOwner!==null)?localSort:props.sort?.length?controlledSort:appliedSort.current?EMPTY_ROWS:localSort;
   const columnOrder=orderOwner===orderSignal?order:props.columnOrder || order, columnVisibility=hiddenOwner===hiddenSignal?visibility:props.hiddenColumns?visibilityOf(props.hiddenColumns):visibility;
+  const sortingRef=React.useRef(sorting);sortingRef.current=sorting;
   const remoteMode=typeof props.fetchRows==='function'&&(mode==='pages'||mode==='load-more'),incoming=remoteMode?(remote?.rows||EMPTY_ROWS):data;
   const source=edited?.input===incoming?edited.rows:incoming,canonical=React.useMemo(()=>recordsOf(source,index,childField),[source,index,childField]);
   const recordsByKey=React.useMemo(()=>new Map(canonical.map(record=>[recordKey(record[index]),record])),[canonical,index]);
@@ -112,14 +120,14 @@ function NextEngine(props) {
   const pick=(key,value)=>{if(!!live.current.selection[key]===!!value)return;const next={...live.current.selection};if(options.selectableRows===1&&value)Object.keys(next).forEach(k=>delete next[k]);if(value)next[key]=true;else delete next[key];notifySelection(next);};
   const changeSort=update=>{const next=typeof update==='function'?update(sorting):update;setSortOwner(sortSignal);setSorting(next);setPage(0);emit('dataSorted',next.map(s=>({field:s.id,dir:s.desc?'desc':'asc'})));};
   const leafDefs=React.useMemo(()=>columns.map(c=>({id:c.field,accessorFn:r=>valueAt(r,c.field),header:c.title||c.field,
-    enableSorting:c.headerSort!==false,filterFn:c.type==='bytes'?byteFilter:c.filter==='list'?listFilter:textFilter,sortingFn:typeof c.sorter==='function'?(a,b,id)=>c.sorter(a.getValue(id),b.getValue(id),a.original,b.original,id,sorting.find(s=>s.id===id)?.desc?'desc':'asc'):c.sorter==='number'||c.type==='bytes'?'basic':compare,
+    enableSorting:c.headerSort!==false,filterFn:c.type==='bytes'?byteFilter:c.filter==='list'?listFilter:textFilter,sortingFn:typeof c.sorter==='function'?(a,b,id)=>c.sorter(a.getValue(id),b.getValue(id),a.original,b.original,id,sortingRef.current.find(s=>s.id===id)?.desc?'desc':'asc'):c.sorter==='number'||c.type==='bytes'?'basic':compare,
     size:kinds(c).includes('icon')?metrics.lead:Math.max(metrics.min,tokenPixels(c.width,frame.current)||autoSizing[c.field]||metrics.min),minSize:kinds(c).includes('icon')?metrics.lead:tokenPixels(c.minWidth,frame.current)||metrics.min,
-    maxSize:kinds(c).includes('icon')?metrics.lead:c.maxWidth?tokenPixels(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],meta:c})),[columns,metrics.min,autoSizing,sorting]);
+    maxSize:kinds(c).includes('icon')?metrics.lead:c.maxWidth?tokenPixels(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],meta:c})),[columns,metrics.min,metrics.lead,autoSizing]);
   const table=useReactTable({data:source,columns:leafDefs,getRowId:r=>recordKey(r[index]),getSubRows:childField?r=>r[childField]:undefined,onExpandedChange:setExpanded,filterFromLeafRows:true,
-    state:{expanded:printing?true:expanded,sorting,columnOrder,columnVisibility,columnSizing:sizing,columnFilters:filters,globalFilter:props.filter,pagination:{pageIndex:page,pageSize},rowSelection:selection},
+    state:{expanded:printing?true:expanded,sorting,columnOrder,columnVisibility,columnSizing:sizing,columnFilters:filters,globalFilter:deferredFilter,pagination:{pageIndex:page,pageSize},rowSelection:selection},
     onSortingChange:changeSort,
     onColumnVisibilityChange:update=>{setHiddenOwner(hiddenSignal);setVisibility(typeof update==='function'?update(columnVisibility):update);},onColumnOrderChange:update=>{setOrderOwner(orderSignal);setOrder(typeof update==='function'?update(columnOrder):update);},onColumnSizingChange:setSizing,onColumnFiltersChange:update=>{setFilters(update);setPage(0);},
-    getColumnCanGlobalFilter:()=>true,globalFilterFn:(row,id,fn)=>typeof fn!=='function'||!!fn(row.original),globalFilter:props.filter,
+    getColumnCanGlobalFilter:()=>true,globalFilterFn:(row,id,fn)=>typeof fn!=='function'||!!fn(row.original),globalFilter:deferredFilter,
     manualPagination:remoteMode,manualSorting:remoteMode,manualFiltering:remoteMode,pageCount:remoteMode?Math.ceil((remote?.total||0)/pageSize):undefined,
     getExpandedRowModel:getExpandedRowModel(),getCoreRowModel:getCoreRowModel(),getFilteredRowModel:getFilteredRowModel(),getSortedRowModel:getSortedRowModel(),
     getPaginationRowModel:mode==='pages'?getPaginationRowModel():undefined,autoResetPageIndex:false});
@@ -166,10 +174,10 @@ function NextEngine(props) {
   React.useLayoutEffect(()=>{
     const at=frame.current;if(!at)return;const doc=at.ownerDocument;
     let raf=0;
-    const measure=()=>{raf=0;const next={row:tokenPixels('--plx-comp-data-grid-record-height',at),line:tokenPixels('--plx-comp-data-grid-line-width',at),lead:tokenPixels('--plx-comp-data-grid-lead-column-width',at),menu:tokenPixels('--plx-comp-data-grid-row-menu-width',at),min:tokenPixels('--plx-ref-size-80px',at),space:tokenPixels('--plx-comp-data-grid-cell-padding-inline',at),room:at.clientWidth,add:tokenPixels('--plx-sys-data-grid-row-height',at),group:tokenPixels('--plx-comp-data-grid-group-header-height',at),groupGap:tokenPixels('--plx-comp-data-grid-group-gap',at)};
+    const measure=()=>{raf=0;const next={step:gridStep(at),row:tokenPixels('--plx-comp-data-grid-record-height',at),line:tokenPixels('--plx-comp-data-grid-line-width',at),lead:tokenPixels('--plx-comp-data-grid-lead-column-width',at),menu:tokenPixels('--plx-comp-data-grid-row-menu-width',at),min:tokenPixels('--plx-ref-size-80px',at),space:tokenPixels('--plx-comp-data-grid-cell-padding-inline',at),room:at.clientWidth,add:tokenPixels('--plx-sys-data-grid-row-height',at),group:tokenPixels('--plx-comp-data-grid-group-header-height',at),groupGap:tokenPixels('--plx-comp-data-grid-group-gap',at)};
       setMetrics(old=>Object.keys(next).every(k=>next[k]===old[k])?old:next);
       const threshold=narrow==='auto'?keys.reduce((sum,field)=>sum+(live.current.table?.getColumn(field)?.getSize()||next.min),selectable?next.lead:0):tokenPixels(narrowAt,at),want=listed&&at.clientWidth>0&&at.clientWidth<threshold;setNarrow(want);
-      if(!isStatic&&!height&&mode!=='pages'&&holder.current){const top=holder.current.getBoundingClientRect().top;holder.current.style.maxBlockSize=gridPx(Math.max(next.row*8,doc.defaultView.innerHeight-top),{round:'down',el:at});}
+      if(!isStatic&&!height&&mode!=='pages'&&holder.current){const top=holder.current.getBoundingClientRect().top,room=at.getBoundingClientRect().bottom-top;holder.current.style.maxBlockSize=gridPx(Math.max(0,Math.min(room,doc.defaultView.innerHeight-top)),{round:'down',el:at});}
     };
     const schedule=()=>{if(!raf)raf=requestAnimationFrame(measure);};measure();
     const ro=new ResizeObserver(schedule);ro.observe(at);const mo=new MutationObserver(schedule);mo.observe(doc.documentElement,{attributes:true,attributeFilter:['data-plx-density','data-plx-density-policy','data-plx-interaction','data-plx-mode']});
@@ -189,7 +197,7 @@ function NextEngine(props) {
     if(removed.length||(!keepHiddenSelection&&hidden.length)){removed.concat(!keepHiddenSelection?hidden:[]).forEach(key=>delete next[key]);notifySelection(next);}
     else if(hidden.length!==selectionInfo.current.hidden){selectionInfo.current={hidden:hidden.length};const records=canonical.filter(r=>selection[recordKey(r[index])]);onSelectionChange?.(records.map(r=>r[index]),{count:records.length,hidden:hidden.length});}
     emit('dataFiltered',filters.map(f=>({field:f.id,type:'like',value:f.value})),table.getFilteredRowModel().rows.map(r=>api.row(r.id)));
-  },[props.filter,JSON.stringify(filters),source,keepHiddenSelection]);
+  },[deferredFilter,JSON.stringify(filters),source,keepHiddenSelection]);
   const previousData=React.useRef(source);
   React.useEffect(()=>{if(ready.current&&previousData.current!==source){previousData.current=source;emit('dataChanged',source);}},[source]);
   React.useEffect(()=>{setPage(0);setLoaded(pageSize);},[sortSignal,props.filter,JSON.stringify(filters),props.search,pageSize]);
@@ -253,7 +261,7 @@ function NextEngine(props) {
   const priorGroups=model.slice(0,first).filter(row=>row.__group).map(row=>row.__group),currentGroup=model[first]?.__group||priorGroups[priorGroups.length-1];
   const stickyGroups=currentGroup?priorGroups.filter((group,i)=>group.path.every((part,depth)=>JSON.stringify(part)===JSON.stringify(currentGroup.path[depth]))&&!priorGroups.slice(i+1).some(next=>next.depth===group.depth)):[];
   const failed=error||remoteError;
-  return <div ref={frame} className={cx(B,pinnedAt>=0&&B+'--row-header',listed&&B+'--list',isNarrow&&B+'--narrow',height==='100%'&&B+'--fill',mode==='pages'&&B+'--pages',mode==='load-more'&&B+'--load-more',className)} data-plx-engine="next" data-plx-render={virtualized?'virtual':undefined} data-plx-row-height={!isStatic&&!isNarrow?effectiveStep:undefined} data-plx-wrap-headers={effectiveWrap?'':undefined} data-plx-height={lengthName(height)} data-plx-fit={!isStatic&&!height&&mode!=='pages'?'':undefined}>
+  return <WidthPixels.Provider value={widthPixels}><div ref={frame} className={cx(B,pinnedAt>=0&&B+'--row-header',listed&&B+'--list',isNarrow&&B+'--narrow',height==='100%'&&B+'--fill',mode==='pages'&&B+'--pages',mode==='load-more'&&B+'--load-more',className)} data-plx-engine="next" data-plx-render={virtualized?'virtual':undefined} data-plx-row-height={!isStatic&&!isNarrow?effectiveStep:undefined} data-plx-wrap-headers={effectiveWrap?'':undefined} data-plx-height={lengthName(height)} data-plx-fit={!isStatic&&!height&&mode!=='pages'?'':undefined}>
     {failed?<EmptyState className={B+'__error'} tone="error" title={S.failed} action={onRetry||remoteError?<Button size="sm" onClick={()=>{setRetry(n=>n+1);onRetry?.();}}>{S.retry}</Button>:null}>{String(failed===true?'':failed.message||failed)}</EmptyState>:null}
     <div className={B+'__table '+B+'__grid'} role={isStatic?'table':groups.length||childField?'treegrid':'grid'} aria-label={label} aria-busy={remoteMode&&remoteBusy?true:undefined} aria-rowcount={groups.length||childField?semanticRows.length+1:(remoteMode?remote?.total||0:table.getFilteredRowModel().rows.length)+1} aria-colcount={ordered.length+(selectable?1:0)+(rowMenu&&rowMenuButton?1:0)+(props.viewMenu?1:0)} hidden={!!failed}>
       <div className={`${B}__grid-header`} ref={header} hidden={isStatic&&props.headerVisible===false}><div className={`${B}__grid-header-contents`}><div {...columnDnd.listProps} className={`${B}__grid-headers`} role="row">
@@ -270,8 +278,7 @@ function NextEngine(props) {
     {mode==='pages'&&!failed?<div className={B+'__footer'}><Text variant="data" className={B+'__range'}>{words(S.range,{first:displayedTotal?Math.min(page*pageSize+1,displayedTotal):0,last:Math.min((page+1)*pageSize,displayedTotal),total:displayedTotal})}</Text><label className={B+'__page-size'}><span>{S.perPage}</span><Select value={String(pageSize)} options={(props.pageSizes||[25,50,100]).map(n=>({value:String(n),label:String(n)}))} onChange={e=>{setPage(0);setPageSize(+e.target.value);}}/></label><Pagination className={B+'__pages'} label={words(S.pages,{label})} page={page+1} pageCount={Math.max(1,Math.ceil(displayedTotal/pageSize))} onPageChange={n=>setPage(n-1)}/></div>:null}
     {mode==='load-more'&&!failed?<div className={B+'__footer'}><Text variant="data" className={B+'__range'}>{words(S.count,{shown:Math.min(loadedRows.length,displayedTotal),total:displayedTotal})}</Text>{loadedRows.length<displayedTotal?<Button size="sm" loading={remoteMode&&remoteBusy} className={B+'__more'} onClick={()=>{if(remoteMode){if(!fetching.current){fetching.current=true;setPage(n=>n+1);}}else setLoaded(n=>Math.min(allRows.length,n+pageSize));}}>{S.loadMore}</Button>:null}</div>:null}
     <span className="plx-sr-only" role="status" aria-live="polite">{message}</span>
-  </div>;
+  </div></WidthPixels.Provider>;
 }
 export function DataGridEngine(props) { return <NextEngine key={props.storageKey || ''} {...props}/>; }
 DataGridEngine.preload = () => Promise.resolve();
-
