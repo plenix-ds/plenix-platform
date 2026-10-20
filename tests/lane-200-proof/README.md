@@ -18,3 +18,5 @@ Package build reports TIPTAP_TRUSTED_SINKS_OK, W15C_PACKAGES_OK (32 checks) and 
 The general utilities suite has the same unrelated resource-404 finding on this head and a rebuilt detached exact base on this runner: 1 failed / 16 passed. Scope banners differ (head changed mode, base forced full), but the checks and finding match. Raw logs retained; no baseline or assertion changed.
 
 Package fixtures install a deliberately broken ambient window.PlenixTiptap before rendering; the packaged editor still loads its own factory and works. The legacy global variant retains ambient engine reuse. Distribution contract: 4 local ESM chunks, all present with prefetch declarations and DOMPurify license in the offline manifest.
+
+Paste follow-up: package generation also replaces the single upstream ProseMirrorClipboard identity-policy helper with the shared sanitizer. Strict CSP still allows only dompurify. Initial strong formatting, typing and hostile-HTML/plain-text clipboard tests pass in package, strict package and classic modes. The shared SAFE_HREF import is retained for the editor link callbacks.

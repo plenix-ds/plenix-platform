@@ -206,8 +206,17 @@ const engineSource = fs.readFileSync(path.join(P, 'vendor', 'tiptap', 'tiptap.mi
 if (!engineSource.includes('var PlenixTiptap=')) throw new Error('Unexpected vendored Tiptap entry');
 // Adapt only the vendored engine's HTML parsing sinks to the shared sanitizer. Keep the upstream file unchanged;
 // the exact sink count is pinned so an engine update cannot silently introduce an unreviewed sink.
-const sinkCounts = { assignments: 0, parsers: 0 };
+const sinkCounts = { assignments: 0, parsers: 0, clipboard: 0 };
 const trustedEngineSource = require('@babel/standalone').transform(engineSource, { plugins: [({ types: t }) => ({ visitor: {
+  FunctionDeclaration(p) {
+    let clipboardPolicy = false;
+    p.traverse({ StringLiteral(q) { if (q.node.value === 'ProseMirrorClipboard') clipboardPolicy = true; } });
+    if (!clipboardPolicy) return;
+    if (p.node.params.length !== 1) throw new Error('Unexpected Tiptap clipboard policy helper');
+    // Reuse the sanitizing policy instead of creating an identity clipboard policy.
+    p.node.body = t.blockStatement([t.returnStatement(t.callExpression(t.identifier('plenixTrustedHTML'), [p.node.params[0]]))]);
+    sinkCounts.clipboard++; p.skip();
+  },
   AssignmentExpression(p) {
     const node = p.node, left = node.left;
     if (left.type !== 'MemberExpression' || !['innerHTML', 'outerHTML'].includes(left.property.name || left.property.value)) return;
@@ -220,7 +229,7 @@ const trustedEngineSource = require('@babel/standalone').transform(engineSource,
     node.arguments[0] = t.callExpression(t.identifier('plenixTrustedHTML'), [node.arguments[0]]); sinkCounts.parsers++; p.skip();
   }
 } })] }).code;
-if (sinkCounts.assignments !== 2 || sinkCounts.parsers !== 1) throw new Error('Unexpected Tiptap HTML sinks: ' + JSON.stringify(sinkCounts));
+if (sinkCounts.assignments !== 2 || sinkCounts.parsers !== 1 || sinkCounts.clipboard !== 1) throw new Error('Unexpected Tiptap HTML sinks: ' + JSON.stringify(sinkCounts));
 console.log('TIPTAP_TRUSTED_SINKS_OK 2 assignments, 1 parser');
 write(path.join(engineBuild, 'tiptap-engine.js'), 'import {trustedRichText} from ' + JSON.stringify(path.join(P, 'utils', 'richText.js').split(path.sep).join('/')) + ';\nexport default function createTiptap(window){ const {document,navigator,Node,HTMLElement}=window; const plenixTrustedHTML = html => trustedRichText(html, document);\n' + trustedEngineSource + '\nreturn PlenixTiptap; }\n');
 write(path.join(engineBuild, 'tiptap-load.js'), "export const loadPackagedTiptap = window => import('./tiptap-engine.js').then(module => module.default(window));\n");

@@ -78,7 +78,7 @@
        only color, background-color, font-family, font-size and text-align; everything else is unwrapped or dropped.
 */
 import React from 'react';
-import { cleanRichText, sanitizeRichText } from '../../utils/richText.js';
+import { cleanRichText, sanitizeRichText, SAFE_HREF } from '../../utils/richText.js';
 export { cleanRichText, RICH_TEXT_STYLE_PROPERTIES } from '../../utils/richText.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';

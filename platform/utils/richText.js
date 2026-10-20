@@ -15,7 +15,7 @@ const RENAME = { B: 'strong', I: 'em', STRIKE: 's', DEL: 's', DIV: 'p' };
 const USER_STYLE = { SPAN: ['color', 'background-color', 'font-family', 'font-size'], MARK: ['color', 'background-color'],
   P: ['text-align'], H1: ['text-align'], H2: ['text-align'], H3: ['text-align'], H4: ['text-align'], H5: ['text-align'], H6: ['text-align'], TH: ['text-align'], TD: ['text-align'] };
 export const RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
-const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
+export const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
 const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
 // the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped, styles kept to the person's formatting)
 export function sanitizeRichText(html, doc = typeof document === 'undefined' ? null : document) {
