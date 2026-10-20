@@ -43,7 +43,7 @@ export function RadioTiles({ legend, legendHidden = false, options = [], value, 
                 <span className="plx-radio-tile__label">{o.label}</span>
                 {o.description ? <span className="plx-radio-tile__description">{o.description}</span> : null}
               </span>
-              <span className="plx-radio-tile__check" aria-hidden="true">{on ? <Icon name="check" size="sm" /> : null}</span>
+              <span className="plx-radio-tile__check" aria-hidden="true">{on ? <Icon name="check" size="sm" filled /> : null}</span>
             </label>
           );
         })}

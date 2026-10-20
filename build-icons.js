@@ -37,7 +37,6 @@ module.exports = function buildIcons(root) {
   });
   // the symbols that point along the reading direction: mirrored in right to left
   const MIRROR = ['arrow_back', 'arrow_right', 'chevron_left', 'chevron_right', 'left_panel_close', 'left_panel_open', 'right_panel_close', 'right_panel_open', 'undo', 'redo'];
-  const STATE = ['[aria-current="page"]', '[aria-current="true"]', '[aria-pressed="true"]', '[aria-selected="true"]', '.is-selected', '.is-current'];
   // the optical size a context draws, per symbol: 20 by default (every density context but Comfortable resets it, so a
   // region nested in a Comfortable one draws 20 again), 24 in a Comfortable region and in a 24px container
   const autos = (big) => symbols.flatMap((sym) => ['', '-fill'].map((f) => '--plx-comp-icon-auto-' + ident(sym) + f + ':var(--plx-comp-icon-glyph-' + ident(sym) + (big ? '-24' : '') + f + ');')).join('');
@@ -63,11 +62,11 @@ module.exports = function buildIcons(root) {
     '.plx-icon--size-lg{--plx-comp-icon-size:var(--plx-comp-icon-size-lg);}',
     '.plx-icon--size-xl{--plx-comp-icon-size:var(--plx-comp-icon-size-xl);}',
     '/* the drawing (exclusive): outline or filled, at the context\'s optical size or, for lg and xl, at 24. Filled is the',
-    '   icon\'s own plx-icon--filled, which the component owning the state passes (<Icon filled>: NavList\'s current item,',
-    '   a selected Button). Until every owner does, an icon that declares neither fill is filled inside a current or',
-    '   selected element, as before (the rollout backlog: these selectors still reach from the ancestor) */',
+    '   icon\'s own plx-icon--filled, which the component owning the state passes (<Icon filled>, stateIcon: NavList\'s',
+    '   current item, a selected Button, a chosen tile\'s check). Content inside a selected row or card stays outline',
+    '   (owner, 2026-10-20): nothing fills an icon from an ancestor */',
     ...(() => {
-      const F = '.plx-icon--filled, :is(' + STATE.join(', ') + ') :not(.plx-icon--outline, [data-plx-icon-fill="outline"])', B = '.plx-icon--size-lg, .plx-icon--size-xl';
+      const F = '.plx-icon--filled', B = '.plx-icon--size-lg, .plx-icon--size-xl';
       return ['.plx-icon:where(:not(' + F + ', ' + B + ')){--plx-comp-icon-url:var(--plx-comp-icon-outline);}',
         '.plx-icon:where(' + F + '):where(:not(' + B + ')){--plx-comp-icon-url:var(--plx-comp-icon-filled);}',
         '.plx-icon:where(' + B + '):where(:not(' + F + ')){--plx-comp-icon-url:var(--plx-comp-icon-outline-24);}',

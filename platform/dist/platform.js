@@ -20564,7 +20564,8 @@ function RadioTiles({
       "aria-hidden": "true"
     }, on ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: "check",
-      size: "sm"
+      size: "sm",
+      filled: true
     }) : null));
   })));
 }

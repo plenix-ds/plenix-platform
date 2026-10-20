@@ -692,13 +692,13 @@
 .plx-icon--size-lg{--plx-comp-icon-size:var(--plx-comp-icon-size-lg);}
 .plx-icon--size-xl{--plx-comp-icon-size:var(--plx-comp-icon-size-xl);}
 /* the drawing (exclusive): outline or filled, at the context's optical size or, for lg and xl, at 24. Filled is the
-   icon's own plx-icon--filled, which the component owning the state passes (<Icon filled>: NavList's current item,
-   a selected Button). Until every owner does, an icon that declares neither fill is filled inside a current or
-   selected element, as before (the rollout backlog: these selectors still reach from the ancestor) */
-.plx-icon:where(:not(.plx-icon--filled, :is([aria-current="page"], [aria-current="true"], [aria-pressed="true"], [aria-selected="true"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill="outline"]), .plx-icon--size-lg, .plx-icon--size-xl)){--plx-comp-icon-url:var(--plx-comp-icon-outline);}
-.plx-icon:where(.plx-icon--filled, :is([aria-current="page"], [aria-current="true"], [aria-pressed="true"], [aria-selected="true"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill="outline"])):where(:not(.plx-icon--size-lg, .plx-icon--size-xl)){--plx-comp-icon-url:var(--plx-comp-icon-filled);}
-.plx-icon:where(.plx-icon--size-lg, .plx-icon--size-xl):where(:not(.plx-icon--filled, :is([aria-current="page"], [aria-current="true"], [aria-pressed="true"], [aria-selected="true"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill="outline"]))){--plx-comp-icon-url:var(--plx-comp-icon-outline-24);}
-.plx-icon:where(.plx-icon--filled, :is([aria-current="page"], [aria-current="true"], [aria-pressed="true"], [aria-selected="true"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill="outline"])):where(.plx-icon--size-lg, .plx-icon--size-xl){--plx-comp-icon-url:var(--plx-comp-icon-filled-24);}
+   icon's own plx-icon--filled, which the component owning the state passes (<Icon filled>, stateIcon: NavList's
+   current item, a selected Button, a chosen tile's check). Content inside a selected row or card stays outline
+   (owner, 2026-10-20): nothing fills an icon from an ancestor */
+.plx-icon:where(:not(.plx-icon--filled, .plx-icon--size-lg, .plx-icon--size-xl)){--plx-comp-icon-url:var(--plx-comp-icon-outline);}
+.plx-icon:where(.plx-icon--filled):where(:not(.plx-icon--size-lg, .plx-icon--size-xl)){--plx-comp-icon-url:var(--plx-comp-icon-filled);}
+.plx-icon:where(.plx-icon--size-lg, .plx-icon--size-xl):where(:not(.plx-icon--filled)){--plx-comp-icon-url:var(--plx-comp-icon-outline-24);}
+.plx-icon:where(.plx-icon--filled):where(.plx-icon--size-lg, .plx-icon--size-xl){--plx-comp-icon-url:var(--plx-comp-icon-filled-24);}
 .plx-icon--add{--plx-comp-icon-filled:var(--plx-comp-icon-auto-add-fill,var(--plx-comp-icon-glyph-add-fill));--plx-comp-icon-filled-24:var(--plx-comp-icon-glyph-add-24-fill);--plx-comp-icon-outline:var(--plx-comp-icon-auto-add,var(--plx-comp-icon-glyph-add));--plx-comp-icon-outline-24:var(--plx-comp-icon-glyph-add-24);}
 .plx-icon--add-column-left{--plx-comp-icon-filled:var(--plx-comp-icon-auto-add-column-left-fill,var(--plx-comp-icon-glyph-add-column-left-fill));--plx-comp-icon-filled-24:var(--plx-comp-icon-glyph-add-column-left-24-fill);--plx-comp-icon-outline:var(--plx-comp-icon-auto-add-column-left,var(--plx-comp-icon-glyph-add-column-left));--plx-comp-icon-outline-24:var(--plx-comp-icon-glyph-add-column-left-24);}
 .plx-icon--add-column-right{--plx-comp-icon-filled:var(--plx-comp-icon-auto-add-column-right-fill,var(--plx-comp-icon-glyph-add-column-right-fill));--plx-comp-icon-filled-24:var(--plx-comp-icon-glyph-add-column-right-24-fill);--plx-comp-icon-outline:var(--plx-comp-icon-auto-add-column-right,var(--plx-comp-icon-glyph-add-column-right));--plx-comp-icon-outline-24:var(--plx-comp-icon-glyph-add-column-right-24);}

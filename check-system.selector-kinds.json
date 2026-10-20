@@ -835,12 +835,6 @@
    "combinator | .plx-floating-action-button--md .plx-floating-action-button__icon": 1,
    "combinator | .plx-floating-action-button--lg .plx-floating-action-button__icon": 1
   },
-  "platform/components/Icon/icon.css": {
-   "combinator | .plx-icon:where(:not(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"]), .plx-icon--size-lg, .plx-icon--size-xl))": 1,
-   "combinator | .plx-icon:where(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"])):where(:not(.plx-icon--size-lg, .plx-icon--size-xl))": 1,
-   "combinator | .plx-icon:where(.plx-icon--size-lg, .plx-icon--size-xl):where(:not(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"])))": 1,
-   "combinator | .plx-icon:where(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"])):where(.plx-icon--size-lg, .plx-icon--size-xl)": 1
-  },
   "platform/components/Illustration/illustration.css": {
    "combinator | .plx-illustration--sm .plx-illustration__shape": 1,
    "combinator | .plx-illustration--sm .plx-illustration__stroke": 1,
