@@ -25,8 +25,9 @@
      { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataGrid's
        table controller), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
-       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, onReady } }
+       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, columnWidths, collapsedGroups, onViewChange, onReady } }
    Notes:
+     tableProps delegates header changes back to this hook; a managed grid ignores its own storageKey.
      The groups' order follows their levels: tableProps.sort is the group levels, then the sort levels. "Hide empty groups"
      on a level leaves out the rows whose value for it is empty. Quick counts apply search, advanced filters and every
      other quick filter, excluding only their own selection. Repeated values in one row count that record once. */
@@ -127,6 +128,14 @@ export function useCollectionView(fields, options = {}) {
     } else rows.forEach((row) => new Set([].concat(field ? valueOf(field, row) : row[key])).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1)));
     facets.set(key, counts); return counts;
   };
+  // The collection owns persistence; header actions write the same state as the command-bar panels.
+  const onViewChange=React.useCallback(patch=>{
+    const known=new Set(fields.map(field=>field.value)),same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+    if(patch.sort){const next=patch.sort.filter(item=>known.has(item.field)&&!group.some(level=>level.field===item.field));setSort(old=>same(old,next)?old:next);setGroup(old=>{const next=old.map(level=>{const sorted=patch.sort.find(item=>item.field===level.field);return sorted?{...level,dir:sorted.dir}:level;});return same(old,next)?old:next;});}
+    if(patch.columnOrder||patch.hiddenColumns)setColumns(old=>{const next={order:patch.columnOrder?patch.columnOrder.filter(field=>known.has(field)):old.order,hidden:patch.hiddenColumns?patch.hiddenColumns.filter(field=>known.has(field)):old.hidden};return same(old,next)?old:next;});
+    if('groupBy'in patch)setGroup(old=>[].concat(patch.groupBy||[]).filter(field=>known.has(field)).map(field=>old.find(level=>level.field===field)||{field,dir:'asc'}));
+    if('rowHeight'in patch||'wrapHeaders'in patch||'widths'in patch||'collapsed'in patch)setView(old=>({...old,...('rowHeight'in patch?{height:patch.rowHeight}:{}),...('wrapHeaders'in patch?{wrapHeaders:patch.wrapHeaders}:{}),...('widths'in patch?{widths:patch.widths}:{}),...('collapsed'in patch?{collapsed:patch.collapsed}:{})}));
+  },[fields,group]);
   const groupable = fields.filter((f) => f.kind === 'select' || f.kind === 'multi');
   const sorters = group.map((g) => ({ field: g.field, dir: g.dir || 'asc' })).concat(sort.filter((s) => !group.some((g) => g.field === s.field)));
   return {
@@ -140,6 +149,6 @@ export function useCollectionView(fields, options = {}) {
     columnsProps: { fields, value: columns, onChange: setColumns },
     viewProps: { value: view, onChange: setView, onReset: reset },
     tableProps: { filter: test, sort: sorters, groupBy: group.length ? group.map((g) => g.field) : false, columnOrder: columns.order, hiddenColumns: columns.hidden,
-      rowHeight: view.height, onReady },
+      rowHeight: view.height, wrapHeaders: !!view.wrapHeaders, columnWidths: view.widths, collapsedGroups: view.collapsed, onViewChange, onReady },
   };
 }

@@ -85,12 +85,16 @@ function NextEngine(props) {
   const [sortOwner,setSortOwner]=React.useState(null),[orderOwner,setOrderOwner]=React.useState(null),[hiddenOwner,setHiddenOwner]=React.useState(null);
   const [sizing,setSizing]=React.useState(()=>Object.fromEntries(Object.entries(initial.widths).map(([k,v])=>[k,parseFloat(v)])));
   const [autoSizing,setAutoSizing]=React.useState({});
+  const widthsSignal=JSON.stringify(props.columnWidths||{});
+  React.useEffect(()=>{if(!props.onViewChange)return;const known=new Set(columns.map(column=>column.field)),next=Object.fromEntries(Object.entries(props.columnWidths||{}).filter(([field,value])=>known.has(field)&&Number.isFinite(parseFloat(value))&&parseFloat(value)>0).map(([field,value])=>[field,parseFloat(value)]));setSizing(old=>JSON.stringify(old)===JSON.stringify(next)?old:next);},[widthsSignal,!!props.onViewChange,columns]);
   const [rowHeight,setRowHeight]=React.useState(initial.rowHeight),[wrapHeaders,setWrapHeaders]=React.useState(initial.wrapHeaders);
   const [filterField,setFilterField]=React.useState(null);
   const [edited,setEdited]=React.useState(null),[editing,setEditing]=React.useState(null),[expanded,setExpanded]=React.useState(props.treeExpanded ?? options.dataTreeStartExpanded ?? false);
   const [localGroups,setGroups]=React.useState(()=>initial.groupBy),[groupOwner,setGroupOwner]=React.useState(null),[collapsed,setCollapsed]=React.useState(()=>new Set(initial.collapsed));
   const [loaded,setLoaded]=React.useState(props.pageSize||50),[printing,setPrinting]=React.useState(false);
-  const groupSignal=JSON.stringify(props.groupBy),groupBy=groupOwner===groupSignal?localGroups:props.groupBy??options.groupBy??localGroups;
+  const collapsedSignal=JSON.stringify(props.collapsedGroups||[]);
+  React.useEffect(()=>{if(props.onViewChange)setCollapsed(old=>JSON.stringify([...old])===collapsedSignal?old:new Set(props.collapsedGroups||[]));},[collapsedSignal,!!props.onViewChange]);
+  const groupSignal=JSON.stringify(props.groupBy),groupBy=props.onViewChange?(props.groupBy??false):groupOwner===groupSignal?localGroups:props.groupBy??options.groupBy??localGroups;
   const childField=(props.tree ?? options.dataTree)?props.childrenField||options.dataTreeChildField||'_children':null;
   const [ownSelection,setSelection]=React.useState({}),[filters,setFilters]=React.useState([]),[page,setPage]=React.useState(0),[pageSize,setPageSize]=React.useState(props.pageSize||50);
   const fetching=React.useRef(false);
@@ -105,8 +109,9 @@ function NextEngine(props) {
   const deferredFilter=React.useDeferredValue(props.filter);
   const initiallyControlledSort=React.useRef(!!props.sort?.length),appliedSort=React.useRef(false);if(props.sort?.length&&(initiallyControlledSort.current||JSON.stringify(controlledSort)!==JSON.stringify(initial.sorting)))appliedSort.current=true;
   React.useEffect(()=>{if(props.sort?.length&&sortOwner!==sortSignal)setSortOwner(null);},[sortSignal]);
-  const sorting=sortOwner===sortSignal||(!props.sort?.length&&sortOwner!==null)?localSort:props.sort?.length?controlledSort:appliedSort.current?EMPTY_ROWS:localSort;
-  const columnOrder=orderOwner===orderSignal?order:props.columnOrder || order, columnVisibility=hiddenOwner===hiddenSignal?visibility:props.hiddenColumns?visibilityOf(props.hiddenColumns):visibility;
+  const sorting=props.onViewChange?controlledSort:sortOwner===sortSignal||(!props.sort?.length&&sortOwner!==null)?localSort:props.sort?.length?controlledSort:appliedSort.current?EMPTY_ROWS:localSort;
+  const controlledVisibility=React.useMemo(()=>visibilityOf(props.hiddenColumns),[hiddenSignal]);
+  const columnOrder=props.onViewChange?props.columnOrder||order:orderOwner===orderSignal?order:props.columnOrder || order, columnVisibility=props.onViewChange?controlledVisibility:hiddenOwner===hiddenSignal?visibility:props.hiddenColumns?controlledVisibility:visibility;
   const sortingRef=React.useRef(sorting);sortingRef.current=sorting;
   const remoteMode=typeof props.fetchRows==='function'&&(mode==='pages'||mode==='load-more'),incoming=remoteMode?(remote?.rows||EMPTY_ROWS):data;
   const source=edited?.input===incoming?edited.rows:incoming,canonical=React.useMemo(()=>recordsOf(source,index,childField),[source,index,childField]);
@@ -115,21 +120,23 @@ function NextEngine(props) {
   const recordPositions=React.useMemo(()=>new Map(canonical.map((record,i)=>[record,i])),[canonical]);
   const recordsByKey=React.useMemo(()=>new Map(canonical.map(record=>[recordKey(record[index]),record])),[canonical,index]);
   const replaceData=rows=>new Promise(resolve=>{mutations.current.push(resolve);setEdited({input:incoming,rows:rows.slice()});});
-  const changeGroups=value=>{setGroupOwner(groupSignal);setGroups(()=>value);setCollapsed(new Set());};
-  const toggleGroup=(id,open)=>setCollapsed(old=>{const next=new Set(old),expand=open??old.has(id);if(expand)next.delete(id);else next.add(id);setMessage(expand?S.expanded:S.collapsed);return next;});
+  const changeGroups=value=>{setGroupOwner(groupSignal);setGroups(()=>value);setCollapsed(new Set());props.onViewChange?.({groupBy:value,collapsed:[]});};
+  const toggleGroup=(id,open)=>{const next=new Set(live.current.collapsed),expand=open??next.has(id);if(expand)next.delete(id);else next.add(id);live.current.collapsed=next;setCollapsed(next);setMessage(expand?S.expanded:S.collapsed);props.onViewChange?.({collapsed:[...next]});};
   const updateRecord=(key,change)=>new Promise(resolve=>{mutations.current.push(resolve);setEdited(old=>({input:incoming,rows:changeRecord(old?.input===incoming?old.rows:source,key,change,index,childField)}));});
   const commitEdit=(key,field,value)=>{const old=canonical.find(record=>recordKey(record[index])===key),previous=valueAt(old,field);updateRecord(key,record=>setField(record,field,value));setEditing(null);pendingEdit.current={key,field};props.onCellEdit?.(setField(old,field,value),{field,value,previous,row:old});};
   const emit=(name,...args)=>{live.current.props.on?.[name]?.(...args);listeners.current.get(name)?.forEach(fn=>fn(...args));};
   const api=React.useMemo(()=>createAdapter(live),[]);
-  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=tokenPixels(definition?.minWidth||'--plx-ref-size-80px',at),max=definition?.maxWidth?tokenPixels(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1];const width=snapToGrid(snapSize(tokenPixels(value,at),min,max),{el:at});setSizing(s=>({...s,[field]:width}));};
-  const move=(field,target,after)=>{const current=live.current.table.getAllLeafColumns().map(c=>c.id).filter(id=>!id.startsWith('__')&&id!==field);const at=current.indexOf(target);current.splice(Math.max(0,at+(after?1:0)),0,field);setOrderOwner(orderSignal);setOrder(current);emit('columnMoved',api.column(field),current.map(api.column));};
+  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=tokenPixels(definition?.minWidth||'--plx-ref-size-80px',at),max=definition?.maxWidth?tokenPixels(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1];const width=snapToGrid(snapSize(tokenPixels(value,at),min,max),{el:at});setSizing(s=>({...s,[field]:width}));props.onViewChange?.({widths:{...sizing,[field]:width}});};
+  const changeOrder=next=>{setOrderOwner(orderSignal);setOrder(next);props.onViewChange?.({columnOrder:next});};
+  const changeVisibility=next=>{setHiddenOwner(hiddenSignal);setVisibility(next);props.onViewChange?.({hiddenColumns:Object.keys(next).filter(field=>next[field]===false)});};
+  const move=(field,target,after)=>{const current=live.current.table.getAllLeafColumns().map(c=>c.id).filter(id=>!id.startsWith('__')&&id!==field);const at=current.indexOf(target);current.splice(Math.max(0,at+(after?1:0)),0,field);changeOrder(current);emit('columnMoved',api.column(field),current.map(api.column));};
   const notifySelection=next=>{
     live.current.selection=next;setSelection(next);const active=new Set(live.current.table.getFilteredRowModel().flatRows.map(r=>r.id)),records=canonical.filter(r=>next[recordKey(r[index])]);
     selectionInfo.current={hidden:records.filter(r=>!active.has(recordKey(r[index]))).length};onSelectionChange?.(records.map(r=>r[index]),{count:records.length,hidden:selectionInfo.current.hidden});
     emit('rowSelectionChanged',records,records.map(r=>api.row(recordKey(r[index]))));
   };
   const pick=(key,value)=>{if(!!live.current.selection[key]===!!value)return;const next={...live.current.selection};if(options.selectableRows===1&&value)Object.keys(next).forEach(k=>delete next[k]);if(value)next[key]=true;else delete next[key];notifySelection(next);};
-  const changeSort=update=>{const next=typeof update==='function'?update(sorting):update;setSortOwner(sortSignal);setSorting(next);setPage(0);emit('dataSorted',next.map(s=>({field:s.id,dir:s.desc?'desc':'asc'})));};
+  const changeSort=update=>{const next=typeof update==='function'?update(sorting):update;setSortOwner(sortSignal);setSorting(next);setPage(0);props.onViewChange?.({sort:sorted(next)});emit('dataSorted',next.map(s=>({field:s.id,dir:s.desc?'desc':'asc'})));};
   const leafDefs=React.useMemo(()=>columns.map(c=>({id:c.field,accessorFn:r=>valueAt(r,c.field),header:c.title||c.field,
     enableSorting:c.headerSort!==false,filterFn:c.type==='bytes'?byteFilter:c.filter==='list'?listFilter:textFilter,sortingFn:typeof c.sorter==='function'?(a,b,id)=>c.sorter(a.getValue(id),b.getValue(id),a.original,b.original,id,sortingRef.current.find(s=>s.id===id)?.desc?'desc':'asc'):c.sorter==='number'||c.type==='bytes'?'basic':compare,
     size:kinds(c).includes('icon')?metrics.lead:Math.max(metrics.min,tokenPixels(c.width,frame.current)||autoSizing[c.field]||metrics.min),minSize:kinds(c).includes('icon')?metrics.lead:tokenPixels(c.minWidth,frame.current)||metrics.min,
@@ -137,7 +144,7 @@ function NextEngine(props) {
   const table=useReactTable({data:source,columns:leafDefs,getRowId:r=>recordKey(r[index]),getSubRows:childField?r=>r[childField]:undefined,onExpandedChange:setExpanded,filterFromLeafRows:true,
     state:{expanded:printing?true:expanded,sorting,columnOrder,columnVisibility,columnSizing:sizing,columnFilters:filters,globalFilter:deferredFilter,pagination:{pageIndex:page,pageSize},rowSelection:selection},
     onSortingChange:changeSort,
-    onColumnVisibilityChange:update=>{setHiddenOwner(hiddenSignal);setVisibility(typeof update==='function'?update(columnVisibility):update);},onColumnOrderChange:update=>{setOrderOwner(orderSignal);setOrder(typeof update==='function'?update(columnOrder):update);},onColumnSizingChange:setSizing,onColumnFiltersChange:update=>{setFilters(update);setPage(0);},
+    onColumnVisibilityChange:update=>{changeVisibility(typeof update==='function'?update(columnVisibility):update);},onColumnOrderChange:update=>{changeOrder(typeof update==='function'?update(columnOrder):update);},onColumnSizingChange:setSizing,onColumnFiltersChange:update=>{setFilters(update);setPage(0);},
     getColumnCanGlobalFilter:()=>true,globalFilterFn:recordFilter,globalFilter:deferredFilter,
     manualPagination:remoteMode,manualSorting:remoteMode,manualFiltering:remoteMode,pageCount:remoteMode?Math.ceil((remote?.total||0)/pageSize):undefined,
     getExpandedRowModel:getExpandedRowModel(),getCoreRowModel:getCoreRowModel(),getFilteredRowModel:getFilteredRowModel(),getSortedRowModel:getSortedRowModel(),
@@ -158,7 +165,7 @@ function NextEngine(props) {
   const listable=column=>!column.rowHandle&&!kinds(column).some(kind=>['icon','actions'].includes(kind));
   const keys=keyColumns?.length?keyColumns:columns.filter(c=>!kinds(c).some(k=>['icon','actions'].includes(k))&&!c.rowHandle).slice(0,3).map(c=>c.field);
   const listed=narrow==='auto'?columns.some(listable):narrow==='list'&&columns.some(column=>listable(column)&&!keys.includes(column.field));
-  const columnDnd=useSortable({items:ordered,getId:column=>column.id,getName:column=>column.columnDef.meta.title||column.id,label:label+' columns',orientation:'horizontal',disabled:!(props.movableColumns??options.movableColumns),onReorder:(next,{item})=>{setOrderOwner(orderSignal);setOrder(next.map(column=>column.id));emit('columnMoved',api.column(item.id),next.map(column=>api.column(column.id)));}});
+  const columnDnd=useSortable({items:ordered,getId:column=>column.id,getName:column=>column.columnDef.meta.title||column.id,label:label+' columns',orientation:'horizontal',disabled:!(props.movableColumns??options.movableColumns),onReorder:(next,{item})=>{changeOrder(next.map(column=>column.id));emit('columnMoved',api.column(item.id),next.map(column=>api.column(column.id)));}});
   const rowDnd=useSortable({items:canonical,getId:record=>recordKey(record[index]),getName:record=>String(valueAt(record,columns[0]?.field)??record[index]),label:label+' rows',disabled:!(props.movableRows??options.movableRows)||!!groupBy||!!childField,onReorder:(rows,{item})=>{setEdited({input:incoming,rows});props.onRowMove?.(rows);emit('rowMoved',api.row(recordKey(item[index])));}});
   live.current={props,frame,index,data:canonical,source,recordsByKey,replaceData,model,groups,groupBy,changeGroups,toggleGroup,collapsed,updateRecord,commitEdit,editing,setEditing,childField,expanded,setExpanded,fields:columns,table,selection,sorting,setSorting:changeSort,resize,move,pick,setPage,page,pageSize,setPageSize,virtual,rowElements:rowElements.current,headerElements:headerElements.current,listeners:listeners.current};
 
@@ -198,7 +205,7 @@ function NextEngine(props) {
   React.useLayoutEffect(()=>{virtual.measure();},[metrics.row,metrics.line,metrics.group,metrics.groupGap,model.length,collapsed]);
   React.useEffect(()=>{if(!metrics.row||!Object.keys(autoSizing).length||ready.current)return;ready.current=true;api.options=options;deliveredReady.current=onReady;onReady?.(api);emit('tableBuilt');},[metrics.row,autoSizing]);
   React.useEffect(()=>{if(ready.current&&onReady!==deliveredReady.current){deliveredReady.current=onReady;onReady?.(api);}},[onReady]);
-  React.useEffect(()=>{if(!ready.current)return;writeView(storageKey,{sort:sorting.map(s=>({column:s.id,dir:s.desc?'desc':'asc'})),order:columnOrder,
+  React.useEffect(()=>{if(!ready.current||props.onViewChange)return;writeView(storageKey,{sort:sorting.map(s=>({column:s.id,dir:s.desc?'desc':'asc'})),order:columnOrder,
     hidden:Object.keys(columnVisibility).filter(k=>columnVisibility[k]===false),widths:Object.fromEntries(Object.entries(sizing).map(([k,v])=>[k,v+'px'])),rowHeight:effectiveStep,wrapHeaders:effectiveWrap,groupBy,collapsed:[...collapsed]});},[storageKey,JSON.stringify(sorting),JSON.stringify(columnOrder),JSON.stringify(columnVisibility),JSON.stringify(sizing),effectiveStep,effectiveWrap,metrics.row,groupSignal,groupBy,collapsed]);
   React.useEffect(()=>{
     if(!ready.current)return;const active=new Set(table.getFilteredRowModel().rows.map(r=>r.id)),next={...selection};
@@ -233,7 +240,7 @@ function NextEngine(props) {
     <MenuItem onSelect={()=>resize(c.field,stepSize(column.getSize(),-1,column.columnDef.minSize,column.columnDef.maxSize))}>{S.narrower}</MenuItem>
     <MenuItem onSelect={()=>resize(c.field,stepSize(column.getSize(),1,column.columnDef.minSize,column.columnDef.maxSize))}>{S.wider}</MenuItem>
     <MenuItem onSelect={()=>fit(c.field)}>{S.fit}</MenuItem><MenuItem disabled={frozen.has(c.field)||ordered.indexOf(column)===0} onSelect={()=>columnDnd.moveTo(ordered.indexOf(column),ordered.indexOf(column)-1)}>{S.moveLeft}</MenuItem><MenuItem disabled={frozen.has(c.field)||ordered.indexOf(column)===ordered.length-1} onSelect={()=>columnDnd.moveTo(ordered.indexOf(column),ordered.indexOf(column)+1)}>{S.moveRight}</MenuItem><MenuDivider/><MenuItem onSelect={()=>changeGroups(c.field)}>{S.group}</MenuItem><MenuItem onSelect={()=>changeGroups(false)}>{S.ungroup}</MenuItem><MenuDivider/>
-    <MenuItem onSelect={()=>column.toggleVisibility(false)} disabled={frozen.has(c.field)}>{S.hide}</MenuItem><MenuItem onSelect={()=>setVisibility({})}>{S.showAll}</MenuItem>
+    <MenuItem onSelect={()=>column.toggleVisibility(false)} disabled={frozen.has(c.field)}>{S.hide}</MenuItem><MenuItem onSelect={()=>changeVisibility({})}>{S.showAll}</MenuItem>
   </>;};
   const startResize=(event,column)=>{if(event.button!==0)return;event.preventDefault();event.stopPropagation();const from=event.clientX,width=column.getSize(),doc=event.currentTarget.ownerDocument;const move=e=>resize(column.id,width+(e.clientX-from)*(isRtl(frame.current)?-1:1));const up=()=>{doc.removeEventListener('pointermove',move);doc.removeEventListener('pointerup',up);};doc.addEventListener('pointermove',move);doc.addEventListener('pointerup',up,{once:true});};
   const headerCell=column=>{const c=column.columnDef.meta,pinned=frozen.has(c.field),offset=(selectable?metrics.lead:0)+ordered.slice(0,ordered.indexOf(column)).filter(col=>frozen.has(col.id)).reduce((sum,col)=>sum+col.getSize(),0);const node=<Width key={c.field} {...columnDnd.itemProps(ordered.indexOf(column))} onAttach={node=>{if(node)headerElements.current.set(c.field,node);else headerElements.current.delete(c.field);}} width={widths[c.field]} frozenOffset={pinned?offset:undefined} role="columnheader" tabIndex={isStatic?undefined:0} data-plx-field={c.field} aria-sort={column.getIsSorted()?(column.getIsSorted()==='desc'?'descending':'ascending'):undefined}
@@ -279,7 +286,7 @@ function NextEngine(props) {
       <div className={`${B}__grid-header`} ref={header} hidden={isStatic&&props.headerVisible===false}><div className={`${B}__grid-header-contents`}><div {...columnDnd.listProps} className={`${B}__grid-headers`} role="row">
         {selectable?<div className={`${B}__grid-col ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`} role="columnheader"><div className={`${B}__grid-col-content`}><Check label={S.selectAll} checked={allVisible} mixed={selectedVisible.length>0&&!allVisible} onChange={e=>selectAll(e.target.checked)}/></div></div>:null}
         {ordered.map(headerCell)}{props.viewMenu?<div className={`${B}__grid-col ${B}__w-view`} role="columnheader"><Menu label={S.view} trigger={<Button variant="ghost" size="xs" iconOnly icon="settings-customize" label={S.view}/>}>
-          {['short','medium','tall','extra-tall'].map(step=><MenuItem key={step} checked={effectiveStep===step} onSelect={()=>setRowHeight(step)}>{S[step]}</MenuItem>)}<MenuDivider/><MenuItem checked={effectiveWrap} onSelect={()=>setWrapHeaders(v=>!v)}>{S.wrapHeaders}</MenuItem></Menu></div>:null}{rowMenu&&rowMenuButton?<Width width={metrics.menu} className={`${B}__grid-col`} role="columnheader" aria-label={S.rowActions}/>:null}
+          {['short','medium','tall','extra-tall'].map(step=><MenuItem key={step} checked={effectiveStep===step} onSelect={()=>{setRowHeight(step);props.onViewChange?.({rowHeight:step});}}>{S[step]}</MenuItem>)}<MenuDivider/><MenuItem checked={effectiveWrap} onSelect={()=>{setWrapHeaders(!effectiveWrap);props.onViewChange?.({wrapHeaders:!effectiveWrap});}}>{S.wrapHeaders}</MenuItem></Menu></div>:null}{rowMenu&&rowMenuButton?<Width width={metrics.menu} className={`${B}__grid-col`} role="columnheader" aria-label={S.rowActions}/>:null}
       </div></div></div>
       <div id={viewportId} ref={holder} className={`${B}__grid-tableholder`} role="rowgroup" tabIndex={isStatic?undefined:0} onKeyDown={event=>{if(event.target===event.currentTarget&&event.key==='ArrowDown'){event.preventDefault();focusCell(first,0);}}} onScroll={e=>{if(header.current)header.current.scrollLeft=e.currentTarget.scrollLeft;if(mode==='load-more'&&e.currentTarget.scrollHeight-e.currentTarget.scrollTop-e.currentTarget.clientHeight<tokenPixels('--plx-ref-size-200px',frame.current)){if(remoteMode&&!fetching.current&&source.length<(remote?.total||0)){fetching.current=true;setPage(n=>n+1);}else if(!remoteMode)setLoaded(n=>Math.min(allRows.length,n+pageSize));}}}>
         <div {...rowDnd.listProps} className={`${B}__grid-table`} role="presentation">{stickyGroups.length?<div className={B+'__sticky-groups'} aria-hidden="true" inert="">{stickyGroups.map(group=>React.cloneElement(groupNode(group),{key:'sticky:'+group.id,className:B+'__sticky-group '+B+'__grid-group-level-'+group.depth,role:undefined,tabIndex:-1,'aria-expanded':undefined,'aria-rowindex':undefined,'aria-level':undefined,onKeyDown:undefined}))}</div>:null}<RowGap rows={model.slice(0,first)}/>{shown.map(renderRow)}<RowGap rows={model.slice(last)}/></div>

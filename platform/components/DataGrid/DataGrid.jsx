@@ -62,7 +62,9 @@
        Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
      fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
        { rows, total }; search: the page's search text
-     storageKey: keeps the person's view (sort, widths, order, hidden columns, row height, wrap, groups) in this browser
+     storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
+     onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+       useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
