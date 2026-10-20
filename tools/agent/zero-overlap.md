@@ -70,14 +70,8 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
    (the Select control's `plx-input`) gets its own class and its own rules on shared tokens.
 7. **Update the component's header comment** (its state order) and its JSX header (new classes).
 8. **Icons the component draws in its own state** are filled by the component: `stateIcon(icon, on)` from
-   `components/Icon/Icon.jsx` (Button, NavList, Tabs, SegmentedControl, AppHeader, ToolRail already do). Still on the
-   transitional ancestor rule (measured on the 13 app pages and all 767 spec pages, 2026-10-20: no application icon
-   depends on it): RadioTiles (the check), CollapsibleSection (the chevron of a current section), and spec samples
-   that force a state on a root (AppHeader with aria-current on the header). The design-system labs that write this
-   markup as HTML add `plx-icon--filled` or `plx-icon--outline`.
-   **Content inside a selected row** (DataGrid cells, MediaCard's placeholder, the content a RowButton holds) also
-   fills today only through the ancestor: leave these as they are; the owner decides whether they should. The rule
-   retires once both lists are empty.
+   `components/Icon/Icon.jsx` (Button, NavList, Tabs, SegmentedControl, AppHeader, ToolRail already do). The transitional ancestor rule is retired (2026-10-20): nothing fills an icon from an ancestor. Content inside a
+   selected row or card stays outline (owner); only the component's own state icon fills.
 
 ## Proof (for every change)
 
