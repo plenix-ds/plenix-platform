@@ -60,7 +60,8 @@
       { id: 'pinned', label: 'Pinned', icon: 'star', onPin: () => {}, pinned: true },
       { id: 'group', label: 'Group', icon: 'folder', defaultExpanded: true, children: [{ id: 'child', label: 'Child', icon: 'description' }] },
     ] }),
-    // Icons alone: their own fill and size, and inside a current, a selected and a pressed element
+    // Icons alone: their own fill and size, and inside a current, a selected and a pressed element (outline there:
+    // nothing fills an icon from an ancestor, owner 2026-10-20)
     row(h(P.Icon, { name: 'star' }), h(P.Icon, { name: 'star', filled: true }), h(P.Icon, { name: 'star', filled: false }), h(P.Icon, { name: 'star', size: 'lg' }), h(P.Icon, { name: 'star', size: 'lg', filled: true }), h(P.Icon, { name: 'star', size: 'xl' }),
       h('span', { 'aria-current': 'page' }, h(P.Icon, { name: 'star' })), h('span', { className: 'is-selected' }, h(P.Icon, { name: 'star' })), h('span', { 'aria-pressed': 'true' }, h(P.Icon, { name: 'star', filled: false })),
       h('span', { 'data-plx-icon-optical': '24' }, h(P.Icon, { name: 'star' }), h(P.Icon, { name: 'star', filled: true }))));
