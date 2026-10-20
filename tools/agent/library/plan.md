@@ -444,7 +444,7 @@ Order: dependencies first (a dependency is built in an earlier wave, or earlier 
 | 9 | B | SankeyDiagram | component | L | ChartKit | horizontal | data-display/Sankey diagram |
 | 9 | B | TimelineChart | component | M | chart-parts | events; ranges; lanes | data-display/Timeline visualization |
 | 9 | B | ComparisonView | pattern | M | — | side by side columns; feature matrix; image slider (before/after); highlight differences | data-display/Comparison view; patterns/Compare (duplicate) |
-| 9 | C | chart-a11y | foundation | M | chart-parts | data table fallback; keyboard point navigation; summary text; patterns | data-display/Chart accessibility |
+| 9 | C | chart-a11y | foundation | M | chart-parts | data grid fallback; keyboard point navigation; summary text; patterns | data-display/Chart accessibility |
 | 9 | C | LollipopChart | component | S | chart-parts | horizontal; vertical | data-display/Lollipop chart |
 | 9 | C | Sparkline | component | S | ChartKit | line; area; bar; with last point | data-display/Sparkline |
 | 9 | C | Metric | extend | S | Sparkline | card with trend | data-display/Metric card |

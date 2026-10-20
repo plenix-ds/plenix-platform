@@ -68,13 +68,13 @@ t('floating', 'foundation', 'M', 1, 'B', [], ['placement (12 sides/aligns)', 'fl
   'utils/floating.js useFloating(anchorRef, floatingRef, opts); generalizes what Menu does today (top layer + anchor positioning); Menu, Tooltip, Popover use it', ['platform/utils/floating.js']);
 t('Portal', 'foundation', 'S', 1, 'B', [], ['body', 'top layer (popover)', 'custom container'], 'a Portal component (createPortal into a shared root, inherits theme/density attributes)', ['platform/utils/portal.jsx']);
 t('scroll-lock', 'foundation', 'S', 1, 'B', [], ['page', 'element', 'nested locks (counted)'], 'useScrollLock(active): scrollbar-gutter kept so nothing shifts; layer.js modal uses it', ['platform/utils/scrollLock.js']);
-t('LiveRegion', 'foundation', 'S', 1, 'B', [], ['polite', 'assertive', 'status', 'log'], 'LiveRegion component + announce(text, politeness) singleton; Toast and DataTable counts move onto it', ['platform/utils/announce.jsx']);
+t('LiveRegion', 'foundation', 'S', 1, 'B', [], ['polite', 'assertive', 'status', 'log'], 'LiveRegion component + announce(text, politeness) singleton; Toast and DataGrid counts move onto it', ['platform/utils/announce.jsx']);
 t('accessible-descriptions', 'foundation', 'S', 1, 'B', [], ['aria-describedby joined', 'description id helper', 'hidden description'], 'useDescribedBy() merges description ids (Field and Tooltip already do this by hand); rules page', ['platform/utils/describedBy.js']);
 t('useIntersection', 'foundation', 'S', 1, 'B', [], ['visible once', 'ratio', 'root margin'], 'hooks/useIntersection.js (IntersectionObserver)', ['platform/hooks/useIntersection.js']);
 t('clipboard', 'foundation', 'S', 1, 'B', [], ['text', 'rich (html + text)', 'image', 'copied state with timeout'], 'utils/clipboard.js useClipboard()', ['platform/utils/clipboard.js']);
 t('hotkey', 'foundation', 'M', 1, 'B', [], ['single key', 'chord (Ctrl K)', 'sequence (g then i)', 'scoped to a region', 'platform-aware Mod key', 'ignored in fields'],
   'utils/hotkey.js useHotkey + a registry the shortcuts dialog reads; Kbd renders the labels', ['platform/utils/hotkey.js']);
-t('virtualizer', 'foundation', 'M', 1, 'B', [], ['fixed row height', 'measured rows', 'grid (rows × columns)', 'horizontal', 'sticky headers'], 'hooks/useVirtualizer.js; DataTable keeps Tabulator; VirtualList and file grids use this', ['platform/hooks/useVirtualizer.js']);
+t('virtualizer', 'foundation', 'M', 1, 'B', [], ['fixed row height', 'measured rows', 'grid (rows × columns)', 'horizontal', 'sticky headers'], 'hooks/useVirtualizer.js; DataGrid keeps Tabulator; VirtualList and file grids use this', ['platform/hooks/useVirtualizer.js']);
 t('interaction-states', 'foundation', 'M', 1, 'C', [], ['hover', 'focus-visible', 'pressed', 'selected', 'dragged', 'disabled', 'state layer on accent/surface/inverse'],
   'state tokens (--plx-sys-state-*) + system/interaction.css, a states lab (one row per treatment, every surface); each leaf a variant page', ['platform/system/interaction.css', 'platform/tokens/semantic/state.tokens.json']);
 t('read-only-context', 'foundation', 'S', 1, 'C', ['interaction-states'], ['region read-only', 'form read-only', 'field read-only'], 'data-plx-readonly region + ReadOnlyProvider; fields inside render read-only', ['platform/providers/ReadOnly.jsx', 'platform/system/read-only.css']);
@@ -213,7 +213,7 @@ t('chart-parts', 'foundation', 'L', 7, 'B', ['ChartKit'], ['Axis (bottom, left, 
   'platform/charts/parts/*.jsx', ['platform/charts/parts/']);
 
 /* ───────── wave 8: charts 1 ───────── */
-t('chart-a11y', 'foundation', 'M', 8, 'A', ['chart-parts'], ['data table fallback', 'keyboard point navigation', 'summary text', 'patterns'], 'platform/charts/a11y.js', ['platform/charts/a11y.js']);
+t('chart-a11y', 'foundation', 'M', 8, 'A', ['chart-parts'], ['data grid fallback', 'keyboard point navigation', 'summary text', 'patterns'], 'platform/charts/a11y.js', ['platform/charts/a11y.js']);
 t('chart-interaction', 'foundation', 'M', 8, 'A', ['chart-parts'], ['hover crosshair', 'brush/zoom', 'legend toggle', 'click a point'], 'platform/charts/interaction.js', ['platform/charts/interaction.js']);
 t('LineChart', 'component', 'M', 8, 'A', ['chart-parts'], ['line', 'step', 'multi-series', 'points'], 'platform/charts/LineChart.jsx', ['platform/charts/LineChart.jsx']);
 t('AreaChart', 'component', 'S', 8, 'A', ['LineChart'], ['area', 'stacked', 'percent'], '', ['platform/charts/AreaChart.jsx']);

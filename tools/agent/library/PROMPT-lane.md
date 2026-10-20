@@ -17,7 +17,7 @@ Before building a leaf, check it is not already answered: grep platform/design-s
 - No inline styles anywhere (no style attribute, not even custom properties; SVG geometry attributes are fine, colors via classes); every value a token; 4px grid; logical properties; never 1px/2px nudges.
 - Focused/invalid fields change only the border color. Reddit Mono for code and technical values (numbers, dates, axis ticks); DM Sans for UI text. American English, sentence case.
 - Statuses are Badges (six variants; `icon` prop for the status icon) — never a dot as a label. Pills: soft 100/300/dark text, 4px radius.
-- Links are not buttons and buttons are not links. Containers nest 2 deep max. Every table is the DataTable. Menus 8px radius. Icons from platform/icons/map.json only.
+- Links are not buttons and buttons are not links. Containers nest 2 deep max. Every table is the DataGrid. Menus 8px radius. Icons from platform/icons/map.json only.
 - Scrolling regions keyboard reachable (tabIndex 0 + name) or useVirtualizer. Popups: prefer Popover/useFloating.
 - Mobile widths follow the HIG / Material 3 when they conflict with web values.
 - Never kill processes you did not start. Temporary scripts go in YOUR OWN session scratchpad.

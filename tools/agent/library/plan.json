@@ -2798,7 +2798,7 @@
     "status",
     "log"
    ],
-   "note": "LiveRegion component + announce(text, politeness) singleton; Toast and DataTable counts move onto it",
+   "note": "LiveRegion component + announce(text, politeness) singleton; Toast and DataGrid counts move onto it",
    "leaves": [
     "interaction/Live regions"
    ]
@@ -2864,7 +2864,7 @@
     "horizontal",
     "sticky headers"
    ],
-   "note": "hooks/useVirtualizer.js; DataTable keeps Tabulator; VirtualList and file grids use this",
+   "note": "hooks/useVirtualizer.js; DataGrid keeps Tabulator; VirtualList and file grids use this",
    "leaves": [
     "interaction/Virtualization",
     "implementation/Virtualization (duplicate)"
@@ -6446,7 +6446,7 @@
     "chart-parts"
    ],
    "variants": [
-    "data table fallback",
+    "data grid fallback",
     "keyboard point navigation",
     "summary text",
     "patterns"
@@ -15624,7 +15624,7 @@
    ],
    "size": "M",
    "variants": [
-    "data table fallback",
+    "data grid fallback",
     "keyboard point navigation",
     "summary text",
     "patterns"
@@ -22276,7 +22276,7 @@
     "status",
     "log"
    ],
-   "note": "LiveRegion component + announce(text, politeness) singleton; Toast and DataTable counts move onto it",
+   "note": "LiveRegion component + announce(text, politeness) singleton; Toast and DataGrid counts move onto it",
    "wave": 1,
    "lane": "A"
   },
@@ -22865,7 +22865,7 @@
     "horizontal",
     "sticky headers"
    ],
-   "note": "hooks/useVirtualizer.js; DataTable keeps Tabulator; VirtualList and file grids use this",
+   "note": "hooks/useVirtualizer.js; DataGrid keeps Tabulator; VirtualList and file grids use this",
    "wave": 1,
    "lane": "A"
   },
