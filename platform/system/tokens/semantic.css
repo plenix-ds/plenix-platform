@@ -502,18 +502,8 @@
   --plx-sys-text-lead-letter-spacing: normal;
   --plx-sys-text-lead-line-height: var(--plx-ref-line-height-relaxed);
   --plx-sys-text-lead-word-spacing: normal;
-  --plx-sys-text-data-font-family: var(--plx-sys-font-data);
-  --plx-sys-text-data-font-size: var(--plx-ref-font-size-12);
-  --plx-sys-text-data-font-weight: var(--plx-sys-font-weight-regular);
-  --plx-sys-text-data-letter-spacing: normal;
-  --plx-sys-text-data-line-height: var(--plx-ref-line-height-normal);
-  --plx-sys-text-data-word-spacing: var(--plx-sys-font-data-word-spacing);
-  --plx-sys-text-code-font-family: var(--plx-sys-font-code);
-  --plx-sys-text-code-font-size: var(--plx-ref-font-size-12);
-  --plx-sys-text-code-font-weight: var(--plx-sys-font-weight-regular);
-  --plx-sys-text-code-letter-spacing: normal;
-  --plx-sys-text-code-line-height: var(--plx-ref-line-height-normal);
-  --plx-sys-text-code-word-spacing: var(--plx-sys-font-data-word-spacing);
+  --plx-sys-text-mono-font-family: var(--plx-sys-font-data);
+  --plx-sys-text-mono-word-spacing: var(--plx-sys-font-data-word-spacing);
 }
 :root {
   --plx-sys-virtual-item-size: var(--plx-ref-size-32px);

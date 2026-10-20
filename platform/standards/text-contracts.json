@@ -2,11 +2,8 @@
  "$description": "The text contract of every part that declares typography (the Plenix Styling Standard, section 6; checked by check-system.rules/text-contract.js). establishes: the part applies one whole text role (platform/tokens/semantic/typography.tokens.json). adjusts: the part sets only these properties and inherits the rest. A part that is not listed declares no typography: it follows its context.",
  "parts": {
   "<a>": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "<body>": {
    "contract": "adjusts",
@@ -25,11 +22,10 @@
   },
   "plx-activity-list__time": {
    "contract": "establishes",
-   "role": "data",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-activity-list__title": {
@@ -100,11 +96,8 @@
    ]
   },
   "plx-auth__data": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-auth__description": {
    "contract": "adjusts",
@@ -177,6 +170,7 @@
   "plx-avatar--20": {
    "contract": "establishes",
    "role": "title",
+   "font": "mono",
    "adjusts": [
     "font-size"
    ]
@@ -184,6 +178,7 @@
   "plx-avatar--24": {
    "contract": "establishes",
    "role": "title",
+   "font": "mono",
    "adjusts": [
     "font-size"
    ]
@@ -191,6 +186,7 @@
   "plx-avatar--28": {
    "contract": "establishes",
    "role": "title",
+   "font": "mono",
    "adjusts": [
     "font-size"
    ]
@@ -198,6 +194,7 @@
   "plx-avatar--32": {
    "contract": "establishes",
    "role": "title",
+   "font": "mono",
    "adjusts": [
     "font-size"
    ]
@@ -205,6 +202,7 @@
   "plx-avatar--40": {
    "contract": "establishes",
    "role": "title",
+   "font": "mono",
    "adjusts": [
     "font-size"
    ]
@@ -212,6 +210,7 @@
   "plx-avatar--48": {
    "contract": "establishes",
    "role": "title",
+   "font": "mono",
    "adjusts": [
     "font-size"
    ]
@@ -219,6 +218,7 @@
   "plx-avatar--64": {
    "contract": "establishes",
    "role": "title",
+   "font": "mono",
    "adjusts": [
     "font-size"
    ]
@@ -352,8 +352,8 @@
   "plx-button": {
    "contract": "establishes",
    "role": "body",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight",
     "line-height"
@@ -374,12 +374,9 @@
    ]
   },
   "plx-calendar__week-number": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-calendar__weekday": {
    "contract": "adjusts",
@@ -439,12 +436,9 @@
    ]
   },
   "plx-chart-data-label": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-chart-legend__entry": {
    "contract": "adjusts",
@@ -465,11 +459,8 @@
    ]
   },
   "plx-chart-legend__value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-chart-reference__label": {
    "contract": "adjusts",
@@ -511,11 +502,8 @@
    ]
   },
   "plx-chart-tooltip__value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-chart__description": {
    "contract": "adjusts",
@@ -525,12 +513,9 @@
    ]
   },
   "plx-chart__tick-label": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-chart__title": {
    "contract": "adjusts",
@@ -563,8 +548,8 @@
   "plx-chat__header-title": {
    "contract": "establishes",
    "role": "title",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
@@ -576,11 +561,9 @@
    ]
   },
   "plx-chat__time": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "establishes",
+   "role": "caption",
+   "font": "mono"
   },
   "plx-check": {
    "contract": "adjusts",
@@ -615,29 +598,24 @@
    ]
   },
   "plx-code": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-code-block__pre": {
    "contract": "establishes",
-   "role": "code",
+   "role": "secondary",
+   "font": "mono",
    "adjusts": [
-    "font-family",
     "font-size",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-code-block__title": {
    "contract": "establishes",
-   "role": "code",
+   "role": "secondary",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-code-editor__gutter": {
@@ -770,11 +748,8 @@
    ]
   },
   "plx-commerce-summary__value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-commerce__legend": {
    "contract": "adjusts",
@@ -803,11 +778,8 @@
    ]
   },
   "plx-comparison-view__data": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-comparison-view__label": {
    "contract": "adjusts",
@@ -850,11 +822,8 @@
    ]
   },
   "plx-connected-accounts__date": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-connected-accounts__description": {
    "contract": "adjusts",
@@ -944,12 +913,9 @@
    ]
   },
   "plx-data-grid__grid": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-data-grid__grid-cell": {
    "contract": "adjusts",
@@ -987,12 +953,9 @@
    ]
   },
   "plx-data-grid__grid-menu": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-data-grid__grid-placeholder-contents": {
    "contract": "adjusts",
@@ -1002,12 +965,9 @@
    ]
   },
   "plx-data-grid__grid-popup-container": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-data-grid__grid-row": {
    "contract": "adjusts",
@@ -1098,8 +1058,8 @@
   "plx-date-badge__weekday": {
    "contract": "establishes",
    "role": "caption",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
@@ -1141,12 +1101,9 @@
    ]
   },
   "plx-diagram__connector-label": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-diagram__detail": {
    "contract": "adjusts",
@@ -1213,11 +1170,8 @@
    ]
   },
   "plx-download-button__percent": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-duplicate-action__source": {
    "contract": "adjusts",
@@ -1304,8 +1258,8 @@
   "plx-entity-header__title": {
    "contract": "establishes",
    "role": "title",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight",
     "line-height"
@@ -1318,12 +1272,9 @@
    ]
   },
   "plx-entity-picker__meta": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-entity-picker__name": {
    "contract": "adjusts",
@@ -1338,11 +1289,9 @@
    ]
   },
   "plx-event-chip__time": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "establishes",
+   "role": "caption",
+   "font": "mono"
   },
   "plx-event-chip__title": {
    "contract": "adjusts",
@@ -1351,11 +1300,8 @@
    ]
   },
   "plx-field__count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-field__counter": {
    "contract": "adjusts",
@@ -1376,12 +1322,12 @@
    ]
   },
   "plx-field__info": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "caption",
+   "font": "sans",
+   "adjusts": [
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-field__info-text": {
@@ -1393,8 +1339,8 @@
   "plx-field__label": {
    "contract": "establishes",
    "role": "label",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight",
     "line-height"
@@ -1422,20 +1368,14 @@
    ]
   },
   "plx-file-input__name": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-file-input__size": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-file-input__summary": {
    "contract": "adjusts",
@@ -1444,11 +1384,9 @@
    ]
   },
   "plx-file-input__summary--file": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-file-list__count": {
    "contract": "adjusts",
@@ -1467,11 +1405,8 @@
    ]
   },
   "plx-file-row__date": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-file-row__error": {
    "contract": "adjusts",
@@ -1490,18 +1425,12 @@
    ]
   },
   "plx-file-row__size": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-file__facts": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-file__meta": {
    "contract": "adjusts",
@@ -1528,12 +1457,9 @@
    ]
   },
   "plx-filter-bar__count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-find-pill": {
    "contract": "adjusts",
@@ -1562,12 +1488,9 @@
    ]
   },
   "plx-gantt__task": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-gauge__label": {
    "contract": "adjusts",
@@ -1609,6 +1532,7 @@
   "plx-heading--size-1": {
    "contract": "establishes",
    "role": "heading",
+   "font": "sans",
    "adjusts": [
     "font-size",
     "font-weight"
@@ -1617,6 +1541,7 @@
   "plx-heading--size-2": {
    "contract": "establishes",
    "role": "heading",
+   "font": "sans",
    "adjusts": [
     "font-size",
     "font-weight"
@@ -1625,6 +1550,7 @@
   "plx-heading--size-3": {
    "contract": "establishes",
    "role": "heading",
+   "font": "sans",
    "adjusts": [
     "font-size",
     "font-weight"
@@ -1633,6 +1559,7 @@
   "plx-heading--size-4": {
    "contract": "establishes",
    "role": "heading",
+   "font": "sans",
    "adjusts": [
     "font-size",
     "font-weight"
@@ -1648,18 +1575,12 @@
    ]
   },
   "plx-heat-map-scale__end": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-heat-map-scale__missing": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans"
   },
   "plx-image-editor__preset": {
    "contract": "adjusts",
@@ -1695,20 +1616,14 @@
    ]
   },
   "plx-image-upload__name": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-image-upload__size": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-image-upload__zone-text": {
    "contract": "adjusts",
@@ -1752,16 +1667,16 @@
   },
   "plx-input--data": {
    "contract": "establishes",
-   "role": "data",
+   "role": "secondary",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "letter-spacing",
-    "word-spacing"
+    "letter-spacing"
    ]
   },
   "plx-input--emphasis": {
    "contract": "establishes",
    "role": "label",
+   "font": "sans",
    "adjusts": [
     "font-weight"
    ]
@@ -1784,12 +1699,11 @@
   },
   "plx-kbd": {
    "contract": "establishes",
-   "role": "code",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
     "font-size",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-link": {
@@ -1815,12 +1729,9 @@
    ]
   },
   "plx-load-more__count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-load-more__end": {
    "contract": "adjusts",
@@ -1844,11 +1755,10 @@
   },
   "plx-media-card__meta": {
    "contract": "establishes",
-   "role": "data",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-media-card__title": {
@@ -1865,20 +1775,14 @@
    ]
   },
   "plx-media-viewer__counter": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-media-viewer__meta": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-media-viewer__title": {
    "contract": "adjusts",
@@ -1930,12 +1834,9 @@
    ]
   },
   "plx-metric-card__date": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-metric-card__day-letter": {
    "contract": "adjusts",
@@ -1970,28 +1871,19 @@
    ]
   },
   "plx-metric-card__number": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-metric-card__rank": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-metric-card__row-detail": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-metric-card__row-label": {
    "contract": "adjusts",
@@ -2000,12 +1892,9 @@
    ]
   },
   "plx-metric-card__share": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-metric-card__summary-value": {
    "contract": "adjusts",
@@ -2045,11 +1934,10 @@
   },
   "plx-metric__change": {
    "contract": "establishes",
-   "role": "data",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-metric__description": {
@@ -2073,8 +1961,8 @@
   "plx-metric__value": {
    "contract": "establishes",
    "role": "label",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight",
     "line-height"
@@ -2100,11 +1988,8 @@
    ]
   },
   "plx-nav-bar__item": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans"
   },
   "plx-nav-bar__label": {
    "contract": "adjusts",
@@ -2144,19 +2029,16 @@
   "plx-nav-pane__title": {
    "contract": "establishes",
    "role": "title",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
   },
   "plx-network-graph__edge-label": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-network-graph__label": {
    "contract": "adjusts",
@@ -2180,12 +2062,9 @@
    ]
   },
   "plx-otp-input__cell": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-pagination": {
    "contract": "adjusts",
@@ -2233,8 +2112,8 @@
   "plx-panel__title": {
    "contract": "establishes",
    "role": "title",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
@@ -2259,11 +2138,8 @@
    ]
   },
   "plx-people-group__number": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-permission-summary__detail": {
    "contract": "adjusts",
@@ -2302,12 +2178,9 @@
    ]
   },
   "plx-pie-chart__center-label": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-pie-chart__center-value": {
    "contract": "adjusts",
@@ -2406,11 +2279,10 @@
   },
   "plx-progress-bar__value": {
    "contract": "establishes",
-   "role": "data",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-progress-circle__value": {
@@ -2475,11 +2347,10 @@
   },
   "plx-property-list__value--data": {
    "contract": "establishes",
-   "role": "data",
+   "role": "body",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-publish__detail": {
@@ -2530,11 +2401,8 @@
    ]
   },
   "plx-query-builder__number": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-radar-chart__axis-label": {
    "contract": "adjusts",
@@ -2568,8 +2436,8 @@
   "plx-radio-tiles__legend": {
    "contract": "establishes",
    "role": "label",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight",
     "line-height"
@@ -2592,26 +2460,20 @@
   "plx-record-page__title": {
    "contract": "establishes",
    "role": "title",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
   },
   "plx-relative-date-input__range": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-rendition-list__item": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-resource-list__count": {
    "contract": "adjusts",
@@ -2626,11 +2488,8 @@
    ]
   },
   "plx-resource-list__group-count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-resource-list__meta": {
    "contract": "adjusts",
@@ -2766,11 +2625,8 @@
    ]
   },
   "plx-search-result-group__count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-search-result__match": {
    "contract": "adjusts",
@@ -2818,18 +2674,18 @@
   "plx-search-ws__title": {
    "contract": "establishes",
    "role": "title",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
   },
   "plx-search__input": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "font-size"
    ]
   },
   "plx-search__match": {
@@ -2902,18 +2758,22 @@
    ]
   },
   "plx-segmented__item": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans",
+   "adjusts": [
     "font-size",
-    "font-weight",
-    "word-spacing"
+    "font-weight"
    ]
   },
   "plx-segmented__item--sm": {
-   "contract": "adjusts",
-   "props": [
-    "font-size"
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans",
+   "adjusts": [
+    "font-size",
+    "letter-spacing",
+    "line-height"
    ]
   },
   "plx-selection-summary__count": {
@@ -2924,11 +2784,8 @@
    ]
   },
   "plx-session-timeout__inline-time": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-session-timeout__text": {
    "contract": "adjusts",
@@ -2977,8 +2834,8 @@
   "plx-settings__section-title": {
    "contract": "establishes",
    "role": "heading",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
@@ -2986,6 +2843,7 @@
   "plx-settings__section-title--level-3": {
    "contract": "establishes",
    "role": "heading",
+   "font": "sans",
    "adjusts": [
     "font-size"
    ]
@@ -2993,6 +2851,7 @@
   "plx-settings__section-title--level-4": {
    "contract": "establishes",
    "role": "heading",
+   "font": "sans",
    "adjusts": [
     "font-size"
    ]
@@ -3021,21 +2880,19 @@
   },
   "plx-slider__mark": {
    "contract": "establishes",
-   "role": "data",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
     "font-size",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-slider__value": {
    "contract": "establishes",
-   "role": "data",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-status-bar": {
@@ -3059,8 +2916,8 @@
   "plx-table__empty": {
    "contract": "establishes",
    "role": "body",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight"
    ]
@@ -3080,12 +2937,9 @@
    ]
   },
   "plx-table__grid": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-table__grid-cell": {
    "contract": "adjusts",
@@ -3123,12 +2977,9 @@
    ]
   },
   "plx-table__grid-menu": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-table__grid-placeholder-contents": {
    "contract": "adjusts",
@@ -3138,12 +2989,9 @@
    ]
   },
   "plx-table__grid-popup-container": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-table__grid-row": {
    "contract": "adjusts",
@@ -3241,8 +3089,8 @@
   "plx-tag": {
    "contract": "establishes",
    "role": "body",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "font-weight",
     "line-height"
@@ -3279,45 +3127,43 @@
   },
   "plx-text--body": {
    "contract": "establishes",
-   "role": "body"
+   "role": "body",
+   "font": "sans"
   },
   "plx-text--caption": {
    "contract": "establishes",
-   "role": "caption"
+   "role": "caption",
+   "font": "sans"
   },
   "plx-text--data": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-text--display": {
    "contract": "establishes",
-   "role": "display"
+   "role": "display",
+   "font": "sans"
   },
   "plx-text--eyebrow": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "font-weight",
-    "letter-spacing",
-    "word-spacing"
-   ]
+   "contract": "establishes",
+   "role": "eyebrow",
+   "font": "sans"
   },
   "plx-text--heading": {
    "contract": "establishes",
-   "role": "heading"
+   "role": "heading",
+   "font": "sans"
   },
   "plx-text--label": {
    "contract": "establishes",
-   "role": "label"
+   "role": "label",
+   "font": "sans"
   },
   "plx-text--lead": {
    "contract": "establishes",
-   "role": "lead"
+   "role": "lead",
+   "font": "sans"
   },
   "plx-text--link": {
    "contract": "adjusts",
@@ -3326,12 +3172,9 @@
    ]
   },
   "plx-text--secondary": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans"
   },
   "plx-text--strong": {
    "contract": "adjusts",
@@ -3341,30 +3184,24 @@
   },
   "plx-text--title": {
    "contract": "establishes",
-   "role": "title"
+   "role": "title",
+   "font": "sans"
   },
   "plx-time": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-time-grid__hour": {
    "contract": "establishes",
-   "role": "data",
+   "role": "caption",
+   "font": "mono",
    "adjusts": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+    "font-size"
    ]
   },
   "plx-time-picker__field": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono"
   },
   "plx-time-picker__option": {
    "contract": "adjusts",
@@ -3394,12 +3231,9 @@
    ]
   },
   "plx-timeline-chart__label": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "sans",
+   "size": true
   },
   "plx-timeline__description": {
    "contract": "adjusts",
@@ -3408,12 +3242,9 @@
    ]
   },
   "plx-timeline__time": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-timeline__title": {
    "contract": "adjusts",
@@ -3443,8 +3274,8 @@
   "plx-tooltip__bubble": {
    "contract": "establishes",
    "role": "caption",
+   "font": "sans",
    "adjusts": [
-    "font-family",
     "font-size",
     "line-height"
    ]
@@ -3452,6 +3283,7 @@
   "plx-tooltip__bubble--rich": {
    "contract": "establishes",
    "role": "caption",
+   "font": "sans",
    "adjusts": [
     "font-size",
     "line-height"
@@ -3466,12 +3298,9 @@
    ]
   },
   "plx-transfer-list__count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-transfer-list__empty": {
    "contract": "adjusts",
@@ -3480,12 +3309,9 @@
    ]
   },
   "plx-transfer-list__meta": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-transfer-list__option": {
    "contract": "adjusts",
@@ -3515,11 +3341,11 @@
    ]
   },
   "plx-tree__meta": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
+   "contract": "establishes",
+   "role": "caption",
+   "font": "mono",
+   "adjusts": [
+    "font-size"
    ]
   },
   "plx-tree__row": {
@@ -3547,12 +3373,9 @@
    ]
   },
   "plx-treemap__value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-u-fs-09": {
    "contract": "adjusts",
@@ -3793,12 +3616,9 @@
    ]
   },
   "plx-virtual-list__count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-virtual-list__description": {
    "contract": "adjusts",
@@ -3807,12 +3627,9 @@
    ]
   },
   "plx-virtual-list__header-count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-virtual-list__header-label": {
    "contract": "adjusts",
@@ -3822,12 +3639,9 @@
    ]
   },
   "plx-virtual-list__meta": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
-    "font-size",
-    "word-spacing"
-   ]
+   "contract": "follows",
+   "font": "mono",
+   "size": true
   },
   "plx-virtual-list__viewport": {
    "contract": "adjusts",

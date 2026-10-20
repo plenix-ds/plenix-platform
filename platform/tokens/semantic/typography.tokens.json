@@ -1,71 +1,159 @@
 {
-  "$description": "Text roles (Plenix Styling Standard, section 6): each a W3C typography composite of existing tokens, with its word spacing as the companion ($extensions.plenix.wordSpacing). build-tokens.js writes each as six longhand tokens (--plx-sys-text-<role>-font-family, -font-size, -font-weight, -letter-spacing, -line-height, -word-spacing). A component that establishes a role applies all six; one that adjusts a role sets only the properties its contract names.",
+  "$description": "Text roles (Plenix Styling Standard, section 6; owner, 2026-10-20: one uniform type system): each a W3C typography composite of existing tokens, with its word spacing as the companion ($extensions.plenix.wordSpacing). build-tokens.js writes each as six longhand tokens (--plx-sys-text-<role>-font-family, -font-size, -font-weight, -letter-spacing, -line-height, -word-spacing). A role sets the metrics (size, weight, letter spacing, line height) in DM Sans; Reddit Mono is not a role but a switch, text-mono-font-family with text-mono-word-spacing, that any role takes for a technical value or code. A component that establishes a role applies all six (the two font properties from the role or from the Mono switch); one that adjusts a role sets only the properties its contract names.",
   "plx-sys": {
     "text-body": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-13}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-body}",
+        "fontSize": "{plx-ref.font-size-13}",
+        "fontWeight": "{plx-sys.font-weight-regular}",
+        "letterSpacing": "normal",
+        "lineHeight": "{plx-ref.line-height-normal}"
+      },
       "$description": "Running text: the page's body text.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-secondary": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-body}",
+        "fontSize": "{plx-ref.font-size-12}",
+        "fontWeight": "{plx-sys.font-weight-regular}",
+        "letterSpacing": "normal",
+        "lineHeight": "{plx-ref.line-height-normal}"
+      },
       "$description": "Supporting text one step below the body: descriptions, metadata in words.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-caption": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-11}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-body}",
+        "fontSize": "{plx-ref.font-size-11}",
+        "fontWeight": "{plx-sys.font-weight-regular}",
+        "letterSpacing": "normal",
+        "lineHeight": "{plx-ref.line-height-normal}"
+      },
       "$description": "The smallest running text: captions, hints, help under a field.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-label": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-label}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-semibold}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-label}",
+        "fontSize": "{plx-ref.font-size-12}",
+        "fontWeight": "{plx-sys.font-weight-semibold}",
+        "letterSpacing": "normal",
+        "lineHeight": "{plx-ref.line-height-normal}"
+      },
       "$description": "A label: names a field, a group or a value.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-heading": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-heading}", "fontSize": "{plx-ref.font-size-13}", "fontWeight": "{plx-sys.font-weight-semibold}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-heading}",
+        "fontSize": "{plx-ref.font-size-13}",
+        "fontWeight": "{plx-sys.font-weight-semibold}",
+        "letterSpacing": "normal",
+        "lineHeight": "{plx-ref.line-height-normal}"
+      },
       "$description": "A section heading inside a page or a card.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-title": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-heading}", "fontSize": "{plx-ref.font-size-20}", "fontWeight": "{plx-sys.font-weight-bold}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-heading}",
+        "fontSize": "{plx-ref.font-size-20}",
+        "fontWeight": "{plx-sys.font-weight-bold}",
+        "letterSpacing": "normal",
+        "lineHeight": "{plx-ref.line-height-normal}"
+      },
       "$description": "A page's title.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-eyebrow": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-label}", "fontSize": "{plx-ref.font-size-11}", "fontWeight": "{plx-sys.font-weight-bold}", "letterSpacing": "{plx-sys.letter-spacing-widest}", "lineHeight": "{plx-ref.line-height-normal}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-label}",
+        "fontSize": "{plx-ref.font-size-11}",
+        "fontWeight": "{plx-sys.font-weight-bold}",
+        "letterSpacing": "{plx-sys.letter-spacing-widest}",
+        "lineHeight": "{plx-ref.line-height-normal}"
+      },
       "$description": "A small spaced label above a heading.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-display": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-heading}", "fontSize": "{plx-ref.font-size-20}", "fontWeight": "{plx-sys.font-weight-semibold}", "letterSpacing": "{plx-sys.letter-spacing-tight}", "lineHeight": "{plx-ref.line-height-tight}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-heading}",
+        "fontSize": "{plx-ref.font-size-20}",
+        "fontWeight": "{plx-sys.font-weight-semibold}",
+        "letterSpacing": "{plx-sys.letter-spacing-tight}",
+        "lineHeight": "{plx-ref.line-height-tight}"
+      },
       "$description": "The largest style: one key figure or a sign-in heading.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
     "text-lead": {
       "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-body}", "fontSize": "{plx-ref.font-size-15}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-relaxed}" },
+      "$value": {
+        "fontFamily": "{plx-sys.font-body}",
+        "fontSize": "{plx-ref.font-size-15}",
+        "fontWeight": "{plx-sys.font-weight-regular}",
+        "letterSpacing": "normal",
+        "lineHeight": "{plx-ref.line-height-relaxed}"
+      },
       "$description": "Body text one step up: the opening paragraph of a page.",
-      "$extensions": { "plenix": { "wordSpacing": "normal" } }
+      "$extensions": {
+        "plenix": {
+          "wordSpacing": "normal"
+        }
+      }
     },
-    "text-data": {
-      "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-data}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
-      "$description": "A technical value (IDs, file names, dates and times, sizes, counts): Reddit Mono, fitted to DM Sans.",
-      "$extensions": { "plenix": { "wordSpacing": "{plx-sys.font-data-word-spacing}" } }
+    "text-mono-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "The Mono switch (owner, 2026-10-20: one uniform type system): a technical value or code in any role takes Reddit Mono, fitted to DM Sans (size-adjust, platform/system/fonts.css), so it keeps the role's size, weight, line height and letter spacing and shares the baseline of the text beside it."
     },
-    "text-code": {
-      "$type": "typography",
-      "$value": { "fontFamily": "{plx-sys.font-code}", "fontSize": "{plx-ref.font-size-12}", "fontWeight": "{plx-sys.font-weight-regular}", "letterSpacing": "normal", "lineHeight": "{plx-ref.line-height-normal}" },
-      "$description": "Code: Reddit Mono, fitted to DM Sans.",
-      "$extensions": { "plenix": { "wordSpacing": "{plx-sys.font-data-word-spacing}" } }
+    "text-mono-word-spacing": {
+      "$value": "{plx-sys.font-data-word-spacing}",
+      "$type": "dimension",
+      "$description": "The Mono switch's word spacing: a space as wide as DM Sans's. Always set with text-mono-font-family."
     }
   }
 }

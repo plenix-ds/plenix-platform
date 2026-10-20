@@ -96,6 +96,15 @@ function rules(text, file) {
 // the declarations and findings as the stylesheets are
 function measure() {
   const idx = index(), FONTS = fontTokens(idx), ROLE = roleOf(idx);
+  // the font switch a family or word spacing belongs to: sans (DM Sans, normal spacing) or mono (Reddit Mono, the fitted spacing)
+  const MONO_WS = String(Object.values((idx.find((t) => t.name === '--plx-sys-font-data-word-spacing') || { resolved: {} }).resolved)[0]);
+  const resolvedOf = (name) => String(Object.values((idx.find((t) => t.name === name) || { resolved: {} }).resolved)[0] || '');
+  const FONT = (v, k) => {
+    const m = /var\((--plx-[a-z0-9-]+)/.exec(v || '');
+    if (k === 'font-family') return m ? (FONTS[m[1]] || 'other') : 'other';
+    if (/^normal$/.test(String(v).trim())) return 'sans';
+    return m && resolvedOf(m[1]) === MONO_WS ? 'mono' : 'other';
+  };
   const boundary = [], parts = {};
   for (const f of cssFiles()) {
     const file = rel(f), contract = !SKIP_CONTRACT.test(f);
@@ -106,7 +115,12 @@ function measure() {
       for (const p of r.parts) {
         const x = parts[p] = parts[p] || { props: new Set(), byProp: {}, family: false, where: file + ':' + r.line };
         // inherit is following the context for that property, not a value of the part's own
-        for (const [k, v] of Object.entries(r.decl)) { if (/^inherit$/.test(v)) continue; x.props.add(k); const s = x.byProp[k] = x.byProp[k] || new Set(); const role = ROLE(v, k); if (Array.isArray(role)) s.add('any:' + role.join(',')); else s.add(role || 'none'); }
+        for (const [k, v] of Object.entries(r.decl)) {
+          if (/^inherit$/.test(v)) continue; x.props.add(k);
+          // the font and its word spacing are the font switch (DM Sans, or Mono fitted to it), not the role's
+          if (k === 'font-family' || k === 'word-spacing') { (x.font = x.font || new Set()).add(FONT(v, k)); continue; }
+          const s = x.byProp[k] = x.byProp[k] || new Set(); const role = ROLE(v, k); if (Array.isArray(role)) s.add('any:' + role.join(',')); else s.add(role || 'none');
+        }
         if (r.decl['font-family'] !== undefined && !/^inherit$/.test(r.decl['font-family'])) x.family = true;
       }
     }
@@ -118,16 +132,22 @@ function measure() {
   const declared = {}, incomplete = {};
   for (const [p, x] of Object.entries(parts).sort()) {
     const base = p.includes('--') ? parts[p.replace(/--[a-z0-9-]+$/, '')] : null;
-    const eff = { props: new Set([...x.props, ...(base ? base.props : [])]), byProp: {} };
+    const eff = { props: new Set([...x.props, ...(base ? base.props : [])]), byProp: {}, font: new Set(x.font && x.font.size ? x.font : ((base && base.font) || [])) }; // a variant's own font replaces its part's
     for (const src of [base, x]) if (src) for (const [k, set] of Object.entries(src.byProp)) { eff.byProp[k] = eff.byProp[k] || new Set(); for (const r of set) eff.byProp[k].add(r); }
+    const font = eff.font.size === 1 && !eff.font.has('other') ? [...eff.font][0] : null;
     const own = PROPS.filter((k) => x.props.has(k)), all = PROPS.filter((k) => eff.props.has(k));
     const fromRole = {}; for (const [k, set] of Object.entries(eff.byProp)) for (const r of set) if (r !== 'none' && !r.startsWith('any:')) (fromRole[r] = fromRole[r] || new Set()).add(k);
     const role = Object.keys(fromRole).sort((a, b) => fromRole[b].size - fromRole[a].size)[0];
     // a property is the role's when every value it is given comes from that role (a keyword matching the role counts)
     const isRole = (k) => [...(eff.byProp[k] || [])].every((r) => r === role || (r.startsWith('any:') && r.slice(4).split(',').includes(role)));
-    const adj = role ? PROPS.filter((k) => x.props.has(k) && !isRole(k)) : own;
-    declared[p] = all.length === PROPS.length && role ? Object.assign({ contract: 'establishes', role }, adj.length ? { adjusts: adj } : {}) : { contract: 'adjusts', props: own };
-    if ((x.family || (base && base.family)) && declared[p].contract !== 'establishes') incomplete[p] = 'changes the font family without the whole role (missing ' + PROPS.filter((k) => !eff.props.has(k)).join(', ') + (all.length === PROPS.length ? '; none from a text role' : '') + ')';
+    const METRICS = ['font-size', 'font-weight', 'letter-spacing', 'line-height'];
+    const adj = role ? METRICS.filter((k) => x.props.has(k) && !isRole(k)) : own;
+    // follows: only the font switch, every metric from the text around it (inline code or a data value in a sentence: the
+    // true match of Mono fitted to DM Sans, Standard 6)
+    const followsIn = font && eff.props.has('font-family') && eff.props.has('word-spacing') && !['font-weight', 'letter-spacing', 'line-height'].some((k) => eff.props.has(k));
+    declared[p] = all.length === PROPS.length && role && font ? Object.assign({ contract: 'establishes', role, font }, adj.length ? { adjusts: adj } : {})
+      : followsIn ? Object.assign({ contract: 'follows', font }, eff.props.has('font-size') ? { size: true } : {}) : { contract: 'adjusts', props: own };
+    if ((x.family || (base && base.family)) && declared[p].contract === 'adjusts') incomplete[p] = 'changes the font family without the whole role (' + (all.length < PROPS.length ? 'missing ' + PROPS.filter((k) => !eff.props.has(k)).join(', ') : !role ? 'no metric from a text role' : 'its font and word spacing are not one switch') + ')';
   }
   return { boundary, declared, incomplete, where: Object.fromEntries(Object.entries(parts).map(([p, x]) => [p, x.where])) };
 }
@@ -139,7 +159,7 @@ function check({ add }) {
   for (const [p, d] of Object.entries(now.declared)) {
     const r = reg[p], where = now.where[p].split(':');
     if (!r) { add(NAME, where[0], +where[1], p + ' declares typography but has no text contract (' + JSON.stringify(d) + ') in platform/standards/text-contracts.json'); continue; }
-    if (JSON.stringify(r) !== JSON.stringify(d)) add(NAME, where[0], +where[1], p + ': its rules ' + (d.contract === 'establishes' ? 'establish the ' + d.role + ' role' : 'adjust ' + d.props.join(', ')) + ', its declared contract says ' + JSON.stringify(r) + ' (declare the change on purpose)');
+    if (JSON.stringify(r) !== JSON.stringify(d)) add(NAME, where[0], +where[1], p + ': its rules ' + (d.contract === 'establishes' ? 'establish the ' + d.role + ' role in ' + d.font : d.contract === 'follows' ? 'follow the text around them in ' + d.font : 'adjust ' + d.props.join(', ')) + ', its declared contract says ' + JSON.stringify(r) + ' (declare the change on purpose)');
   }
   for (const p of Object.keys(reg)) if (!now.declared[p]) add(NAME, 'platform/standards/text-contracts.json', 0, p + ': declared, but no rule gives it typography any more (remove the declaration)');
   for (const [p, t] of Object.entries(now.incomplete)) if (!log[p]) { const w = now.where[p].split(':'); add(NAME, w[0], +w[1], p + ' ' + t + ' (Styling Standard 6, the boundary rule)'); }

@@ -1,18 +1,18 @@
 /* Plenix · Text (platform/components/Text): text roles from the type tokens. */
 .plx-text{margin-block-end:0;margin-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-text--body{color:var(--plx-comp-text-body-text);font-family:var(--plx-comp-text-body-font-family);font-size:var(--plx-comp-text-body-font-size);font-weight:var(--plx-sys-text-body-font-weight);letter-spacing:var(--plx-sys-text-body-letter-spacing);line-height:var(--plx-sys-text-body-line-height);word-spacing:normal;}
-.plx-text--secondary{color:var(--plx-comp-text-secondary-text);font-family:var(--plx-comp-text-secondary-font-family);font-size:var(--plx-comp-text-secondary-font-size);word-spacing:normal;}
+.plx-text--secondary{color:var(--plx-comp-text-secondary-text);font-family:var(--plx-comp-text-secondary-font-family);font-size:var(--plx-comp-text-secondary-font-size);font-weight:var(--plx-sys-text-secondary-font-weight);letter-spacing:var(--plx-sys-text-secondary-letter-spacing);line-height:var(--plx-sys-text-secondary-line-height);word-spacing:normal;}
 .plx-text--caption{color:var(--plx-comp-text-caption-text);font-family:var(--plx-comp-text-caption-font-family);font-size:var(--plx-comp-text-caption-font-size);font-weight:var(--plx-sys-text-caption-font-weight);letter-spacing:var(--plx-sys-text-caption-letter-spacing);line-height:var(--plx-sys-text-caption-line-height);word-spacing:normal;}
 /* data: the data font (Reddit Mono) for technical values; on its own at the secondary size, inside other text (a sentence, a
    caption) at that text's size, so the two share a baseline (owner, 2026-10-11) */
-.plx-text--data{font-family:var(--plx-comp-text-data-font-family);font-size:var(--plx-comp-text-data-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-text--data{font-family:var(--plx-comp-text-data-font-family);font-size:var(--plx-comp-text-data-font-size);word-spacing:var(--plx-sys-text-mono-word-spacing);}
 .plx-text .plx-text--data,p .plx-text--data{font-size:inherit;}
 .plx-text--label{color:var(--plx-comp-text-label-text);font-family:var(--plx-comp-text-label-font-family);font-size:var(--plx-comp-text-label-font-size);font-weight:var(--plx-comp-text-label-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-sys-text-label-line-height);word-spacing:normal;}
 .plx-text--strong{font-weight:var(--plx-comp-text-strong-font-weight);}
 .plx-text--title{color:var(--plx-comp-text-title-text);font-family:var(--plx-comp-text-title-font-family);font-size:var(--plx-comp-text-title-font-size);font-weight:var(--plx-comp-text-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-sys-text-title-line-height);word-spacing:normal;}
 .plx-text--truncate{display:block;min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-text--heading{color:var(--plx-comp-text-heading-text);font-family:var(--plx-comp-text-heading-font-family);font-size:var(--plx-comp-text-heading-font-size);font-weight:var(--plx-comp-text-heading-font-weight);letter-spacing:var(--plx-sys-text-heading-letter-spacing);line-height:var(--plx-sys-text-heading-line-height);word-spacing:normal;}
-.plx-text--eyebrow{color:var(--plx-comp-text-eyebrow-text);font-family:var(--plx-comp-text-eyebrow-font-family);font-size:var(--plx-comp-text-eyebrow-font-size);font-weight:var(--plx-comp-text-eyebrow-font-weight);letter-spacing:var(--plx-comp-text-eyebrow-letter-spacing);text-transform:uppercase;word-spacing:normal;}
+.plx-text--eyebrow{color:var(--plx-comp-text-eyebrow-text);font-family:var(--plx-comp-text-eyebrow-font-family);font-size:var(--plx-comp-text-eyebrow-font-size);font-weight:var(--plx-comp-text-eyebrow-font-weight);letter-spacing:var(--plx-comp-text-eyebrow-letter-spacing);line-height:var(--plx-sys-text-eyebrow-line-height);text-transform:uppercase;word-spacing:normal;}
 .plx-text--danger{color:var(--plx-comp-text-danger-text);}
 .plx-text--success{color:var(--plx-comp-text-success-text);}
 /* accent: a highlighted term, step number or key figure (batch 197) */

@@ -7555,11 +7555,11 @@
       "$type": "dimension"
     },
     "text-data-font-family": {
-      "$value": "{plx-sys.text-data-font-family}",
+      "$value": "{plx-sys.text-mono-font-family}",
       "$type": "fontFamily"
     },
     "text-data-font-size": {
-      "$value": "{plx-sys.text-data-font-size}",
+      "$value": "{plx-sys.text-secondary-font-size}",
       "$type": "dimension",
       "$description": "The data role on its own: the secondary size (12px), the meta line it usually sits in; inside other text it takes that text's size"
     },

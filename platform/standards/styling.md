@@ -263,11 +263,18 @@ height, the focus border, a font family, internal paddings. Plenix's own applica
   - the DM Sans roles carry `normal`.
 - The generator writes each role as coordinated longhand declarations, the companion word spacing included.
 - The roles are generated from the existing tokens, not maintained by hand: `platform/tokens/semantic/typography.tokens.json`
-  holds them (body, secondary, caption, label, heading, title, eyebrow, display, lead, data, code), and `build-tokens.js`
+  holds them (body, secondary, caption, label, heading, title, eyebrow, display, lead), and `build-tokens.js`
   writes each as six longhand tokens, `--plx-sys-text-<role>-font-family`, `-font-size`, `-font-weight`,
   `-letter-spacing`, `-line-height` and `-word-spacing`.
-- A component that establishes a role declares all six, from that role (directly or through its own tokens, which
-  reference the role).
+- **One uniform type system** (owner, 2026-10-20): a role sets the metrics (size, weight, letter spacing, line height)
+  in DM Sans. Reddit Mono is not a role: it is a switch, `--plx-sys-text-mono-font-family` with
+  `--plx-sys-text-mono-word-spacing`, that any role takes for a technical value or code. Mono is fitted to DM Sans (its
+  size in @font-face, its word spacing in the switch), so a role in Mono keeps the role's metrics and the baseline of
+  the text beside it: a date in a caption is the caption role in Mono.
+- A component that establishes a role declares all six: the metrics from the role (directly or through its own
+  tokens, which reference the role), the font and word spacing from the role or from the Mono switch.
+- A Mono value inside running text (inline code, a value in a sentence) follows the text around it: it declares only
+  the switch (and at most its own size) and takes the rest from its context.
 
 **Three contracts.** Each component documents which one it has:
 
@@ -286,7 +293,8 @@ The word-spacing leak happened exactly there.
   applied at its own size reads the token again, at its own size.
 
 **Declared contracts.** `platform/standards/text-contracts.json` declares the contract of every part that sets
-typography (by its class without the modifier): `establishes` with its role, or `adjusts` with the properties it sets.
+typography (by its class, a variant by its modifier class): `establishes` with its role and font (sans or mono), `follows` in
+Mono (the switch alone, at most its own size), or `adjusts` with the properties it sets.
 A part that is not listed follows its context. The check-system rule `text-contract` fails when a part's rules set other
 properties than its declaration says (a contract changes on purpose, with its declaration), when a rule sets a font
 family without its word spacing, and when a part changes the font family without the whole role. The parts that still

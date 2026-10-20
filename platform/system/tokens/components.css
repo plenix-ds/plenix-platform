@@ -1703,8 +1703,8 @@
   --plx-comp-text-caption-text: var(--plx-sys-content-subtle);
   --plx-comp-text-caption-font-family: var(--plx-sys-text-caption-font-family);
   --plx-comp-text-caption-font-size: var(--plx-sys-text-caption-font-size);
-  --plx-comp-text-data-font-family: var(--plx-sys-text-data-font-family);
-  --plx-comp-text-data-font-size: var(--plx-sys-text-data-font-size);
+  --plx-comp-text-data-font-family: var(--plx-sys-text-mono-font-family);
+  --plx-comp-text-data-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-text-label-text: var(--plx-sys-content-default);
   --plx-comp-text-label-font-family: var(--plx-sys-text-label-font-family);
   --plx-comp-text-label-font-size: var(--plx-sys-text-label-font-size);

@@ -4,7 +4,7 @@
 .plx-metric__value{color:var(--plx-comp-metric-value-text);font-family:var(--plx-comp-metric-value-font-family);font-size:var(--plx-comp-metric-value-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-metric-value-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-comp-metric-value-line-height);word-spacing:normal;}
 .plx-metric--lg .plx-metric__value{font-size:var(--plx-comp-metric-lg-value-font-size);}
 .plx-metric__unit{color:var(--plx-comp-metric-unit-text);font-size:var(--plx-comp-metric-unit-font-size);}
-.plx-metric__change{font-family:var(--plx-comp-metric-change-font-family);font-size:var(--plx-comp-metric-change-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-sys-text-data-font-weight);letter-spacing:var(--plx-sys-text-data-letter-spacing);line-height:var(--plx-sys-text-data-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-metric__change{font-family:var(--plx-comp-metric-change-font-family);font-size:var(--plx-comp-metric-change-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-sys-text-caption-font-weight);letter-spacing:var(--plx-sys-text-caption-letter-spacing);line-height:var(--plx-sys-text-caption-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-metric__change--neutral{color:var(--plx-comp-metric-change-neutral-text);}
 .plx-metric__change--success{color:var(--plx-comp-metric-change-success-text);}
 .plx-metric__change--danger{color:var(--plx-comp-metric-change-danger-text);}
