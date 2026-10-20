@@ -22,17 +22,23 @@ const over = (row) => {
 export function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = false) {
   const [step, setStep] = React.useState(min);
   const [width, setWidth] = React.useState(0);
-  React.useLayoutEffect(() => { if (!hold) setStep(min); }, [width, key, min]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const measured = React.useRef(null);
+  React.useLayoutEffect(() => { if (!hold) setStep(min); }, [width, key, min, hold]);   // eslint-disable-line react-hooks/exhaustive-deps
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === 'undefined') return undefined;
     const ro = new ResizeObserver(() => setWidth(el.clientWidth));
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [ref]);
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el || step >= max || hold) return;
+    // Text covers count/custom-slot changes not represented by the caller's key. Reading it does not force layout.
+    // Keep this check after the commit: a render-time dependency would still see the previous DOM text.
+    const signature = [el, width, key, max, min, rows, step, el.textContent];
+    if (measured.current && signature.every((value, i) => value === measured.current[i])) return;
+    measured.current = signature;
     if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
   });
   return Math.max(min, Math.min(step, max));
