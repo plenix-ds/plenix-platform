@@ -1,27 +1,40 @@
-/* Plenix · NavList. */
+/* Plenix · NavList. Zero overlap (Styling Standard 3.3): each property once; the row, its icon and the pin take their
+   state as their own classes (NavList.jsx), and the states pick the values in order. Row text: disabled, current,
+   muted, a subgroup holding the current page, at rest. Row fill: current, hovered (an enabled row), at rest. */
+@property --plx-state-nav-list-item-background{syntax:"*";inherits:false;}
+@property --plx-state-nav-list-item-shadow{syntax:"*";inherits:false;}
+@property --plx-state-nav-list-item-text{syntax:"*";inherits:false;}
+@property --plx-state-nav-list-item-cursor{syntax:"*";inherits:false;}
+@property --plx-state-nav-list-entry-background{syntax:"*";inherits:false;}
+@property --plx-state-nav-list-entry-shadow{syntax:"*";inherits:false;}
+@property --plx-state-nav-list-pin-background{syntax:"*";inherits:false;}
+@property --plx-state-nav-list-pin-text{syntax:"*";inherits:false;}
 .plx-nav-list{display:flex;flex-direction:column;row-gap:var(--plx-comp-nav-list-row-gap);}
 /* a static group heading has the collapsible heading's geometry: its height, its text centered, the same room under it (#49) */
-.plx-nav-list__heading{align-items:center;box-sizing:border-box;display:flex;margin-block-end:var(--plx-comp-nav-list-heading-margin-block-end);min-block-size:var(--plx-comp-nav-list-heading-min-height);color:var(--plx-comp-nav-list-heading-text);font-size:var(--plx-comp-nav-list-heading-font-size);font-weight:var(--plx-comp-nav-list-heading-font-weight);letter-spacing:var(--plx-comp-nav-list-heading-letter-spacing);padding-block-end:var(--plx-comp-nav-list-heading-padding-block);padding-block-start:var(--plx-comp-nav-list-heading-padding-block);padding-inline-end:var(--plx-comp-nav-list-heading-padding-inline);padding-inline-start:var(--plx-comp-nav-list-heading-padding-inline);text-transform:uppercase;}
-.plx-nav-list__items{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-nav-list-items-row-gap);}
-.plx-nav-list__item{align-items:center;background-color:transparent;border-bottom-left-radius:var(--plx-comp-nav-list-item-radius);border-bottom-right-radius:var(--plx-comp-nav-list-item-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-nav-list-item-radius);border-top-right-radius:var(--plx-comp-nav-list-item-radius);border-top-style:none;border-top-width:0;box-sizing:border-box;color:var(--plx-comp-nav-list-item-text);column-gap:var(--plx-comp-nav-list-item-gap);cursor:pointer;display:flex;font-family:inherit;font-size:var(--plx-comp-nav-list-item-font-size);inline-size:100%;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-nav-list-item-min-height);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-nav-list-item-padding-inline);padding-inline-start:var(--plx-comp-nav-list-item-padding-inline);text-align:start;text-decoration-line:none;}
+.plx-nav-list__heading{align-items:center;display:flex;margin-block-end:var(--plx-comp-nav-list-heading-margin-block-end);min-block-size:var(--plx-comp-nav-list-heading-min-height);color:var(--plx-comp-nav-list-heading-text);font-size:var(--plx-comp-nav-list-heading-font-size);font-weight:var(--plx-comp-nav-list-heading-font-weight);letter-spacing:var(--plx-comp-nav-list-heading-letter-spacing);padding-block-end:var(--plx-comp-nav-list-heading-padding-block);padding-block-start:var(--plx-comp-nav-list-heading-padding-block);padding-inline-end:var(--plx-comp-nav-list-heading-padding-inline);padding-inline-start:var(--plx-comp-nav-list-heading-padding-inline);text-transform:uppercase;}
+.plx-nav-list__items{flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;row-gap:var(--plx-comp-nav-list-items-row-gap);}
+.plx-nav-list__items:where(:not([hidden])){display:flex;}
+.plx-nav-list__items[hidden]{display:none;}
+.plx-nav-list__items:where(:not(.plx-nav-list__items--nested)){padding-inline-start:0;}
+.plx-nav-list__item{align-items:center;background-color:var(--plx-state-nav-list-item-background,transparent);border-bottom-left-radius:var(--plx-comp-nav-list-item-radius);border-bottom-right-radius:var(--plx-comp-nav-list-item-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-nav-list-item-radius);border-top-right-radius:var(--plx-comp-nav-list-item-radius);border-top-style:none;border-top-width:0;box-shadow:var(--plx-state-nav-list-item-shadow,none);color:var(--plx-state-nav-list-item-text,var(--plx-comp-nav-list-item-text));column-gap:var(--plx-comp-nav-list-item-gap);cursor:var(--plx-state-nav-list-item-cursor,pointer);display:flex;font-family:inherit;font-size:var(--plx-comp-nav-list-item-font-size);inline-size:100%;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-nav-list-item-min-height);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-nav-list-item-padding-inline);padding-inline-start:var(--plx-comp-nav-list-item-padding-inline);text-align:start;text-decoration-line:none;}
 /* hover and current: the whole row, pin included, takes the state: its fill and an inset border two shades darker in
    the same color family (the owner, batch 230); a row without actions is its item alone */
-.plx-nav-list__item:hover,
-.plx-nav-list__item.is-hover{background-color:var(--plx-comp-nav-list-item-hover-background);box-shadow:var(--plx-comp-nav-list-item-hover-shadow);}
+.plx-nav-list__item:is(:hover, .is-hover):where(:not(.is-current, :disabled)){--plx-state-nav-list-item-background:var(--plx-comp-nav-list-item-hover-background);}
+.plx-nav-list__item:is(:hover, .is-hover):where(:not(.is-current, :disabled, .plx-nav-list__item--in-actions)){--plx-state-nav-list-item-shadow:var(--plx-comp-nav-list-item-hover-shadow);}
 .plx-nav-list__entry{border-bottom-left-radius:var(--plx-comp-nav-list-entry-radius);border-bottom-right-radius:var(--plx-comp-nav-list-entry-radius);border-top-left-radius:var(--plx-comp-nav-list-entry-radius);border-top-right-radius:var(--plx-comp-nav-list-entry-radius);}
-.plx-nav-list__entry--actions:hover,
-.plx-nav-list__entry--actions.is-hover{background-color:var(--plx-comp-nav-list-entry-actions-hover-background);box-shadow:var(--plx-comp-nav-list-entry-actions-hover-shadow);}
-.plx-nav-list__entry--actions:has(>.plx-nav-list__item.is-current){background-color:var(--plx-comp-nav-list-entry-actions-item-current-background);box-shadow:var(--plx-comp-nav-list-entry-actions-item-current-shadow);}
-.plx-nav-list__entry--actions>.plx-nav-list__item:hover,
-.plx-nav-list__entry--actions>.plx-nav-list__item.is-hover,
-.plx-nav-list__entry--actions>.plx-nav-list__item.is-current{box-shadow:none;}
+/* a row with actions: the whole row (pin included) takes hover and current; its item does not repeat them */
+.plx-nav-list__entry--actions{background-color:var(--plx-state-nav-list-entry-background,transparent);box-shadow:var(--plx-state-nav-list-entry-shadow,none);}
+.plx-nav-list__entry--actions:is(:hover, .is-hover):where(:not(.plx-nav-list__entry--current)){--plx-state-nav-list-entry-background:var(--plx-comp-nav-list-entry-actions-hover-background);--plx-state-nav-list-entry-shadow:var(--plx-comp-nav-list-entry-actions-hover-shadow);}
+.plx-nav-list__entry--current{--plx-state-nav-list-entry-background:var(--plx-comp-nav-list-entry-actions-item-current-background);--plx-state-nav-list-entry-shadow:var(--plx-comp-nav-list-entry-actions-item-current-shadow);}
 .plx-nav-list__item:focus-visible,
 .plx-nav-list__item.is-focus-visible{outline-color:var(--plx-comp-nav-list-item-focus-outline-color);outline-offset:var(--plx-comp-nav-list-item-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-nav-list-item-focus-outline-width);}
-.plx-nav-list__item.is-current{background-color:var(--plx-comp-nav-list-item-current-background);box-shadow:var(--plx-comp-nav-list-item-current-shadow);color:var(--plx-comp-nav-list-item-current-text);font-weight:var(--plx-comp-nav-list-item-current-font-weight);}
-.plx-nav-list__item:disabled{color:var(--plx-comp-nav-list-item-disabled-text);cursor:default;}
+.plx-nav-list__item.is-current{--plx-state-nav-list-item-background:var(--plx-comp-nav-list-item-current-background);font-weight:var(--plx-comp-nav-list-item-current-font-weight);}
+.plx-nav-list__item.is-current:where(:not(.plx-nav-list__item--in-actions)){--plx-state-nav-list-item-shadow:var(--plx-comp-nav-list-item-current-shadow);}
+.plx-nav-list__item.is-current:where(:not(:disabled)){--plx-state-nav-list-item-text:var(--plx-comp-nav-list-item-current-text);}
+.plx-nav-list__item:disabled{--plx-state-nav-list-item-cursor:default;--plx-state-nav-list-item-text:var(--plx-comp-nav-list-item-disabled-text);}
 .plx-nav-list__label{align-items:baseline;column-gap:var(--plx-comp-nav-list-label-gap);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 .plx-nav-list__entry--actions{align-items:center;column-gap:var(--plx-comp-nav-list-entry-actions-gap);display:flex;}
-.plx-nav-list__entry--actions>.plx-nav-list__item{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+.plx-nav-list__item--in-actions{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 .plx-nav-list__actions{--plx-comp-button-context-height:var(--plx-sys-control-height-standard);--plx-comp-button-context-icon:var(--plx-sys-control-icon-standard);align-items:center;column-gap:var(--plx-comp-nav-list-actions-gap);display:flex;flex-shrink:0;}
 /* a collapsible group: its header lines up with the rows (the legacy section header inside a navigation list) */
 .plx-nav-list__group{--plx-comp-collapsible-section-context-heading-padding-inline:var(--plx-comp-nav-list-group-collapsible-section-heading-padding-inline);}
@@ -29,27 +42,26 @@
 .plx-nav-list__name{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-nav-list__count{color:var(--plx-comp-nav-list-count-text);flex-shrink:0;font-size:var(--plx-comp-nav-list-count-font-size);font-style:italic;font-weight:var(--plx-comp-nav-list-count-font-weight);white-space:nowrap;}
 /* pinning: the pin shows on hover or focus; a pinned row keeps it, filled */
-.plx-nav-list__pin{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-comp-nav-list-pin-height);border-bottom-left-radius:var(--plx-comp-nav-list-pin-radius);border-bottom-right-radius:var(--plx-comp-nav-list-pin-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-nav-list-pin-radius);border-top-right-radius:var(--plx-comp-nav-list-pin-radius);border-top-style:none;border-top-width:0;color:var(--plx-comp-nav-list-pin-text);cursor:pointer;display:inline-flex;flex-shrink:0;font-family:inherit;inline-size:var(--plx-comp-nav-list-pin-width);justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;opacity:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
-.plx-nav-list__entry:hover .plx-nav-list__pin,.plx-nav-list__entry:focus-within .plx-nav-list__pin,.plx-nav-list__entry.is-pinned .plx-nav-list__pin,
-.plx-nav-list__entry.is-hover .plx-nav-list__pin{opacity:1;}
-.plx-nav-list__pin:hover,
-.plx-nav-list__pin.is-hover{background-color:var(--plx-comp-nav-list-pin-hover-background);color:var(--plx-comp-nav-list-pin-hover-text);}
-.plx-nav-list__entry.is-pinned .plx-nav-list__pin{color:var(--plx-comp-nav-list-entry-pinned-pin-text);}
+.plx-nav-list__pin{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);align-items:center;appearance:none;background-color:var(--plx-state-nav-list-pin-background,transparent);block-size:var(--plx-comp-nav-list-pin-height);border-bottom-left-radius:var(--plx-comp-nav-list-pin-radius);border-bottom-right-radius:var(--plx-comp-nav-list-pin-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-nav-list-pin-radius);border-top-right-radius:var(--plx-comp-nav-list-pin-radius);border-top-style:none;border-top-width:0;color:var(--plx-state-nav-list-pin-text,var(--plx-comp-nav-list-pin-text));cursor:pointer;display:inline-flex;flex-shrink:0;font-family:inherit;inline-size:var(--plx-comp-nav-list-pin-width);justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+/* shown while its row is hovered or holds focus (the row passes the context on), and always once pinned */
+.plx-nav-list__entry:is(:hover, .is-hover, :focus-within){--plx-comp-nav-list-context-pin-opacity:1;}
+.plx-nav-list__pin:where(:not(.plx-nav-list__pin--pinned)){opacity:var(--plx-comp-nav-list-context-pin-opacity,0);}
+.plx-nav-list__pin--pinned{--plx-state-nav-list-pin-text:var(--plx-comp-nav-list-entry-pinned-pin-text);opacity:1;}
+.plx-nav-list__pin:is(:hover, .is-hover){--plx-state-nav-list-pin-background:var(--plx-comp-nav-list-pin-hover-background);}
+.plx-nav-list__pin:is(:hover, .is-hover):where(:not(.plx-nav-list__pin--pinned)){--plx-state-nav-list-pin-text:var(--plx-comp-nav-list-pin-hover-text);}
 .plx-nav-list__pin:focus-visible,
 .plx-nav-list__pin.is-focus-visible{outline-color:var(--plx-comp-nav-list-pin-focus-outline-color);outline-offset:var(--plx-comp-nav-list-pin-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-nav-list-pin-focus-outline-width);}
 /* the row's icons and the pin: the grid icon of the row's control height (the pin is as high as the row) */
 .plx-nav-list__icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);display:inline-flex;flex-shrink:0;}
-.plx-nav-list__pin{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
 /* a row's actions are as high as the row, with its grid icon */
 /* A muted destination remains available; RedSave #62 uses the muted role rather than feedback color. */
-.plx-nav-list__item--muted:not(.is-current){--plx-comp-nav-list-item-muted-text:var(--plx-sys-content-muted);--plx-comp-nav-list-item-muted-icon-text:var(--plx-sys-content-muted);color:var(--plx-comp-nav-list-item-muted-text);}
-.plx-nav-list__item--muted:not(.is-current) .plx-nav-list__icon{color:var(--plx-comp-nav-list-item-muted-icon-text);}
+.plx-nav-list__item--muted:where(:not(.is-current, :disabled)){--plx-comp-nav-list-item-muted-text:var(--plx-sys-content-muted);--plx-comp-nav-list-item-muted-icon-text:var(--plx-sys-content-muted);--plx-state-nav-list-item-text:var(--plx-comp-nav-list-item-muted-text);}
+.plx-nav-list__icon--muted{color:var(--plx-comp-nav-list-item-muted-icon-text);}
 /* a subgroup: a row with a chevron (in the icon slot) that folds its rows; its rows start under its name */
 .plx-nav-list__item--group{font-weight:var(--plx-comp-nav-list-item-group-font-weight);}
-.plx-nav-list__item--group .plx-nav-list__icon{color:var(--plx-comp-nav-list-item-group-icon-text);}
-.plx-nav-list__item--group.is-current-parent{color:var(--plx-comp-nav-list-item-group-current-parent-text);}
+.plx-nav-list__icon--group{color:var(--plx-comp-nav-list-item-group-icon-text);}
+.plx-nav-list__item--group.is-current-parent:where(:not(:disabled)){--plx-state-nav-list-item-text:var(--plx-comp-nav-list-item-group-current-parent-text);}
 .plx-nav-list__items--nested{padding-inline-start:var(--plx-comp-nav-list-items-nested-padding-inline-start);}
-.plx-nav-list__items--nested[hidden]{display:none;}
 /* a row's actions (owner, batch 272: shown only on hover, unlike the pin, which shows a state): hidden until the row is
    hovered or holds keyboard focus, so they stay reachable by keyboard; touch and mobile show them (no hover there) */
 .plx-nav-list__actions>:not(.plx-nav-list__pin){opacity:0;}

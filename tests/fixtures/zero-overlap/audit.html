@@ -51,6 +51,18 @@
 /* a registered non-inheriting variable: the child reads its own fallback */
 .f-m{--st:blue;}
 .f-n{color:var(--st, red);}
+/* a physical longhand and its logical twin: one property on this element */
+.f-q{border-left-style:solid;border-left-width:1px;}
+.f-q.f-q2{border-inline-start-width:0;}
+/* right to left: inline start is the right side, so these two do not meet */
+.f-t{border-left-style:solid;border-left-width:1px;}
+.f-t.f-t2{border-inline-start-width:0;}
+/* a size and its logical name */
+.f-u{inline-size:10px;}
+.f-u.f-u2{width:20px;}
+/* a @supports the browser does not support: its rule never applies */
+@supports (not-a-property: 1){.f-v{color:red;}}
+.f-v{color:blue;}
 /* a rule whose condition is false */
 @media (max-width: 10px){.f-o{color:red;}}
 .f-o{color:blue;}
@@ -72,5 +84,9 @@
 <div class="f-l f-l2" data-expect="">l</div>
 <div class="f-m" data-expect=""><span class="f-n" data-expect="" data-expect-deps="--st">n</span></div>
 <div class="f-o" data-expect="">o</div>
+<div class="f-q f-q2" data-expect="border-left-width">q</div>
+<div class="f-t f-t2" dir="rtl" data-expect="">t</div>
+<div class="f-u f-u2" data-expect="width">u</div>
+<div class="f-v" data-expect="">v</div>
 </body>
 </html>

@@ -22,10 +22,12 @@
        danger: "Error", neutral: "Note" }
      StatusIcon.className: more classes on the status icon
    Behavior:
-     filled={false} explicitly keeps the outline, including inside a selected ancestor (Tree owns each item state).
-     Omitting filled keeps automatic selection behavior; filled={true} explicitly fills it.
-     The filled version is also drawn automatically inside a current or selected element: aria-current, aria-pressed,
-       aria-selected, .is-selected, .is-current.
+     The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
+       selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
+     Omitting filled: until every owner passes it, the filled version is still drawn inside a current or selected
+       element (aria-current, aria-pressed, aria-selected, .is-selected, .is-current): the rollout backlog.
+     The optical size follows the context: 24 in a Comfortable region and in a 24px container (the app header, a
+       pictogram), and for sizes lg and xl; 20 everywhere else.
      A pinned item shows the filled pin, not a filled row.
      Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
      StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
@@ -45,8 +47,8 @@ import { cx } from '../../utils/cx.js';
 export function Icon({ name, size, filled, label, className, ...rest }) {
   devWarn('Icon', { size }, { size: ['xs','sm','md','lg','xl'] });
   return (
-    <span className={cx('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled && 'plx-icon--filled', className)}
-      data-plx-icon-fill={filled === false ? 'outline' : undefined} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest} />
+    <span className={cx('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', className)}
+      role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest} />
   );
 }
 

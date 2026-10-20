@@ -170,7 +170,7 @@ export function Popover({ trigger, triggerOn = 'click', open: openProp, defaultO
           popover={TOP_LAYER ? 'manual' : undefined} data-plx-popover-side={side} data-plx-popover-align={align || 'center'}
           className={cx('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className)}
           onFocus={() => { inside.current = true; }} onBlur={(e) => { inside.current = !!(panel.current && panel.current.contains(e.relatedTarget)); }} {...rest}>
-          {arrow ? <span className="plx-popover__arrow" aria-hidden="true" /> : null}
+          {arrow ? <span className={cx('plx-popover__arrow', 'plx-popover__arrow--' + side, 'plx-popover__arrow--' + (side === 'top' || side === 'bottom' ? 'inline-' + (align || 'center') : 'block-' + ({ top: 'start', bottom: 'end' }[align] || 'center')))} aria-hidden="true" /> : null}
           {header}
           <div className="plx-popover__body">{children}</div>
           {footer ? <div className="plx-popover__footer">{footer}</div> : null}

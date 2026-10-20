@@ -37,9 +37,9 @@
       btn('js', { joined: { end: 'square' } }, 'Joined start'), btn('je', { joined: { start: 'seam' } }, 'Joined end'), btn('jf', { joined: { start: 'seam' }, 'data-force': 'focus focus-visible' }, 'Joined focused')),
     // raw markup: a native disabled button and one marked aria-disabled, without the component's script
     row(h('button', { key: 'nd', className: 'plx-button', disabled: true }, 'native disabled'), h('button', { key: 'ad', className: 'plx-button plx-button--ghost', 'aria-disabled': 'true', 'data-force': 'hover' }, 'aria-disabled hover')),
-    // surfaces: a colored surface holding buttons
-    ...['inverse', 'accent'].map((surface) => h('div', { key: surface, 'data-plx-surface': surface },
-      ...['primary', 'secondary', 'ghost'].flatMap((v) => [['rest', {}], ['hover', { 'data-force': 'hover' }], ['pressed', { 'data-force': 'hover active' }], ['focus', { 'data-force': 'focus focus-visible' }]].map(([s, p]) => btn(surface + v + s, Object.assign({ variant: v }, p), surface + ' ' + v + ' ' + s))))),
+    // surfaces: a colored surface holding buttons (SurfaceContext; the attribute only labels the audit's report)
+    ...['inverse', 'accent'].map((surface) => h(P.SurfaceContext ? P.SurfaceContext.Provider : React.Fragment, P.SurfaceContext ? { key: surface, value: surface } : { key: surface }, h('div', { 'data-plx-surface': surface },
+      ...['primary', 'secondary', 'ghost'].flatMap((v) => [['rest', {}], ['hover', { 'data-force': 'hover' }], ['pressed', { 'data-force': 'hover active' }], ['focus', { 'data-force': 'focus focus-visible' }]].map(([s, p]) => btn(surface + v + s, Object.assign({ variant: v }, p), surface + ' ' + v + ' ' + s)))))),
     // a nested instance: a button inside a hovered, selected primary button's box (a span, so the markup stays valid)
     h('span', { className: 'plx-button plx-button--primary is-selected', 'data-force': 'hover' }, 'outer ', btn('nested', { variant: 'ghost' }, 'nested ghost')));
 

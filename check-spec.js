@@ -147,6 +147,9 @@ const NOT_VARIANTS = {
   'plx-table--list': 'a responsive mode the renderer sets under narrowAt when narrow is list (Table’s default is table)',
   'plx-table--narrow': 'a responsive mode the renderer sets under narrowAt',
   'plx-side-panel--resized': 'a state the panel sets once someone drags its edge (the resizable card shows it)',
+  'plx-button--on-inverse': 'set by SurfaceContext inside a colored surface (TeachingBubble); shown on its page',
+  'plx-button--on-accent': 'set by SurfaceContext inside a colored surface (the accent AppHeader); shown on its page',
+  'plx-icon--outline': 'filled={false}: the owner of a state keeps the outline (Tree, NavList); the default look',
 };
 const ICON_NAMES = new Set(Object.keys(JSON.parse(read(path.join(PLATFORM, 'icons', 'map.json'))).map).map((n) => 'plx-icon--' + n));
 const claimedMods = new Set();

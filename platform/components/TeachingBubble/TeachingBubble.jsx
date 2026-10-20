@@ -48,6 +48,7 @@ import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Spotlight } from '../Spotlight/Spotlight.jsx';
+import { SurfaceContext } from '../../providers/Surface.jsx';
 
 const STRINGS = { close: 'Close', step: '{current} of {total}' };
 
@@ -68,7 +69,9 @@ export function TeachingBubble({ target, open = false, onDismiss, title, childre
     {spotlight ? <Spotlight target={spot} open={!!open} /> : null}
     <Popover trigger={React.Children.only(target)} triggerOn="manual" open={!!open} onOpenChange={(v) => { if (!v && onDismiss) onDismiss(); }}
       placement={placement} size={wide ? 'lg' : 'md'} arrow focusOnOpen={focusOnOpen} aria-labelledby={id + 't'}
-      data-plx-surface="inverse" className={cx('plx-teaching-bubble', wide && 'plx-teaching-bubble--wide', className)}>
+      className={cx('plx-teaching-bubble', wide && 'plx-teaching-bubble--wide', className)}>
+      {/* the bubble is an inverse surface: its buttons take that look (SurfaceContext, Button) */}
+      <SurfaceContext.Provider value="inverse">
       {media ? <div className="plx-teaching-bubble__media">{media}</div> : null}
       <div className="plx-teaching-bubble__header">
         <h2 id={id + 't'} className="plx-teaching-bubble__title">{title}</h2>
@@ -86,6 +89,7 @@ export function TeachingBubble({ target, open = false, onDismiss, title, childre
           ) : null}
         </div>
       ) : null}
+      </SurfaceContext.Provider>
     </Popover>
     </span>
   );

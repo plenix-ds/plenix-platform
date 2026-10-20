@@ -144,15 +144,28 @@ function generate(manifest) {
     let text = o.prologue;
     for (const s of o.sets) {
       const ext = s.data.$extensions[EXT];
-      const lines = [];
+      const lines = [], still = [];
       for (const { name, token } of tokensOf(s.data)) {
         const x = (token.$extensions && token.$extensions[EXT]) || {};
+        // a token with a motion-off value ("reducedMotion": "0s") is written under exclusive conditions instead (below)
+        if (x.reducedMotion !== undefined) { (x.before || []).forEach((l) => lines.push(l)); still.push({ name, token, x }); continue; }
         (x.before || []).forEach((l) => lines.push(l));
         written.push({ name, file: o.file, set: s.tokens, selector: ext.selector, line: text.split('\n').length + lines.length + 1 });
         lines.push('  ' + name + ': ' + toCss(token.$value) + ';' + (x.after || ''));
       }
       (ext.tail || []).forEach((l) => lines.push(l));
       text += s.before + ext.opener + '\n' + lines.join('\n') + '\n}';
+      // Motion off (Styling Standard 3.6, condition): the motion values apply only while the person has not asked for
+      // reduced motion and no density change is in progress; otherwise the same tokens are 0s. The three blocks are
+      // mutually exclusive, so each token has one declaration in every condition, and every component reads the tokens.
+      if (still.length) {
+        const decl = (pick) => still.map((t) => '    ' + t.name + ': ' + pick(t) + ';').join('\n');
+        text += '\n/* motion: the values while motion is wanted; 0s for reduced motion and while the density changes (a frame) */'
+          + '\n@media (prefers-reduced-motion: no-preference) {\n  :root:not([data-plx-density-changing]) {\n' + decl((t) => toCss(t.token.$value)) + '\n  }\n'
+          + '  :root[data-plx-density-changing] {\n' + decl((t) => toCss(t.x.reducedMotion)) + '\n  }\n}'
+          + '\n@media (prefers-reduced-motion: reduce) {\n  :root {\n' + decl((t) => toCss(t.x.reducedMotion)) + '\n  }\n}';
+        still.forEach((t) => written.push({ name: t.name, file: o.file, set: s.tokens, selector: ':root', line: text.split('\n').length }));
+      }
     }
     files[o.file] = text + o.epilogue;
   }

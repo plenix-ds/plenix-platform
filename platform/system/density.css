@@ -22,5 +22,5 @@
 /* compact: ordinary high-frequency controls get smaller; dialog and destructive-confirmation actions carry more
    consequence and stay at 36px */
 
-/* while the density changes: no transitions, so a large table does not animate every row (workspace.js sets it for one frame) */
-:root[data-plx-density-changing] *,:root[data-plx-density-changing] *::before,:root[data-plx-density-changing] *::after{transition-duration:0s !important;}
+/* while the density changes no transition runs, so a large table does not animate every row: workspace.js sets
+   data-plx-density-changing on the root for one frame, and the motion duration tokens are 0s meanwhile (reference.css) */

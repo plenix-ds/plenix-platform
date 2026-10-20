@@ -13,9 +13,9 @@
               shift as position-try fallbacks; it follows the anchor on scroll and resize by itself
      pointer  typed attr() (Chrome 133): the point, already flipped and kept inside the window by useFloating
      inline   neither: the floating element sits inside the anchor's parent (data-plx-floating-host), placed on its
-              side by these rules, with the side and alignment useFloating measured; render it next to its anchor */
-[data-plx-floating]{box-sizing:border-box;}
-
+              side by these rules, with the side and alignment useFloating measured; render it next to its anchor
+   Zero overlap (Styling Standard 3.3): every combination of placement, flip, shift and offset is one rule that sets each
+   of its properties once; the three ways are exclusive (@supports, and the pointer attribute). The reset owns box-sizing. */
 @supports (anchor-name: --plx-a){
   [data-plx-floating-anchor="1"]{anchor-name:--plx-floating-1;}
   [data-plx-floating-anchor="2"]{anchor-name:--plx-floating-2;}
@@ -49,75 +49,86 @@
   [data-plx-floating="14"]{position-anchor:--plx-floating-14;}
   [data-plx-floating="15"]{position-anchor:--plx-floating-15;}
   [data-plx-floating="16"]{position-anchor:--plx-floating-16;}
-  [data-plx-floating]{inset-block-end:auto;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:auto;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;position:fixed;z-index:var(--plx-sys-layer-popover);}
-  [data-plx-floating-placement="top"]{position-area:block-start center;position-try-fallbacks:flip-block, block-start span-inline-end, block-start span-inline-start, block-end span-inline-end, block-end span-inline-start;}
-  [data-plx-floating-placement="top"][data-plx-floating-flip="off"]{position-try-fallbacks:block-start span-inline-end, block-start span-inline-start;}
-  [data-plx-floating-placement="top"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating]:where(:not([data-plx-floating-pointer])){inset-block-end:auto;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:auto;position:fixed;z-index:var(--plx-sys-layer-popover);}
+  [data-plx-floating-placement="top"]{position-area:block-start center;}
+  [data-plx-floating-placement="top"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block, block-start span-inline-end, block-start span-inline-start, block-end span-inline-end, block-end span-inline-start;}
+  [data-plx-floating-placement="top"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:block-start span-inline-end, block-start span-inline-start;}
+  [data-plx-floating-placement="top"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-block;}
   [data-plx-floating-placement="top"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="top-start"]{position-area:block-start span-inline-end;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
-  [data-plx-floating-placement="top-start"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
-  [data-plx-floating-placement="top-start"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="top-start"]{position-area:block-start span-inline-end;}
+  [data-plx-floating-placement="top-start"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="top-start"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="top-start"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-block;}
   [data-plx-floating-placement="top-start"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="top-end"]{position-area:block-start span-inline-start;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
-  [data-plx-floating-placement="top-end"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
-  [data-plx-floating-placement="top-end"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="top-end"]{position-area:block-start span-inline-start;}
+  [data-plx-floating-placement="top-end"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="top-end"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="top-end"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-block;}
   [data-plx-floating-placement="top-end"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="bottom"]{position-area:block-end center;position-try-fallbacks:flip-block, block-end span-inline-end, block-end span-inline-start, block-start span-inline-end, block-start span-inline-start;}
-  [data-plx-floating-placement="bottom"][data-plx-floating-flip="off"]{position-try-fallbacks:block-end span-inline-end, block-end span-inline-start;}
-  [data-plx-floating-placement="bottom"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="bottom"]{position-area:block-end center;}
+  [data-plx-floating-placement="bottom"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block, block-end span-inline-end, block-end span-inline-start, block-start span-inline-end, block-start span-inline-start;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:block-end span-inline-end, block-end span-inline-start;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-block;}
   [data-plx-floating-placement="bottom"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="bottom-start"]{position-area:block-end span-inline-end;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
-  [data-plx-floating-placement="bottom-start"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
-  [data-plx-floating-placement="bottom-start"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="bottom-start"]{position-area:block-end span-inline-end;}
+  [data-plx-floating-placement="bottom-start"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="bottom-start"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="bottom-start"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-block;}
   [data-plx-floating-placement="bottom-start"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="bottom-end"]{position-area:block-end span-inline-start;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
-  [data-plx-floating-placement="bottom-end"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
-  [data-plx-floating-placement="bottom-end"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="bottom-end"]{position-area:block-end span-inline-start;}
+  [data-plx-floating-placement="bottom-end"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="bottom-end"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="bottom-end"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-block;}
   [data-plx-floating-placement="bottom-end"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="start"]{position-area:center inline-start;position-try-fallbacks:flip-inline, span-block-end inline-start, span-block-start inline-start, span-block-end inline-end, span-block-start inline-end;}
-  [data-plx-floating-placement="start"][data-plx-floating-flip="off"]{position-try-fallbacks:span-block-end inline-start, span-block-start inline-start;}
-  [data-plx-floating-placement="start"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="start"]{position-area:center inline-start;}
+  [data-plx-floating-placement="start"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline, span-block-end inline-start, span-block-start inline-start, span-block-end inline-end, span-block-start inline-end;}
+  [data-plx-floating-placement="start"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:span-block-end inline-start, span-block-start inline-start;}
+  [data-plx-floating-placement="start"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-inline;}
   [data-plx-floating-placement="start"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="start-top"]{position-area:span-block-end inline-start;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
-  [data-plx-floating-placement="start-top"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
-  [data-plx-floating-placement="start-top"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="start-top"]{position-area:span-block-end inline-start;}
+  [data-plx-floating-placement="start-top"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="start-top"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="start-top"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-inline;}
   [data-plx-floating-placement="start-top"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="start-bottom"]{position-area:span-block-start inline-start;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
-  [data-plx-floating-placement="start-bottom"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
-  [data-plx-floating-placement="start-bottom"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="start-bottom"]{position-area:span-block-start inline-start;}
+  [data-plx-floating-placement="start-bottom"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="start-bottom"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="start-bottom"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-inline;}
   [data-plx-floating-placement="start-bottom"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="end"]{position-area:center inline-end;position-try-fallbacks:flip-inline, span-block-end inline-end, span-block-start inline-end, span-block-end inline-start, span-block-start inline-start;}
-  [data-plx-floating-placement="end"][data-plx-floating-flip="off"]{position-try-fallbacks:span-block-end inline-end, span-block-start inline-end;}
-  [data-plx-floating-placement="end"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="end"]{position-area:center inline-end;}
+  [data-plx-floating-placement="end"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline, span-block-end inline-end, span-block-start inline-end, span-block-end inline-start, span-block-start inline-start;}
+  [data-plx-floating-placement="end"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:span-block-end inline-end, span-block-start inline-end;}
+  [data-plx-floating-placement="end"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-inline;}
   [data-plx-floating-placement="end"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="end-top"]{position-area:span-block-end inline-end;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
-  [data-plx-floating-placement="end-top"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
-  [data-plx-floating-placement="end-top"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="end-top"]{position-area:span-block-end inline-end;}
+  [data-plx-floating-placement="end-top"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="end-top"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="end-top"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-inline;}
   [data-plx-floating-placement="end-top"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
-  [data-plx-floating-placement="end-bottom"]{position-area:span-block-start inline-end;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
-  [data-plx-floating-placement="end-bottom"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
-  [data-plx-floating-placement="end-bottom"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="end-bottom"]{position-area:span-block-start inline-end;}
+  [data-plx-floating-placement="end-bottom"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="end-bottom"][data-plx-floating-flip="off"]:where(:not([data-plx-floating-shift="off"])){position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="end-bottom"][data-plx-floating-shift="off"]:where(:not([data-plx-floating-flip="off"])){position-try-fallbacks:flip-inline;}
   [data-plx-floating-placement="end-bottom"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
   [data-plx-floating-match="width"]{min-inline-size:anchor-size(inline);}
+  /* the gap on the side that faces the anchor (a flip moves it with the element) */
+  :is([data-plx-floating-placement="top"], [data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])):where(:not([data-plx-floating-pointer])){margin-block-end:var(--plx-sys-floating-offset-xs);margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="top"], [data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"])[data-plx-floating-offset="sm"]:where(:not([data-plx-floating-pointer])){margin-block-end:var(--plx-sys-floating-offset-sm);margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="top"], [data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"])[data-plx-floating-offset="md"]:where(:not([data-plx-floating-pointer])){margin-block-end:var(--plx-sys-floating-offset-md);margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="top"], [data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"])[data-plx-floating-offset="none"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="bottom"], [data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])):where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-xs);margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="bottom"], [data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"])[data-plx-floating-offset="sm"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-sm);margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="bottom"], [data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"])[data-plx-floating-offset="md"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-md);margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="bottom"], [data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"])[data-plx-floating-offset="none"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="start"], [data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])):where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:var(--plx-sys-floating-offset-xs);margin-inline-start:0;}
+  :is([data-plx-floating-placement="start"], [data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"])[data-plx-floating-offset="sm"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:var(--plx-sys-floating-offset-sm);margin-inline-start:0;}
+  :is([data-plx-floating-placement="start"], [data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"])[data-plx-floating-offset="md"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:var(--plx-sys-floating-offset-md);margin-inline-start:0;}
+  :is([data-plx-floating-placement="start"], [data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"])[data-plx-floating-offset="none"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="end"], [data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])):where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-xs);}
+  :is([data-plx-floating-placement="end"], [data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"])[data-plx-floating-offset="sm"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-sm);}
+  :is([data-plx-floating-placement="end"], [data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"])[data-plx-floating-offset="md"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-md);}
+  :is([data-plx-floating-placement="end"], [data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"])[data-plx-floating-offset="none"]:where(:not([data-plx-floating-pointer])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
 }
-
-/* the gap on the side that faces the anchor (a flip moves it with the element) */
-[data-plx-floating][data-plx-floating-placement^="top"]{margin-block-end:var(--plx-sys-floating-offset-xs);}
-[data-plx-floating][data-plx-floating-placement^="top"][data-plx-floating-offset="sm"]{margin-block-end:var(--plx-sys-floating-offset-sm);}
-[data-plx-floating][data-plx-floating-placement^="top"][data-plx-floating-offset="md"]{margin-block-end:var(--plx-sys-floating-offset-md);}
-[data-plx-floating][data-plx-floating-placement^="top"][data-plx-floating-offset="none"]{margin-block-end:0;}
-[data-plx-floating][data-plx-floating-placement^="bottom"]{margin-block-start:var(--plx-sys-floating-offset-xs);}
-[data-plx-floating][data-plx-floating-placement^="bottom"][data-plx-floating-offset="sm"]{margin-block-start:var(--plx-sys-floating-offset-sm);}
-[data-plx-floating][data-plx-floating-placement^="bottom"][data-plx-floating-offset="md"]{margin-block-start:var(--plx-sys-floating-offset-md);}
-[data-plx-floating][data-plx-floating-placement^="bottom"][data-plx-floating-offset="none"]{margin-block-start:0;}
-[data-plx-floating][data-plx-floating-placement^="start"]{margin-inline-end:var(--plx-sys-floating-offset-xs);}
-[data-plx-floating][data-plx-floating-placement^="start"][data-plx-floating-offset="sm"]{margin-inline-end:var(--plx-sys-floating-offset-sm);}
-[data-plx-floating][data-plx-floating-placement^="start"][data-plx-floating-offset="md"]{margin-inline-end:var(--plx-sys-floating-offset-md);}
-[data-plx-floating][data-plx-floating-placement^="start"][data-plx-floating-offset="none"]{margin-inline-end:0;}
-[data-plx-floating][data-plx-floating-placement^="end"]{margin-inline-start:var(--plx-sys-floating-offset-xs);}
-[data-plx-floating][data-plx-floating-placement^="end"][data-plx-floating-offset="sm"]{margin-inline-start:var(--plx-sys-floating-offset-sm);}
-[data-plx-floating][data-plx-floating-placement^="end"][data-plx-floating-offset="md"]{margin-inline-start:var(--plx-sys-floating-offset-md);}
-[data-plx-floating][data-plx-floating-placement^="end"][data-plx-floating-offset="none"]{margin-inline-start:0;}
 
 /* pointer: at the point useFloating measured (already flipped and inside the window); no anchor, no fallbacks */
 @supports (inset-block-start: attr(data-plx-floating-y px, 0px)){
@@ -127,18 +138,51 @@
 /* inline: inside the anchor's parent, on its side (browsers without anchor positioning) */
 @supports not (anchor-name: --plx-a){
   [data-plx-floating-host]{position:relative;}
-  [data-plx-floating]{inset-block-end:auto;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:auto;position:absolute;z-index:var(--plx-sys-layer-popover);}
-  [data-plx-floating-placement="top"]{inline-size:max-content;inset-block-end:100%;inset-inline-end:0;inset-inline-start:0;margin-inline-end:auto;margin-inline-start:auto;}
-  [data-plx-floating-placement="top-start"]{inset-block-end:100%;inset-inline-start:0;}
-  [data-plx-floating-placement="top-end"]{inset-block-end:100%;inset-inline-end:0;}
-  [data-plx-floating-placement="bottom"]{inline-size:max-content;inset-block-start:100%;inset-inline-end:0;inset-inline-start:0;margin-inline-end:auto;margin-inline-start:auto;}
-  [data-plx-floating-placement="bottom-start"]{inset-block-start:100%;inset-inline-start:0;}
-  [data-plx-floating-placement="bottom-end"]{inset-block-start:100%;inset-inline-end:0;}
-  [data-plx-floating-placement="start"]{block-size:max-content;inset-block-end:0;inset-block-start:0;inset-inline-end:100%;margin-block-end:auto;margin-block-start:auto;}
-  [data-plx-floating-placement="start-top"]{inset-block-start:0;inset-inline-end:100%;}
-  [data-plx-floating-placement="start-bottom"]{inset-block-end:0;inset-inline-end:100%;}
-  [data-plx-floating-placement="end"]{block-size:max-content;inset-block-end:0;inset-block-start:0;inset-inline-start:100%;margin-block-end:auto;margin-block-start:auto;}
-  [data-plx-floating-placement="end-top"]{inset-block-start:0;inset-inline-start:100%;}
-  [data-plx-floating-placement="end-bottom"]{inset-block-end:0;inset-inline-start:100%;}
+  [data-plx-floating]{position:absolute;z-index:var(--plx-sys-layer-popover);}
+  [data-plx-floating-placement="top"]{inline-size:max-content;inset-block-end:100%;inset-block-start:auto;inset-inline-end:0;inset-inline-start:0;}
+  [data-plx-floating-placement="top-start"]{inset-block-end:100%;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:0;}
+  [data-plx-floating-placement="top-end"]{inset-block-end:100%;inset-block-start:auto;inset-inline-end:0;inset-inline-start:auto;}
+  [data-plx-floating-placement="bottom"]{inline-size:max-content;inset-block-end:auto;inset-block-start:100%;inset-inline-end:0;inset-inline-start:0;}
+  [data-plx-floating-placement="bottom-start"]{inset-block-end:auto;inset-block-start:100%;inset-inline-end:auto;inset-inline-start:0;}
+  [data-plx-floating-placement="bottom-end"]{inset-block-end:auto;inset-block-start:100%;inset-inline-end:0;inset-inline-start:auto;}
+  [data-plx-floating-placement="start"]{block-size:max-content;inset-block-end:0;inset-block-start:0;inset-inline-end:100%;inset-inline-start:auto;}
+  [data-plx-floating-placement="start-top"]{inset-block-end:auto;inset-block-start:0;inset-inline-end:100%;inset-inline-start:auto;}
+  [data-plx-floating-placement="start-bottom"]{inset-block-end:0;inset-block-start:auto;inset-inline-end:100%;inset-inline-start:auto;}
+  [data-plx-floating-placement="end"]{block-size:max-content;inset-block-end:0;inset-block-start:0;inset-inline-end:auto;inset-inline-start:100%;}
+  [data-plx-floating-placement="end-top"]{inset-block-end:auto;inset-block-start:0;inset-inline-end:auto;inset-inline-start:100%;}
+  [data-plx-floating-placement="end-bottom"]{inset-block-end:0;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:100%;}
   [data-plx-floating-match="width"]{min-inline-size:100%;}
+  /* the gap on the side that faces the anchor; a centered placement centers on the other axis */
+  [data-plx-floating-placement="top"]:where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:var(--plx-sys-floating-offset-xs);margin-block-start:0;margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:var(--plx-sys-floating-offset-xs);margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="top"][data-plx-floating-offset="sm"]{margin-block-end:var(--plx-sys-floating-offset-sm);margin-block-start:0;margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"])[data-plx-floating-offset="sm"]{margin-block-end:var(--plx-sys-floating-offset-sm);margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="top"][data-plx-floating-offset="md"]{margin-block-end:var(--plx-sys-floating-offset-md);margin-block-start:0;margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"])[data-plx-floating-offset="md"]{margin-block-end:var(--plx-sys-floating-offset-md);margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="top"][data-plx-floating-offset="none"]{margin-block-end:0;margin-block-start:0;margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="top-start"], [data-plx-floating-placement="top-end"])[data-plx-floating-offset="none"]{margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="bottom"]:where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-xs);margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-xs);margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-offset="sm"]{margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-sm);margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"])[data-plx-floating-offset="sm"]{margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-sm);margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-offset="md"]{margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-md);margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"])[data-plx-floating-offset="md"]{margin-block-end:0;margin-block-start:var(--plx-sys-floating-offset-md);margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-offset="none"]{margin-block-end:0;margin-block-start:0;margin-inline-end:auto;margin-inline-start:auto;}
+  :is([data-plx-floating-placement="bottom-start"], [data-plx-floating-placement="bottom-end"])[data-plx-floating-offset="none"]{margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="start"]:where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:auto;margin-block-start:auto;margin-inline-end:var(--plx-sys-floating-offset-xs);margin-inline-start:0;}
+  :is([data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:0;margin-block-start:0;margin-inline-end:var(--plx-sys-floating-offset-xs);margin-inline-start:0;}
+  [data-plx-floating-placement="start"][data-plx-floating-offset="sm"]{margin-block-end:auto;margin-block-start:auto;margin-inline-end:var(--plx-sys-floating-offset-sm);margin-inline-start:0;}
+  :is([data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"])[data-plx-floating-offset="sm"]{margin-block-end:0;margin-block-start:0;margin-inline-end:var(--plx-sys-floating-offset-sm);margin-inline-start:0;}
+  [data-plx-floating-placement="start"][data-plx-floating-offset="md"]{margin-block-end:auto;margin-block-start:auto;margin-inline-end:var(--plx-sys-floating-offset-md);margin-inline-start:0;}
+  :is([data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"])[data-plx-floating-offset="md"]{margin-block-end:0;margin-block-start:0;margin-inline-end:var(--plx-sys-floating-offset-md);margin-inline-start:0;}
+  [data-plx-floating-placement="start"][data-plx-floating-offset="none"]{margin-block-end:auto;margin-block-start:auto;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="start-top"], [data-plx-floating-placement="start-bottom"])[data-plx-floating-offset="none"]{margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+  [data-plx-floating-placement="end"]:where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:auto;margin-block-start:auto;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-xs);}
+  :is([data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"]):where(:not([data-plx-floating-offset="sm"], [data-plx-floating-offset="md"], [data-plx-floating-offset="none"])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-xs);}
+  [data-plx-floating-placement="end"][data-plx-floating-offset="sm"]{margin-block-end:auto;margin-block-start:auto;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-sm);}
+  :is([data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"])[data-plx-floating-offset="sm"]{margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-sm);}
+  [data-plx-floating-placement="end"][data-plx-floating-offset="md"]{margin-block-end:auto;margin-block-start:auto;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-md);}
+  :is([data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"])[data-plx-floating-offset="md"]{margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:var(--plx-sys-floating-offset-md);}
+  [data-plx-floating-placement="end"][data-plx-floating-offset="none"]{margin-block-end:auto;margin-block-start:auto;margin-inline-end:0;margin-inline-start:0;}
+  :is([data-plx-floating-placement="end-top"], [data-plx-floating-placement="end-bottom"])[data-plx-floating-offset="none"]{margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
 }

@@ -3,7 +3,7 @@
    the picture in (reduced motion: at once, system/motion.css), and shows the fallback when it fails. */
 .plx-image{zoom:var(--plx-comp-image-zoom,1);display:block;max-inline-size:100%;overflow:hidden;position:relative;}
 .plx-image__picture{display:contents;}
-.plx-image__img{block-size:auto;display:block;inline-size:100%;opacity:1;transition-duration:var(--plx-comp-image-fade-duration);transition-property:opacity;transition-timing-function:var(--plx-comp-image-fade-easing);}
+.plx-image__img{block-size:auto;display:block;inline-size:100%;max-inline-size:100%;opacity:1;transition-duration:var(--plx-comp-image-fade-duration);transition-property:opacity;transition-timing-function:var(--plx-comp-image-fade-easing);}
 .plx-image[class*="plx-ratio-"] .plx-image__img{block-size:100%;}
 .plx-image.is-loading .plx-image__img{opacity:0;}
 .plx-image.is-error .plx-image__img{display:none;}
@@ -15,10 +15,10 @@
 /* placeholder: the neutral fill, a tiny copy blurred over it, or nothing */
 .plx-image--placeholder-color.is-loading{background-color:var(--plx-comp-image-placeholder-background);}
 .plx-image--placeholder-blur.is-loading{background-color:var(--plx-comp-image-placeholder-background);}
-.plx-image__placeholder{block-size:100%;filter:blur(var(--plx-comp-image-placeholder-blur));inline-size:100%;inset-block-start:0;inset-inline-start:0;object-fit:cover;position:absolute;transform:scale(var(--plx-comp-image-placeholder-scale));}
+.plx-image__placeholder{block-size:100%;filter:blur(var(--plx-comp-image-placeholder-blur));inline-size:100%;inset-block-start:0;inset-inline-start:0;max-inline-size:100%;object-fit:cover;position:absolute;transform:scale(var(--plx-comp-image-placeholder-scale));}
 .plx-image--placeholder-none.is-loading{background-color:transparent;}
 /* rounded: the media corners */
 .plx-image--rounded{border-end-end-radius:var(--plx-comp-image-radius);border-end-start-radius:var(--plx-comp-image-radius);border-start-end-radius:var(--plx-comp-image-radius);border-start-start-radius:var(--plx-comp-image-radius);}
 /* the fallback: the image icon and a short line, centered in the frame's fill */
-.plx-image__fallback{align-items:center;background-color:var(--plx-comp-image-fallback-background);block-size:100%;box-sizing:border-box;color:var(--plx-comp-image-fallback-text);display:flex;flex-direction:column;font-family:var(--plx-comp-image-fallback-font-family);font-size:var(--plx-comp-image-fallback-font-size);inline-size:100%;inset-block-start:0;inset-inline-start:0;justify-content:center;line-height:var(--plx-comp-image-fallback-line-height);padding-block-end:var(--plx-comp-image-fallback-padding);padding-block-start:var(--plx-comp-image-fallback-padding);padding-inline-end:var(--plx-comp-image-fallback-padding);padding-inline-start:var(--plx-comp-image-fallback-padding);position:absolute;row-gap:var(--plx-comp-image-fallback-gap);text-align:center;word-spacing:normal;}
+.plx-image__fallback{align-items:center;background-color:var(--plx-comp-image-fallback-background);block-size:100%;color:var(--plx-comp-image-fallback-text);display:flex;flex-direction:column;font-family:var(--plx-comp-image-fallback-font-family);font-size:var(--plx-comp-image-fallback-font-size);inline-size:100%;inset-block-start:0;inset-inline-start:0;justify-content:center;line-height:var(--plx-comp-image-fallback-line-height);padding-block-end:var(--plx-comp-image-fallback-padding);padding-block-start:var(--plx-comp-image-fallback-padding);padding-inline-end:var(--plx-comp-image-fallback-padding);padding-inline-start:var(--plx-comp-image-fallback-padding);position:absolute;row-gap:var(--plx-comp-image-fallback-gap);text-align:center;word-spacing:normal;}
 .plx-image__fallback-icon{--plx-comp-icon-size:var(--plx-comp-image-fallback-icon-size);display:contents;}

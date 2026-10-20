@@ -83,6 +83,7 @@ export { SecondaryPane } from './patterns/SecondaryPane/SecondaryPane.jsx';
 export { NavPane } from './patterns/NavPane/NavPane.jsx';
 export { StatusBar } from './patterns/StatusBar/StatusBar.jsx';
 export { ThemeProvider, useTheme } from './providers/ThemeProvider.jsx';
+export { SurfaceContext } from './providers/Surface.jsx';
 export { THEMES, DEFAULT_THEME } from './providers/themes.js';
 export { SessionProvider, useSession, DEMO_SESSION, setDefaultSession, choosePicture } from './providers/SessionProvider.jsx';
 export { PLENIX_APPS, appById, appHref } from './providers/apps.js';

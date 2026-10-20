@@ -42,7 +42,7 @@
    Every state selector has the same weight (one class and one state), so the order below decides: disabled last.
    The is-hover, is-focus-visible and is-pressed classes draw a state in documentation. Components adopt these rules
    in their own tasks; this file never styles a component. */
-.plx-state{cursor:pointer;}
+.plx-state{cursor:pointer;padding-block-end:0;padding-block-start:0;}
 @media (hover: hover){
   .plx-state:hover{background-color:var(--plx-sys-state-hover);}
 }

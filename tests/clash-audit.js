@@ -56,7 +56,8 @@ function audit(noClash, from, to, opts) {
   const visit = (rules, file) => { for (const r of rules) {
     if (r instanceof CSSImportRule) { try { visit(r.styleSheet.cssRules, (r.href || '').replace(/^.*\/Plenix\//, '')); } catch (e) { /* cross-origin */ } }
     else if (r instanceof CSSMediaRule || r instanceof CSSSupportsRule || (window.CSSContainerRule && r instanceof CSSContainerRule) || (window.CSSLayerBlockRule && r instanceof CSSLayerBlockRule)) {
-      if (!(r instanceof CSSMediaRule) || matchMedia(r.conditionText || r.media.mediaText).matches) visit(r.cssRules, file);
+      // only the rules whose condition holds here: a media query that matches, a @supports the browser supports
+      if (r instanceof CSSMediaRule ? matchMedia(r.conditionText || r.media.mediaText).matches : r instanceof CSSSupportsRule ? CSS.supports(r.conditionText) : true) visit(r.cssRules, file);
     } else if (window.CSSPropertyRule && r instanceof CSSPropertyRule) {
       registered[r.name] = { inherits: r.inherits };
     } else if (r instanceof CSSStyleRule) {
@@ -75,6 +76,19 @@ function audit(noClash, from, to, opts) {
   const SKIP_PROPS = /^(transition|animation)/;
   const hash = (str) => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
   const all = strict ? [document.documentElement, document.body, ...document.querySelectorAll('body *')] : [...document.querySelectorAll('body *')];
+  // logical longhands are counted under the physical property they set on this element (horizontal writing), so
+  // border-inline-start-width and border-left-width meet: inline start is left in left-to-right, right in right-to-left
+  const LOGICAL = /^(margin|padding|inset|border)-(inline|block)-(start|end)(-(width|style|color))?$|^border-(start|end)-(start|end)-radius$|^(min-|max-)?(inline|block)-size$/;
+  const phys = (p, rtl) => {
+    if (!LOGICAL.test(p)) return p;
+    const side = (axis, edge) => (axis === 'block' ? (edge === 'start' ? 'top' : 'bottom') : (edge === 'start') !== rtl ? 'left' : 'right');
+    let m = p.match(/^(margin|padding|inset|border)-(inline|block)-(start|end)(-(width|style|color))?$/);
+    if (m) return (m[1] === 'inset' ? '' : m[1] + '-') + side(m[2], m[3]) + (m[4] || '');
+    m = p.match(/^border-(start|end)-(start|end)-radius$/);
+    if (m) return 'border-' + side('block', m[1]) + '-' + side('inline', m[2]) + '-radius';
+    m = p.match(/^(min-|max-)?(inline|block)-size$/);
+    return (m[1] || '') + (m[2] === 'inline' ? 'width' : 'height');
+  };
   const marks = [], deps = {}, drawn = (el, pe) => !/^(before|after)$/.test(pe) || getComputedStyle(el, '::' + pe).content !== 'none';
   for (const el of all.slice(from || 0, to == null ? all.length : to)) {
     if (el.closest('svg') && el.tagName.toLowerCase() !== 'svg') continue;
@@ -88,10 +102,10 @@ function audit(noClash, from, to, opts) {
     if (noClash) continue;
     const own = blockOf([...el.classList].find((c) => c.startsWith('plx-')) || '');
     const cand = [...new Set([...el.classList].flatMap((c) => byKey[c] || []))].concat(strict ? noKey : noKey.filter((x) => !/^(\*|html|body|:root)/.test(x.s)));
-    const props = {};
+    const props = {}, rtl = strict && getComputedStyle(el).direction === 'rtl';
     for (const x of cand) {
       let ok = false; try { ok = el.matches(x.s) && (!x.pe || drawn(el, x.pe)); } catch (e) { /* unsupported */ } if (!ok) continue;
-      for (const p of Object.keys(x.decl)) { const k = x.pe ? p + '::' + x.pe : p; (props[k] = props[k] || []).push({ s: x.label || x.s, v: x.decl[p], file: x.file, rid: x.rid }); }
+      for (const p0 of Object.keys(x.decl)) { const p = strict ? phys(p0, rtl) : p0, k = x.pe ? p + '::' + x.pe : p; (props[k] = props[k] || []).push({ s: x.label || x.s, v: x.decl[p0], file: x.file, rid: x.rid }); }
     }
     // dependencies: the variables its declarations read that no rule declares on it (inherited, or a registered
     // non-inheriting variable falling back to its default)

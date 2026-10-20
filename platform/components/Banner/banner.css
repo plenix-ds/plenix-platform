@@ -1,7 +1,7 @@
 /* Plenix · Banner (platform/components/Banner): a full-width message at the top of a page or a pane, in its tone's soft
    fill and content color, with an edge under it (two shades darker than the fill, like every tone's edge) and no corners.
    The icon, the message, the actions and the Dismiss button sit on one row; the message wraps. */
-.plx-banner{align-items:center;border-block-end-style:solid;border-block-end-width:var(--plx-comp-banner-border-width);box-sizing:border-box;column-gap:var(--plx-comp-banner-gap);display:flex;font-size:var(--plx-comp-banner-font-size);inline-size:100%;line-height:var(--plx-comp-banner-line-height);padding-block-end:var(--plx-comp-banner-padding-block);padding-block-start:var(--plx-comp-banner-padding-block);}
+.plx-banner{align-items:center;border-block-end-style:solid;border-block-end-width:var(--plx-comp-banner-border-width);column-gap:var(--plx-comp-banner-gap);display:flex;font-size:var(--plx-comp-banner-font-size);inline-size:100%;line-height:var(--plx-comp-banner-line-height);padding-block-end:var(--plx-comp-banner-padding-block);padding-block-start:var(--plx-comp-banner-padding-block);}
 .plx-banner--page{padding-inline-end:var(--plx-comp-banner-page-padding-inline);padding-inline-start:var(--plx-comp-banner-page-padding-inline);}
 .plx-banner--pane{padding-inline-end:var(--plx-comp-banner-pane-padding-inline);padding-inline-start:var(--plx-comp-banner-pane-padding-inline);}
 .plx-banner__icon{display:inline-flex;flex-shrink:0;}

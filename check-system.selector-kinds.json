@@ -98,38 +98,6 @@
   "platform/components/Breadcrumbs/breadcrumbs.css": {
    "combinator | .plx-breadcrumbs__item+.plx-breadcrumbs__item::before": 1
   },
-  "platform/components/Button/button.css": {
-   "combinator | .plx-button--primary .plx-button__caret": 1,
-   "combinator | .plx-button--danger .plx-button__caret": 1,
-   "combinator | .plx-button:disabled .plx-button__caret": 1,
-   "combinator | .plx-button[aria-disabled=\"true\"] .plx-button__caret": 1,
-   "combinator | .plx-button[aria-expanded=\"true\"] .plx-button__caret": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--primary": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--primary:hover": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--primary.is-hover": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--primary:active": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--primary.is-pointer-down": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--secondary": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--secondary:hover": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--secondary.is-hover": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--secondary:active": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--secondary.is-pointer-down": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--ghost": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--ghost:hover": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--ghost.is-hover": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--ghost:active": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button--ghost.is-pointer-down": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button:focus-visible": 1,
-   "combinator | [data-plx-surface=\"inverse\"] .plx-button.is-focus-visible": 1,
-   "combinator | [data-plx-surface=\"accent\"] .plx-button--secondary": 1,
-   "combinator | [data-plx-surface=\"accent\"] .plx-button--secondary:hover": 1,
-   "combinator | [data-plx-surface=\"accent\"] .plx-button--secondary.is-hover": 1,
-   "combinator | [data-plx-surface=\"accent\"] .plx-button--secondary:active:not(:disabled):not([aria-disabled=\"true\"])": 1,
-   "combinator | [data-plx-surface=\"accent\"] .plx-button--secondary.is-pointer-down": 1,
-   "combinator | .plx-button--truncate .plx-button__label": 1,
-   "combinator | .plx-button--stacked-label .plx-button__label": 1,
-   "combinator | .plx-button--label-row .plx-button__label": 1
-  },
   "platform/components/Calendar/calendar.css": {
    "combinator | .plx-calendar__cell.is-in-range>.plx-calendar__day:not(.is-today):not(.is-disabled)": 1
   },
@@ -870,30 +838,10 @@
    "combinator | .plx-floating-action-button--lg .plx-floating-action-button__icon": 1
   },
   "platform/components/Icon/icon.css": {
-   "combinator | [aria-current=\"page\"] .plx-icon": 1,
-   "combinator | [aria-current=\"true\"] .plx-icon": 1,
-   "combinator | [aria-pressed=\"true\"] .plx-icon": 1,
-   "combinator | [aria-selected=\"true\"] .plx-icon": 1,
-   "combinator | .is-selected .plx-icon": 1,
-   "combinator | .is-current .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] .plx-icon": 1,
-   "combinator | [data-plx-density=\"comfortable\"] .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] [aria-current=\"page\"] .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] [aria-current=\"true\"] .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] [aria-pressed=\"true\"] .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] [aria-selected=\"true\"] .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] .is-selected .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] .is-current .plx-icon": 1,
-   "combinator | [data-plx-density=\"comfortable\"] [aria-current=\"page\"] .plx-icon": 1,
-   "combinator | [data-plx-density=\"comfortable\"] [aria-current=\"true\"] .plx-icon": 1,
-   "combinator | [data-plx-density=\"comfortable\"] [aria-pressed=\"true\"] .plx-icon": 1,
-   "combinator | [data-plx-density=\"comfortable\"] [aria-selected=\"true\"] .plx-icon": 1,
-   "combinator | [data-plx-density=\"comfortable\"] .is-selected .plx-icon": 1,
-   "combinator | [data-plx-density=\"comfortable\"] .is-current .plx-icon": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] .plx-icon.plx-icon--filled": 1,
-   "combinator | [data-plx-density=\"comfortable\"] .plx-icon.plx-icon--filled": 1,
-   "combinator | [data-plx-icon-optical=\"24\"] .plx-icon[data-plx-icon-fill=\"outline\"]": 1,
-   "combinator | [data-plx-density=\"comfortable\"] .plx-icon[data-plx-icon-fill=\"outline\"]": 1
+   "combinator | .plx-icon:where(:not(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"]), .plx-icon--size-lg, .plx-icon--size-xl))": 1,
+   "combinator | .plx-icon:where(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"])):where(:not(.plx-icon--size-lg, .plx-icon--size-xl))": 1,
+   "combinator | .plx-icon:where(.plx-icon--size-lg, .plx-icon--size-xl):where(:not(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"])))": 1,
+   "combinator | .plx-icon:where(.plx-icon--filled, :is([aria-current=\"page\"], [aria-current=\"true\"], [aria-pressed=\"true\"], [aria-selected=\"true\"], .is-selected, .is-current) :not(.plx-icon--outline, [data-plx-icon-fill=\"outline\"])):where(.plx-icon--size-lg, .plx-icon--size-xl)": 1
   },
   "platform/components/Icon/status-icon.css": {
    "combinator | .plx-status-icon--info .plx-status-icon__glyph": 1,
@@ -1016,17 +964,6 @@
    "combinator | .plx-miller-columns--resizable .plx-miller-columns__column": 1
   },
   "platform/components/NavList/nav-list.css": {
-   "relational | .plx-nav-list__entry--actions:has(>.plx-nav-list__item.is-current)": 1,
-   "combinator | .plx-nav-list__entry--actions>.plx-nav-list__item:hover": 1,
-   "combinator | .plx-nav-list__entry--actions>.plx-nav-list__item.is-hover": 1,
-   "combinator | .plx-nav-list__entry--actions>.plx-nav-list__item.is-current": 1,
-   "combinator | .plx-nav-list__entry--actions>.plx-nav-list__item": 1,
-   "combinator | .plx-nav-list__entry:hover .plx-nav-list__pin": 1,
-   "combinator | .plx-nav-list__entry:focus-within .plx-nav-list__pin": 1,
-   "combinator | .plx-nav-list__entry.is-pinned .plx-nav-list__pin": 2,
-   "combinator | .plx-nav-list__entry.is-hover .plx-nav-list__pin": 1,
-   "combinator | .plx-nav-list__item--muted:not(.is-current) .plx-nav-list__icon": 1,
-   "combinator | .plx-nav-list__item--group .plx-nav-list__icon": 1,
    "combinator | .plx-nav-list__actions>:not(.plx-nav-list__pin)": 1,
    "combinator | .plx-nav-list__entry:hover .plx-nav-list__actions>:not(.plx-nav-list__pin)": 1,
    "combinator | .plx-nav-list__entry.is-hover .plx-nav-list__actions>:not(.plx-nav-list__pin)": 1,
@@ -1046,22 +983,6 @@
    "combinator | .plx-persona--lg .plx-persona__secondary": 1,
    "combinator | .plx-persona--xl .plx-persona__name": 1,
    "combinator | .plx-persona--xl .plx-persona__secondary": 1
-  },
-  "platform/components/Popover/popover.css": {
-   "combinator | .plx-popover[data-plx-popover-side=\"bottom\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover[data-plx-popover-side=\"bottom\"] .plx-popover__arrow::after": 1,
-   "combinator | .plx-popover[data-plx-popover-side=\"top\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover[data-plx-popover-side=\"top\"] .plx-popover__arrow::after": 1,
-   "combinator | .plx-popover[data-plx-popover-side=\"end\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover[data-plx-popover-side=\"end\"] .plx-popover__arrow::after": 1,
-   "combinator | .plx-popover[data-plx-popover-side=\"start\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover[data-plx-popover-side=\"start\"] .plx-popover__arrow::after": 1,
-   "combinator | .plx-popover:is([data-plx-popover-side=\"top\"],[data-plx-popover-side=\"bottom\"])[data-plx-popover-align=\"start\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover:is([data-plx-popover-side=\"top\"],[data-plx-popover-side=\"bottom\"])[data-plx-popover-align=\"end\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover:is([data-plx-popover-side=\"top\"],[data-plx-popover-side=\"bottom\"])[data-plx-popover-align=\"center\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover:is([data-plx-popover-side=\"start\"],[data-plx-popover-side=\"end\"])[data-plx-popover-align=\"top\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover:is([data-plx-popover-side=\"start\"],[data-plx-popover-side=\"end\"])[data-plx-popover-align=\"bottom\"] .plx-popover__arrow": 1,
-   "combinator | .plx-popover:is([data-plx-popover-side=\"start\"],[data-plx-popover-side=\"end\"])[data-plx-popover-align=\"center\"] .plx-popover__arrow": 1
   },
   "platform/components/Preview/preview.css": {
    "combinator | .plx-preview--cover .plx-preview__media": 2,
@@ -2660,17 +2581,9 @@
    "combinator | .plx-widget-grid__item.is-dragging *": 1,
    "cross-block | .plx-widget-grid__menu.plx-menu-anchor:not(.plx-widget-grid__menu--inline)": 1
   },
-  "platform/system/base.css": {
-   "base-unguarded | img": 1
-  },
   "platform/system/charts.css": {
    "combinator | .plx-chart--sm .plx-chart__plot": 1,
    "combinator | .plx-chart--lg .plx-chart__plot": 1
-  },
-  "platform/system/density.css": {
-   "combinator | :root[data-plx-density-changing] *": 1,
-   "combinator | :root[data-plx-density-changing] *::before": 1,
-   "combinator | :root[data-plx-density-changing] *::after": 1
   },
   "platform/system/dnd.css": {
    "combinator | :root[data-plx-dnd-active=\"pointer\"] body": 1,
@@ -2754,11 +2667,8 @@
    "combinator | .plx-app-shell[data-plx-layout=\"focus\"] .plx-app-shell__main~*": 1
   },
   "platform/system/motion.css": {
-   "condition-not-token | *": 1,
-   "condition-not-token | *::before": 1,
-   "condition-not-token | *::after": 1,
-   "cross-block | :where(.plx-button,.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input)": 1,
-   "cross-block | :where(.plx-button,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile):active:not(:disabled):not([aria-disabled=\"true\"])": 1,
+   "cross-block | :where(.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input)": 1,
+   "cross-block | :where(.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile):active:not(:disabled):not([aria-disabled=\"true\"])": 1,
    "combinator | .plx-tree__item:not(.is-selected)>.plx-tree__row:active": 1,
    "combinator | .plx-nav-list__item:active:not(.is-current):not(.plx-nav-list__entry--actions>.plx-nav-list__item)": 1,
    "relational | .plx-nav-list__entry--actions:active:not(:has(>.plx-nav-list__item.is-current))": 1,
@@ -2790,10 +2700,6 @@
    "combinator | [data-plx-readonly=\"true\"] [aria-readonly=\"true\"]": 1,
    "combinator | [data-plx-readonly=\"true\"] [data-plx-readonly-set=\"locked\"]": 1,
    "relational | [data-plx-readonly=\"true\"] label:has(> [data-plx-readonly-set])": 1
-  },
-  "platform/system/scrolling.css": {
-   "unowned | *:hover": 1,
-   "unowned | *:focus-within": 1
   },
   "platform/system/steps.css": {
    "combinator | .plx-tree__item>.plx-tree__row": 1,

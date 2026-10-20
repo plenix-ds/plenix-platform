@@ -11,7 +11,7 @@
 .plx-brand-lockup{align-items:center;display:inline-flex;flex-shrink:0;vertical-align:middle;white-space:nowrap;}
 .plx-brand-lockup__name{font-family:var(--plx-comp-brand-name-font-family);font-weight:var(--plx-comp-brand-name-font-weight);letter-spacing:var(--plx-comp-brand-name-letter-spacing);line-height:var(--plx-comp-brand-name-line-height);word-spacing:normal;}
 .plx-brand-lockup__app{font-family:var(--plx-comp-brand-app-font-family);font-weight:var(--plx-comp-brand-app-font-weight);line-height:var(--plx-comp-brand-name-line-height);word-spacing:normal;}
-.plx-brand-lockup__tile{align-items:center;border-bottom-color:transparent;border-bottom-style:solid;border-bottom-width:0;border-left-color:transparent;border-left-style:solid;border-left-width:0;border-right-color:transparent;border-right-style:solid;border-right-width:0;border-top-color:transparent;border-top-style:solid;border-top-width:0;box-sizing:border-box;display:inline-flex;flex-shrink:0;justify-content:center;}
+.plx-brand-lockup__tile{align-items:center;border-bottom-color:transparent;border-bottom-style:solid;border-bottom-width:0;border-left-color:transparent;border-left-style:solid;border-left-width:0;border-right-color:transparent;border-right-style:solid;border-right-width:0;border-top-color:transparent;border-top-style:solid;border-top-width:0;display:inline-flex;flex-shrink:0;justify-content:center;}
 /* the kinds: the wordmark alone, the logo (mark + wordmark), the product mark (tile + application name) */
 .plx-brand-lockup--wordmark{column-gap:0;}
 .plx-brand-lockup--logo .plx-brand-lockup__name,.plx-brand-lockup--wordmark .plx-brand-lockup__name{margin-block-end:0;margin-block-start:0;}

@@ -1,7 +1,7 @@
 /* Plenix · Sparkline (platform/charts/Sparkline.jsx). A word-sized box (inline) or the container's width (fill); the line,
    area, bars and the latest dot take the sparkline's data-viz color (data-plx-dataviz on the root, the first categorical
    color without one). Every value is a --plx-comp-sparkline-* token. */
-.plx-sparkline{--plx-comp-sparkline-color:var(--plx-comp-sparkline-default-color);box-sizing:border-box;display:inline-block;vertical-align:middle;}
+.plx-sparkline{--plx-comp-sparkline-color:var(--plx-comp-sparkline-default-color);display:inline-block;vertical-align:middle;}
 .plx-sparkline[data-plx-dataviz]{--plx-comp-sparkline-color:var(--plx-comp-data-color);}
 .plx-sparkline--inline{block-size:var(--plx-comp-sparkline-inline-height);inline-size:var(--plx-comp-sparkline-inline-width);}
 .plx-sparkline--fill{block-size:var(--plx-comp-sparkline-fill-height);display:block;inline-size:100%;min-inline-size:0;}

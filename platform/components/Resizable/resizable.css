@@ -2,10 +2,10 @@
    edges are wide hit areas that show a line on hover and focus (as the shell's pane splitter); the menu of sizes sits in
    the box's end corner. The size reaches the stylesheet as data-plx-width and data-plx-height: one rule per size token
    (at the end of this file) sets the box's own custom property. */
-.plx-resizable{box-sizing:border-box;max-inline-size:100%;min-block-size:0;min-inline-size:0;position:relative;}
+.plx-resizable{max-inline-size:100%;min-block-size:0;min-inline-size:0;position:relative;}
 .plx-resizable[data-plx-width]{inline-size:var(--plx-comp-resizable-width);}
 .plx-resizable[data-plx-height]{block-size:var(--plx-comp-resizable-height);}
-.plx-resizable__content{block-size:100%;box-sizing:border-box;inline-size:100%;overflow-x:hidden;overflow-y:hidden;}
+.plx-resizable__content{block-size:100%;inline-size:100%;overflow-x:hidden;overflow-y:hidden;}
 /* the edges: a wide hit area across the edge, its line in the middle */
 .plx-resizable__edge{position:absolute;touch-action:none;z-index:var(--plx-comp-resizable-edge-z-index);}
 .plx-resizable__edge--inline{cursor:col-resize;inline-size:var(--plx-comp-resizable-edge-size);inset-block-end:0;inset-block-start:0;inset-inline-end:calc(var(--plx-comp-resizable-edge-size) / -2);}

@@ -1,5 +1,5 @@
 /* Plenix · SecondaryPane (platform/patterns/SecondaryPane): a narrow pane beside the main content. */
-.plx-secondary-pane{background-color:var(--plx-comp-secondary-pane-background);border-inline-end-color:var(--plx-comp-secondary-pane-border-inline-end-color);border-inline-end-style:solid;border-inline-end-width:0;border-inline-start-color:var(--plx-comp-secondary-pane-border-inline-start-color);border-inline-start-style:solid;border-inline-start-width:0;box-sizing:border-box;display:flex;flex-direction:column;flex-shrink:0;min-block-size:0;position:relative;}
+.plx-secondary-pane{background-color:var(--plx-comp-secondary-pane-background);border-inline-end-color:var(--plx-comp-secondary-pane-border-inline-end-color);border-inline-end-style:solid;border-inline-end-width:0;border-inline-start-color:var(--plx-comp-secondary-pane-border-inline-start-color);border-inline-start-style:solid;border-inline-start-width:0;display:flex;flex-direction:column;flex-shrink:0;min-block-size:0;position:relative;}
 .plx-secondary-pane--start{border-inline-end-width:var(--plx-comp-secondary-pane-start-border-inline-end-width);}
 .plx-secondary-pane--end{border-inline-start-width:var(--plx-comp-secondary-pane-end-border-inline-start-width);}
 .plx-secondary-pane--sm{inline-size:var(--plx-comp-secondary-pane-width-sm);}

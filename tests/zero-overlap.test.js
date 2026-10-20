@@ -68,7 +68,8 @@ async function force(page) {
         for (const f of found) {
           if (f.got) for (const p of f.got.split(',')) { const k = f.scope + ' | ' + p; (overlaps[k] = overlaps[k] || new Set()).add(f.el); }
           if (f.moving) wrong.push('pilot (' + density + ', reduced motion) ' + f.el + ': a duration is not 0s');
-          if (f.style) snapshot[density + ' #' + f.i + ' ' + f.el] = f.style;
+          // by position: an element that gains a class (a part taking its own state) is still the same element
+          if (f.style) snapshot[density + ' #' + f.i] = f.el + '\n' + f.style;
         }
       }
       const n = Object.values(overlaps).reduce((a, s) => a + s.size, 0);
@@ -79,8 +80,10 @@ async function force(page) {
         const keys = new Set([...Object.keys(before), ...Object.keys(snapshot)]);
         for (const k of keys) if (before[k] !== snapshot[k]) {
           if (!before[k] || !snapshot[k]) { wrong.push('pilot element ' + (before[k] ? 'gone' : 'new') + ': ' + k); continue; }
-          const a = Object.fromEntries(before[k].split(';').map((x) => [x.slice(0, x.indexOf(':')), x.slice(x.indexOf(':') + 1)])), b = Object.fromEntries(snapshot[k].split(';').map((x) => [x.slice(0, x.indexOf(':')), x.slice(x.indexOf(':') + 1)]));
-          wrong.push('pilot changed ' + k + ': ' + Object.keys(Object.assign({}, a, b)).filter((p) => a[p] !== b[p]).slice(0, 6).map((p) => p + ' ' + a[p] + ' -> ' + b[p]).join('; '));
+          const [la, sa] = before[k].split('\n'), [lb, sb] = snapshot[k].split('\n');
+          if (sa === sb) continue;
+          const a = Object.fromEntries(sa.split(';').map((x) => [x.slice(0, x.indexOf(':')), x.slice(x.indexOf(':') + 1)])), b = Object.fromEntries(sb.split(';').map((x) => [x.slice(0, x.indexOf(':')), x.slice(x.indexOf(':') + 1)]));
+          wrong.push('pilot changed ' + k + ' ' + lb + (la !== lb ? ' (was ' + la + ')' : '') + ': ' + Object.keys(Object.assign({}, a, b)).filter((p) => a[p] !== b[p]).slice(0, 6).map((p) => p + ' ' + a[p] + ' -> ' + b[p]).join('; '));
         }
       }
     }

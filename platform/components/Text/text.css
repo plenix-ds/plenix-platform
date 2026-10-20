@@ -1,5 +1,5 @@
 /* Plenix · Text (platform/components/Text): text roles from the type tokens. */
-.plx-text{margin-block-end:0;margin-block-start:0;}
+.plx-text{margin-block-end:0;margin-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-text--body{color:var(--plx-comp-text-body-text);font-family:var(--plx-comp-text-body-font-family);font-size:var(--plx-comp-text-body-font-size);word-spacing:normal;}
 .plx-text--secondary{color:var(--plx-comp-text-secondary-text);font-family:var(--plx-comp-text-secondary-font-family);font-size:var(--plx-comp-text-secondary-font-size);word-spacing:normal;}
 .plx-text--caption{color:var(--plx-comp-text-caption-text);font-family:var(--plx-comp-text-caption-font-family);font-size:var(--plx-comp-text-caption-font-size);word-spacing:normal;}

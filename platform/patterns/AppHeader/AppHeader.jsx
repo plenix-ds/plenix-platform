@@ -101,6 +101,7 @@ import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
+import { SurfaceContext } from '../../providers/Surface.jsx';
 import { BrandMark } from '../../components/Brand/Brand.jsx';
 import { Count } from '../../components/Count/Count.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
@@ -202,7 +203,8 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
     document.body,
   ) : null;
   return (
-    <header ref={root} data-plx-surface={tone === 'accent' ? 'accent' : undefined} data-plx-icon-optical="24" className={cx('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)} {...rest}>
+    <SurfaceContext.Provider value={tone === 'accent' ? 'accent' : null}>
+    <header ref={root} data-plx-icon-optical="24" className={cx('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)} {...rest}>
       <div className="plx-app-header__start">
         {back ? <AppHeader.Item icon={<Icon name="arrow-left" />} label={back.label || 'Back'} href={back.href} onClick={back.onClick} className="plx-app-header__back" /> : null}
         {title ? <span className="plx-app-header__brand plx-app-header__title">{title}</span>
@@ -230,6 +232,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
         </div>
       </div>
     </header>
+    </SurfaceContext.Provider>
   );
 }
 

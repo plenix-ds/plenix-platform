@@ -51,7 +51,7 @@ ol.plx-inline,ol.plx-stack,ul.plx-inline,ul.plx-stack{list-style-type:none;}
 @media (width < 840px){.plx-stack.plx-layout--reverse-below-medium{flex-direction:column-reverse;}.plx-inline.plx-layout--reverse-below-medium{flex-direction:row-reverse;}.plx-layout--order-first-below-medium{order:-1;}.plx-layout--order-last-below-medium{order:1;}}
 /* Center: a block centered in its parent at a readable maximum width; its children centered at their own width (intrinsic),
    in the parent's height too (vertical: safe, so content taller than the parent starts at the top) or its lines centered */
-.plx-center{box-sizing:border-box;inline-size:100%;margin-inline-end:auto;margin-inline-start:auto;}
+.plx-center{inline-size:100%;margin-inline-end:auto;margin-inline-start:auto;}
 .plx-center--max-sm{max-inline-size:var(--plx-comp-center-sm-max-width);}
 .plx-center--max-md{max-inline-size:var(--plx-comp-center-md-max-width);}
 .plx-center--max-lg{max-inline-size:var(--plx-comp-center-lg-max-width);}
@@ -61,7 +61,7 @@ ol.plx-inline,ol.plx-stack,ul.plx-inline,ul.plx-stack{list-style-type:none;}
 .plx-center--vertical{display:flex;flex-direction:column;justify-content:safe center;min-block-size:100%;}
 .plx-center--text{text-align:center;}
 /* Bleed: a child that reaches past its parent's inset to the parent's edges (the same inset tokens, negated) */
-.plx-bleed{box-sizing:border-box;}
+.plx-bleed{}
 .plx-bleed--xs.plx-bleed--inline,.plx-bleed--xs.plx-bleed--all{margin-inline-end:var(--plx-comp-bleed-xs-margin-inline);margin-inline-start:var(--plx-comp-bleed-xs-margin-inline);}
 .plx-bleed--xs.plx-bleed--block,.plx-bleed--xs.plx-bleed--all{margin-block-end:var(--plx-comp-bleed-xs-margin-block);margin-block-start:var(--plx-comp-bleed-xs-margin-block);}
 .plx-bleed--sm.plx-bleed--inline,.plx-bleed--sm.plx-bleed--all{margin-inline-end:var(--plx-comp-bleed-sm-margin-inline);margin-inline-start:var(--plx-comp-bleed-sm-margin-inline);}

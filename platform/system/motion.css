@@ -18,11 +18,10 @@
    frame: each ends on the element's own opacity and transform. */
 @keyframes motion-pop-in{from{opacity:0;transform:scale(var(--plx-sys-motion-enter-scale));}}
 @keyframes motion-fade-in{from{opacity:0;}}
-/* People who ask their system for less motion get an effectively static interface: no slide, shimmer or fade
-   (state changes still happen, instantly: a zero duration; animations still end, so Toast still leaves). */
-@media(prefers-reduced-motion:reduce){
-*,*::before,*::after{animation-duration:0s !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:0s !important;}
-}
+/* People who ask their system for less motion get an effectively static interface: no slide, shimmer or fade. The
+   motion duration tokens are 0s then (reference.css, from platform/tokens: the condition sets token values, every
+   component reads them), so state changes still happen, instantly, and animations still end (Toast still leaves).
+   Smooth scrolling is chosen in script, which asks the same question (BackToTop, Carousel, drag and drop). */
 /* content that has just appeared rises into place (the dashboard's .fu, batch 113) */
 .plx-motion-enter{animation-duration:var(--plx-sys-motion-duration-fast);animation-fill-mode:both;animation-name:motion-fade-up;animation-timing-function:var(--plx-sys-motion-ease-standard);}
 
@@ -35,9 +34,9 @@
    The application switcher (the brand) takes none of it: it opens on a click, without hover or press motion (owner,
    batch 289).
    All of it is written with :where(), so a component's own transition or transform still wins, and reduced motion (above)
-   sets every duration to 0s. */
-:where(.plx-button,.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input){transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
-:where(.plx-button,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile):active:not(:disabled):not([aria-disabled="true"]){transform:scale(var(--plx-sys-motion-press-scale));}
+   sets every duration to 0s. Button owns its own fade and press (button.css). */
+:where(.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input){transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+:where(.plx-segmented__item,.plx-tag--chip,.plx-tag__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile):active:not(:disabled):not([aria-disabled="true"]){transform:scale(var(--plx-sys-motion-press-scale));}
 /* Pressed fill (batch 238): rows, menu items and list items go a step darker than their hover while held (the
    -pressed roles; Button has its own pressed tokens). Selected and current items keep their own fill. Written with
    real specificity and loaded after the components, so it wins over their hover rules while the pointer is down. */

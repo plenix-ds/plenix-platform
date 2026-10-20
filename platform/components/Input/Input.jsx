@@ -82,7 +82,7 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
     el.style.blockSize = gridPx(el.scrollHeight + edge, { round: 'up', el });
   }, [autoGrow]);
   React.useLayoutEffect(() => { fit(); });
-  return <textarea ref={setRef} rows={rows} className={cx('plx-input', 'plx-textarea', data && 'plx-input--data', autoGrow && 'plx-textarea--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined}
+  return <textarea ref={setRef} rows={rows} className={cx('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined}
     onInput={(e) => { fit(); if (onInput) onInput(e); }} {...rest} />;
 });
 

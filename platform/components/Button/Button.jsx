@@ -53,23 +53,33 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
+import { SurfaceContext } from '../../providers/Surface.jsx';
 
 const STRINGS = { working: 'Working' };
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
+// open; an Icon element the caller gives keeps its own fill when it sets one
+const asIcon = (i, on) => (typeof i === 'string' ? <Icon name={i} filled={on} /> : React.isValidElement(i) && i.type === Icon && i.props.filled === undefined ? React.cloneElement(i, { filled: on }) : i);
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
   expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, className, children, onClick, strings, ...rest }, ref) {
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
+  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
+  const surface = React.useContext(SurfaceContext);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',
-    caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', className);
+    caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
+  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
+  const v = variant === 'quiet' ? 'ghost' : variant;
+  const on = !!(selected || pressed || expanded);
+  const labelClass = cx('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
+  const caretClass = cx('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
   const content = (
     <>
-      {loading ? <span className="plx-button__icon"><Spinner size="sm" label={t.working} /></span> : (icon ? <span className="plx-button__icon">{asIcon(icon)}</span> : null)}
-      {iconOnly ? null : (children !== undefined && children !== null ? <span className="plx-button__label">{children}</span> : null)}
-      {iconEnd ? <span className="plx-button__icon">{asIcon(iconEnd)}</span> : null}
-      {caret ? <span className="plx-button__caret" aria-hidden="true" /> : null}
+      {loading ? <span className="plx-button__icon"><Spinner size="sm" label={t.working} /></span> : (icon ? <span className="plx-button__icon">{asIcon(icon, on)}</span> : null)}
+      {iconOnly ? null : (children !== undefined && children !== null ? <span className={labelClass}>{children}</span> : null)}
+      {iconEnd ? <span className="plx-button__icon">{asIcon(iconEnd, on)}</span> : null}
+      {caret ? <span className={caretClass} aria-hidden="true" /> : null}
     </>
   );
   const a11y = { 'aria-label': iconOnly ? (label || (typeof children === 'string' ? children : undefined)) : label, 'aria-expanded': expanded,

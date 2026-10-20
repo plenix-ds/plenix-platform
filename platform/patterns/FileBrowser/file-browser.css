@@ -11,7 +11,7 @@
 /* the tree's pane: a line at its end, the Resizable inside it as tall as the content */
 .plx-file-browser__tree{border-inline-end-color:var(--plx-comp-file-browser-tree-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-file-browser-tree-border-width);display:flex;flex-shrink:0;}
 .plx-file-browser__pane{block-size:auto;}
-.plx-file-browser__tree-scroll{block-size:100%;box-sizing:border-box;max-block-size:var(--plx-comp-file-browser-tree-max-height);overflow-x:hidden;overflow-y:auto;padding-block-end:var(--plx-comp-file-browser-tree-padding-block);padding-block-start:var(--plx-comp-file-browser-tree-padding-block);padding-inline-end:var(--plx-comp-file-browser-tree-padding-inline);}
+.plx-file-browser__tree-scroll{block-size:100%;max-block-size:var(--plx-comp-file-browser-tree-max-height);overflow-x:hidden;overflow-y:auto;padding-block-end:var(--plx-comp-file-browser-tree-padding-block);padding-block-start:var(--plx-comp-file-browser-tree-padding-block);padding-inline-end:var(--plx-comp-file-browser-tree-padding-inline);}
 .plx-file-browser__tree-scroll:focus-visible{outline-color:var(--plx-comp-file-browser-focus-outline-color);outline-offset:var(--plx-comp-file-browser-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-file-browser-focus-outline-width);}
 .plx-file-browser__target{display:inline-block;min-inline-size:0;}
 /* the content: the list or the grid; positioned, so the drop overlay covers it */

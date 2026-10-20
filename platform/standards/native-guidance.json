@@ -4028,7 +4028,7 @@
           "property": "Editable",
           "ios": "TextEditor (editable) or Text (read only) / UITextView isEditable",
           "android": "TextField or OutlinedTextField with minLines and maxLines",
-          "web": "Textarea (plx-textarea) or read-only text"
+          "web": "Textarea (plx-input--textarea) or read-only text"
         },
         {
           "property": "Visible lines",

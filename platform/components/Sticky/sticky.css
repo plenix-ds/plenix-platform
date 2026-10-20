@@ -5,7 +5,7 @@
 .plx-sticky--top{inset-block-start:0;}
 .plx-sticky--bottom{inset-block-end:0;}
 .plx-sticky--fixed{inset-inline-end:0;inset-inline-start:0;position:fixed;}
-.plx-sticky__body{background-color:var(--plx-comp-sticky-background);box-shadow:none;box-sizing:border-box;color:var(--plx-comp-sticky-text);transition-duration:var(--plx-comp-sticky-transition-duration);transition-property:box-shadow;transition-timing-function:var(--plx-comp-sticky-transition-easing);}
+.plx-sticky__body{background-color:var(--plx-comp-sticky-background);box-shadow:none;color:var(--plx-comp-sticky-text);transition-duration:var(--plx-comp-sticky-transition-duration);transition-property:box-shadow;transition-timing-function:var(--plx-comp-sticky-transition-easing);}
 /* the shadow: while stuck (default), always (a fixed bar), or never */
 .plx-sticky--shadow-stuck.is-stuck>.plx-sticky__body,.plx-sticky--shadow-always>.plx-sticky__body{box-shadow:var(--plx-comp-sticky-stuck-shadow);}
 @container scroll-state(stuck: top){.plx-sticky--top.plx-sticky--shadow-stuck>.plx-sticky__body{box-shadow:var(--plx-comp-sticky-stuck-shadow);}}

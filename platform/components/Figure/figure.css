@@ -7,6 +7,6 @@
 /* below (default): the caption under the media */
 .plx-figure--below .plx-figure__caption{max-inline-size:var(--plx-comp-figure-caption-max-width);}
 /* overlay: a short caption on a solid media band over the picture's bottom edge */
-.plx-figure--overlay .plx-figure__caption--overlay{background-color:var(--plx-comp-figure-overlay-background);box-sizing:border-box;color:var(--plx-comp-figure-overlay-text);inline-size:100%;inset-block-end:0;inset-inline-start:0;padding-block-end:var(--plx-comp-figure-overlay-padding-block);padding-block-start:var(--plx-comp-figure-overlay-padding-block);padding-inline-end:var(--plx-comp-figure-overlay-padding-inline);padding-inline-start:var(--plx-comp-figure-overlay-padding-inline);position:absolute;}
+.plx-figure--overlay .plx-figure__caption--overlay{background-color:var(--plx-comp-figure-overlay-background);color:var(--plx-comp-figure-overlay-text);inline-size:100%;inset-block-end:0;inset-inline-start:0;padding-block-end:var(--plx-comp-figure-overlay-padding-block);padding-block-start:var(--plx-comp-figure-overlay-padding-block);padding-inline-end:var(--plx-comp-figure-overlay-padding-inline);padding-inline-start:var(--plx-comp-figure-overlay-padding-inline);position:absolute;}
 /* credited: the credit line after the caption */
 .plx-figure--credited .plx-figure__credit{display:block;}

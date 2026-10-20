@@ -25,7 +25,8 @@ const PATTERNS = [
   /\bplx-icon--([a-z0-9]+(?:-[a-z0-9]+)*)\b(?!-)/g,                                      // "plx-icon--x" (not plx-icon--' + n)
 ];
 // the Icon's own modifier classes
-const MODIFIER = /^(size-(xs|sm|md|lg|xl)|filled)$/;
+// the modifiers that are not names: the sizes, and the fill an owner passes (<Icon filled>, <Icon filled={false}>)
+const MODIFIER = /^(size-(xs|sm|md|lg|xl)|filled|outline)$/;
 
 function known(root) {
   const f = path.join(root, 'platform', 'icons', 'map.json');

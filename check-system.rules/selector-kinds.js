@@ -137,15 +137,20 @@ function classify(sel, ctx = {}) {
   const b = bare(sel).trim();
   if (/^:root\b/.test(b) || /^html\b/.test(b)) return custom || decls.every(([p]) => p.startsWith('--') || p === 'color-scheme') ? { kind: 'foundation' } : { kind: 'base' };
   if (/^(\*|\*::?before|\*::?after|body|::selection|::backdrop)$/.test(b)) return { kind: 'base' };
+  // the reset with its own exclusive conditions (*:where(:not(:hover)), *:is(:hover, :focus-within))
+  if (/^\*:(where|is|not)\(/.test(sel) && !classes.length) return { kind: 'base' };
   // :where(el:not([class*="plx-"]), …) or el:not([class*="plx-"])
-  const raw = (s) => /^[a-z][a-z0-9]*\b/.test(s) && RAW_GUARD.test(s);
+  // a raw element, or any raw element (:not([class*="plx-"]) alone)
+  const raw = (s) => (/^[a-z][a-z0-9]*\b/.test(s) || /^:not\(/.test(s)) && RAW_GUARD.test(s);
   const w = sel.match(/^:where\((.*)\)$/);
   if (w && splitList(w[1]).every(raw)) return { kind: 'base' };
   if (w && splitList(w[1]).some((s) => /^[a-z][a-z0-9]*\b/.test(s) && !RAW_GUARD.test(s))) return { problem: 'base-unguarded' };
   if (raw(sel)) return { kind: 'base' };
   if (/^[a-z][a-z0-9]*\b/.test(b) && !/\[data-plx-/.test(sel)) return { problem: 'base-unguarded' };
   // attributes only: a mode context or a behavior
-  const names = [...new Set([...sel.matchAll(/\[data-(?:plx|ds)-([a-z0-9]+)/g)].map((m) => m[1]))];
+  // the attributes it applies to; an exclusion (:not(…)) names conditions it leaves out, not a second owner
+  const noNot = (t) => { let out = '', i = 0; while (i < t.length) { if (t.startsWith(':not(', i)) { let d = 1, j = i + 5; while (j < t.length && d) { if (t[j] === '(') d++; else if (t[j] === ')') d--; j++; } i = j; continue; } out += t[i++]; } return out; };
+  const names = [...new Set([...noNot(sel).matchAll(/\[data-(?:plx|ds)-([a-z0-9]+)/g)].map((m) => m[1]))];
   if (names.length && names.every((n) => MODES.includes(n))) return custom ? { kind: 'foundation' } : { problem: 'foundation-property' };
   if (names.length === 1) return { kind: 'behavior', behavior: names[0] };
   if (names.length > 1) return { problem: 'mixed-behavior' };

@@ -1,6 +1,6 @@
 /* Plenix · Pictogram (platform/components/Pictogram). A large symbol centered in a round frame: the outline on the
    sunken surface, or (two-tone) the filled symbol on a tint; the size sets the frame and the symbol together. */
-.plx-pictogram{align-items:center;background-color:var(--plx-comp-pictogram-background);border-bottom-left-radius:var(--plx-comp-pictogram-radius);border-bottom-right-radius:var(--plx-comp-pictogram-radius);border-top-left-radius:var(--plx-comp-pictogram-radius);border-top-right-radius:var(--plx-comp-pictogram-radius);box-sizing:border-box;color:var(--plx-comp-pictogram-text);display:inline-flex;flex-shrink:0;justify-content:center;vertical-align:middle;}
+.plx-pictogram{align-items:center;background-color:var(--plx-comp-pictogram-background);border-bottom-left-radius:var(--plx-comp-pictogram-radius);border-bottom-right-radius:var(--plx-comp-pictogram-radius);border-top-left-radius:var(--plx-comp-pictogram-radius);border-top-right-radius:var(--plx-comp-pictogram-radius);color:var(--plx-comp-pictogram-text);display:inline-flex;flex-shrink:0;justify-content:center;vertical-align:middle;}
 .plx-pictogram--48{block-size:var(--plx-comp-pictogram-48-size);inline-size:var(--plx-comp-pictogram-48-size);}
 .plx-pictogram--64{block-size:var(--plx-comp-pictogram-64-size);inline-size:var(--plx-comp-pictogram-64-size);}
 .plx-pictogram--96{block-size:var(--plx-comp-pictogram-96-size);inline-size:var(--plx-comp-pictogram-96-size);}

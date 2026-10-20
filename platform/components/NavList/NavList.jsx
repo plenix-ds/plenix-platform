@@ -48,7 +48,9 @@ import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx
 
 const STRINGS = { pin: 'Pin', unpin: 'Unpin', pinItem: 'Pin {label}', unpinItem: 'Unpin {label}' };
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+// the icon takes the row's state as its own (Styling Standard 3.6): filled on the current row; an Icon element the caller
+// gives keeps its own fill when it sets one
+const asIcon = (i, on) => (typeof i === 'string' ? <Icon name={i} filled={on} /> : React.isValidElement(i) && i.type === Icon && i.props.filled === undefined ? React.cloneElement(i, { filled: on }) : i);
 // the current item is the open one: a folder shows as an open folder (filled, like every current icon)
 const OPEN_ICONS = { folder: 'folder-open' };
 const iconOf = (icon, on) => (on && typeof icon === 'string' && OPEN_ICONS[icon]) || icon;
@@ -64,7 +66,7 @@ function SubGroup({ item, current, onSelect, t, loc }) {
     <li className="plx-nav-list__entry">
       <button type="button" className={cx('plx-nav-list__item', 'plx-nav-list__item--group', inside && !open && 'is-current-parent')}
         aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
-        <span className="plx-nav-list__icon"><Icon name={open ? 'chevron-down' : 'chevron-right'} /></span>
+        <span className="plx-nav-list__icon plx-nav-list__icon--group"><Icon name={open ? 'chevron-down' : 'chevron-right'} filled={false} /></span>
         <span className="plx-nav-list__label"><span className="plx-nav-list__name">{item.label}</span>
           {item.count !== undefined ? <span className="plx-nav-list__count">({item.count})</span> : null}</span>
       </button>
@@ -78,21 +80,21 @@ function SubGroup({ item, current, onSelect, t, loc }) {
 function Item({ item, current, onSelect, t, loc }) {
   if (item.children) return <SubGroup item={item} current={current} onSelect={onSelect} t={t} loc={loc} />;
   const on = item.id === current;
-  const props = { className: cx('plx-nav-list__item', item.muted && 'plx-nav-list__item--muted', on && 'is-current'), 'aria-current': on ? 'page' : undefined };
+  const props = { className: cx('plx-nav-list__item', item.muted && 'plx-nav-list__item--muted', on && 'is-current', (item.actions || item.onPin) && 'plx-nav-list__item--in-actions'), 'aria-current': on ? 'page' : undefined };
   const content = (
     <>
-      {item.icon ? <span className="plx-nav-list__icon">{asIcon(iconOf(item.icon, on))}</span> : null}
+      {item.icon ? <span className={cx('plx-nav-list__icon', item.muted && !on && 'plx-nav-list__icon--muted')}>{asIcon(iconOf(item.icon, on), on)}</span> : null}
       <span className="plx-nav-list__label"><span className="plx-nav-list__name">{item.label}</span>
         {item.count !== undefined ? <span className="plx-nav-list__count">({typeof item.count === 'number' ? item.count.toLocaleString(loc) : item.count})</span> : null}</span>
     </>
   );
   return (
-    <li className={cx('plx-nav-list__entry', (item.actions || item.onPin) && 'plx-nav-list__entry--actions', item.pinned && 'is-pinned')}>
+    <li className={cx('plx-nav-list__entry', (item.actions || item.onPin) && 'plx-nav-list__entry--actions', (item.actions || item.onPin) && on && 'plx-nav-list__entry--current', item.pinned && 'is-pinned')}>
       {item.href ? <a href={item.href} {...props} onClick={onSelect ? () => onSelect(item.id) : undefined}>{content}</a>
         : <button type="button" {...props} disabled={item.disabled || undefined} onClick={() => onSelect && onSelect(item.id)}>{content}</button>}
       {item.actions || item.onPin ? <span className="plx-nav-list__actions">
-        {item.onPin ? <button type="button" className="plx-nav-list__pin" aria-pressed={!!item.pinned} aria-label={(item.pinned ? t.unpinItem : t.pinItem).split('{label}').join(item.label)}
-          title={item.pinned ? t.unpin : t.pin} onClick={() => item.onPin(item.id)}><Icon name={item.pinned ? 'pin-filled' : 'pin'} /></button> : null}
+        {item.onPin ? <button type="button" className={cx('plx-nav-list__pin', item.pinned && 'plx-nav-list__pin--pinned')} aria-pressed={!!item.pinned} aria-label={(item.pinned ? t.unpinItem : t.pinItem).split('{label}').join(item.label)}
+          title={item.pinned ? t.unpin : t.pin} onClick={() => item.onPin(item.id)}><Icon name={item.pinned ? 'pin-filled' : 'pin'} filled={!!item.pinned} /></button> : null}
         {item.actions}
       </span> : null}
     </li>

@@ -15,6 +15,8 @@
 /* expect: behavior */ [data-plx-floating]{position:fixed;}
 /* expect: behavior */ [data-plx-floating-placement="top"]:where(:not([data-plx-floating-flip="off"], [data-plx-floating-shift="off"])){position-try-fallbacks:flip-block;}
 /* expect: behavior */ [data-plx-dnd-handle]:disabled{cursor:default;}
+/* expect: behavior */ [data-plx-icon-optical="24"]{--plx-comp-icon-auto-star:var(--plx-comp-icon-glyph-star-24);}
+/* expect: foundation */ [data-plx-density]:where(:not([data-plx-density="comfortable"], [data-plx-icon-optical="24"])){--plx-comp-icon-auto-star:var(--plx-comp-icon-glyph-star);}
 /* expect: foundation */ :root{--plx-ref-space-4px:0.25rem;color-scheme:light;}
 /* expect: foundation */ :root[data-plx-mode="dark"]{--plx-sys-surface-default:var(--plx-ref-color-gray-900);}
 /* expect: foundation */ [data-plx-density="compact"]{--plx-sys-control-height-standard:var(--plx-ref-space-28px);}
@@ -25,6 +27,10 @@
 /* expect: base */ *::before{box-sizing:border-box;}
 /* expect: base */ body{margin-block-start:0;}
 /* expect: base */ html{font-size:100%;}
+/* expect: base */ :where(:not([class*="plx-"])){margin-block-start:0;}
+/* expect: base */ *:where(:not(:hover, :focus-within)){scrollbar-color:transparent transparent;}
+/* expect: base */ *:is(:hover, :focus-within){scrollbar-color:var(--plx-sys-scrollbar-thumb) transparent;}
+/* expect: fail cross-block */ *:where(:not(.plx-avatar__presence, .plx-popover__arrow)){box-sizing:border-box;}
 /* expect: condition */ @media (prefers-reduced-motion: reduce){:root{--plx-ref-motion-duration-fast:0s;}}
 /* expect: condition */ @media (forced-colors: active){:root{--plx-sys-focus-color:Highlight;}}
 /* expect: condition */ :root[data-plx-density-changing]{--plx-ref-motion-duration-fast:0s;}
