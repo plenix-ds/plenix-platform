@@ -13,7 +13,7 @@ export const valueAt = (row, field) => String(field).split('.').reduce((value, k
 export function opening(props) {
   const saved = props.onViewChange ? {} : readView(props.storageKey) || {}, options = props.options || {}, known = new Set(props.columns.map(c=>c.field));
   const fields = values => Array.isArray(values) ? [...new Set(values.filter(f=>known.has(f)))] : undefined;
-  const groups=value=>Array.isArray(value)?fields(value).length?fields(value):false:typeof value==='string'?(known.has(value)?value:false):value;
+  const groups=value=>{if(!Array.isArray(value))return typeof value==='string'?(known.has(value)?value:false):value;const seen=new Set(),next=value.filter(level=>{const field=typeof level==='object'?level.field:level;if(!known.has(field)||seen.has(field))return false;seen.add(field);return true;});return next.length?next:false;};
   const storedWidths=props.columnWidths??saved.widths;
   const widths = storedWidths && typeof storedWidths==='object' ? Object.fromEntries(Object.entries(storedWidths).filter(([key,value])=>known.has(key)&&Number.isFinite(parseFloat(value))&&parseFloat(value)>0)) : {};
   const step = ['short','medium','tall','extra-tall'].includes(saved.rowHeight) ? saved.rowHeight : props.rowHeight || 'short';
