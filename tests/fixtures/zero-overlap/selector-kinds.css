@@ -30,7 +30,7 @@
 /* expect: base */ :where(:not([class*="plx-"])){margin-block-start:0;}
 /* expect: base */ *:where(:not(:hover, :focus-within)){scrollbar-color:transparent transparent;}
 /* expect: base */ *:is(:hover, :focus-within){scrollbar-color:var(--plx-sys-scrollbar-thumb) transparent;}
-/* expect: fail cross-block */ *:where(:not(.plx-avatar__presence, .plx-popover__arrow)){box-sizing:border-box;}
+/* expect: base */ *:where(:not(.plx-avatar__presence, .plx-popover__arrow)){box-sizing:border-box;}
 /* expect: condition */ @media (prefers-reduced-motion: reduce){:root{--plx-ref-motion-duration-fast:0s;}}
 /* expect: condition */ @media (forced-colors: active){:root{--plx-sys-focus-color:Highlight;}}
 /* expect: condition */ :root[data-plx-density-changing]{--plx-ref-motion-duration-fast:0s;}
@@ -42,7 +42,10 @@
 /* expect: fail combinator */ .plx-icon:where(:not([data-plx-density="comfortable"] *)){--plx-comp-icon-url:var(--plx-comp-icon-outline);}
 /* expect: fail relational */ .plx-check:has(.plx-check__input:disabled){cursor:not-allowed;}
 /* expect: fail cross-block */ .plx-input.plx-textarea{resize:vertical;}
-/* expect: fail cross-block */ .plx-nav-list__item:not(.plx-menu__item){color:inherit;}
+/* expect: component */ .plx-nav-list__item:not(.plx-menu__item){color:inherit;}
+/* expect: component */ .plx-layout--width-sm:where(:not(.plx-grow)){flex-shrink:0;}
+/* expect: component */ :is(.plx-grow, .plx-layout--scroll){min-block-size:0;}
+/* expect: fail cross-block */ .plx-stack.plx-layout--reverse{flex-direction:column-reverse;}
 /* expect: fail unowned */ .is-focus-visible{outline-style:solid;}
 /* expect: fail unowned */ :focus-visible{outline-style:solid;}
 /* expect: fail unowned */ [aria-disabled="true"]{cursor:not-allowed;}

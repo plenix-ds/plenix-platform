@@ -1173,12 +1173,6 @@
    "condition-not-token | .plx-spotlight__beacon": 1
   },
   "platform/components/Stack/stack.css": {
-   "cross-block | .plx-stack.plx-layout--reverse": 1,
-   "cross-block | .plx-inline.plx-layout--reverse": 1,
-   "cross-block | .plx-stack.plx-layout--reverse-below-narrow": 1,
-   "cross-block | .plx-inline.plx-layout--reverse-below-narrow": 1,
-   "cross-block | .plx-stack.plx-layout--reverse-below-medium": 1,
-   "cross-block | .plx-inline.plx-layout--reverse-below-medium": 1,
    "relational | .plx-stack:has(>.plx-field--inline)": 1,
    "relational | .plx-stack:has(>.plx-field--inline)>*": 1,
    "relational | .plx-stack:has(>.plx-field--inline)>:not(.plx-field--inline)": 1

@@ -125,7 +125,11 @@ function classify(sel, ctx = {}) {
   const args = pseudoArgs(sel);
   if (args.some((a) => /^has$/.test(a.fn))) return { problem: 'relational' };
   if (hasCombinator(sel) || args.some((a) => a.args.some(hasCombinator))) return { problem: 'combinator' };
-  const classes = [...sel.matchAll(/\.(-?[a-zA-Z_][a-zA-Z0-9_-]*)/g)].map((m) => m[1]);
+  // the classes the element must have: an exclusion (:not(…)) names what it leaves out, not a second owner; a list of
+  // single classes in :is() or :where() is a set of alternatives (one rule shared by blocks of one stylesheet)
+  const strip = (t) => { let out = '', i = 0; while (i < t.length) { if (t.startsWith(':not(', i)) { let d = 1, j = i + 5; while (j < t.length && d) { if (t[j] === '(') d++; else if (t[j] === ')') d--; j++; } i = j; continue; } out += t[i++]; } return out; };
+  const required = strip(sel).replace(/:(is|where)\(\s*(\.[\w-]+(\s*,\s*\.[\w-]+)+)\s*\)/g, (m, f, list) => list.split(',')[0].trim());
+  const classes = [...required.matchAll(/\.(-?[a-zA-Z_][a-zA-Z0-9_-]*)/g)].map((m) => m[1]);
   const blocks = [...new Set(classes.filter((c) => !isState(c)).map(blockOf))];
   if (inCondition) {
     if (/^:root\b/.test(sel) && !blocks.length && custom) return { kind: 'condition' };

@@ -1,6 +1,12 @@
-/* Plenix · Stack and Inline (platform/components/Stack): columns and rows spaced by the spacing tokens. */
-.plx-stack{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
-.plx-inline{display:flex;flex-direction:row;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+/* Plenix · Stack and Inline (platform/components/Stack): columns and rows spaced by the spacing tokens.
+   Zero overlap (Styling Standard 3.3): each property once. The direction and the inline-start padding read state
+   variables: reverse assigns the direction, an inset its padding, indent its own (it wins over an inset). */
+@property --plx-state-stack-direction{syntax:"*";inherits:false;}
+@property --plx-state-inline-direction{syntax:"*";inherits:false;}
+@property --plx-state-layout-inset-inline-start{syntax:"*";inherits:false;}
+@property --plx-state-layout-indent{syntax:"*";inherits:false;}
+.plx-stack{display:flex;flex-direction:var(--plx-state-stack-direction,column);margin-block-end:0;margin-block-start:0;padding-inline-start:var(--plx-state-layout-indent,var(--plx-state-layout-inset-inline-start,0));}
+.plx-inline{display:flex;flex-direction:var(--plx-state-inline-direction,row);margin-block-end:0;margin-block-start:0;padding-inline-start:var(--plx-state-layout-indent,var(--plx-state-layout-inset-inline-start,0));}
 .plx-stack--gap-none,.plx-inline--gap-none{column-gap:0;row-gap:0;}
 .plx-stack--gap-xs{row-gap:var(--plx-comp-stack-gap-xs-row-gap);}
 .plx-stack--gap-sm{row-gap:var(--plx-comp-stack-gap-sm-row-gap);}
@@ -12,7 +18,8 @@
 .plx-inline--gap-md{column-gap:var(--plx-comp-inline-gap-md-gap);}
 .plx-inline--gap-lg{column-gap:var(--plx-comp-inline-gap-lg-gap);}
 .plx-inline--gap-xl{column-gap:var(--plx-comp-inline-gap-xl-gap);}
-.plx-inline--wrap{flex-wrap:wrap;row-gap:var(--plx-comp-inline-wrap-row-gap);}
+.plx-inline--wrap{flex-wrap:wrap;}
+.plx-inline--wrap:where(:not(.plx-inline--gap-none)){row-gap:var(--plx-comp-inline-wrap-row-gap);}
 .plx-layout--align-start{align-items:flex-start;}
 .plx-layout--align-center{align-items:center;}
 .plx-layout--align-end{align-items:flex-end;}
@@ -22,33 +29,35 @@
 .plx-layout--justify-center{justify-content:center;}
 .plx-layout--justify-end{justify-content:flex-end;}
 .plx-layout--justify-between{justify-content:space-between;}
-.plx-layout--inset-xs{padding-block-end:var(--plx-comp-layout-inset-xs-padding-block);padding-block-start:var(--plx-comp-layout-inset-xs-padding-block);padding-inline-end:var(--plx-comp-layout-inset-xs-padding-inline);padding-inline-start:var(--plx-comp-layout-inset-xs-padding-inline);}
-.plx-layout--inset-sm{padding-block-end:var(--plx-comp-layout-inset-sm-padding-block);padding-block-start:var(--plx-comp-layout-inset-sm-padding-block);padding-inline-end:var(--plx-comp-layout-inset-sm-padding-inline);padding-inline-start:var(--plx-comp-layout-inset-sm-padding-inline);}
-.plx-layout--inset-md{padding-block-end:var(--plx-comp-layout-inset-md-padding-block);padding-block-start:var(--plx-comp-layout-inset-md-padding-block);padding-inline-end:var(--plx-comp-layout-inset-md-padding-inline);padding-inline-start:var(--plx-comp-layout-inset-md-padding-inline);}
-.plx-layout--inset-lg{padding-block-end:var(--plx-comp-layout-inset-lg-padding-block);padding-block-start:var(--plx-comp-layout-inset-lg-padding-block);padding-inline-end:var(--plx-comp-layout-inset-lg-padding-inline);padding-inline-start:var(--plx-comp-layout-inset-lg-padding-inline);}
-.plx-layout--inset-xl{padding-block-end:var(--plx-comp-layout-inset-xl-padding-block);padding-block-start:var(--plx-comp-layout-inset-xl-padding-block);padding-inline-end:var(--plx-comp-layout-inset-xl-padding-inline);padding-inline-start:var(--plx-comp-layout-inset-xl-padding-inline);}
-.plx-layout--scroll{min-block-size:0;overflow-y:auto;}
-/* any element that fills the rest of its parent row or column (and may shrink below its content) */
-.plx-grow{flex-basis:0%;flex-grow:1;flex-shrink:1;min-block-size:0;min-inline-size:0;}
+.plx-layout--inset-xs{padding-block-end:var(--plx-comp-layout-inset-xs-padding-block);padding-block-start:var(--plx-comp-layout-inset-xs-padding-block);padding-inline-end:var(--plx-comp-layout-inset-xs-padding-inline);--plx-state-layout-inset-inline-start:var(--plx-comp-layout-inset-xs-padding-inline);}
+.plx-layout--inset-sm{padding-block-end:var(--plx-comp-layout-inset-sm-padding-block);padding-block-start:var(--plx-comp-layout-inset-sm-padding-block);padding-inline-end:var(--plx-comp-layout-inset-sm-padding-inline);--plx-state-layout-inset-inline-start:var(--plx-comp-layout-inset-sm-padding-inline);}
+.plx-layout--inset-md{padding-block-end:var(--plx-comp-layout-inset-md-padding-block);padding-block-start:var(--plx-comp-layout-inset-md-padding-block);padding-inline-end:var(--plx-comp-layout-inset-md-padding-inline);--plx-state-layout-inset-inline-start:var(--plx-comp-layout-inset-md-padding-inline);}
+.plx-layout--inset-lg{padding-block-end:var(--plx-comp-layout-inset-lg-padding-block);padding-block-start:var(--plx-comp-layout-inset-lg-padding-block);padding-inline-end:var(--plx-comp-layout-inset-lg-padding-inline);--plx-state-layout-inset-inline-start:var(--plx-comp-layout-inset-lg-padding-inline);}
+.plx-layout--inset-xl{padding-block-end:var(--plx-comp-layout-inset-xl-padding-block);padding-block-start:var(--plx-comp-layout-inset-xl-padding-block);padding-inline-end:var(--plx-comp-layout-inset-xl-padding-inline);--plx-state-layout-inset-inline-start:var(--plx-comp-layout-inset-xl-padding-inline);}
+.plx-layout--scroll{overflow-y:auto;}
+/* any element that fills the rest of its parent row or column (and may shrink below its content); a scroll region too */
+:is(.plx-grow, .plx-layout--scroll){min-block-size:0;}
+.plx-grow{flex-basis:0%;flex-grow:1;min-inline-size:0;}
+.plx-grow:where(:not(.plx-layout--width-xs, .plx-layout--width-sm, .plx-layout--width-md, .plx-layout--width-lg)){flex-shrink:1;}
 .plx-layout--width-xs{flex-shrink:0;inline-size:var(--plx-comp-layout-width-xs-width);}
 .plx-layout--width-sm{flex-shrink:0;inline-size:var(--plx-comp-layout-width-sm-width);}
 .plx-layout--width-md{flex-shrink:0;inline-size:var(--plx-comp-layout-width-md-width);}
 .plx-layout--width-lg{flex-shrink:0;inline-size:var(--plx-comp-layout-width-lg-width);}
-.plx-layout--max-sm{max-block-size:var(--plx-comp-layout-max-sm-max-height);overflow-y:auto;}
-.plx-layout--max-md{max-block-size:var(--plx-comp-layout-max-md-max-height);overflow-y:auto;}
-.plx-layout--max-lg{max-block-size:var(--plx-comp-layout-max-lg-max-height);overflow-y:auto;}
-.plx-layout--indent{padding-inline-start:var(--plx-comp-layout-indent-padding-inline-start);}
+.plx-layout--max-sm{max-block-size:var(--plx-comp-layout-max-sm-max-height);}
+.plx-layout--max-md{max-block-size:var(--plx-comp-layout-max-md-max-height);}
+.plx-layout--max-lg{max-block-size:var(--plx-comp-layout-max-lg-max-height);}
+.plx-layout--max-sm:where(:not(.plx-layout--scroll)),.plx-layout--max-md:where(:not(.plx-layout--scroll)),.plx-layout--max-lg:where(:not(.plx-layout--scroll)){overflow-y:auto;}
+.plx-layout--indent{--plx-state-layout-indent:var(--plx-comp-layout-indent-padding-inline-start);}
 .plx-layout--push{margin-inline-start:auto;}
 /* a Stack or an Inline drawn as a list (as="ul" | "ol") has no markers */
 ol.plx-inline,ol.plx-stack,ul.plx-inline,ul.plx-stack{list-style-type:none;}
 /* reorder (library wave 3)): the children drawn in the other order, or one child moved to the start or the end; the markup keeps the
    reading and Tab order. Below a window class: Narrow under 600px, Medium under 840px (--plx-sys-shell-rail-below). */
-.plx-stack.plx-layout--reverse{flex-direction:column-reverse;}
-.plx-inline.plx-layout--reverse{flex-direction:row-reverse;}
+.plx-layout--reverse{--plx-state-stack-direction:column-reverse;--plx-state-inline-direction:row-reverse;}
 .plx-layout--order-first{order:-1;}
 .plx-layout--order-last{order:1;}
-@media (width < 600px){.plx-stack.plx-layout--reverse-below-narrow{flex-direction:column-reverse;}.plx-inline.plx-layout--reverse-below-narrow{flex-direction:row-reverse;}.plx-layout--order-first-below-narrow{order:-1;}.plx-layout--order-last-below-narrow{order:1;}}
-@media (width < 840px){.plx-stack.plx-layout--reverse-below-medium{flex-direction:column-reverse;}.plx-inline.plx-layout--reverse-below-medium{flex-direction:row-reverse;}.plx-layout--order-first-below-medium{order:-1;}.plx-layout--order-last-below-medium{order:1;}}
+@media (width < 600px){.plx-layout--reverse-below-narrow{--plx-state-stack-direction:column-reverse;--plx-state-inline-direction:row-reverse;}.plx-layout--order-first-below-narrow{order:-1;}.plx-layout--order-last-below-narrow{order:1;}}
+@media (width < 840px){.plx-layout--reverse-below-medium{--plx-state-stack-direction:column-reverse;--plx-state-inline-direction:row-reverse;}.plx-layout--order-first-below-medium{order:-1;}.plx-layout--order-last-below-medium{order:1;}}
 /* Center: a block centered in its parent at a readable maximum width; its children centered at their own width (intrinsic),
    in the parent's height too (vertical: safe, so content taller than the parent starts at the top) or its lines centered */
 .plx-center{inline-size:100%;margin-inline-end:auto;margin-inline-start:auto;}
@@ -57,8 +66,9 @@ ol.plx-inline,ol.plx-stack,ul.plx-inline,ul.plx-stack{list-style-type:none;}
 .plx-center--max-lg{max-inline-size:var(--plx-comp-center-lg-max-width);}
 .plx-center--max-page{max-inline-size:var(--plx-comp-center-page-max-width);}
 .plx-center--max-none{max-inline-size:none;}
-.plx-center--intrinsic{align-items:center;display:flex;flex-direction:column;}
-.plx-center--vertical{display:flex;flex-direction:column;justify-content:safe center;min-block-size:100%;}
+.plx-center:is(.plx-center--intrinsic, .plx-center--vertical){display:flex;flex-direction:column;}
+.plx-center--intrinsic{align-items:center;}
+.plx-center--vertical{justify-content:safe center;min-block-size:100%;}
 .plx-center--text{text-align:center;}
 /* Bleed: a child that reaches past its parent's inset to the parent's edges (the same inset tokens, negated) */
 .plx-bleed{}
