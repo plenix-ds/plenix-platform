@@ -5112,7 +5112,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
      Select.size: as Input.size; numeric values retain the native select size attribute.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
-     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*)
+     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
+     Select.width: the same values
      Input.data: the data font, for codes, hex values, links to copy (default false)
      Input.emphasis: semibold, for a record's title (default false)
      Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
@@ -5245,12 +5246,13 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   joined,
   data = false,
   block = false,
+  width,
   className,
   children,
   ...rest
 }, ref) {
   return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
+    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
     ref: ref,
     size: size === 'sm' || size === 'md' ? undefined : size,
@@ -5765,7 +5767,8 @@ const COMPOSITION_GUIDE = exports.COMPOSITION_GUIDE = [{
 const FIELD_RULES = exports.FIELD_RULES = {
   "components": ["Input", "Select", "Combobox", "SearchField", "NumberInput", "Textarea", "DatePicker", "TimePicker", "TreeSelect", "CountrySelect", "TimeZoneSelect", "EntityPicker", "RelativeDateInput", "InputGroup", "FileInput", "MentionInput"],
   "stretch": ["Form", "FormSection", "Fieldset", "Field", "SettingsRow", "Dialog", "PromptDialog", "ConfirmDialog", "Drawer", "Sheet", "SidePanel", "Popover", "InlineEdit", "FilterPanel", "SortPanel", "GroupPanel", "Wizard"],
-  "content": ["CommandBar", "Toolbar", "DataToolbar", "FilterBar", "ActionBar", "AppHeader"]
+  "content": ["CommandBar", "Toolbar", "DataToolbar", "FilterBar", "ActionBar", "AppHeader"],
+  "row": ["ResourceList"]
 };
   } },
   "platform/utils/sizeSteps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -22745,6 +22748,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
      <Combobox marks="radio" options={…} value={…} onChange={…} />                                     // radio select
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
      value: the chosen value, for a single choice
@@ -22797,6 +22802,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   multiple = false,
   creatable = false,
   onCreate,
+  width,
   placeholder,
   label,
   invalid,
@@ -22932,7 +22938,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const optId = i => auto + '-o' + i;
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
-    className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
+    className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-combobox__field plx-input",
     "aria-invalid": invalid || undefined,
@@ -23072,7 +23078,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        searches cannot be removed here
      strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
        clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
-     width: "auto" (default: as wide as its container gives it) | "bar" (the command bar's search: one fixed width, 240px,
+     width: "auto" (default: as wide as its container gives it) | "xs" | "sm" | "md" | "lg" (the field-width scale, P-52) | "bar" (the command bar's search: one fixed width, 240px,
        never squeezed; owner, 2026-10-14) | "fill" (the whole width: the find field inside a panel, a dialog or a menu)
      collapsed: the narrow bar's search (owner, 2026-10-14): an icon-only search button in the field's place (tinted while
        there is text) that opens the field across the bar, over its other controls; default false
@@ -23271,7 +23277,7 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
   } : {};
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
-    className: (0, _cx.cx)('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', onAccent && 'plx-search--on-accent', shown && 'is-open', className),
+    className: (0, _cx.cx)('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className),
     role: "search"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search__icon",
@@ -37874,7 +37880,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      icon: an icon name shown at the start inside the border (decorative: the label says what the field is)
      start: a Button or a Select (or an array of them) joined to the field's start edge
      end: a Button or a Select (or an array of them) joined to the field's end edge
-     width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
+     width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*) | "fill"; full width by default
      compact: a short box (--plx-comp-input-group-compact-box-width), the value centered: a count between its buttons (NumberInput quantity)
      data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too
@@ -41294,6 +41300,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Field label="Period"><DatePicker mode="range" value={period} onChange={setPeriod} presets /></Field>
      <Field label="Starts"><DatePicker mode="date-time" value={starts} onChange={setStarts} min={todayIso()} /></Field>
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      mode: "single" (default; one date) | "range" (a start and an end) | "date-time" (a date and a time: one moment)
      value: "YYYY-MM-DD" (single), { start, end } of such dates (range), or "YYYY-MM-DDTHH:MM" (date-time); null when
        empty. Controlled with onChange
@@ -41418,6 +41426,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   months,
   min,
   max,
+  width,
   isDateDisabled,
   weekNumbers = false,
   defaultTime = '09:00',
@@ -41652,7 +41661,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   })) : null);
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: root,
-    className: (0, _cx.cx)('plx-date-picker', 'plx-date-picker--' + (range ? 'range' : dateTime ? 'date-time' : 'single'), className),
+    className: (0, _cx.cx)('plx-date-picker', 'plx-date-picker--' + (range ? 'range' : dateTime ? 'date-time' : 'single'), width && 'plx-date-picker--width-' + width, className),
     onBlur: onBlur
   }, rest), /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     anchorClassName: "plx-date-picker__anchor",
@@ -42862,6 +42871,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <TimePicker step={30} min="08:00" max="18:00" value={t} onChange={setT} label="Meeting" />
      <TimePicker variant="segments" hourCycle="24" value={t} onChange={setT} label="Alarm" />
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      value: the time as "HH:MM" on a 24-hour clock ("14:30"), or "" for none; the same whatever clock is shown
      defaultValue: the time it starts with, uncontrolled
      onChange(value): runs with the new "HH:MM" (or "" when cleared)
@@ -42950,6 +42961,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
   min,
   max,
   label,
+  width,
   invalid,
   disabled,
   id,
@@ -42975,7 +42987,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
   };
-  const cls = (0, _cx.cx)('plx-time-picker', 'plx-time-picker--' + variant, disabled && 'is-disabled', className);
+  const cls = (0, _cx.cx)('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? /*#__PURE__*/_react.default.createElement("input", {
     type: "hidden",
     name: name,
@@ -44734,6 +44746,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Field label="Folder"><TreeSelect nodes={folders} value={folder} onChange={setFolder} /></Field>
      <TreeSelect label="Categories" multiple nodes={categories} values={chosen} onChange={setChosen} search />
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      nodes: the hierarchy, as Tree takes it: [{ id, label, icon, children: [...] }]
      value: the chosen item's id (one choice)
      values: the checked items' ids, with multiple (the leaves: items without children)
@@ -44838,6 +44852,7 @@ function TreeSelect({
   placeholder,
   label,
   defaultExpanded,
+  width,
   invalid,
   disabled,
   required,
@@ -45005,7 +45020,7 @@ function TreeSelect({
     "aria-hidden": "true"
   }));
   return /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-tree-select', multiple && 'plx-tree-select--multiple', open && 'is-open', disabled && 'is-disabled', className)
+    className: (0, _cx.cx)('plx-tree-select', width && 'plx-tree-select--width-' + width, multiple && 'plx-tree-select--multiple', open && 'is-open', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     anchorClassName: "plx-tree-select__anchor",
     trigger: trigger,
@@ -49174,8 +49189,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      items[].meta: its details at the row's end (a date, a count, a Badge for a status); wrap technical values in
        <Text variant="data">
      items[].thumbnail: { src, alt, icon } the record's picture (media variant): a Thumbnail
-     items[].avatar: { name, src } a person or a team (avatar variant): an Avatar
+     items[].avatar: { name, src, gender } a person or a team (avatar variant): an Avatar
      items[].media: any content before the text, instead of a thumbnail or an avatar
+     items[].field: a field at the row's end (a tag picker, a quick edit; P-52): it takes a set share of the row
+       (--plx-comp-resource-list-field-share) and fills it, never wider; items[].fieldOnHover: shown only while the row is
+       hovered or focused, its space kept so the row never shifts
      items[].actions: controls at the row's end (with actions): ghost icon buttons or a menu; their own Tab stops
      items[].group: the heading the record sits under (grouped); groups keep the order they first appear in
      items[].disabled: the row's checkbox cannot be checked (a record people may not change)
@@ -49239,6 +49257,7 @@ function Row({
   const media = item.media !== undefined ? item.media : item.avatar ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
     name: item.avatar.name || (typeof name === 'string' ? name : ''),
     src: item.avatar.src,
+    gender: item.avatar.gender,
     size: "md"
   }) : item.thumbnail ? /*#__PURE__*/_react.default.createElement(_Thumbnail.Thumbnail, {
     src: item.thumbnail.src,
@@ -49267,7 +49286,9 @@ function Row({
   }, item.description) : null), item.meta ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-resource-list__meta",
     "data-plx-text-follow": "size"
-  }, item.meta) : null, item.actions ? /*#__PURE__*/_react.default.createElement("span", {
+  }, item.meta) : null, item.field ? /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-resource-list__field', item.fieldOnHover && 'plx-resource-list__field--hover')
+  }, item.field) : null, item.actions ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-resource-list__actions"
   }, item.actions) : null);
 }

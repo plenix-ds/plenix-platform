@@ -7,6 +7,8 @@
      <TimePicker step={30} min="08:00" max="18:00" value={t} onChange={setT} label="Meeting" />
      <TimePicker variant="segments" hourCycle="24" value={t} onChange={setT} label="Alarm" />
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      value: the time as "HH:MM" on a 24-hour clock ("14:30"), or "" for none; the same whatever clock is shown
      defaultValue: the time it starts with, uncontrolled
      onChange(value): runs with the new "HH:MM" (or "" when cleared)
@@ -69,7 +71,7 @@ const show = (mins, cycle, t) => {
   return cycle === '12' ? ((h % 12) || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m);
 };
 
-export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label,
+export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label, width,
   invalid, disabled, id, name, strings, className, ...rest }, ref) {
   devWarn('TimePicker', { variant }, { variant: ['list','segments'] });
   const t = Object.assign({}, STRINGS, strings);
@@ -83,7 +85,7 @@ export const TimePicker = React.forwardRef(function TimePicker({ value, defaultV
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
   };
-  const cls = cx('plx-time-picker', 'plx-time-picker--' + variant, disabled && 'is-disabled', className);
+  const cls = cx('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? <input type="hidden" name={name} value={current || ''} /> : null;
   if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }} />;
   return <ListPicker ref={ref} {...{ t, cycle, step: step || 15, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }} />;

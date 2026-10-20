@@ -28,3 +28,9 @@
 .plx-resource-list__description{color:var(--plx-comp-resource-list-description-text);font-size:var(--plx-comp-resource-list-description-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-resource-list__meta{align-items:center;color:var(--plx-comp-resource-list-meta-text);column-gap:var(--plx-comp-resource-list-actions-gap);display:inline-flex;flex-shrink:0;font-size:var(--plx-comp-resource-list-meta-font-size);white-space:nowrap;}
 .plx-resource-list__actions{align-items:center;column-gap:var(--plx-comp-resource-list-actions-gap);display:flex;flex-shrink:0;position:relative;z-index:var(--plx-comp-resource-list-control-z-index);}
+/* the row's field (P-52): a set share at the row's end; its field fills the share; a field revealed on hover keeps its space
+   so the row never shifts */
+.plx-resource-list__field{flex-basis:var(--plx-comp-resource-list-field-share);flex-grow:0;flex-shrink:1;min-inline-size:0;}
+.plx-resource-list__field>*{inline-size:100%;max-inline-size:100%;min-inline-size:0;}
+.plx-resource-list__field--hover{opacity:0;}
+.plx-resource-list__item:hover .plx-resource-list__field--hover,.plx-resource-list__item:focus-within .plx-resource-list__field--hover{opacity:1;}

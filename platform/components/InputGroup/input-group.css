@@ -34,3 +34,5 @@
 .plx-input-group--compact{inline-size:auto;}
 .plx-input-group--compact>.plx-input-group__box{flex-basis:auto;flex-grow:0;inline-size:var(--plx-comp-input-group-compact-box-width);}
 .plx-input-group--compact .plx-input-group__input{padding-inline-end:var(--plx-comp-input-group-compact-padding-inline);padding-inline-start:var(--plx-comp-input-group-compact-padding-inline);text-align:center;}
+/* width fill (P-52): the whole width (the group's default; named for a pattern that sets widths explicitly) */
+.plx-input-group.plx-input-group--width-fill{inline-size:100%;}

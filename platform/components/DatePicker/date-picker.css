@@ -10,3 +10,9 @@
 .plx-date-picker__panel{column-gap:var(--plx-comp-date-picker-panel-gap);display:flex;flex-wrap:wrap;padding-block-end:var(--plx-comp-date-picker-panel-padding);padding-block-start:var(--plx-comp-date-picker-panel-padding);padding-inline-end:var(--plx-comp-date-picker-panel-padding);padding-inline-start:var(--plx-comp-date-picker-panel-padding);row-gap:var(--plx-comp-date-picker-panel-gap);}
 .plx-date-picker__presets{border-inline-end-color:var(--plx-comp-date-picker-presets-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-date-picker-presets-border-width);display:flex;flex-direction:column;padding-inline-end:var(--plx-comp-date-picker-presets-padding-inline-end);row-gap:var(--plx-comp-date-picker-presets-gap);}
 .plx-date-picker__preset{justify-content:flex-start;}
+/* width (P-52, owner 2026-10-19): by its role, or the whole width */
+.plx-date-picker.plx-date-picker--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-date-picker.plx-date-picker--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-date-picker.plx-date-picker--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-date-picker.plx-date-picker--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-date-picker.plx-date-picker--width-fill{inline-size:100%;}

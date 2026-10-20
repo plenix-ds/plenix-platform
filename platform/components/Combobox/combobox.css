@@ -1,5 +1,5 @@
 /* Plenix · Combobox (platform/components/Combobox). The field reuses .plx-input; the list is a menu surface (border only). */
-.plx-combobox{display:block;max-inline-size:var(--plx-comp-combobox-max-width);position:relative;}
+.plx-combobox{display:block;max-inline-size:min(var(--plx-comp-combobox-max-width),100%);min-inline-size:0;position:relative;}
 .plx-combobox__field{align-items:center;column-gap:var(--plx-comp-combobox-field-gap);cursor:text;display:flex;flex-wrap:wrap;padding-inline-end:var(--plx-comp-combobox-field-padding-inline-end);position:relative;row-gap:var(--plx-comp-combobox-field-row-gap);}
 .plx-combobox--multiple .plx-combobox__field{padding-block-end:var(--plx-comp-combobox-multiple-field-padding-block);padding-block-start:var(--plx-comp-combobox-multiple-field-padding-block);padding-inline-start:var(--plx-comp-combobox-multiple-field-padding-inline-start);}
 .plx-combobox__field:focus-within{border-bottom-color:var(--plx-comp-combobox-field-focus-border-color);border-left-color:var(--plx-comp-combobox-field-focus-border-color);border-right-color:var(--plx-comp-combobox-field-focus-border-color);border-top-color:var(--plx-comp-combobox-field-focus-border-color);}
@@ -27,3 +27,9 @@
 
 /* The field may still grow to hold multiple values; its minimum follows the small control role. */
 .plx-combobox--size-sm{--plx-comp-input-min-height:var(--plx-comp-combobox-small-min-height);}
+/* width (P-52, owner 2026-10-19): a picker by its role (a tag picker sm or md), or the whole width */
+.plx-combobox.plx-combobox--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-combobox.plx-combobox--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-combobox.plx-combobox--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-combobox.plx-combobox--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-combobox.plx-combobox--width-fill{inline-size:100%;}

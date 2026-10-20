@@ -28,7 +28,7 @@
        searches cannot be removed here
      strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
        clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
-     width: "auto" (default: as wide as its container gives it) | "bar" (the command bar's search: one fixed width, 240px,
+     width: "auto" (default: as wide as its container gives it) | "xs" | "sm" | "md" | "lg" (the field-width scale, P-52) | "bar" (the command bar's search: one fixed width, 240px,
        never squeezed; owner, 2026-10-14) | "fill" (the whole width: the find field inside a panel, a dialog or a menu)
      collapsed: the narrow bar's search (owner, 2026-10-14): an icon-only search button in the field's place (tinted while
        there is text) that opens the field across the bar, over its other controls; default false
@@ -152,7 +152,7 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
     'aria-haspopup': grid ? 'grid' : undefined,
     'aria-activedescendant': shown && active >= 0 ? (grid ? cellId(active, cell) : optId(active)) : undefined } : {};
   return (
-    <div ref={wrap} className={cx('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
+    <div ref={wrap} className={cx('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
       <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label="Searching" /> : <Icon name="search" />}</span>
       <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
         onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}

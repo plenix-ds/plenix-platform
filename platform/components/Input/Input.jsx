@@ -9,7 +9,8 @@
      Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
      Select.size: as Input.size; numeric values retain the native select size attribute.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
-     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*)
+     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
+     Select.width: the same values
      Input.data: the data font, for codes, hex values, links to copy (default false)
      Input.emphasis: semibold, for a record's title (default false)
      Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
@@ -86,9 +87,9 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
 });
 
 /* options: [{ value, label }] or children <option>s */
-export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, data = false, block = false, className, children, ...rest }, ref) {
+export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, ...rest }, ref) {
   return (
-    <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
+    <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
       <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>

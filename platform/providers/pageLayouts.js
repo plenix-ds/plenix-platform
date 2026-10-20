@@ -243,5 +243,8 @@ export const FIELD_RULES = {
     "FilterBar",
     "ActionBar",
     "AppHeader"
+  ],
+  "row": [
+    "ResourceList"
   ]
 };

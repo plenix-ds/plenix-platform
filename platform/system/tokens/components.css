@@ -4813,6 +4813,7 @@
   --plx-comp-resource-list-meta-text: var(--plx-sys-content-muted);
   --plx-comp-resource-list-meta-font-size: var(--plx-ref-font-size-12);
   --plx-comp-resource-list-actions-gap: var(--plx-sys-space-cluster-xs);
+  --plx-comp-resource-list-field-share: 45%;
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-retry-status-gap: var(--plx-sys-space-cluster-sm);

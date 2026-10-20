@@ -18,7 +18,7 @@ const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'task
 function standard() {
   const j = JSON.parse(fs.readFileSync(path.join(ROOT, 'platform/standards/layout.json'), 'utf8'));
   const f = j.fields || {};
-  return { fields: new Set(f.components || []), allowed: new Set([].concat(f.stretch || [], f.content || [])) };
+  return { fields: new Set(f.components || []), allowed: new Set([].concat(f.stretch || [], f.content || [], f.row || [])) };
 }
 function files() {
   const out = [];

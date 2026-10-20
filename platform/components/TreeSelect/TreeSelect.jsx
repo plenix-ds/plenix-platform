@@ -6,6 +6,8 @@
      <Field label="Folder"><TreeSelect nodes={folders} value={folder} onChange={setFolder} /></Field>
      <TreeSelect label="Categories" multiple nodes={categories} values={chosen} onChange={setChosen} search />
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      nodes: the hierarchy, as Tree takes it: [{ id, label, icon, children: [...] }]
      value: the chosen item's id (one choice)
      values: the checked items' ids, with multiple (the leaves: items without children)
@@ -76,7 +78,7 @@ function flatten(nodes, open, parent, out) {
   return out;
 }
 
-export function TreeSelect({ nodes = [], value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded,
+export function TreeSelect({ nodes = [], value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
   invalid, disabled, required, strings, id, className, ...rest }) {
   const t = Object.assign({}, STRINGS, strings);
   const base = 'plx-ts' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -162,7 +164,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
     </button>
   );
   return (
-    <div className={cx('plx-tree-select', multiple && 'plx-tree-select--multiple', open && 'is-open', disabled && 'is-disabled', className)}>
+    <div className={cx('plx-tree-select', width && 'plx-tree-select--width-' + width, multiple && 'plx-tree-select--multiple', open && 'is-open', disabled && 'is-disabled', className)}>
       <Popover anchorClassName="plx-tree-select__anchor" trigger={trigger} open={open} onOpenChange={(o) => { setOpen(o); if (!o) setText(''); }} label={name} size="md"
         initialFocus={search ? searchRef : firstRef.current} className="plx-tree-select__popover">
         <div className="plx-tree-select__panel">

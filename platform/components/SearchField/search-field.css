@@ -48,3 +48,8 @@
 
 /* Search already uses the toolbar height by default; this makes the shared small-size API explicit. */
 .plx-search--size-sm{--plx-comp-search-input-min-height:var(--plx-comp-search-small-min-height);}
+/* width (P-52, owner 2026-10-19): the scale joins auto, bar and fill */
+.plx-search.plx-search--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-search.plx-search--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-search.plx-search--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-search.plx-search--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}

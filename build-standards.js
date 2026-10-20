@@ -52,7 +52,7 @@ module.exports = function buildStandards(root, opts) {
     + '// the composition standard: what each region is for and the patterns it is built from; the guide; the fields rule\n'
     + 'export const PAGE_REGIONS = ' + JSON.stringify(REG, null, 2) + ';\n\n'
     + 'export const COMPOSITION_GUIDE = ' + JSON.stringify(std.decide || [], null, 2) + ';\n\n'
-    + 'export const FIELD_RULES = ' + JSON.stringify({ components: FLD.components || [], stretch: FLD.stretch || [], content: FLD.content || [] }, null, 2) + ';\n';
+    + 'export const FIELD_RULES = ' + JSON.stringify({ components: FLD.components || [], stretch: FLD.stretch || [], content: FLD.content || [], row: FLD.row || [] }, null, 2) + ';\n';
 
   // ---- system/layout-modes.css: how each mode is drawn
   const S = (mode) => '.plx-app-shell[data-plx-layout="' + mode + '"]';

@@ -19,8 +19,11 @@
      items[].meta: its details at the row's end (a date, a count, a Badge for a status); wrap technical values in
        <Text variant="data">
      items[].thumbnail: { src, alt, icon } the record's picture (media variant): a Thumbnail
-     items[].avatar: { name, src } a person or a team (avatar variant): an Avatar
+     items[].avatar: { name, src, gender } a person or a team (avatar variant): an Avatar
      items[].media: any content before the text, instead of a thumbnail or an avatar
+     items[].field: a field at the row's end (a tag picker, a quick edit; P-52): it takes a set share of the row
+       (--plx-comp-resource-list-field-share) and fills it, never wider; items[].fieldOnHover: shown only while the row is
+       hovered or focused, its space kept so the row never shifts
      items[].actions: controls at the row's end (with actions): ghost icon buttons or a menu; their own Tab stops
      items[].group: the heading the record sits under (grouped); groups keep the order they first appear in
      items[].disabled: the row's checkbox cannot be checked (a record people may not change)
@@ -71,7 +74,7 @@ function Row({ item, selectable, checked, onCheck, t }) {
     : item.onOpen ? <button type="button" className="plx-resource-list__opener" onClick={item.onOpen}>{name}</button>
       : <span className="plx-resource-list__opener">{name}</span>;
   const media = item.media !== undefined ? item.media
-    : item.avatar ? <Avatar name={item.avatar.name || (typeof name === 'string' ? name : '')} src={item.avatar.src} size="md" />
+    : item.avatar ? <Avatar name={item.avatar.name || (typeof name === 'string' ? name : '')} src={item.avatar.src} gender={item.avatar.gender} size="md" />
       : item.thumbnail ? <Thumbnail src={item.thumbnail.src} alt={item.thumbnail.alt} icon={item.thumbnail.icon} /> : null;
   return (
     <li className={cx('plx-resource-list__item', (item.href || item.onOpen) && 'is-interactive', checked && 'is-selected')}>
@@ -86,6 +89,7 @@ function Row({ item, selectable, checked, onCheck, t }) {
         {item.description ? <span className="plx-resource-list__description">{item.description}</span> : null}
       </span>
       {item.meta ? <span className="plx-resource-list__meta" data-plx-text-follow="size">{item.meta}</span> : null}
+      {item.field ? <span className={cx('plx-resource-list__field', item.fieldOnHover && 'plx-resource-list__field--hover')}>{item.field}</span> : null}
       {item.actions ? <span className="plx-resource-list__actions">{item.actions}</span> : null}
     </li>
   );

@@ -7,6 +7,8 @@
      <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
      <Combobox marks="radio" options={…} value={…} onChange={…} />                                     // radio select
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
      value: the chosen value, for a single choice
@@ -54,7 +56,7 @@ import { announce } from '../../utils/announce.jsx';
 
 const STRINGS = { loading: 'Loading…', error: 'The options could not be loaded', results: (n) => n + (n === 1 ? ' option' : ' options') };
 
-export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate,
+export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate, width,
   placeholder, label, invalid, disabled, emptyText = 'No matches', loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
   className, id, size, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
@@ -122,7 +124,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   };
   const optId = (i) => auto + '-o' + i;
   return (
-    <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
+    <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
       <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
           return <Tag key={v} onRemove={() => onChange(chosen.filter((x) => x !== v))} removeLabel={'Remove ' + t}>{t}</Tag>; }) : null}

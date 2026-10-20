@@ -14,7 +14,7 @@
      icon: an icon name shown at the start inside the border (decorative: the label says what the field is)
      start: a Button or a Select (or an array of them) joined to the field's start edge
      end: a Button or a Select (or an array of them) joined to the field's end edge
-     width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
+     width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*) | "fill"; full width by default
      compact: a short box (--plx-comp-input-group-compact-box-width), the value centered: a count between its buttons (NumberInput quantity)
      data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too

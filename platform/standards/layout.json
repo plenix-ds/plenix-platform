@@ -206,7 +206,7 @@
     }
   ],
   "fields": {
-    "$description": "Fields (Input, Select, Combobox, SearchField, NumberInput, Textarea, the pickers) are layout-neutral: they take their natural width, and the pattern they sit in sizes them. \"stretch\" patterns make a field fill its column; \"content\" patterns size it to its content. A field anywhere else is a composition error (check-system.js).",
+    "$description": "Fields (Input, Select, Combobox, SearchField, NumberInput, Textarea, the pickers) are layout-neutral: they take their natural width, and the pattern they sit in sizes them. \"stretch\" patterns make a field fill its column; \"content\" patterns size it to its content. A field anywhere else is a composition error (check-system.js). A field used alone (P-52, owner 2026-10-19) is never wider than its container (its own maximum and 100%, whichever is less) and never as wide as its placeholder or its chips; its width is chosen by what it holds, with the width prop on every field: \"xs\" | \"sm\" | \"md\" | \"lg\" (the field-width scale) | \"fill\". \"row\" patterns hold a field at a row's end: the row gives it a set share and the field fills it (ResourceList items[].field).",
     "components": [
       "Input",
       "Select",
@@ -292,6 +292,9 @@
       "InputGroup": "plx-input-group",
       "FileInput": "plx-file-input",
       "MentionInput": "plx-mention-input"
-    }
+    },
+    "row": [
+      "ResourceList"
+    ]
   }
 }

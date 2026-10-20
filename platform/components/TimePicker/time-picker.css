@@ -26,3 +26,9 @@
 .plx-time-picker__segment--period{margin-inline-start:var(--plx-comp-time-picker-segment-period-margin-inline-start);}
 .plx-time-picker__separator{color:var(--plx-comp-time-picker-separator-text);}
 .plx-time-picker__segments .plx-time-picker__icon{margin-inline-start:var(--plx-comp-time-picker-segments-icon-margin-inline-start);}
+/* width (P-52, owner 2026-10-19): by its role, or the whole width */
+.plx-time-picker.plx-time-picker--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-time-picker.plx-time-picker--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-time-picker.plx-time-picker--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-time-picker.plx-time-picker--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-time-picker.plx-time-picker--width-fill{inline-size:100%;}

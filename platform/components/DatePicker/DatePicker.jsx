@@ -8,6 +8,8 @@
      <Field label="Period"><DatePicker mode="range" value={period} onChange={setPeriod} presets /></Field>
      <Field label="Starts"><DatePicker mode="date-time" value={starts} onChange={setStarts} min={todayIso()} /></Field>
    Props:
+     width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
+       width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      mode: "single" (default; one date) | "range" (a start and an end) | "date-time" (a date and a time: one moment)
      value: "YYYY-MM-DD" (single), { start, end } of such dates (range), or "YYYY-MM-DDTHH:MM" (date-time); null when
        empty. Controlled with onChange
@@ -91,7 +93,7 @@ const zoneOf = (locale, style) => {
 };
 const monthBounds = (iso, n) => { const first = addMonths(iso.slice(0, 7) + '-01', n); return { start: first, end: addDays(addMonths(first, 1), -1) }; };
 
-export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single', value, defaultValue, onChange, presets, months, min, max,
+export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single', value, defaultValue, onChange, presets, months, min, max, width,
   isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, disabled, required, id,
   'aria-describedby': describedBy, locale: localeProp, strings, className, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
@@ -190,7 +192,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
     </div>
   );
   return (
-    <div ref={root} className={cx('plx-date-picker', 'plx-date-picker--' + (range ? 'range' : dateTime ? 'date-time' : 'single'), className)} onBlur={onBlur} {...rest}>
+    <div ref={root} className={cx('plx-date-picker', 'plx-date-picker--' + (range ? 'range' : dateTime ? 'date-time' : 'single'), width && 'plx-date-picker--width-' + width, className)} onBlur={onBlur} {...rest}>
       <Popover anchorClassName="plx-date-picker__anchor" trigger={field} triggerOn="manual" open={open} onOpenChange={(v) => { if (!v) close(true); }} label={t.dialog} size="auto"
         placement="bottom-start" focusOnOpen initialFocus={day} sheetOnNarrow={false}>
         <div className={cx('plx-date-picker__panel', presetList && 'plx-date-picker__panel--presets')}>

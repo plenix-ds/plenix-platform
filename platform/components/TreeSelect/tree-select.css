@@ -2,7 +2,7 @@
    item and a chevron; the panel is a Popover holding an optional SearchField and the tree, drawn with the Tree's classes
    and tokens (rows, indents, the + and − boxes, icons). This adds the trigger's layout, the panel's scroll area and the
    checkbox mark of the multiple form. */
-.plx-tree-select{display:block;max-inline-size:var(--plx-comp-tree-select-max-width);min-inline-size:0;}
+.plx-tree-select{display:block;max-inline-size:min(var(--plx-comp-tree-select-max-width),100%);min-inline-size:0;}
 .plx-tree-select__anchor{display:block;}
 .plx-tree-select__trigger{align-items:center;cursor:pointer;display:flex;inline-size:100%;padding-inline-end:var(--plx-comp-tree-select-trigger-padding-inline-end);position:relative;text-align:start;}
 .plx-tree-select__trigger:disabled{cursor:not-allowed;}
@@ -14,3 +14,9 @@
 .plx-tree-select__scroll{max-block-size:var(--plx-comp-tree-select-scroll-max-height);min-inline-size:0;overflow-x:hidden;overflow-y:auto;}
 .plx-tree-select__mark{margin-block-start:0;pointer-events:none;}
 .plx-tree-select__empty{color:var(--plx-comp-tree-select-empty-text);font-size:var(--plx-comp-tree-select-empty-font-size);margin-block-end:0;margin-block-start:0;padding-block-end:var(--plx-comp-tree-select-empty-padding-block);padding-block-start:var(--plx-comp-tree-select-empty-padding-block);}
+/* width (P-52, owner 2026-10-19): by its role, or the whole width */
+.plx-tree-select.plx-tree-select--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-tree-select.plx-tree-select--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-tree-select.plx-tree-select--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-tree-select.plx-tree-select--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-tree-select.plx-tree-select--width-fill{inline-size:100%;}
