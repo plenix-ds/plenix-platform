@@ -2578,7 +2578,7 @@ function Metric({
       title: label,
       meta: description,
       href: href,
-      className: (0, _cx.cx)('plx-metric-card', className)
+      className: (0, _cx.cx)('plx-metric--card', className)
     }, rest), /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)('plx-metric', 'plx-metric--' + size)
     }, figure, spark));

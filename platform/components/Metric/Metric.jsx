@@ -60,7 +60,7 @@ export function Metric({ value, label, unit, change, changeTone = 'neutral', des
   ) : null;
   if (card) {
     return (
-      <Card title={label} meta={description} href={href} className={cx('plx-metric-card', className)} {...rest}>
+      <Card title={label} meta={description} href={href} className={cx('plx-metric--card', className)} {...rest}>
         <div className={cx('plx-metric', 'plx-metric--' + size)}>
           {figure}
           {spark}

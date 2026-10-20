@@ -140,6 +140,7 @@ const NOT_VARIANTS = {
   'plx-nav-pane--screen': 'a responsive mode the shell sets (Narrow windows: the pane is a screen of its own; Platforms Standard 4.1)',
   'plx-side-panel--overlay': 'a responsive mode the shell sets (the inspector opens over the main region)',
   'plx-app-header__item--account': 'AppHeader.Account sets it on its own item (no fill around the picture)',
+  'plx-metric--card': 'Metric’s deprecated card prop (use MetricCard, the Metric card page); kept one release',
   'plx-table--fill': 'the grid’s modes in Table’s generated base (table-base.css from data-grid.css); a static Table never sets them',
   'plx-table--pages': 'the grid’s modes in Table’s generated base; a static Table never sets them',
   'plx-table--load-more': 'the grid’s modes in Table’s generated base; a static Table never sets them',
