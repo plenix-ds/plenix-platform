@@ -18,6 +18,9 @@
   --plx-ref-font-size-15: 0.9375rem;
   --plx-ref-font-size-18: 1.125rem;
   --plx-ref-font-size-20: 1.25rem;
+  --plx-ref-font-size-24: 1.5rem;
+  --plx-ref-font-size-28: 1.75rem;
+  --plx-ref-font-size-36: 2.25rem;
   /* ── TYPOGRAPHY: families ── */
   --plx-ref-font-sans: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --plx-ref-font-mono: "Reddit Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;

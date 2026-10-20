@@ -2500,6 +2500,8 @@
   --plx-comp-avatar-presence-ring-color: var(--plx-sys-surface-default);
   --plx-comp-avatar-presence-ring-width: var(--plx-sys-border-width-medium);
   --plx-comp-avatar-presence-offset: calc(-1 * var(--plx-sys-border-width-medium));
+  --plx-comp-avatar-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-avatar-border-color: var(--plx-sys-border-media);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-avatar-gender-icon-size: 75%;
@@ -4207,6 +4209,76 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-metric-trend-min-width: var(--plx-ref-size-96px);
   --plx-comp-metric-card-row-gap: var(--plx-sys-space-stack-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-metric-card-background: var(--plx-sys-surface-default);
+  --plx-comp-metric-card-border-color: var(--plx-sys-border-default);
+  --plx-comp-metric-card-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-metric-card-radius: var(--plx-sys-radius-surface-8px);
+  --plx-comp-metric-card-divider-color: var(--plx-sys-border-divider);
+  --plx-comp-metric-card-divider-width: var(--plx-sys-border-width-thin);
+  --plx-comp-metric-card-header-padding-block: var(--plx-sys-space-inset-md);
+  --plx-comp-metric-card-padding-inline: var(--plx-sys-space-inset-lg);
+  --plx-comp-metric-card-body-padding-block: var(--plx-sys-space-inset-lg);
+  --plx-comp-metric-card-footer-padding-block: var(--plx-sys-space-inset-md);
+  --plx-comp-metric-card-header-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-metric-card-heading-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-metric-card-title-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-metric-card-actions-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-metric-card-body-row-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-metric-card-beside-gap: var(--plx-sys-space-inline-lg);
+  --plx-comp-metric-card-title-text: var(--plx-sys-content-default);
+  --plx-comp-metric-card-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-metric-card-title-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-metric-card-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-metric-card-icon-text: var(--plx-sys-content-default);
+  --plx-comp-metric-card-context-text: var(--plx-sys-content-muted);
+  --plx-comp-metric-card-context-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-metric-card-value-text: var(--plx-sys-content-default);
+  --plx-comp-metric-card-value-font-family: var(--plx-sys-font-heading);
+  --plx-comp-metric-card-value-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-metric-card-value-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-metric-card-value-sm-font-size: var(--plx-ref-font-size-24);
+  --plx-comp-metric-card-value-md-font-size: var(--plx-ref-font-size-28);
+  --plx-comp-metric-card-value-lg-font-size: var(--plx-ref-font-size-36);
+  --plx-comp-metric-card-value-empty-text: var(--plx-sys-content-subtle);
+  --plx-comp-metric-card-unit-text: var(--plx-sys-content-muted);
+  --plx-comp-metric-card-unit-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-metric-card-figure-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-metric-card-change-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-metric-card-change-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-metric-card-delta-font-family: var(--plx-sys-font-data);
+  --plx-comp-metric-card-delta-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-metric-card-delta-good-text: var(--plx-sys-feedback-success-content);
+  --plx-comp-metric-card-delta-bad-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-metric-card-delta-neutral-text: var(--plx-sys-content-muted);
+  --plx-comp-metric-card-versus-text: var(--plx-sys-content-muted);
+  --plx-comp-metric-card-footer-text: var(--plx-sys-content-subtle);
+  --plx-comp-metric-card-footer-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-metric-card-label-text: var(--plx-sys-content-muted);
+  --plx-comp-metric-card-label-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-metric-card-small-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-metric-card-subtle-text: var(--plx-sys-content-subtle);
+  --plx-comp-metric-card-rows-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-metric-card-row-padding-block: var(--plx-sys-space-stack-xs);
+  --plx-comp-metric-card-cell-gap: var(--plx-ref-size-4px);
+  --plx-comp-metric-card-bar-height: var(--plx-ref-size-8px);
+  --plx-comp-metric-card-bar-radius: var(--plx-sys-shape-pill);
+  --plx-comp-metric-card-track-background: var(--plx-sys-surface-sunken);
+  --plx-comp-metric-card-week-bar-height: var(--plx-ref-size-40px);
+  --plx-comp-metric-card-week-bar-width: var(--plx-ref-size-12px);
+  --plx-comp-metric-card-day-height: var(--plx-ref-size-28px);
+  --plx-comp-metric-card-day-radius: var(--plx-sys-radius-detail-4px);
+  --plx-comp-metric-card-today-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-metric-card-today-outline-color: var(--plx-sys-content-default);
+  --plx-comp-metric-card-edge-width: var(--plx-sys-border-width-heavy);
+  --plx-comp-metric-card-on-color-text: var(--plx-sys-content-on-media);
+  --plx-comp-metric-card-on-color-divider: var(--plx-sys-content-on-media-muted);
+  --plx-comp-metric-card-tile-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-metric-card-link-hover-border-color: var(--plx-sys-border-strong);
+  --plx-comp-metric-card-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-metric-card-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-metric-card-focus-outline-offset: var(--plx-sys-focus-ring-offset);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-miller-columns-background: var(--plx-sys-surface-default);
