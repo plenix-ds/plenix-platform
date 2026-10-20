@@ -16,4 +16,3 @@ assert.ok(await page.evaluate(()=>document.querySelector('iframe').contentDocume
 assert.equal(requests.filter(u=>process.env.GLOBAL_EDITOR?/vendor\/tiptap\/tiptap.min.js/.test(u):/chunks\/tiptap-engine/.test(u)).length,process.env.GLOBAL_EDITOR?2:1,'engine initialized per frame, packaged chunk reused');
 assert.ok(requests.every(u=>u.startsWith('http://127.0.0.1:'+port)||u.startsWith('data:')),'no runtime remote requests');assert.deepEqual(errors,[]);console.log('PACKAGED_EDITOR_200_OK '+(process.env.TRUSTED_PACKAGE?'Trusted Types enforced; ':'')+'lazy local chunk; typing; per-window factory; no remote code or import effects');
 }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;});
-
