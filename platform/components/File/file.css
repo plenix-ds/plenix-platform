@@ -18,6 +18,8 @@ button.plx-file__name{cursor:pointer;}
   a.plx-file__name:hover{text-decoration-line:underline;}
   button.plx-file__name:hover{background-color:var(--plx-comp-file-name-hover-background);}
 }
+/* the hover look as a class (the spec's state pages, and browsers without hover) */
+button.plx-file__name.is-hover{background-color:var(--plx-comp-file-name-hover-background);}
 a.plx-file__name:focus-visible,
 button.plx-file__name:focus-visible{outline-color:var(--plx-comp-file-focus-outline-color);outline-offset:var(--plx-comp-file-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-file-focus-outline-width);}
 .plx-file__meta{color:var(--plx-comp-file-meta-text);column-gap:var(--plx-comp-file-text-gap);display:inline-flex;flex-shrink:0;font-size:var(--plx-comp-file-meta-font-size);line-height:var(--plx-comp-file-meta-line-height);white-space:nowrap;}

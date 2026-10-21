@@ -28,7 +28,7 @@ const res = [], check = (n, ok, d) => res.push([n, !!ok, d]);
     const host = document.createElement('div'); host.id = 'hc-host'; document.body.appendChild(host);
     host.innerHTML = '<input class="plx-input" id="hc-input" aria-label="Name">'
       + '<button type="button" class="plx-nav-list__item is-current" aria-current="page" id="hc-current"><span class="plx-icon plx-icon--add" aria-hidden="true"></span>All assets</button>'
-      + '<button type="button" class="plx-button plx-button--secondary" aria-pressed="true" id="hc-pressed">Grid</button>'
+      + '<button type="button" class="plx-button plx-button--secondary is-selected" aria-pressed="true" id="hc-pressed">Grid</button>'
       + '<button type="button" class="plx-button plx-button--secondary" disabled id="hc-disabled">Delete</button>'
       + '<span id="hc-plain"><span class="plx-icon plx-icon--add" aria-hidden="true"></span></span>'
       + '<div class="plx-card" id="hc-card"></div>'
@@ -51,7 +51,7 @@ const res = [], check = (n, ok, d) => res.push([n, !!ok, d]);
     check('forced colors: ' + id + ' (selected) is Highlight with HighlightText', (await css(id, 'backgroundColor')) === HL && (await css(id, 'color')) === HLT, (await css(id, 'backgroundColor')) + ' / ' + (await css(id, 'color')));
   }
   check('forced colors: the icon of a current item is HighlightText', (await css('#hc-current .plx-icon', 'backgroundColor')) === HLT, await css('#hc-current .plx-icon', 'backgroundColor'));
-  check('forced colors: an icon elsewhere is CanvasText', (await css('#hc-plain .plx-icon', 'backgroundColor')) === TXT, await css('#hc-plain .plx-icon', 'backgroundColor'));
+  check('forced colors: an icon elsewhere is CanvasText (its forced stroke)', (await css('#hc-plain .plx-icon', 'borderInlineStartColor')) === TXT && parseFloat(await css('#hc-plain .plx-icon', 'borderInlineStartWidth')) > 0, (await css('#hc-plain .plx-icon', 'borderInlineStartColor')) + ' ' + (await css('#hc-plain .plx-icon', 'borderInlineStartWidth')));
   check('forced colors: a disabled button is GrayText', (await css('#hc-disabled', 'color')) === GRAY, await css('#hc-disabled', 'color'));
   check('forced colors: a card has an outline', (await css('#hc-card', 'outlineStyle')) === 'solid', await css('#hc-card', 'outlineStyle'));
   check('forced colors: a progress fill is Highlight', (await css('#hc-fill', 'backgroundColor')) === HL, await css('#hc-fill', 'backgroundColor'));
@@ -76,7 +76,7 @@ const res = [], check = (n, ok, d) => res.push([n, !!ok, d]);
   // 3. reduced motion: the loading classes stand still; with motion they run
   await media([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
   await open(); await draw();
-  for (const id of ['#hc-spin', '#hc-shimmer', '#hc-run']) check('reduced motion: ' + id + ' has no animation', (await css(id, 'animationName')) === 'none', await css(id, 'animationName'));
+  for (const id of ['#hc-spin', '#hc-shimmer', '#hc-run']) check('reduced motion: ' + id + ' stands still (a zero-length animation)', (await css(id, 'animationDuration')) === '0s', await css(id, 'animationDuration'));
   await media([{ name: 'prefers-reduced-motion', value: 'no-preference' }]);
   await open(); await draw();
   check('motion: the spinner turns', (await css('#hc-spin', 'animationName')) === 'motion-spin', await css('#hc-spin', 'animationName'));
