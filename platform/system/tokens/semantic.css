@@ -127,6 +127,7 @@
   :root {
     --plx-sys-print-hidden: initial;
     --plx-sys-print-block-size: initial;
+    --plx-sys-print-max-block-size: initial;
     --plx-sys-print-overflow: initial;
     --plx-sys-print-position: initial;
     --plx-sys-print-shown: initial;
@@ -139,6 +140,7 @@
   :root {
     --plx-sys-print-hidden: none;
     --plx-sys-print-block-size: auto;
+    --plx-sys-print-max-block-size: none;
     --plx-sys-print-overflow: visible;
     --plx-sys-print-position: static;
     --plx-sys-print-shown: contents;

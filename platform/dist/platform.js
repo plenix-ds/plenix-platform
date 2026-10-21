@@ -18754,6 +18754,8 @@ function NextEngine(props) {
     id: viewportId,
     ref: holder,
     className: `${B}__grid-tableholder`,
+    "data-plx-height": lengthName(height),
+    "data-plx-fit": !isStatic && !height && mode !== 'pages' ? '' : undefined,
     role: "rowgroup",
     tabIndex: isStatic ? undefined : 0,
     onKeyDown: event => {

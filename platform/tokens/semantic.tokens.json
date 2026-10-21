@@ -608,6 +608,15 @@
         }
       }
     },
+    "print-max-block-size": {
+      "$value": "initial",
+      "$description": "On paper nothing is cut to a maximum height: a region with a set height (a data grid's) reads it. Not set on screen.",
+      "$extensions": {
+        "com.plenix": {
+          "print": "none"
+        }
+      }
+    },
     "print-overflow": {
       "$value": "initial",
       "$description": "On paper nothing scrolls: the shell's scrolling regions read it. Not set on screen.",
