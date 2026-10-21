@@ -45,8 +45,8 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 
 ## Also in this work
 
-- **Cells sitting 1.2 to 2.2px off center** (the behavior test's "vertical alignment not middle"): explained, not fixed;
-  a pixel change waits for the owner's decision. Measured with the test's own measure (space above / below the content,
+- **Cells sitting 1.2 to 2.2px off center** (the behavior test's "vertical alignment not middle"): fixed in 588cdf2d after
+  the owner chose option 1 (2026-10-21); every measured cell is now in the middle. The record below is what was decided. Measured with the test's own measure (space above / below the content,
   Short rows, at c1a0d260), and with the proposed fix injected in the test browser only:
 
   | Case | Density | Cell / content | Now | With the fix |
