@@ -20,6 +20,7 @@
      headingLevel: the heading level of the title (default 3)
      className: more classes on the card
    Behavior:
+     Media and image parts carry the layout as their own class, never an ancestor selector.
      With href or onOpen the whole card is one target (Card's opener) and one Tab stop; hover raises it, focus outlines it.
      The picture keeps its 16:9 frame before it loads, so nothing moves; it is decorative unless imageAlt says otherwise.
      Descriptions wrap; keep them to one or two lines.
@@ -41,12 +42,12 @@ export function FeatureCard({ title, description, variant = 'icon', icon, hue, t
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'icon';
   const picture = v === 'image' || (v === 'horizontal' && image && !icon);
   const media = picture && image
-    ? <Image src={image} alt={imageAlt} ratio={v === 'image' ? '16-9' : '1-1'} rounded={v === 'horizontal'} className="plx-feature-card__image" />
+    ? <Image src={image} alt={imageAlt} ratio={v === 'image' ? '16-9' : '1-1'} rounded={v === 'horizontal'} className={cx("plx-feature-card__image", "plx-feature-card__image--" + v)} />
     : <IconTile icon={icon || 'sparkle'} hue={hue} tone={tone} size="md" className="plx-feature-card__tile" />;
   return (
     <Card layout={v === 'horizontal' ? 'media-start' : 'media-first'} titleWrap title={title} meta={description} href={href} onOpen={onOpen} headingLevel={headingLevel}
       className={cx('plx-feature-card', 'plx-feature-card--' + v, className)} {...rest}>
-      <span className={cx('plx-feature-card__media', picture && 'plx-feature-card__media--image')}>{media}</span>
+      <span className={cx('plx-feature-card__media', picture && 'plx-feature-card__media--image', v === 'image' && 'plx-feature-card__media--bleed')}>{media}</span>
     </Card>
   );
 }

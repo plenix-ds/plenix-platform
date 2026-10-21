@@ -1,0 +1,33 @@
+{
+  "base": 2876,
+  "head": 2878,
+  "prefix": 1527,
+  "suffix": 458,
+  "diffs": [
+    {
+      "where": 1240,
+      "label": "div.ds-stack",
+      "textBefore": "UI Inventory07 Data Display & VisualizationCards and objectsFeature cardFeature card · BaseA Card that presents one feature or task: its icon tile (or a picture across the top), it",
+      "textAfter": "UI Inventory07 Data Display & VisualizationCards and objectsFeature cardFeature card · BaseA Card that presents one feature or task: its icon tile (or a picture across the top), it",
+      "parent": "ds-page-scroll",
+      "changes": {
+        "block-size": [
+          "7874.16px",
+          "7926.16px"
+        ],
+        "height": [
+          "7874.16px",
+          "7926.16px"
+        ],
+        "perspective-origin": [
+          "466px 3937.08px",
+          "466px 3963.08px"
+        ],
+        "transform-origin": [
+          "466px 3937.08px",
+          "466px 3963.08px"
+        ]
+      }
+    }
+  ]
+}

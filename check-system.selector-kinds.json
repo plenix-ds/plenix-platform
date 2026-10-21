@@ -937,11 +937,6 @@
    "combinator | .plx-entity-header--section .plx-entity-header__rule": 1,
    "combinator | .plx-entity-header--section .plx-entity-header__aside": 1
   },
-  "platform/patterns/FeatureCard/feature-card.css": {
-   "combinator | .plx-feature-card--image .plx-feature-card__media--image": 1,
-   "combinator | .plx-feature-card--image .plx-feature-card__image": 1,
-   "combinator | .plx-feature-card--horizontal .plx-feature-card__image": 1
-  },
   "platform/patterns/FileBrowser/file-browser.css": {
    "combinator | .plx-file-browser--tree .plx-file-browser__body": 1
   },
