@@ -52,7 +52,7 @@
       "$description": "RoleManager: the role’s title size (font-size-18)."
     },
     "role-manager-title-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-label-font-weight}",
       "$type": "fontWeight",
       "$description": "RoleManager: the titles’ weight (font-weight-semibold)."
     },

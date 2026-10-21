@@ -4,7 +4,7 @@
    markers that follow the writing direction and a code block that scrolls sideways. Rules read :where() so a component
    placed inside (a <Link>, a <Code>) keeps its own classes. Tokens: platform/tokens/components/rich-text.tokens.json
    (and the link, code and blockquote token files). */
-.plx-rich-text{color:var(--plx-comp-rich-text-text);font-family:var(--plx-comp-rich-text-font-family);overflow-wrap:break-word;word-spacing:normal;}
+.plx-rich-text{color:var(--plx-comp-rich-text-text);font-family:var(--plx-comp-rich-text-font-family);font-weight:var(--plx-sys-text-body-font-weight);letter-spacing:var(--plx-sys-text-body-letter-spacing);overflow-wrap:break-word;word-spacing:normal;}
 .plx-rich-text--article{font-size:var(--plx-comp-rich-text-article-font-size);line-height:var(--plx-comp-rich-text-article-line-height);max-inline-size:var(--plx-comp-rich-text-article-measure);}
 .plx-rich-text--compact{font-size:var(--plx-comp-rich-text-compact-font-size);line-height:var(--plx-comp-rich-text-compact-line-height);}
 /* the rhythm: no outer margins; the variant's gap between blocks, more above a heading */

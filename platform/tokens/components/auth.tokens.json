@@ -62,7 +62,7 @@
       "$description": "Auth: title font (font-heading)."
     },
     "auth-title-font-size": {
-      "$value": "{plx-ref.font-size-20}",
+      "$value": "{plx-sys.text-title-font-size}",
       "$type": "dimension",
       "$description": "Auth: title size (font-size-20)."
     },

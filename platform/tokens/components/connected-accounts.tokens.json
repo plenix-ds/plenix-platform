@@ -57,7 +57,7 @@
       "$description": "ConnectedAccounts: service name size (font-size-14)."
     },
     "connected-accounts-service-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-label-font-weight}",
       "$type": "fontWeight",
       "$description": "ConnectedAccounts: service name weight (font-weight-semibold)."
     },

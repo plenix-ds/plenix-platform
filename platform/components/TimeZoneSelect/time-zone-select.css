@@ -3,5 +3,5 @@
    Offsets are technical values: the data font. */
 .plx-time-zone-select__option{column-gap:var(--plx-comp-time-zone-select-option-gap);}
 .plx-time-zone-select__city{flex-basis:0%;flex-grow:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-time-zone-select__offset,.plx-time-zone-select__field-offset{color:var(--plx-comp-time-zone-select-offset-text);flex-shrink:0;font-family:var(--plx-comp-time-zone-select-offset-font-family);font-size:var(--plx-comp-time-zone-select-offset-font-size);font-weight:var(--plx-comp-time-zone-select-offset-font-weight);white-space:nowrap;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-time-zone-select__offset,.plx-time-zone-select__field-offset{color:var(--plx-comp-time-zone-select-offset-text);flex-shrink:0;font-family:var(--plx-comp-time-zone-select-offset-font-family);font-size:var(--plx-comp-time-zone-select-offset-font-size);font-weight:var(--plx-comp-time-zone-select-offset-font-weight);letter-spacing:var(--plx-sys-text-caption-letter-spacing);line-height:var(--plx-sys-text-caption-line-height);white-space:nowrap;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-time-zone-select__field-offset{margin-inline-end:var(--plx-comp-time-zone-select-field-offset-margin-inline-end);}

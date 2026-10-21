@@ -8,7 +8,7 @@
 .plx-connected-accounts__tile{flex-shrink:0;}
 .plx-connected-accounts__body{display:flex;flex-basis:var(--plx-comp-connected-accounts-body-min-width);flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-connected-accounts-body-gap);}
 .plx-connected-accounts__head{align-items:center;column-gap:var(--plx-comp-connected-accounts-head-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-connected-accounts-body-gap);}
-.plx-connected-accounts__service{color:var(--plx-comp-connected-accounts-service-text);font-family:var(--plx-comp-connected-accounts-service-font-family);font-size:var(--plx-comp-connected-accounts-service-font-size);font-weight:var(--plx-comp-connected-accounts-service-font-weight);line-height:var(--plx-comp-connected-accounts-service-line-height);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
+.plx-connected-accounts__service{color:var(--plx-comp-connected-accounts-service-text);font-family:var(--plx-comp-connected-accounts-service-font-family);font-size:var(--plx-comp-connected-accounts-service-font-size);font-weight:var(--plx-comp-connected-accounts-service-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-comp-connected-accounts-service-line-height);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
 .plx-connected-accounts__description,
 .plx-connected-accounts__detail,
 .plx-connected-accounts__error{font-size:var(--plx-comp-connected-accounts-detail-font-size);line-height:var(--plx-comp-connected-accounts-detail-line-height);margin-block-end:0;margin-block-start:0;}

@@ -22,12 +22,12 @@
       "$description": "Barcode: the human-readable line is a technical value, in the data font."
     },
     "barcode-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.text-secondary-font-size}",
       "$type": "dimension",
       "$description": "Barcode: the size of the human-readable line and of the invalid-value message."
     },
     "barcode-line-height": {
-      "$value": "{plx-ref.line-height-normal}",
+      "$value": "{plx-sys.text-secondary-line-height}",
       "$type": "number",
       "$description": "Barcode: the line height of the human-readable line."
     },

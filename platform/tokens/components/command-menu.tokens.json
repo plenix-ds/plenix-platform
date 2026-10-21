@@ -57,7 +57,7 @@
       "$description": "CommandMenu: a group heading size (as the menu group label)."
     },
     "command-menu-group-label-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-label-font-weight}",
       "$type": "fontWeight",
       "$description": "CommandMenu: a group heading weight (as the menu group label)."
     },

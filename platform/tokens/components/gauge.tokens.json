@@ -11,15 +11,15 @@
     "gauge-value-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Gauge: the value in the middle of the dial." },
     "gauge-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Gauge: the value is a technical value: the data font (Reddit Mono)." },
     "gauge-value-font-size": { "$value": "{plx-ref.font-size-20}", "$type": "dimension", "$description": "Gauge: the value's size (the metric's large value)." },
-    "gauge-value-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Gauge: the value's weight." },
+    "gauge-value-font-weight": { "$value": "{plx-sys.text-label-font-weight}", "$type": "fontWeight", "$description": "Gauge: the value's weight." },
     "gauge-value-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "Gauge: the value's line height." },
     "gauge-label-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Gauge: the words under the value (its unit or whole)." },
     "gauge-label-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "Gauge: the label's typeface (UI text)." },
-    "gauge-label-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "Gauge: the label's size." },
+    "gauge-label-font-size": { "$value": "{plx-sys.text-secondary-font-size}", "$type": "dimension", "$description": "Gauge: the label's size." },
     "gauge-label-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "Gauge: the label's line height." },
     "gauge-end-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Gauge: the minimum and maximum under the ends of the arc." },
     "gauge-end-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Gauge: the ends are technical values: the data font." },
-    "gauge-end-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Gauge: the ends' size (the tick labels' size)." },
+    "gauge-end-font-size": { "$value": "{plx-sys.text-caption-font-size}", "$type": "dimension", "$description": "Gauge: the ends' size (the tick labels' size)." },
     "gauge-end-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "Gauge: the ends' line height." },
     "gauge-end-inset": { "$value": "{plx-ref.size-12px}", "$type": "dimension", "$description": "Gauge: how far in from the dial's sides the ends sit, under the ends of the track." }
   }

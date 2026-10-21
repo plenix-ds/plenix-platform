@@ -67,12 +67,12 @@
       "$description": "TransferList: the title's typeface (UI text)."
     },
     "transfer-list-title-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.text-label-font-size}",
       "$type": "dimension",
       "$description": "TransferList: the title's size."
     },
     "transfer-list-title-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-label-font-weight}",
       "$type": "fontWeight",
       "$description": "TransferList: the title's weight."
     },

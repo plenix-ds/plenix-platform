@@ -22,7 +22,7 @@
     "upload-manager-actions-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "UploadManager: the gap between the head's actions and between the zone's pickers (space-inline-xs)." },
     "upload-manager-counts-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "UploadManager: the counts' color (content-muted)." },
     "upload-manager-counts-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "UploadManager: the counts and the percent are numbers: the data font (Reddit Mono)." },
-    "upload-manager-counts-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "UploadManager: the counts' size (12px)." },
+    "upload-manager-counts-font-size": { "$value": "{plx-sys.text-secondary-font-size}", "$type": "dimension", "$description": "UploadManager: the counts' size (12px)." },
     "upload-manager-counts-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "UploadManager: the counts' line height (16px)." },
     "upload-manager-drop-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "UploadManager: the drop zone's words (content-default)." },
     "upload-manager-drop-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "UploadManager: the drop zone's words' size (13px)." },

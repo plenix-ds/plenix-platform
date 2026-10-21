@@ -21,7 +21,7 @@
 .plx-input-group__box>.plx-input.plx-input-group__input--after-affix{padding-inline-start:var(--plx-comp-input-group-affix-gap);}
 .plx-input-group__box>.plx-input.plx-input-group__input--before-affix{padding-inline-end:var(--plx-comp-input-group-affix-gap);}
 /* the prefix and suffix: text that belongs to the value but is not part of it */
-.plx-input-group__affix{color:var(--plx-comp-input-group-affix-text);flex-shrink:0;font-family:var(--plx-comp-input-group-affix-font-family);font-size:var(--plx-comp-input-group-affix-font-size);line-height:var(--plx-comp-input-group-affix-line-height);user-select:none;white-space:nowrap;word-spacing:normal;}
+.plx-input-group__affix{color:var(--plx-comp-input-group-affix-text);flex-shrink:0;font-family:var(--plx-comp-input-group-affix-font-family);font-size:var(--plx-comp-input-group-affix-font-size);font-weight:var(--plx-sys-text-secondary-font-weight);letter-spacing:var(--plx-sys-text-secondary-letter-spacing);line-height:var(--plx-comp-input-group-affix-line-height);user-select:none;white-space:nowrap;word-spacing:normal;}
 .plx-input-group__affix--prefix{padding-inline-start:var(--plx-comp-input-group-padding-inline);}
 .plx-input-group__affix--suffix{padding-inline-end:var(--plx-comp-input-group-padding-inline);}
 .plx-input-group__icon+.plx-input-group__affix--prefix{padding-inline-start:var(--plx-comp-input-group-affix-gap);}

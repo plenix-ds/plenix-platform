@@ -62,7 +62,7 @@
       "$description": "FileRow: cell color: size, date, owner, percent (content-muted)."
     },
     "file-row-cell-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.text-secondary-font-size}",
       "$type": "dimension",
       "$description": "FileRow: cell size (font-size-12)."
     },

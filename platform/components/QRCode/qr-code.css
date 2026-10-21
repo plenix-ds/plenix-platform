@@ -19,7 +19,7 @@
 /* the caption: what scanning does, then the value in the data font */
 .plx-qr-code__caption{align-items:center;display:flex;flex-direction:column;row-gap:var(--plx-comp-qr-code-value-gap);text-align:center;}
 .plx-qr-code__text{color:var(--plx-comp-qr-code-caption-color);font-size:var(--plx-comp-qr-code-caption-font-size);line-height:var(--plx-comp-qr-code-caption-line-height);}
-.plx-qr-code__value{color:var(--plx-comp-qr-code-value-color);font-family:var(--plx-comp-qr-code-value-font-family);font-size:var(--plx-comp-qr-code-value-font-size);line-height:var(--plx-comp-qr-code-caption-line-height);overflow-wrap:anywhere;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-qr-code__value{color:var(--plx-comp-qr-code-value-color);font-family:var(--plx-comp-qr-code-value-font-family);font-size:var(--plx-comp-qr-code-value-font-size);font-weight:var(--plx-sys-text-caption-font-weight);letter-spacing:var(--plx-sys-text-caption-letter-spacing);line-height:var(--plx-comp-qr-code-caption-line-height);overflow-wrap:anywhere;word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* on an accent surface: the caption and value in the accent colors; the plate stays light */
 .plx-qr-code--on-accent .plx-qr-code__text{color:var(--plx-comp-qr-code-on-accent-caption-color);}
 .plx-qr-code--on-accent .plx-qr-code__value{color:var(--plx-comp-qr-code-on-accent-value-color);}

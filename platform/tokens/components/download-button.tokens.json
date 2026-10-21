@@ -3,8 +3,8 @@
   "plx-comp": {
     "download-button-meta-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "DownloadButton: the format and size after the label, in the muted text color." },
     "download-button-meta-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "DownloadButton: the format and size are technical values: the data font." },
-    "download-button-meta-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "DownloadButton: the size of the format and size (the data font one step under the 12px label)." },
-    "download-button-meta-font-weight": { "$value": "{plx-sys.font-weight-regular}", "$type": "fontWeight", "$description": "DownloadButton: the file facts are not emphasized." },
+    "download-button-meta-font-size": { "$value": "{plx-sys.text-caption-font-size}", "$type": "dimension", "$description": "DownloadButton: the size of the format and size (the data font one step under the 12px label)." },
+    "download-button-meta-font-weight": { "$value": "{plx-sys.text-caption-font-weight}", "$type": "fontWeight", "$description": "DownloadButton: the file facts are not emphasized." },
     "download-button-meta-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "DownloadButton: the space between the label and the file facts." },
     "download-button-percent-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "DownloadButton: the percent while it downloads, in the data font." },
     "download-button-percent-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "DownloadButton: the space between Downloading and the percent." }

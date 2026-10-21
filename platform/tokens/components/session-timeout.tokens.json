@@ -57,7 +57,7 @@
       "$description": "SessionTimeout: in the page: the title’s size (font-size-15, a dialog title’s)."
     },
     "session-timeout-title-font-weight": {
-      "$value": "{plx-sys.font-weight-bold}",
+      "$value": "{plx-sys.text-title-font-weight}",
       "$type": "fontWeight",
       "$description": "SessionTimeout: in the page: the title’s weight (font-weight-bold)."
     },

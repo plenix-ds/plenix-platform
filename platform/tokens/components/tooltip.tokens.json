@@ -77,7 +77,7 @@
       "$description": "Rich tooltip: the title's face (as Popover)."
     },
     "tooltip-rich-title-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-label-font-weight}",
       "$type": "fontWeight",
       "$description": "Rich tooltip: the title's weight."
     },

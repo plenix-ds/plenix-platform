@@ -27,7 +27,7 @@
       "$description": "Extended: the label's size."
     },
     "floating-action-button-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
+      "$value": "{plx-sys.text-label-font-weight}",
       "$type": "fontWeight",
       "$description": "Extended: the label's weight."
     },

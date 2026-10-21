@@ -20,6 +20,6 @@
 .plx-tooltip__bubble--rich::before{content:none;}
 .plx-tooltip__bubble--rich.is-open{pointer-events:auto;}
 .plx-tooltip__content{display:flex;flex-direction:column;row-gap:var(--plx-comp-tooltip-rich-gap);}
-.plx-tooltip__title{color:var(--plx-comp-tooltip-rich-title-text);font-family:var(--plx-comp-tooltip-rich-title-font-family);font-weight:var(--plx-comp-tooltip-rich-title-font-weight);word-spacing:normal;}
+.plx-tooltip__title{color:var(--plx-comp-tooltip-rich-title-text);font-family:var(--plx-comp-tooltip-rich-title-font-family);font-size:var(--plx-sys-text-label-font-size);font-weight:var(--plx-comp-tooltip-rich-title-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-sys-text-label-line-height);word-spacing:normal;}
 .plx-tooltip__body{display:block;}
 .plx-tooltip__action{display:flex;justify-content:flex-start;margin-block-start:var(--plx-comp-tooltip-rich-action-margin-block-start);}

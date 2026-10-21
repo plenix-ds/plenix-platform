@@ -77,7 +77,7 @@
       "$description": "CodeEditor: the code font (Reddit Mono), as CodeBlock."
     },
     "code-editor-font-size": {
-      "$value": "{plx-comp.code-block-pre-font-size}",
+      "$value": "{plx-sys.text-secondary-font-size}",
       "$type": "dimension",
       "$description": "CodeEditor: the code’s size, as CodeBlock."
     },

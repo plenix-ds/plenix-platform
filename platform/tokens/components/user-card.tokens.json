@@ -7,7 +7,7 @@
     "user-card-name-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "User card: the name (the card's heading)." },
     "user-card-name-font-family": { "$value": "{plx-sys.font-heading}", "$type": "fontFamily", "$description": "User card: the name's typeface (a heading)." },
     "user-card-name-font-size": { "$value": "{plx-ref.font-size-15}", "$type": "dimension", "$description": "User card: the name's size (default variant)." },
-    "user-card-name-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "User card: the name's weight." },
+    "user-card-name-font-weight": { "$value": "{plx-sys.text-label-font-weight}", "$type": "fontWeight", "$description": "User card: the name's weight." },
     "user-card-name-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "User card: the name's line height." },
     "user-card-secondary-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "User card: the line under the name (title, team or email), secondary text." },
     "user-card-secondary-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "User card: the line's size." },

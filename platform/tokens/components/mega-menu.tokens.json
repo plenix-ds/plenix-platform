@@ -8,7 +8,7 @@
     "mega-menu-heading-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "MegaMenu: the group heading's color (as Menu's group label)." },
     "mega-menu-heading-font-family": { "$value": "{plx-sys.font-heading}", "$type": "fontFamily", "$description": "MegaMenu: the group heading's face." },
     "mega-menu-heading-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "MegaMenu: the group heading's size." },
-    "mega-menu-heading-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "MegaMenu: the group heading's weight." },
+    "mega-menu-heading-font-weight": { "$value": "{plx-sys.text-heading-font-weight}", "$type": "fontWeight", "$description": "MegaMenu: the group heading's weight." },
     "mega-menu-heading-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "MegaMenu: the group heading's line, 16px." },
     "mega-menu-heading-margin-block-end": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "MegaMenu: the space under a group heading." },
     "mega-menu-link-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "MegaMenu: the gap between the links of a group." },

@@ -103,7 +103,7 @@ function measure() {
     const m = /var\((--plx-[a-z0-9-]+)/.exec(v || '');
     if (k === 'font-family') return m ? (FONTS[m[1]] || 'other') : 'other';
     if (/^normal$/.test(String(v).trim())) return 'sans';
-    return m && resolvedOf(m[1]) === MONO_WS ? 'mono' : 'other';
+    if (!m) return 'other'; const r = resolvedOf(m[1]); return r === MONO_WS ? 'mono' : r === 'normal' ? 'sans' : 'other';
   };
   const boundary = [], parts = {};
   for (const f of cssFiles()) {
@@ -134,6 +134,11 @@ function measure() {
     const base = p.includes('--') ? parts[p.replace(/--[a-z0-9-]+$/, '')] : null;
     const eff = { props: new Set([...x.props, ...(base ? base.props : [])]), byProp: {}, font: new Set(x.font && x.font.size ? x.font : ((base && base.font) || [])) }; // a variant's own font replaces its part's
     for (const src of [base, x]) if (src) for (const [k, set] of Object.entries(src.byProp)) { eff.byProp[k] = eff.byProp[k] || new Set(); for (const r of set) eff.byProp[k].add(r); }
+    // a part whose every variant sets what the part leaves out (a heading's size, from its size variant) is complete through them
+    if (!base) {
+      const vs = Object.keys(parts).filter((k) => k.startsWith(p + '--')).map((k) => parts[k]);
+      for (const k of PROPS) if (!eff.props.has(k) && vs.length && vs.every((v) => v.props.has(k))) { eff.props.add(k); eff.byProp[k] = new Set(vs.flatMap((v) => [...(v.byProp[k] || [])])); }
+    }
     const font = eff.font.size === 1 && !eff.font.has('other') ? [...eff.font][0] : null;
     const own = PROPS.filter((k) => x.props.has(k)), all = PROPS.filter((k) => eff.props.has(k));
     const fromRole = {}; for (const [k, set] of Object.entries(eff.byProp)) for (const r of set) if (r !== 'none' && !r.startsWith('any:')) (fromRole[r] = fromRole[r] || new Set()).add(k);

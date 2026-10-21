@@ -6,7 +6,7 @@
 *,*::before,*::after{box-sizing:border-box;}
 img:not([class*="plx-"]){max-inline-size:100%;}
 :where(:not([class*="plx-"])){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
-body{background-color:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-default);cursor:var(--plx-sys-page-drag-cursor,var(--plx-sys-page-resize-cursor,auto));font-family:var(--plx-sys-font-body);font-size:var(--plx-ref-font-size-13);line-height:var(--plx-ref-line-height-normal);user-select:var(--plx-sys-page-drag-user-select,auto);word-spacing:normal;-webkit-user-select:var(--plx-sys-page-drag-user-select,auto);}
+body{background-color:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-default);cursor:var(--plx-sys-page-drag-cursor,var(--plx-sys-page-resize-cursor,auto));font-family:var(--plx-sys-text-body-font-family);font-size:var(--plx-sys-text-body-font-size);font-weight:var(--plx-sys-text-body-font-weight);letter-spacing:var(--plx-sys-text-body-letter-spacing);line-height:var(--plx-sys-text-body-line-height);user-select:var(--plx-sys-page-drag-user-select,auto);word-spacing:var(--plx-sys-text-body-word-spacing);-webkit-user-select:var(--plx-sys-page-drag-user-select,auto);}
 /* a raw heading (rich text) stays with what follows it on paper */
 :where(h1:not([class*="plx-"]), h2:not([class*="plx-"]), h3:not([class*="plx-"]), h4:not([class*="plx-"])){break-after:var(--plx-sys-print-keep,auto);}
 /* a raw external link prints its address inside plx-print-urls (print.css; Link prints its own) */

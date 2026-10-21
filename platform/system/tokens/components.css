@@ -161,7 +161,7 @@
   --plx-comp-input-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-input-text: var(--plx-sys-content-default);
   --plx-comp-input-font-family: var(--plx-sys-font-body);
-  --plx-comp-input-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-input-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-input-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-input-max-width: var(--plx-ref-size-600px);
   --plx-comp-input-min-height: var(--plx-sys-control-height-standard);
@@ -172,8 +172,8 @@
   --plx-comp-input-invalid-border-color: var(--plx-sys-feedback-danger-solid);
   --plx-comp-input-disabled-background: var(--plx-sys-fill-neutral);
   --plx-comp-input-readonly-background: var(--plx-sys-surface-sunken);
-  --plx-comp-textarea-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-textarea-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-textarea-font-size: var(--plx-sys-text-secondary-font-size);
+  --plx-comp-textarea-line-height: var(--plx-sys-text-secondary-line-height);
   --plx-comp-textarea-min-height: var(--plx-ref-size-60px);
   --plx-comp-textarea-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-select-max-width: var(--plx-ref-size-600px);
@@ -882,7 +882,7 @@
   --plx-comp-app-header-icon-size: var(--plx-ref-size-24px);
   --plx-comp-app-header-item-size: var(--plx-ref-size-40px);
   --plx-comp-app-header-name-width: var(--plx-ref-size-200px);
-  --plx-comp-avatar-font-weight: var(--plx-sys-font-weight-bold);
+  --plx-comp-avatar-font-weight: var(--plx-sys-text-title-font-weight);
   --plx-comp-avatar-line-height: var(--plx-ref-line-height-none);
   --plx-comp-avatar-20-height: var(--plx-ref-size-20px);
   --plx-comp-avatar-20-radius: var(--plx-sys-radius-avatar-4px);
@@ -1102,9 +1102,9 @@
   --plx-comp-collapsible-section-toggle-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-collapsible-section-toggle-font-family: var(--plx-sys-font-label);
   --plx-comp-collapsible-section-toggle-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-collapsible-section-toggle-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-collapsible-section-toggle-font-weight: var(--plx-sys-text-display-font-weight);
   --plx-comp-collapsible-section-toggle-letter-spacing: var(--plx-sys-letter-spacing-caps);
-  --plx-comp-collapsible-section-toggle-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-collapsible-section-toggle-line-height: var(--plx-sys-text-display-line-height);
   --plx-comp-collapsible-section-toggle-min-height: var(--plx-sys-control-height-prominent);
   --plx-comp-collapsible-section-toggle-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-collapsible-section-toggle-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
@@ -1593,10 +1593,10 @@
   --plx-comp-section-heading-font-family: var(--plx-sys-font-label);
   --plx-comp-section-heading-font-size: var(--plx-ref-font-size-10);
   --plx-comp-section-heading-level-2-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-section-heading-level-3-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-section-heading-level-3-font-size: var(--plx-sys-text-eyebrow-font-size);
   --plx-comp-section-heading-level-4-font-size: var(--plx-ref-font-size-10);
-  --plx-comp-section-heading-font-weight: var(--plx-sys-font-weight-bold);
-  --plx-comp-section-heading-letter-spacing: var(--plx-sys-letter-spacing-widest);
+  --plx-comp-section-heading-font-weight: var(--plx-sys-text-eyebrow-font-weight);
+  --plx-comp-section-heading-letter-spacing: var(--plx-sys-text-eyebrow-letter-spacing);
   --plx-comp-section-heading-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-section-heading-toggle-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-section-heading-toggle-min-height: var(--plx-sys-control-height-standard);
@@ -2549,7 +2549,7 @@
   --plx-comp-auth-header-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-auth-title-text: var(--plx-sys-content-default);
   --plx-comp-auth-title-font-family: var(--plx-sys-font-heading);
-  --plx-comp-auth-title-font-size: var(--plx-ref-font-size-20);
+  --plx-comp-auth-title-font-size: var(--plx-sys-text-title-font-size);
   --plx-comp-auth-title-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-auth-title-line-height: var(--plx-ref-size-28px);
   --plx-comp-auth-muted-text: var(--plx-sys-content-muted);
@@ -2648,8 +2648,8 @@
   --plx-comp-barcode-bar: var(--plx-sys-surface-media);
   --plx-comp-barcode-text: var(--plx-sys-surface-media);
   --plx-comp-barcode-font-family: var(--plx-sys-font-data);
-  --plx-comp-barcode-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-barcode-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-barcode-font-size: var(--plx-sys-text-secondary-font-size);
+  --plx-comp-barcode-line-height: var(--plx-sys-text-secondary-line-height);
   --plx-comp-barcode-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-barcode-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-barcode-sm-height: var(--plx-ref-size-48px);
@@ -2671,7 +2671,7 @@
   --plx-comp-blockquote-quote-line-height: var(--plx-ref-size-20px);
   --plx-comp-blockquote-citation-text: var(--plx-sys-content-muted);
   --plx-comp-blockquote-citation-font-family: var(--plx-sys-font-body);
-  --plx-comp-blockquote-citation-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-blockquote-citation-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-blockquote-citation-line-height: var(--plx-ref-size-16px);
   --plx-comp-blockquote-pull-rule-color: var(--plx-sys-border-strong);
   --plx-comp-blockquote-pull-rule-width: var(--plx-sys-border-width-heavy);
@@ -2934,8 +2934,8 @@
   --plx-comp-chart-caption-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-chart-title-text: var(--plx-sys-content-default);
   --plx-comp-chart-title-font-family: var(--plx-sys-font-label);
-  --plx-comp-chart-title-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-chart-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-chart-title-font-size: var(--plx-sys-text-heading-font-size);
+  --plx-comp-chart-title-font-weight: var(--plx-sys-text-heading-font-weight);
   --plx-comp-chart-title-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-chart-description-text: var(--plx-sys-content-subtle);
   --plx-comp-chart-description-font-size: var(--plx-ref-font-size-12);
@@ -2984,7 +2984,7 @@
   --plx-comp-chart-axis-tick-offset: var(--plx-ref-size-8px);
   --plx-comp-chart-axis-label-text: var(--plx-sys-content-subtle);
   --plx-comp-chart-axis-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-chart-axis-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-chart-axis-label-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-chart-axis-label-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-chart-body-gap: var(--plx-sys-space-inline-lg);
   --plx-comp-chart-legend-end-max-width: var(--plx-ref-size-200px);
@@ -3023,7 +3023,7 @@
   --plx-comp-chart-tooltip-list-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-chart-tooltip-item-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-chart-tooltip-font-family: var(--plx-sys-font-label);
-  --plx-comp-chart-tooltip-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-chart-tooltip-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-chart-tooltip-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-chart-tooltip-title-text: var(--plx-sys-content-default);
   --plx-comp-chart-tooltip-title-font-weight: var(--plx-sys-font-weight-semibold);
@@ -3048,14 +3048,14 @@
   --plx-comp-chart-threshold-line-width: var(--plx-sys-border-width-medium);
   --plx-comp-chart-reference-label-text: var(--plx-sys-content-default);
   --plx-comp-chart-reference-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-chart-reference-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-chart-reference-label-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-chart-reference-label-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-chart-reference-label-offset: var(--plx-ref-size-4px);
   --plx-comp-chart-reference-label-halo-color: var(--plx-sys-surface-default);
   --plx-comp-chart-reference-label-halo-width: var(--plx-sys-border-width-thick);
   --plx-comp-chart-reference-value-text: var(--plx-sys-content-subtle);
   --plx-comp-chart-reference-value-font-family: var(--plx-sys-font-data);
-  --plx-comp-chart-reference-value-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-chart-reference-value-font-weight: var(--plx-sys-text-caption-font-weight);
   --plx-comp-chart-annotation-ring-color: var(--plx-sys-content-default);
   --plx-comp-chart-annotation-ring-width: var(--plx-sys-border-width-medium);
   --plx-comp-chart-annotation-leader-color: var(--plx-sys-content-subtle);
@@ -3063,7 +3063,7 @@
   --plx-comp-chart-annotation-band-background: var(--plx-sys-surface-sunken);
   --plx-comp-chart-annotation-label-text: var(--plx-sys-content-default);
   --plx-comp-chart-annotation-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-chart-annotation-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-chart-annotation-label-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-chart-annotation-label-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-chart-annotation-label-halo-color: var(--plx-sys-surface-default);
   --plx-comp-chart-annotation-label-halo-width: var(--plx-sys-border-width-thick);
@@ -3099,7 +3099,7 @@
   --plx-comp-code-editor-caret-color: var(--plx-comp-input-text);
   --plx-comp-code-editor-placeholder-text: var(--plx-comp-input-placeholder-text);
   --plx-comp-code-editor-font-family: var(--plx-comp-code-block-pre-font-family);
-  --plx-comp-code-editor-font-size: var(--plx-comp-code-block-pre-font-size);
+  --plx-comp-code-editor-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-code-editor-line-height: var(--plx-comp-code-block-pre-line-height);
   --plx-comp-code-editor-padding-block: var(--plx-comp-code-block-pre-padding-block);
   --plx-comp-code-editor-padding-inline: var(--plx-comp-code-block-pre-padding-inline);
@@ -3181,7 +3181,7 @@
   --plx-comp-command-menu-group-label-text: var(--plx-sys-content-muted);
   --plx-comp-command-menu-group-label-font-family: var(--plx-sys-font-label);
   --plx-comp-command-menu-group-label-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-command-menu-group-label-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-command-menu-group-label-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-command-menu-group-label-padding-block-start: var(--plx-sys-space-inset-sm);
   --plx-comp-command-menu-group-label-padding-block-end: var(--plx-sys-space-inset-xs);
   --plx-comp-command-menu-item-text: var(--plx-sys-content-default);
@@ -3230,11 +3230,11 @@
   --plx-comp-commerce-search-width: var(--plx-ref-size-560px);
   --plx-comp-commerce-title-text: var(--plx-sys-content-default);
   --plx-comp-commerce-title-font-family: var(--plx-sys-font-heading);
-  --plx-comp-commerce-title-font-size: var(--plx-ref-font-size-20);
-  --plx-comp-commerce-title-font-weight: var(--plx-sys-font-weight-bold);
+  --plx-comp-commerce-title-font-size: var(--plx-sys-text-title-font-size);
+  --plx-comp-commerce-title-font-weight: var(--plx-sys-text-title-font-weight);
   --plx-comp-commerce-title-line-height: var(--plx-ref-line-height-snug);
   --plx-comp-commerce-subtitle-font-size: var(--plx-ref-font-size-15);
-  --plx-comp-commerce-subtitle-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-commerce-subtitle-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-commerce-subtitle-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-commerce-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-commerce-focus-outline-offset: var(--plx-sys-focus-ring-offset);
@@ -3248,7 +3248,7 @@
   --plx-comp-commerce-line-text-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-commerce-line-total-width: var(--plx-ref-size-80px);
   --plx-comp-commerce-line-total-font-family: var(--plx-sys-font-data);
-  --plx-comp-commerce-line-total-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-commerce-line-total-font-weight: var(--plx-sys-text-heading-font-weight);
   --plx-comp-commerce-placeholder-background: var(--plx-sys-surface-sunken);
   --plx-comp-commerce-placeholder-text: var(--plx-sys-content-subtle);
   --plx-comp-commerce-summary-gap: var(--plx-sys-space-stack-xs);
@@ -3274,12 +3274,12 @@
   --plx-comp-comparison-view-head-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-comparison-view-title-text: var(--plx-sys-content-default);
   --plx-comp-comparison-view-title-font-family: var(--plx-sys-font-label);
-  --plx-comp-comparison-view-title-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-comparison-view-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-comparison-view-title-font-size: var(--plx-sys-text-heading-font-size);
+  --plx-comp-comparison-view-title-font-weight: var(--plx-sys-text-heading-font-weight);
   --plx-comp-comparison-view-title-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-comparison-view-meta-text: var(--plx-sys-content-subtle);
   --plx-comp-comparison-view-meta-font-family: var(--plx-sys-font-data);
-  --plx-comp-comparison-view-meta-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-comparison-view-meta-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-comparison-view-meta-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-comparison-view-body-gap: var(--plx-sys-space-stack-md);
   --plx-comp-comparison-view-scroll-height: var(--plx-ref-size-320px);
@@ -3313,7 +3313,7 @@
   --plx-comp-connected-accounts-service-text: var(--plx-sys-content-default);
   --plx-comp-connected-accounts-service-font-family: var(--plx-sys-font-heading);
   --plx-comp-connected-accounts-service-font-size: var(--plx-ref-font-size-14);
-  --plx-comp-connected-accounts-service-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-connected-accounts-service-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-connected-accounts-service-line-height: var(--plx-ref-size-20px);
   --plx-comp-connected-accounts-detail-font-size: var(--plx-ref-font-size-12);
   --plx-comp-connected-accounts-detail-line-height: var(--plx-ref-size-16px);
@@ -3463,8 +3463,8 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-details-text: var(--plx-sys-content-default);
   --plx-comp-details-font-family: var(--plx-sys-font-body);
-  --plx-comp-details-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-details-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-details-font-size: var(--plx-sys-text-body-font-size);
+  --plx-comp-details-line-height: var(--plx-sys-text-secondary-line-height);
   --plx-comp-details-summary-text: var(--plx-sys-content-default);
   --plx-comp-details-summary-hover-background: var(--plx-sys-state-hover);
   --plx-comp-details-summary-radius: var(--plx-sys-radius-control-4px);
@@ -3486,7 +3486,7 @@
   --plx-comp-details-bordered-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-details-bordered-content-indent: calc(var(--plx-sys-space-inset-sm) + var(--plx-sys-icon-size-sm) + var(--plx-sys-space-inline-xs));
   --plx-comp-details-bordered-summary-radius: var(--plx-sys-shape-none);
-  --plx-comp-details-inline-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-details-inline-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-details-inline-summary-text: var(--plx-sys-content-muted);
   --plx-comp-details-inline-summary-hover-text: var(--plx-sys-content-default);
   --plx-comp-details-inline-summary-font-weight: var(--plx-sys-font-weight-regular);
@@ -3502,7 +3502,7 @@
   --plx-comp-diagram-terminal-radius: var(--plx-sys-shape-pill);
   --plx-comp-diagram-label-text: var(--plx-sys-content-default);
   --plx-comp-diagram-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-diagram-label-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-diagram-label-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-diagram-label-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-diagram-label-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-diagram-label-padding-inline: var(--plx-sys-space-inline-sm);
@@ -3512,7 +3512,7 @@
   --plx-comp-diagram-connector-color: var(--plx-sys-border-strong);
   --plx-comp-diagram-connector-width: var(--plx-sys-border-width-thin);
   --plx-comp-diagram-connector-label-text: var(--plx-sys-content-subtle);
-  --plx-comp-diagram-connector-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-diagram-connector-label-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-diagram-connector-label-halo-color: var(--plx-sys-surface-default);
   --plx-comp-diagram-connector-label-halo-width: var(--plx-ref-size-4px);
   --plx-comp-diagram-group-background: var(--plx-sys-surface-sunken);
@@ -3526,7 +3526,7 @@
   --plx-comp-document-viewer-gap: var(--plx-sys-space-stack-md);
   --plx-comp-document-viewer-height: var(--plx-ref-size-560px);
   --plx-comp-document-viewer-font: var(--plx-sys-font-data);
-  --plx-comp-document-viewer-text-size: var(--plx-ref-font-size-13);
+  --plx-comp-document-viewer-text-size: var(--plx-sys-text-body-font-size);
   --plx-comp-document-viewer-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-document-viewer-zoom-50: 0.5;
   --plx-comp-document-viewer-zoom-75: 0.75;
@@ -3538,8 +3538,8 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-download-button-meta-text: var(--plx-sys-content-muted);
   --plx-comp-download-button-meta-font-family: var(--plx-sys-font-data);
-  --plx-comp-download-button-meta-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-download-button-meta-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-download-button-meta-font-size: var(--plx-sys-text-caption-font-size);
+  --plx-comp-download-button-meta-font-weight: var(--plx-sys-text-caption-font-weight);
   --plx-comp-download-button-meta-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-download-button-percent-font-family: var(--plx-sys-font-data);
   --plx-comp-download-button-percent-gap: var(--plx-sys-space-inline-xs);
@@ -3755,8 +3755,8 @@
   --plx-comp-figure-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-figure-caption-text: var(--plx-sys-content-muted);
   --plx-comp-figure-caption-font-family: var(--plx-sys-font-body);
-  --plx-comp-figure-caption-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-figure-caption-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-figure-caption-font-size: var(--plx-sys-text-secondary-font-size);
+  --plx-comp-figure-caption-line-height: var(--plx-sys-text-secondary-line-height);
   --plx-comp-figure-caption-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-figure-caption-max-width: var(--plx-ref-size-560px);
   --plx-comp-figure-credit-text: var(--plx-sys-content-subtle);
@@ -3777,8 +3777,8 @@
   --plx-comp-file-name-text: var(--plx-sys-content-default);
   --plx-comp-file-name-font-family: var(--plx-sys-font-body);
   --plx-comp-file-name-data-font-family: var(--plx-sys-font-data);
-  --plx-comp-file-name-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-file-name-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-file-name-font-size: var(--plx-sys-text-body-font-size);
+  --plx-comp-file-name-font-weight: var(--plx-sys-text-body-font-weight);
   --plx-comp-file-name-line-height: var(--plx-ref-size-20px);
   --plx-comp-file-name-radius: var(--plx-sys-radius-control-4px);
   --plx-comp-file-name-hover-background: var(--plx-sys-state-hover);
@@ -3831,7 +3831,7 @@
   --plx-comp-file-list-bar-min-height: var(--plx-sys-control-height-toolbar);
   --plx-comp-file-list-count-text: var(--plx-sys-content-muted);
   --plx-comp-file-list-count-font-family: var(--plx-sys-font-data);
-  --plx-comp-file-list-count-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-file-list-count-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-file-list-count-line-height: var(--plx-sys-label-height-16px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
@@ -3848,7 +3848,7 @@
   --plx-comp-file-row-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-file-row-actions-padding-inline-end: var(--plx-sys-space-inset-xs);
   --plx-comp-file-row-cell-text: var(--plx-sys-content-muted);
-  --plx-comp-file-row-cell-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-file-row-cell-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-file-row-cell-line-height: var(--plx-ref-size-16px);
   --plx-comp-file-row-data-font-family: var(--plx-sys-font-data);
   --plx-comp-file-row-size-width: var(--plx-ref-size-100px);
@@ -3925,7 +3925,7 @@
   --plx-comp-floating-action-button-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-floating-action-button-font-family: var(--plx-sys-font-label);
   --plx-comp-floating-action-button-font-size: var(--plx-ref-font-size-14);
-  --plx-comp-floating-action-button-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-floating-action-button-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-floating-action-button-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-floating-action-button-focus-ring-color: var(--plx-sys-focus-ring-color);
   --plx-comp-floating-action-button-focus-ring-width: var(--plx-sys-border-width-medium);
@@ -4009,15 +4009,15 @@
   --plx-comp-gauge-value-text: var(--plx-sys-content-default);
   --plx-comp-gauge-value-font-family: var(--plx-sys-font-data);
   --plx-comp-gauge-value-font-size: var(--plx-ref-font-size-20);
-  --plx-comp-gauge-value-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-gauge-value-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-gauge-value-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-gauge-label-text: var(--plx-sys-content-subtle);
   --plx-comp-gauge-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-gauge-label-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-gauge-label-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-gauge-label-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-gauge-end-text: var(--plx-sys-content-subtle);
   --plx-comp-gauge-end-font-family: var(--plx-sys-font-data);
-  --plx-comp-gauge-end-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-gauge-end-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-gauge-end-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-gauge-end-inset: var(--plx-ref-size-12px);
 }
@@ -4061,7 +4061,7 @@
   --plx-comp-heat-map-scale-font-family: var(--plx-sys-font-label);
   --plx-comp-heat-map-scale-value-font-family: var(--plx-sys-font-data);
   --plx-comp-heat-map-scale-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-heat-map-scale-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-heat-map-scale-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-heat-map-scale-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-heat-map-scale-swatch-width: var(--plx-ref-size-16px);
   --plx-comp-heat-map-scale-swatch-height: var(--plx-ref-size-12px);
@@ -4143,7 +4143,7 @@
   --plx-comp-image-fallback-background: var(--plx-sys-fill-neutral);
   --plx-comp-image-fallback-text: var(--plx-sys-content-muted);
   --plx-comp-image-fallback-font-family: var(--plx-sys-font-body);
-  --plx-comp-image-fallback-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-image-fallback-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-image-fallback-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-image-fallback-icon-size: var(--plx-sys-icon-size-lg);
   --plx-comp-image-fallback-gap: var(--plx-sys-space-stack-xs);
@@ -4372,7 +4372,7 @@
   --plx-comp-mega-menu-heading-text: var(--plx-sys-content-muted);
   --plx-comp-mega-menu-heading-font-family: var(--plx-sys-font-heading);
   --plx-comp-mega-menu-heading-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-mega-menu-heading-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-mega-menu-heading-font-weight: var(--plx-sys-text-heading-font-weight);
   --plx-comp-mega-menu-heading-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-mega-menu-heading-margin-block-end: var(--plx-sys-space-stack-sm);
   --plx-comp-mega-menu-link-gap: var(--plx-sys-space-stack-xs);
@@ -4428,7 +4428,7 @@
   --plx-comp-metric-card-context-font-size: var(--plx-ref-font-size-12);
   --plx-comp-metric-card-value-text: var(--plx-sys-content-default);
   --plx-comp-metric-card-value-font-family: var(--plx-sys-font-heading);
-  --plx-comp-metric-card-value-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-metric-card-value-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-metric-card-value-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-metric-card-value-sm-font-size: var(--plx-ref-font-size-24);
   --plx-comp-metric-card-value-md-font-size: var(--plx-ref-font-size-28);
@@ -4440,7 +4440,7 @@
   --plx-comp-metric-card-change-font-size: var(--plx-ref-font-size-13);
   --plx-comp-metric-card-change-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-metric-card-delta-font-family: var(--plx-sys-font-data);
-  --plx-comp-metric-card-delta-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-metric-card-delta-font-weight: var(--plx-sys-text-heading-font-weight);
   --plx-comp-metric-card-delta-good-text: var(--plx-sys-feedback-success-content);
   --plx-comp-metric-card-delta-bad-text: var(--plx-sys-feedback-danger-content);
   --plx-comp-metric-card-delta-neutral-text: var(--plx-sys-content-muted);
@@ -4549,7 +4549,7 @@
   --plx-comp-network-graph-node-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-network-graph-label-text: var(--plx-sys-content-default);
   --plx-comp-network-graph-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-network-graph-label-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-network-graph-label-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-network-graph-label-offset: var(--plx-ref-size-16px);
   --plx-comp-network-graph-label-halo-color: var(--plx-sys-surface-default);
   --plx-comp-network-graph-label-halo-width: var(--plx-ref-size-4px);
@@ -4679,7 +4679,7 @@
   --plx-comp-pie-chart-center-value-text: var(--plx-sys-content-default);
   --plx-comp-pie-chart-center-value-font-family: var(--plx-sys-font-data);
   --plx-comp-pie-chart-center-value-font-size: var(--plx-ref-font-size-20);
-  --plx-comp-pie-chart-center-value-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-pie-chart-center-value-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-pie-chart-center-label-text: var(--plx-sys-content-subtle);
   --plx-comp-pie-chart-center-label-font-family: var(--plx-sys-font-label);
   --plx-comp-pie-chart-center-label-font-size: var(--plx-ref-font-size-12);
@@ -4768,8 +4768,8 @@
   --plx-comp-product-card-price-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-product-card-compare-text: var(--plx-sys-content-muted);
   --plx-comp-product-card-compare-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-product-card-price-sm-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-product-card-price-sm-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-product-card-price-sm-font-size: var(--plx-sys-text-body-font-size);
+  --plx-comp-product-card-price-sm-font-weight: var(--plx-sys-text-body-font-weight);
   --plx-comp-product-card-rating-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-product-card-actions-padding-block-start: var(--plx-sys-space-stack-xs);
   --plx-comp-product-card-actions-z-index: var(--plx-sys-layer-raised);
@@ -4780,7 +4780,7 @@
   --plx-comp-product-options-option-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-product-options-legend-text: var(--plx-sys-content-default);
   --plx-comp-product-options-legend-font-family: var(--plx-sys-font-label);
-  --plx-comp-product-options-legend-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-product-options-legend-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-product-options-legend-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-product-options-legend-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-product-options-label-font-weight: var(--plx-sys-font-weight-semibold);
@@ -4809,7 +4809,7 @@
   --plx-comp-progress-circle-animation-duration: var(--plx-sys-motion-duration-loop-fast);
   --plx-comp-progress-circle-value-color: var(--plx-sys-content-default);
   --plx-comp-progress-circle-value-font-family: var(--plx-sys-font-data);
-  --plx-comp-progress-circle-value-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-progress-circle-value-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-progress-circle-value-line-height: var(--plx-ref-line-height-none);
 }
 :root,[data-plx-density],[data-plx-interaction] {
@@ -4914,7 +4914,7 @@
   --plx-comp-qr-code-caption-line-height: var(--plx-ref-line-height-snug);
   --plx-comp-qr-code-value-color: var(--plx-sys-content-muted);
   --plx-comp-qr-code-value-font-family: var(--plx-sys-font-data);
-  --plx-comp-qr-code-value-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-qr-code-value-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-qr-code-on-accent-caption-color: var(--plx-sys-accent-content);
   --plx-comp-qr-code-on-accent-value-color: var(--plx-sys-accent-content-muted);
 }
@@ -4951,7 +4951,7 @@
   --plx-comp-radar-chart-label-offset: var(--plx-ref-size-8px);
   --plx-comp-radar-chart-axis-label-text: var(--plx-sys-content-default);
   --plx-comp-radar-chart-axis-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-radar-chart-axis-label-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-radar-chart-axis-label-font-size: var(--plx-sys-text-label-font-size);
   --plx-comp-radar-chart-axis-label-font-weight: var(--plx-sys-font-weight-medium);
 }
 :root,[data-plx-density],[data-plx-interaction] {
@@ -5201,7 +5201,7 @@
   --plx-comp-role-manager-title-text: var(--plx-sys-content-default);
   --plx-comp-role-manager-title-font-family: var(--plx-sys-font-heading);
   --plx-comp-role-manager-title-font-size: var(--plx-ref-font-size-18);
-  --plx-comp-role-manager-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-role-manager-title-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-role-manager-title-line-height: var(--plx-ref-size-24px);
   --plx-comp-role-manager-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-role-manager-focus-outline-width: var(--plx-sys-focus-ring-width);
@@ -5223,14 +5223,14 @@
   --plx-comp-sankey-diagram-link-active-opacity: var(--plx-sys-opacity-mid);
   --plx-comp-sankey-diagram-label-text: var(--plx-sys-content-default);
   --plx-comp-sankey-diagram-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-sankey-diagram-label-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-sankey-diagram-label-font-size: var(--plx-sys-text-label-font-size);
   --plx-comp-sankey-diagram-label-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-sankey-diagram-label-offset: var(--plx-ref-size-8px);
   --plx-comp-sankey-diagram-label-halo-color: var(--plx-sys-surface-default);
   --plx-comp-sankey-diagram-label-halo-width: var(--plx-sys-border-width-thick);
   --plx-comp-sankey-diagram-value-text: var(--plx-sys-content-subtle);
   --plx-comp-sankey-diagram-value-font-family: var(--plx-sys-font-data);
-  --plx-comp-sankey-diagram-value-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-sankey-diagram-value-font-weight: var(--plx-sys-text-secondary-font-weight);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-save-as-gap: var(--plx-sys-space-stack-md);
@@ -5350,7 +5350,7 @@
   --plx-comp-session-timeout-title-text: var(--plx-sys-content-default);
   --plx-comp-session-timeout-title-font-family: var(--plx-sys-font-heading);
   --plx-comp-session-timeout-title-font-size: var(--plx-ref-font-size-15);
-  --plx-comp-session-timeout-title-font-weight: var(--plx-sys-font-weight-bold);
+  --plx-comp-session-timeout-title-font-weight: var(--plx-sys-text-title-font-weight);
   --plx-comp-session-timeout-title-line-height: var(--plx-ref-size-20px);
   --plx-comp-session-timeout-body-gap: var(--plx-sys-space-stack-sm);
   --plx-comp-session-timeout-actions-gap: var(--plx-sys-space-inline-sm);
@@ -5696,7 +5696,7 @@
   --plx-comp-tooltip-rich-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-tooltip-rich-title-text: var(--plx-sys-content-default);
   --plx-comp-tooltip-rich-title-font-family: var(--plx-sys-font-heading);
-  --plx-comp-tooltip-rich-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-tooltip-rich-title-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-tooltip-rich-action-margin-block-start: var(--plx-sys-space-stack-xs);
   --plx-comp-tooltip-rich-close-delay: var(--plx-sys-motion-duration-slow);
 }
@@ -5717,8 +5717,8 @@
   --plx-comp-transfer-list-header-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-transfer-list-title-text: var(--plx-sys-content-default);
   --plx-comp-transfer-list-title-font-family: var(--plx-sys-font-label);
-  --plx-comp-transfer-list-title-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-transfer-list-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-transfer-list-title-font-size: var(--plx-sys-text-label-font-size);
+  --plx-comp-transfer-list-title-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-transfer-list-meta-text: var(--plx-sys-content-subtle);
   --plx-comp-transfer-list-meta-font-family: var(--plx-sys-font-data);
   --plx-comp-transfer-list-meta-font-size: var(--plx-ref-font-size-11);
@@ -5772,15 +5772,15 @@
   --plx-comp-treemap-label-font-family: var(--plx-sys-font-label);
   --plx-comp-treemap-label-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-treemap-value-font-family: var(--plx-sys-font-data);
-  --plx-comp-treemap-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-treemap-label-font-size: var(--plx-sys-text-caption-font-size);
   --plx-comp-treemap-label-halo-color: var(--plx-sys-surface-default);
   --plx-comp-treemap-label-halo-width: var(--plx-sys-border-width-thick);
   --plx-comp-treemap-group-border-color: var(--plx-sys-border-strong);
   --plx-comp-treemap-group-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-treemap-group-label-text: var(--plx-sys-content-default);
   --plx-comp-treemap-group-label-font-family: var(--plx-sys-font-label);
-  --plx-comp-treemap-group-label-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-treemap-group-label-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-treemap-group-label-font-size: var(--plx-sys-text-label-font-size);
+  --plx-comp-treemap-group-label-font-weight: var(--plx-sys-text-label-font-weight);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-trial-upgrade-gap: var(--plx-sys-space-stack-md);
@@ -5807,7 +5807,7 @@
   --plx-comp-upload-manager-actions-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-upload-manager-counts-text: var(--plx-sys-content-muted);
   --plx-comp-upload-manager-counts-font-family: var(--plx-sys-font-data);
-  --plx-comp-upload-manager-counts-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-upload-manager-counts-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-upload-manager-counts-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-upload-manager-drop-text: var(--plx-sys-content-default);
   --plx-comp-upload-manager-drop-font-size: var(--plx-ref-font-size-13);
@@ -5828,7 +5828,7 @@
   --plx-comp-user-card-name-text: var(--plx-sys-content-default);
   --plx-comp-user-card-name-font-family: var(--plx-sys-font-heading);
   --plx-comp-user-card-name-font-size: var(--plx-ref-font-size-15);
-  --plx-comp-user-card-name-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-user-card-name-font-weight: var(--plx-sys-text-label-font-weight);
   --plx-comp-user-card-name-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-user-card-secondary-text: var(--plx-sys-content-subtle);
   --plx-comp-user-card-secondary-font-size: var(--plx-ref-font-size-12);
@@ -5862,7 +5862,7 @@
   --plx-comp-version-compare-line-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-version-compare-line-text: var(--plx-sys-content-default);
   --plx-comp-version-compare-line-font-family: var(--plx-sys-font-data);
-  --plx-comp-version-compare-line-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-version-compare-line-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-version-compare-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-version-compare-number-width: var(--plx-ref-size-32px);
   --plx-comp-version-compare-number-text: var(--plx-sys-content-subtle);
@@ -5883,7 +5883,7 @@
   --plx-comp-version-label-color: var(--plx-sys-content-default);
   --plx-comp-version-label-font-family: var(--plx-sys-font-data);
   --plx-comp-version-label-line-height: var(--plx-ref-line-height-snug);
-  --plx-comp-version-label-md-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-version-label-md-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-version-label-sm-font-size: var(--plx-ref-font-size-11);
   --plx-comp-version-label-gap: var(--plx-sys-space-inline-xs);
 }
@@ -5939,9 +5939,9 @@
   --plx-comp-word-cloud-text: var(--plx-sys-content-default);
   --plx-comp-word-cloud-font-family: var(--plx-sys-font-label);
   --plx-comp-word-cloud-font-weight: var(--plx-sys-font-weight-medium);
-  --plx-comp-word-cloud-large-font-weight: var(--plx-sys-font-weight-semibold);
-  --plx-comp-word-cloud-size-1: var(--plx-ref-font-size-12);
-  --plx-comp-word-cloud-size-2: var(--plx-ref-font-size-13);
+  --plx-comp-word-cloud-large-font-weight: var(--plx-sys-text-label-font-weight);
+  --plx-comp-word-cloud-size-1: var(--plx-sys-text-secondary-font-size);
+  --plx-comp-word-cloud-size-2: var(--plx-sys-text-body-font-size);
   --plx-comp-word-cloud-size-3: var(--plx-ref-font-size-15);
   --plx-comp-word-cloud-size-4: var(--plx-ref-font-size-18);
   --plx-comp-word-cloud-size-5: var(--plx-ref-font-size-20);

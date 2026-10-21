@@ -5,7 +5,7 @@
 .plx-product-options{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-product-options-gap);}
 .plx-product-options__option{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-product-options-option-gap);}
 /* the option's name and its chosen value */
-.plx-product-options__legend{color:var(--plx-comp-product-options-legend-text);font-family:var(--plx-comp-product-options-legend-font-family);font-size:var(--plx-comp-product-options-legend-font-size);line-height:var(--plx-comp-product-options-legend-line-height);word-spacing:normal;}
+.plx-product-options__legend{color:var(--plx-comp-product-options-legend-text);font-family:var(--plx-comp-product-options-legend-font-family);font-size:var(--plx-comp-product-options-legend-font-size);font-weight:var(--plx-sys-text-secondary-font-weight);letter-spacing:var(--plx-sys-text-secondary-letter-spacing);line-height:var(--plx-comp-product-options-legend-line-height);word-spacing:normal;}
 .plx-product-options__legend-text{column-gap:var(--plx-comp-product-options-legend-gap);display:inline-flex;flex-wrap:wrap;}
 .plx-product-options__label{font-weight:var(--plx-comp-product-options-label-font-weight);}
 .plx-product-options__chosen{color:var(--plx-comp-product-options-chosen-text);font-weight:var(--plx-comp-product-options-chosen-font-weight);}

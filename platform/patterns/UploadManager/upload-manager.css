@@ -17,7 +17,7 @@
 .plx-upload-manager__actions{align-items:center;column-gap:var(--plx-comp-upload-manager-actions-gap);display:inline-flex;flex-shrink:0;}
 .plx-upload-manager__summary{align-items:center;column-gap:var(--plx-comp-upload-manager-head-gap);display:flex;min-inline-size:0;}
 .plx-upload-manager__bar{flex-basis:0;flex-grow:1;min-inline-size:0;}
-.plx-upload-manager__counts{color:var(--plx-comp-upload-manager-counts-text);flex-shrink:0;font-family:var(--plx-comp-upload-manager-counts-font-family);font-size:var(--plx-comp-upload-manager-counts-font-size);line-height:var(--plx-comp-upload-manager-counts-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-upload-manager__counts{color:var(--plx-comp-upload-manager-counts-text);flex-shrink:0;font-family:var(--plx-comp-upload-manager-counts-font-family);font-size:var(--plx-comp-upload-manager-counts-font-size);font-weight:var(--plx-sys-text-secondary-font-weight);letter-spacing:var(--plx-sys-text-secondary-letter-spacing);line-height:var(--plx-comp-upload-manager-counts-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-upload-manager__body{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-upload-manager-gap);}
 .plx-upload-manager__body[hidden]{display:none;}
 /* the drop zone's content: the icon, the words, the limits and the two pickers */

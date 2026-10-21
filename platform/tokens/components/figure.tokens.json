@@ -17,12 +17,12 @@
       "$description": "The caption: the body font."
     },
     "figure-caption-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.text-secondary-font-size}",
       "$type": "dimension",
       "$description": "The caption: the secondary size of the type scale."
     },
     "figure-caption-line-height": {
-      "$value": "{plx-ref.line-height-normal}",
+      "$value": "{plx-sys.text-secondary-line-height}",
       "$type": "number",
       "$description": "The caption's line height, for a sentence that wraps."
     },

@@ -16,7 +16,7 @@
     "progress-circle-animation-duration": { "$value": "{plx-sys.motion-duration-loop-fast}", "$type": "duration", "$description": "ProgressCircle indeterminate: one turn of the arc (the spinner's loop)." },
     "progress-circle-value-color": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "ProgressCircle lg: the percent in the center." },
     "progress-circle-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "ProgressCircle lg: the percent's face (the data font)." },
-    "progress-circle-value-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "ProgressCircle lg: the percent's size (11px, as ProgressBar's value)." },
+    "progress-circle-value-font-size": { "$value": "{plx-sys.text-caption-font-size}", "$type": "dimension", "$description": "ProgressCircle lg: the percent's size (11px, as ProgressBar's value)." },
     "progress-circle-value-line-height": { "$value": "{plx-ref.line-height-none}", "$type": "number", "$description": "ProgressCircle lg: the percent's line height." }
   }
 }
