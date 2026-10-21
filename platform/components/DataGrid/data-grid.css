@@ -170,6 +170,9 @@
 .plx-data-grid__value--lines{--plx-state-data-grid-value-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:round(down, calc((var(--plx-comp-data-grid-record-height) - var(--plx-comp-data-grid-cell-padding-block) * 2) / var(--plx-comp-data-grid-text-line-height)), 1);display:-webkit-box;line-height:var(--plx-comp-data-grid-text-line-height);max-block-size:calc(var(--plx-comp-data-grid-record-height) - var(--plx-comp-data-grid-cell-padding-block) * 2);overflow-wrap:anywhere;}
 .plx-data-grid__rich{--plx-comp-avatar-context-font-size:var(--plx-comp-data-grid-font-size);align-items:center;column-gap:var(--plx-comp-data-grid-cell-rich-gap);display:inline-flex;}
 .plx-data-grid__deleted{color:var(--plx-comp-data-grid-cell-deleted-text);font-style:italic;}
+/* a custom cell's content is the cell's own flex item, so the cell centers it (owner, 2026-10-21: badges and icons sat 0.5 to
+   1.1px low on the wrapper's text line); the row-actions wrapper keeps its box for its fade */
+.plx-data-grid__portal:where(:not(.plx-data-grid__portal--actions)){display:contents;}
 .plx-data-grid__portal--actions{opacity:var(--plx-state-data-grid-actions-focus,var(--plx-comp-data-grid-context-row-actions,0));transition-duration:var(--plx-comp-data-grid-duration);transition-property:opacity;}
 .plx-data-grid__portal--actions:focus-within{--plx-state-data-grid-actions-focus:1;}
 .plx-data-grid__check{cursor:pointer;display:flex;}

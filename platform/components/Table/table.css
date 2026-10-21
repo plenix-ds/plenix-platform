@@ -4,6 +4,5 @@
    <DataGridEngine isStatic>, whose root is plx-table; these rules style only the DataGrid's own
    parts (Styling Standard, section 4: one owner). Was components/Table/table.css until 2026-10-19. */
 /* Table's look is the engine's static mode, styled with the grid's parts in data-grid.css (its --static rules) and
-   generated for Table's block into table-base.css (build-steps.js), on the Table tokens. Here only what the base never
-   sets: a custom cell's content sits directly in the cell (zero overlap, batch 7). */
-.plx-table__portal{display:contents;}
+   generated for Table's block into table-base.css (build-steps.js), on the Table tokens. Nothing of Table's own is left
+   to declare here (zero overlap, batch 7; the portal's display:contents moved to the base, 2026-10-21). */
