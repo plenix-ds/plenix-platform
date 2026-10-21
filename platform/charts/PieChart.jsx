@@ -27,6 +27,7 @@
      strings: { part: "Part", value: "Value", share: "Share", total: "Total", other: "Other" } and ChartFrame's strings
    Behavior:
      A part keeps its color by its order in the data, not by its size; Other takes the neutral categorical color.
+     Half-ring center parts carry their own variant classes, so nested chart instances stay independent.
      Hover a slice: the tooltip shows its name, value and share. The legend and the data grid carry every part's value
        and share: the chart's keyboard and screen reader view.
    Notes:
@@ -125,8 +126,8 @@ export function PieChart({ title, description, hideCaption, size, data = [], var
             }) : null}
             {center ? (
               <g className="plx-pie-chart__center">
-                <text className="plx-pie-chart__center-value" x={cx0} y={cy0}>{center.value}</text>
-                {center.label ? <text className="plx-pie-chart__center-label" x={cx0} y={cy0}>{center.label}</text> : null}
+                <text className={cx('plx-pie-chart__center-value', half && 'plx-pie-chart__center-value--half')} x={cx0} y={cy0}>{center.value}</text>
+                {center.label ? <text className={cx('plx-pie-chart__center-label', half && 'plx-pie-chart__center-label--half')} x={cx0} y={cy0}>{center.label}</text> : null}
               </g>
             ) : null}
             {tip}

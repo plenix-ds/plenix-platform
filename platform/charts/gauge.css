@@ -1,16 +1,19 @@
 /* Plenix · Gauge (platform/charts/gauge.css; the code is Gauge.jsx): the dial (an SVG scaled to the size's width), the
    readout over its middle, the range under its ends and the status badge. Every value is a --plx-comp-gauge-* token; the
-   fill and the threshold bands take their data-viz steps (data-plx-dataviz). */
-.plx-gauge__meter{align-items:center;display:flex;flex-direction:column;inline-size:var(--plx-comp-gauge-width-md);max-inline-size:100%;row-gap:var(--plx-comp-gauge-gap);}
-.plx-gauge--sm .plx-gauge__meter{inline-size:var(--plx-comp-gauge-width-sm);}
-.plx-gauge--lg .plx-gauge__meter{inline-size:var(--plx-comp-gauge-width-lg);}
+   fill and the threshold bands take their data-viz steps (data-plx-dataviz). Size belongs to the meter itself;
+   its exclusive size classes and data-viz fill assign noninheriting state values, each property declared once. */
+@property --plx-state-gauge-width{syntax:"*";inherits:false;}
+@property --plx-state-gauge-fill-stroke{syntax:"*";inherits:false;}
+.plx-gauge__meter{align-items:center;display:flex;flex-direction:column;inline-size:var(--plx-state-gauge-width,var(--plx-comp-gauge-width-md));max-inline-size:100%;row-gap:var(--plx-comp-gauge-gap);}
+.plx-gauge__meter--sm{--plx-state-gauge-width:var(--plx-comp-gauge-width-sm);}
+.plx-gauge__meter--lg{--plx-state-gauge-width:var(--plx-comp-gauge-width-lg);}
 /* the dial and the readout share one cell: the value sits in the arc's middle, on its baseline */
 .plx-gauge__dial{display:grid;inline-size:100%;}
 .plx-gauge__svg{block-size:auto;display:block;grid-column-end:2;grid-column-start:1;grid-row-end:2;grid-row-start:1;inline-size:100%;overflow:visible;}
 .plx-gauge__track,.plx-gauge__fill,.plx-gauge__band{fill:none;stroke-linecap:butt;}
 .plx-gauge__track{stroke:var(--plx-comp-gauge-track-color);stroke-width:var(--plx-comp-gauge-track-width);}
-.plx-gauge__fill{--plx-comp-gauge-fill-stroke:var(--plx-comp-chart-mark-default-color);stroke:var(--plx-comp-gauge-fill-stroke);stroke-width:var(--plx-comp-gauge-track-width);}
-.plx-gauge__fill[data-plx-dataviz]{--plx-comp-gauge-fill-stroke:var(--plx-comp-data-color);}
+.plx-gauge__fill{stroke:var(--plx-state-gauge-fill-stroke,var(--plx-comp-chart-mark-default-color));stroke-width:var(--plx-comp-gauge-track-width);}
+.plx-gauge__fill[data-plx-dataviz]{--plx-state-gauge-fill-stroke:var(--plx-comp-data-color);}
 .plx-gauge__band{stroke:var(--plx-comp-data-color);stroke-width:var(--plx-comp-gauge-band-width);}
 .plx-gauge__readout{align-items:center;align-self:end;display:flex;flex-direction:column;grid-column-end:2;grid-column-start:1;grid-row-end:2;grid-row-start:1;justify-self:center;}
 .plx-gauge__value{color:var(--plx-comp-gauge-value-text);font-family:var(--plx-comp-gauge-value-font-family);font-size:var(--plx-comp-gauge-value-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-comp-gauge-value-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-comp-gauge-value-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}

@@ -23,6 +23,7 @@
        threshold; empty: none) }
      className: more classes on the figure
    Behavior:
+     The meter carries its own size class; no root selector sizes nested parts.
      Static: it has no keyboard stop of its own; the meter's value text says the value, its label and its range's name
        ("86%, of 100 GB, Nearly full"). The data grid under it lists the value, the ends and the thresholds.
      The status badge pairs the range's color with its name and icon, so color is never the only cue.
@@ -75,7 +76,7 @@ export function Gauge({ title, description, value, min = 0, max = 100, format, l
         <span id={uid + '-title'} className="plx-chart__title">{title}</span>
         {description ? <span id={uid + '-desc'} className="plx-chart__description">{description}</span> : null}
       </figcaption>
-      <div className="plx-gauge__meter" role="meter" aria-labelledby={uid + '-title'} aria-describedby={description ? uid + '-desc' : undefined}
+      <div className={cx('plx-gauge__meter', 'plx-gauge__meter--' + s)} role="meter" aria-labelledby={uid + '-title'} aria-describedby={description ? uid + '-desc' : undefined}
         aria-valuenow={v} aria-valuemin={min} aria-valuemax={max} aria-valuetext={valueText}>
         <div className="plx-gauge__dial">
           <svg className="plx-gauge__svg" viewBox={'0 0 ' + VB_W + ' ' + VB_H} aria-hidden="true" focusable="false">
