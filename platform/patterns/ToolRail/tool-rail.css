@@ -1,20 +1,24 @@
-/* Plenix · ToolRail. */
+@property --plx-state-tool-rail-background{syntax:"*";inherits:false;}
+@property --plx-state-tool-rail-text{syntax:"*";inherits:false;}
+@property --plx-state-tool-rail-cursor{syntax:"*";inherits:false;}
+@property --plx-state-tool-rail-height{syntax:"*";inherits:false;}
+@property --plx-state-tool-rail-width{syntax:"*";inherits:false;}
+@property --plx-state-tool-rail-padding{syntax:"*";inherits:false;}
+/* Plenix · ToolRail. Exclusive color state: disabled > active > hover > current (is-pressed) > rest. Focus is independent. Each item carries its own label layout. */
 /* 4px grid: the rail's divider line is drawn inside (an inset shadow), so the rail is exactly its width; its items' icons
    are the prominent control's grid icon; the divider is a 1px line centered in a 4px box. */
 .plx-tool-rail{align-items:center;background-color:var(--plx-comp-tool-rail-background);box-shadow:var(--plx-comp-tool-rail-shadow);display:flex;flex-direction:column;flex-shrink:0;padding-block-end:var(--plx-comp-tool-rail-padding-block);padding-block-start:var(--plx-comp-tool-rail-padding-block);padding-inline-end:var(--plx-comp-tool-rail-padding-inline);padding-inline-start:var(--plx-comp-tool-rail-padding-inline);row-gap:var(--plx-comp-tool-rail-row-gap);}
-.plx-tool-rail__item{--plx-comp-icon-size:var(--plx-sys-control-icon-prominent);align-items:center;background-color:transparent;block-size:var(--plx-comp-tool-rail-item-height);border-bottom-left-radius:var(--plx-comp-tool-rail-item-radius);border-bottom-right-radius:var(--plx-comp-tool-rail-item-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-tool-rail-item-radius);border-top-right-radius:var(--plx-comp-tool-rail-item-radius);border-top-style:none;border-top-width:0;color:var(--plx-comp-tool-rail-item-text);cursor:pointer;display:inline-flex;font-family:inherit;inline-size:var(--plx-comp-tool-rail-item-width);justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
-.plx-tool-rail__item:hover,
-.plx-tool-rail__item.is-hover{background-color:var(--plx-comp-tool-rail-item-hover-background);color:var(--plx-comp-tool-rail-item-hover-text);}
-.plx-tool-rail__item.is-pressed{background-color:var(--plx-comp-tool-rail-item-pressed-background);color:var(--plx-comp-tool-rail-item-pressed-text);}
+.plx-tool-rail__item{--plx-comp-icon-size:var(--plx-sys-control-icon-prominent);align-items:center;background-color:var(--plx-state-tool-rail-background,transparent);block-size:var(--plx-state-tool-rail-height,var(--plx-comp-tool-rail-item-height));border-bottom-left-radius:var(--plx-comp-tool-rail-item-radius);border-bottom-right-radius:var(--plx-comp-tool-rail-item-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-tool-rail-item-radius);border-top-right-radius:var(--plx-comp-tool-rail-item-radius);border-top-style:none;border-top-width:0;color:var(--plx-state-tool-rail-text,var(--plx-comp-tool-rail-item-text));cursor:var(--plx-state-tool-rail-cursor,pointer);display:inline-flex;font-family:inherit;inline-size:var(--plx-state-tool-rail-width,var(--plx-comp-tool-rail-item-width));justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:var(--plx-state-tool-rail-padding,0);padding-block-start:var(--plx-state-tool-rail-padding,0);padding-inline-end:0;padding-inline-start:0;}
+.plx-tool-rail__item:is(:hover,.is-hover):where(:not(:disabled,[aria-disabled="true"],:active,.is-active)){--plx-state-tool-rail-background:var(--plx-comp-tool-rail-item-hover-background);--plx-state-tool-rail-text:var(--plx-comp-tool-rail-item-hover-text);}
+.plx-tool-rail__item.is-pressed:where(:not(:disabled,[aria-disabled="true"],:active,.is-active,:hover,.is-hover)){--plx-state-tool-rail-background:var(--plx-comp-tool-rail-item-pressed-background);--plx-state-tool-rail-text:var(--plx-comp-tool-rail-item-pressed-text);}
+.plx-tool-rail__item:is(:active,.is-active):where(:not(:disabled,[aria-disabled="true"])){--plx-state-tool-rail-background:var(--plx-sys-state-pressed);--plx-state-tool-rail-text:var(--plx-comp-tool-rail-item-hover-text);}
 .plx-tool-rail__item:focus-visible,
 .plx-tool-rail__item.is-focus-visible{outline-color:var(--plx-comp-tool-rail-item-focus-outline-color);outline-offset:var(--plx-comp-tool-rail-item-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-tool-rail-item-focus-outline-width);}
-.plx-tool-rail__item:disabled{color:var(--plx-comp-tool-rail-item-disabled-text);cursor:default;}
+.plx-tool-rail__item:is(:disabled,[aria-disabled="true"]){--plx-state-tool-rail-text:var(--plx-comp-tool-rail-item-disabled-text);--plx-state-tool-rail-cursor:default;}
 .plx-tool-rail__divider{background-color:transparent;background-image:var(--plx-comp-tool-rail-divider-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-tool-rail-divider-background-size);block-size:var(--plx-comp-tool-rail-divider-height);inline-size:var(--plx-comp-tool-rail-divider-width);margin-block-end:0;margin-block-start:0;}
-.plx-tool-rail--labels .plx-tool-rail__item{block-size:auto;flex-direction:column;inline-size:var(--plx-comp-tool-rail-labels-item-width);padding-block-end:var(--plx-comp-tool-rail-labels-item-padding-block);padding-block-start:var(--plx-comp-tool-rail-labels-item-padding-block);row-gap:var(--plx-comp-tool-rail-labels-item-row-gap);}
+.plx-tool-rail__item--labels{--plx-state-tool-rail-height:auto;--plx-state-tool-rail-width:var(--plx-comp-tool-rail-labels-item-width);--plx-state-tool-rail-padding:var(--plx-comp-tool-rail-labels-item-padding-block);flex-direction:column;row-gap:var(--plx-comp-tool-rail-labels-item-row-gap);}
 .plx-tool-rail__label{font-size:var(--plx-comp-tool-rail-label-font-size);}
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-tool-rail__item{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
-.plx-tool-rail__item:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
-/* pressed (batch 238; moved from motion.css): a step darker than its hover while held. The rollout joins it to this
-   component's state order (tools/agent/zero-overlap.md) */
-.plx-tool-rail__item:active:not(:disabled):not(.is-pressed){background-color:var(--plx-sys-state-pressed);}
+.plx-tool-rail__item:is(:active,.is-active):where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
+/* Transient active uses the existing pressed role above, including a current item. */
