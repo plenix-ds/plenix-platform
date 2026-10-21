@@ -18143,6 +18143,12 @@ function NextEngine(props) {
   const headerCell = column => {
     const c = column.columnDef.meta,
       pinned = frozen.has(c.field),
+      sorted = column.getIsSorted(),
+      filtered = column.getIsFiltered(),
+      icon = kinds(c).includes('icon'),
+      hasFilter = !!(c.filter || filterField === c.field || filtered),
+      align = c.headerHozAlign || (c.type === 'bytes' ? 'right' : null),
+      titleFixed = icon ? 'flush' : sorted || filtered ? 'reserve' : null,
       offset = (selectable ? metrics.lead : 0) + ordered.slice(0, ordered.indexOf(column)).filter(col => frozen.has(col.id)).reduce((sum, col) => sum + col.getSize(), 0);
     const node = /*#__PURE__*/_react.default.createElement(Width, _extends({
       key: c.field
@@ -18156,7 +18162,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -18168,11 +18174,11 @@ function NextEngine(props) {
         }
       }
     }), /*#__PURE__*/_react.default.createElement("div", {
-      className: `${B}__grid-col-content`
+      className: (0, _cx.cx)(B + '__grid-col-content', icon && B + '__grid-col-content--icon', !icon && align === 'center' && B + '__grid-col-content--center', effectiveWrap && B + '__grid-col-content--wrap')
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: `${B}__grid-col-title-holder`
     }, /*#__PURE__*/_react.default.createElement("div", {
-      className: `${B}__grid-col-title`,
+      className: (0, _cx.cx)(B + '__grid-col-title', titleFixed && B + '__grid-col-title--' + titleFixed, icon && B + '__grid-col-title--icon', align && B + '__grid-col-title--align-' + align),
       title: c.title
     }, kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: B + '__header-icon'
@@ -18189,14 +18195,14 @@ function NextEngine(props) {
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: typeIcons[typeOf(c)] || 'ed-text'
     })), /*#__PURE__*/_react.default.createElement("span", {
-      className: B + '__title-text'
+      className: (0, _cx.cx)(B + '__title-text', effectiveWrap && B + '__title-text--wrap')
     }, c.title || c.field))), /*#__PURE__*/_react.default.createElement("div", {
-      className: `${B}__grid-col-sorter`,
+      className: (0, _cx.cx)(B + '__grid-col-sorter', sorted && B + '__grid-col-sorter--on', column.getCanSort() && B + '__grid-col-sorter--sortable', icon && B + '__grid-col-sorter--icon'),
       "aria-hidden": "true"
     }, /*#__PURE__*/_react.default.createElement("div", {
-      className: '' + B + '__grid-arrow' + (column.getIsSorted() === 'desc' ? ' ' + B + '__sort-desc' : '')
+      className: (0, _cx.cx)(B + '__grid-arrow', sorted === 'asc' && B + '__grid-arrow--asc', sorted === 'desc' && B + '__grid-arrow--desc')
     }))), headerMenu ? /*#__PURE__*/_react.default.createElement("span", {
-      className: `${B}__grid-header-popup-button`
+      className: (0, _cx.cx)(B + '__grid-header-popup-button', B + '__grid-header-popup-button--menu')
     }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
       label: c.title + ' column actions',
       trigger: /*#__PURE__*/_react.default.createElement("span", {
@@ -18208,7 +18214,7 @@ function NextEngine(props) {
         name: "chevron-down"
       }))
     }, headerItems(column))) : null, c.filter || filterField === c.field || column.getIsFiltered() ? /*#__PURE__*/_react.default.createElement("span", {
-      className: `${B}__grid-header-popup-button`
+      className: (0, _cx.cx)(B + '__grid-header-popup-button', filtered && B + '__grid-header-popup-button--filtered', headerMenu && B + '__grid-header-popup-button--shift')
     }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
       open: filterField === c.field,
       onOpenChange: open => setFilterField(open ? c.field : null),
@@ -18698,7 +18704,7 @@ function NextEngine(props) {
     "aria-colcount": ordered.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
     hidden: !!failed
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: `${B}__grid-header`,
+    className: (0, _cx.cx)(B + '__grid-header', isNarrow && B + '__grid-header--narrow'),
     ref: header,
     hidden: isStatic && props.headerVisible === false
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -18710,7 +18716,7 @@ function NextEngine(props) {
     className: `${B}__grid-col ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
     role: "columnheader"
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: `${B}__grid-col-content`
+    className: `${B}__grid-col-content ${B}__grid-col-content--row-header`
   }, /*#__PURE__*/_react.default.createElement(Check, {
     label: S.selectAll,
     checked: allVisible,

@@ -888,7 +888,7 @@
     "word-spacing"
    ]
   },
-  "plx-data-grid__grid-col-content": {
+  "plx-data-grid__grid-col-content--icon": {
    "contract": "adjusts",
    "props": [
     "line-height"
@@ -983,7 +983,7 @@
     "word-spacing"
    ]
   },
-  "plx-data-grid__title-text": {
+  "plx-data-grid__title-text--wrap": {
    "contract": "adjusts",
    "props": [
     "line-height"
@@ -2879,6 +2879,12 @@
     "line-height"
    ]
   },
+  "plx-table__grid-col-content--icon": {
+   "contract": "adjusts",
+   "props": [
+    "line-height"
+   ]
+  },
   "plx-table__grid-col-title": {
    "contract": "adjusts",
    "props": [
@@ -2968,7 +2974,7 @@
     "word-spacing"
    ]
   },
-  "plx-table__title-text": {
+  "plx-table__title-text--wrap": {
    "contract": "adjusts",
    "props": [
     "line-height"
