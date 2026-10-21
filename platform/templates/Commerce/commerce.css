@@ -5,9 +5,9 @@
    Anatomy and API: Commerce.jsx. */
 .plx-commerce{container-type:inline-size;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-gap);}
 .plx-commerce__head{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-head-gap);}
-.plx-commerce__title{color:var(--plx-comp-commerce-title-text);font-family:var(--plx-comp-commerce-title-font-family);font-size:var(--plx-comp-commerce-title-font-size);font-weight:var(--plx-comp-commerce-title-font-weight);line-height:var(--plx-comp-commerce-title-line-height);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
+.plx-commerce__title{color:var(--plx-comp-commerce-title-text);font-family:var(--plx-comp-commerce-title-font-family);font-size:var(--plx-comp-commerce-title-font-size);font-weight:var(--plx-comp-commerce-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-comp-commerce-title-line-height);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
 .plx-commerce__title:focus-visible{outline-color:var(--plx-comp-commerce-focus-outline-color);outline-offset:var(--plx-comp-commerce-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-commerce-focus-outline-width);}
-.plx-commerce__subtitle{color:var(--plx-comp-commerce-title-text);font-family:var(--plx-comp-commerce-title-font-family);font-size:var(--plx-comp-commerce-subtitle-font-size);font-weight:var(--plx-comp-commerce-subtitle-font-weight);line-height:var(--plx-comp-commerce-subtitle-line-height);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
+.plx-commerce__subtitle{color:var(--plx-comp-commerce-title-text);font-family:var(--plx-comp-commerce-title-font-family);font-size:var(--plx-comp-commerce-subtitle-font-size);font-weight:var(--plx-comp-commerce-subtitle-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-comp-commerce-subtitle-line-height);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
 .plx-commerce__search{max-inline-size:var(--plx-comp-commerce-search-width);}
 .plx-commerce__section{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-section-gap);}
 .plx-commerce__list,.plx-commerce-lines,.plx-commerce__returnables,.plx-commerce-summary__items{list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
@@ -30,7 +30,7 @@
 .plx-commerce-line__media{display:block;min-inline-size:0;}
 .plx-commerce-line__placeholder{align-items:center;background-color:var(--plx-comp-commerce-placeholder-background);color:var(--plx-comp-commerce-placeholder-text);display:flex;justify-content:center;}
 .plx-commerce-line__text{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-commerce-line-text-gap);}
-.plx-commerce-line__total{font-family:var(--plx-comp-commerce-line-total-font-family);font-weight:var(--plx-comp-commerce-line-total-font-weight);min-inline-size:var(--plx-comp-commerce-line-total-width);text-align:end;word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-commerce-line__total{font-family:var(--plx-comp-commerce-line-total-font-family);font-size:var(--plx-sys-text-heading-font-size);font-weight:var(--plx-comp-commerce-line-total-font-weight);letter-spacing:var(--plx-sys-text-heading-letter-spacing);line-height:var(--plx-sys-text-heading-line-height);min-inline-size:var(--plx-comp-commerce-line-total-width);text-align:end;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-commerce-line__warning{grid-column:2 / -1;}
 /* the order summary's totals: the name at the start, the amount at the end, on one baseline */
 .plx-commerce-summary__items{display:flex;flex-direction:column;padding-block-end:var(--plx-comp-commerce-summary-gap);row-gap:var(--plx-comp-commerce-summary-gap);}
