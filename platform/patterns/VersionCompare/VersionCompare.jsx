@@ -36,6 +36,7 @@
        change", at: "Change {n} of {total}", unchanged: "Show {n} unchanged lines", empty: "Choose two versions to compare." }
      className: more classes on the view
    Behavior:
+     Text-diff signs carry their own line-kind classes; the diff part owns its layout and Field owns picker minimum width.
      Each picker lists every version but the one the other picker shows; Swap exchanges them. The first (Compare) is
        the baseline: the second's changed values carry ComparisonView's Changed badge, its added lines are marked
        Added, the first's removed lines Removed.
@@ -154,7 +155,7 @@ function TextDiff({ base, target, context, t, uid }) {
                 className={cx('plx-version-compare__line', x.kind === 'add' && 'plx-version-compare__line--added', x.kind === 'del' && 'plx-version-compare__line--removed')}>
                 <span className="plx-version-compare__number" aria-hidden="true">{x.a || ''}</span>
                 <span className="plx-version-compare__number" aria-hidden="true">{x.b || ''}</span>
-                <span className="plx-version-compare__sign" aria-hidden="true">{x.kind === 'add' ? '+' : x.kind === 'del' ? '−' : ''}</span>
+                <span className={cx('plx-version-compare__sign', x.kind === 'add' && 'plx-version-compare__sign--added', x.kind === 'del' && 'plx-version-compare__sign--removed')} aria-hidden="true">{x.kind === 'add' ? '+' : x.kind === 'del' ? '−' : ''}</span>
                 <span className="plx-version-compare__text">{x.kind === 'add' ? <VisuallyHidden>{t.added + ': '}</VisuallyHidden> : x.kind === 'del' ? <VisuallyHidden>{t.removed + ': '}</VisuallyHidden> : null}{x.text || ' '}</span>
               </li>
             );
