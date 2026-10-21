@@ -795,3 +795,83 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.behavior.focus:** Lifecycle journeys’ focus row says “Every scrollable code region has a keyboard target.” This page has no code region. Should that sentence be dropped from this page?
 
+## interaction (24 questions)
+
+### interaction-keyboard-support
+
+- **rec.purpose / docs:** The Keyboard support page shows the Focus ring write-up and its purpose ("Shows keyboard users exactly where they are on the page"). The page is about operating everything from the keyboard, not about seeing focus. Should it get its own purpose and write-up, or point to Focus order and Hotkey instead?
+
+### interaction-keyboard-navigation
+
+- **rec.purpose / docs:** The Keyboard navigation page also shows the Focus ring write-up and purpose, but it is about the Tab order and roving focus. Should it show the Focus order write-up instead?
+
+### interaction-accessible-names
+
+- **rec.purpose / docs:** The Accessible names page shows the Visually hidden write-up (its parts are "a span" and "hidden text"). The page is about giving every control a name. Should it get its own write-up, or show Accessible descriptions instead?
+
+### interaction-screen-reader-behavior
+
+- **rec.purpose / docs:** The Screen-reader behavior page shows the Visually hidden write-up, but it is about announcing changes (announce(), role="alert"). Should it show the Live regions write-up instead?
+
+### interaction-reduced-motion
+
+- **rec.text:** The overview says that with reduced motion "transitions become instant or fade only", while the Motion write-up says every animation and transition "takes zero time". Is a fade still allowed with reduced motion, or does everything become instant?
+
+### interaction-scroll-lock
+
+- **docs.anatomy:** Two pages name the scroll lock differently: Overlay manager and Focus lock say the page gets the class is-scroll-locked on <html>; Scroll lock says the target gets data-plx-scroll-lock="locked". Which one is current? (Overlay manager anatomy, Focus lock overview and Scroll lock anatomy are left unchanged until you decide.)
+
+### use-of-color
+
+- **docs.behavior.focus:** This row says "The focus indicator is a border color change". The Focus ring page says controls show a 2px ring and only fields change their border color. Should this row say "a ring on controls, the border color on fields"?
+
+### hotkey
+
+- **docs.behavior.error:** For two bindings of the same keys "in the same scope", the row says "the innermost scope runs". If both are in the same scope, which one runs: the one registered last (the one that is listed)?
+
+### interaction-truncate
+
+- **rec.purpose:** Truncate and Clamp both show the purpose of the whole Text component (a type scale for the page’s reading order). Should they get a purpose of their own, such as "keeps long text from breaking the layout while the whole text stays in the page"?
+
+### forced-colors
+
+- **rec.text:** The overview says that with more contrast "muted text" takes the default text color; the anatomy says "muted and subtle text". Does subtle text change too? (The overview is left unchanged until you decide.)
+
+### view-state
+
+- **leaf:** This page is named "Scroll restoration", but it covers everything an application remembers between visits: the last screen, the side pane width and the scroll position. Should it be renamed (for example "View restoration")?
+
+### gesture-interaction
+
+- **docs.content.localization:** The localization note says a swipe toward the inline "end" archives, but the labels example says "Swipe left to archive" (in left-to-right text, left is the start, not the end). Which direction archives?
+
+### semantic-html
+
+- **rec.text:** The overview says "a table is a DataGrid", but Usage says DataGrid or Table for rows of fields (a static table is a Table). Should the overview say "a table is a DataGrid or a Table"? I left the overview as it is until you decide.
+- **docs.behavior.error:** The error row lists only two of the things the checks reject (a clickable div or span, an anchor that acts without href), while the rule also covers p, li, td, section, article, img and i, and the links-not-buttons rule covers more. Should the row list all of them, or say "everything the overview lists"?
+
+### shortcuts-dialog
+
+- **rec.variantPages[0].use, rec.variantPages[0].avoid, rec.variantPages[1].use, rec.variantPages[1].avoid:** Both variants (Grouped and Searchable) have placeholder Usage text ("Use this composition when it fits the task.", "Keep scope and consequences explicit before submitting.") and the same overview text. What should each variant say about when to pick it?
+- **docs.content.actions:** The content and accessibility rows (Import, Export, Request access, Upgrade, Delete account; review grids, permission summaries; wizard steps; plan terms and account names) seem copied from another family of pages and do not fit a keyboard shortcuts dialog. Should they be rewritten for this dialog?
+- **docs.behavior.pointer:** The Mouse row describes the list updating and search matching, which is not about the pointer, and the same text is the overview of both variants. Where should this text live?
+
+### captions-transcripts
+
+- **rec.use[0], rec.avoid[0]:** Usage repeats the overview word for word, and When not to use says only "Keep sources and actions explicit." What are the real cases for and against this component?
+- **docs.a11y, docs.content, docs.behavior:** Several rows speak about galleries, file lists, FileRow, MediaViewer, Save metadata and form errors, which belong to other media pages. Should they be rewritten for captions and transcripts (for example, naming the caption tracks and the transcript)?
+
+### accessibility-testing
+
+- **rec.avoid[1]:** "Do not rely on default-state snapshots for active technical values" is unclear. Does it mean: do not test only the resting state, also check states where technical values (such as code or numbers) are shown?
+- **rec.use[1]:** Usage says to inspect states "in both themes", but dark-mode checks are on hold until the end. Keep "both themes" as the lasting rule?
+- **docs.anatomy, docs.behavior, docs.a11y, docs.content:** The written sections ("Source standard or build entry point", "The guidance is readable in normal document order") read like a template for guidance pages, not about accessibility testing. Should they be rewritten for this page, or hidden?
+
+### internationalization
+
+- **docs.content.guidance:** The guidance row repeats the purpose word for word (the same happens on the WCAG guidance page). May it go?
+
+### use-collection-view
+
+- **docs.a11y.announce:** "Facet counts report matching records without filtering out their own selection" is unclear. Does it mean each filter's counts ignore that filter's own current choice, so its other options still show counts?
+
