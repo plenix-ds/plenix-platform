@@ -281,15 +281,7 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
   // each record with its written sections (inventory-docs.js, batch 208); a record's own fields win
   const docs = win.DSDocs || {};
   // Static Markdown uses the same records and source headers as the API. Never execute a live example to document it.
-  const cdnDocs = [];
-  for (const record of recs) {
-    if (!record.id) continue;
-    const file = record.src && path.resolve(P, record.src), inside = file && file.startsWith(P + path.sep);
-    const source = inside && fs.existsSync(file) && fs.statSync(file).isFile() ? fs.readFileSync(file, 'utf8') : '';
-    const name = encodeURIComponent(record.id) + '.md';
-    write(path.join(CDN, 'docs', name), cdnRecordDoc(record, docs[record.id] || {}, source));
-    cdnDocs.push({ id: record.id, title: record.title || record.leaf || record.id, href: name, source: record.src || null });
-  }
+  const cdnDocs = require('./build-docs-components')(recs, docs, P, path.join(CDN, 'docs'), cdnRecordDoc, write);
   json(path.join(CDN, 'docs', 'index.json'), { version: VERSION, types: '../plenix.d.ts', count: cdnDocs.length, records: cdnDocs });
 
   const components = recs.map((r) => Object.assign(pick(docs[r.id] || {}, ['purpose', 'anatomy', 'behavior', 'a11y', 'content']), pick(r, ['id', 'title', 'sec', 'sub', 'leaf', 'level', 'status', 'icon', 'text', 'purpose', 'use', 'avoid', 'related', 'aliases', 'covers', 'map', 'plenix', 'src'])));

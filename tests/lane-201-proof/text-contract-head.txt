@@ -1,0 +1,7 @@
+platform/templates/Commerce/commerce.css:33  plx-commerce-line__total: its rules adjust font-family, font-weight, word-spacing, its declared contract says {"contract":"establishes","role":"heading","font":"mono"} (declare the change on purpose)
+platform/templates/Commerce/commerce.css:10  plx-commerce__subtitle: its rules adjust font-family, font-size, font-weight, line-height, word-spacing, its declared contract says {"contract":"establishes","role":"label","font":"sans","adjusts":["font-size","line-height"]} (declare the change on purpose)
+platform/templates/Commerce/commerce.css:8  plx-commerce__title: its rules adjust font-family, font-size, font-weight, line-height, word-spacing, its declared contract says {"contract":"establishes","role":"title","font":"sans","adjusts":["line-height"]} (declare the change on purpose)
+platform/templates/Commerce/commerce.css:33  plx-commerce-line__total changes the font family without the whole role (missing font-size, letter-spacing, line-height) (Styling Standard 6, the boundary rule)
+platform/templates/Commerce/commerce.css:10  plx-commerce__subtitle changes the font family without the whole role (missing letter-spacing) (Styling Standard 6, the boundary rule)
+platform/templates/Commerce/commerce.css:8  plx-commerce__title changes the font family without the whole role (missing letter-spacing) (Styling Standard 6, the boundary rule)
+6 finding(s)

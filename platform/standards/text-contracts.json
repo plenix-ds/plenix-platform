@@ -3193,6 +3193,12 @@
     "font-size"
    ]
   },
+  "plx-resizable-limit": {
+   "contract": "establishes",
+   "role": "caption",
+   "font": "sans",
+   "adjusts": ["font-size", "line-height"]
+  },
   "plx-tooltip__bubble": {
    "contract": "establishes",
    "role": "caption",

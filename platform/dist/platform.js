@@ -5860,7 +5860,41 @@ function stepSize(px, dir, min, max) {
   return c[Math.max(0, Math.min(c.length - 1, i))];
 }
   } },
-  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Resizable/resize-scale.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.resizeScale = resizeScale;
+/* Plenix · resizeScale
+   Summary: Pointer values stay continuous; settled values use the 4px grid or caller steps.
+   Usage: resizeScale(steps, min, max, keyboardSteps) returns clamp, snap, step and limits.
+   Props: steps: allowed settled values; min/max: bounds; keyboardSteps: existing token steps.
+   Behavior: Sorts and deduplicates explicit steps, clamps live values and supports limits beyond the token scale.
+   Notes: No DOM or side effects. */
+function resizeScale(steps, min, max, keyboardSteps = []) {
+  const clamp = value => Math.max(min, Math.min(max, Number.isFinite(value) ? value : min));
+  const values = Array.isArray(steps) ? [...new Set(steps.filter(Number.isFinite).filter(value => value >= min && value <= max))].sort((a, b) => a - b) : [];
+  const snap = value => values.length ? values.reduce((a, b) => Math.abs(b - value) < Math.abs(a - value) ? b : a) : clamp(Math.round(clamp(value) / 4) * 4);
+  const step = (value, dir) => {
+    if (values.length) return values[Math.max(0, Math.min(values.length - 1, values.indexOf(snap(value)) + (dir > 0 ? 1 : -1)))];
+    const keys = keyboardSteps.filter(size => size >= min && size <= max);
+    const last = keyboardSteps.length ? Math.max(...keyboardSteps) : min;
+    if (value > last || value === last && dir > 0 || !keys.length) return snap(value + (dir > 0 ? 4 : -4));
+    const candidates = keys.filter(size => dir > 0 ? size > value : size < value);
+    return candidates.length ? dir > 0 ? Math.min(...candidates) : Math.max(...candidates) : dir > 0 ? max : min;
+  };
+  return {
+    clamp,
+    snap,
+    step,
+    lo: values.length ? values[0] : min,
+    hi: values.length ? values[values.length - 1] : max
+  };
+}
+  } },
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5872,13 +5906,16 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _direction = require("../../utils/direction.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
+var _resizeScale = require("./resize-scale.js");
+var _floating = require("../../utils/floating.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Resizable, PanelSplitter
    Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
      Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
      a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is a size
-     token: a drag snaps to the nearest, the arrow keys step through them, and a list of steps narrows them further.
+     token: a drag follows the pointer and snaps on release, the arrow keys step through them, and a list of steps narrows them further.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
@@ -5892,20 +5929,21 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      fill: the content is a column whose children fill it; default false
      axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
        "both" (both edges, and a corner the pointer drags in both directions)
-     width, height: the size in pixels, each a size token (--plx-ref-size-*), when the page keeps it; onResize({ width,
-       height }) runs with each new size
+     width, height: the size in pixels when the page keeps it; onResize({ width,
+       height }) runs with each live size and the snapped release size
      defaultWidth, defaultHeight: the starting size when the box keeps it itself
      minWidth, maxWidth, minHeight, maxHeight: the limits in pixels (defaults: the tokens --plx-comp-resizable-min-width,
        -max-width, -min-height and -max-height: 120 to 560 wide, 80 to 400 high)
      steps: the only sizes allowed, smallest first (each a size token): an array for the resized axis, or { width: [],
-       height: [] }; without it every size token within the limits
+       height: [] }; without it the settled size is on the 4px grid within the limits
      strings: the words it says, for other languages: { width: "{label} width", height: "{label} height" }
        "Reset size" }
+     strings.minWidth, maxWidth, minHeight, maxHeight: optional explanations at those limits.
      className: more classes on the box; children: its content
      PanelSplitter.label, value, min, max() (a function: the widest it can be now), onChange(width), onCollapse(),
        defaultValue, edge: "end" (an area at the start) | "start" (an area at the end)
    Behavior:
-     Pointer: drag an edge (or the corner); the size follows in size-token steps; the page shows the resize pointer.
+     Pointer: drag an edge (or the corner); the size follows the pointer within the limits and snaps on release to 4px or the supplied steps; the page shows the resize pointer.
      Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
        end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
        to the limits.
@@ -5914,8 +5952,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token (never a style
        attribute). The content fits itself: it wraps, or scrolls in a region of its own.
+     Limit hints appear beside the divider, announce once per limit per drag, and dismiss on release, blur or Escape.
+     Motion uses the existing duration token and is skipped when reduced motion is requested.
      A table's column widths are the DataGrid's own; a pane of the shell uses PanelSplitter through its pattern.
 */
+const useSizeEffect = typeof window === 'undefined' ? _react.default.useEffect : _react.default.useLayoutEffect;
+
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
    collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
    "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
@@ -5991,22 +6033,7 @@ const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? 
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = name => typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
 const limit = (v, name) => v != null ? v : tokenPx('--plx-comp-resizable-' + name);
-// one axis's sizes: the steps given (within the limits), or every size token within them
-function scaleOf(steps, min, max) {
-  const list = Array.isArray(steps) ? steps.filter(s => s >= min && s <= max) : null;
-  const snap = px => list && list.length ? list.reduce((a, b) => Math.abs(b - px) < Math.abs(a - px) ? b : a) : (0, _sizeSteps.snapSize)(px, min, max);
-  const step = (px, dir) => {
-    if (!list || !list.length) return (0, _sizeSteps.stepSize)(px, dir, min, max);
-    const i = list.indexOf(snap(px)) + (dir > 0 ? 1 : -1);
-    return list[Math.max(0, Math.min(list.length - 1, i))];
-  };
-  return {
-    snap,
-    step,
-    lo: list && list.length ? list[0] : snap(min),
-    hi: list && list.length ? list[list.length - 1] : snap(max)
-  };
-}
+// One axis's settled sizes: caller steps, or the 4px grid; the live pointer remains continuous.
 function Resizable({
   label,
   variant = 'default',
@@ -6036,22 +6063,105 @@ function Resizable({
     doH = axis !== 'horizontal';
   const wSteps = Array.isArray(steps) ? doW ? steps : null : steps && steps.width;
   const hSteps = Array.isArray(steps) ? doW ? null : steps : steps && steps.height;
-  const W = scaleOf(wSteps, minWidth, maxWidth),
-    H = scaleOf(hSteps, minHeight, maxHeight);
+  const W = (0, _resizeScale.resizeScale)(wSteps, minWidth, maxWidth, _sizeSteps.SIZE_STEPS),
+    H = (0, _resizeScale.resizeScale)(hSteps, minHeight, maxHeight, _sizeSteps.SIZE_STEPS);
   const [own, setOwn] = _react.default.useState(() => ({
     width: defaultWidth != null ? W.snap(defaultWidth) : W.snap((minWidth + maxWidth) / 2),
     height: defaultHeight != null ? H.snap(defaultHeight) : H.snap((minHeight + maxHeight) / 2)
   }));
+  const [dragging, setDragging] = _react.default.useState(false);
   const size = {
-    width: width != null ? W.snap(width) : own.width,
-    height: height != null ? H.snap(height) : own.height
+    width: width != null ? dragging ? W.clamp(width) : W.snap(width) : W.clamp(own.width),
+    height: height != null ? dragging ? H.clamp(height) : H.snap(height) : H.clamp(own.height)
   };
+  const root = _react.default.useRef(null),
+    sizeId = _react.default.useId();
+  // Data dimensions use scoped CSS rules, never style attributes. Existing size-token selectors remain exclusive.
+  useSizeEffect(() => {
+    const doc = root.current && root.current.ownerDocument;
+    if (!doc) return;
+    const rules = [];
+    for (const [axis, value] of Object.entries(size)) {
+      if (!(axis === 'width' ? doW : doH) || _sizeSteps.SIZE_STEPS.includes(value)) continue;
+      const selector = '.plx-resizable[data-plx-' + axis + '="' + value + 'px"]:where([data-plx-resize-id=' + JSON.stringify(sizeId) + '])';
+      rules.push(selector + '{--plx-comp-resizable-' + axis + ':calc(var(--plx-ref-size-4px) * ' + value / 4 + ')}');
+    }
+    if (!rules.length) return;
+    const sheet = doc.createElement('style');
+    sheet.setAttribute('data-plx-resize-rules', sizeId);
+    sheet.textContent = rules.join('\n');
+    doc.head.appendChild(sheet);
+    return () => sheet.remove();
+  }, [size.width, size.height, doW, doH, sizeId]);
   const latest = _react.default.useRef(size);
   latest.current = size;
-  const set = next => {
+  const dragCleanup = _react.default.useRef(null),
+    motion = _react.default.useRef([]);
+  const stopMotion = () => {
+    motion.current.forEach(animation => animation.cancel());
+    motion.current = [];
+  };
+  const animate = (element, frames) => {
+    const win = element && element.ownerDocument.defaultView;
+    if (!win || !element.animate || win.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const duration = win.getComputedStyle(element).getPropertyValue('--plx-comp-resizable-edge-duration').trim();
+    const milliseconds = parseFloat(duration) * (duration.endsWith('ms') ? 1 : 1000);
+    if (milliseconds > 0) motion.current.push(element.animate(frames, {
+      duration: milliseconds
+    }));
+  };
+  _react.default.useEffect(() => () => {
+    if (dragCleanup.current) dragCleanup.current();
+    stopMotion();
+  }, []);
+  const [notice, setNotice] = _react.default.useState(''),
+    [announcement, setAnnouncement] = _react.default.useState('');
+  const input = _react.default.useRef('pointer');
+  const announced = _react.default.useRef(new Set()),
+    anchor = _react.default.useRef(null),
+    bubble = _react.default.useRef(null);
+  (0, _floating.useFloating)(anchor, bubble, {
+    open: !!notice,
+    placement: 'end',
+    offset: 'sm'
+  });
+  useSizeEffect(() => {
+    const element = bubble.current;
+    if (!notice || !element || !element.showPopover) return;
+    element.showPopover();
+    return () => {
+      if (element.matches(':popover-open')) element.hidePopover();
+    };
+  }, [notice]);
+  const reportLimit = next => {
+    let message = '';
+    for (const [which, scale, active] of [['width', W, doW], ['height', H, doH]]) {
+      if (!active || next[which] > scale.lo && next[which] < scale.hi) continue;
+      const smallest = next[which] <= scale.lo,
+        value = smallest ? scale.lo : scale.hi;
+      message = t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')] || (smallest ? 'Smallest ' : 'Largest ') + which + ' for ' + label + ' (' + value + 'px)';
+      break;
+    }
+    setNotice(message);
+    if (message && !announced.current.has(message)) {
+      announced.current.add(message);
+      setAnnouncement(message);
+      const handle = anchor.current;
+      const transform = handle && handle.classList.contains('plx-resizable__edge--block') ? 'translateY' : 'translateX';
+      if (handle) animate(handle, [{
+        transform: transform + '(0)'
+      }, {
+        transform: transform + '(var(--plx-ref-size-4px))'
+      }, {
+        transform: transform + '(0)'
+      }]);
+    }
+  };
+  const set = (next, settle = true) => {
+    reportLimit(next);
     const s = {
-      width: doW ? W.snap(next.width) : latest.current.width,
-      height: doH ? H.snap(next.height) : latest.current.height
+      width: doW ? settle ? W.snap(next.width) : W.clamp(next.width) : latest.current.width,
+      height: doH ? settle ? H.snap(next.height) : H.clamp(next.height) : latest.current.height
     };
     if (s.width === latest.current.width && s.height === latest.current.height) return;
     latest.current = s;
@@ -6061,28 +6171,66 @@ function Resizable({
   const drag = (dx, dy) => e => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     e.preventDefault();
+    input.current = 'pointer';
+    anchor.current = e.currentTarget;
     const x0 = e.clientX,
       y0 = e.clientY,
       w0 = latest.current.width,
       h0 = latest.current.height,
       flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
+    stopMotion();
+    announced.current.clear();
+    setAnnouncement('');
+    setDragging(true);
     const cls = dx && dy ? 'is-resizing-both' : dy ? 'is-resizing-rows' : 'is-resizing-columns';
     const move = ev => set({
       width: w0 + (ev.clientX - x0) * flip * dx,
       height: h0 + (ev.clientY - y0) * dy
-    });
-    const up = () => {
-      document.removeEventListener('pointermove', move);
-      document.removeEventListener('pointerup', up);
-      document.removeEventListener('pointercancel', up);
-      document.documentElement.classList.remove(cls);
+    }, false);
+    const doc = e.currentTarget.ownerDocument;
+    if (dragCleanup.current) dragCleanup.current();
+    const clear = () => {
+      doc.removeEventListener('pointermove', move);
+      doc.removeEventListener('pointerup', up);
+      doc.removeEventListener('pointercancel', up);
+      doc.documentElement.classList.remove(cls);
+      dragCleanup.current = null;
     };
-    document.addEventListener('pointermove', move);
-    document.addEventListener('pointerup', up);
-    document.addEventListener('pointercancel', up);
-    document.documentElement.classList.add(cls);
+    const up = () => {
+      const raw = latest.current,
+        settled = {
+          width: W.snap(raw.width),
+          height: H.snap(raw.height)
+        };
+      const before = {},
+        after = {};
+      if (doW) {
+        before.inlineSize = raw.width + 'px';
+        after.inlineSize = settled.width + 'px';
+      }
+      if (doH) {
+        before.blockSize = raw.height + 'px';
+        after.blockSize = settled.height + 'px';
+      }
+      if (raw.width !== settled.width || raw.height !== settled.height) animate(root.current, [before, after]);
+      set(raw);
+      setNotice('');
+      setDragging(false);
+      clear();
+    };
+    dragCleanup.current = clear;
+    doc.addEventListener('pointermove', move);
+    doc.addEventListener('pointerup', up);
+    doc.addEventListener('pointercancel', up);
+    doc.documentElement.classList.add(cls);
   };
   const keys = which => e => {
+    input.current = 'keyboard';
+    if (e.key === 'Escape') {
+      setNotice('');
+      return;
+    }
+    anchor.current = e.currentTarget;
     const S = which === 'width' ? W : H;
     const step = which === 'width' ? (0, _direction.arrowStep)(e, e.currentTarget, {
       vertical: false
@@ -6108,18 +6256,34 @@ function Resizable({
       "aria-valuenow": size[which],
       "aria-valuemin": S.lo,
       "aria-valuemax": S.hi,
+      title: notice || undefined,
       className: (0, _cx.cx)('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block')),
       onPointerDown: which === 'width' ? drag(1, 0) : drag(0, 1),
-      onKeyDown: keys(which)
+      onKeyDown: keys(which),
+      onBlur: () => setNotice(''),
+      onPointerLeave: () => {
+        if (!dragging && input.current === 'pointer') setNotice('');
+      }
     });
   };
   return /*#__PURE__*/_react.default.createElement("div", _extends({}, rest, {
+    ref: root,
+    "data-plx-resize-id": sizeId,
     className: (0, _cx.cx)('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', variant === 'divider' && 'plx-resizable--divider', fillContent && 'plx-resizable--fill', className),
     "data-plx-width": doW ? size.width + 'px' : undefined,
     "data-plx-height": doH ? size.height + 'px' : undefined
   }), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-resizable__content"
-  }, children), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
+  }, children), notice ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    popover: "manual",
+    className: "plx-resizable-limit"
+  }, notice) : null, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status",
+    "aria-live": "polite",
+    "aria-atomic": "true"
+  }, announcement), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-resizable__corner",
     "aria-hidden": "true",
     onPointerDown: drag(1, 1)
@@ -73469,7 +73633,7 @@ function useAnalytics() {
   return _react.default.useContext(Context);
 }
   } },
-  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../components/DataGrid/room.js":"platform/components/DataGrid/room.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../components/DataGrid/room.js":"platform/components/DataGrid/room.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -73479,6 +73643,7 @@ exports.ReadingPane = ReadingPane;
 exports.SplitView = SplitView;
 var _react = _interopRequireDefault(require("react"));
 var _room = require("../../components/DataGrid/room.js");
+var _AppShell = require("../AppShell/AppShell.jsx");
 var _cx = require("../../utils/cx.js");
 var _Resizable = require("../../components/Resizable/Resizable.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -73489,7 +73654,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      ReadingPane is the second panel's surface: the table's frame, an actions row with a thin line under it that stops
      short of the edges, and the item below.
    Usage:
-     <AppShell page="master-detail" …>
+     <AppShell …>
        <SplitView label="Inbox" orientation="side-by-side" firstLabel="Message list" defaultSize={560}
          first={<DataGrid label="Inbox" … />}
          second={<ReadingPane label={item.subject} actions={<Toolbar …/>}>…</ReadingPane>} />
@@ -73502,14 +73667,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        ReadingPane)
      label: the split view's accessible name (a group); firstLabel: what the divider resizes ("Message list"; default
        "First panel"), its name is "{firstLabel} width" or "… height"
-     defaultSize: the first panel's starting width (side by side) or height (stacked), a size token in pixels; size /
+     defaultSize: the first panel's starting width (side by side) or height (stacked), in pixels; size /
        onSizeChange(px): the parent keeps it (keep it in the view to remember it per person)
      minSize, maxSize: its limits in pixels (defaults: 360–720 side by side, 200–500 stacked)
-     steps: the only sizes allowed, smallest first (size tokens); the divider snaps to them on release
+     steps: settled sizes allowed; the divider follows the pointer within its limits and snaps to these on release.
+       Without steps it settles on the 4px grid. Side by side, the other pane retains its token minimum width.
      className: more classes on the split view
      ReadingPane.label: its region's name (the item's title); actions: the actions row (a Toolbar); empty: what shows
        when nothing is chosen (an EmptyState); children: the item; className
    Behavior:
+     Claims master-detail through useAppLayout().claimPage while mounted inside AppShell; cleanup restores the shell page.
      Each panel scrolls on its own; the page never scrolls as a whole (the multi-pane page kind). The divider is the whole
        gap between the panels: the resize pointer anywhere along it, a thin line down its middle and a small pill
        centered on the line; the pill darkens on hover, line and pill take the focus color while focused or dragged.
@@ -73541,14 +73708,54 @@ function SplitView({
   className,
   ...rest
 }) {
+  const shell = (0, _AppShell.useAppLayout)();
+  const claim = shell && shell.claimPage;
+  _react.default.useEffect(() => claim ? claim('master-detail') : undefined, [claim]);
   const side = orientation !== 'stacked';
   const [lo, hi, start] = LIMITS[side ? 'side-by-side' : 'stacked'];
+  const container = _react.default.useRef(null);
+  const [available, setAvailable] = _react.default.useState(null);
+  _react.default.useEffect(() => {
+    const element = container.current,
+      win = element && element.ownerDocument.defaultView;
+    if (!element || !win) return;
+    const measure = () => {
+      const panels = element.firstElementChild,
+        second = panels && panels.lastElementChild;
+      const horizontal = side && panels && win.getComputedStyle(panels).flexDirection === 'row';
+      if (!horizontal || !second) {
+        setAvailable(null);
+        return;
+      }
+      const minimum = parseFloat(win.getComputedStyle(second).minInlineSize) || 0;
+      const gap = parseFloat(win.getComputedStyle(panels).columnGap) || 0;
+      const max = Math.max(minSize ?? lo, panels.getBoundingClientRect().width - gap - minimum);
+      setAvailable(previous => previous && previous.max === max && previous.minimum === minimum ? previous : {
+        max,
+        minimum
+      });
+    };
+    measure();
+    const observer = win.ResizeObserver ? new win.ResizeObserver(measure) : null;
+    if (observer) observer.observe(element);
+    win.addEventListener('resize', measure);
+    return () => {
+      if (observer) observer.disconnect();
+      win.removeEventListener('resize', measure);
+    };
+  }, [side, minSize, lo]);
+  const requestedMax = maxSize ?? hi;
+  const constrained = side && available && available.max < requestedMax;
+  const widthMax = constrained ? available.max : requestedMax;
   const box = side ? {
     axis: 'horizontal',
     defaultWidth: defaultSize != null ? defaultSize : start,
     width: size,
     minWidth: minSize || lo,
-    maxWidth: maxSize || hi,
+    maxWidth: widthMax,
+    strings: constrained ? {
+      maxWidth: "The other pane needs at least " + available.minimum + "px"
+    } : undefined,
     onResize: onSizeChange ? s => onSizeChange(s.width) : undefined
   } : {
     axis: 'vertical',
@@ -73561,6 +73768,7 @@ function SplitView({
   return /*#__PURE__*/_react.default.createElement(_room.GridPane.Provider, {
     value: true
   }, /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: container,
     role: "group",
     "aria-label": label,
     className: (0, _cx.cx)('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)

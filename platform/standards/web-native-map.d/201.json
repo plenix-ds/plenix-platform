@@ -1,0 +1,9 @@
+{
+  "$description": "Lane 201: collection view state uses existing native collection and state guidance.",
+  "map": {
+    "interaction|Collection view state": {
+      "ios": ["ios-data-display|Collections"],
+      "android": ["android-data-display|Collection", "android-interaction|States"]
+    }
+  }
+}
