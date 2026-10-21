@@ -11,6 +11,11 @@ tree, in the same browser, page by page.
 3. `node tools/agent/datagrid/compare-header.js`: every header element at rest, while each column is hovered, and after
    sorting the first sortable column both ways. Extend its states (row hover, selection, editing, groups opened) for the
    batch at hand.
-4. Remove the baseline's `node_modules` junction with `cmd /c rmdir` before `git worktree remove`.
+4. `node tools/agent/datagrid/compare-states.js [--pages files,data-grid] [--states rest,hover0] [--agg]`: every element of
+   every grid, about a hundred computed values with ::before, ::after and the box (relative to its grid), grid by grid, in
+   every state the batches touch (rest, three rows hovered, a row selected and hovered, a cell edited, a group closed and
+   hovered, scrolled, the grid hovered) on the six application pages and every DataGrid and Table spec page
+   (spec-pages.json). Run it once with both copies at the same commit first: it must print SAME everywhere.
+5. Remove the baseline's `node_modules` junction with `cmd /c rmdir` before `git worktree remove`.
 
 The test browser runs with prefers-reduced-motion: reduce.

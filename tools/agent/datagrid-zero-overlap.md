@@ -21,8 +21,10 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
    root reaching the table holder (a context value read by the holder).
 2. **Header** (done: 993fe052): columns, titles, contents, the sort arrow and sorter, the header menu button. Sort direction, filtered and
    sortable become the column's own classes from the engine; the column's hover reaches its parts as context values.
-3. **Rows and cells**: cell kinds, frozen and row-label cells, the selected and hover row (the row's state as context
-   values for its cells), values, links in cells, editors, tree cells and their controls.
+3. **Rows and cells** (done: a07a4ac4): cell kinds, frozen and row-label cells, the selected and hover row (the row's state as
+   context values for its cells), values, editors, tree cells and their controls. The grid's modes are the parts' own classes
+   (row --narrow, --virtual; cell --narrow, --sized, --lines, --after-lead, --bare, tree level; value --wrap, --sized,
+   --lines); row actions fade on their wrapper (__portal--actions). Links in cells (`__portal > a`) stay for batch 6.
 4. **Scrolling**: the table holder, the custom scrollbars and their thumbs, frozen rows.
 5. **Groups**: group rows, bands, gaps, sticky group headers, summaries, the add row, probes.
 6. **Menus, filters, pagination and the rest**.
@@ -35,7 +37,7 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 - **Phase 4 text roles** for the 8 DataGrid and Table parts still on the migration backlog
   (`check-system.text-contract.json`).
 
-## Lessons from batches 1 and 2
+## Lessons from batches 1 to 3
 
 - Prove each batch by computed values before and after, in every state the part has (rest, hover of each column, sorted
   both ways), not only the strict overlap audit: the audit keys pairs by selector text, so renamed rules show as new and
@@ -48,3 +50,11 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 - A media condition may only set tokens (condition-not-token). Reduced motion is the duration tokens (0s); a
   transition-property:none rule is not carried over.
 - The test browser runs with prefers-reduced-motion: reduce.
+- `tools/agent/datagrid/compare-states.js` proves a batch: every grid element, ~100 computed values, its ::before and
+  ::after and its box relative to its grid, grid by grid, in every state (rest, rows hovered, selected, edited, a group
+  closed, scrolled, the grid hovered). A grid whose text differs is skipped and named (the spec's documentation tables
+  list the stylesheet's own rules). `--agg` totals every distinct difference.
+- A class the engine only uses at run time is not dead: `__length-probe` is the span tokenPixels (environment.js)
+  appends to measure a calc() length; without its rule a grouped grid drew one row more. Grep the JS, not only the JSX.
+- Table: where the base goes flat, table.css's rules for the same parts start winning, including the ones that used to
+  lose (a wrapped value's padding). In each batch remove from table.css what repeats its base or already lost to it.
