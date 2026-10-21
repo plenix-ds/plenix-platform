@@ -17070,7 +17070,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A group's head is __group-head--gap after a band (not in its sticky copy), its label __group-label--level-N, its
      cells --narrow in the list, the add row's cell __group-cell--add; the eyebrow is the grid's own span. A custom cell's
      own element takes __cell-content (a link alone in a cell fills it); a data cell (kind data, type bytes) is
-     __grid-cell--data, the data role in Mono. */
+     __grid-cell--data, the data role in Mono. Table (isStatic) marks its parts --static: the root, grid, header, headers, columns, their
+     contents and titles, the body, the table, rows, cells, values and the placeholder. */
 // Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
 const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
   className: GRID + '__cell-direction',
@@ -18183,7 +18184,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -18195,11 +18196,11 @@ function NextEngine(props) {
         }
       }
     }), /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-col-content', icon && B + '__grid-col-content--icon', !icon && align === 'center' && B + '__grid-col-content--center', effectiveWrap && B + '__grid-col-content--wrap')
+      className: (0, _cx.cx)(B + '__grid-col-content', isStatic && B + '__grid-col-content--static', icon && B + '__grid-col-content--icon', !icon && align === 'center' && B + '__grid-col-content--center', effectiveWrap && B + '__grid-col-content--wrap')
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: `${B}__grid-col-title-holder`
     }, /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-col-title', titleFixed && B + '__grid-col-title--' + titleFixed, icon && B + '__grid-col-title--icon', align && B + '__grid-col-title--align-' + align),
+      className: (0, _cx.cx)(B + '__grid-col-title', isStatic && B + '__grid-col-title--static', titleFixed && B + '__grid-col-title--' + titleFixed, icon && B + '__grid-col-title--icon', align && B + '__grid-col-title--align-' + align),
       title: c.title
     }, kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: B + '__header-icon'
@@ -18464,7 +18465,7 @@ function NextEngine(props) {
     const step = !isStatic && !isNarrow ? effectiveStep : undefined,
       sized = step != null,
       lines = sized && step !== 'short',
-      modes = (0, _cx.cx)(isNarrow && B + '__grid-cell--narrow', sized && B + '__grid-cell--sized', lines && B + '__grid-cell--lines');
+      modes = (0, _cx.cx)(isStatic && B + '__grid-cell--static', isNarrow && B + '__grid-cell--narrow', sized && B + '__grid-cell--sized', lines && B + '__grid-cell--lines');
     const node = /*#__PURE__*/_react.default.createElement(RowTarget, _extends({
       key: row.displayKey || row.id
     }, !(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)), {
@@ -18478,7 +18479,7 @@ function NextEngine(props) {
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
         if (selectable) pickCheckbox(row, {
@@ -18538,7 +18539,7 @@ function NextEngine(props) {
         isEditing = editing?.key === row.id && editing.field === c.field,
         handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
         actions = k.includes('actions');
-      const mods = (0, _cx.cx)(k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && B + '__value--lines') || undefined,
+      const mods = (0, _cx.cx)(isStatic && B + '__value--static', k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && B + '__value--lines') || undefined,
         shown = (0, _cells.CellValue)({
           block: B,
           column: c,
@@ -18696,7 +18697,7 @@ function NextEngine(props) {
     value: widthPixels
   }, /*#__PURE__*/_react.default.createElement("div", {
     ref: frame,
-    className: (0, _cx.cx)(B, pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
+    className: (0, _cx.cx)(B, isStatic && B + '--static', pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
     "data-plx-render": virtualized ? 'virtual' : undefined,
     "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : undefined,
@@ -18733,7 +18734,7 @@ function NextEngine(props) {
     disabled: !Object.keys(selection).some(key => selection[key]),
     onSelect: () => unread.mark(canonical.filter(record => selection[(0, _state.recordKey)(record[index])]), true)
   }, "Mark as unread")) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)(B + '__table', B + '__grid', height === '100%' && B + '__grid--fill'),
+    className: (0, _cx.cx)(B + '__table', B + '__grid', height === '100%' && B + '__grid--fill', isStatic && B + '__grid--static'),
     role: isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid',
     "aria-label": label,
     "aria-busy": remoteMode && remoteBusy ? true : undefined,
@@ -18741,13 +18742,13 @@ function NextEngine(props) {
     "aria-colcount": ordered.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
     hidden: !!failed
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)(B + '__grid-header', isNarrow && B + '__grid-header--narrow'),
+    className: (0, _cx.cx)(B + '__grid-header', isNarrow && B + '__grid-header--narrow', isStatic && B + '__grid-header--static'),
     ref: header,
     hidden: isStatic && props.headerVisible === false
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: `${B}__grid-header-contents`
   }, /*#__PURE__*/_react.default.createElement("div", _extends({}, columnDnd.listProps, {
-    className: `${B}__grid-headers`,
+    className: (0, _cx.cx)(`${B}__grid-headers`, isStatic && B + '__grid-headers--static'),
     role: "row"
   }), selectable ? /*#__PURE__*/_react.default.createElement("div", {
     className: `${B}__grid-col ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
@@ -18796,7 +18797,7 @@ function NextEngine(props) {
   }) : null))), /*#__PURE__*/_react.default.createElement("div", {
     id: viewportId,
     ref: holder,
-    className: (0, _cx.cx)(`${B}__grid-tableholder`, height === '100%' && B + '__grid-tableholder--fill'),
+    className: (0, _cx.cx)(`${B}__grid-tableholder`, height === '100%' && B + '__grid-tableholder--fill', isStatic && B + '__grid-tableholder--static'),
     "data-plx-height": lengthName(height),
     "data-plx-fit": !isStatic && !height && mode !== 'pages' ? '' : undefined,
     role: "rowgroup",
@@ -18817,7 +18818,7 @@ function NextEngine(props) {
       }
     }
   }, /*#__PURE__*/_react.default.createElement("div", _extends({}, rowDnd.listProps, {
-    className: (0, _cx.cx)(`${B}__grid-table`, virtualized && B + '__grid-table--virtual', isNarrow && B + '__grid-table--narrow'),
+    className: (0, _cx.cx)(`${B}__grid-table`, virtualized && B + '__grid-table--virtual', isNarrow && B + '__grid-table--narrow', isStatic && B + '__grid-table--static'),
     role: "presentation"
   }), stickyGroups.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: B + '__sticky-groups',
@@ -18837,7 +18838,7 @@ function NextEngine(props) {
   }), shown.map(renderRow), /*#__PURE__*/_react.default.createElement(RowGap, {
     rows: model.slice(last)
   })), !model.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: `${B}__grid-placeholder`
+    className: (0, _cx.cx)(`${B}__grid-placeholder`, isStatic && B + '__grid-placeholder--static')
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: `${B}__grid-placeholder-contents`
   }, /*#__PURE__*/_react.default.createElement("span", {

@@ -2864,12 +2864,6 @@
     "line-height"
    ]
   },
-  "plx-table__grid-col-content": {
-   "contract": "adjusts",
-   "props": [
-    "line-height"
-   ]
-  },
   "plx-table__grid-col-content--icon": {
    "contract": "adjusts",
    "props": [

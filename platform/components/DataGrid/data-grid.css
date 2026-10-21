@@ -25,14 +25,14 @@
 @property --plx-state-data-grid-button-color{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-button-inset{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-button-on{syntax:"*";inherits:false;}
-.plx-data-grid__grid-header{background-color:var(--plx-comp-data-grid-header-background);border-block-end-color:var(--plx-comp-data-grid-border-bottom-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-data-grid-line-width);color:var(--plx-comp-data-grid-header-text);font-weight:var(--plx-comp-data-grid-header-font-weight);overflow:hidden;position:relative;user-select:none;white-space:nowrap;}
+.plx-data-grid__grid-header{background-color:var(--plx-comp-data-grid-header-background);border-block-end-color:var(--plx-comp-data-grid-border-bottom-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-data-grid-line-width);color:var(--plx-comp-data-grid-header-text);font-weight:var(--plx-comp-data-grid-header-font-weight);overflow:var(--plx-state-data-grid-header-overflow,hidden);position:relative;user-select:none;white-space:nowrap;}
 .plx-data-grid__grid-header--narrow{display:none;}
 .plx-data-grid__grid-header-contents{overflow:visible;position:relative;}
-.plx-data-grid__grid-headers{display:flex;inline-size:max-content;min-inline-size:100%;position:relative;}
-.plx-data-grid__grid-col{background-color:var(--plx-state-data-grid-col-hover-bg,var(--plx-state-data-grid-col-grouped-bg,var(--plx-comp-data-grid-header-background)));border-inline-end-style:none;display:inline-flex;flex-direction:column;flex-grow:0;flex-shrink:0;overflow:visible;position:var(--plx-state-data-grid-position,relative);vertical-align:bottom;}
+.plx-data-grid__grid-headers{display:flex;inline-size:var(--plx-state-data-grid-headers-inline-size,max-content);min-inline-size:var(--plx-state-data-grid-headers-min-inline-size,100%);position:relative;}
+.plx-data-grid__grid-col{background-color:var(--plx-state-data-grid-col-hover-bg,var(--plx-state-data-grid-col-grouped-bg,var(--plx-comp-data-grid-header-background)));border-inline-end-style:none;display:inline-flex;flex-direction:column;flex-grow:0;flex-shrink:var(--plx-state-data-grid-col-shrink,0);overflow:visible;position:var(--plx-state-data-grid-position,relative);vertical-align:bottom;}
 .plx-data-grid__grid-col:hover{--plx-comp-data-grid-context-hover-on:1;--plx-comp-data-grid-context-hover-reserve:var(--plx-comp-data-grid-title-reserve);}
 .plx-data-grid__grid-col.plx-data-grid__grid-sortable:hover{--plx-state-data-grid-col-hover-bg:var(--plx-comp-data-grid-hover-background);}
-.plx-data-grid__grid-col.plx-data-grid__cell--icon:hover:not(.plx-data-grid__grid-sortable){--plx-state-data-grid-col-hover-bg:var(--plx-comp-data-grid-cell-icon-hover-background);}
+.plx-data-grid__grid-col.plx-data-grid__cell--icon:hover:not(.plx-data-grid__grid-sortable, .plx-data-grid__grid-col--static){--plx-state-data-grid-col-hover-bg:var(--plx-comp-data-grid-cell-icon-hover-background);}
 .plx-data-grid__grid-col.plx-data-grid__cell--grouped{--plx-state-data-grid-col-grouped-bg:var(--plx-comp-data-grid-grouped-column-background);}
 .plx-data-grid__grid-col.plx-data-grid__grid-frozen{z-index:var(--plx-sys-layer-raised);}
 .plx-data-grid__grid-col[draggable="true"]{cursor:grab;}
@@ -42,9 +42,9 @@
 .plx-data-grid__grid-col-content--row-header{--plx-state-data-grid-content-justify:center;--plx-state-data-grid-content-position:static;}
 .plx-data-grid__grid-col-content--icon{--plx-state-data-grid-content-display:inline-flex;--plx-state-data-grid-content-justify:center;color:var(--plx-comp-data-grid-cell-icon-text);line-height:normal;}
 .plx-data-grid__grid-col-content--center{--plx-state-data-grid-content-justify:center;}
-.plx-data-grid__grid-col-content--wrap{--plx-state-data-grid-content-block:var(--plx-comp-data-grid-header-wrap-height);}
+.plx-data-grid__grid-col-content--wrap:where(:not(.plx-data-grid__grid-col-content--static)){--plx-state-data-grid-content-block:var(--plx-comp-data-grid-header-wrap-height);}
 .plx-data-grid__grid-col-title-holder{flex:1;min-inline-size:0;position:relative;}
-.plx-data-grid__grid-col-title{color:var(--plx-comp-data-grid-text);font-size:var(--plx-comp-data-grid-header-font-size);font-weight:var(--plx-comp-data-grid-header-font-weight);overflow:hidden;padding-inline-end:var(--plx-state-data-grid-title-fixed,var(--plx-comp-data-grid-context-hover-reserve,0));text-overflow:ellipsis;white-space:nowrap;}
+.plx-data-grid__grid-col-title{color:var(--plx-comp-data-grid-text);font-size:var(--plx-comp-data-grid-header-font-size);font-weight:var(--plx-comp-data-grid-header-font-weight);overflow:var(--plx-state-data-grid-title-overflow,hidden);padding-inline-end:var(--plx-state-data-grid-title-fixed,var(--plx-comp-data-grid-context-hover-reserve,0));text-overflow:ellipsis;white-space:var(--plx-state-data-grid-title-space,nowrap);}
 .plx-data-grid__grid-col-title--reserve{--plx-state-data-grid-title-fixed:var(--plx-comp-data-grid-title-reserve);}
 .plx-data-grid__grid-col-title--flush{--plx-state-data-grid-title-fixed:0;}
 .plx-data-grid__grid-col-title--icon{display:flex;}
@@ -93,7 +93,7 @@
 @property --plx-state-data-grid-cell-min-block{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-value-space{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-actions-focus{syntax:"*";inherits:false;}
-.plx-data-grid__grid-row:where(:not(.plx-data-grid__grid-group)){background-color:var(--plx-comp-data-grid-context-row-fill,var(--plx-comp-data-grid-background));border-block-end-color:var(--plx-comp-data-grid-row-line);border-block-end-style:solid;border-block-end-width:var(--plx-comp-data-grid-line-width);display:var(--plx-state-data-grid-row-display,flex);min-block-size:var(--plx-comp-data-grid-record-height);position:relative;}
+.plx-data-grid__grid-row:where(:not(.plx-data-grid__grid-group)){background-color:var(--plx-comp-data-grid-context-row-fill,var(--plx-comp-data-grid-background));border-block-end-color:var(--plx-comp-data-grid-row-line);border-block-end-style:solid;border-block-end-width:var(--plx-comp-data-grid-line-width);display:var(--plx-state-data-grid-row-display,flex);min-block-size:var(--plx-state-data-grid-row-min,var(--plx-comp-data-grid-record-height));position:relative;}
 .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover:where(:not(.plx-data-grid__grid-selected)){--plx-comp-data-grid-context-row-fill:var(--plx-comp-data-grid-row-hover-background);}
 .plx-data-grid__grid-row.plx-data-grid__grid-selected:where(:not(:hover)){--plx-comp-data-grid-context-row-fill:var(--plx-comp-data-grid-row-selected-background);}
 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{--plx-comp-data-grid-context-row-fill:var(--plx-comp-data-grid-row-selected-hover-background);}
@@ -102,7 +102,7 @@
 .plx-data-grid__grid-row:is(:hover, .plx-data-grid__grid-selected){--plx-comp-data-grid-context-row-actions:1;}
 .plx-data-grid__grid-row--narrow{--plx-state-data-grid-row-display:grid;align-items:center;grid-template-columns:auto auto minmax(0,1fr) auto;padding-block-end:var(--plx-comp-data-grid-list-padding-block);padding-block-start:var(--plx-comp-data-grid-list-padding-block);}
 .plx-data-grid__grid-row--virtual{block-size:calc(var(--plx-comp-data-grid-record-height) + var(--plx-comp-data-grid-line-width));overflow:clip;}
-.plx-data-grid__grid-cell{align-items:center;align-self:stretch;background-color:var(--plx-state-data-grid-cell-fill,var(--plx-state-data-grid-cell-bg,transparent));block-size:auto;display:var(--plx-state-data-grid-cell-display,flex);flex-grow:0;flex-shrink:0;line-height:var(--plx-state-data-grid-cell-line-height,var(--plx-comp-data-grid-line-height));min-block-size:var(--plx-state-data-grid-cell-min-block,var(--plx-comp-data-grid-min-height));overflow:hidden;padding-block-end:var(--plx-state-data-grid-cell-pad-end,0);padding-block-start:var(--plx-state-data-grid-cell-pad-start,0);padding-inline-end:var(--plx-state-data-grid-cell-pad-inline-end,var(--plx-comp-data-grid-cell-padding-inline));padding-inline-start:var(--plx-state-data-grid-cell-pad-inline-start,var(--plx-comp-data-grid-cell-padding-inline));position:var(--plx-state-data-grid-cell-position,var(--plx-state-data-grid-position,relative));text-overflow:ellipsis;white-space:var(--plx-state-data-grid-cell-space,nowrap);}
+.plx-data-grid__grid-cell{align-items:center;align-self:stretch;background-color:var(--plx-state-data-grid-cell-fill,var(--plx-state-data-grid-cell-bg,transparent));block-size:auto;display:var(--plx-state-data-grid-cell-display,flex);flex-grow:0;flex-shrink:var(--plx-state-data-grid-cell-shrink,0);line-height:var(--plx-state-data-grid-cell-line-height,var(--plx-comp-data-grid-line-height));min-block-size:var(--plx-state-data-grid-cell-min-block,var(--plx-comp-data-grid-min-height));overflow:hidden;padding-block-end:var(--plx-state-data-grid-cell-pad-end,0);padding-block-start:var(--plx-state-data-grid-cell-pad-start,0);padding-inline-end:var(--plx-state-data-grid-cell-pad-inline-end,var(--plx-comp-data-grid-cell-padding-inline));padding-inline-start:var(--plx-state-data-grid-cell-pad-inline-start,var(--plx-comp-data-grid-cell-padding-inline));position:var(--plx-state-data-grid-cell-position,var(--plx-state-data-grid-position,relative));text-overflow:ellipsis;white-space:var(--plx-state-data-grid-cell-space,nowrap);}
 .plx-data-grid__grid-cell:not(:first-child, .plx-data-grid__grid-cell--after-lead, .plx-data-grid__grid-cell--narrow:not(.plx-data-grid__cell--row-menu))::before{background-color:var(--plx-comp-data-grid-column-line);content:"";inline-size:var(--plx-comp-data-grid-line-width);inset-block-end:var(--plx-comp-data-grid-column-line-inset);inset-block-start:var(--plx-comp-data-grid-column-line-inset);inset-inline-start:0;position:absolute;}
 .plx-data-grid__grid-cell.plx-data-grid__grid-row-header::after{background-color:var(--plx-comp-data-grid-column-line);content:"";inline-size:var(--plx-comp-data-grid-line-width);inset-block-end:var(--plx-comp-data-grid-column-line-inset);inset-block-start:var(--plx-comp-data-grid-column-line-inset);inset-inline-end:0;position:absolute;}
 /* background */
@@ -118,7 +118,7 @@
 .plx-data-grid__grid-cell:is(.plx-data-grid__cell--center, .plx-data-grid__cell--actions, .plx-data-grid__grid-row-header, .plx-data-grid__cell--icon):where(:not(.plx-data-grid__grid-cell--lines, .plx-data-grid__grid-cell--narrow.plx-data-grid__cell--key)):where(:not(.plx-data-grid__grid-cell--narrow), .plx-data-grid__cell--actions, .plx-data-grid__grid-row-header){--plx-state-data-grid-cell-display:inline-flex;}
 .plx-data-grid__grid-cell:is(.plx-data-grid__cell--center, .plx-data-grid__cell--actions, .plx-data-grid__grid-row-header, .plx-data-grid__cell--icon):where(:not(.plx-data-grid__grid-cell--lines, .plx-data-grid__grid-cell--narrow.plx-data-grid__cell--key, .plx-data-grid__grid-cell--sized.plx-data-grid__cell--wrap)){--plx-state-data-grid-cell-line-height:normal;}
 .plx-data-grid__grid-cell.plx-data-grid__cell--wrap:where(:not(.plx-data-grid__grid-cell--sized, .plx-data-grid__grid-cell--narrow.plx-data-grid__cell--key, .plx-data-grid__cell--center, .plx-data-grid__cell--actions, .plx-data-grid__grid-row-header, .plx-data-grid__cell--icon)){--plx-state-data-grid-cell-line-height:var(--plx-comp-data-grid-wrap-line-height);}
-.plx-data-grid__grid-cell.plx-data-grid__cell--wrap:where(:not(.plx-data-grid__grid-cell--sized, .plx-data-grid__grid-cell--narrow.plx-data-grid__cell--key)){--plx-state-data-grid-cell-space:normal;}
+.plx-data-grid__grid-cell.plx-data-grid__cell--wrap:where(:not(.plx-data-grid__grid-cell--sized, .plx-data-grid__grid-cell--narrow.plx-data-grid__cell--key, .plx-data-grid__grid-cell--static)){--plx-state-data-grid-cell-space:normal;}
 /* padding */
 .plx-data-grid__grid-cell.plx-data-grid__cell--wrap:where(:not(.plx-data-grid__grid-cell--sized, .plx-data-grid__grid-cell--bare, .plx-data-grid__grid-editing, .plx-data-grid__grid-cell--narrow.plx-data-grid__cell--key:not(.plx-data-grid__cell--key-first))){--plx-state-data-grid-cell-pad-start:var(--plx-comp-data-grid-cell-wrap-padding-top);}
 .plx-data-grid__grid-cell.plx-data-grid__cell--wrap:where(:not(.plx-data-grid__grid-cell--sized, .plx-data-grid__grid-cell--bare, .plx-data-grid__grid-editing)){--plx-state-data-grid-cell-pad-end:var(--plx-comp-data-grid-cell-wrap-padding-bottom);}
@@ -159,11 +159,13 @@
 .plx-data-grid__grid-cell.plx-data-grid__grid-editing{outline-color:var(--plx-comp-data-grid-outline-color);outline-offset:calc(var(--plx-comp-data-grid-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-grid-editing-outline-width);}
 .plx-data-grid__grid-cell.plx-data-grid__cell--handle{cursor:grab;}
 .plx-data-grid__grid-cell.plx-data-grid__cell--handle:focus-visible:where(:not(.plx-data-grid__grid-editing)){outline-color:var(--plx-comp-data-grid-focus-outline-color);outline-offset:calc(var(--plx-comp-data-grid-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-grid-editing-outline-width);}
-.plx-data-grid__w-lead{flex-basis:var(--plx-comp-data-grid-lead-column-width);inline-size:var(--plx-comp-data-grid-lead-column-width);max-inline-size:var(--plx-comp-data-grid-lead-column-width);min-inline-size:var(--plx-comp-data-grid-lead-column-width);}
+.plx-data-grid__w-lead{flex-basis:var(--plx-comp-data-grid-lead-column-width);inline-size:var(--plx-comp-data-grid-lead-column-width);max-inline-size:var(--plx-comp-data-grid-lead-column-width);}
+.plx-data-grid__w-lead:where(:not(.plx-data-grid__grid-col--static, .plx-data-grid__grid-cell--static)){min-inline-size:var(--plx-comp-data-grid-lead-column-width);}
 .plx-data-grid__w-view{flex-basis:var(--plx-comp-data-grid-view-column-width);inline-size:var(--plx-comp-data-grid-view-column-width);max-inline-size:var(--plx-comp-data-grid-view-column-width);min-inline-size:var(--plx-comp-data-grid-view-column-width);}
 /* what a cell holds: values, rich values, row actions, the checkbox, the editor, the tree */
-.plx-data-grid__value{flex-basis:auto;flex-grow:0;flex-shrink:1;min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:var(--plx-state-data-grid-value-space,nowrap);}
-.plx-data-grid__value--wrap:where(:not(.plx-data-grid__value--sized)){--plx-state-data-grid-value-space:normal;padding-block-end:var(--plx-comp-data-grid-cell-wrap-padding-bottom);padding-block-start:var(--plx-comp-data-grid-cell-wrap-padding-top);}
+.plx-data-grid__value{flex-basis:auto;flex-grow:0;flex-shrink:1;min-inline-size:0;overflow:var(--plx-state-data-grid-value-overflow,hidden);text-overflow:ellipsis;white-space:var(--plx-state-data-grid-value-space,nowrap);}
+.plx-data-grid__value--wrap:where(:not(.plx-data-grid__value--sized, .plx-data-grid__value--static)){--plx-state-data-grid-value-space:normal;}
+.plx-data-grid__value--wrap:where(:not(.plx-data-grid__value--sized)){padding-block-end:var(--plx-comp-data-grid-cell-wrap-padding-bottom);padding-block-start:var(--plx-comp-data-grid-cell-wrap-padding-top);}
 .plx-data-grid__value--sized.plx-data-grid__value--wrap:where(:not(.plx-data-grid__value--lines)){line-height:var(--plx-comp-data-grid-line-height);}
 .plx-data-grid__value--lines{--plx-state-data-grid-value-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:round(down, calc((var(--plx-comp-data-grid-record-height) - var(--plx-comp-data-grid-cell-padding-block) * 2) / var(--plx-comp-data-grid-text-line-height)), 1);display:-webkit-box;line-height:var(--plx-comp-data-grid-text-line-height);max-block-size:calc(var(--plx-comp-data-grid-record-height) - var(--plx-comp-data-grid-cell-padding-block) * 2);overflow-wrap:anywhere;}
 .plx-data-grid__rich{--plx-comp-avatar-context-font-size:var(--plx-comp-data-grid-font-size);align-items:center;column-gap:var(--plx-comp-data-grid-cell-rich-gap);display:inline-flex;}
@@ -192,7 +194,7 @@
 @property --plx-state-data-grid-scroll-display{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-table-inline-size{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-table-min-inline-size{syntax:"*";inherits:false;}
-.plx-data-grid__grid{background-color:var(--plx-comp-data-grid-background);border-style:none;color:var(--plx-comp-data-grid-text);font-family:var(--plx-comp-data-grid-font-family);font-size:var(--plx-comp-data-grid-font-size);overflow:hidden;position:relative;text-align:start;transform:translateZ(0);word-spacing:normal;}
+.plx-data-grid__grid{background-color:var(--plx-comp-data-grid-background);border-style:none;color:var(--plx-comp-data-grid-text);font-family:var(--plx-comp-data-grid-font-family);font-size:var(--plx-comp-data-grid-font-size);overflow:var(--plx-state-data-grid-grid-overflow,hidden);position:relative;text-align:start;transform:translateZ(0);word-spacing:normal;}
 .plx-data-grid__grid--fill{block-size:100%;display:flex;flex-direction:column;}
 .plx-data-grid__grid-tableholder{background-color:var(--plx-comp-data-grid-background);inline-size:100%;isolation:isolate;overflow:var(--plx-state-data-grid-holder-overflow,auto);position:relative;white-space:nowrap;}
 .plx-data-grid__grid-tableholder:focus-visible{outline-color:var(--plx-comp-data-grid-focus-outline-color);outline-offset:calc(var(--plx-comp-data-grid-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-grid-editing-outline-width);}
@@ -309,16 +311,46 @@
 /* ---- the rest (zero overlap, batch 6): the empty message, the footer, a link alone in a custom cell, the row menu, the
    header's type icon, flat. A link the engine places directly in a cell is a.plx-data-grid__cell-content (the engine adds
    the class to custom content); the row-menu cell sizes its button through Button's context hooks. */
-.plx-data-grid__grid-placeholder{align-items:center;display:flex;justify-content:center;min-block-size:var(--plx-comp-data-grid-record-height);}
+.plx-data-grid__grid-placeholder{align-items:center;display:flex;justify-content:center;min-block-size:var(--plx-state-data-grid-placeholder-min,var(--plx-comp-data-grid-record-height));}
 .plx-data-grid__grid-placeholder-contents{color:var(--plx-comp-data-grid-header-text);font-size:var(--plx-comp-data-grid-placeholder-font-size);font-weight:var(--plx-comp-data-grid-placeholder-font-weight);}
 .plx-data-grid__empty{color:var(--plx-comp-data-grid-empty-text);font-family:var(--plx-comp-data-grid-font-family);font-size:var(--plx-comp-data-grid-placeholder-font-size);font-weight:var(--plx-comp-data-grid-placeholder-font-weight);letter-spacing:var(--plx-sys-text-body-letter-spacing);line-height:var(--plx-sys-text-body-line-height);word-spacing:normal;}
 a.plx-data-grid__cell-content{align-items:center;align-self:stretch;display:inline-flex;flex-grow:1;min-inline-size:0;}
 .plx-data-grid__footer{align-items:center;border-block-start-color:var(--plx-comp-data-grid-footer-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-data-grid-line-width);color:var(--plx-comp-data-grid-footer-text);column-gap:var(--plx-comp-data-grid-footer-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-data-grid-footer-font-size);padding-block-end:var(--plx-comp-data-grid-footer-padding-block);padding-block-start:var(--plx-comp-data-grid-footer-padding-block);padding-inline-end:var(--plx-comp-data-grid-footer-padding-inline);padding-inline-start:var(--plx-comp-data-grid-footer-padding-inline);row-gap:var(--plx-comp-data-grid-footer-row-gap);}
 .plx-data-grid__page-size{align-items:center;column-gap:var(--plx-comp-data-grid-footer-label-gap);display:flex;white-space:nowrap;}
+/* ---- the static grid (zero overlap, batch 7): Table renders the engine with isStatic, and its parts take that mode as
+   their own class (--static); a static table fits the page instead of scrolling (no clipping, the body neither scrolls nor
+   stops at a height), its headers, cells and values wrap and shrink with the room, its rows grow with their content, and a
+   name keeps its weight in an unread row. Table's own stylesheet keeps only what the base never sets. */
+@property --plx-state-data-grid-root-overflow{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-grid-overflow{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-header-overflow{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-headers-inline-size{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-headers-min-inline-size{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-col-shrink{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-title-overflow{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-title-space{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-cell-shrink{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-value-overflow{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-row-min{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-placeholder-min{syntax:"*";inherits:false;}
+.plx-data-grid--static{--plx-state-data-grid-root-overflow:clip;}
+.plx-data-grid__grid--static{--plx-state-data-grid-grid-overflow:visible;}
+.plx-data-grid__grid-header--static{--plx-state-data-grid-header-overflow:clip;}
+.plx-data-grid__grid-headers--static{--plx-state-data-grid-headers-inline-size:100%;--plx-state-data-grid-headers-min-inline-size:0;}
+.plx-data-grid__grid-tableholder--static:where(:not([data-plx-height], [data-plx-fit])){--plx-state-data-grid-holder-overflow:visible;}
+.plx-data-grid__grid-table--static:where(:not(.plx-data-grid__grid-table--narrow)){--plx-state-data-grid-table-inline-size:100%;--plx-state-data-grid-table-min-inline-size:0;}
+.plx-data-grid__grid-col--static{--plx-state-data-grid-col-shrink:1;contain:inline-size;min-inline-size:0;overflow-wrap:anywhere;white-space:normal;}
+.plx-data-grid__grid-col-content--static{--plx-state-data-grid-content-block:auto;min-block-size:var(--plx-comp-data-grid-height);}
+.plx-data-grid__grid-col-title--static{--plx-state-data-grid-title-overflow:visible;--plx-state-data-grid-title-space:normal;overflow-wrap:anywhere;}
+.plx-data-grid__grid-row--static{--plx-state-data-grid-row-min:var(--plx-comp-data-grid-min-height);}
+.plx-data-grid__grid-cell--static{--plx-state-data-grid-cell-shrink:1;--plx-state-data-grid-cell-space:normal;contain:inline-size;overflow-wrap:anywhere;}
+.plx-data-grid__grid-cell--static:where(:not(.plx-data-grid__grid-cell--narrow)){min-inline-size:0;}
+.plx-data-grid__value--static{--plx-state-data-grid-value-overflow:visible;--plx-state-data-grid-value-space:normal;overflow-wrap:anywhere;}
+.plx-data-grid__grid-placeholder--static{--plx-state-data-grid-placeholder-min:var(--plx-comp-data-grid-min-height);}
 .plx-data-grid__type-icon{--plx-comp-icon-size:100%;block-size:var(--plx-comp-data-grid-header-type-icon-size);color:var(--plx-comp-data-grid-header-type-icon-text);display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-data-grid-header-type-icon-size);overflow:hidden;}
 @property --plx-state-data-grid-holder-overflow{syntax:"*";inherits:false;}
 
-.plx-data-grid[data-plx-engine="next"]{background-color:var(--plx-comp-data-grid-background);border-color:var(--plx-comp-data-grid-border-color);border-radius:var(--plx-comp-data-grid-radius);border-style:solid;border-width:var(--plx-comp-data-grid-border-width);min-inline-size:0;overflow:hidden;}
+.plx-data-grid[data-plx-engine="next"]{background-color:var(--plx-comp-data-grid-background);border-color:var(--plx-comp-data-grid-border-color);border-radius:var(--plx-comp-data-grid-radius);border-style:solid;border-width:var(--plx-comp-data-grid-border-width);min-inline-size:0;overflow:var(--plx-state-data-grid-root-overflow,hidden);}
 
 @property --plx-state-data-grid-sticky-start{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-position{syntax:"*";inherits:false;}
@@ -477,7 +509,7 @@ a.plx-data-grid__cell-content{align-items:center;align-self:stretch;display:inli
 /* Unread is independent of interaction state. Only record rows and their own cells carry this attribute. */
 @property --plx-state-data-grid-unread-weight{syntax:"*";inherits:false;}
 .plx-data-grid__grid-row[data-plx-unread]{font-weight:var(--plx-comp-data-grid-unread-font-weight);}
-.plx-data-grid__grid-cell[data-plx-unread]{--plx-state-data-grid-unread-weight:var(--plx-comp-data-grid-unread-font-weight);}
+.plx-data-grid__grid-cell[data-plx-unread]:where(:not(.plx-data-grid__grid-cell--static)){--plx-state-data-grid-unread-weight:var(--plx-comp-data-grid-unread-font-weight);}
 .plx-data-grid__grid-row[data-plx-unread]::before{content:"";--plx-state-data-grid-unread-bar-width:var(--plx-comp-data-grid-unread-bar-width);position:absolute;inset-block-start:0;inset-block-end:0;inset-inline-start:0;inline-size:var(--plx-state-data-grid-unread-bar-width);background-color:var(--plx-comp-data-grid-unread-bar-color);pointer-events:none;z-index:var(--plx-sys-layer-sticky);}
 
 @property --plx-state-data-grid-unread-bar-width{syntax:"*";inherits:false;}
