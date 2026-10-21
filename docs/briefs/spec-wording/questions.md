@@ -734,3 +734,64 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.behavior:** The keyboard, focus, responsive, loading, error, accessibility and content rows on Performance, Web components and Design-system MCP tooling are the same generic UI text (Stack, Field, DataGrid, Badge, Notice) and do not describe a build check or a server. Also, Performance keeps its build behavior under Mouse (pointer). Should these pages get their own rows?
 
+## patterns (17 questions)
+
+### bulk-selection
+
+- **docs.anatomy[2]:** The overview says the command bar swaps to the selection’s commands and the separate Bulk action bar is only for pages without a command bar. The parts list calls the Bulk action bar “required”, and Multi-selection, Select all and Bulk edit describe BulkActions “above the results”. Should the parts list and those pages say the bar is used only on pages without a command bar?
+
+### patterns-multi-selection
+
+- **rec.purpose:** Multi-selection, Select all and Bulk edit show the Bulk selection purpose and write-up word for word. Is that intended, or should Select all and Bulk edit each get a purpose of their own (for example, Bulk edit: change the same fields on many items at once)?
+
+### patterns-saved-view
+
+- **rec.purpose:** The Saved view page shows the purpose and write-up of the Filter and sort workflow (filter bar, toolbar, pagination), which is not what a saved view is (keeping a person’s sort, column widths, order and hidden columns). Should Saved view get its own purpose and write-up?
+
+### filter-and-sort-workflow
+
+- **docs:** The overview (owner, 2026-10-14) puts filtering and sorting in the command bar (Filter panel, Sort, Group, Columns and View buttons). The write-up below still describes the older layout: a separate filter row (FilterBar with More filters), a data toolbar, filter chips and pagination, and the Data-table workflow page says filter chips under the bar should be avoided. Should the write-up be rewritten for the command bar? Nothing in it was changed until you decide.
+
+### search-workflow
+
+- **docs.behavior.keyboard:** The overview says Enter in the header search opens the Search workspace everywhere; the keyboard row says this happens “in the asset app”. Does Enter open the workspace in every application, or only in the asset app?
+
+### patterns-coach-mark
+
+- **docs.a11y.contrast:** The contrast row is hard to read (“The color on the brand on the brand blue …”). Does it mean: the text and icons are the on-brand color on the brand blue (4.5:1 or more in light and dark); the primary action reverses that pair; the focus ring and step count are the on-brand color? I left it unchanged until you confirm.
+
+### resizable
+
+- **docs.purpose:** The overview says Resize has no size menu (owner, 2026-10-16), but the purpose still says people resize “by a menu”, and the responsive row says “the menu is always visible with touch”. Should both mentions of a menu be removed?
+
+### unpublish
+
+- **rec.avoid[0]:** The “when not to use” point “Delete when the content should be kept” can be read two ways. Does it mean “Don’t delete content that should be kept: unpublish it instead”? I left it unchanged until you say.
+- **docs:** The Unpublish page shows the write-up for the whole publishing flow (Draft, Schedule, Publish, Unpublish), and its purpose speaks about publishing in general. Is that intended, or should Unpublish get its own purpose and sections?
+
+### data-review-workflow
+
+- **rec.text:** In the review panel, Reject comes first and Approve last. In the review queue’s command bar, Reject comes last (Approve, Request changes, Reject). Is the different order on purpose? I left the text unchanged.
+
+### wizard
+
+- **rec.variantPages[*].text:** The four variant pages of Wizard (and the variants of Create flow, Autosave, Draft state, Save as and Archive) only say “X uses the same controls and persistence contract as …”, with the same generic “when to use” and “when not to use” lines. They say nothing about each variant. Should each variant get its own short description? Writing them needs your decision on what each variant is for, so I left them.
+- **docs.content.guidance:** The “Guidance” row repeats the “When to use” list word for word on Wizard, Create flow, Autosave, Draft state, Save as and Archive (and repeats the purpose on Lifecycle journeys). May these Guidance rows be removed so each fact is said once?
+
+### permissions-editor
+
+- **rec.variantPages[*]:** On Permissions, Product tour, Checklist, Onboarding, Feature introduction, Import workflow, Access request, Trial and upgrade and Offboarding, every variant page repeats the main page’s behavior sentence, and the “when not to use” line is a generic sentence (“Keep education optional and permissions explicit.” or “Keep scope and consequences explicit before submitting.”) that does not describe a case to avoid. Should each variant get its own description and its own when-to-use lines?
+- **rec.text:** On Permissions, Product tour, Checklist, Onboarding, Feature introduction, Import workflow, Access request and Trial and upgrade (and Offboarding), the overview is the same sentence as the purpose. Should the overview describe what the pattern shows instead (as the sign-in pages do), so the purpose is not said twice?
+
+### import-dialog-pattern
+
+- **rec.use[0]:** Import and Export say “The same workflow as the action page.” under when to use, and “Duplicating import or export behavior.” under when not to use. Which “action page” is meant? Once you say, these lines can name it.
+
+### multi-factor-authentication
+
+- **docs.content.errors:** The “Error messages” row says “Say where the code went: to the phone ending 42.” That is not about errors (it repeats a when-to-use point). Connected accounts has the same issue (“List shared data in plain words…” sits under Error messages). Should these move to another row, or should the Error messages row say what the errors are?
+
+### lifecycle-journeys
+
+- **docs.behavior.focus:** Lifecycle journeys’ focus row says “Every scrollable code region has a keyboard target.” This page has no code region. Should that sentence be dropped from this page?
+
