@@ -583,3 +583,53 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.a11y.focus / docs.behavior.responsive:** These AI pages share lines that fit only some of them, for example “Scrolling Chat threads are keyboard reachable and named.” on Prompt input, and “Sheet uses native-inspired responsive forms.” on Streaming response. Should each page keep only the lines that apply to it?
 
+## page-structures (15 questions)
+
+### application-shell
+
+- **docs.content.localization:** This note says the "Skip to main content" text is fixed in the code and still needs translating, and that the arrow keys "should be checked" in right-to-left languages. These read as open to-do items rather than rules. Have they been done, or should they stay as written? (The same text is on the Footer and Three-pane workspace pages.)
+
+### page-structures-footer
+
+- **rec.purpose:** The Footer page shows the purpose and the full write-up of the whole application frame (header, navigation, inspector, footer), not of the footer itself. The separate Status region page already describes the status bar. Should the Footer page get its own footer-specific purpose, or be merged with Status region?
+- **rec.use[0]:** The Footer page says the footer holds counts that apply to "the whole page", while the Status region page says "the whole application". Which is right?
+
+### page-structures-three-pane-workspace
+
+- **rec.text:** This page says the inspector becomes a bottom sheet on Narrow windows, but the shell's responsive rules only say it opens over the main region below 1024px. Is the bottom sheet still how it works?
+- **rec.avoid[0]:** This says to avoid three columns "on Narrow and Medium windows", but the inspector already overlays below 1024px, which also covers windows from 840 to 1023px (wider than Medium). Should it say "below 1024px" instead?
+
+### inspector-region
+
+- **rec.variantPages[0].avoid[0]:** This says below 1024px the inspector opens over the "main area"; everywhere else it is called the "main region". OK to change it to "main region"?
+
+### record-page
+
+- **rec.text:** The overview describes a long page in cards with an "On this page" side list, but the rest of the page (purpose, parts, usage, examples) is about the header of a record page and the entity header. Which one is this page about, so the overview can match?
+- **rec.variantPages[2].avoid[0]:** The live-state example is itself shown as a status badge, but its "when not to use" says to "use the status badge" for a state that does not change. Is the difference that a changing state goes in the facts and a fixed one goes elsewhere? Please confirm what to point people to.
+
+### settings-page
+
+- **rec.text:** The Settings page also carries the Create and Edit pages, with a sentence about them in its overview and generic usage lines ("Starting a page with an existing layout and behavior", "Copying a template to bypass shared controls"). Should Create and Edit move to a page of their own (for example a form page), so this page is only about settings?
+- **rec.variantPages[2].use[0]:** The Create and Edit examples (and the Authentication, Error and Split workspace examples on Landing page) say only "The matching page purpose" and "Unrelated workflows". These say nothing about the page. Should they get real guidance?
+
+### listing-page
+
+- **docs:** The purpose and every written section of Listing page are generic placeholder text ("Provides a reusable implementation using existing Platform roles and controls.") that says nothing about a listing page. Should it get its own write-up, or show another page's (for example the DataGrid or the master-detail one)?
+
+### content-template
+
+- **docs:** Same as Listing page: the purpose and written sections are generic placeholder text, and the page title ("Content-management template") does not match its overview (a page of cards with a filter row). Should it get its own write-up, and which name is right?
+
+### master-detail-workspace
+
+- **rec.purpose:** This page's purpose is copied from the DAM template ("Shows how a data-management capability is put together…") plus a sentence about MasterDetailPage, while its written sections are generic placeholder text. Should it get its own purpose and write-up about the list-and-details layout?
+
+### dam-template
+
+- **rec.text:** The overview says to open the Asset Manager at "../../../Plenix - DAM/index.html", but the Asset Manager now lives in the dam/ folder of Plenix (the old folder keeps only its history). Should the link point to dam/index.html?
+
+### landing-page
+
+- **docs:** Landing page's purpose and written sections are generic placeholder text, and it carries Authentication, Error and Split workspace examples that are not landing pages. Should those move to their own pages, and should Landing page get its own write-up?
+
