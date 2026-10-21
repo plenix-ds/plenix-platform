@@ -40,10 +40,11 @@ const STATES = [
   // a grid built while its section was hidden is drawn when the section is shown
   ['dam/settings-system.html#fields', ['#users'], 1],
   ['dam/settings-system.html#fields', ['#scheduler'], 1],
-  ['settings/index.html', ['Documentation', 'Product vision'], 1],
-  ['settings/index.html', ['Documentation', 'Terminology', 'open:*'], 3],
-  ['settings/index.html', ['Documentation', 'Data model', 'open:*'], 2],
-  ['settings/index.html', ['Documentation', 'Capabilities', 'main:Notes'], 2],
+  // the static Table (plx-table: settings documentation, the design system's reference tables): built and accessible
+  ['settings/index.html', ['Documentation', 'Product vision'], 1, 'table'],
+  ['settings/index.html', ['Documentation', 'Terminology', 'open:*'], 3, 'table'],
+  ['settings/index.html', ['Documentation', 'Data model', 'open:*'], 2, 'table'],
+  ['settings/index.html', ['Documentation', 'Capabilities', 'main:Notes'], 2, 'table'],
   // the design system's reference tables (props, states, classes, tokens), where token and class names sit in cells
   ['platform/design-system/index.html#/data-display/data-grid', [], 1],
   // the modes: fill (the default; 5,000 rows, virtual), pages (rows from a server, fetchRows), load more
@@ -60,8 +61,8 @@ const STATES = [
   ['platform/design-system/index.html#/data-display/data-grid/v/grouped-table-with-summaries', [], 1],
   ['platform/design-system/index.html#/data-display/data-grid/v/wrapped-headers', [], 1],
   ['platform/design-system/index.html#/data-display/data-grid/v/column-menu', [], 1],
-  ['platform/design-system/index.html#/data-display/badge', [], 1],
-  ['platform/design-system/index.html#/actions/button', [], 1],
+  ['platform/design-system/index.html#/data-display/badge', [], 1, 'table'],
+  ['platform/design-system/index.html#/actions/button', [], 1, 'table'],
 ];
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 // in scope: a view whose app or design-system page changed (the record's component too: #/sec/data-grid -> DataGrid)
@@ -152,7 +153,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     } catch(error) {res.push(['Existing high-impact regressions',false,error.message]);}
   }
   if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its table views are skipped');
-  for (const [url, steps, want] of VIEWS) {
+  for (const [url, steps, want, kind] of VIEWS) {
     if (ONLY && !ONLY.test(url)) continue;   // DT_ONLY=<pattern>: only the views whose address matches
     if (!HAS_DS && url.indexOf('platform/design-system/') === 0) continue;
     const name = url + (steps.length ? ' › ' + steps.join(' › ') : '');
@@ -185,6 +186,18 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       await sleep(400);
     }
     if (missing) { res.push([name, false, 'no control "' + missing + '"']); continue; }
+    if (kind === 'table') {
+      // a static Table view: every shown Table drawn with its rows, then axe on them (Table's own rendering: static-table.test.js)
+      try { await page.waitForFunction((n) => { const t = Array.from(document.querySelectorAll('.plx-table')).filter((g) => g.offsetParent); return t.length >= n && t.every((g) => g.querySelector('.plx-table__grid-row')); }, { timeout: 60000 }, want); }
+      catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-table')).filter((g) => g.offsetParent && g.querySelector('.plx-table__grid-row')).length)) + ' of ' + want]); continue; }
+      await sleep(600);
+      if (!(await page.evaluate(() => !!window.axe))) await page.addScriptTag({ url: BASE + 'node_modules/axe-core/axe.min.js' });
+      const v = await page.evaluate(async (TAGS) => { const t = Array.from(document.querySelectorAll('.plx-table')).filter((g) => g.offsetParent);
+        const ax = await window.axe.run({ include: t.map((g) => [g]) }, { runOnly: { type: 'tag', values: TAGS }, resultTypes: ['violations'] });
+        return { n: t.length, bad: ax.violations.map((x) => x.id + ' (' + x.nodes.length + ')') }; }, TAGS);
+      res.push([name + ' (' + v.n + ' Table' + (v.n === 1 ? '' : 's') + ')', !v.bad.length, v.bad.length ? 'axe: ' + v.bad.join(', ') : '']);
+      continue;
+    }
     try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent).length >= n
       && Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent).every((g) => g.querySelector('.plx-data-grid__grid-row, .plx-data-grid__grid-placeholder, .plx-data-grid__error')), { timeout: 60000 }, want); }
     catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent && g.querySelector('.plx-data-grid__grid-row, .plx-data-grid__grid-placeholder')).length)) + ' of ' + want + '; unready: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-grid')).filter(g => g.offsetParent && !g.querySelector('.plx-data-grid__grid-row, .plx-data-grid__grid-placeholder, .plx-data-grid__error')).map(g => g.querySelector('[aria-label]')?.getAttribute('aria-label') || g.className).join(', ')))]); continue; }
