@@ -31,6 +31,7 @@
        { state, expiresAt, stay(), signOut() }; activity restarts the time only while state is "active" (in the warning
        only Stay signed in does).
    Behavior:
+     Countdown and signed-out minute parts each own their role; ancestor state never restyles a nested message.
      The warning is an alert dialog: focus starts on Stay signed in; Escape and the close button also stay. The countdown
        is a timer that is not read every second: the dialog's opening says how long is left, and the time is announced
        politely at one minute, 30 seconds and 10 seconds.
