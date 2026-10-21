@@ -1,0 +1,20 @@
+// Guarded RecordPage migration; unexpected source stops the script.
+const fs=require('fs');function rep(file,from,to){const s=fs.readFileSync(file,'utf8');if(s.split(from).length!==2)throw Error('Expected one match: '+file+' '+from);fs.writeFileSync(file,s.replace(from,to));}const css='platform/patterns/RecordPage/record-page.css',jsx='platform/patterns/RecordPage/RecordPage.jsx',lab='lanes/207-record/design-system/layout-labs.js';
+rep(css,'/* Plenix · RecordPage','@property --plx-state-record-page-header-margin{syntax:"*";inherits:false;}\n@property --plx-state-record-page-header-gap{syntax:"*";inherits:false;}\n@property --plx-state-record-page-title-size{syntax:"*";inherits:false;}\n@property --plx-state-record-page-columns-align{syntax:"*";inherits:false;}\n@property --plx-state-record-page-aside-size{syntax:"*";inherits:false;}\n/* Plenix · RecordPage');
+rep(css,'   formerly RecordHeader) keeps its look; the page lays the header over its body and an optional aside. */','   formerly RecordHeader) keeps its look; parts own size/surface state, and responsive properties are assigned once. */');
+rep(css,'column-gap:var(--plx-comp-record-page-header-gap);','column-gap:var(--plx-state-record-page-header-gap,var(--plx-comp-record-page-header-gap));');
+rep(css,'margin-block-end:var(--plx-comp-record-page-header-margin-block-end);','margin-block-end:var(--plx-state-record-page-header-margin,var(--plx-comp-record-page-header-margin-block-end));');
+rep(css,'.plx-record-page__header--md{margin-block-end:', '.plx-record-page__header--md{--plx-state-record-page-header-margin:');
+rep(css,'font-size:var(--plx-comp-record-page-title-font-size);','font-size:var(--plx-state-record-page-title-size,var(--plx-comp-record-page-title-font-size));');
+rep(css,'.plx-record-page__header--md .plx-record-page__title{font-size:', '.plx-record-page__title--md{--plx-state-record-page-title-size:');
+rep(css,'column-gap:var(--plx-comp-record-page-header-card-gap);','--plx-state-record-page-header-gap:var(--plx-comp-record-page-header-card-gap);');
+rep(css,'.plx-record-page__header--card .plx-record-page__media', '.plx-record-page__media--card');
+rep(css,'.plx-record-page__columns{align-items:flex-start;', '.plx-record-page__columns{align-items:var(--plx-state-record-page-columns-align,flex-start);');
+rep(css,'inline-size:var(--plx-sys-panel-inspector-width);','inline-size:var(--plx-state-record-page-aside-size,var(--plx-sys-panel-inspector-width));');
+rep(css,'.plx-record-page__columns{align-items:stretch;', '.plx-record-page__columns{--plx-state-record-page-columns-align:stretch;');
+rep(css,'.plx-record-page__aside{inline-size:auto;}', '.plx-record-page__aside{--plx-state-record-page-aside-size:auto;}');
+rep(jsx,'   Props:\n','   Behavior:\n     Size and surface are carried on each affected part. Responsive state stays local and never inherits into nested records.\n   Props:\n');
+rep(jsx,'className="plx-record-page__media"',"className={cx('plx-record-page__media', surface === 'card' && 'plx-record-page__media--card')}");
+rep(jsx,'className="plx-record-page__title"',"className={cx('plx-record-page__title', size === 'md' && 'plx-record-page__title--md')}");
+rep(lab,'class="plx-record-page__media"',"class=\"plx-record-page__media' + (variant === 'card' ? ' plx-record-page__media--card' : '') + '\"");
+rep(lab,'class="plx-record-page__title"',"class=\"plx-record-page__title' + (variant === 'md' ? ' plx-record-page__title--md' : '') + '\"");
