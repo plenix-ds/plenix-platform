@@ -1,0 +1,11 @@
+# FeatureCard zero-overlap proof (#207)
+
+Exact base `81f48a80964fc2e09e4516734e50952d49f88b38`, DS `e5365a05bab701d0add622aa5459bcbc8b33f0d3`. Light mode, 1440×1000, actual React component.
+
+Five configurations: icon, top image, horizontal icon, horizontal image, image variant with missing-image fallback. All computed non-custom/non-animation properties on 15 owned/composed elements match the unchanged base capture. The media/image/tile parts have zero strict overlaps before and after. Three ancestor selectors disappear; variant layout is carried directly by each part. Existing values and Card context gap are unchanged. No state variables are needed because these part classes assign different properties, once.
+
+The two horizontal configurations already have a Card-root `display` overlap before this change (`.plx-card` and its media-start layout). Card is outside #207's owned files. This proof captures all its computed styles for parity but scopes the zero-overlap assertion to FeatureCard's media/image/tile parts. It does not change Card, add an overlap allowance or alter the strict runtime baseline. The dashboard strict audit also passes unchanged. The parent overlap remains an integration limitation, not a claim of zero overlap for Card itself.
+
+`computed-before.json.gz` is the immutable unchanged-base style capture. `edit-feature.cjs` contains the guarded transformation, stopping unless each input matches once. The lab overlay changes only matching FeatureCard classes. Run `node tests/feature-zero-overlap-207.test.js` after overlay/build; never recapture on the migrated branch.
+
+Build/usage, SYSTEM1065, SPEC1172/768, selector59, audit22/pilot611, FeatureCard lab and dashboard strict audit pass. No colors/fonts/tokens, text contracts, shared components or generated outputs are changed.
