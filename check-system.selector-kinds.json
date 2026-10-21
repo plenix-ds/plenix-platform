@@ -990,10 +990,6 @@
    "relational | .plx-page-panes:has(> .plx-secondary-pane--list) > :not(.plx-secondary-pane)": 1,
    "relational | .plx-page-panes:has(> .plx-secondary-pane-back)": 1
   },
-  "platform/patterns/SessionTimeout/session-timeout.css": {
-   "combinator | .plx-session-timeout--warning .plx-session-timeout__time": 1,
-   "combinator | .plx-session-timeout--signed-out .plx-session-timeout__inline-time": 1
-  },
   "platform/patterns/SettingsLayout/settings-layout.css": {
    "combinator | .plx-settings__section.is-collapsed>.plx-settings__section-header": 1,
    "combinator | .plx-settings__section--collapsible>.plx-settings__section-header": 1,

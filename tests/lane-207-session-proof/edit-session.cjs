@@ -1,0 +1,5 @@
+const fs=require('fs');function edit(file,changes){let s=fs.readFileSync(file,'utf8');for(const[a,b]of changes){if(s.split(a).length!==2)throw Error(file+' unmatched/repeated '+a);s=s.replace(a,b)}fs.writeFileSync(file,s)}edit('platform/patterns/SessionTimeout/session-timeout.css',[
+['   with tabular figures, so the countdown does not shift. Anatomy and API: SessionTimeout.jsx. */','   with tabular figures, so the countdown does not shift. Anatomy and API: SessionTimeout.jsx.\n   Countdown and signed-out minute parts each own their one role; color and weight never depend on an ancestor. */'],
+['.plx-session-timeout--warning .plx-session-timeout__time{','.plx-session-timeout__time{'],
+['.plx-session-timeout--signed-out .plx-session-timeout__inline-time{','.plx-session-timeout__inline-time{']]);edit('platform/patterns/SessionTimeout/SessionTimeout.jsx',[
+['   Behavior:\n','   Behavior:\n     Countdown and signed-out minute parts each own their role; ancestor state never restyles a nested message.\n']]);
