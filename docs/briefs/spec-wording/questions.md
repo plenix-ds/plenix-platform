@@ -633,3 +633,104 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs:** Landing page's purpose and written sections are generic placeholder text, and it carries Authentication, Error and Split workspace examples that are not landing pages. Should those move to their own pages, and should Landing page get its own write-up?
 
+## implementation (27 questions)
+
+### react
+
+- **rec.avoid[0]:** "Components inside an application that both applications need" dates from when there were two applications; the suite now has eleven (ten suite applications and the Asset Manager). Should it read "that more than one application needs"?
+
+### testing
+
+- **rec.text:** The overview and anatomy say each change is verified with "the suites for both applications", and the purpose says "so both applications keep to one Platform". There are now more than two applications, and the test runner is npm test (see Code review). Is this page still current, and what should it say?
+
+### changelog
+
+- **rec.text:** This page says every change is logged as a numbered batch in "Plenix - DAM/audit/batches/", and sends package users to GitHub releases. Other pages (Code review, Release process, Deprecation, Migration) describe CHANGELOG.md with Unreleased, Breaking and Deprecated entries. Should this page also describe CHANGELOG.md, and is the batch folder still where batches are kept?
+
+### implementation-theming
+
+- **docs.anatomy[4]:** The overview says "Theming is ThemeProvider and the theme stylesheets", but the anatomy calls ThemeProvider optional and says it only gives React the density and interaction context. Which is right?
+
+### implementation-component-api
+
+- **rec.purpose:** This page shows the Purpose and the written sections (anatomy, behavior, accessibility, content) of the React page, word for word, so they describe component folders and builds rather than this topic. Should it get its own purpose and sections, or keep showing React's?
+
+### implementation-code-libraries
+
+- **rec.purpose:** This page shows the Purpose and the written sections (anatomy, behavior, accessibility, content) of the React page, word for word, so they describe component folders and builds rather than this topic. Should it get its own purpose and sections, or keep showing React's?
+- **rec.text:** The overview says Plenix is "four packages" (tokens, icons, styles, react), and Versioning says the same; but other pages describe more packages (@plenix-ds/vue, @plenix-ds/web-components, @plenix-ds/mcp, Angular adapters, lint and Figma packages). Should the list and the count be updated?
+
+### implementation-composition-patterns
+
+- **rec.purpose:** This page shows the Purpose and the written sections (anatomy, behavior, accessibility, content) of the React page, word for word, so they describe component folders and builds rather than this topic. Should it get its own purpose and sections, or keep showing React's?
+
+### implementation-web
+
+- **rec.purpose:** This page shows the Purpose and the written sections (anatomy, behavior, accessibility, content) of the React page, word for word, so they describe component folders and builds rather than this topic. Should it get its own purpose and sections, or keep showing React's?
+
+### implementation-css-reset
+
+- **docs.anatomy:** This page shows the Purpose and the written sections of the CSS architecture page, word for word (for example "platform.css — the only stylesheet applications load"). Should it get its own purpose and sections, or keep showing CSS architecture's?
+
+### implementation-styling-api
+
+- **docs.anatomy:** This page shows the Purpose and the written sections of the CSS architecture page, word for word (for example "platform.css — the only stylesheet applications load"). Should it get its own purpose and sections, or keep showing CSS architecture's?
+
+### implementation-html-css
+
+- **rec.purpose:** This page shows the Purpose and the written sections of the CSS architecture page, word for word (for example "platform.css — the only stylesheet applications load"). Should it get its own purpose and sections, or keep showing CSS architecture's? The anatomy names platform.css, while this page names plenix.css.
+
+### implementation-code-review
+
+- **docs.anatomy:** This page shows the Purpose and the written sections of the Testing page, word for word (check-system rules, "both applications"). Should it get its own purpose and sections? The overview lists build-app, check-spec and npm test, which the copied sections do not mention.
+
+### implementation-design-review
+
+- **rec.purpose:** The purpose reads "Catches any change that breaks the system's rules before it is logged", copied from Testing, and the sections describe the check-system command. Design review is the owner's approval of visible changes. What should its purpose and sections say?
+
+### implementation-versioning
+
+- **rec.purpose:** This page shows the Purpose and the written sections of the Component lifecycle page, word for word (the seven statuses, owner, review date, and "An app's own screens" under When not to use). Should it get its own purpose and sections?
+
+### implementation-deprecation
+
+- **docs.anatomy:** This page shows the Purpose and the written sections of the Component lifecycle page, word for word (the seven statuses, owner, review date, and "An app's own screens" under When not to use). Should it get its own purpose and sections?
+
+### implementation-migration
+
+- **rec.purpose:** This page shows the Purpose and the written sections of the Component lifecycle page, word for word (the seven statuses, owner, review date, and "An app's own screens" under When not to use). Should it get its own purpose and sections?
+
+### implementation-adoption-guidance
+
+- **rec.purpose:** This page shows the Purpose and the written sections of the Contribution model page, word for word ("Keeps the inventory free of duplicates", the search/classify steps). That purpose does not fit this topic. Should it get its own purpose and sections?
+
+### implementation-release-process
+
+- **rec.purpose:** This page shows the Purpose and the written sections of the Contribution model page, word for word ("Keeps the inventory free of duplicates", the search/classify steps). That purpose does not fit this topic. Should it get its own purpose and sections?
+
+### implementation-design-system-roadmap
+
+- **rec.purpose:** This page shows the Purpose and the written sections of the Contribution model page, word for word ("Keeps the inventory free of duplicates", the search/classify steps). That purpose does not fit this topic. Should it get its own purpose and sections?
+- **rec.avoid[0]:** "Work that is not on the roadmap or approved by the owner" can be read two ways: avoid work that is neither on the roadmap nor approved, or avoid work that is missing either one. Which is meant?
+
+### angular-package
+
+- **docs.content.localization:** "compiler-free/AOT-only distribution is an owner follow-up" is a status note, and it sits under Localization although it is about how the adapter is compiled. Should it stay here, move, or go to the to-do list?
+
+### analytics-instrumentation
+
+- **docs.content.localization:** "Only explicitly allowlisted boolean and finite numeric properties are delivered; strings are omitted" is a data rule, not a localization rule. Should it move (for example to Behavior or Error messages)?
+
+### platform-implementation
+
+- **rec.variantPages[1].text:** "Keep keyboard operation, resizable panes and restoration consistent…": restoration of what (window size, pane widths, the last view)? Please say what is restored so the sentence can be made clear.
+- **docs.anatomy:** The written sections here (anatomy "Source standard or build entry point…", behavior, accessibility, content) are the same generic text on four pages (Platforms standard, Browser support policy, Vue, Lint tooling) and say little about this topic. Should each page get its own sections?
+
+### browser-support
+
+- **rec.purpose:** The purpose speaks of "the proposed browser target queries". Have the targets been approved, so "proposed" can go?
+
+### performance-budget
+
+- **docs.behavior:** The keyboard, focus, responsive, loading, error, accessibility and content rows on Performance, Web components and Design-system MCP tooling are the same generic UI text (Stack, Field, DataGrid, Badge, Notice) and do not describe a build check or a server. Also, Performance keeps its build behavior under Mouse (pointer). Should these pages get their own rows?
+
