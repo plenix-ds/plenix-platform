@@ -14,8 +14,9 @@
    The environment wins over density everywhere, including regions that set their own data-plx-density: compact is a
    pointer-and-keyboard mode, and a phone is never offered it (workspace.js shows it as standard there). */
 
-/* touch and mobile: anything that only appears on hover is shown (its own rest look reads the two values) */
-:root:is([data-plx-interaction="touch"], [data-plx-interaction="mobile"]){--plx-sys-hover-reveal-opacity:1;--plx-sys-hover-reveal-visibility:visible;}
+/* touch and mobile: anything that only appears on hover is shown (its own rest look reads the two values); a pointer-only
+   control is not drawn (--plx-sys-touch-hidden, read as display:var(--plx-sys-touch-hidden, <its display>), unset for a pointer) */
+:root:is([data-plx-interaction="touch"], [data-plx-interaction="mobile"]){--plx-sys-hover-reveal-opacity:1;--plx-sys-hover-reveal-visibility:visible;--plx-sys-touch-hidden:none;}
 /* a Narrow window (under 600px): the shell collapses (grid.css); side regions become drawers or their own screens. Target
    size comes from the environment, so a narrow desktop window keeps its pointer-sized controls. */
 

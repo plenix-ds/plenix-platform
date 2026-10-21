@@ -7585,7 +7585,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage: <Scrollbars holder={holderRef}/>
    Props: A scrollable element ref.
    Behavior: CSS scroll timelines position the token-sized thumbs; pointer dragging writes native scroll offsets.
-   Notes: Browsers without timeline and anchor support retain their native scrollbars. */
+   Notes: Browsers without timeline and anchor support retain their native scrollbars. The thumb carries its axis
+     (__thumb--x, --y) and its size (data-plx-thumb) itself, so its rules need no track above it. */
 
 function Scrollbars({
   holder,
@@ -7687,7 +7688,8 @@ function Scrollbars({
     ref: node => {
       thumbs.current[axis] = node;
     },
-    className: "plx-data-grid__thumb",
+    className: 'plx-data-grid__thumb plx-data-grid__thumb--' + axis,
+    "data-plx-thumb": sizes[axis] || undefined,
     "data-plx-scroll-viewport": viewportId,
     onPointerDown: event => start(event, axis)
   })));
@@ -17063,7 +17065,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      __grid-row--narrow (the list) and --virtual (the drawn window); every cell of it __grid-cell--narrow, --sized (a row
      height step) and --lines (a step taller than short), the first after the checkbox --after-lead, a plain value
      directly inside --bare, a nested row's tree cell __tree-cell--level-N; a value __value--wrap, --sized and --lines;
-     row actions sit in __portal--actions; the checkbox input is __check-input. */
+     row actions sit in __portal--actions; the checkbox input is __check-input. The grid, the scroll body and the table
+     take the fill and the drawn window as __grid--fill, __grid-tableholder--fill, __grid-table--virtual and --narrow. */
 // Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
 const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
   className: GRID + '__cell-direction',
@@ -18722,7 +18725,7 @@ function NextEngine(props) {
     disabled: !Object.keys(selection).some(key => selection[key]),
     onSelect: () => unread.mark(canonical.filter(record => selection[(0, _state.recordKey)(record[index])]), true)
   }, "Mark as unread")) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: B + '__table ' + B + '__grid',
+    className: (0, _cx.cx)(B + '__table', B + '__grid', height === '100%' && B + '__grid--fill'),
     role: isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid',
     "aria-label": label,
     "aria-busy": remoteMode && remoteBusy ? true : undefined,
@@ -18785,7 +18788,7 @@ function NextEngine(props) {
   }) : null))), /*#__PURE__*/_react.default.createElement("div", {
     id: viewportId,
     ref: holder,
-    className: `${B}__grid-tableholder`,
+    className: (0, _cx.cx)(`${B}__grid-tableholder`, height === '100%' && B + '__grid-tableholder--fill'),
     "data-plx-height": lengthName(height),
     "data-plx-fit": !isStatic && !height && mode !== 'pages' ? '' : undefined,
     role: "rowgroup",
@@ -18806,7 +18809,7 @@ function NextEngine(props) {
       }
     }
   }, /*#__PURE__*/_react.default.createElement("div", _extends({}, rowDnd.listProps, {
-    className: `${B}__grid-table`,
+    className: (0, _cx.cx)(`${B}__grid-table`, virtualized && B + '__grid-table--virtual', isNarrow && B + '__grid-table--narrow'),
     role: "presentation"
   }), stickyGroups.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: B + '__sticky-groups',
