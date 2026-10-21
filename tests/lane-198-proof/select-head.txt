@@ -1,0 +1,1 @@
+GRID_SELECT_OK 600 keys, one notification per header action, visible rows only

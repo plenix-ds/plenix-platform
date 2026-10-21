@@ -25,16 +25,39 @@ export function changeRecord(rows, key, change, index = 'id', children = null) {
   });
 }
 const valueKey = value => value == null || value === '' ? 'empty' : typeof value + ':' + JSON.stringify(value);
+// Calendar groups use UTC, so persisted group keys do not depend on the viewer's time zone.
+export function groupValue(value, level, column = {}) {
+  if (value == null || value === '') return null;
+  if (typeof column.groupBucket === 'function') return column.groupBucket(value);
+  const config = typeof level === 'object' ? level : {};
+  const interval = config.interval || (column.type === 'date' ? 'day' : undefined);
+  if (['day', 'week', 'month', 'year'].includes(interval)) {
+    const date = new Date(value); if (!Number.isFinite(date.getTime())) return null;
+    const year = date.getUTCFullYear(), month = date.getUTCMonth();
+    if (interval === 'year') return String(year);
+    if (interval === 'month') return date.toISOString().slice(0, 7);
+    const day = new Date(Date.UTC(year, month, date.getUTCDate()));
+    if (interval === 'week') day.setUTCDate(day.getUTCDate() - (day.getUTCDay() + 6) % 7);
+    return day.toISOString().slice(0, 10);
+  }
+  const step = Number(config.range ?? column.groupRange);
+  if (Number.isFinite(step) && step > 0 && typeof value === 'number' && Number.isFinite(value)) {
+    const start = Math.floor(value / step) * step;
+    return '[' + start + ', ' + (start + step) + ')';
+  }
+  return value;
+}
 export function groupedRows(rows, fields, columns) {
   const levels = typeof fields === 'string' || typeof fields === 'function' ? [fields] : Array.isArray(fields) ? fields.filter(Boolean) : [];
   function build(input, depth, path) {
     if (depth >= levels.length) return [];
-    const field = levels[depth], column = columns.find(column => column.field === field) || {}, buckets = new Map();
+    const level = levels[depth], field = typeof level === 'object' ? level.field : level, column = columns.find(column => column.field === field) || {}, buckets = new Map();
     for (const row of input) {
       const raw = typeof field === 'function' ? field(row.original) : valueAt(row.original,field), multiple = column.multi || column.type === 'multi';
       const values = multiple && Array.isArray(raw) ? raw.length ? raw : [null] : [raw];
       const seen = new Set();
-      for (const value of values) {
+      for (const original of values) {
+        const value = groupValue(original, level, column);
         const key = valueKey(value); if (seen.has(key)) continue; seen.add(key);
         if (!buckets.has(key)) buckets.set(key, { value, rows: [] }); buckets.get(key).rows.push(row);
       }

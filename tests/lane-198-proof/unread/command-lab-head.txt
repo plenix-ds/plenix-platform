@@ -1,0 +1,8 @@
+SCOPE labs: changed since e803c7f69 (20 files) · 1 of 1 labs
+  FAIL command-bar: 64 checks, 13 tokens
+       default/one/default/labels sg: --plx-comp-command-bar-side-gap set to 37px but column-gap reads 12px (was 12px)
+       default/one/default/labels gg: --plx-comp-command-bar-group-gap set to 37px but column-gap reads 4px (was 4px)
+       default/one/default/icons sg: --plx-comp-command-bar-side-gap set to 37px but column-gap reads 12px (was 12px)
+       default/one/default/icons gg: --plx-comp-command-bar-group-gap set to 37px but column-gap reads 4px (was 4px)
+       default/selected/default/labels sg: --plx-comp-command-bar-side-gap set to 37px but column-gap reads 12px (was 12px)
+LABS_FAIL 0/1 labs

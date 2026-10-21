@@ -1,0 +1,12 @@
+SCOPE reflow: full · 21 app pages, 14 of 14 sampled design-system pages
+  exempt design-system #/content/text: pre.plx-code-block__pre 466/236px
+  exempt design-system #/actions/button: div.ds-page-scroll 359/320px | pre.plx-code-block__pre 611/236px
+  exempt design-system #/forms/fieldset: div.ds-page-scroll 361/320px | pre.plx-code-block__pre 961/236px
+  exempt design-system #/navigation/application-header: div.ds-page-scroll 350/320px | pre.plx-code-block__pre 741/236px
+  exempt design-system #/data-display/badge: pre.plx-code-block__pre 378/236px
+  exempt design-system #/specialized/preview: pre.plx-code-block__pre 748/236px
+  exempt design-system #/feedback/notice: pre.plx-code-block__pre 718/236px
+  exempt design-system #/overlays/dialog: pre.plx-code-block__pre 695/236px
+  exempt design-system #/page-structures/application-shell: pre.plx-code-block__pre 679/236px
+  exempt design-system #/implementation/react: pre.plx-code-block__pre 659/236px
+REFLOW_OK 0 known findings on 36 pages at 320px (13 exempt two-dimensional scrollers)

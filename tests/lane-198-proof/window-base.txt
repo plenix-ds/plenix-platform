@@ -1,0 +1,27 @@
+[
+  {
+    "room": 560,
+    "pane": 560,
+    "viewport": 525,
+    "rows": 20,
+    "total": 19800,
+    "height": "100%"
+  },
+  {
+    "room": 560,
+    "pane": 560,
+    "viewport": 964,
+    "rows": 34,
+    "total": 19800,
+    "height": "automatic"
+  }
+]
+AssertionError [ERR_ASSERTION]: viewport must fit its pane
+    at C:\Users\Administrator\Documents\Plenix-Codex-Tools\workspaces\task149-base\tests\data-grid-window-184.test.js:6:198 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}

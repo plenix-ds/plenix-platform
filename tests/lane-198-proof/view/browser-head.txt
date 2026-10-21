@@ -1,0 +1,1 @@
+GRID_COLLECTION_VIEW_OK one store, header sort/hide, stale pruning, remount and reset widths
