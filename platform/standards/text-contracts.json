@@ -851,20 +851,12 @@
    ]
   },
   "plx-data-grid__empty": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans",
+   "adjusts": [
     "font-size",
-    "font-weight",
-    "word-spacing"
-   ]
-  },
-  "plx-data-grid__filter-label": {
-   "contract": "adjusts",
-   "props": [
-    "font-size",
-    "font-weight",
-    "letter-spacing"
+    "font-weight"
    ]
   },
   "plx-data-grid__footer": {
@@ -881,11 +873,16 @@
   "plx-data-grid__grid-cell": {
    "contract": "adjusts",
    "props": [
-    "font-family",
-    "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
+   ]
+  },
+  "plx-data-grid__grid-cell--data": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size"
    ]
   },
   "plx-data-grid__grid-col-content--icon": {
@@ -901,12 +898,6 @@
     "font-weight"
    ]
   },
-  "plx-data-grid__grid-footer": {
-   "contract": "adjusts",
-   "props": [
-    "font-weight"
-   ]
-  },
   "plx-data-grid__grid-group": {
    "contract": "adjusts",
    "props": [
@@ -919,22 +910,12 @@
     "font-weight"
    ]
   },
-  "plx-data-grid__grid-menu": {
-   "contract": "follows",
-   "font": "sans",
-   "size": true
-  },
   "plx-data-grid__grid-placeholder-contents": {
    "contract": "adjusts",
    "props": [
     "font-size",
     "font-weight"
    ]
-  },
-  "plx-data-grid__grid-popup-container": {
-   "contract": "follows",
-   "font": "sans",
-   "size": true
   },
   "plx-data-grid__grid-row": {
    "contract": "adjusts",
@@ -2865,14 +2846,6 @@
     "font-weight"
    ]
   },
-  "plx-table__filter-label": {
-   "contract": "adjusts",
-   "props": [
-    "font-size",
-    "font-weight",
-    "letter-spacing"
-   ]
-  },
   "plx-table__footer": {
    "contract": "adjusts",
    "props": [
@@ -2887,11 +2860,8 @@
   "plx-table__grid-cell": {
    "contract": "adjusts",
    "props": [
-    "font-family",
-    "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-table__grid-col-content": {
@@ -2913,22 +2883,11 @@
     "font-weight"
    ]
   },
-  "plx-table__grid-footer": {
-   "contract": "adjusts",
-   "props": [
-    "font-weight"
-   ]
-  },
   "plx-table__grid-header": {
    "contract": "adjusts",
    "props": [
     "font-weight"
    ]
-  },
-  "plx-table__grid-menu": {
-   "contract": "follows",
-   "font": "sans",
-   "size": true
   },
   "plx-table__grid-placeholder-contents": {
    "contract": "adjusts",
@@ -2936,11 +2895,6 @@
     "font-size",
     "font-weight"
    ]
-  },
-  "plx-table__grid-popup-container": {
-   "contract": "follows",
-   "font": "sans",
-   "size": true
   },
   "plx-table__grid-row": {
    "contract": "adjusts",
@@ -3237,6 +3191,14 @@
    "adjusts": [
     "font-size",
     "line-height"
+   ]
+  },
+  "plx-table__grid-cell--data": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size"
    ]
   },
   "plx-table__grid-group": {

@@ -17068,7 +17068,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      row actions sit in __portal--actions; the checkbox input is __check-input. The grid, the scroll body and the table
      take the fill and the drawn window as __grid--fill, __grid-tableholder--fill, __grid-table--virtual and --narrow.
      A group's head is __group-head--gap after a band (not in its sticky copy), its label __group-label--level-N, its
-     cells --narrow in the list, the add row's cell __group-cell--add; the eyebrow is the grid's own span. */
+     cells --narrow in the list, the add row's cell __group-cell--add; the eyebrow is the grid's own span. A custom cell's
+     own element takes __cell-content (a link alone in a cell fills it); a data cell (kind data, type bytes) is
+     __grid-cell--data, the data role in Mono. */
 // Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
 const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
   className: GRID + '__cell-direction',
@@ -17304,6 +17306,10 @@ function RowMenuContent({
 }) {
   return build(typeof items === 'function' ? items(record) : items || [], record, rowApi);
 }
+// a custom cell's own elements (each element of a fragment too) take __cell-content: the grid's class on what it places in the cell
+const ownContent = (node, block) => ! /*#__PURE__*/_react.default.isValidElement(node) ? node : node.type === _react.default.Fragment ? /*#__PURE__*/_react.default.cloneElement(node, {}, _react.default.Children.map(node.props.children, child => ownContent(child, block))) : /*#__PURE__*/_react.default.cloneElement(node, {
+  className: (0, _cx.cx)(node.props.className, block + '__cell-content')
+});
 const CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
   column,
   record,
@@ -17312,7 +17318,7 @@ const CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
   mods
 }) {
   const content = column.render(record, cell);
-  return /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
+  return /*#__PURE__*/_react.default.isValidElement(content) ? ownContent(content, block) : /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)(block + '__value', mods)
   }, content);
 }, (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block && a.mods === b.mods);
@@ -18592,7 +18598,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
       }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
