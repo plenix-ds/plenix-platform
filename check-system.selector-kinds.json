@@ -962,12 +962,6 @@
    "combinator | .plx-product-card--list .plx-product-card__media": 1,
    "combinator | .plx-product-card--list .plx-product-card__actions": 1
   },
-  "platform/patterns/PropertyList/property-list.css": {
-   "combinator | .plx-property-list--columns .plx-property-list__item": 3,
-   "combinator | .plx-property-list--stacked .plx-property-list__item": 1,
-   "combinator | .plx-property-list--columns .plx-property-list__label-tip": 1,
-   "combinator | .plx-property-list--columns .plx-property-list__label-text": 2
-  },
   "platform/patterns/RecordPage/record-page.css": {
    "combinator | .plx-record-page__header--md .plx-record-page__title": 1,
    "combinator | .plx-record-page__header--card .plx-record-page__media": 1
