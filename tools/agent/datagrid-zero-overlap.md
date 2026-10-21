@@ -33,7 +33,11 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
    (--level-N), values (--data), counts, summaries, the add row, bands, sticky group copies, virtual gaps; the group row's
    focus reaches its head as context values; the eyebrow is the grid's own span in the eyebrow role. Probes, spacers and
    group toggles were never rendered.
-6. **Menus, filters, pagination and the rest**.
+6. **Menus, filters, pagination and the rest** (done: 320bda22): the empty message (whole body role), the footer, the
+   placeholder, the type icon; a custom cell's own elements take `__cell-content` (a lone link fills its cell through
+   `a.plx-data-grid__cell-content`); the row-menu cell sizes its button through Button's context hooks
+   (`--plx-comp-button-context-width`, `--plx-comp-button-context-min-height`). Menus, popups, filters and the old footer
+   were never rendered; the pages and load-more margins never matched. Data cells are `__grid-cell--data` (Phase 4).
 7. **Table**: `table.css` by hand; `table-base.css` and `table-steps.css` follow from build-steps.js.
 
 ## Also in this work
@@ -41,7 +45,8 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 - **Cells sitting 1.3 to 2px off center** (centered badge cells, DAM's checkbox columns, compact density): the behavior
   test's "vertical alignment not middle". It predates Phase 4; it is fixed in batch 3 by geometry (never a nudge).
 - **Phase 4 text roles** for the 8 DataGrid and Table parts still on the migration backlog
-  (`check-system.text-contract.json`). Done in batch 5: group count, summary value and value (and Table's).
+  (`check-system.text-contract.json`). Done in batches 5 and 6: group count, summary value, value, the empty message and data cells (and Table's); the
+  migration list holds no grid part.
 
 ## Lessons from batches 1 to 3
 

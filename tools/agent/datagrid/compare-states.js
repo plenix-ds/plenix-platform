@@ -34,12 +34,17 @@ const read = ([PROPS, PSEUDO]) => {
     const label = (g.querySelector('[aria-label]') || g).getAttribute('aria-label') || '', key = label + ' #' + (seen[label] = (seen[label] || 0) + 1), at = g.getBoundingClientRect(), els = [];
     for (const e of [g, ...g.querySelectorAll('*')]) {
       const c = getComputedStyle(e), b = e.getBoundingClientRect(), name = typeof e.className === 'string' && e.className ? e.className.split(' ')[0] : e.tagName.toLowerCase();
-      const vals = PROPS.map((p) => p + '=' + c.getPropertyValue(p));
-      vals.push(c.display === 'contents' ? 'box=contents' : 'box=' + [r(b.x - at.x), r(b.y - at.y), r(b.width), r(b.height)].join(','));
+      // an element drawn with no size (in a closed tab, display:none) has no geometry worth comparing: its offsets depend on
+      // where the page happens to put it
+      const empty = !b.width && !b.height, GEO = ['top', 'right', 'bottom', 'left', 'width', 'height'];
+      // a floating scrollbar is placed by anchor: its insets are measured from the page, its box (below) is what shows
+      const anchored = /__scroll(\s|$)/.test(name), INSETS = ['top', 'right', 'bottom', 'left'];
+      const vals = PROPS.map((p) => p + '=' + ((empty && GEO.includes(p)) || (anchored && INSETS.includes(p)) ? 'n/a' : c.getPropertyValue(p)));
+      vals.push(c.display === 'contents' ? 'box=contents' : empty ? 'box=empty' : 'box=' + [r(b.x - at.x), r(b.y - at.y), r(b.width), r(b.height)].join(','));
       for (const ps of ['::before', '::after']) { const s = getComputedStyle(e, ps); if (s.content === 'none' || s.content === 'normal') { vals.push(ps + '=none'); continue; } vals.push(...PSEUDO.map((p) => ps + p + '=' + s.getPropertyValue(p))); }
       els.push([name, vals]);
     }
-    grids.push({ key, text: g.textContent, els });
+    grids.push({ key, text: g.textContent, width: Math.round(at.width), els });
   }
   return grids;
 };
@@ -57,7 +62,8 @@ const STATES = {
   gridHover: async (p) => { const h = (await p.$$('.plx-data-grid'))[0]; if (!h) return false; try { await h.hover(); } catch (e) { return false; } return true; },
   touch: async (p) => { await p.mouse.move(0, 0); return p.evaluate(() => { document.documentElement.setAttribute('data-plx-interaction', 'touch'); return !!document.querySelector('.plx-data-grid, .plx-table'); }); },
 };
-async function hoverRow(p, i) { const rows = []; for (const h of await p.$$(ROW)) if (await h.evaluate((e) => !!e.offsetParent && e.getBoundingClientRect().top > 0 && e.getBoundingClientRect().bottom < innerHeight)) rows.push(h); if (!rows[i]) return false; try { await rows[i].hover(); } catch (e) { return false; } return true; }
+// the i-th record row of the DataGrids (not the static Tables the spec documents itself with), brought into view
+async function hoverRow(p, i) { const rows = []; for (const r of await p.$$('.plx-data-grid ' + ROW)) if (await r.evaluate((e) => !!e.offsetParent)) rows.push(r); if (!rows[i]) return false; try { await rows[i].evaluate((e) => e.scrollIntoView({ block: 'center' })); await sleep(150); await rows[i].hover(); } catch (e) { return false; } return true; }
 
 async function specPages(browser) {
   if (fs.existsSync(LIST)) return JSON.parse(fs.readFileSync(LIST, 'utf8'));
@@ -92,6 +98,7 @@ async function specPages(browser) {
       let d = 0; const before = new Map(r1.map((g) => [g.key, g]));
       for (const g2 of r2) { const g1 = before.get(g2.key);
         if (!g1) { notes.push(st + ': grid ' + g2.key + ' only after'); d++; continue; }
+        if (g1.width !== g2.width) { if (st === 'rest') skipped.add(g2.key + ' [its container is ' + g1.width + ' / ' + g2.width + 'px wide]'); continue; }
         if (g1.text !== g2.text) { if (st === 'rest') { let k = 0; while (g1.text[k] === g2.text[k]) k++; skipped.add(g2.key + ' [' + g1.text.slice(Math.max(0, k - 20), k + 30) + ' | ' + g2.text.slice(Math.max(0, k - 20), k + 30) + ']'); } continue; }
         const x1 = g1.els, x2 = g2.els, n = Math.max(x1.length, x2.length);
         if (x1.length !== x2.length) notes.push(st + ' ' + g2.key + ': ' + x1.length + ' / ' + x2.length + ' elements');
@@ -105,7 +112,7 @@ async function specPages(browser) {
       diffs += d; if (d) notes.push(st + ': ' + d + ' elements differ');
     }
     if (notes.length) bad.push(url);
-    console.log((notes.length ? 'DIFF ' : 'SAME ') + url + ' [' + reached.join(' ') + ']' + (notes.length ? '\n  ' + notes.join('\n  ') : '') + (renamed.size ? '\n  renamed, same values: ' + [...renamed].join(', ') : '') + (skipped.size ? '\n  not compared (its text differs): ' + [...skipped].join(', ') : ''));
+    console.log((notes.length ? 'DIFF ' : 'SAME ') + url + ' [' + reached.join(' ') + ']' + (notes.length ? '\n  ' + notes.join('\n  ') : '') + (renamed.size ? '\n  renamed, same values: ' + [...renamed].join(', ') : '') + (skipped.size ? '\n  not compared (its text or container differs): ' + [...skipped].join(', ') : ''));
   }
   if (agg) for (const [k, n] of [...agg].sort((a, b) => b[1] - a[1]).slice(0, +(arg('top') || 80))) console.log(String(n).padStart(6) + '  ' + k.slice(0, 220));
   console.log('total ' + total + ' element readings, ' + diffs + ' differ' + (bad.length ? '; pages: ' + bad.join(' ') : ''));
