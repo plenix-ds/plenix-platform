@@ -2,7 +2,10 @@
 const babel = require('@babel/standalone');
 module.exports = function sourceProps(source, name) {
   let result = null;
-  babel.transform(source, { ast: false, code: false, parserOpts: {sourceType:'module',plugins:['jsx']}, plugins: [() => ({visitor:{Function(path) {
+  babel.transform(source, { ast: false, code: false, parserOpts: {sourceType:'module',plugins:['jsx']}, plugins: [() => ({visitor:{VariableDeclarator(path) {
+    const node=path.node;
+    if(!result && path.scope.path.isProgram() && node.id.name===name && node.init?.type==='ObjectExpression') result={props:{},jsx:false,namespace:node.init.properties.filter(p=>p.type==='ObjectProperty'&&!p.computed).map(p=>({key:p.key.name||p.key.value,name:p.value.name}))};
+  },Function(path) {
     let owner = path.node.id && path.node.id.name;
     if (path.parentPath.isVariableDeclarator()) owner = path.parentPath.node.id.name;
     if (path.parentPath.isCallExpression() && path.parentPath.parentPath.isVariableDeclarator()) owner = path.parentPath.parentPath.node.id.name;

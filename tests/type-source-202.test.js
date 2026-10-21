@@ -5,3 +5,4 @@ const forwarded=read('export function Grid(props){ const {columns=[]}=props; con
 assert.ok(forwarded.props.columns);assert.ok(forwarded.props.data);assert.equal(forwarded.props.private,undefined);assert.equal(forwarded.jsx,true);
 assert.equal(read('export function helper(value){return value;}','Missing'),null);
 console.log('TYPE_SOURCE_202_OK actual props, aliases/defaults, conditional JSX, ref wrappers and lexical shadowing');
+assert.equal(read('function Header(){return <div/>;} export const Chat={Header};','Chat').namespace[0].key,'Header');

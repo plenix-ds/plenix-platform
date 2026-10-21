@@ -78,8 +78,14 @@ module.exports = function buildTypes(outFile, version) {
       const name = raw; names.push(name);
       const precise = contract(name, P);
       if (precise) { blocks.push(precise); if (/^[A-Z]/.test(name)) components.push(name); continue; }
+      const documented = /^[A-Z][a-z]/.test(name) && !name.endsWith('Context') && head && (hc.split('\n')[0].match(/[A-Za-z_$][\w$]*/g) || []).includes(name);
       const actual = sourceProps(src, name);
-      const isComponent = /^[A-Z]/.test(name) && actual && actual.jsx;
+      if (actual?.namespace && documented) {
+        blocks.push('export declare const ' + name + ': {\n' + actual.namespace.map(part => '  ' + JSON.stringify(part.key) + ': ' + (part.name && sourceProps(src, part.name)?.jsx ? 'React.ComponentType<{ [prop: string]: unknown }>' : 'unknown') + ';').join('\n') + '\n};');
+        components.push(name); continue;
+      }
+      if (documented && !actual) throw Error('build-types: cannot read documented component: ' + name);
+      const isComponent = /^[A-Z]/.test(name) && actual && (actual.jsx || documented);
       if (!isComponent) {
         // hooks, helpers and data: typed loosely (their headers describe behavior, not a signature)
         blocks.push(/^use[A-Z]|^[a-z]/.test(name) ? 'export declare function ' + name + '(...args: any[]): any;' : 'export declare const ' + name + ': any;');
