@@ -1,0 +1,192 @@
+[
+  {
+    "dir": "ltr",
+    "name": "scroll",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "pinned": 0
+  },
+  {
+    "dir": "ltr",
+    "name": "resize wider",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "ltr",
+    "name": "resize narrower",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "ltr",
+    "name": "sort",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "ltr",
+    "name": "hide column",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "ltr",
+    "name": "reorder columns",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "ltr",
+    "name": "resize column",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "ltr",
+    "name": "multiple frozen columns and custom link",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 0,
+    "frozen": 0,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "movingC": 300,
+    "linkDisplay": "inline-flex"
+  },
+  {
+    "dir": "ltr",
+    "name": "opposite-direction content",
+    "scroll": 300,
+    "headerScroll": 0,
+    "alignment": 300,
+    "frozen": 300,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "layoutDirection": "rtl",
+    "valueDirection": "rtl"
+  },
+  {
+    "dir": "rtl",
+    "name": "scroll",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "pinned": 0
+  },
+  {
+    "dir": "rtl",
+    "name": "resize wider",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "rtl",
+    "name": "resize narrower",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "rtl",
+    "name": "sort",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "rtl",
+    "name": "hide column",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "rtl",
+    "name": "reorder columns",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "rtl",
+    "name": "resize column",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false
+  },
+  {
+    "dir": "rtl",
+    "name": "multiple frozen columns and custom link",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "movingC": -300,
+    "linkDisplay": "inline-flex"
+  },
+  {
+    "dir": "rtl",
+    "name": "opposite-direction content",
+    "scroll": -300,
+    "headerScroll": 0,
+    "alignment": -300,
+    "frozen": -300,
+    "headerVisible": true,
+    "frozenBackground": false,
+    "layoutDirection": "ltr",
+    "valueDirection": "ltr"
+  }
+]
