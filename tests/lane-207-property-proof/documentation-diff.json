@@ -1,0 +1,258 @@
+{
+  "base": 3033,
+  "head": 3041,
+  "prefix": 1346,
+  "suffix": 416,
+  "diffs": [
+    {
+      "where": 1180,
+      "label": "div.ds-stack",
+      "textBefore": "UI Inventory03 Content & IdentityMetadataProperty listProperty list · BaseLabel and value pairs (metadata, details, settings summaries), as a description list.StatusActiveLevelComp",
+      "textAfter": "UI Inventory03 Content & IdentityMetadataProperty listProperty list · BaseLabel and value pairs (metadata, details, settings summaries), as a description list.StatusActiveLevelComp",
+      "parent": "ds-page-scroll",
+      "changes": {
+        "block-size": [
+          "7356.75px",
+          "7430.75px"
+        ],
+        "height": [
+          "7356.75px",
+          "7430.75px"
+        ],
+        "perspective-origin": [
+          "466px 3678.38px",
+          "466px 3715.38px"
+        ],
+        "transform-origin": [
+          "466px 3678.38px",
+          "466px 3715.38px"
+        ]
+      }
+    },
+    {
+      "where": 1345,
+      "label": "span.plx-text.plx-text--data.plx-table__cell-content",
+      "textBefore": "flex",
+      "textAfter": "var(--plx-state-property-list-display,flex)",
+      "parent": "plx-table__portal",
+      "changes": {
+        "inline-size": [
+          "26.2188px",
+          "281.812px"
+        ],
+        "perspective-origin": [
+          "13.1094px 8.39062px",
+          "140.906px 8.39062px"
+        ],
+        "transform-origin": [
+          "13.1094px 8.39844px",
+          "140.906px 8.39844px"
+        ],
+        "width": [
+          "26.2188px",
+          "281.812px"
+        ]
+      }
+    },
+    {
+      "where": -276,
+      "label": "span.plx-list__text",
+      "textBefore": "20 tokens (Implementation › Tokens)",
+      "textAfter": "24 tokens (Implementation › Tokens)",
+      "parent": "plx-list__item plx-list__item--neutral",
+      "changes": {
+        "inline-size": [
+          "202.953px",
+          "202.109px"
+        ],
+        "perspective-origin": [
+          "101.469px 10px",
+          "101.047px 10px"
+        ],
+        "transform-origin": [
+          "101.477px 10px",
+          "101.055px 10px"
+        ],
+        "width": [
+          "202.953px",
+          "202.109px"
+        ]
+      }
+    },
+    {
+      "where": -277,
+      "label": "li.plx-list__item.plx-list__item--neutral",
+      "textBefore": "20 tokens (Implementation › Tokens)",
+      "textAfter": "24 tokens (Implementation › Tokens)",
+      "parent": "plx-list plx-list--bullets plx-table__cell-content",
+      "changes": {
+        "inline-size": [
+          "214.953px",
+          "214.109px"
+        ],
+        "perspective-origin": [
+          "107.469px 10px",
+          "107.047px 10px"
+        ],
+        "transform-origin": [
+          "107.477px 10px",
+          "107.055px 10px"
+        ],
+        "width": [
+          "214.953px",
+          "214.109px"
+        ]
+      }
+    },
+    {
+      "where": -278,
+      "label": "ul.plx-list.plx-list--bullets.plx-table__cell-content",
+      "textBefore": "20 tokens (Implementation › Tokens)",
+      "textAfter": "24 tokens (Implementation › Tokens)",
+      "parent": "plx-table__portal",
+      "changes": {
+        "inline-size": [
+          "214.953px",
+          "214.109px"
+        ],
+        "perspective-origin": [
+          "107.469px 10px",
+          "107.047px 10px"
+        ],
+        "transform-origin": [
+          "107.477px 10px",
+          "107.055px 10px"
+        ],
+        "width": [
+          "214.953px",
+          "214.109px"
+        ]
+      }
+    },
+    {
+      "where": -384,
+      "label": "span.plx-count.plx-count--plain",
+      "textBefore": "20",
+      "textAfter": "24",
+      "parent": "plx-tabs__tab plx-tabs__tab--folder",
+      "changes": {
+        "inline-size": [
+          "13.7656px",
+          "13.1719px"
+        ],
+        "perspective-origin": [
+          "6.875px 7px",
+          "6.57812px 7px"
+        ],
+        "transform-origin": [
+          "6.88281px 7px",
+          "6.58594px 7px"
+        ],
+        "width": [
+          "13.7656px",
+          "13.1719px"
+        ]
+      }
+    },
+    {
+      "where": -386,
+      "label": "button.plx-tabs__tab.plx-tabs__tab--folder",
+      "textBefore": "Tokens20",
+      "textAfter": "Tokens24",
+      "parent": "plx-tabs__tablist plx-tabs__tablist--folder",
+      "changes": {
+        "inline-size": [
+          "83.6406px",
+          "83.0469px"
+        ],
+        "perspective-origin": [
+          "41.8125px 12px",
+          "41.5156px 12px"
+        ],
+        "transform-origin": [
+          "41.8203px 12px",
+          "41.5234px 12px"
+        ],
+        "width": [
+          "83.6406px",
+          "83.0469px"
+        ]
+      }
+    },
+    {
+      "where": -387,
+      "label": "span.plx-count.plx-count--plain",
+      "textBefore": "10",
+      "textAfter": "12",
+      "parent": "plx-tabs__tab plx-tabs__tab--folder",
+      "changes": {
+        "inline-size": [
+          "11.25px",
+          "10.2656px"
+        ],
+        "perspective-origin": [
+          "5.625px 7px",
+          "5.125px 7px"
+        ],
+        "transform-origin": [
+          "5.625px 7px",
+          "5.13281px 7px"
+        ],
+        "width": [
+          "11.25px",
+          "10.2656px"
+        ]
+      }
+    },
+    {
+      "where": -389,
+      "label": "button.plx-tabs__tab.plx-tabs__tab--folder",
+      "textBefore": "Classes10",
+      "textAfter": "Classes12",
+      "parent": "plx-tabs__tablist plx-tabs__tablist--folder",
+      "changes": {
+        "inline-size": [
+          "85.3594px",
+          "84.375px"
+        ],
+        "perspective-origin": [
+          "42.6719px 12px",
+          "42.1875px 12px"
+        ],
+        "transform-origin": [
+          "42.6797px 12px",
+          "42.1875px 12px"
+        ],
+        "width": [
+          "85.3594px",
+          "84.375px"
+        ]
+      }
+    },
+    {
+      "where": -396,
+      "label": "div.plx-tabs__tablist.plx-tabs__tablist--folder",
+      "textBefore": "Use in codePropertyList.jsxproperty-list.cssClasses10Tokens20",
+      "textAfter": "Use in codePropertyList.jsxproperty-list.cssClasses12Tokens24",
+      "parent": "plx-tabs__list plx-tabs__list--folder",
+      "changes": {
+        "inline-size": [
+          "493.797px",
+          "492.219px"
+        ],
+        "perspective-origin": [
+          "246.891px 12px",
+          "246.109px 12px"
+        ],
+        "transform-origin": [
+          "246.898px 12px",
+          "246.109px 12px"
+        ],
+        "width": [
+          "493.797px",
+          "492.219px"
+        ]
+      }
+    }
+  ]
+}
