@@ -12,3 +12,5 @@ Focused local Chrome light checks:
 - LABS_ONLY=resizable:56 checks,6 tokens pass (raw log retained).
 
 Build/app, usage, native guidance, packages and performance checks pass. SYSTEM_OK1063; SPEC_OK1172 leaves/768 records. Selector and text contract checks pass. No baseline was changed. Full browser CI/proof are dispatched with the PR; they are not claimed complete here.
+
+After rebase onto bded375d219e4ea43dd1f54ba41bc21ef323af5f: build/app, usage and native guidance pass; SPEC_OK1172/768. SYSTEM now reports6 Commerce text-contract findings inherited from that exact target. An isolated detached target checkout produces byte-identical text-contract output; the Commerce CSS is unchanged by this lane. Raw head/base logs retained. SYSTEM was clean on the prior e711 base; it is not claimed clean on bded375d. The new tooltip's own strict overlap and declared text contract remain covered. No baseline/contract backlog is relaxed to hide these findings.
