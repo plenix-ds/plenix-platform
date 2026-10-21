@@ -476,3 +476,110 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 - **rec.variantPages:** The three variants (In the inspector, Search, Articles) share the same text, and their use and avoid lines (“Use this composition when it fits the task”, “Keep education optional and permissions explicit”) do not describe them. What does each variant show, and when should it be used?
 - **rec.text:** The overview repeats the purpose word for word. Should the overview describe the panel’s parts (a heading, a search field, results, an article with Back) instead?
 
+## specialized (36 questions)
+
+### typing-indicator
+
+- **rec.variantPages[0].text / rec.variantPages[1].text:** The variant pages say their messages sit “on the left” and mine “on the right”, but the write-up says mine sit on the end side and flip in right-to-left languages. Should the variant pages say “start side” and “end side” instead of left and right?
+
+### specialized-asset-grid
+
+- **rec.purpose / docs:** The Asset grid page shows the purpose and full write-up of the Asset browser template (“Shows how a data-management capability is put together…”), not of the grid itself. Should this page show the content grid’s own purpose and write-up?
+
+### specialized-asset-browser
+
+- **rec.purpose:** The purpose speaks about the template in general (“Shows how a data-management capability is put together in Plenix…”) while the overview says the asset browser is the Asset Manager. Is the template purpose the one you want on this page?
+
+### specialized-thumbnail
+
+- **rec.purpose / docs:** The Thumbnail page shows the asset card’s (MediaCard’s) purpose and write-up, including selecting several for bulk actions, which a thumbnail on its own does not do. Should Thumbnail get its own purpose and write-up, or show the Thumbnail component’s?
+
+### specialized-notification-center
+
+- **rec.text:** The overview says the notification center is “opened from the header’s bell”, but the purpose says it is a section of the page and the content guidance says “Do not add a bell or a header badge: notifications live in the page.” Which is right?
+
+### share-dialog
+
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines? On this page the avoid line (“Keep education optional and permissions explicit”) also talks about education, which is not about sharing.
+- **docs.behavior.keyboard / docs.behavior.focus / docs.a11y.focus / docs.content.actions / docs.content.localization:** Several rows on the Sharing page mention tours, teaching bubbles, checklists and articles (“Resume tour, Dismiss checklist and Back to articles”), which belong to other pages. They are shared sentences, so I left them. Should the Sharing page get its own sentences here?
+
+### asset-gallery
+
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several media pages; they mention forms, FileRow, Carousel, metadata actions and MediaViewer even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### download-manager
+
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several media pages; they mention forms, FileRow, Carousel, metadata actions and MediaViewer even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### media-player
+
+- **rec.text / rec.purpose / docs.purpose:** The Video player and Audio player pages share one purpose sentence, written as a command (“Play authorized audio and video…”). Because it is shared I left it. Should each page get its own purpose, written as what it does for people?
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several media pages; they mention forms, FileRow, Carousel, metadata actions and MediaViewer even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### metadata-editor
+
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several media pages; they mention forms, FileRow, Carousel, metadata actions and MediaViewer even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### related-assets
+
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several media pages; they mention forms, FileRow, Carousel, metadata actions and MediaViewer even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### audio-player
+
+- **rec:** The Audio player page has no text of its own: its overview, purpose and mouse behavior are the Video player’s (“audio and video”), its When to use repeats the purpose and its When not to use is generic (“Keep sources and actions explicit.”). Is it a page of its own (then it needs its own text) or should it be the Audio variant of Video player?
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several media pages; they mention forms, FileRow, Carousel, metadata actions and MediaViewer even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+
+### file-picker
+
+- **rec.avoid[0] / rec.text:** The overview says the picker chooses “files, assets or media” and it has an Assets variant, but When not to use says “Do not use it to choose managed assets with metadata; use Asset picker instead.” Which assets belong here and which in Asset picker? I left both unchanged.
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several pages; they mention dialogs, tours, checklists, articles or version choices even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### rendition-list
+
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several pages; they mention dialogs, tours, checklists, articles or version choices even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### document-viewer
+
+- **rec.use[0]:** When to use mentions office files, but the overview and the variants cover only PDFs, image pages and text. Can the viewer show office files? I kept “office files” as written.
+- **docs (shared rows):** This page’s Keyboard, Focus, Responsive, Motion, Loading and Error rows and its Accessibility and Content rows are shared sentences used on several pages; they mention dialogs, tours, checklists, articles or version choices even where those do not apply. I left them unchanged. Should each page get its own sentences for these rows?
+- **rec.variantPages:** Every variant page here shows the same overview sentence (the page’s mouse behavior), and its When to use / When not to use either repeat the page’s purpose or say something generic (“Keep actions explicit”, “Use this composition when it fits the task”). They do not describe the variant. Should each variant get its own description and use/avoid lines?
+
+### commerce
+
+- **rec.text / rec.purpose:** This page is titled “Product discovery”, but its overview and purpose describe all ten shop pages (discovery, listing, detail, cart, checkout and so on). Should this page describe only product discovery, with the ten-page overview living on a family page?
+
+### presence-bar
+
+- **docs (anatomy, behavior.error, content.actions) and rec.variantPages[*].avoid:** Presence shows who is viewing or editing, but its write-up is the comments one: it talks about drafts, an error beside the composer, and the actions Edit, Resolve, Send reply and Add annotation; each variant says “Do not silently discard a failed draft.” None of that fits Presence. Should Presence get its own write-up?
+
+### comment / comment-thread / image-annotation / presence-bar
+
+- **rec.text, rec.purpose, rec.use[0], rec.variantPages[*].text / use:** On these four pages the overview, the purpose, the first “when to use” point and every variant’s overview and “when to use” are the same sentence, and all four share one general write-up (“Named content region”, “Identity and context”…). Should each page and variant get its own short description of what it shows?
+
+### announcement / audit-log / approval-workflow / mention-input
+
+- **docs.behavior, docs.a11y, docs.content:** These four pages share one write-up that mentions all of them together (mention suggestions, editors, announcement dismissal, approval stages; actions Add mention, Dismiss announcement, Approve, Reject, Request changes). On Audit history, for example, it talks about mention suggestions. Should each page keep only the parts that apply to it?
+
+### version-history
+
+- **docs.behavior.keyboard / docs.a11y.name / docs.a11y.focus / docs.content.actions:** Version history uses a write-up shared with the file pages: it mentions file choices, file rows, “Cancel preserves saved files” and the actions Choose, Download, Preview, Restore and Remove. Should Version history name only what applies to versions?
+
+### ai-disclaimer
+
+- **docs.behavior.pointer:** “…with no scripted dismissal or accuracy promise” is unclear: does it mean the reminder has no dismiss button at all, or only that a script must not hide it? I left this sentence unchanged until you decide.
+
+### all pages in this part
+
+- **rec.variantPages[*].use / avoid:** Most variant pages here say only “Use this composition when it fits the task.” (or “…for the named task.”) under when to use, and a general line such as “Keep actions explicit.” under when not to use. These say nothing about the variant. Should each variant get a real one-line use and avoid, or should these rows be hidden?
+
+### prompt-input / ai-chat / streaming-text / assistant-panel
+
+- **docs.a11y.focus / docs.behavior.responsive:** These AI pages share lines that fit only some of them, for example “Scrolling Chat threads are keyboard reachable and named.” on Prompt input, and “Sheet uses native-inspired responsive forms.” on Streaming response. Should each page keep only the lines that apply to it?
+
