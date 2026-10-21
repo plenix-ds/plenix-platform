@@ -50,10 +50,6 @@
   "platform/charts/radar-chart.css": {
    "cross-block | .plx-radar-chart__area.plx-chart__line": 1
   },
-  "platform/charts/scatter-chart.css": {
-   "combinator | .plx-scatter--points .plx-scatter__point": 1,
-   "combinator | .plx-scatter--bubble .plx-scatter__point": 1
-  },
   "platform/components/AvatarGroup/avatar-group.css": {
    "combinator | .plx-avatar-group--stack .plx-avatar-group__avatar": 1,
    "combinator | .plx-avatar-group--stack .plx-avatar-group__more": 1,

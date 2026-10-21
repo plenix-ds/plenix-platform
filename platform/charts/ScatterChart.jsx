@@ -20,6 +20,7 @@
      strings: the words it says: { series: "Series", item: "Item", hint } (hint: the chart interaction's)
      className: more classes on the figure
    Behavior:
+     Points carry their own kind class; outer chart variants do not reach nested chart parts.
      Both axes fit the data (they need not start at zero) on round ticks; the axis titles name the measures.
      Bubbles: area, not radius, follows the size (the largest bubble 24px across its radius); smaller bubbles are drawn on
        top of larger ones, and every point is a little transparent, so overlaps stay visible.
@@ -97,7 +98,7 @@ export function ScatterChart({ title, description, series = [], variant = 'point
               <GridLines scale={y} inner={inner} />
               <GridLines scale={x} direction="vertical" inner={inner} />
               {trend ? groups.map((g, gi) => { const l = fits[gi]; return l ? <line key={'t' + g.id} className="plx-scatter__trend" data-plx-dataviz={g.color} x1={x(l[0][0])} y1={y(l[0][1])} x2={x(l[1][0])} y2={y(l[1][1])} /> : null; }) : null}
-              {order.map((i) => { const p = all[i]; return <circle key={i} className="plx-scatter__point" data-plx-dataviz={p.series.color} cx={x(p.x)} cy={y(p.y)} r={radius(p)}
+              {order.map((i) => { const p = all[i]; return <circle key={i} className={cx('plx-scatter__point', 'plx-scatter__point--' + v)} data-plx-dataviz={p.series.color} cx={x(p.x)} cy={y(p.y)} r={radius(p)}
                 onMouseEnter={() => keys.hover(i)} onMouseLeave={() => keys.hover(null)} />; })}
               <Axis scale={x} orient="bottom" inner={inner} margin={margin} format={xFormat} label={xTitle} />
               <Axis scale={y} orient="left" inner={inner} margin={margin} format={yFormat} label={yTitle} />
