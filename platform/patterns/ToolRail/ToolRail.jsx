@@ -18,6 +18,7 @@
      ToolRail.Item.className: more classes
      ToolRailBar (NavPane at Narrow): the same items drawn as the destinations of the bottom navigation bar
    Behavior:
+     Item color priority is disabled, active, hover, current, rest; focus is independent. Label layout is carried by each item.
      It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
      enters and leaves the rail.
      Each tool is an icon-only toggle button with a tooltip at its end side.
@@ -66,7 +67,7 @@ ToolRail.Item = function ToolRailItem({ icon, label, pressed, disabled = false, 
     </button>
   );
   const button = (
-    <button type="button" className={cx('plx-tool-rail__item', pressed && 'is-pressed', className)} aria-label={labels ? undefined : label}
+    <button type="button" className={cx('plx-tool-rail__item', labels && 'plx-tool-rail__item--labels', pressed && 'is-pressed', className)} aria-label={labels ? undefined : label}
       aria-pressed={pressed === undefined ? undefined : !!pressed} disabled={disabled || undefined} onClick={onClick}>
       {stateIcon(icon, pressed)}
       {labels ? <span className="plx-tool-rail__label">{label}</span> : null}

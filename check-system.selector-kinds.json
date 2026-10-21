@@ -1014,9 +1014,6 @@
    "combinator | .plx-split-view__second>*": 1,
    "combinator | .plx-split-view--side-by-side .plx-split-view__second": 1
   },
-  "platform/patterns/ToolRail/tool-rail.css": {
-   "combinator | .plx-tool-rail--labels .plx-tool-rail__item": 1
-  },
   "platform/patterns/UploadManager/upload-manager.css": {
    "combinator | .plx-upload-manager--dialog .plx-upload-manager__body": 1
   },
