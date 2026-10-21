@@ -16536,7 +16536,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      (pill) every other value is a DataPill with its column's type icon; column.pill(value, record) may return its tone,
      icon, variant, data and gender, and column.pill === false keeps the plain value. A person (type person, kind
      avatar-name) carries value.gender.
-   Notes: Imports no legacy grid implementation. Data still sorts and filters by its raw value. */
+   Notes: Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
+     engine gives every value span (__value--wrap, --sized, --lines). */
 
 const valueText = value => value == null ? '' : Array.isArray(value) ? value.map(valueText).join(', ') : typeof value === 'object' ? String(value.label ?? value.name ?? '') : String(value);
 exports.valueText = valueText;
@@ -16581,8 +16582,10 @@ function CellValue({
   record,
   pill = false,
   icon,
-  block = 'plx-data-grid'
+  block = 'plx-data-grid',
+  mods
 }) {
+  const own = block + '__value' + (mods ? ' ' + mods : '');
   const kinds = [].concat(column.kind || []);
   if (pill && column.pill !== false && value !== null && value !== undefined && value !== '' && !kinds.includes('tags') && !kinds.includes('badge') && !kinds.includes('deleted')) {
     const isPerson = column.type === 'person' || kinds.includes('avatar-name');
@@ -16600,13 +16603,13 @@ function CellValue({
     }, text);
   }
   if (value === null || value === undefined || value === '') return /*#__PURE__*/_react.default.createElement("span", {
-    className: block + '__value' + (kinds.includes('deleted') ? ' ' + block + '__deleted' : '')
+    className: own + (kinds.includes('deleted') ? ' ' + block + '__deleted' : '')
   }, column.empty ?? (kinds.includes('deleted') ? strings?.deleted || 'Deleted' : ''));
   if (column.type === 'bytes') return /*#__PURE__*/_react.default.createElement("span", {
-    className: `${block}__value`
+    className: own
   }, (0, _format.formatBytes)(Number(value)));
   if (kinds.includes('deleted')) return /*#__PURE__*/_react.default.createElement("span", {
-    className: `${block}__value ${block}__deleted`
+    className: `${own} ${block}__deleted`
   }, valueText(value));
   if (kinds.includes('avatar-name')) {
     const person = typeof value === 'object' ? value : {
@@ -16621,7 +16624,7 @@ function CellValue({
       size: "2xs",
       "aria-hidden": "true"
     }), /*#__PURE__*/_react.default.createElement("span", {
-      className: `${block}__value`
+      className: own
     }, name));
   }
   if (kinds.includes('tags')) return /*#__PURE__*/_react.default.createElement("span", {
@@ -16640,7 +16643,7 @@ function CellValue({
     }, badge.label);
   }
   return /*#__PURE__*/_react.default.createElement("span", {
-    className: `${block}__value`
+    className: own
   }, valueText(value));
 }
   } },
@@ -17055,7 +17058,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
      token-sized CSS gaps represent missing rows. An automatic viewport is bounded by its allocated pane as well as the browser. Opening saved state is supplied on the very first render. Search filtering is deferred so typing stays responsive;
      controlled sort state and the numeric text collator are reused across search updates.
-   Notes: Own Plenix markup and stylesheet use the existing table tokens. Applications use the public DataGrid entry point. */
+   Notes: Own Plenix markup and stylesheet use the existing table tokens. Applications use the public DataGrid entry point.
+     A part takes the grid's modes and its row's state as its own classes (zero overlap, data-grid.css): a record row
+     __grid-row--narrow (the list) and --virtual (the drawn window); every cell of it __grid-cell--narrow, --sized (a row
+     height step) and --lines (a step taller than short), the first after the checkbox --after-lead, a plain value
+     directly inside --bare, a nested row's tree cell __tree-cell--level-N; a value __value--wrap, --sized and --lines;
+     row actions sit in __portal--actions; the checkbox input is __check-input. */
 // Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
 const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
   className: GRID + '__cell-direction',
@@ -17242,6 +17250,7 @@ function Check({
     onClick: e => e.stopPropagation()
   }, /*#__PURE__*/_react.default.createElement("input", {
     ref: ref,
+    className: GRID + '__check-input',
     type: "checkbox",
     checked: !!checked,
     "aria-label": label,
@@ -17294,13 +17303,14 @@ const CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
   column,
   record,
   cell,
-  block
+  block,
+  mods
 }) {
   const content = column.render(record, cell);
   return /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
-    className: block + '__value'
+    className: (0, _cx.cx)(block + '__value', mods)
   }, content);
-}, (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block);
+}, (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block && a.mods === b.mods);
 // Window-only updates reuse complete record rows; view, selection and edit changes invalidate their closures.
 const MemoGridRow = /*#__PURE__*/_react.default.memo(function MemoGridRow({
   row,
@@ -18440,6 +18450,10 @@ function NextEngine(props) {
     const rowApi = api.row(row.id),
       record = row.original;
     let offset = selectable ? metrics.lead : 0;
+    const step = !isStatic && !isNarrow ? effectiveStep : undefined,
+      sized = step != null,
+      lines = sized && step !== 'short',
+      modes = (0, _cx.cx)(isNarrow && B + '__grid-cell--narrow', sized && B + '__grid-cell--sized', lines && B + '__grid-cell--lines');
     const node = /*#__PURE__*/_react.default.createElement(RowTarget, _extends({
       key: row.displayKey || row.id
     }, !(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)), {
@@ -18453,7 +18467,7 @@ function NextEngine(props) {
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
         if (selectable) pickCheckbox(row, {
@@ -18494,7 +18508,7 @@ function NextEngine(props) {
         }
       }
     }), selectable ? /*#__PURE__*/_react.default.createElement("div", {
-      className: `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
+      className: (0, _cx.cx)(`${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`, modes),
       role: "gridcell"
     }, /*#__PURE__*/_react.default.createElement(Check, {
       label: S.selectRow + ' ' + record[index],
@@ -18508,7 +18522,23 @@ function NextEngine(props) {
       if (pinned) offset += column.getSize();
       const cell = api.cell(row.id, c.field),
         canEdit = !!c.editor && (typeof c.editable === 'function' ? c.editable(cell) : c.editable !== false);
-      const value = (0, _state.valueAt)(record, c.field);
+      const value = (0, _state.valueAt)(record, c.field),
+        isTree = !!childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field),
+        isEditing = editing?.key === row.id && editing.field === c.field,
+        handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
+        actions = k.includes('actions');
+      const mods = (0, _cx.cx)(k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && B + '__value--lines') || undefined,
+        shown = (0, _cells.CellValue)({
+          block: B,
+          column: c,
+          value,
+          strings: S,
+          record,
+          pill: cells === 'pill',
+          icon: typeIcons[typeOf(c)],
+          mods
+        });
+      const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && /*#__PURE__*/_react.default.isValidElement(shown) && shown.type === 'span' && String(shown.props.className).split(' ').includes(B + '__value');
       return /*#__PURE__*/_react.default.createElement(Width, {
         key: c.field,
         width: isNarrow ? null : widths[c.field],
@@ -18557,7 +18587,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
       }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -18590,7 +18620,7 @@ function NextEngine(props) {
       }, S.moveTop), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
         onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical.length - 1)
       }, S.moveBottom)) : c.render ? /*#__PURE__*/_react.default.createElement("span", {
-        className: B + '__portal',
+        className: (0, _cx.cx)(B + '__portal', actions && B + '__portal--actions'),
         dir: pinned && !isStatic ? 'auto' : undefined,
         "data-plx-link-target": "cell"
       }, /*#__PURE__*/_react.default.createElement(CustomCell, {
@@ -18599,22 +18629,18 @@ function NextEngine(props) {
         cell: cell,
         rowId: row.id,
         selected: !!selection[row.id],
-        block: B
-      })) : cellDirection(pinned && !isStatic, /*#__PURE__*/_react.default.createElement(_cells.CellValue, {
         block: B,
-        column: c,
-        value: value,
-        strings: S,
-        record: record,
-        pill: cells === 'pill',
-        icon: typeIcons[typeOf(c)]
-      })));
+        mods: mods
+      })) : actions ? /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__portal ' + B + '__portal--actions',
+        dir: pinned && !isStatic ? 'auto' : undefined
+      }, shown) : cellDirection(pinned && !isStatic, shown));
     }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
-      className: `${B}__grid-cell ${B}__w-view`,
+      className: (0, _cx.cx)(`${B}__grid-cell ${B}__w-view`, modes),
       role: "gridcell"
     }) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
       width: metrics.menu,
-      className: `${B}__grid-cell ${B}__cell--row-menu`,
+      className: (0, _cx.cx)(`${B}__grid-cell ${B}__cell--row-menu`, modes),
       role: "gridcell"
     }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
       label: S.rowActions,

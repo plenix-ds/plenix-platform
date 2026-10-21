@@ -989,7 +989,13 @@
     "line-height"
    ]
   },
-  "plx-data-grid__value": {
+  "plx-data-grid__value--lines": {
+   "contract": "adjusts",
+   "props": [
+    "line-height"
+   ]
+  },
+  "plx-data-grid__value--sized": {
    "contract": "adjusts",
    "props": [
     "line-height"
@@ -2980,7 +2986,13 @@
     "line-height"
    ]
   },
-  "plx-table__value": {
+  "plx-table__value--lines": {
+   "contract": "adjusts",
+   "props": [
+    "line-height"
+   ]
+  },
+  "plx-table__value--sized": {
    "contract": "adjusts",
    "props": [
     "line-height"

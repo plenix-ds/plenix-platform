@@ -6,7 +6,8 @@
      (pill) every other value is a DataPill with its column's type icon; column.pill(value, record) may return its tone,
      icon, variant, data and gender, and column.pill === false keeps the plain value. A person (type person, kind
      avatar-name) carries value.gender.
-   Notes: Imports no legacy grid implementation. Data still sorts and filters by its raw value. */
+   Notes: Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
+     engine gives every value span (__value--wrap, --sized, --lines). */
 import React from 'react';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { Badge } from '../Badge/Badge.jsx';
@@ -28,7 +29,8 @@ export function byteFilter(row, field, search) {
 }
 const DATA_TYPES = ['number', 'currency', 'date', 'bytes'];
 
-export function CellValue({ column, value, strings, record, pill = false, icon, block = 'plx-data-grid' }) {
+export function CellValue({ column, value, strings, record, pill = false, icon, block = 'plx-data-grid', mods }) {
+  const own = block + '__value' + (mods ? ' ' + mods : '');
   const kinds = [].concat(column.kind || []);
   if (pill && column.pill !== false && value !== null && value !== undefined && value !== '' && !kinds.includes('tags') && !kinds.includes('badge') && !kinds.includes('deleted')) {
     const isPerson = column.type === 'person' || kinds.includes('avatar-name');
@@ -38,11 +40,11 @@ export function CellValue({ column, value, strings, record, pill = false, icon, 
     return <DataPill tone={own.tone} variant={own.variant} icon={own.icon || (isPerson ? undefined : icon)} person={isPerson} gender={own.gender || (person ? person.gender : undefined)}
       data={own.data !== undefined ? own.data : kinds.includes('data') || DATA_TYPES.includes(column.type)} fill={own.fill}>{text}</DataPill>;
   }
-  if (value === null || value === undefined || value === '') return <span className={block+'__value'+(kinds.includes('deleted')?' '+block+'__deleted':'')}>{column.empty??(kinds.includes('deleted')?strings?.deleted||'Deleted':'')}</span>;
-  if (column.type === 'bytes') return <span className={`${block}__value`}>{formatBytes(Number(value))}</span>;
-  if (kinds.includes('deleted')) return <span className={`${block}__value ${block}__deleted`}>{valueText(value)}</span>;
-  if (kinds.includes('avatar-name')) { const person = typeof value === 'object' ? value : { name: String(value) }, name=person.name||person.label||''; return <span className={`${block}__rich`}><Avatar name={name} src={person.src} size="2xs" aria-hidden="true" /><span className={`${block}__value`}>{name}</span></span>; }
+  if (value === null || value === undefined || value === '') return <span className={own+(kinds.includes('deleted')?' '+block+'__deleted':'')}>{column.empty??(kinds.includes('deleted')?strings?.deleted||'Deleted':'')}</span>;
+  if (column.type === 'bytes') return <span className={own}>{formatBytes(Number(value))}</span>;
+  if (kinds.includes('deleted')) return <span className={`${own} ${block}__deleted`}>{valueText(value)}</span>;
+  if (kinds.includes('avatar-name')) { const person = typeof value === 'object' ? value : { name: String(value) }, name=person.name||person.label||''; return <span className={`${block}__rich`}><Avatar name={name} src={person.src} size="2xs" aria-hidden="true" /><span className={own}>{name}</span></span>; }
   if (kinds.includes('tags')) return <span className={`${block}__rich`}>{[].concat(value).map((tag, i) => <Tag key={i} category={typeof tag === 'object' ? tag.category : undefined}>{typeof tag === 'object' ? tag.label : String(tag)}</Tag>)}</span>;
   if (kinds.includes('badge')) { const badge = typeof value === 'object' ? value : { label: String(value) }; return <Badge tone={badge.tone} icon={badge.icon||'circle-info'}>{badge.label}</Badge>; }
-  return <span className={`${block}__value`}>{valueText(value)}</span>;
+  return <span className={own}>{valueText(value)}</span>;
 }
