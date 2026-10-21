@@ -1020,15 +1020,6 @@
   "platform/patterns/UploadManager/upload-manager.css": {
    "combinator | .plx-upload-manager--dialog .plx-upload-manager__body": 1
   },
-  "platform/patterns/UserCard/user-card.css": {
-   "combinator | .plx-user-card--cover .plx-user-card__identity": 1,
-   "combinator | .plx-user-card--cover .plx-user-card__avatar": 1,
-   "combinator | .plx-user-card--compact .plx-user-card__identity": 1,
-   "combinator | .plx-user-card--compact .plx-user-card__text": 1,
-   "combinator | .plx-user-card--compact .plx-user-card__name": 2,
-   "combinator | .plx-user-card--compact .plx-user-card__secondary": 1,
-   "combinator | .plx-user-card--compact .plx-user-card__actions": 1
-  },
   "platform/patterns/VersionCompare/version-compare.css": {
    "combinator | .plx-version-compare--text .plx-version-compare__diff": 1,
    "combinator | .plx-version-compare__line--added .plx-version-compare__sign": 1,

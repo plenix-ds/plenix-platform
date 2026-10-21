@@ -28,6 +28,7 @@
        dnd: "Do not disturb", offline: "Offline" }
      className: more classes on the card
    Behavior:
+     Cover and compact layout state is carried by each part, so nested cards keep their own layout.
      The name is the card's heading; with href it is a link (one Tab stop), and the actions are buttons of their own, so
        the card itself is not one target.
      The avatar is decorative (the name is beside it); the presence is read after the name ("Maya Chen, Online").
@@ -64,23 +65,23 @@ export function UserCard({ name, src, color, secondary, role, presence, details,
   return (
     <Card bodyLayout="stack" className={cx('plx-user-card', 'plx-user-card--' + (compact ? 'compact' : 'default'), withCover && 'plx-user-card--cover', hasActions && 'plx-user-card--actions', className)} {...rest}>
       {withCover ? <span className="plx-user-card__cover"><Image src={cover} alt="" ratio="21-9" className="plx-user-card__cover-image" /></span> : null}
-      <div className="plx-user-card__identity">
-        <Avatar name={name} src={src} color={color} presence={p || undefined} size={compact ? 'lg' : '2xl'} className="plx-user-card__avatar" />
-        <div className="plx-user-card__text">
-          <H level={headingLevel} className="plx-user-card__name" title={compact && typeof name === 'string' ? name : undefined}>
+      <div className={cx('plx-user-card__identity', withCover && 'plx-user-card__identity--cover', compact && 'plx-user-card__identity--compact')}>
+        <Avatar name={name} src={src} color={color} presence={p || undefined} size={compact ? 'lg' : '2xl'} className={cx('plx-user-card__avatar', withCover && 'plx-user-card__avatar--cover')} />
+        <div className={cx('plx-user-card__text', compact && 'plx-user-card__text--compact')}>
+          <H level={headingLevel} className={cx('plx-user-card__name', compact && 'plx-user-card__name--compact')} title={compact && typeof name === 'string' ? name : undefined}>
             {href ? <Link href={href} variant="standalone">{name}</Link> : name}
             {p ? <VisuallyHidden>{', ' + words[p]}</VisuallyHidden> : null}
           </H>
-          {secondary ? <p className="plx-user-card__secondary" title={compact && typeof secondary === 'string' ? secondary : undefined}>{secondary}</p> : null}
+          {secondary ? <p className={cx('plx-user-card__secondary', compact && 'plx-user-card__secondary--compact')} title={compact && typeof secondary === 'string' ? secondary : undefined}>{secondary}</p> : null}
           {role && !compact ? <span className="plx-user-card__role"><Badge tone="neutral" size="sm">{role}</Badge></span> : null}
         </div>
-        {compact && hasActions ? <div className="plx-user-card__actions">{actions}</div> : null}
+        {compact && hasActions ? <div className={cx('plx-user-card__actions', compact && 'plx-user-card__actions--compact')}>{actions}</div> : null}
       </div>
       {!compact && details && details.length ? (
         <List className="plx-user-card__details"
           items={details.map((d) => ({ icon: d.icon, children: d.data ? <Text variant="data">{d.label}</Text> : d.label }))} />
       ) : null}
-      {!compact && hasActions ? <div className="plx-user-card__actions">{actions}</div> : null}
+      {!compact && hasActions ? <div className={cx('plx-user-card__actions', compact && 'plx-user-card__actions--compact')}>{actions}</div> : null}
     </Card>
   );
 }
