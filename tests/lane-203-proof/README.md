@@ -23,3 +23,7 @@ The original light-only typography inspector was run on both checkouts for the f
 The standard PR CI checks tested a merge onto the subsequently advanced target 66d820ac, while these comparisons isolate the implementation against its exact base 0c6dd191. PR pages, accessibility, fixtures and all three lab shards passed. Broader typography/alignment findings remain visible. Targets/reflow hit a CDP Runtime.callFunctionOn timeout; job 119019771200 was retried once (new job 119028350024), it completed with the same target-only CDP timeout; reflow passed on 36 pages. No further retry has been requested. The target timeout is not yet attributed as a base failure.
 
 Reproduce the light-only style/typography attribution after building both checkouts: set COMPARE_BASE to the exact-base checkout and run `node tests/lane-203-proof/compare-media.cjs`. The full original capture is retained locally in Tools/task219-attribution-full.json; the committed report keeps the relevant property differences and counts.
+
+## Latest merge-run attribution
+
+See latest-ci-attribution.md and latest-typography.json for the actual CI merge1713bce4 versus parent e46577e4. This supersedes the older blanket description of the latest CI target as66d820ac. The two integration follow-ups are deferred by owner decision; no approval is pending in #219.

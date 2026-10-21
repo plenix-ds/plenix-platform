@@ -1,0 +1,10 @@
+SCOPE targets: full · 0 app pages, 1 of 14 sampled design-system pages
+MEASURE_START coarse design-system #/implementation/react
+CONTROL_COUNT 678
+MEASURE_END coarse 87330ms {"fail":["div.plx-panel-splitter.plx-panel-splitter--end[Resize UI Inventory] 8x804"],"covered":1,"n":589}
+MEASURE_START fine design-system #/implementation/react
+CONTROL_COUNT 678
+MEASURE_END fine 100502ms {"fail":["div.plx-panel-splitter.plx-panel-splitter--end[Resize UI Inventory] 8x904"],"covered":1,"n":589}
+  NEW design-system #/implementation/react · coarse: 0 -> 1 · e.g. div.plx-panel-splitter.plx-panel-splitter--end[Resize UI Inventory] 8x804
+  NEW design-system #/implementation/react · fine: 0 -> 1 · e.g. div.plx-panel-splitter.plx-panel-splitter--end[Resize UI Inventory] 8x904
+TARGETS_FAIL 2 pages got worse; undersized targets coarse 1 of 589, fine 1 of 589 on 1 pages

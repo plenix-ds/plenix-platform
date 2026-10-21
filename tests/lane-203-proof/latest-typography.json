@@ -1,0 +1,2014 @@
+{
+  "base": "e46577e40f4d12aceba882c21ff4afa6ae53ef35",
+  "head": "1713bce40f709b83eff7d505e49be7b5f5bfc8dd",
+  "mode": "light",
+  "pages": 108,
+  "counts": {
+    "dashboard/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 7,
+        "head": 7
+      }
+    },
+    "projects/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "messages/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "contacts/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "calendar/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "tasks/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "notes/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "bookmarks/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "files/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "settings/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "dam/index.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "dam/settings-system.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "dam/settings-myaccount.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "dam/image-editor.html": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "settings/index.html#/account": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "settings/index.html#/appearance": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "settings/index.html#/categories": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "settings/index.html#/docs/data-model": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "dam/settings-system.html#/users": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "dam/settings-system.html#/permissions": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "dam/settings-myaccount.html#/preferences": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system home": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/design-tokens": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 2,
+        "head": 2
+      }
+    },
+    "design-system #/foundations/color": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/foundations/typography": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/foundations/spacing": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/border": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/radius": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/icon": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/motion": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/foundations/layers": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/breakpoints": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/themes": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 0
+      }
+    },
+    "design-system #/layout/grid": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/layout/dashboard-grid": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 2,
+        "head": 2
+      }
+    },
+    "design-system #/layout/panel": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/layout/responsive-grid": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/content/text": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/content/code-block": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 0
+      }
+    },
+    "design-system #/content/avatar": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 1
+      }
+    },
+    "design-system #/content/property-list": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/actions/button": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 7,
+        "head": 2
+      }
+    },
+    "design-system #/actions/toolbar": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/actions/action-menu": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/forms/fieldset": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/forms/text-field": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/forms/native-select": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/forms/checkbox": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/forms/color-swatch": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 2,
+        "head": 2
+      }
+    },
+    "design-system #/forms/drop-zone": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/forms/slider": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 3
+      }
+    },
+    "design-system #/navigation/application-header": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 3,
+        "head": 1
+      }
+    },
+    "design-system #/navigation/side-navigation": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 4,
+        "head": 4
+      }
+    },
+    "design-system #/navigation/breadcrumbs": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/navigation/tabs": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 4,
+        "head": 4
+      }
+    },
+    "design-system #/navigation/filter-bar": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/data-display/badge": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 2,
+        "head": 2
+      }
+    },
+    "design-system #/data-display/metric": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/data-display/interactive-list": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/data-display/card": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 3,
+        "head": 3
+      }
+    },
+    "design-system #/content/thumbnail": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/specialized/preview": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/data-display/calendar-view": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/data-display/table": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/data-display/data-grid": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/feedback/notice": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/feedback/status-dot": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/feedback/spinner": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/feedback/empty-state": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/overlays/dialog": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/overlays/side-drawer": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/overlays/tooltip": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 0
+      }
+    },
+    "design-system #/overlays/expandable-section": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 2,
+        "head": 2
+      }
+    },
+    "design-system #/overlays/media-lightbox": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/patterns/bulk-selection": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/patterns/filter-and-sort-workflow": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/page-structures/application-shell": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 4,
+        "head": 4
+      }
+    },
+    "design-system #/page-structures/record-page": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/page-structures/content-template": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/page-structures/master-detail-workspace": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 4,
+        "head": 4
+      }
+    },
+    "design-system #/specialized/typing-indicator": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/interaction/focus-ring": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/interaction/visually-hidden": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/interaction/overlay-manager": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/implementation/react": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/implementation/css-architecture": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 6,
+        "head": 6
+      }
+    },
+    "design-system #/implementation/component-lifecycle": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 497,
+        "head": 497
+      }
+    },
+    "design-system #/content/content-skip-link": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 2,
+        "head": 3
+      }
+    },
+    "design-system #/actions/actions-modal-trigger": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/overlays/overlays-focus-trap": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/implementation/implementation-web": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 4,
+        "head": 4
+      }
+    },
+    "design-system #/foundations/numbers-and-units": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/aspect-ratio-scale": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 1,
+        "head": 1
+      }
+    },
+    "design-system #/foundations/interaction-states": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 6,
+        "head": 4
+      }
+    },
+    "design-system #/foundations/logo": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/patterns/patterns-contextual-education": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/actions/copy-button": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/patterns/inline-editing": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/navigation/mobile-app-bar": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 2,
+        "head": 2
+      }
+    },
+    "design-system #/data-display/chart-foundations": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/patterns/compare": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/specialized/human-review": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/patterns/sign-in": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/patterns/trial-upgrade": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/specialized/file-list": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/specialized/product-options": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/content-style": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    },
+    "design-system #/foundations/design-principles": {
+      "role": {
+        "base": 0,
+        "head": 0
+      },
+      "prose": {
+        "base": 0,
+        "head": 0
+      },
+      "pattern": {
+        "base": 0,
+        "head": 0
+      },
+      "baseline": {
+        "base": 0,
+        "head": 0
+      }
+    }
+  },
+  "settled": {
+    "base": {
+      "content/avatar": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\"initials\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Localization\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "forms/slider": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\")\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Disabled\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"onCommit\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Keyboard\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "content/content-skip-link": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\")\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus (any)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"label\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Accessible name\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      }
+    },
+    "head": {
+      "content/avatar": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\"initials\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Localization\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "forms/slider": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\")\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Disabled\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"onCommit\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Keyboard\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      },
+      "content/content-skip-link": {
+        "role": [],
+        "prose": [],
+        "pattern": [],
+        "baseline": [
+          "\")\" (span, \"Reddit Mono\" 12px) vs \"Focus\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"var(\" (span, \"Reddit Mono\" 12px) vs \"Focus (any)\" (span.plx-table__value, \"DM Sans\" 12px): 8.00px",
+          "\"label\" (code.plx-text.plx-text--data, \"Reddit Mono\" 12px) vs \"Accessible name\" (span.plx-table__value, \"DM Sans\" 12px): 8.41px"
+        ]
+      }
+    }
+  }
+}
