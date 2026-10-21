@@ -5,6 +5,8 @@
      <RecordPage header={<RecordPage.Header title="Cross 014.png" meta={<…/>} actions={<…/>} />} aside={<…/>}>…</RecordPage>
      <RecordPage.Header title="General" description="Language, regional formats…" meta={<…/>} media={<…/>} actions={<…/>}
        size="lg" surface="card" headingLevel={1} />
+   Behavior:
+     Size and surface are carried on each affected part. Responsive state stays local and never inherits into nested records.
    Props:
      header: the header region (a RecordPage.Header)
      aside: an optional column on the end side (facts, related items)
@@ -30,9 +32,9 @@ function Header({ title, description, meta, media, actions, size = 'lg', surface
   const H = 'h' + headingLevel;
   return (
     <div className={cx('plx-record-page__header', 'plx-record-page__header--' + size, surface === 'card' && 'plx-record-page__header--card', className)}>
-      {media ? <div className="plx-record-page__media">{media}</div> : null}
+      {media ? <div className={cx('plx-record-page__media', surface === 'card' && 'plx-record-page__media--card')}>{media}</div> : null}
       <div className="plx-record-page__text">
-        <H className="plx-record-page__title">{title}</H>
+        <H className={cx('plx-record-page__title', size === 'md' && 'plx-record-page__title--md')}>{title}</H>
         {description ? <p className="plx-record-page__description">{description}</p> : null}
         {meta ? <div className="plx-record-page__meta">{meta}</div> : null}
       </div>
