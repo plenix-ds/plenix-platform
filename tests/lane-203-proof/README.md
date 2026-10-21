@@ -1,6 +1,6 @@
 # Lane 203 proof
 
-Source base: b6bdfe07. Light mode only; no visual baseline was relaxed.
+Implementation rebased onto 0c6dd191; the geometry snapshot retains the original b6bdfe07 stylesheet. The layout-lab overlay preserves the owner’s intervening EntityHeader lab fix from design-system aff42310. Light mode only; no visual baseline was relaxed.
 
 - Full build/app/usage and package build passed; SYSTEM_OK (1061 files), SPEC_OK (1171 leaves, 767 records).
 - `patterns-203.test.js` builds the actual source with React development/StrictMode. It checks lazy MediaViewer access over 1,500 items, navigation, clamped indexes and no requests while closed; one First column control and Alt-arrow reordering; 1,500-card virtualization, whole-set selection, focused offscreen retention, resizing, last-item reachability and AssetGallery passthrough.

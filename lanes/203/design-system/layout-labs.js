@@ -338,37 +338,34 @@
   var EH = function (n) { return 'plx-comp-entity-header-' + n; };
   var HUE = { blue: '-blue', green: '-green', purple: '-purple', red: '-red', brown: '-brown', gray: '-gray' };
   var ENTITY = {
-    person: { media: { person: 'MC', color: 'blue' }, context: 'Clients', status: ['action-required', 'Reconnect due'], title: 'Maya Chen', facts: ['Creative Director', 'Apex Co', 'Last message <span class="plx-text plx-text--data">10:24 AM</span>'],
-      actions: [['phone', 'Call'], ['mail', 'Email'], ['message', 'Message', true], ['pencil', 'Edit'], ['trash', 'Delete'], ['share', 'Share']] },
-    tile: { media: { icon: 'briefcase', hue: 'purple' }, context: 'Research', status: ['waiting', 'Paused'], title: 'AI Writing Tools', description: 'Evaluating AI writing assistants for team adoption',
-      actions: [['flag', 'Update status', true], ['share', 'Share']] },
-    live: { media: { icon: 'sparkle', hue: 'purple' }, context: 'Support', status: ['success', 'Active'], title: 'Order status assistant', live: ['success', 'Running 3 conversations', 'check'], facts: ['WhatsApp, Web', 'Claude Sonnet'],
-      actions: [['triangle-right', 'Test'], ['upload', 'Publish', true], ['share', 'Share']] },
-    email: { media: { person: 'DS', color: 'green' }, status: ['neutral', 'Snoozed'], title: 'Re: Kitchen tile quote and the revised schedule for March', facts: ['David Saad', '<span class="plx-text plx-text--data">Mar 8, 9:41 AM</span>', '2 attachments'],
-      actions: [['reply', 'Reply', true], ['reply-all', 'Reply all'], ['forward', 'Forward'], ['archive', 'Archive'], ['mark-unread', 'Mark as unread'], ['snooze', 'Snooze'], ['trash', 'Delete']] },
-    // narrow: the actions that do not fit have folded into the ⋯ menu (the overflow is measured live; drawn here as folded)
-    narrow: { media: { icon: 'briefcase', hue: 'blue' }, context: 'Client work', status: ['success', 'Active'], title: 'Coptic Orthodox Diocese of Los Angeles — Clergy Office Renovation and Records Migration', facts: ['Due Mar 30', 'R. Maher', '12 of 30 tasks'],
-      actions: [['flag', 'Update status', true]], narrow: true }
+    person: { media: { person: 'Maya Chen', color: 'blue' }, title: 'Maya Chen', subtitle: 'Creative Director · Apex Co',
+      status: { tone: 'action-required', icon: 'alert', label: 'Reconnect due' }, facts: [{ label: 'Last message', value: '10:24 AM', data: true }, { label: 'Owner', value: 'Sam Patel' }],
+      next: { title: 'Send the revised quote', detail: 'Due tomorrow · Sam Patel' }, actions: [{ icon: 'phone', label: 'Call' }, { icon: 'message', label: 'Message', primary: true }, { icon: 'share', label: 'Share' }] },
+    tile: { media: { icon: 'briefcase', hue: 'purple' }, title: 'AI Writing Tools', subtitle: 'Evaluating AI writing assistants for team adoption',
+      status: { tone: 'waiting', label: 'Paused' }, actions: [{ icon: 'flag', label: 'Update status', primary: true }, { icon: 'share', label: 'Share' }] },
+    live: { media: { icon: 'sparkle', hue: 'purple' }, title: 'Order status assistant', subtitle: 'Support',
+      status: { tone: 'success', icon: 'check', label: 'Running 3 conversations' }, facts: [{ label: 'Channels', value: 'WhatsApp, Web' }, { label: 'Model', value: 'Claude Sonnet' }],
+      actions: [{ icon: 'triangle-right', label: 'Test' }, { icon: 'upload', label: 'Publish', primary: true }, { icon: 'share', label: 'Share' }] },
+    email: { media: { person: 'David Saad', color: 'green' }, title: 'Re: Kitchen tile quote and the revised schedule for March', subtitle: 'David Saad',
+      status: { tone: 'neutral', label: 'Snoozed' }, facts: [{ label: 'Received', value: 'Mar 8, 9:41 AM', data: true }, { label: 'Attachments', value: '2' }],
+      actions: [{ icon: 'reply', label: 'Reply', primary: true }, { icon: 'reply-all', label: 'Reply all' }, { icon: 'forward', label: 'Forward' }, { icon: 'archive', label: 'Archive' }] },
+    narrow: { media: { icon: 'briefcase', hue: 'blue' }, title: 'Coptic Orthodox Diocese of Los Angeles — Clergy Office Renovation and Records Migration', subtitle: 'Client work',
+      status: { tone: 'success', label: 'Active' }, facts: [{ label: 'Due', value: 'Mar 30', data: true }, { label: 'Owner', value: 'R. Maher' }], actions: [{ icon: 'flag', label: 'Update status', primary: true }], narrow: true }
   };
   var isEntity = function (variant) { return !!ENTITY[variant]; };
-  var ACTION = function (a) {
-    return '<span data-plx-overflow-item="" class="plx-entity-header__action"><button type="button" tabindex="-1" class="plx-button plx-button--' + (a[2] ? 'primary' : 'ghost') + ' plx-button--size-xs plx-button--icon-only" aria-label="' + a[1] + '" title="' + a[1] + '">'
-      + '<span class="plx-button__icon">' + ICON(a[0]) + '</span></button></span>';
-  };
-  function entityHtml(e, extraCls) {
-    var media = e.media.person
-      ? '<span class="plx-avatar plx-avatar--48 plx-entity-header__media plx-entity-header__avatar" data-plx-avatar="" data-plx-color="' + e.media.color + '" aria-hidden="true">' + e.media.person + '</span>'
-      : '<span class="plx-entity-header__media plx-entity-header__tile" data-plx-media-hue="' + e.media.hue + '" aria-hidden="true">' + ICON(e.media.icon, 'lg') + '</span>';
-    var top = '<div class="plx-entity-header__top">' + (e.context ? '<div class="plx-entity-header__context">' + e.context + '</div>' : '<span></span>')
-      + '<div class="plx-entity-header__status"><span class="plx-badge plx-badge--' + e.status[0] + '">' + e.status[1] + '</span></div></div>';
-    var more = '<span data-plx-overflow-more="" class="plx-entity-header__action"><button type="button" tabindex="-1" class="plx-button plx-button--ghost plx-button--size-xs plx-button--icon-only" aria-label="More actions" title="More actions"><span class="plx-button__icon">' + ICON('more') + '</span></button></span>';
-    var items = [];
-    if (e.live) items.push('<span class="plx-badge plx-badge--' + e.live[0] + ' plx-badge--sm plx-entity-header__live"><span class="plx-icon plx-icon--' + e.live[2] + ' plx-badge__icon" aria-hidden="true"></span>' + e.live[1] + '</span>');
-    if (e.description) items.push('<span>' + e.description + '</span>'); else e.facts.forEach(function (f) { items.push('<span>' + f + '</span>'); });
-    return '<header class="plx-entity-header ' + (e.narrow ? 'ds-layout-frame' : 'ds-layout-frame--xl') + cls(extraCls) + '">' + media + top
-      + '<h3 class="plx-entity-header__title">' + e.title + '</h3>'
-      + '<div class="plx-entity-header__actions" data-plx-density="compact">' + e.actions.map(ACTION).join('') + more + '</div>'
-      + '<p class="plx-entity-header__facts">' + items.join('<span class="plx-entity-header__sep" aria-hidden="true">·</span>') + '</p></header>';
+  // the entity header is the component itself: the specimen is a frame the after hook renders EntityHeader into
+  function entityHtml(variant, extraCls) {
+    return '<div class="' + (ENTITY[variant].narrow ? 'ds-layout-frame' : 'ds-layout-frame--xl') + '" data-lab-entity="' + variant + '" data-lab-cls="' + (extraCls || '') + '"></div>';
+  }
+  function drawEntities(doc) {
+    // the spec page's React and Platform draw it, also into the lab's frames (they load only the stylesheets)
+    var R = window.React, RD = window.ReactDOM, P = window.Plenix;
+    if (!R || !RD || !P || !P.EntityHeader) return;
+    doc.querySelectorAll('[data-lab-entity]:not([data-lab-drawn])').forEach(function (frame) {
+      frame.setAttribute('data-lab-drawn', '');
+      var e = ENTITY[frame.getAttribute('data-lab-entity')], root = RD.createRoot(frame);
+      RD.flushSync(function () { root.render(R.createElement(P.EntityHeader, Object.assign({ headingLevel: 3, className: frame.getAttribute('data-lab-cls') || undefined }, e))); });
+    });
   }
   function recordHtml(variant, extraCls) {
     var plain = variant === 'none' || variant === 'card';
@@ -396,6 +393,7 @@
       { id: 'pl', label: 'Padding left', css: ['padding-inline-start'], show: 'padding-left', cat: 'space' },
       { id: 'pr', label: 'Padding right', css: ['padding-inline-end'], show: 'padding-right', cat: 'space' },
       { id: 'gap', label: 'Gap (media, text, actions)', css: ['column-gap'], cat: 'space' },
+      { id: 'egap', label: 'Gap (main to aside)', css: ['column-gap'], part: '.plx-entity-header__layout', cat: 'space' },
       { id: 'rgap', label: 'Gap between lines', css: ['row-gap'], cat: 'space' },
       { id: 'mb', label: 'Space below the header', css: ['margin-block-end'], show: 'margin-bottom', cat: 'space' },
       { id: 'avc', label: 'Avatar border color', css: ['border-top-color'], part: '.plx-entity-header__avatar', cat: 'color' },
@@ -406,9 +404,9 @@
       { id: 'tbg', label: 'Icon tile background (its hue)', css: ['background-color'], part: '.plx-entity-header__tile', cat: 'color' },
       { id: 'tfg', label: 'Icon tile icon color (its hue)', css: ['color'], part: '.plx-entity-header__tile', cat: 'color' },
       { id: 'mfg', label: 'Media color (card)', css: ['color'], part: '.plx-record-page__media', cat: 'color' },
-      { id: 'cc', label: 'Context color', css: ['color'], part: '.plx-entity-header__context', cat: 'color' },
-      { id: 'cfs', label: 'Context font size', css: ['font-size'], part: '.plx-entity-header__context', cat: 'font-size' },
-      { id: 'topgap', label: 'Top line gap (context, status)', css: ['column-gap'], part: '.plx-entity-header__top', cat: 'space' },
+      { id: 'cc', label: 'Subtitle color', css: ['color'], part: '.plx-entity-header__subtitle', cat: 'color' },
+      { id: 'cfs', label: 'Subtitle font size', css: ['font-size'], part: '.plx-entity-header__subtitle', cat: 'font-size' },
+      { id: 'topgap', label: 'Heading gap (media, title)', css: ['column-gap'], part: '.plx-entity-header__heading', cat: 'space' },
       { id: 'tc', label: 'Title color', css: ['color'], part: '.plx-entity-header__title, .plx-record-page__title', cat: 'color' },
       { id: 'tff', label: 'Title font family', css: ['font-family'], part: '.plx-entity-header__title, .plx-record-page__title', cat: 'font' },
       { id: 'tfs', label: 'Title font size', css: ['font-size'], part: '.plx-entity-header__title, .plx-record-page__title', cat: 'font-size' },
@@ -420,16 +418,16 @@
       { id: 'dfs', label: 'Description font size', css: ['font-size'], part: '.plx-record-page__description', cat: 'font-size' },
       { id: 'dlh', label: 'Description line height', css: ['line-height'], part: '.plx-record-page__description', cat: 'line-height' },
       { id: 'mgap', label: 'Meta gap', css: ['column-gap'], part: '.plx-record-page__meta', cat: 'space' },
-      { id: 'fc', label: 'Facts color', css: ['color'], part: '.plx-entity-header__facts', cat: 'color' },
-      { id: 'ffs', label: 'Facts font size', css: ['font-size'], part: '.plx-entity-header__facts', cat: 'font-size' },
-      { id: 'flc', label: 'Facts line color', css: ['border-top-color'], part: '.plx-entity-header__facts', cat: 'color' },
-      { id: 'flw', label: 'Facts line width', css: ['border-top-width'], part: '.plx-entity-header__facts', cat: 'border-width' },
-      { id: 'fpt', label: 'Facts padding top', css: ['padding-block-start'], show: 'padding-top', part: '.plx-entity-header__facts', cat: 'space' },
-      { id: 'sep', label: 'Separator color', css: ['color'], part: '.plx-entity-header__sep', cat: 'color' }
+      { id: 'fc', label: 'Fact value color', css: ['color'], part: '.plx-entity-header__fact:not(.plx-entity-header__fact--status) .plx-entity-header__fact-value', cat: 'color' },
+      { id: 'ffs', label: 'Fact value font size', css: ['font-size'], part: '.plx-entity-header__fact:not(.plx-entity-header__fact--status) .plx-entity-header__fact-value', cat: 'font-size' },
+      { id: 'flc', label: 'Fact tile border color', css: ['border-top-color'], part: '.plx-entity-header__fact:not(.plx-entity-header__fact--status)', cat: 'color' },
+      { id: 'flw', label: 'Fact tile border width', css: ['border-top-width'], part: '.plx-entity-header__fact', cat: 'border-width' },
+      { id: 'fpt', label: 'Fact tile padding top', css: ['padding-block-start'], show: 'padding-top', part: '.plx-entity-header__fact', cat: 'space' },
+      { id: 'sep', label: 'Accent rule color', css: ['background-color'], part: '.plx-entity-header__rule', cat: 'color' }
     ],
     token: function (id, size, variant) {
       if (isEntity(variant)) {
-        var e = ENTITY[variant], person = !!e.media.person, hue = person ? null : HUE[e.media.hue];
+        var e = ENTITY[variant], person = !!e.media.person, hue = person ? null : HUE[e.media.hue], facts = !!(e.facts && e.facts.length);
         switch (id) {
           case 'bg': return EH('background');
           case 'bc': return EH('border-color');
@@ -438,8 +436,9 @@
           case 'py': return EH('padding-block');
           case 'pl': return EH('padding-inline-start');
           case 'pr': return EH('padding-inline-end');
-          case 'gap': return EH('gap');
-          case 'rgap': return EH('row-gap');
+          case 'gap': return null;
+          case 'egap': return e.next || e.actions ? EH('column-gap') : null;
+          case 'rgap': return null;
           case 'avc': return person ? 'plx-comp-avatar-border-color' : null;   // Avatar's own border (every avatar, owner 2026-10-19)
           case 'avw': return person ? 'plx-comp-avatar-border-width' : null;
           case 'tw': return person ? null : EH('tile-width');
@@ -447,21 +446,21 @@
           case 'trad': return person ? null : EH('tile-radius');
           case 'tbg': return person ? null : EH('tile' + hue + '-background');
           case 'tfg': return person ? null : EH('tile' + hue + '-text');
-          case 'cc': return e.context ? EH('context-text') : null;
-          case 'cfs': return e.context ? EH('context-font-size') : null;
-          case 'topgap': return EH('top-gap');
+          case 'cc': return e.subtitle ? EH('subtitle-text') : null;
+          case 'cfs': return e.subtitle ? EH('subtitle-font-size') : null;
+          case 'topgap': return EH('heading-gap');
           case 'tc': return EH('title-text');
           case 'tff': return EH('title-font-family');
           case 'tfs': return EH('title-font-size');
           case 'tfw': return EH('title-font-weight');
           case 'tlh': return EH('title-line-height');
-          // agap: the action area is a Compact density scope (data-plx-density) that sets its own gap, so it is fixed here
-          case 'fc': return EH('facts-text');
-          case 'ffs': return EH('facts-font-size');
-          case 'flc': return EH('facts-border-top-color');
-          case 'flw': return EH('facts-border-top-width');
-          case 'fpt': return EH('facts-padding-block-start');
-          case 'sep': return e.description && !e.live ? null : EH('sep-text');
+          case 'agap': return e.actions && e.actions.length > 1 ? EH('actions-gap') : null;
+          case 'fc': return facts ? EH('fact-value-text') : null;
+          case 'ffs': return facts ? EH('fact-value-font-size') : null;
+          case 'flc': return facts ? EH('fact-border-color') : null;
+          case 'flw': return EH('fact-border-width');
+          case 'fpt': return EH('fact-padding-block');
+          case 'sep': return EH('rule-color');
           default: return null;
         }
       }
@@ -498,19 +497,20 @@
       return 'every record page header';
     },
     every: 'every record page header',
-    html: function (variant, size, state, extraCls) { return isEntity(variant) ? entityHtml(ENTITY[variant], extraCls) : recordHtml(variant, extraCls); },
+    html: function (variant, size, state, extraCls) { return isEntity(variant) ? entityHtml(variant, extraCls) : recordHtml(variant, extraCls); },
+    after: drawEntities,
     labelSelector: '.plx-entity-header__title, .plx-record-page__title',
-    parts: { bg: 'A', bc: 'A', bw: 'A', rad: 'A', py: 'A', pl: 'A', pr: 'A', gap: 'A', rgap: 'A', mb: 'A',
+    parts: { bg: 'A', bc: 'A', bw: 'A', rad: 'A', py: 'A', pl: 'A', pr: 'A', gap: 'A', egap: 'A', rgap: 'A', mb: 'A',
       avc: 'B', avw: 'B', tw: 'B', th: 'B', trad: 'B', tbg: 'B', tfg: 'B', mfg: 'B',
       cc: 'C', cfs: 'C', topgap: 'C',
       tc: 'D', tff: 'D', tfs: 'D', tfw: 'D', tlh: 'D', xgap: 'D', dc: 'D', dfs: 'D', dlh: 'D', mgap: 'D',
       agap: 'E',
       fc: 'F', ffs: 'F', flc: 'F', flw: 'F', fpt: 'F', sep: 'F' },
-    anchors: { A: { part: null, side: 'top' }, B: { part: '.plx-entity-header__media, .plx-record-page__media', side: 'left' }, C: { part: '.plx-entity-header__top', side: 'top' },
-      D: { part: '.plx-entity-header__title, .plx-record-page__title', side: 'left' }, E: { part: '.plx-entity-header__actions, .plx-record-page__actions', side: 'right' }, F: { part: '.plx-entity-header__facts', side: 'bottom' } },
-    sections: [['Surface', ['bg', 'bc', 'bw', 'rad', 'py', 'pl', 'pr', 'gap', 'rgap', 'mb']], ['Media', ['avc', 'avw', 'tw', 'th', 'trad', 'tbg', 'tfg', 'mfg']],
-      ['Top line', ['cc', 'cfs', 'topgap']], ['Title', ['tc', 'tff', 'tfs', 'tfw', 'tlh', 'xgap']], ['Description and meta', ['dc', 'dfs', 'dlh', 'mgap']], ['Actions', ['agap']],
-      ['Facts', ['fc', 'ffs', 'flc', 'flw', 'fpt', 'sep']]],
+    anchors: { A: { part: null, side: 'top' }, B: { part: '.plx-entity-header__media, .plx-record-page__media', side: 'left' }, C: { part: '.plx-entity-header__subtitle', side: 'top' },
+      D: { part: '.plx-entity-header__title, .plx-record-page__title', side: 'left' }, E: { part: '.plx-entity-header__actions, .plx-record-page__actions', side: 'right' }, F: { part: '.plx-entity-header__details', side: 'bottom' } },
+    sections: [['Surface', ['bg', 'bc', 'bw', 'rad', 'py', 'pl', 'pr', 'gap', 'egap', 'rgap', 'mb']], ['Media', ['avc', 'avw', 'tw', 'th', 'trad', 'tbg', 'tfg', 'mfg']],
+      ['Heading and subtitle', ['cc', 'cfs', 'topgap']], ['Title', ['tc', 'tff', 'tfs', 'tfw', 'tlh', 'xgap']], ['Description and meta', ['dc', 'dfs', 'dlh', 'mgap']], ['Actions', ['agap']],
+      ['Facts and rule', ['fc', 'ffs', 'flc', 'flw', 'fpt', 'sep']]],
     matrixLabel: 'Record page header values by kind', matrixColumnWidth: '--plx-ref-size-720px',
     statesHead: 'Entity headers and record page headers · ' + HEAD
   });
