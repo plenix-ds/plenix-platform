@@ -247,3 +247,106 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.anatomy:** The Audio page shows the Video text: its overview says “audio and video” and its parts include picture in picture, which audio does not have. Should Audio get its own text without the video-only parts?
 
+## data-display (29 questions)
+
+### data-grid
+
+- **rec.use[1]:** The approved DataGrid sample moves "Reference tables in documentation and settings" out of When to use and corrects it to "Static facts, in documentation or settings: use Table" under When not to use. A text replacement cannot move a list item, so I left it. Should it be moved by hand (deleted from When to use, added to When not to use)?
+- **docs.content.labels:** It says to align numbers to the end with hozAlign "right". hozAlign is a Tabulator setting, and the grid is now built on TanStack. Is this still the right name, or should it name the DataGrid's own setting?
+
+### table
+
+- **docs.anatomy[1]:** The Table says its header row can be hidden for a name/value table (options.headerVisible false), but the Property table page says every name/value list of reference facts is a Table with a header row. Which is right: may a name/value table hide its header row?
+- **docs.a11y.announce:** The static Table is announced to screen readers as an interactive grid ("An ARIA grid"). A table with nothing to operate is normally announced as a plain table. Is the grid role intended here?
+
+### tag
+
+- **docs.a11y.focus:** It says TagInput and the rename field show a focus underline (--plx-sys-shadow-underline-focus). The field focus rule says focus recolors the border only, with no underline. Is this sentence outdated?
+
+### counter
+
+- **docs.anatomy[1]:** The Counter pill is a solid colored pill, while the pill rule says every pill is soft (light fill, border, dark text). Is the Counter an exception to the pill rule? Also, the Warning counter is called "amber" while the Badge calls the same family yellow: should it say yellow?
+
+### metric
+
+- **rec.avoid[0]:** "A count beside a label: use Count": there is no component named Count; the counting component is Counter. Should it say Counter?
+
+### card
+
+- **rec.purpose:** The Card purpose says it "opens" the object, but the Static card variant does not open. Should the purpose say the card usually opens its object (or can open it)?
+
+### data-display-status-label
+
+- **rec.text:** It says Active is success and Review is info, and that the soft variant suits a column of statuses. The Badge now has an Active variant (blue, for in progress), info is an old name for it, and every pill is soft. Which tone should Active and In review use here, and may the soft-variant remark go?
+
+### data-display-lozenge
+
+- **rec.text:** It says a lozenge is solid for emphasis or soft in lists, but every Badge is now soft (solid is ignored). Its When to use also says "a short state or category", while a category is a Tag, not a Badge. Should both be corrected to: always soft, and a status only?
+
+### data-display-list
+
+- **rec.text:** It says a List can be numbered (<ol>), but the List's parts describe only an unmarked <ul> with icons. Can a List be numbered? It also says rows people act on are "an interactive list or a table"; under the owner's rule that would be a DataGrid. May I change "a table" to "a DataGrid" once the numbering question is settled?
+
+### data-display-responsive-table
+
+- **rec.text:** This page says the DataGrid turns into a list under 600px wide, but the shared write-up below (Behavior, responsive) says the grid scrolls sideways inside its frame. Which is right? Also, narrow="table" is named as the static Table’s setting: is that correct, and is it the Table’s or the DataGrid’s option?
+
+### data-display-expandable-table
+
+- **rec.text:** This page says an expanding row gets a chevron in its name column, but the shared Anatomy describes the tree control as a 14px box with − or +. Which one does the product draw? Also, options.dataTree, _children and dataTreeStartExpanded are the old Tabulator names: are they still the DataGrid’s names now that it runs on TanStack?
+
+### data-display-compact-table
+
+- **docs.content.labels:** The shared DataGrid write-up (on all six pages) still uses hozAlign "right", a Tabulator name, and options.dataTree in Anatomy. Should those be renamed to the TanStack-based DataGrid’s real prop names? (Not changed here because the text is shared across pages.)
+- **docs.purpose:** Every page in this group repeats the full DataGrid write-up word for word (purpose, anatomy, behavior, accessibility, content). Should these variant pages show only what is special about them and link to the DataGrid page for the rest?
+
+### data-display-editable-table
+
+- **rec.purpose, docs (all):** The Editable table and Tree table pages show the DataGrid’s own write-up (purpose, parts, behavior, accessibility, content), word for word. I left it unchanged here so it is rewritten once, on the DataGrid page, using the DataGrid sample you approved. Is that right?
+
+### data-display-tree-table
+
+- **rec.text:** The overview says each level is “indented by its level class” and names options.dataTree; the Editable table names on.cellEdited, and the DataGrid text uses hozAlign. These look like names from the old Tabulator grid. Are they still the DataGrid’s real settings, or should they be updated to the current names (the indent is now a token, --plx-comp-data-grid-tree-indent)? I did not change this text.
+
+### chart-foundations
+
+- **docs.anatomy[8]:** Chart pages call the values view under each chart the “data grid” (Chart foundations, Chart tooltip, Data label, Annotation, Chart interaction, Line chart), but your rule makes it a static Table (Chart foundations itself says “the same values as a Table”). Should these pages say “data table” (or “the table”) instead, so no one reads it as a DataGrid? I left the wording as it is.
+
+### chart-threshold
+
+- **rec.purpose, docs (all):** The Threshold page shows the Reference line’s purpose and write-up. That purpose speaks of “a target, an average, a limit or a date”, while Threshold’s own “when not to use” sends averages to the Reference line. Should Threshold get its own purpose (a limit the data should stay under or above), or is the shared text fine? I did not change it.
+
+### profile-card
+
+- **docs.a11y.contrast:** “The presence dot carries a shape from 40px” is unclear. Does it mean the presence dot adds a shape (not only a color) on avatars 40px and larger? I did not change it.
+
+### chart-reference-line
+
+- **docs.content.localization:** “The value from the scale’s format or format” repeats a word. Does the second “format” mean the line’s own format setting (so: “the scale’s format, or the line’s format setting”)? It is shared with Threshold, so I did not change it.
+
+### chart-accessibility
+
+- **rec.text:** This page says the keyboard reading of values (one Tab stop, arrow keys through the points) is "the same on every chart". But the bar, combo, pie, bullet, box plot, radar, Sankey and timeline pages say nothing in their plot takes focus and the keyboard only reaches "Show the data". Which is right: should every chart be readable point by point with the keyboard, or only some? I left this page and those pages unchanged until you decide.
+- **rec.use[1]:** Charts call their table of values the "data grid" (here and in the anatomy of almost every chart page). Under your rule, DataGrid is the dynamic table (sort, filter, group, search) and Table is the static one. A chart’s values table looks static, so should these pages call it the "data table" (a Table) instead of the "data grid"? The accessibility page also says "the data grid and its rows keep their own keys", which suggests something interactive. I changed none of these words.
+
+### metric-card
+
+- **rec.text:** The overview describes the new metric card (header with icon, title, info, period filter and More; 12 types, 5 layouts, 5 appearances; Panel’s frame; the whole card is the link with href). The written sections below describe the older card (a Card surface; only the title is a link and "the rest of the card is not a target"; title, period, value, change, trend). Which one is current? The written sections probably need rewriting from the new design, which is more than a wording change, so I left both unchanged.
+- **rec.text:** The overview says "the appearance" (5), while the approved decision calls them "styles" (5 styles). Which word should the spec use?
+
+### bubble-chart
+
+- **rec.text:** "The largest 24px across its radius" is unclear: does the largest bubble have a 24px radius (48px wide), or is it 24px wide? I left the sentence as it is.
+
+### box-plot
+
+- **rec.variantPages[2].text:** The "With outliers" variant says the values beyond the whiskers show "as points of the frame". What does "of the frame" mean here? If it just means points on the plot, I can shorten it to "The values beyond the whiskers, as points."
+
+### step-chart
+
+- **rec.purpose:** The step chart’s purpose is the line chart’s general purpose ("lets people compare the trends of a few series"); it says nothing about values that hold and then jump. Should it get its own purpose, for example "Shows values that change at moments and hold in between, such as prices or limits"? I did not change it.
+
+### waterfall-chart
+
+- **rec.use[2]:** "Subtotals (total without a value) at natural breaks": does "total without a value" mean a data entry marked as a total and given no amount (the chart works the running total out)? If so I can write it that way; for now it stays as it is.
+
