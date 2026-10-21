@@ -33,6 +33,7 @@
        renamed: "Renamed to {name}", failed: "The name could not be changed" }
      className: more classes on the rename action
    Behavior:
+     The inline edit carries its own layout part class; its component owns its minimum width.
      Inline: click, Enter, Space or F2 on the name opens the field; Enter saves, Escape puts the name back, leaving the field
        saves (InlineEdit). Dialog: the button opens the dialog with the name selected; Rename (or Enter) saves, Cancel,
        Escape or the close button put it back; focus returns to the button.
@@ -116,7 +117,7 @@ export function RenameAction({ value = '', onRename, variant = 'inline', label, 
       <span {...rest} className={cx('plx-rename-action', 'plx-rename-action--inline', className)}
         onFocus={(e) => { if (extension && e.target.tagName === 'INPUT') { const el = e.target; setTimeout(() => selectBase(el), 0); } }}
         onKeyDown={(e) => { if (e.key === 'F2' && e.target.classList && e.target.classList.contains('plx-inline-edit__read')) { e.preventDefault(); e.target.click(); } }}>
-        <InlineEdit label={name} value={value} data={data} disabled={disabled} validate={(v) => check(v) || null}
+        <InlineEdit className="plx-rename-action__edit" label={name} value={value} data={data} disabled={disabled} validate={(v) => check(v) || null}
           onConfirm={(next) => { const v = String(next).trim(); const r = onRename ? onRename(v) : null; const say = () => setTimeout(() => announce(fill(t.renamed, { name: v })), 0); if (r && typeof r.then === 'function') return r.then(say); say(); return r; }}
           strings={{ saved: '' }} />
       </span>

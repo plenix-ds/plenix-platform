@@ -1,6 +1,6 @@
 /* Plenix · RenameAction (platform/patterns/RenameAction): inline, the name's InlineEdit at most the field's width; as a
-   dialog, its button in the flow and the form in the dialog's body. */
+   dialog, its button in the flow and the form in the dialog's body. The edit part owns growth; InlineEdit owns its minimum. */
 .plx-rename-action{display:inline-flex;max-inline-size:100%;min-inline-size:0;}
 .plx-rename-action--inline{inline-size:var(--plx-comp-rename-action-inline-width);}
-.plx-rename-action--inline>*{flex-grow:1;min-inline-size:0;}
+.plx-rename-action__edit{flex-grow:1;}
 .plx-rename-action__form{display:flex;flex-direction:column;row-gap:var(--plx-comp-rename-action-form-gap);}

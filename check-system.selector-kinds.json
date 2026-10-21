@@ -972,9 +972,6 @@
    "combinator | .plx-record-page__header--md .plx-record-page__title": 1,
    "combinator | .plx-record-page__header--card .plx-record-page__media": 1
   },
-  "platform/patterns/RenameAction/rename-action.css": {
-   "combinator | .plx-rename-action--inline>*": 1
-  },
   "platform/patterns/ResourceList/resource-list.css": {
    "relational | .plx-resource-list__item.is-interactive:has(.plx-resource-list__opener:focus-visible)": 1,
    "relational | .plx-resource-list__item.is-interactive:has(.plx-resource-list__opener.is-focus-visible)": 1,
