@@ -1,0 +1,233 @@
+{
+  "base": 3266,
+  "head": 3272,
+  "prefix": 1626,
+  "suffix": 448,
+  "diffs": [
+    {
+      "where": 1252,
+      "label": "div.ds-stack",
+      "textBefore": "UI Inventory03 Content & IdentityIdentityUser cardUser card · BaseA person on a Card: the avatar, the name as the heading (a link to the profile with href), a line with their title",
+      "textAfter": "UI Inventory03 Content & IdentityIdentityUser cardUser card · BaseA person on a Card: the avatar, the name as the heading (a link to the profile with href), a line with their title",
+      "parent": "ds-page-scroll",
+      "changes": {
+        "block-size": [
+          "9541.23px",
+          "9617.23px"
+        ],
+        "height": [
+          "9541.23px",
+          "9617.23px"
+        ],
+        "perspective-origin": [
+          "466px 4770.61px",
+          "466px 4808.61px"
+        ],
+        "transform-origin": [
+          "466px 4770.62px",
+          "466px 4808.62px"
+        ]
+      }
+    },
+    {
+      "where": -304,
+      "label": "span.plx-list__text",
+      "textBefore": "22 tokens (Implementation › Tokens)",
+      "textAfter": "26 tokens (Implementation › Tokens)",
+      "parent": "plx-list__item plx-list__item--neutral",
+      "changes": {
+        "inline-size": [
+          "201.969px",
+          "202.516px"
+        ],
+        "perspective-origin": [
+          "100.984px 10px",
+          "101.25px 10px"
+        ],
+        "transform-origin": [
+          "100.984px 10px",
+          "101.258px 10px"
+        ],
+        "width": [
+          "201.969px",
+          "202.516px"
+        ]
+      }
+    },
+    {
+      "where": -305,
+      "label": "li.plx-list__item.plx-list__item--neutral",
+      "textBefore": "22 tokens (Implementation › Tokens)",
+      "textAfter": "26 tokens (Implementation › Tokens)",
+      "parent": "plx-list plx-list--bullets plx-table__cell-content",
+      "changes": {
+        "inline-size": [
+          "213.969px",
+          "214.516px"
+        ],
+        "perspective-origin": [
+          "106.984px 10px",
+          "107.25px 10px"
+        ],
+        "transform-origin": [
+          "106.984px 10px",
+          "107.258px 10px"
+        ],
+        "width": [
+          "213.969px",
+          "214.516px"
+        ]
+      }
+    },
+    {
+      "where": -306,
+      "label": "ul.plx-list.plx-list--bullets.plx-table__cell-content",
+      "textBefore": "22 tokens (Implementation › Tokens)",
+      "textAfter": "26 tokens (Implementation › Tokens)",
+      "parent": "plx-table__portal",
+      "changes": {
+        "inline-size": [
+          "213.969px",
+          "214.516px"
+        ],
+        "perspective-origin": [
+          "106.984px 10px",
+          "107.25px 10px"
+        ],
+        "transform-origin": [
+          "106.984px 10px",
+          "107.258px 10px"
+        ],
+        "width": [
+          "213.969px",
+          "214.516px"
+        ]
+      }
+    },
+    {
+      "where": -412,
+      "label": "span.plx-count.plx-count--plain",
+      "textBefore": "22",
+      "textAfter": "26",
+      "parent": "plx-tabs__tab plx-tabs__tab--folder",
+      "changes": {
+        "inline-size": [
+          "12.875px",
+          "13.3594px"
+        ],
+        "perspective-origin": [
+          "6.4375px 7px",
+          "6.67188px 7px"
+        ],
+        "transform-origin": [
+          "6.4375px 7px",
+          "6.67969px 7px"
+        ],
+        "width": [
+          "12.875px",
+          "13.3594px"
+        ]
+      }
+    },
+    {
+      "where": -414,
+      "label": "button.plx-tabs__tab.plx-tabs__tab--folder",
+      "textBefore": "Tokens22",
+      "textAfter": "Tokens26",
+      "parent": "plx-tabs__tablist plx-tabs__tablist--folder",
+      "changes": {
+        "inline-size": [
+          "82.75px",
+          "83.2344px"
+        ],
+        "perspective-origin": [
+          "41.375px 12px",
+          "41.6094px 12px"
+        ],
+        "transform-origin": [
+          "41.375px 12px",
+          "41.6172px 12px"
+        ],
+        "width": [
+          "82.75px",
+          "83.2344px"
+        ]
+      }
+    },
+    {
+      "where": -415,
+      "label": "span.plx-count.plx-count--plain",
+      "textBefore": "13",
+      "textAfter": "17",
+      "parent": "plx-tabs__tab plx-tabs__tab--folder",
+      "changes": {
+        "inline-size": [
+          "10.4375px",
+          "9.75px"
+        ],
+        "perspective-origin": [
+          "5.21875px 7px",
+          "4.875px 7px"
+        ],
+        "transform-origin": [
+          "5.21875px 7px",
+          "4.875px 7px"
+        ],
+        "width": [
+          "10.4375px",
+          "9.75px"
+        ]
+      }
+    },
+    {
+      "where": -417,
+      "label": "button.plx-tabs__tab.plx-tabs__tab--folder",
+      "textBefore": "Classes13",
+      "textAfter": "Classes17",
+      "parent": "plx-tabs__tablist plx-tabs__tablist--folder",
+      "changes": {
+        "inline-size": [
+          "84.5469px",
+          "83.8594px"
+        ],
+        "perspective-origin": [
+          "42.2656px 12px",
+          "41.9219px 12px"
+        ],
+        "transform-origin": [
+          "42.2734px 12px",
+          "41.9297px 12px"
+        ],
+        "width": [
+          "84.5469px",
+          "83.8594px"
+        ]
+      }
+    },
+    {
+      "where": -424,
+      "label": "div.plx-tabs__tablist.plx-tabs__tablist--folder",
+      "textBefore": "Use in codeUserCard.jsxuser-card.cssClasses13Tokens22",
+      "textAfter": "Use in codeUserCard.jsxuser-card.cssClasses17Tokens26",
+      "parent": "plx-tabs__list plx-tabs__list--folder",
+      "changes": {
+        "inline-size": [
+          "461.391px",
+          "461.188px"
+        ],
+        "perspective-origin": [
+          "230.688px 12px",
+          "230.594px 12px"
+        ],
+        "transform-origin": [
+          "230.695px 12px",
+          "230.594px 12px"
+        ],
+        "width": [
+          "461.391px",
+          "461.188px"
+        ]
+      }
+    }
+  ]
+}

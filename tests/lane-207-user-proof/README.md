@@ -1,0 +1,12 @@
+# UserCard zero-overlap proof (#207)
+
+Exact base `81f48a80964fc2e09e4516734e50952d49f88b38`; DS `e5365a05bab701d0add622aa5459bcbc8b33f0d3`. Actual React at 1440×1000 in light mode, with fonts settled.
+
+Four configurations: default with details/actions, cover with details/actions, compact with actions, compact without actions. All computed non-custom/non-animation properties on 33 rendered owned/composed elements remain identical. Seven observed overlaps (compact identity direction, text gap, name size and action wrapping) become zero. Every touched selector is flat; seven selector-backlog findings are removed.
+
+Cover/compact state is passed to each relevant part in JSX and the lab overlay. Four registered `inherits:false` state variables supply direction, text gap, name size and action wrapping once in each base part rule. Default values remain fallbacks, compact assignments have one condition, and state cannot leak into nested cards. Cover-only properties are declared directly once. Avatar, Card, Image and all shared component sources remain untouched; existing fonts, text contracts, tokens and visible values are preserved.
+
+The immutable gzip capture is from the unchanged exact base. Run `node tests/user-zero-overlap-207.test.js` after overlay/build to compare; never recapture it on the migrated branch. `edit-user.cjs` is the exact guarded transformation and stops on any unexpected input. Matching lab markup is under `lanes/207-user/design-system/parts/w08A.labs.js`; integrator reconciles independent edits in other ready w08A overlays.
+
+Build/usage, SYSTEM1065, SPEC1172/768, selector59, audit22/pilot611, UserCard lab and dashboard strict audit pass. No runtime baseline was relaxed. Generated outputs are restored before commits.
+Full-page remote proof39655685775 reports zero new clashes and nine matching-region changes. Exact81f/DSe536 light captures reproduce all nine: documentation stack extent +76px; class inventory13->17, CSS-variable inventory22->26 (the four registered state variables, not new token JSON), and their count badges/tab/list widths. documentation-diff.json lists every changed property and text. All114corresponding component/immediate-child nodes on the actual spec page have IDENTICAL text and computed properties (verify-doc-components.cjs); the focused33-element proof also matches. Raw full captures are preserved as documentation-base/head.json.gz. No runtime fix, baseline/assertion change or retry is needed.
