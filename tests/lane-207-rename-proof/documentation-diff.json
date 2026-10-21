@@ -1,0 +1,108 @@
+{
+  "base": 3368,
+  "head": 3371,
+  "prefix": 1590,
+  "suffix": 443,
+  "diffs": [
+    {
+      "where": 1258,
+      "label": "div.ds-stack",
+      "textBefore": "UI Inventory04 Actions & CommandsCommon actionsRenameRename · BaseGiving something a new name: in place, where the name is shown (inline: the name turns into a field, InlineEdit), ",
+      "textAfter": "UI Inventory04 Actions & CommandsCommon actionsRenameRename · BaseGiving something a new name: in place, where the name is shown (inline: the name turns into a field, InlineEdit), ",
+      "parent": "ds-page-scroll",
+      "changes": {
+        "block-size": [
+          "9525.14px",
+          "9553.14px"
+        ],
+        "height": [
+          "9525.14px",
+          "9553.14px"
+        ],
+        "perspective-origin": [
+          "466px 4762.56px",
+          "466px 4776.56px"
+        ],
+        "transform-origin": [
+          "466px 4762.57px",
+          "466px 4776.57px"
+        ]
+      }
+    },
+    {
+      "where": -412,
+      "label": "span.plx-count.plx-count--plain",
+      "textBefore": "3",
+      "textAfter": "4",
+      "parent": "plx-tabs__tab plx-tabs__tab--folder",
+      "changes": {
+        "inline-size": [
+          "6.60938px",
+          "6.875px"
+        ],
+        "perspective-origin": [
+          "3.29688px 7px",
+          "3.4375px 7px"
+        ],
+        "transform-origin": [
+          "3.30469px 7px",
+          "3.4375px 7px"
+        ],
+        "width": [
+          "6.60938px",
+          "6.875px"
+        ]
+      }
+    },
+    {
+      "where": -414,
+      "label": "button.plx-tabs__tab.plx-tabs__tab--folder",
+      "textBefore": "Classes3",
+      "textAfter": "Classes4",
+      "parent": "plx-tabs__tablist plx-tabs__tablist--folder",
+      "changes": {
+        "inline-size": [
+          "80.7188px",
+          "80.9844px"
+        ],
+        "perspective-origin": [
+          "40.3594px 12px",
+          "40.4844px 12px"
+        ],
+        "transform-origin": [
+          "40.3594px 12px",
+          "40.4922px 12px"
+        ],
+        "width": [
+          "80.7188px",
+          "80.9844px"
+        ]
+      }
+    },
+    {
+      "where": -421,
+      "label": "div.plx-tabs__tablist.plx-tabs__tablist--folder",
+      "textBefore": "Use in codeRenameAction.jsxrename-action.cssClasses3Tokens2",
+      "textAfter": "Use in codeRenameAction.jsxrename-action.cssClasses4Tokens2",
+      "parent": "plx-tabs__list plx-tabs__list--folder",
+      "changes": {
+        "inline-size": [
+          "503.641px",
+          "503.906px"
+        ],
+        "perspective-origin": [
+          "251.812px 12px",
+          "251.953px 12px"
+        ],
+        "transform-origin": [
+          "251.82px 12px",
+          "251.953px 12px"
+        ],
+        "width": [
+          "503.641px",
+          "503.906px"
+        ]
+      }
+    }
+  ]
+}
