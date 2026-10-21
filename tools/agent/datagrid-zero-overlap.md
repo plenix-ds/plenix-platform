@@ -25,7 +25,10 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
    context values for its cells), values, editors, tree cells and their controls. The grid's modes are the parts' own classes
    (row --narrow, --virtual; cell --narrow, --sized, --lines, --after-lead, --bare, tree level; value --wrap, --sized,
    --lines); row actions fade on their wrapper (__portal--actions). Links in cells (`__portal > a`) stay for batch 6.
-4. **Scrolling**: the table holder, the custom scrollbars and their thumbs, frozen rows.
+4. **Scrolling** (done: 77f357c4): the grid, the table holder and the table (fill, the drawn window and the list as their
+   own classes), the custom scrollbars and their thumbs (axis and size on the thumb; the grid's hover as context values). The
+   holder hides its native scrollbar through the base's hook `--plx-sys-scrollbar-width` (scrolling.css); touch hides the
+   bars through `--plx-sys-touch-hidden` (interaction.css). Frozen rows were never rendered.
 5. **Groups**: group rows, bands, gaps, sticky group headers, summaries, the add row, probes.
 6. **Menus, filters, pagination and the rest**.
 7. **Table**: `table.css` by hand; `table-base.css` and `table-steps.css` follow from build-steps.js.

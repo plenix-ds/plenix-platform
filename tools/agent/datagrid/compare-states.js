@@ -1,7 +1,7 @@
 // Every element inside a DataGrid or Table, before (Plenix-b0) and now (Plenix): about a hundred computed values, its
 // ::before and ::after, and its box, in every state the batches touch. States: rest; each of the first three record rows
 // hovered; the first row selected (its checkbox) and then hovered; a cell edited (double-click a name, else any cell);
-// the first group collapsed and its header hovered; the body scrolled down and to the end; the grid hovered (scrollbars).
+// the first group collapsed and its header hovered; the body scrolled down and to the end; the grid hovered (scrollbars); touch (the interaction mode).
 //   node tools/agent/datagrid/compare-states.js [--pages files,dam] [--states rest,hover] [--max 5]
 // Pages: the applications that show grids, and every DataGrid and Table page of the spec (found from its sidebar once and
 // kept in the scratch list tools/agent/datagrid/spec-pages.json).
@@ -55,6 +55,7 @@ const STATES = {
   groupHover: async (p) => { const h = (await p.$$('[class*="__grid-group"][role="row"]'))[0]; if (!h) return false; try { await h.hover(); } catch (e) { return false; } return true; },
   scroll: async (p) => { await p.mouse.move(0, 0); return p.evaluate(() => { let any = false; for (const h of document.querySelectorAll('[class*="__grid-tableholder"]')) { if (h.scrollHeight > h.clientHeight || h.scrollWidth > h.clientWidth) { h.scrollTop = Math.round(h.scrollHeight / 3); h.scrollLeft = h.scrollWidth; any = true; } } return any; }); },
   gridHover: async (p) => { const h = (await p.$$('.plx-data-grid'))[0]; if (!h) return false; try { await h.hover(); } catch (e) { return false; } return true; },
+  touch: async (p) => { await p.mouse.move(0, 0); return p.evaluate(() => { document.documentElement.setAttribute('data-plx-interaction', 'touch'); return !!document.querySelector('.plx-data-grid, .plx-table'); }); },
 };
 async function hoverRow(p, i) { const rows = []; for (const h of await p.$$(ROW)) if (await h.evaluate((e) => !!e.offsetParent && e.getBoundingClientRect().top > 0 && e.getBoundingClientRect().bottom < innerHeight)) rows.push(h); if (!rows[i]) return false; try { await rows[i].hover(); } catch (e) { return false; } return true; }
 
