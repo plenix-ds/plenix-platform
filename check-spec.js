@@ -9,7 +9,9 @@
 //              and no two records claim the same leaf; the library parts' records (spec-parts.js) included
 //   parts      every library part (platform/design-system/parts/, bundled into spec-parts.js) loads and its records build
 //   sidebar    the sidebar lists every leaf (Plenix decision 1)
-//   order      the item page has the template's sections in the approved order (Plenix decision 2)
+//   order      the item page takes its sections' order, titles and "On this page" from page-template.js (§7, decision 2)
+//   template   STANDARD.md §7 states page-template.js exactly: the 17 sections in order and the variant block's fields
+//   variant-block  every variant has its Figma design (the variant block's first field; pending until the block is built)
 //   variants   every variant class a record's stylesheet defines (block--modifier) has its own variant card (decision 5)
 //   states     every interactive record has a States table (decision 6)
 //   api        every component, pattern, provider and hook file opens with the structured header comment (batch 162):
@@ -20,10 +22,11 @@ const vm = require('vm');
 
 const SPEC = path.join(__dirname, 'platform', 'design-system');
 const PLATFORM = path.join(__dirname, 'platform');
-const PENDING = {};
-const ORDER = [['purpose', 'Overview and Purpose'], ['guide', 'Usage (When to use, When not to use)'], ['exh', 'Variants'], ['states', 'States'],
-  ['anat', 'Anatomy'], ['behavior', 'Behavior'], ['platforms', 'Platforms'], ['a11y', 'Accessibility'], ['content', 'Content guidance'], ['impl', 'Implementation'],
-  ['assets', 'Design assets'], ['rel', 'Related items'], ['map', 'Source-system mappings'], ['details', 'Details and Lifecycle']];
+// the variant block (§7) is approved (owner, 2026-10-21) but not built: each variant's Figma design and the block on the
+// variant pages come with the variant work; until then its findings are listed, not failed
+const PENDING = { 'variant-block': 'the variant block on the variant pages (owner, 2026-10-21)' };
+// the Web item page template: page-template.js is the one source; §7 states it and spec.js draws it
+const TEMPLATE = (() => { const c = { window: {} }; vm.runInNewContext(fs.readFileSync(path.join(SPEC, 'page-template.js'), 'utf8'), c); return c.window.DSPageTemplate; })();
 const INTERACTIVE = new Set(['Action', 'Input', 'Selection', 'Navigation', 'Search', 'Filter', 'Disclosure', 'Editing', 'Drag and drop']);
 
 const findings = {};
@@ -101,15 +104,35 @@ recs.forEach((r) => {
 // the item page: spec.js declares what the sidebar lists and the page's section order
 const spec = read(path.join(SPEC, 'spec.js'));
 if (!/SIDEBAR_LISTS_EVERY_LEAF\s*=\s*true/.test(spec)) add('sidebar', 'the sidebar lists only the items with a Plenix page, not every leaf of §3');
+// order: the item page takes its sections' order, titles and "On this page" list from the template, never a list of its own
 const fromItem = spec.slice(spec.indexOf('function ItemPage'));
-const toc = fromItem.slice(fromItem.indexOf('var TOC = '), fromItem.indexOf('body = body.map'));
-const keys = [...toc.matchAll(/\['(\w+)'/g)].map((m) => m[1]);
-let at = -1;
-ORDER.forEach(([k, label]) => {
-  const i = keys.indexOf(k);
-  if (i < 0) add('order', 'the item page has no "' + label + '" section');
-  else if (i < at) add('order', '"' + label + '" comes before the section it should follow');
-  else at = i;
+const itemBody = fromItem.slice(0, fromItem.indexOf('body = body.map'));
+if (!/body = templateBody\(body\)/.test(itemBody)) add('order', 'spec.js ItemPage does not put its sections in the template’s order (templateBody)');
+if (!/var TOC = templateToc\(body\)/.test(itemBody)) add('order', 'spec.js ItemPage does not build "On this page" from the template (templateToc)');
+if (/var TOC = \[\[/.test(itemBody)) add('order', 'spec.js ItemPage has a section list of its own (var TOC = [[…): the template is the one list');
+// every template section is drawn by ItemPage (its key appears as a section key)
+TEMPLATE.sections.forEach((s) => { if (!new RegExp("key: '" + s.key + "'").test(spec)) add('order', 'the item page never draws "' + s.title + '" (key ' + s.key + ')'); });
+// titles: written once, in the template; the page may not hard-code another title for a template section
+[['spec', /'Guidelines'/], ['exh', /'Variants and examples'/], ['lab', /'Button lab'/]].forEach(([k, re]) => { if (re.test(itemBody)) add('order', 'spec.js still writes an old title for "' + TEMPLATE.sections.find((s) => s.key === k).title + '"'); });
+
+// template: STANDARD.md §7 states the template exactly: its sections in order (number, title) and the variant block's fields
+{
+  const md = read(path.join(SPEC, 'STANDARD.md')).replace(/\r\n/g, '\n');
+  const s7 = md.slice(md.indexOf('## 7. Documentation page template'), md.indexOf('## 8. '));
+  const tableAfter = (heading) => { const t = s7.slice(s7.indexOf(heading)); return [...t.slice(0, (t.indexOf('\n### ', 4) + 1 || t.length + 1) - 1).matchAll(/^\| (\d+) \| ([^|]+?) \|/gm)].map((m) => [+m[1], m[2].trim()]); };
+  const sec = tableAfter('### Sections'), vb = tableAfter('### The variant block');
+  if (!sec.length) add('template', 'STANDARD.md §7 has no "### Sections" table');
+  TEMPLATE.sections.forEach((s, i) => { const row = sec[i]; if (!row || row[0] !== i + 1 || row[1] !== s.title) add('template', '§7 section ' + (i + 1) + ' should be "' + s.title + '", it is ' + (row ? '"' + row[1] + '"' : 'missing')); });
+  if (sec.length > TEMPLATE.sections.length) add('template', '§7 lists ' + sec.length + ' sections, the template ' + TEMPLATE.sections.length);
+  TEMPLATE.variant.forEach((f, i) => { const row = vb[i]; if (!row || row[1] !== f.title) add('template', '§7 variant block field ' + (i + 1) + ' should be "' + f.title + '", it is ' + (row ? '"' + row[1] + '"' : 'missing')); });
+  if (vb.length > TEMPLATE.variant.length) add('template', '§7 lists ' + vb.length + ' variant block fields, the template ' + TEMPLATE.variant.length);
+  const keysSeen = new Set(); TEMPLATE.sections.forEach((s) => { if (keysSeen.has(s.key)) add('template', 'page-template.js: the key ' + s.key + ' is used twice'); keysSeen.add(s.key); });
+}
+
+// variant-block: every variant a record draws has its Figma design (the block's first field); pending until it is built
+recs.forEach((r) => {
+  if (/^(ios|android)-/.test(r.sec)) return;
+  (r.examples || []).forEach((e) => { if (!Array.isArray(e[1])) return; e[1].forEach((v) => { if (!v || !v[0]) return; if (!(r.figma && r.figma[v[0]])) add('variant-block', r.id + ' › ' + v[0] + ': no Figma design'); }); });
 });
 
 // variants: every block--modifier class has a card (a variant entry whose third item names it: [name, render, 'plx-…--…'])
@@ -174,13 +197,13 @@ recs.forEach((r) => {
 // a record's states come from its hand-written table (r.states) or from its stylesheet's state rules (the spec reads them)
 const STATE_RE = /:hover|:focus-visible|:focus(?![\w-])|:disabled|:checked|\[aria-(selected|pressed|checked|current|disabled|invalid|busy|expanded|readonly)|\[readonly\]|\.is-(selected|current|loading|active|pressed|error|success|expanded)(?![\w-])/;
 recs.forEach((r) => {
-  if (!INTERACTIVE.has(r.interaction) || r.states || r.statesFrom || r.stateNote) return;
+  if (![].concat(r.interaction || []).some((x) => INTERACTIVE.has(x)) || r.states || r.statesFrom || r.stateNote) return;
   const blocks = blocksOf(r) || [];
   const css = cssOf(r).replace(/\/\*[\s\S]*?\*\//g, '');
   const all = css.match(/[^{}]+\{[^{}]*\}/g) || [];
   const own = all.filter((rule) => blocks.some((b) => rule.split('{')[0].includes('.' + b)));
   const mine = r.blocks ? own : all;   // without its own blocks the spec reads the whole stylesheet of its folder
-  if (!mine.some((rule) => STATE_RE.test(rule.split('{')[0]))) add('states', r.id + ' (' + r.interaction + '): no States table and no state rules in its stylesheet' + (r.stateNote ? '' : ''));
+  if (!mine.some((rule) => STATE_RE.test(rule.split('{')[0]))) add('states', r.id + ' (' + [].concat(r.interaction).join(', ') + '): no States table and no state rules in its stylesheet' + (r.stateNote ? '' : ''));
 });
 
 // api: the structured header comment
@@ -197,7 +220,7 @@ for (const dir of ['components', 'patterns', 'providers', 'hooks']) {
 
 // report
 let failed = 0;
-for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'variants', 'states', 'api']) {
+for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api']) {
   const list = findings[rule] || [];
   const pending = PENDING[rule];
   if (!list.length) { console.log('ok       ' + rule); continue; }

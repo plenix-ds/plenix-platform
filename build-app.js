@@ -50,6 +50,9 @@ const PLAT = require('./build-platforms.js')(ROOT);
 // Plenix's own guidance for the Apple HIG pages, mapped to Web and Android (platform/standards/native-guidance.json, batch 330)
 const NG = require('./build-native-guidance.js')(ROOT);
 console.log('Built platform/design-system/native-guidance.js (' + NG.pages + ' pages, ' + NG.rules + ' rules' + (NG.changed ? '' : ', unchanged') + ')');
+// each Web item's Last reviewed date, from the design system's history (STANDARD.md §7)
+const RV = require('./build-reviewed.js')(ROOT);
+console.log('Built platform/design-system/reviewed.js (' + RV.count + ' items dated' + (RV.changed ? '' : ', unchanged') + ')');
 // the native token outputs (Swift, Kotlin, Dart; Platforms Standard 7.2), written by build-tokens.js with the stylesheets
 const MOB = TOKENS.mobile;
 console.log('Built platform/mobile (' + MOB.files.length + ' files, ' + MOB.colors + ' colors' + (MOB.changed ? '' : ', unchanged') + ')');

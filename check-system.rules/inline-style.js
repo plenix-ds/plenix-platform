@@ -35,7 +35,7 @@ const path = require('path');
 
 const NAME = 'inline-style';
 // generated bundles are checked through their sources; native-guidance.js holds Swift / Kotlin / XML samples as text
-const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups)[\\/]|[\\/](app|assets)\.js$|[\\/]design-system[\\/]native-guidance\.js$/;
+const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups)[\\/]|[\\/](app|assets)\.js$|[\\/]design-system[\\/]native-guidance(-full)?\.js$/;
 const SPEC_PAGE = /[\\/]platform[\\/]design-system[\\/]/;
 
 const COLOR_PROP = /color|background|border(?!.*(width|radius|style))|outline(?!.*(width|offset|style))|fill|stroke|shadow|caret|accent/i;
