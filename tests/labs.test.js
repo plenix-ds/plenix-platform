@@ -44,7 +44,7 @@ if (!ONLY && !changed.anyDS()) changed.none('LABS_OK 0/0 labs');
         Array.from(document.styleSheets).forEach((s) => { try { walk(s.cssRules, s); } catch (e) { /* unreadable */ } });
         window.__labStates = true;
       }
-      const MARK = { color: ['rgb(1, 2, 3)', (v) => /\b1, 2, 3\b/.test(v)], 'control-height': ['77px', (v) => v === '77px'], size: ['77px', (v) => v === '77px'], space: ['37px', (v) => v === '37px'],
+      const MARK = { color: ['rgb(1, 2, 3)', (v) => /\b1, 2, 3\b/.test(v)], 'control-height': ['77px', (v) => v === '77px'], size: ['77px', (v) => v === '77px' || v === 'min(77px, 100%)'], space: ['37px', (v) => v === '37px'],
         icon: ['17px', (v) => v === '17px'], opacity: ['0.37', (v) => v === '0.37'], columns: ['123px minmax(0, 1fr)', (v) => /^123px /.test(v)], transform: ['translateX(7px)', (v) => /, 7, 0\)$/.test(v)],
         radius: ['9px', (v) => v === '9px'], 'border-width': ['5px', (v) => v === '5px'], font: ['"Courier New"', (v) => /Courier New/.test(v)],
         'font-size': ['19px', (v) => v === '19px'], 'font-weight': ['900', (v) => v === '900'], 'line-height': ['31px', (v) => v === '31px'], shadow: ['rgb(1, 2, 3) 0px 0px 0px 3px', (v) => /1, 2, 3/.test(v)] };

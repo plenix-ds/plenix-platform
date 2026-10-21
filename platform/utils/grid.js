@@ -27,6 +27,8 @@ export const GRID_TOKEN = '--plx-ref-space-4px';
 export function gridStep(el) {
   if (typeof document === 'undefined') return 4;
   const at = el || document.documentElement, win = at.ownerDocument.defaultView;
+  // a document without a window (a preview frame already removed): nothing to read, the base step
+  if (!win) return 4;
   const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
   const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
   return px > 0 ? px : 4;
