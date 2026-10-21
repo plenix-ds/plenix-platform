@@ -23,6 +23,7 @@
      Every measure shares the scale: normalize measures of different units first (to a score, a percentage), or use bars.
      Hover a point: the tooltip shows the item and the measure's value. The data grid lists every value.
    Notes:
+     Area and point parts own their shared chart role values; axis placement selects exclusive local state values.
      Shapes' outlines and points take the series' data-viz color (the frame's line and point); the area takes the same
        color at the low opacity (radar-chart tokens). Spokes and rings are the frame's grid lines; the measures' names are
        UI text, the ring values the data font. Compare three items at most.
@@ -92,11 +93,11 @@ export function RadarChart({ title, description, hideCaption, size = 'lg', axes 
               {axes.map((a, ai) => { const [x2, y2] = pt(ai, end); return <line key={a.key} className="plx-chart__grid-line plx-radar-chart__spoke" x1={cx0} y1={cy0} x2={x2} y2={y2} />; })}
             </g>
             {list.map((s, si) => (
-              <polygon key={s.id} className="plx-chart__line plx-radar-chart__area" data-plx-dataviz={s.color} points={axes.map((a, ai) => pt(ai, r(valueOf(s, ai))).join(',')).join(' ')} />
+              <polygon key={s.id} className="plx-radar-chart__area" data-plx-dataviz={s.color} points={axes.map((a, ai) => pt(ai, r(valueOf(s, ai))).join(',')).join(' ')} />
             ))}
             {showPoints ? list.map((s, si) => axes.map((a, ai) => {
               const [px, py] = pt(ai, r(valueOf(s, ai)));
-              return <circle key={s.id + a.key} className="plx-chart__point plx-radar-chart__point" data-plx-dataviz={s.color}
+              return <circle key={s.id + a.key} className="plx-radar-chart__point" data-plx-dataviz={s.color}
                 cx={px} cy={py} {...(tooltip ? hover(si + ':' + ai) : {})} />;
             })) : null}
             {/* the rings' values up the first spoke; the outermost is left out: the first measure's name sits there */}

@@ -47,9 +47,6 @@
    "combinator | .plx-pie-chart--half .plx-pie-chart__center-label": 1,
    "combinator | .plx-pie-chart--half .plx-pie-chart__center-value": 1
   },
-  "platform/charts/radar-chart.css": {
-   "cross-block | .plx-radar-chart__area.plx-chart__line": 1
-  },
   "platform/charts/scatter-chart.css": {
    "combinator | .plx-scatter--points .plx-scatter__point": 1,
    "combinator | .plx-scatter--bubble .plx-scatter__point": 1
