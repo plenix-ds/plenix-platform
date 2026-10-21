@@ -875,3 +875,92 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.a11y.announce:** "Facet counts report matching records without filtering out their own selection" is unclear. Does it mean each filter's counts ignore that filter's own current choice, so its other options still show counts?
 
+## foundations (24 questions)
+
+### control-heights
+
+- **rec.use[0]:** The usage list names the height roles "inline-action, toolbar, standard, page-action, dialog", but the parts list names them "inline, toolbar, standard, prominent, dialog, dialog-destructive". Which names are right, and is "page-action" the same as "prominent"?
+
+### layers
+
+- **rec.use[0]:** The usage list gives the stacking levels as "base, raised, sticky, overlay, popover, menu, modal, toast, critical"; the parts list gives "behind, base, raised, sticky, menu, overlay, modal, popover, toast, critical". The order of menu, overlay and popover differs, and "behind" is missing from usage. Which order is right?
+
+### foundations-heading-hierarchy
+
+- **rec.purpose / docs:** This page is about the order of headings on a page, but its purpose and written sections describe the SectionHeading component (a small uppercase group label that can show or hide its group). Should it get its own purpose and write-up, or point to the SectionHeading page?
+- **docs.a11y.contrast:** The overview says level 3 (the default) is 11px and level 4 is 10px, but the contrast note says the label is "10px bold". Which size is the default label?
+
+### foundations-font-size
+
+- **docs.anatomy[2]:** The overview says the font-size scale is in rem (so text follows the person's font settings), but the shared typography parts list says "--plx-ref-font-size-09 to -20 in px". Which is right? The same parts list appears on Type scale and on every typography page.
+
+### foundations-font-weight
+
+- **rec.text:** "Weight shows the role of the text, never a color or a size change" is unclear. Does it mean weight must never stand in for a color or size change, or that a role must never be shown by color or size instead of weight?
+
+### foundations-sizing-scale
+
+- **rec.avoid[1]:** "Avoid a size written as a number in a component" sits next to the example Skeleton width="200px" and the overview rule that a number in a prop snaps to the nearest size token. Are numbers in props allowed (and snapped), or must props name a token too?
+
+### icon
+
+- **rec.text:** The overview says the optical size 24 files are optional "for the header and touch", but the responsive note and the Large icon page say "the app header and Comfortable density". Is it touch, Comfortable density, or both?
+
+### foundations-semantic-tokens
+
+- **rec.purpose / docs:** The five token pages (Semantic, Component, State, Theme, Responsive tokens) show the Design tokens purpose and write-up word for word; the six typography pages (Typefaces to Code typography) do the same with Type scale, and the four spacing pages with Spacing scale. These shared texts were left unchanged. Should each page get its own short purpose, or keep the parent page's text?
+
+### foundations-content-widths
+
+- **rec.purpose / docs.purpose:** This page shows the Spacing purpose and write-up ("Spacing shows how things relate…"), which is about gaps, not content widths. Should Content widths get its own purpose, or point to the Layout or Grid write-up instead?
+
+### foundations-responsive-sizing
+
+- **rec.purpose / docs.purpose:** This page shows the Spacing purpose and write-up, which is about gaps, not about how sizes respond to font size, density and touch. Should Responsive sizing get its own purpose, or show another page’s write-up (Control heights or Density)?
+- **rec.text:** The overview says "Columns and the hierarchy never change with size", but the Breakpoints write-up says the grid has 4, 8, 12 or 16 columns depending on width. Is the sentence meant to say that the column count does not change with density or font size (only with width)? I left it as it is.
+
+### foundations-icon-alignment
+
+- **rec.purpose / docs.purpose:** This page shows the Spacing purpose and write-up, but it is about icons. Should it show the Icons write-up (like Icon sizes) instead?
+
+### foundations-surface-fills
+
+- **rec.purpose / docs.purpose:** This page shows the Shadows purpose and write-up ("Shadows show that a surface sits above the page…"), but it is about background fills. Should it show the Surface colors write-up instead?
+
+### foundations-border-style
+
+- **rec.text:** The overview names the style tokens --plx-sys-border-style-solid and -dashed, but the parts list names --plx-ref-border-style-*. Which name is right (or do both exist)? I left the overview as it is.
+
+### foundations-border-color
+
+- **rec.text / rec.use.0:** This page says the default border is for controls and frames, but the same page’s accessibility row says default and subtle borders are for separation only, and Border colors says a control’s edge is border-strong or the control edge. Which border should a control use? I left the text as it is.
+
+### foundations-shape-treatment
+
+- **rec.text:** The overview says badges use the pill shape, but the Badge rule gives every pill 4px corners. Should badges be fully round (pill) or have 4px corners? I left the text as it is.
+
+### foundations-easing
+
+- **docs.anatomy:** The shared Motion parts list names only the standard easing and the fast, base and slow durations, while Easing, Transitions and Entrance motion also name the enter easing, instant (0.08s), quick (0.12s) and the enter scale. Should the parts list add them? (Not changed: the list is shared by several pages.)
+
+### color-status
+
+- **rec.text / docs.anatomy:** The parts list includes a fifth presence role, status-dnd (do not disturb), but the overview names only online, away, busy and offline. Should the overview add do not disturb, or is status-dnd the same as busy? I did not add it.
+
+### illustration
+
+- **rec.use[3] / rec.avoid[1]:** Usage says to give an illustration a label "only when the drawing says something the text does not", but When not to use says to avoid "a drawing that carries information the text does not". Which one is right: may a drawing ever add information the text does not have?
+
+### type-styles
+
+- **docs.a11y.contrast:** The contrast row mentions a "secondary" text style next to caption, but the page lists only five styles (display, lead, body, label, caption). Is there a secondary style that the page should list, or should the word be removed?
+
+### content-style
+
+- **docs.anatomy, docs.behavior, docs.a11y:** The Parts list ("Source standard or build entry point", "Specific implementation instructions", "Existing checks and limitations") and most Behavior and Accessibility rows on this page are general sentences that say nothing about style and grammar. Should they be written for this page, or left for the later pass that hides empty rows? I did not change them.
+- **rec.variantPages[*].use / avoid:** All five sub-pages (Capitalization, Inclusive language, Terminology, Action labels, Text alternatives) repeat the same two Usage points and the same two When-not-to-use points as the main page. Should each sub-page get its own guidance, or should the repeats go?
+
+### design-principles
+
+- **docs.content.guidance:** The "guidance" row repeats the page’s purpose word for word. Should it be removed, or should it say something else?
+
