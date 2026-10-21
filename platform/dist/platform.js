@@ -17056,6 +17056,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      token-sized CSS gaps represent missing rows. An automatic viewport is bounded by its allocated pane as well as the browser. Opening saved state is supplied on the very first render. Search filtering is deferred so typing stays responsive;
      controlled sort state and the numeric text collator are reused across search updates.
    Notes: Own Plenix markup and stylesheet use the existing table tokens. Applications use the public DataGrid entry point. */
+// Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
+const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
+  className: GRID + '__cell-direction',
+  dir: "auto"
+}, content) : content;
 const EMPTY_ROWS = [];
 const words = (template, values) => String(template).replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
 const GRID = 'plx-data-grid',
@@ -18506,7 +18511,7 @@ function NextEngine(props) {
         tabIndex: isStatic ? undefined : -1,
         "data-plx-field": c.field,
         "data-plx-unread": unread.has(record) || undefined,
-        dir: "auto",
+        dir: pinned && !isStatic ? undefined : 'auto',
         onDoubleClick: () => {
           if (canEdit) setEditing({
             key: row.id,
@@ -18558,12 +18563,12 @@ function NextEngine(props) {
         onClick: () => row.toggleExpanded()
       }, /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__grid-data-tree-control-' + (row.getIsExpanded() ? 'collapse' : 'expand')
-      })) : null) : null, editing?.key === row.id && editing.field === c.field ? /*#__PURE__*/_react.default.createElement(CellEditor, {
+      })) : null) : null, editing?.key === row.id && editing.field === c.field ? cellDirection(pinned && !isStatic, /*#__PURE__*/_react.default.createElement(CellEditor, {
         column: c,
         value: value,
         onCommit: next => commitEdit(row.id, c.field, next),
         onCancel: () => setEditing(null)
-      }) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      })) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
         label: S.moveRow,
         trigger: /*#__PURE__*/_react.default.createElement(_DragHandle.DragHandle, {
           dnd: rowDnd.handleProps(recordPositions.get(record) ?? -1)
@@ -18580,6 +18585,7 @@ function NextEngine(props) {
         onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical.length - 1)
       }, S.moveBottom)) : c.render ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__portal',
+        dir: pinned && !isStatic ? 'auto' : undefined,
         "data-plx-link-target": "cell"
       }, /*#__PURE__*/_react.default.createElement(CustomCell, {
         column: c,
@@ -18588,7 +18594,7 @@ function NextEngine(props) {
         rowId: row.id,
         selected: !!selection[row.id],
         block: B
-      })) : /*#__PURE__*/_react.default.createElement(_cells.CellValue, {
+      })) : cellDirection(pinned && !isStatic, /*#__PURE__*/_react.default.createElement(_cells.CellValue, {
         block: B,
         column: c,
         value: value,
@@ -18596,7 +18602,7 @@ function NextEngine(props) {
         record: record,
         pill: cells === 'pill',
         icon: typeIcons[typeOf(c)]
-      }));
+      })));
     }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
       className: `${B}__grid-cell ${B}__w-view`,
       role: "gridcell"
@@ -27311,6 +27317,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
+     Horizontal body scrolling moves the column headers by the same amount; frozen headers and cells stay pinned.
+       Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
        row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
