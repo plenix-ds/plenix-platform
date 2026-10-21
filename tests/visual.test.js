@@ -24,15 +24,15 @@ const PROPS = ['background-color', 'color', 'border-top-color', 'border-left-col
 const SUB = { '.plx-button__icon': ['block-size', 'inline-size', 'background-color'], '.plx-button__caret': ['block-size', 'inline-size', 'background-color', 'transform'] };
 
 (async () => {
-  let html = '<!doctype html><html lang="en" data-plx-theme="plenix"><head><meta charset="utf-8"><link rel="stylesheet" href="' + PLAT + 'platform.css"></head><body>';
+  let html = '<!doctype html><html lang="en" data-plx-theme="default"><head><meta charset="utf-8"><link rel="stylesheet" href="' + PLAT + 'platform.css"></head><body>';
   for (const v of VARIANTS) for (const s of SIZES) for (const st of STATES) for (const f of FORMS) {
     const cls = ['plx-button', 'plx-button--' + v, s !== 'md' ? 'plx-button--size-' + s : '', f === 'icon-only' ? 'plx-button--icon-only' : '',
       st === 'hover' ? 'is-hover' : '', st === 'selected' ? 'is-selected' : '', st === 'focus' ? 'is-focus-visible' : '', st === 'loading' ? 'is-loading' : ''].filter(Boolean).join(' ');
     const icon = f === 'icon' || f === 'icon-only' ? '<span class="plx-button__icon"><span class="plx-icon plx-icon--add"></span></span>' : '';
     html += '<button data-id="' + [v, s, st, f].join('|') + '" class="' + cls + '"' + (st === 'disabled' ? ' disabled' : '') + (st === 'expanded' ? ' aria-expanded="true"' : '') + '>'
-      + icon + (f === 'icon-only' ? '' : '<span class="plx-button__label">Save</span>') + (f === 'caret' ? '<span class="plx-button__caret"></span>' : '') + '</button> ';
+      + icon + (f === 'icon-only' ? '' : '<span class="plx-button__label">Save</span>') + (f === 'caret' ? '<span class="' + ['plx-button__caret', (v === 'primary' || v === 'danger' || st === 'disabled' || st === 'loading') ? 'plx-button__caret--current' : '', st === 'expanded' ? 'plx-button__caret--open' : ''].filter(Boolean).join(' ') + '"></span>' : '') + '</button> ';
   }
-  html += '<span class="plx-button-group"><button class="plx-button" data-id="group|a">A</button><button class="plx-button" data-id="group|b">B</button><button class="plx-button is-focus-visible" data-id="group|c">C</button></span></body></html>';
+  html += '<span class="plx-button-group"><button class="plx-button plx-button--secondary plx-button--joined-end-square plx-button--joined" data-id="group|a">A</button><button class="plx-button plx-button--secondary plx-button--joined-start-seam plx-button--joined-end-square plx-button--joined" data-id="group|b">B</button><button class="plx-button plx-button--secondary plx-button--joined-start-seam plx-button--joined is-focus-visible" data-id="group|c">C</button></span></body></html>';
   const file = path.join(__dirname, '.visual-button.html');
   fs.writeFileSync(file, html);
   const browser = await launch();
