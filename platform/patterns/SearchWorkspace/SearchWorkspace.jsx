@@ -35,6 +35,7 @@
        table: "Table", sort: "Sort", sortValue: "Sort: {value}", noMatchQuery: "Nothing matches “{query}”.",
        noMatchQueryFilters: "Nothing matches “{query}” with these filters.", noMatchFilters: "Nothing matches these filters." }
    Behavior:
+     The query field carries its own sizing part class; the pattern never sizes arbitrary descendants.
      Set filters are repeated as removable chips under the toolbar ("Type: PNG ×") with Clear all.
      The count line is announced politely. The results CommandBar swaps to selection commands while count is above zero.
      When count is 0 the results area says there is nothing to show for the query.
@@ -112,7 +113,7 @@ export function SearchWorkspace({ title, query = '', onQueryChange, placeholder,
         {headEnd}
       </div>
       <div role="search" className="plx-search-ws__query">
-        <SearchField ref={field} label={fill(t.searchField, { nouns })} placeholder={placeholder === undefined ? t.placeholder : placeholder} value={query}
+        <SearchField ref={field} className="plx-search-ws__field" label={fill(t.searchField, { nouns })} placeholder={placeholder === undefined ? t.placeholder : placeholder} value={query}
           onChange={(e) => onQueryChange && onQueryChange(e.target.value)} onClear={() => onQueryChange && onQueryChange('')} />
       </div>
       {/* Clear all lives with the active-filter chips below, once */}

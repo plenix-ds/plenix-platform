@@ -983,9 +983,6 @@
    "combinator | .plx-resource-list__item:hover .plx-resource-list__field--hover": 1,
    "combinator | .plx-resource-list__item:focus-within .plx-resource-list__field--hover": 1
   },
-  "platform/patterns/SearchWorkspace/search-workspace.css": {
-   "combinator | .plx-search-ws__query>*": 1
-  },
   "platform/patterns/SecondaryPane/secondary-pane.css": {
    "relational | .plx-page-panes:has(> .plx-secondary-pane--list) > :not(.plx-secondary-pane)": 1,
    "relational | .plx-page-panes:has(> .plx-secondary-pane-back)": 1
