@@ -907,6 +907,12 @@
     "font-weight"
    ]
   },
+  "plx-data-grid__grid-group": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
   "plx-data-grid__grid-header": {
    "contract": "adjusts",
    "props": [
@@ -937,18 +943,20 @@
    ]
   },
   "plx-data-grid__group-count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-data-grid__group-eyebrow": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "eyebrow",
+   "font": "sans",
+   "adjusts": [
     "line-height"
    ]
   },
@@ -966,22 +974,29 @@
    ]
   },
   "plx-data-grid__group-summary-value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
     "font-size",
     "font-weight",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-data-grid__group-value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans",
+   "adjusts": [
+    "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
+  },
+  "plx-data-grid__group-value--data": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono"
   },
   "plx-data-grid__title-text--wrap": {
    "contract": "adjusts",
@@ -2934,18 +2949,20 @@
    ]
   },
   "plx-table__group-count": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
     "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-table__group-eyebrow": {
-   "contract": "adjusts",
-   "props": [
+   "contract": "establishes",
+   "role": "eyebrow",
+   "font": "sans",
+   "adjusts": [
     "line-height"
    ]
   },
@@ -2963,21 +2980,23 @@
    ]
   },
   "plx-table__group-summary-value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
     "font-size",
     "font-weight",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-table__group-value": {
-   "contract": "adjusts",
-   "props": [
-    "font-family",
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans",
+   "adjusts": [
+    "font-size",
     "font-weight",
-    "line-height",
-    "word-spacing"
+    "line-height"
    ]
   },
   "plx-table__title-text--wrap": {
@@ -3215,7 +3234,21 @@
    "contract": "establishes",
    "role": "caption",
    "font": "sans",
-   "adjusts": ["font-size", "line-height"]
+   "adjusts": [
+    "font-size",
+    "line-height"
+   ]
+  },
+  "plx-table__grid-group": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-table__group-value--data": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono"
   },
   "plx-tooltip__bubble": {
    "contract": "establishes",

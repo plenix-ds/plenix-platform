@@ -17066,7 +17066,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      height step) and --lines (a step taller than short), the first after the checkbox --after-lead, a plain value
      directly inside --bare, a nested row's tree cell __tree-cell--level-N; a value __value--wrap, --sized and --lines;
      row actions sit in __portal--actions; the checkbox input is __check-input. The grid, the scroll body and the table
-     take the fill and the drawn window as __grid--fill, __grid-tableholder--fill, __grid-table--virtual and --narrow. */
+     take the fill and the drawn window as __grid--fill, __grid-tableholder--fill, __grid-table--virtual and --narrow.
+     A group's head is __group-head--gap after a band (not in its sticky copy), its label __group-label--level-N, its
+     cells --narrow in the list, the add row's cell __group-cell--add; the eyebrow is the grid's own span. */
 // Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
 const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
   className: GRID + '__cell-direction',
@@ -18298,7 +18300,7 @@ function NextEngine(props) {
       });
     }));
   };
-  const groupNode = group => /*#__PURE__*/_react.default.createElement("div", {
+  const groupNode = (group, sticky = false) => /*#__PURE__*/_react.default.createElement("div", {
     key: group.id,
     "data-plx-group": group.id,
     className: (0, _cx.cx)('' + B + '__grid-row ' + B + '__grid-group', '' + B + '__grid-group-level-' + group.depth, group.separated && B + '__group--gap'),
@@ -18332,16 +18334,16 @@ function NextEngine(props) {
       }
     }
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: B + '__group-head',
+    className: (0, _cx.cx)(B + '__group-head', group.separated && !sticky && B + '__group-head--gap'),
     role: "presentation"
   }, ordered.map((column, i) => /*#__PURE__*/_react.default.createElement(Width, {
     key: column.id,
     width: widths[column.id] + (i === 0 && selectable ? metrics.lead : 0),
-    className: (0, _cx.cx)(B + '__group-cell', i === 0 && B + '__group-cell--first', column.columnDef.meta.summary && B + '__group-cell--summary'),
+    className: (0, _cx.cx)(B + '__group-cell', i === 0 && B + '__group-cell--first', column.columnDef.meta.summary && B + '__group-cell--summary', isNarrow && B + '__group-cell--narrow'),
     role: "gridcell",
     "aria-colspan": i === 0 && selectable ? 2 : undefined
   }, i === 0 ? /*#__PURE__*/_react.default.createElement("div", {
-    className: B + '__group-label'
+    className: (0, _cx.cx)(B + '__group-label', group.depth >= 1 && group.depth <= 3 && B + '__group-label--level-' + group.depth)
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__group-chevron',
     "aria-hidden": "true",
@@ -18350,11 +18352,11 @@ function NextEngine(props) {
     name: collapsed.has(group.id) ? 'chevron-right' : 'chevron-down'
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: B + '__group-text'
-  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "eyebrow",
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    dir: "auto",
     className: B + '__group-eyebrow'
   }, columns.find(c => c.field === group.field)?.title || group.field), /*#__PURE__*/_react.default.createElement("span", {
-    className: B + '__group-value',
+    className: (0, _cx.cx)(B + '__group-value', kinds(columns.find(c => c.field === group.field) || {}).includes('data') && B + '__group-value--data'),
     "data-plx-text-follow": "size",
     "data-plx-kind": kinds(columns.find(c => c.field === group.field) || {}).includes('data') ? 'data' : undefined
   }, (0, _cells.valueText)(group.value) || S.noValue)), /*#__PURE__*/_react.default.createElement("span", {
@@ -18433,7 +18435,7 @@ function NextEngine(props) {
     }, /*#__PURE__*/_react.default.createElement("div", {
       role: "gridcell",
       "aria-colspan": ordered.length + (selectable ? 1 : 0),
-      className: B + '__group-cell ' + B + '__group-cell--first'
+      className: (0, _cx.cx)(B + '__group-cell', B + '__group-cell--first', B + '__group-cell--add', isNarrow && B + '__group-cell--narrow')
     }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
       variant: "ghost",
       size: "xs",
@@ -18815,7 +18817,7 @@ function NextEngine(props) {
     className: B + '__sticky-groups',
     "aria-hidden": "true",
     inert: ""
-  }, stickyGroups.map(group => /*#__PURE__*/_react.default.cloneElement(groupNode(group), {
+  }, stickyGroups.map(group => /*#__PURE__*/_react.default.cloneElement(groupNode(group, true), {
     key: 'sticky:' + group.id,
     className: B + '__sticky-group ' + B + '__grid-group-level-' + group.depth,
     role: undefined,

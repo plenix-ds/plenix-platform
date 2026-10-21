@@ -8,9 +8,6 @@
   "plx-command-menu__page-title": "changes the font family without the whole role (missing letter-spacing, line-height)",
   "plx-data-grid__empty": "changes the font family without the whole role (missing letter-spacing, line-height)",
   "plx-data-grid__grid-cell": "changes the font family without the whole role (missing letter-spacing)",
-  "plx-data-grid__group-count": "changes the font family without the whole role (missing letter-spacing)",
-  "plx-data-grid__group-summary-value": "changes the font family without the whole role (missing letter-spacing, line-height)",
-  "plx-data-grid__group-value": "changes the font family without the whole role (missing font-size, letter-spacing)",
   "plx-data-pill--data": "changes the font family without the whole role (missing font-size, letter-spacing)",
   "plx-dialog__title": "changes the font family without the whole role (missing letter-spacing, line-height)",
   "plx-focus-order__number": "changes the font family without the whole role (missing letter-spacing, line-height)",
@@ -28,9 +25,6 @@
   "plx-session-timeout__time": "changes the font family without the whole role (missing font-size, letter-spacing, line-height)",
   "plx-sheet__title": "changes the font family without the whole role (missing letter-spacing, line-height)",
   "plx-table__grid-cell": "changes the font family without the whole role (missing letter-spacing)",
-  "plx-table__group-count": "changes the font family without the whole role (missing letter-spacing)",
-  "plx-table__group-summary-value": "changes the font family without the whole role (missing letter-spacing, line-height)",
-  "plx-table__group-value": "changes the font family without the whole role (missing font-size, letter-spacing)",
   "plx-time-picker__option": "changes the font family without the whole role (missing letter-spacing, line-height)"
  }
 }
