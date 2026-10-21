@@ -166,3 +166,84 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.a11y.contrast:** “The heading and count follow SectionHeading and the muted text” — does this mean the heading follows SectionHeading and the count uses muted text? I left it unchanged until you confirm.
 
+## content (25 questions)
+
+### text
+
+- **rec.text:** The overview names seven text roles (body, secondary, caption, data, label, strong, title), but the component offers thirteen (also heading, eyebrow, accent, success, danger and link). Should the overview list all thirteen?
+- **rec.variantPages[8].text:** The Data style is described here as 11px, but elsewhere on the page data text is "at the secondary size" (and Secondary is 12px). Which size is right for data text on its own?
+- **rec.variantPages[8].avoid[0]:** This says values in a property list use the label font with equal-width digits, not the data font. The Property list page says technical values there use the data font (Reddit Mono). Which is right?
+- **docs (all sections):** This write-up (purpose, parts, behavior, accessibility, content) appears word for word on seven pages: Body text, Paragraph, Label, Caption, Helper text, Secondary text and Truncated text. I left it unchanged so the copies stay identical. Should it be rewritten once and shown on all of them?
+
+### heading
+
+- **rec.use[0] / rec.use[2]:** Two usage points give different heading sizes: one says levels 2–4 are 18, 15 and 13px, the other says level 2 is 13px, level 3 11px, level 4 10px. Which sizes are right?
+- **rec.purpose / docs.purpose:** The purpose describes only the small uppercase section label (SectionHeading), but the page also covers page and section headings (levels 1–4). Should the purpose cover both?
+
+### code-block
+
+- **rec.text:** The overview says the code sits "on the inverse surface", but the parts list says it sits on the default surface (--plx-sys-surface-default). Which is right?
+
+### avatar
+
+- **rec.use[1]:** The usage list names six sizes (xs to 2xl), but the behavior section also lists a 2xs size of 20px, and the Small avatar page points to "the 20px size". Should usage list 2xs too?
+- **docs (all sections):** The Avatar write-up also appears word for word on the User identity page, so I left it unchanged to keep the copies the same. Rewrite it once for both?
+
+### property-list
+
+- **rec.use[1]:** Usage says a technical value sits "on the value’s baseline", but the parts list says "on the label’s baseline". Which is right?
+- **docs.a11y.contrast:** This says "a name/value table is a DataGrid, not a PropertyList". Under the table rule you set (DataGrid for dynamic tables, Table for static ones), a static name/value table would be a Table. Should this say Table?
+- **docs (all sections):** The Property list write-up appears word for word on four pages (Property list, Key-value pair, Attribute list, Description list), so I left it unchanged. Rewrite it once for all four?
+
+### thumbnail
+
+- **docs.behavior.error:** The behavior section says a broken picture is not replaced by the icon, but the Icon thumbnail page says the icon shows when there is no picture "or it fails to load". Which is right?
+
+### content-skip-link
+
+- **rec.purpose / docs:** The Skip link page shows the purpose and full write-up of the application frame (AppShell: header, navigation pane, main region, inspector, footer), not of the skip link. Should it get its own purpose ("lets keyboard users jump past the header and navigation to the main content")?
+
+### content-paragraph
+
+- **rec.text / rec.use[1]:** The Paragraph page uses a "lead" text style for the opening paragraph, but the Text component’s list of styles does not include "lead". Does the lead style exist, or should these mentions change?
+
+### content-caption
+
+- **rec.avoid[1]:** This page says a caption should not be longer than two lines; the Caption style on the Body text page says not longer than one line. Which limit is right?
+
+### content-truncated-text
+
+- **rec.text:** This page describes clamping to 2, 3 or 4 lines (lines) and a Show more option (expandable), but the Text parts list only shows one-line truncation. Do lines and expandable exist on Text, or belong to another component?
+
+### content-online-status
+
+- **rec.purpose / docs:** Online status shows availability in words, but its purpose and write-up are those of the presence dot on an avatar. Should it get its own purpose (for example, "shows a person’s availability in words where an avatar dot is too small or missing")?
+
+### presence
+
+- **docs (all sections):** The Presence write-up also appears word for word on the Online status page, so I left it unchanged. Rewrite it once for both?
+
+### swatch
+
+- **rec.avoid[2]:** The page says a swatch can be a button that picks a color (with a ring on the chosen one), but “When not to use” says to use the swatch picker (ColorPicker) for picking from a set. Is the button form only meant for use inside ColorPicker, or can pages use picking swatches on their own? The wording should say which.
+
+### timestamp
+
+- **docs.a11y.focus:** “Only relative times and date labels (and tooltip) are Tab stops” is unclear. Does it mean any timestamp that has the tooltip turned on (which is on by default for relative times and date labels) is a Tab stop?
+
+### people-group
+
+- **docs.behavior.responsive:** The Team page says the “source” is cut with an ellipsis, but a team has no source part (only the Group has “Synced from directory”). Should “source” be removed from the Team page?
+
+### image-gallery
+
+- **rec:** Image gallery’s text is a generic media-family text: “When to use” repeats the overview word for word, “When not to use” says “Keep sources and actions explicit.” (an instruction, not a case to avoid), and Behavior, Accessibility and Content talk about forms, FileRow, Carousel and “Save metadata”, which are not part of a gallery. Should this page get its own written text?
+
+### video
+
+- **rec:** Video’s text is shared word for word with Audio and the other media pages; “When to use” repeats the overview and “When not to use” is “Keep sources and actions explicit.” Should Video get its own text (for example when to use Video versus Audio)?
+
+### audio
+
+- **docs.anatomy:** The Audio page shows the Video text: its overview says “audio and video” and its parts include picture in picture, which audio does not have. Should Audio get its own text without the video-only parts?
+
