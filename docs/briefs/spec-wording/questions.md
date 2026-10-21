@@ -114,3 +114,55 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 - **docs.anatomy:** The parts list gives only names (Device FileInput, Selected FileRows or removable chips, Validation Notice) with no description or required/optional mark, unlike other pages. Should these be filled in? That needs facts about the component that the page does not give.
 - **rec.purpose:** The purpose is word for word the overview (“Attach validated local files with a reversible selection.”). Should the purpose say why people use it (the need it serves) instead of repeating the overview?
 
+## navigation (14 questions)
+
+### navigation-menu
+
+- **rec.purpose, rec.use[0], rec.use[1], docs:** This page mixes two things: the mega menu (a top navigation item with a big panel of links) and the side navigation list (NavList rows with counts, pins and folding groups). The purpose, the first two usage points and every written section describe the side list, not the mega menu. Should the side-list text move to its own page (or to Side navigation), leaving this page about the mega menu only?
+
+### navigation-section-navigation
+
+- **rec.purpose, docs:** Section navigation shows the navigation pane's purpose and write-up (title row, splitter, rail and so on) instead of text about sections, subpages, in-page links and tables of contents. Should it get its own purpose, or is showing the pane's write-up intended?
+
+### navigation-saved-searches
+
+- **rec.purpose, docs:** Saved searches shows the Search workspace's purpose and write-up (the whole advanced search page). Should it get its own purpose about keeping a named query and its filters, or is showing the search page's write-up intended?
+
+### side-navigation
+
+- **docs.purpose:** The written purpose says the pane is "shown as an overlay on small screens", but the rest of the page (and Bottom navigation) says that on a phone it is a bottom bar plus a full screen, never a drawer. Should this purpose be changed to match (the overview purpose already does)? The same text appears on Section navigation.
+- **docs.behavior.focus:** Side navigation says focus is not moved into the overlay, but Bottom navigation says opening the overlay or the screen moves focus into the pane and returns it on close. Which one is right?
+
+### product-navigation
+
+- **docs.behavior.keyboard, docs.behavior.motion:** Product navigation says the pane's rows move with the arrow keys and the pane folds with the standard motion. The Navigation menu page says the list adds no arrow keys, and Side navigation says the pane has no motion of its own. Which is right?
+
+### mobile-app-bar
+
+- **docs.behavior.responsive:** This says the header links leave the bar "below the Narrow class", but the overview says the bar is the Narrow class itself, and Application header says the links leave below 840px (Medium and Narrow). Should it read "below 840px (Medium and Narrow)"?
+
+### tabs
+
+- **rec.use[0], rec.variantPages[0].avoid[0]:** Usage says peer views always use the contained tabs, yet the Contained variant says a page whose whole body switches should use Folder tabs, and Segmented tabs have their own uses. Should the usage line say "contained by default" instead of "always"?
+
+### progress-steps
+
+- **rec.text, rec.variantPages[4]:** The compact stepper is described as for sequences "without names", but it shows "Step 2 of 5 and the step's name". Does compact show the step's name or not?
+
+### filter-bar
+
+- **rec.text:** Filter bar says a search page shows the set filters as chips under the toolbar, while the Filter panel and Quick filters pages say never to put filter chips under the command bar. Are chips allowed only on the search page, and should the other pages say so?
+
+### query-builder
+
+- **docs.content.labels:** The page says operators should be in words, never symbols people must learn, but its read-back example uses a symbol: “Size (MB) > 40”. Should the example read “Size (MB) is more than 40”, or is the symbol meant to stay in the text view?
+- **docs.a11y.name:** This line uses “Rule 2” both as the name of a rule and as an example control label (“Rule 2, Operator”). Is each control meant to be labeled with its rule number plus its role (for example “Rule 2 operator”)? I left it unchanged until you say.
+
+### search-result
+
+- **docs.behavior.responsive:** “The text wraps under the thumbnail’s column” can be read two ways: the text moves below the thumbnail on a narrow width, or it stays in its own column next to the thumbnail. Which one is meant? I left it unchanged.
+
+### search-result-group
+
+- **docs.a11y.contrast:** “The heading and count follow SectionHeading and the muted text” — does this mean the heading follows SectionHeading and the count uses muted text? I left it unchanged until you confirm.
+
