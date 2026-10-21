@@ -45,12 +45,30 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 
 ## Also in this work
 
-- **Cells sitting 1.2 to 2.2px off center** (the behavior test's "vertical alignment not middle"): found, not applied (a
-  pixel change waits for the owner). Cause: a custom cell's content sits in the inline `__portal` wrapper, so a badge or
-  icon rides on the wrapper's text baseline instead of being centered by the cell (Table is exact: its portal is
-  `display: contents`). Fix by geometry: `.plx-data-grid__portal:where(:not(.plx-data-grid__portal--actions)){display:contents}`
-  (the actions wrapper keeps its box for its fade); badges and icons in custom cells move up 0.6 to 1.1px. Measured: a
-  centered badge, compact 6.6 / 5.4px above / below, standard 9.1 / 6.9, comfortable 13.1 / 10.9.
+- **Cells sitting 1.2 to 2.2px off center** (the behavior test's "vertical alignment not middle"): explained, not fixed;
+  a pixel change waits for the owner's decision. Measured with the test's own measure (space above / below the content,
+  Short rows, at c1a0d260), and with the proposed fix injected in the test browser only:
+
+  | Case | Density | Cell / content | Now | With the fix |
+  | --- | --- | --- | --- | --- |
+  | centered badge cell (kind center, custom render; spec Assets, Stock) | compact | 28 / 16px | 6.6 / 5.4 | 6.0 / 6.0 |
+  | centered badge cell | standard | 32 / 16px | 9.1 / 6.9 | 8.0 / 8.0 |
+  | centered badge cell | comfortable | 40 / 16px | 13.1 / 10.9 | 12.0 / 12.0 |
+  | icon column (custom render; spec Assets) | compact | 28 / 16px | 6.5 / 5.5 | 6.0 / 6.0 |
+  | icon column | standard | 32 / 16px | 8.8 / 7.2 | 8.0 / 8.0 |
+  | checkbox column (DAM Users, spec Assets, Stock) | compact | 28 / 16px | 6.0 / 6.0 | 6.0 / 6.0 |
+  | DAM Users badges (a Badge the engine renders itself) | compact | 28 / 20px | 4.0 / 4.0 | 4.0 / 4.0 |
+
+  The checkbox columns are in the middle at every density today (the input is the cell's own flex item); the earlier
+  report predates the row-header cell's own rules. Cause: a custom cell's content (column.render) sits in the engine's
+  inline wrapper `span.plx-data-grid__portal`; the cell centers the wrapper, but a badge or icon inside it is an inline box
+  on the wrapper's text line at line-height normal, so the font's ascent pushes it down. Table is exact because its
+  wrapper is `display: contents`. Proposed geometry fix (never a nudge):
+  `.plx-data-grid__portal:where(:not(.plx-data-grid__portal--actions)){display:contents;}`: the content becomes the cell's
+  own flex item and the cell centers it; the row-actions wrapper keeps its box (it fades the actions with opacity, which a
+  `display: contents` element cannot carry); a lone link keeps filling its cell; Table's last rule (table.css) becomes
+  redundant. Effect: badges and icons in custom cells move up 0.5 to 1.1px; nothing else moves (cells, rows and engine
+  values are unchanged). Options: (1) apply it as above; (2) apply it to centered and icon cells only; (3) leave it.
 - **Phase 4 text roles** for the 8 DataGrid and Table parts still on the migration backlog
   (`check-system.text-contract.json`). Done in batches 5 and 6: group count, summary value, value, the empty message and data cells (and Table's); the
   migration list holds no grid part.
