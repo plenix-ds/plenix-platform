@@ -128,7 +128,7 @@
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-header .plx-table__grid-col.plx-table__cell--icon:hover{background-color:var(--plx-comp-data-grid-cell-icon-hover-background);}
 
 
-.plx-table[data-plx-engine="next"] .plx-table__cell--name{font-weight:var(--plx-comp-data-grid-name-font-weight);}
+.plx-table[data-plx-engine="next"] .plx-table__cell--name{font-weight:var(--plx-state-data-grid-unread-weight,var(--plx-comp-data-grid-name-font-weight));}
 .plx-table[data-plx-engine="next"] .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--data{font-family:var(--plx-comp-data-grid-data-font-family);font-size:var(--plx-comp-data-grid-data-font-size);word-spacing:var(--plx-sys-font-data-word-spacing);}
 
 
@@ -277,7 +277,7 @@
 
 .plx-table[data-plx-engine="next"] .plx-table__grid-cell code{font-size:inherit;}
 
-.plx-table[data-plx-engine="next"] .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-label{font-weight:var(--plx-comp-data-grid-name-font-weight);}
+.plx-table[data-plx-engine="next"] .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-label{font-weight:var(--plx-state-data-grid-unread-weight,var(--plx-comp-data-grid-name-font-weight));}
 
 .plx-table[data-plx-engine="next"] .plx-table__grid-row-handle{cursor:grab;}
 .plx-table[data-plx-engine="next"] .plx-table__grid-row.plx-table__grid-moving,.plx-table[data-plx-engine="next"] .plx-table__grid-row.plx-table__grid-moving *{cursor:grabbing;}
@@ -343,7 +343,7 @@
 
   .plx-table[data-plx-engine="next"].plx-table--narrow .plx-table__group-cell:not(.plx-table__group-cell--first){display:none;}
   .plx-table[data-plx-engine="next"].plx-table--narrow .plx-table__group-cell--first{max-inline-size:100%;}
-  .plx-table[data-plx-engine="next"].plx-table--narrow .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--key-first{font-weight:var(--plx-comp-data-grid-name-font-weight);}
+  .plx-table[data-plx-engine="next"].plx-table--narrow .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--key-first{font-weight:var(--plx-state-data-grid-unread-weight,var(--plx-comp-data-grid-name-font-weight));}
   .plx-table[data-plx-engine="next"].plx-table--narrow .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--key:not(.plx-table__cell--key-first){color:var(--plx-comp-data-grid-list-detail-text);padding-block-start:var(--plx-comp-data-grid-list-row-gap);}
 
 
@@ -632,3 +632,11 @@
 .plx-table[data-plx-engine="next"] .plx-table__grid .plx-table__grid-row .plx-table__grid-cell.plx-table__cell--row-menu::before{background-color:var(--plx-comp-data-grid-column-line);content:"";inline-size:var(--plx-comp-data-grid-line-width);inset-block-end:var(--plx-comp-data-grid-column-line-inset);inset-block-start:var(--plx-comp-data-grid-column-line-inset);inset-inline-start:0;position:absolute;}
 /* its own font (Styling Standard 3.4: raw-element rules do not reach component elements) */
 .plx-table__grid-data-tree-control{font-family:inherit;}
+
+/* Unread is independent of interaction state. Only record rows and their own cells carry this attribute. */
+@property --plx-state-data-grid-unread-weight{syntax:"*";inherits:false;}
+.plx-table__grid-row[data-plx-unread]{font-weight:var(--plx-comp-data-grid-unread-font-weight);}
+.plx-table__grid-cell[data-plx-unread]{--plx-state-data-grid-unread-weight:var(--plx-comp-data-grid-unread-font-weight);}
+.plx-table__grid-row[data-plx-unread]::before{content:"";--plx-state-data-grid-unread-bar-width:var(--plx-comp-data-grid-unread-bar-width);position:absolute;inset-block-start:0;inset-block-end:0;inset-inline-start:0;inline-size:var(--plx-state-data-grid-unread-bar-width);background-color:var(--plx-comp-data-grid-unread-bar-color);pointer-events:none;z-index:var(--plx-sys-layer-sticky);}
+
+@property --plx-state-data-grid-unread-bar-width{syntax:"*";inherits:false;}

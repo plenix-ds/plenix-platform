@@ -7304,6 +7304,108 @@ function Notice({
   }) : null);
 }
   } },
+  "platform/components/DataGrid/unread.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useUnread = useUnread;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · unread records
+   Summary: Key-based unread state shared by DataGrid, Table and VirtualList.
+   Usage: useUnread(records, keyOf, props).
+   Props: unread(record), unreadKeys, onUnreadChange(keys, {unreadCount}), markReadOnOpen, readDelay.
+   Behavior: Controlled keys stay authoritative; predicate mode keeps local read overrides. Timers are canceled on unmount.
+   Notes: Records are never mutated. */
+
+function useUnread(records, keyOf, props) {
+  const [overrides, setOverrides] = _react.default.useState(() => new Map());
+  const enabled = typeof props.unread === 'function' || Array.isArray(props.unreadKeys);
+  const keys = _react.default.useMemo(() => {
+    if (Array.isArray(props.unreadKeys)) return new Set(props.unreadKeys);
+    return new Set(records.filter(record => overrides.has(keyOf(record)) ? overrides.get(keyOf(record)) : props.unread?.(record)).map(keyOf));
+  }, [records, keyOf, props.unread, props.unreadKeys, overrides]);
+  const current = _react.default.useRef();
+  current.current = {
+    keys,
+    props,
+    keyOf
+  };
+  const timers = _react.default.useRef(new Map());
+  _react.default.useEffect(() => () => {
+    timers.current.forEach(clearTimeout);
+    timers.current.clear();
+  }, []);
+  const mark = _react.default.useCallback((items, value) => {
+    const {
+        keys,
+        props,
+        keyOf
+      } = current.current,
+      next = new Set(keys),
+      changes = [];
+    for (const record of items) {
+      const key = keyOf(record);
+      clearTimeout(timers.current.get(key));
+      timers.current.delete(key);
+      if (next.has(key) === value) continue;
+      value ? next.add(key) : next.delete(key);
+      changes.push(key);
+    }
+    if (!changes.length) return;
+    if (!Array.isArray(props.unreadKeys)) setOverrides(old => {
+      const next = new Map(old);
+      changes.forEach(key => next.set(key, value));
+      return next;
+    });
+    props.onUnreadChange?.([...next], {
+      unreadCount: next.size
+    });
+  }, []);
+  const open = _react.default.useCallback(record => {
+    const {
+        keys,
+        props,
+        keyOf
+      } = current.current,
+      key = keyOf(record);
+    if (props.markReadOnOpen === false || !keys.has(key) || timers.current.has(key)) return;
+    const delay = Math.max(0, Number(props.readDelay) || 0);
+    if (delay) timers.current.set(key, setTimeout(() => {
+      timers.current.delete(key);
+      mark([record], false);
+    }, delay));else mark([record], false);
+  }, [mark]);
+  return {
+    enabled,
+    keys,
+    count: keys.size,
+    has: record => keys.has(keyOf(record)),
+    mark,
+    open
+  };
+}
+  } },
+  "platform/components/DataGrid/room.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GridPane = void 0;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · GridPane
+   Summary: Internal bounded-pane context shared by SplitView and DataGrid.
+   Usage: SplitView supplies the provider; the grid reads its allocated room.
+   Props: Boolean context value; false outside a pane.
+   Behavior: Keeps pane viewport measurement local without changing standalone grid sizing.
+   Notes: No public component API or visual tokens. */
+
+const GridPane = exports.GridPane = /*#__PURE__*/_react.default.createContext(false);
+  } },
   "platform/components/DataGrid/scrollbars.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -15854,19 +15956,31 @@ exports.visibilityOf = visibilityOf;
 const valueAt = (row, field) => String(field).split('.').reduce((value, key) => value == null ? undefined : value[key], row);
 exports.valueAt = valueAt;
 function opening(props) {
-  const saved = readView(props.storageKey) || {},
+  const saved = props.onViewChange ? {} : readView(props.storageKey) || {},
     options = props.options || {},
     known = new Set(props.columns.map(c => c.field));
-  const fields = values => Array.isArray(values) ? values.filter(f => known.has(f)) : undefined;
-  const widths = saved.widths && typeof saved.widths === 'object' ? Object.fromEntries(Object.entries(saved.widths).filter(([key, value]) => known.has(key) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0)) : {};
+  const fields = values => Array.isArray(values) ? [...new Set(values.filter(f => known.has(f)))] : undefined;
+  const groups = value => {
+    if (!Array.isArray(value)) return typeof value === 'string' ? known.has(value) ? value : false : value;
+    const seen = new Set(),
+      next = value.filter(level => {
+        const field = typeof level === 'object' ? level.field : level;
+        if (!known.has(field) || seen.has(field)) return false;
+        seen.add(field);
+        return true;
+      });
+    return next.length ? next : false;
+  };
+  const storedWidths = props.columnWidths ?? saved.widths;
+  const widths = storedWidths && typeof storedWidths === 'object' ? Object.fromEntries(Object.entries(storedWidths).filter(([key, value]) => known.has(key) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0)) : {};
   const step = ['short', 'medium', 'tall', 'extra-tall'].includes(saved.rowHeight) ? saved.rowHeight : props.rowHeight || 'short';
   return {
-    sorting: normalizeSort(props.sort?.length ? props.sort : saved.sort || options.initialSort),
+    sorting: normalizeSort(Array.isArray(props.sort) ? !props.onViewChange && !props.sort.length && !saved.sort ? options.initialSort : props.sort : saved.sort || options.initialSort).filter(item => known.has(item.id)),
     order: fields(props.columnOrder) || fields(saved.order) || props.columns.map(c => c.field),
     visibility: visibilityOf(fields(props.hiddenColumns) || fields(saved.hidden)),
     widths,
-    groupBy: props.groupBy ?? saved.groupBy ?? options.groupBy ?? false,
-    collapsed: Array.isArray(saved.collapsed) ? saved.collapsed : [],
+    groupBy: groups(props.groupBy ?? saved.groupBy ?? options.groupBy ?? false),
+    collapsed: Array.isArray(props.collapsedGroups) ? props.collapsedGroups : Array.isArray(saved.collapsed) ? saved.collapsed : [],
     rowHeight: step,
     wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false
   };
@@ -16552,6 +16666,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.changeRecord = changeRecord;
 exports.groupDisplay = groupDisplay;
 exports.groupSummary = groupSummary;
+exports.groupValue = groupValue;
 exports.groupedRows = groupedRows;
 exports.recordsOf = recordsOf;
 exports.setField = setField;
@@ -16611,11 +16726,36 @@ function changeRecord(rows, key, change, index = 'id', children = null) {
   });
 }
 const valueKey = value => value == null || value === '' ? 'empty' : typeof value + ':' + JSON.stringify(value);
+// Calendar groups use UTC, so persisted group keys do not depend on the viewer's time zone.
+function groupValue(value, level, column = {}) {
+  if (value == null || value === '') return null;
+  if (typeof column.groupBucket === 'function') return column.groupBucket(value);
+  const config = typeof level === 'object' ? level : {};
+  const interval = config.interval || (column.type === 'date' ? 'day' : undefined);
+  if (['day', 'week', 'month', 'year'].includes(interval)) {
+    const date = new Date(value);
+    if (!Number.isFinite(date.getTime())) return null;
+    const year = date.getUTCFullYear(),
+      month = date.getUTCMonth();
+    if (interval === 'year') return String(year);
+    if (interval === 'month') return date.toISOString().slice(0, 7);
+    const day = new Date(Date.UTC(year, month, date.getUTCDate()));
+    if (interval === 'week') day.setUTCDate(day.getUTCDate() - (day.getUTCDay() + 6) % 7);
+    return day.toISOString().slice(0, 10);
+  }
+  const step = Number(config.range ?? column.groupRange);
+  if (Number.isFinite(step) && step > 0 && typeof value === 'number' && Number.isFinite(value)) {
+    const start = Math.floor(value / step) * step;
+    return '[' + start + ', ' + (start + step) + ')';
+  }
+  return value;
+}
 function groupedRows(rows, fields, columns) {
   const levels = typeof fields === 'string' || typeof fields === 'function' ? [fields] : Array.isArray(fields) ? fields.filter(Boolean) : [];
   function build(input, depth, path) {
     if (depth >= levels.length) return [];
-    const field = levels[depth],
+    const level = levels[depth],
+      field = typeof level === 'object' ? level.field : level,
       column = columns.find(column => column.field === field) || {},
       buckets = new Map();
     for (const row of input) {
@@ -16623,7 +16763,8 @@ function groupedRows(rows, fields, columns) {
         multiple = column.multi || column.type === 'multi';
       const values = multiple && Array.isArray(raw) ? raw.length ? raw : [null] : [raw];
       const seen = new Set();
-      for (const value of values) {
+      for (const original of values) {
+        const value = groupValue(original, level, column);
         const key = valueKey(value);
         if (seen.has(key)) continue;
         seen.add(key);
@@ -16705,7 +16846,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16713,6 +16854,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DataGridEngine = DataGridEngine;
 var _react = _interopRequireDefault(require("react"));
+var _unread = require("./unread.js");
+var _room = require("./room.js");
 var _reactDom = require("react-dom");
 var _scrollbars = require("./scrollbars.jsx");
 var _dnd = require("../../utils/dnd.js");
@@ -16746,7 +16889,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      groupBy, tree/childrenField/treeColumn, editable columns, row menus, storageKey, fetchRows and loading/error state.
      onRowClick(record,event), onRowDoubleClick(record,event), onCellEdit(record,change) receive application records.
    Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
-     token-sized CSS gaps represent missing rows. Opening saved state is supplied on the very first render.
+     token-sized CSS gaps represent missing rows. An automatic viewport is bounded by its allocated pane as well as the browser. Opening saved state is supplied on the very first render. Search filtering is deferred so typing stays responsive;
+     controlled sort state and the numeric text collator are reused across search updates.
    Notes: Own Plenix markup and stylesheet use the existing table tokens. Applications use the public DataGrid entry point. */
 const EMPTY_ROWS = [];
 const words = (template, values) => String(template).replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
@@ -16838,13 +16982,14 @@ const lengthName = v => {
   const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || ''));
   return match?.[1];
 };
+const sortCollator = new Intl.Collator(undefined, {
+  numeric: true
+});
 const compare = (a, b, id) => {
   const x = a.getValue(id),
     y = b.getValue(id);
   if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
-  return (0, _cells.valueText)(x).localeCompare((0, _cells.valueText)(y), undefined, {
-    numeric: true
-  });
+  return sortCollator.compare((0, _cells.valueText)(x), (0, _cells.valueText)(y));
 };
 function Gap({
   count,
@@ -16935,6 +17080,7 @@ function Check({
     onClick: e => e.stopPropagation()
   }));
 }
+const WidthPixels = /*#__PURE__*/_react.default.createContext(null);
 // Calculate token widths during React's read-only render, then let React batch all style writes at commit.
 // Reading the grid in a separate layout effect for every new cell alternates reads and writes and forces layout.
 const Width = /*#__PURE__*/_react.default.forwardRef(function Width({
@@ -16946,14 +17092,14 @@ const Width = /*#__PURE__*/_react.default.forwardRef(function Width({
   ...props
 }, forwarded) {
   const ref = _react.default.useRef(null),
+    pixels = _react.default.useContext(WidthPixels),
+    length = value => pixels ? pixels(value) : (0, _grid.gridPx)(value, {
+      el: ref.current || document.documentElement
+    }),
     style = width == null ? undefined : {
-      width: (0, _grid.gridPx)(width, {
-        el: ref.current || document.documentElement
-      }),
+      width: length(width),
       ...(frozenOffset == null ? {} : {
-        insetInlineStart: (0, _grid.gridPx)(frozenOffset, {
-          el: ref.current || document.documentElement
-        })
+        insetInlineStart: length(frozenOffset)
       })
     };
   return /*#__PURE__*/_react.default.createElement(Element, _extends({}, props, {
@@ -16965,6 +17111,34 @@ const Width = /*#__PURE__*/_react.default.forwardRef(function Width({
     }
   }), children);
 });
+
+// Compatibility cell adapters read through a live ref; retain custom output until its record, column or row state changes.
+function RowMenuContent({
+  build,
+  items,
+  record,
+  rowApi
+}) {
+  return build(typeof items === 'function' ? items(record) : items || [], record, rowApi);
+}
+const CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
+  column,
+  record,
+  cell,
+  block
+}) {
+  const content = column.render(record, cell);
+  return /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
+    className: block + '__value'
+  }, content);
+}, (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block);
+// Window-only updates reuse complete record rows; view, selection and edit changes invalidate their closures.
+const MemoGridRow = /*#__PURE__*/_react.default.memo(function MemoGridRow({
+  row,
+  render
+}) {
+  return render(row);
+}, (a, b) => a.row === b.row && a.version === b.version && a.selected === b.selected);
 const RowTarget = /*#__PURE__*/_react.default.forwardRef(function RowTarget({
   onAttach,
   ...props
@@ -16977,6 +17151,7 @@ const RowTarget = /*#__PURE__*/_react.default.forwardRef(function RowTarget({
   }));
 });
 function NextEngine(props) {
+  const inPane = _react.default.useContext(_room.GridPane);
   const {
     label,
     data = EMPTY_ROWS,
@@ -16989,14 +17164,14 @@ function NextEngine(props) {
     options = {},
     mode = 'fill',
     height,
-    narrow = 'list',
+    narrow: requestedNarrow,
     narrowAt = '--plx-ref-size-600px',
     keyColumns,
     storageKey,
     isStatic = false,
     cells = 'text',
     headerMenu = true,
-    rowMenu,
+    rowMenu: suppliedRowMenu,
     rowMenuButton = true,
     columnMenu,
     onReady,
@@ -17006,6 +17181,7 @@ function NextEngine(props) {
     error,
     onRetry
   } = props;
+  const narrow = requestedNarrow === undefined ? inPane && !isStatic ? 'table' : 'list' : requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
   const S = {
       ...defaults,
@@ -17043,6 +17219,13 @@ function NextEngine(props) {
     [hiddenOwner, setHiddenOwner] = _react.default.useState(null);
   const [sizing, setSizing] = _react.default.useState(() => Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)])));
   const [autoSizing, setAutoSizing] = _react.default.useState({});
+  const widthsSignal = JSON.stringify(props.columnWidths || {});
+  _react.default.useEffect(() => {
+    if (!props.onViewChange) return;
+    const known = new Set(columns.map(column => column.field)),
+      next = Object.fromEntries(Object.entries(props.columnWidths || {}).filter(([field, value]) => known.has(field) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0).map(([field, value]) => [field, parseFloat(value)]));
+    setSizing(old => JSON.stringify(old) === JSON.stringify(next) ? old : next);
+  }, [widthsSignal, !!props.onViewChange, columns]);
   const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
   const [filterField, setFilterField] = _react.default.useState(null);
@@ -17054,8 +17237,12 @@ function NextEngine(props) {
     [collapsed, setCollapsed] = _react.default.useState(() => new Set(initial.collapsed));
   const [loaded, setLoaded] = _react.default.useState(props.pageSize || 50),
     [printing, setPrinting] = _react.default.useState(false);
+  const collapsedSignal = JSON.stringify(props.collapsedGroups || []);
+  _react.default.useEffect(() => {
+    if (props.onViewChange) setCollapsed(old => JSON.stringify([...old]) === collapsedSignal ? old : new Set(props.collapsedGroups || []));
+  }, [collapsedSignal, !!props.onViewChange]);
   const groupSignal = JSON.stringify(props.groupBy),
-    groupBy = groupOwner === groupSignal ? localGroups : props.groupBy ?? options.groupBy ?? localGroups;
+    groupBy = props.onViewChange ? props.groupBy ?? false : groupOwner === groupSignal ? localGroups : props.groupBy ?? options.groupBy ?? localGroups;
   const childField = props.tree ?? options.dataTree ? props.childrenField || options.dataTreeChildField || '_children' : null;
   const [ownSelection, setSelection] = _react.default.useState({}),
     [filters, setFilters] = _react.default.useState([]),
@@ -17077,22 +17264,61 @@ function NextEngine(props) {
     }),
     [isNarrow, setNarrow] = _react.default.useState(false),
     [message, setMessage] = _react.default.useState('');
+  // One conversion per distinct width and measured environment, shared by every visible cell.
+  const widthPixels = _react.default.useMemo(() => {
+    const cache = new Map();
+    return value => {
+      if (!cache.has(value)) cache.set(value, (0, _grid.gridPx)(value, {
+        el: frame.current || document.documentElement
+      }));
+      return cache.get(value);
+    };
+  }, [metrics]);
   const effectiveStep = props.rowHeight || rowHeight,
     effectiveWrap = props.wrapHeaders ?? wrapHeaders;
   const selection = Array.isArray(selected) ? Object.fromEntries(selected.map(k => [(0, _state.recordKey)(k), true])) : ownSelection;
+  const controlledSort = _react.default.useMemo(() => (0, _state.normalizeSort)(props.sort), [sortSignal]);
+  const deferredFilter = _react.default.useDeferredValue(props.filter);
   const initiallyControlledSort = _react.default.useRef(!!props.sort?.length),
     appliedSort = _react.default.useRef(false);
-  if (props.sort?.length && (initiallyControlledSort.current || JSON.stringify((0, _state.normalizeSort)(props.sort)) !== JSON.stringify(initial.sorting))) appliedSort.current = true;
+  if (props.sort?.length && (initiallyControlledSort.current || JSON.stringify(controlledSort) !== JSON.stringify(initial.sorting))) appliedSort.current = true;
   _react.default.useEffect(() => {
     if (props.sort?.length && sortOwner !== sortSignal) setSortOwner(null);
   }, [sortSignal]);
-  const sorting = sortOwner === sortSignal || !props.sort?.length && sortOwner !== null ? localSort : props.sort?.length ? (0, _state.normalizeSort)(props.sort) : appliedSort.current ? [] : localSort;
-  const columnOrder = orderOwner === orderSignal ? order : props.columnOrder || order,
-    columnVisibility = hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? (0, _state.visibilityOf)(props.hiddenColumns) : visibility;
+  const sorting = props.onViewChange ? controlledSort : sortOwner === sortSignal || !props.sort?.length && sortOwner !== null ? localSort : props.sort?.length ? controlledSort : appliedSort.current ? EMPTY_ROWS : localSort;
+  const controlledVisibility = _react.default.useMemo(() => (0, _state.visibilityOf)(props.hiddenColumns), [hiddenSignal]);
+  const columnOrder = props.onViewChange ? props.columnOrder || order : orderOwner === orderSignal ? order : props.columnOrder || order,
+    columnVisibility = props.onViewChange ? controlledVisibility : hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? controlledVisibility : visibility;
+  const sortingRef = _react.default.useRef(sorting);
+  sortingRef.current = sorting;
   const remoteMode = typeof props.fetchRows === 'function' && (mode === 'pages' || mode === 'load-more'),
     incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
   const source = edited?.input === incoming ? edited.rows : incoming,
     canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
+  // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
+  const unreadKey = _react.default.useCallback(record => record[index], [index]);
+  const unread = (0, _unread.useUnread)(canonical, unreadKey, props),
+    [localUnreadOnly, setUnreadOnly] = _react.default.useState(false);
+  const unreadOnly = props.unreadOnly ?? localUnreadOnly;
+  const activeFilter = _react.default.useMemo(() => unreadOnly ? {
+    keys: unread.keys,
+    filter: deferredFilter
+  } : deferredFilter, [unreadOnly, unread.keys, deferredFilter]);
+  const rowMenu = unread.enabled && !isStatic ? record => [...(typeof suppliedRowMenu === 'function' ? suppliedRowMenu(record) : suppliedRowMenu || []), {
+    label: unread.has(record) ? 'Mark as read' : 'Mark as unread',
+    onSelect: () => unread.mark([record], !unread.has(record))
+  }] : suppliedRowMenu;
+  const recordFilter = _react.default.useMemo(() => {
+    const results = new WeakMap();
+    return row => {
+      const record = row.original;
+      if (unreadOnly && !unread.has(record)) return false;
+      if (typeof deferredFilter !== 'function') return true;
+      if (!results.has(record)) results.set(record, !!deferredFilter(record));
+      return results.get(record);
+    };
+  }, [deferredFilter, source, unreadOnly, unread.keys]);
+  const recordPositions = _react.default.useMemo(() => new Map(canonical.map((record, i) => [record, i])), [canonical]);
   const recordsByKey = _react.default.useMemo(() => new Map(canonical.map(record => [(0, _state.recordKey)(record[index]), record])), [canonical, index]);
   const replaceData = rows => new Promise(resolve => {
     mutations.current.push(resolve);
@@ -17105,14 +17331,22 @@ function NextEngine(props) {
     setGroupOwner(groupSignal);
     setGroups(() => value);
     setCollapsed(new Set());
+    props.onViewChange?.({
+      groupBy: value,
+      collapsed: []
+    });
   };
-  const toggleGroup = (id, open) => setCollapsed(old => {
-    const next = new Set(old),
-      expand = open ?? old.has(id);
+  const toggleGroup = (id, open) => {
+    const next = new Set(live.current.collapsed),
+      expand = open ?? next.has(id);
     if (expand) next.delete(id);else next.add(id);
+    live.current.collapsed = next;
+    setCollapsed(next);
     setMessage(expand ? S.expanded : S.collapsed);
-    return next;
-  });
+    props.onViewChange?.({
+      collapsed: [...next]
+    });
+  };
   const updateRecord = (key, change) => new Promise(resolve => {
     mutations.current.push(resolve);
     setEdited(old => ({
@@ -17141,6 +17375,9 @@ function NextEngine(props) {
     listeners.current.get(name)?.forEach(fn => fn(...args));
   };
   const api = _react.default.useMemo(() => (0, _adapter.createAdapter)(live), []);
+  api.getUnreadCount = () => unread.count;
+  api.markRead = keys => unread.mark(canonical.filter(record => [].concat(keys).includes(record[index])), false);
+  api.markUnread = keys => unread.mark(canonical.filter(record => [].concat(keys).includes(record[index])), true);
   const resize = (field, value) => {
     const definition = columns.find(c => c.field === field),
       at = frame.current;
@@ -17153,13 +17390,32 @@ function NextEngine(props) {
       ...s,
       [field]: width
     }));
+    props.onViewChange?.({
+      widths: {
+        ...sizing,
+        [field]: width
+      }
+    });
+  };
+  const changeOrder = next => {
+    setOrderOwner(orderSignal);
+    setOrder(next);
+    props.onViewChange?.({
+      columnOrder: next
+    });
+  };
+  const changeVisibility = next => {
+    setHiddenOwner(hiddenSignal);
+    setVisibility(next);
+    props.onViewChange?.({
+      hiddenColumns: Object.keys(next).filter(field => next[field] === false)
+    });
   };
   const move = (field, target, after) => {
     const current = live.current.table.getAllLeafColumns().map(c => c.id).filter(id => !id.startsWith('__') && id !== field);
     const at = current.indexOf(target);
     current.splice(Math.max(0, at + (after ? 1 : 0)), 0, field);
-    setOrderOwner(orderSignal);
-    setOrder(current);
+    changeOrder(current);
     emit('columnMoved', api.column(field), current.map(api.column));
   };
   const notifySelection = next => {
@@ -17190,6 +17446,9 @@ function NextEngine(props) {
     setSortOwner(sortSignal);
     setSorting(next);
     setPage(0);
+    props.onViewChange?.({
+      sort: sorted(next)
+    });
     emit('dataSorted', next.map(s => ({
       field: s.id,
       dir: s.desc ? 'desc' : 'asc'
@@ -17201,12 +17460,12 @@ function NextEngine(props) {
     header: c.title || c.field,
     enableSorting: c.headerSort !== false,
     filterFn: c.type === 'bytes' ? _cells.byteFilter : c.filter === 'list' ? _cells.listFilter : _cells.textFilter,
-    sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sorting.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
+    sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sortingRef.current.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
     size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, (0, _environment.tokenPixels)(c.width, frame.current) || autoSizing[c.field] || metrics.min),
     minSize: kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min,
     maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
     meta: c
-  })), [columns, metrics.min, autoSizing, sorting]);
+  })), [columns, metrics.min, metrics.lead, autoSizing]);
   const table = (0, _reactTable.useReactTable)({
     data: source,
     columns: leafDefs,
@@ -17221,7 +17480,7 @@ function NextEngine(props) {
       columnVisibility,
       columnSizing: sizing,
       columnFilters: filters,
-      globalFilter: props.filter,
+      globalFilter: activeFilter,
       pagination: {
         pageIndex: page,
         pageSize
@@ -17230,12 +17489,10 @@ function NextEngine(props) {
     },
     onSortingChange: changeSort,
     onColumnVisibilityChange: update => {
-      setHiddenOwner(hiddenSignal);
-      setVisibility(typeof update === 'function' ? update(columnVisibility) : update);
+      changeVisibility(typeof update === 'function' ? update(columnVisibility) : update);
     },
     onColumnOrderChange: update => {
-      setOrderOwner(orderSignal);
-      setOrder(typeof update === 'function' ? update(columnOrder) : update);
+      changeOrder(typeof update === 'function' ? update(columnOrder) : update);
     },
     onColumnSizingChange: setSizing,
     onColumnFiltersChange: update => {
@@ -17243,8 +17500,8 @@ function NextEngine(props) {
       setPage(0);
     },
     getColumnCanGlobalFilter: () => true,
-    globalFilterFn: (row, id, fn) => typeof fn !== 'function' || !!fn(row.original),
-    globalFilter: props.filter,
+    globalFilterFn: recordFilter,
+    globalFilter: deferredFilter,
     manualPagination: remoteMode,
     manualSorting: remoteMode,
     manualFiltering: remoteMode,
@@ -17299,8 +17556,7 @@ function NextEngine(props) {
     onReorder: (next, {
       item
     }) => {
-      setOrderOwner(orderSignal);
-      setOrder(next.map(column => column.id));
+      changeOrder(next.map(column => column.id));
       emit('columnMoved', api.column(item.id), next.map(column => api.column(column.id)));
     }
   });
@@ -17408,6 +17664,7 @@ function NextEngine(props) {
     const measure = () => {
       raf = 0;
       const next = {
+        step: (0, _grid.gridStep)(at),
         row: (0, _environment.tokenPixels)('--plx-comp-data-grid-record-height', at),
         line: (0, _environment.tokenPixels)('--plx-comp-data-grid-line-width', at),
         lead: (0, _environment.tokenPixels)('--plx-comp-data-grid-lead-column-width', at),
@@ -17424,8 +17681,9 @@ function NextEngine(props) {
         want = listed && at.clientWidth > 0 && at.clientWidth < threshold;
       setNarrow(want);
       if (!isStatic && !height && mode !== 'pages' && holder.current) {
-        const top = holder.current.getBoundingClientRect().top;
-        holder.current.style.maxBlockSize = (0, _grid.gridPx)(Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+        const top = holder.current.getBoundingClientRect().top,
+          room = at.getBoundingClientRect().bottom - top;
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
           round: 'down',
           el: at
         });
@@ -17452,7 +17710,7 @@ function NextEngine(props) {
       mo.disconnect();
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|')]);
+  }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|')]);
   _react.default.useLayoutEffect(() => {
     virtual.measure();
   }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
@@ -17471,7 +17729,7 @@ function NextEngine(props) {
     }
   }, [onReady]);
   _react.default.useEffect(() => {
-    if (!ready.current) return;
+    if (!ready.current || props.onViewChange) return;
     (0, _state.writeView)(storageKey, {
       sort: sorting.map(s => ({
         column: s.id,
@@ -17513,7 +17771,7 @@ function NextEngine(props) {
       type: 'like',
       value: f.value
     })), table.getFilteredRowModel().rows.map(r => api.row(r.id)));
-  }, [props.filter, JSON.stringify(filters), source, keepHiddenSelection]);
+  }, [deferredFilter, JSON.stringify(filters), source, keepHiddenSelection]);
   const previousData = _react.default.useRef(source);
   _react.default.useEffect(() => {
     if (ready.current && previousData.current !== source) {
@@ -17616,7 +17874,7 @@ function NextEngine(props) {
       to = selectionRows.indexOf(row);
     if ((event.nativeEvent?.shiftKey || event.shiftKey) && from >= 0 && to >= 0) {
       const next = {
-        ...selection
+        ...live.current.selection
       };
       selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(record => {
         if (wanted) next[record.id] = true;else delete next[record.id];
@@ -17652,7 +17910,6 @@ function NextEngine(props) {
       }
     }, item.label);
   });
-  const rowItems = row => typeof rowMenu === 'function' ? rowMenu(row) : rowMenu || [];
   const headerItems = column => {
     const c = column.columnDef.meta,
       custom = typeof columnMenu === 'function' ? columnMenu(c) : columnMenu || [];
@@ -17686,6 +17943,7 @@ function NextEngine(props) {
       disabled: frozen.has(c.field) || ordered.indexOf(column) === ordered.length - 1,
       onSelect: () => columnDnd.moveTo(ordered.indexOf(column), ordered.indexOf(column) + 1)
     }, S.moveRight), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: c.groupable === false,
       onSelect: () => changeGroups(c.field)
     }, S.group), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
       onSelect: () => changeGroups(false)
@@ -17693,7 +17951,7 @@ function NextEngine(props) {
       onSelect: () => column.toggleVisibility(false),
       disabled: frozen.has(c.field)
     }, S.hide), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => setVisibility({})
+      onSelect: () => changeVisibility({})
     }, S.showAll));
   };
   const startResize = (event, column) => {
@@ -17729,7 +17987,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).includes(c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -18009,7 +18267,9 @@ function NextEngine(props) {
     let offset = selectable ? metrics.lead : 0;
     const node = /*#__PURE__*/_react.default.createElement(RowTarget, _extends({
       key: row.displayKey || row.id
-    }, canonical.indexOf(record) < 0 ? null : rowDnd.itemProps(canonical.indexOf(record)), {
+    }, !(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)), {
+      "data-plx-unread": unread.has(record) || undefined,
+      "aria-label": unread.has(record) ? String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index]) + ', unread' : undefined,
       "data-plx-record": row.id,
       onAttach: node => rememberRow(row, node),
       role: "row",
@@ -18030,6 +18290,7 @@ function NextEngine(props) {
         });else if (options.selectableRows) pick(row.id, !selection[row.id]);
         emit('rowClick', e, rowApi);
         props.onRowClick?.(record, e);
+        if (props.onRowClick || on.rowClick) unread.open(record);
       },
       onDoubleClick: e => {
         if (!e.target.closest(interactive)) {
@@ -18049,6 +18310,7 @@ function NextEngine(props) {
           });else if (options.selectableRows) pick(row.id, !selection[row.id]);
           emit('rowClick', e, rowApi);
           props.onRowClick?.(record, e);
+          if (props.onRowClick || on.rowClick) unread.open(record);
         }
         if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
           e.preventDefault();
@@ -18072,7 +18334,6 @@ function NextEngine(props) {
       const cell = api.cell(row.id, c.field),
         canEdit = !!c.editor && (typeof c.editable === 'function' ? c.editable(cell) : c.editable !== false);
       const value = (0, _state.valueAt)(record, c.field);
-      const content = c.render ? c.render(record, cell) : value == null || value === '' ? c.empty ?? '' : String(value);
       return /*#__PURE__*/_react.default.createElement(Width, {
         key: c.field,
         width: isNarrow ? null : widths[c.field],
@@ -18080,6 +18341,7 @@ function NextEngine(props) {
         role: isStatic ? c.rowLabel ? 'rowheader' : 'cell' : 'gridcell',
         tabIndex: isStatic ? undefined : -1,
         "data-plx-field": c.field,
+        "data-plx-unread": unread.has(record) || undefined,
         dir: "auto",
         onDoubleClick: () => {
           if (canEdit) setEditing({
@@ -18120,7 +18382,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), [].concat(groupBy || []).includes(c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
       }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -18137,27 +18399,32 @@ function NextEngine(props) {
         value: value,
         onCommit: next => commitEdit(row.id, c.field, next),
         onCancel: () => setEditing(null)
-      }) : c.rowHandle && canonical.indexOf(record) >= 0 ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      }) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
         label: S.moveRow,
         trigger: /*#__PURE__*/_react.default.createElement(_DragHandle.DragHandle, {
-          dnd: rowDnd.handleProps(canonical.indexOf(record))
+          dnd: rowDnd.handleProps(recordPositions.get(record) ?? -1)
         })
       }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-        disabled: !rowDnd.canMove(canonical.indexOf(record), -1),
-        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), canonical.indexOf(record) - 1)
+        disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, -1),
+        onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) - 1)
       }, S.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-        disabled: !rowDnd.canMove(canonical.indexOf(record), 1),
-        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), canonical.indexOf(record) + 1)
+        disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, 1),
+        onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) + 1)
       }, S.moveDown), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), 0)
+        onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, 0)
       }, S.moveTop), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-        onSelect: () => rowDnd.moveTo(canonical.indexOf(record), canonical.length - 1)
+        onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical.length - 1)
       }, S.moveBottom)) : c.render ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__portal',
         "data-plx-link-target": "cell"
-      }, /*#__PURE__*/_react.default.isValidElement(content) ? content : /*#__PURE__*/_react.default.createElement("span", {
-        className: B + '__value'
-      }, content)) : /*#__PURE__*/_react.default.createElement(_cells.CellValue, {
+      }, /*#__PURE__*/_react.default.createElement(CustomCell, {
+        column: c,
+        record: record,
+        cell: cell,
+        rowId: row.id,
+        selected: !!selection[row.id],
+        block: B
+      })) : /*#__PURE__*/_react.default.createElement(_cells.CellValue, {
         block: B,
         column: c,
         value: value,
@@ -18183,18 +18450,38 @@ function NextEngine(props) {
         icon: "more",
         label: S.rowActions
       })
-    }, menuItems(rowItems(record), record, rowApi))) : null);
+    }, /*#__PURE__*/_react.default.createElement(RowMenuContent, {
+      build: menuItems,
+      items: rowMenu,
+      record: record,
+      rowApi: rowApi
+    }))) : null);
     return rowMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
       key: row.displayKey || row.id,
       target: node,
       label: S.rowActions
-    }, menuItems(rowItems(record), record, rowApi)) : node;
+    }, /*#__PURE__*/_react.default.createElement(RowMenuContent, {
+      build: menuItems,
+      items: rowMenu,
+      record: record,
+      rowApi: rowApi
+    })) : node;
   };
+  const rowVersion = _react.default.useMemo(() => ({}), [unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
+  const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(MemoGridRow, {
+    key: row.displayKey || row.id,
+    row: row,
+    render: rowNode,
+    selected: !!selection[row.id],
+    version: props.movableRows ?? options.movableRows ? {} : rowVersion
+  }) : rowNode(row);
   const priorGroups = model.slice(0, first).filter(row => row.__group).map(row => row.__group),
     currentGroup = model[first]?.__group || priorGroups[priorGroups.length - 1];
   const stickyGroups = currentGroup ? priorGroups.filter((group, i) => group.path.every((part, depth) => JSON.stringify(part) === JSON.stringify(currentGroup.path[depth])) && !priorGroups.slice(i + 1).some(next => next.depth === group.depth)) : [];
   const failed = error || remoteError;
-  return /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement(WidthPixels.Provider, {
+    value: widthPixels
+  }, /*#__PURE__*/_react.default.createElement("div", {
     ref: frame,
     className: (0, _cx.cx)(B, pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
@@ -18214,7 +18501,25 @@ function NextEngine(props) {
         onRetry?.();
       }
     }, S.retry) : null
-  }, String(failed === true ? '' : failed.message || failed)) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, String(failed === true ? '' : failed.message || failed)) : null, unread.enabled && !isStatic ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    "aria-pressed": unreadOnly,
+    onClick: () => {
+      setUnreadOnly(!unreadOnly);
+      props.onUnreadOnlyChange?.(!unreadOnly);
+    }
+  }, "Show unread only (", unread.count, ")"), selectable ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: "Change selected rows",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost"
+    }, "Change selected rows")
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: !Object.keys(selection).some(key => selection[key]),
+    onSelect: () => unread.mark(canonical.filter(record => selection[(0, _state.recordKey)(record[index])]), false)
+  }, "Mark as read"), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: !Object.keys(selection).some(key => selection[key]),
+    onSelect: () => unread.mark(canonical.filter(record => selection[(0, _state.recordKey)(record[index])]), true)
+  }, "Mark as unread")) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: B + '__table ' + B + '__grid',
     role: isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid',
     "aria-label": label,
@@ -18256,10 +18561,20 @@ function NextEngine(props) {
   }, ['short', 'medium', 'tall', 'extra-tall'].map(step => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: step,
     checked: effectiveStep === step,
-    onSelect: () => setRowHeight(step)
+    onSelect: () => {
+      setRowHeight(step);
+      props.onViewChange?.({
+        rowHeight: step
+      });
+    }
   }, S[step])), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     checked: effectiveWrap,
-    onSelect: () => setWrapHeaders(v => !v)
+    onSelect: () => {
+      setWrapHeaders(!effectiveWrap);
+      props.onViewChange?.({
+        wrapHeaders: !effectiveWrap
+      });
+    }
   }, S.wrapHeaders))) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
     width: metrics.menu,
     className: `${B}__grid-col`,
@@ -18304,7 +18619,7 @@ function NextEngine(props) {
     onKeyDown: undefined
   }))) : null, /*#__PURE__*/_react.default.createElement(RowGap, {
     rows: model.slice(0, first)
-  }), shown.map(rowNode), /*#__PURE__*/_react.default.createElement(RowGap, {
+  }), shown.map(renderRow), /*#__PURE__*/_react.default.createElement(RowGap, {
     rows: model.slice(last)
   })), !model.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: `${B}__grid-placeholder`
@@ -18368,7 +18683,7 @@ function NextEngine(props) {
     className: "plx-sr-only",
     role: "status",
     "aria-live": "polite"
-  }, message));
+  }, message)));
 }
 function DataGridEngine(props) {
   return /*#__PURE__*/_react.default.createElement(NextEngine, _extends({
@@ -18399,6 +18714,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
        pill: false (as DataGrid).
      Table.preload(): compatibility no-op; the renderer is already bundled.
+   Props: unread(record), unreadKeys and onUnreadChange match DataGrid; static rows never mark themselves read.
    Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
      Links and controls supplied as cell content retain their own behavior. Wrapped cells stretch the entire row. The table grows with its rows and never scrolls internally.
    Notes: Existing Table tokens preserve the static-table look; use DataGrid for records people work with. */
@@ -18412,7 +18728,10 @@ function Table({
   narrow = 'table',
   headerVisible = true,
   cells = 'text',
-  className
+  className,
+  unread,
+  unreadKeys,
+  onUnreadChange
 }) {
   const staticColumns = _react.default.useMemo(() => columns.map(({
     title,
@@ -18449,6 +18768,9 @@ function Table({
   })), [columns]);
   return /*#__PURE__*/_react.default.createElement(_DataGridEngine.DataGridEngine, {
     isStatic: true,
+    unread: unread,
+    unreadKeys: unreadKeys,
+    onUnreadChange: onUnreadChange,
     label: label,
     data: data,
     columns: staticColumns,
@@ -24709,19 +25031,25 @@ const over = row => {
 function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = false) {
   const [step, setStep] = _react.default.useState(min);
   const [width, setWidth] = _react.default.useState(0);
+  const measured = _react.default.useRef(null);
   _react.default.useLayoutEffect(() => {
     if (!hold) setStep(min);
-  }, [width, key, min]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [width, key, min, hold]); // eslint-disable-line react-hooks/exhaustive-deps
   _react.default.useLayoutEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === 'undefined') return undefined;
     const ro = new ResizeObserver(() => setWidth(el.clientWidth));
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [ref]);
   _react.default.useLayoutEffect(() => {
     const el = ref.current;
     if (!el || step >= max || hold) return;
+    // Text covers count/custom-slot changes not represented by the caller's key. Reading it does not force layout.
+    // Keep this check after the commit: a render-time dependency would still see the previous DOM text.
+    const signature = [el, width, key, max, min, rows, step, el.textContent];
+    if (measured.current && signature.every((value, i) => value === measured.current[i])) return;
+    measured.current = signature;
     if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
   });
   return Math.max(min, Math.min(step, max));
@@ -26769,6 +27097,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        type: "text" (default) | "number" | "currency" | "date" | "select" | "checkbox" | "file" | "image" | "link" |
          "person" | "long-text" | "bytes" (file sizes; filters take "> 2 MB") | "multi" (several values: a grouped table
          puts the record in each of its groups): the header icon and the sort words
+       groupable: false disables header grouping; groupRange: positive numeric bucket width; groupBucket(value): custom bucket label.
+       groupBy also accepts [{ field, interval: "day" | "week" | "month" | "year", range }]; calendar periods use UTC, weeks start Monday.
        render(record): the cell as a React element; sorter: "string" | "number" | "date" | a compare function
          sorter(valueA, valueB, recordA, recordB, field, direction) returns ascending order; direction lets a fixed
          category order (such as folders first) compensate for the descending inversion
@@ -26782,6 +27112,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
+     unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
+     markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
+     unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
@@ -26805,11 +27138,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
      fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
        { rows, total }; search: the page's search text
-     storageKey: keeps the person's view (sort, widths, order, hidden columns, row height, wrap, groups) in this browser
-     narrow: "list" (default: under narrowAt, 600px of its own width, a list of keyColumns) | "table" | "auto"
+     storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
+     onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+       useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
+     narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
+     Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
+     Width conversions are shared across cells and refreshed when the measured token environment changes.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
        row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
@@ -46104,12 +46441,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Collapse all and Expand all at the top.
    Usage:
      const [groups, setGroups] = React.useState([]);
-     <GroupPanel fields={fields.filter((f) => f.kind === 'select')} value={groups} onChange={setGroups} />
-     <DataGrid … groupBy={groups.map((g) => g.field)} sort={groups.concat(sort)} />
+     <GroupPanel fields={fields} value={groups} onChange={setGroups} />
+     <DataGrid … groupBy={groups} sort={groups.concat(sort)} />
      (or useCollectionView)
    Props:
-     fields: the fields rows can be grouped by (utils/fields.js); usually the select fields
-     value: the levels: [{ field, dir: "asc" | "desc", hideEmpty }], the first the outer group
+     fields: the fields rows can be grouped by (utils/fields.js); groupable: false excludes a field; date fields offer UTC calendar periods
+     value: the levels: [{ field, dir: "asc" | "desc", hideEmpty, interval: "day" | "week" | "month" | "year", range }], the first the outer group
      onChange(value): runs on every change
      table: the table controller, or a ref to it: Collapse all and Expand all close and open its
        groups; without it they are disabled
@@ -46163,6 +46500,7 @@ function GroupPanel({
   inline = false,
   strings
 }) {
+  fields = fields.filter(f => f.groupable !== false);
   const t = Object.assign({}, STRINGS, strings);
   const levels = value;
   const ro = (0, _panelParts.useReorder)(levels, onChange, l => (0, _fields.fieldOf)(fields, l.field).label, t);
@@ -46200,7 +46538,9 @@ function GroupPanel({
       value: l.field,
       options: fields.filter(x => x.value === l.field || !levels.some(y => y.field === x.value)).map(fieldOption),
       onChange: v => put(i, {
-        field: v
+        field: v,
+        interval: fields.find(f => f.value === v)?.kind === 'date' ? 'day' : undefined,
+        range: undefined
       })
     }), /*#__PURE__*/_react.default.createElement(_panelParts.Pick, {
       label: t.order,
@@ -46229,7 +46569,14 @@ function GroupPanel({
           name: f.label
         })
       })
-    }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    }, f.kind === 'date' ? ['day', 'week', 'month', 'year'].map(interval => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: interval,
+      checked: (l.interval || 'day') === interval,
+      keepOpen: true,
+      onSelect: () => put(i, {
+        interval
+      })
+    }, interval[0].toUpperCase() + interval.slice(1))) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
       checked: !!l.hideEmpty,
       keepOpen: true,
       onSelect: () => put(i, {
@@ -46255,7 +46602,9 @@ function GroupPanel({
     disabled: !free.length,
     onClick: () => onChange(levels.concat({
       field: free[0].value,
-      dir: 'asc'
+      dir: 'asc',
+      interval: free[0].kind === 'date' ? 'day' : undefined,
+      range: free[0].groupRange
     }))
   }, levels.length ? t.addSub : t.add)));
   return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
@@ -46756,8 +47105,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataGrid's
        table controller), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
-       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, onReady } }
+       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, columnWidths, collapsedGroups, onViewChange, onReady } }
    Notes:
+     tableProps delegates header changes back to this hook; a managed grid ignores its own storageKey.
      The groups' order follows their levels: tableProps.sort is the group levels, then the sort levels. "Hide empty groups"
      on a level leaves out the rows whose value for it is empty. Quick counts apply search, advanced filters and every
      other quick filter, excluding only their own selection. Repeated values in one row count that record once. */
@@ -46807,7 +47157,7 @@ function useCollectionView(fields, options = {}) {
       const order = saved.columns.order.filter(f => known.has(f));
       saved.filter = prune(saved.filter);
       saved.sort = saved.sort.filter(it => known.has(it.field));
-      saved.group = saved.group.filter(it => known.has(it.field));
+      saved.group = saved.group.filter(it => known.has(it.field) && fields.find(f => f.value === it.field)?.groupable !== false);
       saved.quick = Object.fromEntries(Object.entries(saved.quick).filter(([key]) => known.has(key)));
       saved.columns = {
         order: order.concat(fields.map(f => f.value).filter(f => !order.includes(f))),
@@ -46932,7 +47282,55 @@ function useCollectionView(fields, options = {}) {
     facets.set(key, counts);
     return counts;
   };
-  const groupable = fields.filter(f => f.kind === 'select' || f.kind === 'multi');
+  // The collection owns persistence; header actions write the same state as the command-bar panels.
+  const onViewChange = _react.default.useCallback(patch => {
+    const known = new Set(fields.map(field => field.value)),
+      same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    if (patch.sort) {
+      const next = patch.sort.filter(item => known.has(item.field) && !group.some(level => level.field === item.field));
+      setSort(old => same(old, next) ? old : next);
+      setGroup(old => {
+        const next = old.map(level => {
+          const sorted = patch.sort.find(item => item.field === level.field);
+          return sorted ? {
+            ...level,
+            dir: sorted.dir
+          } : level;
+        });
+        return same(old, next) ? old : next;
+      });
+    }
+    if (patch.columnOrder || patch.hiddenColumns) setColumns(old => {
+      const next = {
+        order: patch.columnOrder ? patch.columnOrder.filter(field => known.has(field)) : old.order,
+        hidden: patch.hiddenColumns ? patch.hiddenColumns.filter(field => known.has(field)) : old.hidden
+      };
+      return same(old, next) ? old : next;
+    });
+    if ('groupBy' in patch) setGroup(old => [].concat(patch.groupBy || []).map(value => typeof value === 'string' ? {
+      field: value
+    } : value).filter(value => known.has(value.field)).map(value => ({
+      ...old.find(level => level.field === value.field),
+      dir: 'asc',
+      ...value
+    })));
+    if ('rowHeight' in patch || 'wrapHeaders' in patch || 'widths' in patch || 'collapsed' in patch) setView(old => ({
+      ...old,
+      ...('rowHeight' in patch ? {
+        height: patch.rowHeight
+      } : {}),
+      ...('wrapHeaders' in patch ? {
+        wrapHeaders: patch.wrapHeaders
+      } : {}),
+      ...('widths' in patch ? {
+        widths: patch.widths
+      } : {}),
+      ...('collapsed' in patch ? {
+        collapsed: patch.collapsed
+      } : {})
+    }));
+  }, [fields, group]);
+  const groupable = fields.filter(f => f.groupable !== false);
   const sorters = group.map(g => ({
     field: g.field,
     dir: g.dir || 'asc'
@@ -46984,7 +47382,7 @@ function useCollectionView(fields, options = {}) {
       grouped: group.length > 0
     },
     groupProps: {
-      fields: groupable.length ? groupable : fields,
+      fields: groupable,
       value: group,
       onChange: setGroup,
       table
@@ -47002,10 +47400,18 @@ function useCollectionView(fields, options = {}) {
     tableProps: {
       filter: test,
       sort: sorters,
-      groupBy: group.length ? group.map(g => g.field) : false,
+      groupBy: group.length ? group.map(g => ({
+        ...g,
+        interval: g.interval || (fields.find(f => f.value === g.field)?.kind === 'date' ? 'day' : undefined),
+        range: g.range ?? fields.find(f => f.value === g.field)?.groupRange
+      })) : false,
       columnOrder: columns.order,
       hiddenColumns: columns.hidden,
       rowHeight: view.height,
+      wrapHeaders: !!view.wrapHeaders,
+      columnWidths: view.widths,
+      collapsedGroups: view.collapsed,
+      onViewChange,
       onReady
     }
   };
@@ -47646,7 +48052,7 @@ function UserCard({
   }, actions) : null);
 }
   } },
-  "platform/components/VirtualList/VirtualList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/VirtualList/VirtualList.jsx": { deps: {"react":null,"../DataGrid/unread.js":"platform/components/DataGrid/unread.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47654,6 +48060,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.VirtualList = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _unread = require("../DataGrid/unread.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
@@ -47677,6 +48084,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      groups: instead of items, rows under headers: [{ id, label, items }]; each header stays at the top while its group
        scrolls and says how many items it holds
      count: instead of items, how many rows there are; renderItem(undefined, index) draws each one (rows built on demand)
+     unread(item) or unreadKeys with onUnreadChange(keys, {unreadCount}): key-based unread state. onItemOpen(item) enables click/Enter opening; markReadOnOpen and readDelay match DataGrid.
      renderItem(item, index): draws a row's content (default: the row of icon, label, description and meta)
      getKey(item, index): a stable key for a row (default item.id, else its index)
      mode: "fixed" (default: every row one line at the list row height, cut with an ellipsis) | "variable" (rows take
@@ -47746,6 +48154,12 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
   overscan,
   strings,
   className,
+  unread: unreadPredicate,
+  unreadKeys,
+  onUnreadChange,
+  markReadOnOpen,
+  readDelay,
+  onItemOpen,
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
@@ -47770,6 +48184,15 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
       item: it
     })) : null;
   }, [items, groups]);
+  const unreadRecords = _react.default.useMemo(() => rows ? rows.filter(row => !row.header).map(row => row.item) : [], [rows]);
+  const unreadKey = _react.default.useCallback(item => getKey ? getKey(item, unreadRecords.indexOf(item)) : item?.id ?? unreadRecords.indexOf(item), [getKey, unreadRecords]);
+  const unread = (0, _unread.useUnread)(unreadRecords, unreadKey, {
+    unread: unreadPredicate,
+    unreadKeys,
+    onUnreadChange,
+    markReadOnOpen,
+    readDelay
+  });
   const total = rows ? rows.length : Math.max(0, count || 0);
   const itemCount = groups ? groups.reduce((n, g) => n + (g.items || []).length, 0) : total;
   const sticky = _react.default.useMemo(() => groups && rows ? rows.reduce((l, r, i) => r.header ? l.concat(i) : l, []) : undefined, [groups, rows]);
@@ -47813,7 +48236,22 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
     return /*#__PURE__*/_react.default.createElement("div", _extends({
       key: key,
       role: "listitem",
-      className: "plx-virtual-list__item"
+      className: "plx-virtual-list__item",
+      "data-plx-unread": unread.has(item) || undefined,
+      "aria-label": unread.has(item) ? String(item?.label ?? key) + ', unread' : undefined,
+      tabIndex: onItemOpen ? 0 : undefined,
+      onClick: () => {
+        if (onItemOpen) {
+          onItemOpen(item);
+          unread.open(item);
+        }
+      },
+      onKeyDown: event => {
+        if (onItemOpen && event.key === 'Enter' && event.target === event.currentTarget) {
+          onItemOpen(item);
+          unread.open(item);
+        }
+      }
     }, v.itemProps(index)), renderItem ? renderItem(item, index) : /*#__PURE__*/_react.default.createElement(Row, {
       item: item
     }));
@@ -73031,7 +73469,7 @@ function useAnalytics() {
   return _react.default.useContext(Context);
 }
   } },
-  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../components/DataGrid/room.js":"platform/components/DataGrid/room.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -73040,6 +73478,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ReadingPane = ReadingPane;
 exports.SplitView = SplitView;
 var _react = _interopRequireDefault(require("react"));
+var _room = require("../../components/DataGrid/room.js");
 var _cx = require("../../utils/cx.js");
 var _Resizable = require("../../components/Resizable/Resizable.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -73119,7 +73558,9 @@ function SplitView({
     maxHeight: maxSize || hi,
     onResize: onSizeChange ? s => onSizeChange(s.height) : undefined
   };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
+  return /*#__PURE__*/_react.default.createElement(_room.GridPane.Provider, {
+    value: true
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({
     role: "group",
     "aria-label": label,
     className: (0, _cx.cx)('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)
@@ -73133,7 +73574,7 @@ function SplitView({
     className: "plx-split-view__first"
   }, box), first), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-split-view__second"
-  }, second)));
+  }, second))));
 }
 function ReadingPane({
   label,
