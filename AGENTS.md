@@ -70,7 +70,7 @@ changes inside `platform/design-system/` at `lanes/<task>/design-system/<the sam
 - Every size on the 4px grid; logical properties; never a 1px or 2px nudge to make something fit.
 - Class names start with `plx-` (BEM). React owns behavior. Header comments: Summary / Usage / Props / Behavior / Notes.
 - Focused or invalid fields change only the border color (no outer ring). Menus 8px radius. Containers nest 2 deep at most.
-- Every table is the DataGrid. Statuses are Badges with an icon, never a dot. Links are not buttons.
+- A dynamic table (sort, filter, group, search) is the DataGrid; a static table is the Table, which looks the same; never a hand-built table. Statuses are Badges with an icon, never a dot. Links are not buttons.
 - Icons only from `platform/icons/map.json` (Material Symbols Sharp, unedited).
 - Reddit Mono for code and technical values (numbers, dates); DM Sans for UI text. American English, sentence case.
 - A pattern is built only from Platform components. Mobile widths follow the HIG (iOS) or Material 3 (Android).

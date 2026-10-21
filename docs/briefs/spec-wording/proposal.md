@@ -6,7 +6,7 @@ survives or is retired on purpose; word counts are a side effect, not the target
 
 Revision 2 (2026-10-21) follows an outside review: the Button sample had dropped the 2xs size and the tertiary variant
 (fixed below), the rules were too rigid (sentence length, "filler"), API names must stay one link away, and the
-Table / DataGrid rule must be settled before DataGrid's text is rewritten.
+Table / DataGrid rule had to be settled first (settled by the owner the same day).
 
 ## What I found
 
@@ -26,23 +26,16 @@ repetition and padding. Counts come from `count-spec-text.js` in this folder.
 - **Long sentences.** 99 entries are over 45 words.
 - **Two rules that disagree.** See "Decide first" below.
 
-## Decide first: Table and DataGrid
+## The Table and DataGrid rule (settled by the owner, 2026-10-21)
 
-- The spec (and the owner's decision of 2026-10-19) says: an interactive table is a **DataGrid**; a static table (facts,
-  settings, documentation) is a **Table**, the same look with nothing to operate.
-- `AGENTS.md` (line 73), `tools/agent/library/PROMPT-lane.md` and `tools/agent/web/BRIEF-web.md` say: "Every table is
-  the DataGrid."
-- DataGrid's own Usage says to use it for "reference tables in documentation and settings", contradicting its Purpose.
+> **DataGrid** is the dynamic table: sort, filter, group, search and the rest. **Table** is the static table. A base
+> Table looks the same as a DataGrid. Applications never hand-build a table (a `<table>` element or another grid
+> library).
 
-They agree in substance (Table renders the DataGrid engine in its static mode), but read literally they conflict.
-Proposed wording for all of them, to confirm:
-
-> Every table runs on the DataGrid engine: **DataGrid** for records people work with, **Table** for static facts.
-> Applications never hand-build a table (a `<table>` element or another grid library). The engine's own markup is its
-> concern: it renders ARIA grid and table roles.
-
-That also qualifies "Never a `<table>` element": it forbids hand-built tables in applications, not an accessibility
-implementation choice inside the engine.
+`AGENTS.md`, `tools/agent/library/PROMPT-lane.md` and `tools/agent/web/BRIEF-web.md` said "Every table is the DataGrid";
+they now say the rule above. DataGrid's Usage text, which sent documentation tables to DataGrid, is corrected in the
+sample below. "Never a `<table>` element" is about applications building their own tables, not about the engine's markup
+(which uses ARIA grid and table roles).
 
 ## Proposed rules (revised)
 
@@ -154,16 +147,46 @@ contrast figures and "the text must carry the meaning".
 
 ### DataGrid
 
-Waits for the Table / DataGrid decision above. Once it is settled, the sample keeps every requirement in its current
-text and fixes the contradiction: "reference tables in documentation and settings" moves to When not to use ("Static
-facts, in documentation or settings: use Table"), and "a React grid on TanStack Table and TanStack Virtual" moves to
-Development.
+**Overview and Purpose**
+
+| Now | Proposed |
+| --- | --- |
+| Records people work with, by column: sort, filter, select, open, edit, group or nest them. A React grid on TanStack Table in the Plenix table style. | The dynamic table: people sort, filter, group, search, select, open, edit or nest the records in it. |
+| Shows records as rows to compare by column: to sort, filter, select, open, edit, group or nest them. An interactive table in Plenix is a DataGrid: a React grid on TanStack Table and TanStack Virtual (bundled) in the Plenix table style, drawn only with tokens; a static table (facts, props, documentation) is a Table, the same look with nothing to operate. Never a `<table>` element or another grid library. | Lets people compare records by column and work with them. A static table is a Table, which looks the same with nothing to operate. |
+
+"A React grid on TanStack Table and TanStack Virtual (bundled), drawn only with tokens" moves to Development.
+
+**Usage**
+
+| Now | Proposed |
+| --- | --- |
+| Any set of records shown as rows and columns: lists to compare, sort, filter, select, open, edit, group or nest | Records people work with: compare, sort, filter, group, search, select, open, edit or nest them. |
+| Reference tables in documentation and settings (the first column names each row) | (moves to When not to use, corrected: "Static facts, in documentation or settings: use Table.") |
+| A few facts about one record: use Property list | A few facts about one record: use Property list. |
+| A layout of cards or pictures: use Content grid | Cards or pictures: use Content grid. |
+| Never a `<table>` element or another grid library: an interactive table is a DataGrid, a static one a Table | Never hand-build a table (a `<table>` element or another grid library): a dynamic table is a DataGrid, a static one a Table. |
+
+**Behavior** (sample row): "Right-click a header for the column menu too (the application's field actions, sort,
+filter, group, width and position, hide and show); right-click a row for its row menu." becomes "Right-click a header
+for its column menu (field actions, sort, filter, group, width and position, hide and show), or a row for its row menu."
+The list stays: it tells people what the menu offers.
+
+**Requirement check**
+
+| Requirement in the original | In the proposal |
+| --- | --- |
+| What people do with it: sort, filter, select, open, edit, group, nest | Overview, Usage (search added, per the owner's rule) |
+| Interactive table = DataGrid; static = Table, same look | Purpose; Usage |
+| React grid on TanStack Table and Virtual, bundled, tokens only | Development (moved) |
+| Never a `<table>` element or another grid library | Usage, qualified as hand-built tables in applications |
+| Property list for a few facts; Content grid for cards | Usage |
+| Reference tables in documentation and settings | Corrected: Table (it contradicted the rule) |
+| Column menu contents on right-click; row menu | Behavior |
 
 ## What I need from you
 
-1. Confirm the Table / DataGrid wording above (it would also update `AGENTS.md` and the two Codex briefs).
-2. Approve the revised rules and the Button and Badge samples as the model.
-3. Then: Actions first, one section at a time, each page with its requirement check.
+1. Approve the revised rules and the three samples as the model.
+2. Then: Actions first, one section at a time, each page with its requirement check.
 
 ## Not part of this
 

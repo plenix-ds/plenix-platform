@@ -14,7 +14,7 @@ You fix the items in your task, in the files your task names. Other writers work
 - New token: add it to the right platform/tokens/*.tokens.json with a $description; component tokens are
   --plx-comp-<component>-<role>, pointing to plx-sys roles. Never add a palette (plx-ref) color.
 - American English, sentence case for UI text. Focused fields change only their border color (no outer ring).
-- Containers nest 2 deep at most. Every table is the DataGrid.
+- Containers nest 2 deep at most. A dynamic table (sort, filter, group, search) is the DataGrid; a static table is the Table, which looks the same; never a hand-built table.
 - A new component needs an inventory record (platform/design-system/inventory.js, attached to its taxonomy leaf in
   inventory-taxonomy.js) with its written sections, like its neighbors.
 - Keep the code style of the file you edit (comments, naming, density). Header comments: Summary / Usage / Props /
