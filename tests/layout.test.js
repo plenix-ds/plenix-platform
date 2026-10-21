@@ -16,7 +16,7 @@ changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
 const MODES = { fluid: 'workspace', contained: 'settings', hybrid: 'detail', 'multi-pane': 'master-detail', focus: 'editor' };
-const html = '<!doctype html><html lang="en" data-plx-theme="plenix" data-plx-mode="light"><head><meta charset="utf-8">'
+const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-mode="light"><head><meta charset="utf-8">'
   + '<link rel="stylesheet" href="' + P + 'platform.css"><script src="' + P + 'vendor/react.production.min.js"></script>'
   + '<script src="' + P + 'vendor/react-dom.production.min.js"></script><script src="' + P + 'dist/platform.js"></script></head><body><div id="root"></div></body></html>';
 
