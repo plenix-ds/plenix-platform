@@ -29,7 +29,10 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
    own classes), the custom scrollbars and their thumbs (axis and size on the thumb; the grid's hover as context values). The
    holder hides its native scrollbar through the base's hook `--plx-sys-scrollbar-width` (scrolling.css); touch hides the
    bars through `--plx-sys-touch-hidden` (interaction.css). Frozen rows were never rendered.
-5. **Groups**: group rows, bands, gaps, sticky group headers, summaries, the add row, probes.
+5. **Groups** (done: 1cf47ff6): group rows, heads (--gap), cells (--first, --summary, --add, --narrow), labels
+   (--level-N), values (--data), counts, summaries, the add row, bands, sticky group copies, virtual gaps; the group row's
+   focus reaches its head as context values; the eyebrow is the grid's own span in the eyebrow role. Probes, spacers and
+   group toggles were never rendered.
 6. **Menus, filters, pagination and the rest**.
 7. **Table**: `table.css` by hand; `table-base.css` and `table-steps.css` follow from build-steps.js.
 
@@ -38,7 +41,7 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 - **Cells sitting 1.3 to 2px off center** (centered badge cells, DAM's checkbox columns, compact density): the behavior
   test's "vertical alignment not middle". It predates Phase 4; it is fixed in batch 3 by geometry (never a nudge).
 - **Phase 4 text roles** for the 8 DataGrid and Table parts still on the migration backlog
-  (`check-system.text-contract.json`).
+  (`check-system.text-contract.json`). Done in batch 5: group count, summary value and value (and Table's).
 
 ## Lessons from batches 1 to 3
 
