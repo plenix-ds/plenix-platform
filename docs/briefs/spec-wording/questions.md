@@ -350,3 +350,60 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **rec.use[2]:** "Subtotals (total without a value) at natural breaks": does "total without a value" mean a data entry marked as a total and given no amount (the chart works the running total out)? If so I can write it that way; for now it stays as it is.
 
+## feedback (16 questions)
+
+### spinner
+
+- **rec.text:** The Spinner overview says it comes "in two sizes", but the page shows three (Small 12px, Medium 16px, Large 24px). Should the overview say three sizes?
+
+### empty-state
+
+- **rec.use[1]:** The Empty state page tells people to use it for content that could not load (tone="error", with Retry), and it has an Error variant. But its Behavior and Content sections say "an error is not an empty state" and "do not use it for errors". Which is right? There is also a separate Error state page that covers the same case.
+- **rec.text:** The Empty state overview only describes an application with nothing in it yet, shown in the main region. The page also covers the small version inside a list or panel, and the no-results case. Should the overview describe the component in general?
+
+### skeleton
+
+- **rec.avoid[0]:** Skeleton says not to use it for waits "under a second"; the Shimmer page says "under half a second". Which limit is right?
+
+### toast
+
+- **rec.variantPages[1].avoid[0]:** The Success toast says to show nothing for a save that always works, but the Snackbar page gives "Saved" as its main example, and the toast’s own writing guidance uses "Saved" as an example. Should a plain save show a toast or not?
+
+### feedback-snackbar
+
+- **rec.text:** The Snackbar overview says a toast "leaves on its own", but a danger toast stays until it is dismissed. Should the overview mention that exception?
+
+### feedback-presence-indicator
+
+- **docs:** Presence indicator and Availability indicator describe the same thing. Presence indicator shows the Status dot write-up, which says the dot is always 6px, uses the feedback colors, and gives examples like "active, paused, priority". The page itself says presence uses its own colors (never the feedback ones) and larger dots with shapes. Should Presence indicator show the Availability indicator write-up instead, or be merged with it?
+
+### feedback-health-indicator
+
+- **rec.text:** Your status display rule says statuses are shown as a status badge with an icon, never a dot. Health indicator, Severity indicator and Status dot all show a status as a dot with words. Do these pages still stand, or should they point to the status badge?
+
+### feedback-severity-indicator
+
+- **rec.avoid[0]:** Severity indicator names three levels (info, warning, danger) but says not to use "more levels than the four tones". Is the fourth level neutral, or should it say three?
+
+### feedback-notification
+
+- **rec.text:** The Notification page names a component "NotificationList", but the notification center is built from ActivityList. Which name is right?
+
+### feedback-status-badge
+
+- **rec.text:** The Status badge overview says the badge has an icon when color must not carry the meaning alone, but the Badge parts list has no icon. Does the badge carry an icon?
+
+### banner
+
+- **rec.purpose / docs.purpose:** The purpose says a banner offers “the one action” that resolves it, but the parts list and the “Banner with actions” page allow one or two actions. Should the purpose say “one or two actions”, or should banners have only one action?
+- **rec.variantPages[7].text (Dismissible banner):** “The owner removes the banner when it is pressed”: “owner” here seems to mean the code that shows the banner, not a person. Can it read “pressing it removes the banner” (the app’s code does the removing)?
+
+### loading-overlay
+
+- **rec.variantPages[2].use[0] (With message):** The “With message” page says to use a message on every overlay, but the parts list calls the message optional. Is the message required on every overlay, or optional?
+- **docs.behavior.motion:** “The spinner turns (still with reduced motion)” can be read two ways: that it keeps turning with reduced motion, or that it stands still. The Accessibility section says that with reduced motion the veil appears at once and the spinner stands still. Can Behavior say that plainly: “The veil fades in and the spinner turns; with reduced motion, neither moves”?
+
+### undo-pattern
+
+- **docs.behavior.motion:** “The toast slides in and out (still with reduced motion)” can be read as “it still slides with reduced motion”. The Accessibility section says that with reduced motion the toast appears at once. Can Behavior say: “The toast slides in and out; with reduced motion it appears at once”?
+
