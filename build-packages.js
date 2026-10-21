@@ -195,14 +195,50 @@ readme('styles', `
 
 // ---------- react ----------
 const R = path.join(PKG, 'react');
-const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel: 'silent', target: 'es2019', jsx: 'transform',
+const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel: 'silent', target: 'es2019', jsx: 'transform', minifySyntax: true,
   loader: { '.js': 'jsx', '.jsx': 'jsx' }, external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
   banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' },
-  // a bundled app has no Plenix script to find the vendor folder from: the RichTextEditor loads its engine from this release's
-  // CDN copy (versioned, never changes) unless the page sets window.PlenixVendorBase (batch 251)
-  define: { __PLENIX_VENDOR__: JSON.stringify('https://design-system.lighthouseway.org/cdn/' + VERSION + '/vendor/') } };
-esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(R, 'dist', 'index.js') }));
+  define: { __PLENIX_PACKAGE__: 'true', __PLENIX_TIPTAP_LOAD__: 'loadPackagedTiptap' } };
+// The vendored engine is self-contained. Wrap it as a per-window factory (including framed editors), without
+// evaluating it at import. ESM emits a local lazy chunk; CommonJS keeps the same deferred initialization in its bundle.
+const engineBuild = path.join(R, '.build');
+const engineSource = fs.readFileSync(path.join(P, 'vendor', 'tiptap', 'tiptap.min.js'), 'utf8');
+if (!engineSource.includes('var PlenixTiptap=')) throw new Error('Unexpected vendored Tiptap entry');
+// Adapt only the vendored engine's HTML parsing sinks to the shared sanitizer. Keep the upstream file unchanged;
+// the exact sink count is pinned so an engine update cannot silently introduce an unreviewed sink.
+const sinkCounts = { assignments: 0, parsers: 0, clipboard: 0 };
+const trustedEngineSource = require('@babel/standalone').transform(engineSource, { plugins: [({ types: t }) => ({ visitor: {
+  FunctionDeclaration(p) {
+    let clipboardPolicy = false;
+    p.traverse({ StringLiteral(q) { if (q.node.value === 'ProseMirrorClipboard') clipboardPolicy = true; } });
+    if (!clipboardPolicy) return;
+    if (p.node.params.length !== 1) throw new Error('Unexpected Tiptap clipboard policy helper');
+    // Reuse the sanitizing policy instead of creating an identity clipboard policy.
+    p.node.body = t.blockStatement([t.returnStatement(t.callExpression(t.identifier('plenixTrustedHTML'), [p.node.params[0]]))]);
+    sinkCounts.clipboard++; p.skip();
+  },
+  AssignmentExpression(p) {
+    const node = p.node, left = node.left;
+    if (left.type !== 'MemberExpression' || !['innerHTML', 'outerHTML'].includes(left.property.name || left.property.value)) return;
+    if (node.operator !== '=') throw new Error('Unexpected compound Tiptap HTML assignment');
+    node.right = t.callExpression(t.identifier('plenixTrustedHTML'), [node.right]); sinkCounts.assignments++; p.skip();
+  },
+  CallExpression(p) {
+    const node = p.node, callee = node.callee;
+    if (callee.type !== 'MemberExpression' || (callee.property.name || callee.property.value) !== 'parseFromString') return;
+    node.arguments[0] = t.callExpression(t.identifier('plenixTrustedHTML'), [node.arguments[0]]); sinkCounts.parsers++; p.skip();
+  }
+} })] }).code;
+if (sinkCounts.assignments !== 2 || sinkCounts.parsers !== 1 || sinkCounts.clipboard !== 1) throw new Error('Unexpected Tiptap HTML sinks: ' + JSON.stringify(sinkCounts));
+console.log('TIPTAP_TRUSTED_SINKS_OK 2 assignments, 1 parser');
+write(path.join(engineBuild, 'tiptap-engine.js'), 'import {trustedRichText} from ' + JSON.stringify(path.join(P, 'utils', 'richText.js').split(path.sep).join('/')) + ';\nexport default function createTiptap(window){ const {document,navigator,Node,HTMLElement}=window; const plenixTrustedHTML = html => trustedRichText(html, document);\n' + trustedEngineSource + '\nreturn PlenixTiptap; }\n');
+write(path.join(engineBuild, 'tiptap-load.js'), "export const loadPackagedTiptap = window => import('./tiptap-engine.js').then(module => module.default(window));\n");
+jsOpts.inject = [path.join(engineBuild, 'tiptap-load.js')];
+esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', splitting: true, entryPoints: {index: path.join(P, 'index.js'), prefetch: path.join(P, 'utils', 'prefetch.js')}, outdir: path.join(R, 'dist'), chunkNames: 'chunks/[name]-[hash]' }));
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', outfile: path.join(R, 'dist', 'index.cjs') }));
+esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', entryPoints: [path.join(P, 'utils', 'prefetch.js')], outfile: path.join(R, 'dist', 'prefetch.cjs') }));
+write(path.join(R, 'prefetch.d.ts'), 'export declare function enablePrefetch(options?: {selector?: string; eagerness?: "conservative"; document?: Document}): () => void;\n');
+rm(engineBuild);
 copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js'));
 // the TypeScript definitions, from the components' header comments (build-types.js)
 require('./build-types.js')(path.join(R, 'index.d.ts'), VERSION);
@@ -213,7 +249,7 @@ for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/expo
 }
 json(path.join(R, 'package.json'), manifest('react', 'Plenix React components and patterns, drawn only from Plenix tokens.', {
   main: 'dist/index.cjs', module: 'dist/index.js', types: 'index.d.ts',
-  exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './package.json': './package.json' },
+  exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './prefetch': { types: './prefetch.d.ts', import: './dist/prefetch.js', require: './dist/prefetch.cjs' }, './plenix.global.js': './dist/plenix.global.js', './package.json': './package.json' },
   peerDependencies: { react: '>=18.2.0 <19', 'react-dom': '>=18.2.0 <19' },
   dependencies: { [SCOPE + '/styles']: VERSION, [SCOPE + '/tokens']: VERSION, [SCOPE + '/icons']: VERSION },
 }));
@@ -226,6 +262,9 @@ import { AppShell, Button, DataGrid } from '${SCOPE}/react';
 \`\`\`
 
 Pages without a build tool load \`dist/plenix.global.js\` after React 18 and use \`window.Plenix\`.
+RichTextEditor loads a local bundled engine chunk on first use; keep dist/chunks/ beside the ESM entry. No remote vendor base is configured.
+Prefetch is off on import. Opt in with enablePrefetch from ${SCOPE}/react/prefetch; mark links with data-plx-prefetch and retain the returned cleanup function. Only conservative pointer-press prefetching is supported; pages are never prerendered.
+
 React 18 is a peer dependency. Rules: compose from these components and the tokens only; no inline styles or hard-coded values.`);
 
 // ---------- CDN: the same files at a fixed address per version ----------
@@ -235,7 +274,12 @@ copy(path.join(S, 'fonts.css'), path.join(CDN, 'fonts.css'));
 copyDir(path.join(S, 'fonts'), path.join(CDN, 'fonts'));   // the hosted typefaces beside fonts.css (batch 227)
 copy(path.join(S, 'theme-boot.js'), path.join(CDN, 'theme-boot.js'));
 copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
+copy(path.join(P, 'utils', 'vendor', 'DOMPurify-LICENSE.txt'), path.join(R, 'DOMPurify-LICENSE.txt'));
+copy(path.join(P, 'utils', 'vendor', 'DOMPurify-LICENSE.txt'), path.join(CDN, 'DOMPurify-LICENSE.txt'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
+copyDir(path.join(R, 'dist', 'chunks'), path.join(CDN, 'chunks'));
+copy(path.join(R, 'dist', 'prefetch.js'), path.join(CDN, 'prefetch.js'));
+copy(path.join(R, 'prefetch.d.ts'), path.join(CDN, 'prefetch.d.ts'));
 // The CDN and npm declarations share the same generated source, including its export-coverage gate.
 copy(path.join(R, 'index.d.ts'), path.join(CDN, 'plenix.d.ts'));
 write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
@@ -343,7 +387,7 @@ function cdnOfflineBundle() {
     if (fs.statSync(file).isDirectory()) for (const name of fs.readdirSync(file).sort()) add(relative + '/' + name);
     else assets.set(relative, fs.readFileSync(file));
   };
-  for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix.css', 'plenix.min.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
+  for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix.css', 'plenix.min.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor', 'chunks', 'prefetch.js', 'prefetch.d.ts', 'DOMPurify-LICENSE.txt']) add(name);
   const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
   const manifest = { version: VERSION, algorithm: 'sha256', description: 'Hashes cover every runtime file, TypeScript declarations and the README. This manifest is excluded from its own list; the CDN index hashes the complete archive.', files: [...assets].map(([name, data]) => ({ path: name, bytes: data.length, sha256: hash(data) })) };
   const manifestName = 'bundle-manifest.json';

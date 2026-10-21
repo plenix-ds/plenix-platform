@@ -11,7 +11,7 @@
    Props:
      variant: "article" (default: a page of reading: 14px text, 24px lines, a reading width of about 80 characters) |
        "compact" (notes, comments and help in a panel: the body size, 20px lines, the container's width)
-     html: HTML to show, already sanitized by the application (see Notes); without it, the children
+     html: HTML sanitized through the shared Plenix prose entry point; without it, the children
      as: the element: "div" (default) | "article" | "section"
      label: names the region for assistive technology when it is a landmark (as="section")
      children: the content, as plain elements (h1–h6, p, ul, ol, li, a, strong, em, u, s, sub, sup, mark, code, pre,
@@ -24,8 +24,8 @@
        overflows (give it tabindex="0" and a name in the content).
      Lists take their markers from the writing direction; the quote's rule sits at the start side.
    Notes:
-     It sanitizes nothing: HTML from people (comments, imported documents) must be cleaned by the application first (an
-       allow-list of the elements above, no scripts, no event attributes, no style attributes).
+     HTML from people passes through DOMPurify and the Plenix prose allow-list before DOM nodes are mounted.
+       Trusted Types CSP must allow the named dompurify policy; no default policy is installed.
      With html, the container carries plx-user-content: the HTML is a person's content, whose own formatting (color,
        background-color, font-family, font-size and text-align on its text, as the RichTextEditor stores them) the style
        audit and the page checks allow there; the rest follows the type styles.
@@ -36,14 +36,20 @@
      Other props pass through to the container.
 */
 import React from 'react';
+import { sanitizeRichText } from '../../utils/richText.js';
+const useContentEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 export function RichText({ variant = 'article', html, as: Tag = 'div', label, className, children, ...rest }) {
   devWarn('RichText', { variant }, { variant: ['article','compact'] });
-  const content = html != null ? { dangerouslySetInnerHTML: { __html: html } } : null;
+  const holder = React.useRef(null);
+  useContentEffect(() => {
+    if (html == null || !holder.current) return;
+    holder.current.replaceChildren(sanitizeRichText(html, holder.current.ownerDocument));
+  }, [html]);
   return (
-    <Tag aria-label={label} {...content} {...rest}
+    <Tag key={html == null ? 'jsx' : 'html'} ref={holder} aria-label={label} {...rest}
       className={cx('plx-rich-text', 'plx-rich-text--' + (variant === 'compact' ? 'compact' : 'article'), html != null && 'plx-user-content', className)}>
       {html != null ? undefined : children}
     </Tag>

@@ -1,35 +1,48 @@
-/* Plenix · prefetch (platform/utils/prefetch.js): the next page is ready before the click (batch 237). Internal; not part
-   of the public API: the Platform bundle runs it once, on every page that loads the Platform over http(s).
-   Chromium browsers get speculation rules: a link to another page of the same site is prerendered when the pointer
-   rests on it (about 200ms) or presses it, so switching apps shows the finished page at once instead of a blank reload.
-   Other browsers get the page's document fetched into the cache on hover. Links that open elsewhere (target, download),
-   same-page anchors and links marked data-plx-no-prefetch are left alone. Nothing runs from file://. */
+/* Plenix · enablePrefetch (platform/utils/prefetch.js)
+   Summary: Opt-in document prefetching for links the application explicitly marks. Importing does nothing.
+   Usage: const stop = enablePrefetch({ selector: 'a[data-plx-prefetch]', eagerness: 'conservative' });
+   Props: selector selects approved links; eagerness is conservative (pointer press only); document optionally selects
+     a frame's document. Returns a cleanup function. In SSR or file pages, returns a no-op.
+   Behavior: Never prerenders, creates speculation rules or inserts inline scripts. Only same-origin http(s) document
+     links are prefetched, at most once per URL. Downloads, targets, anchors and data-plx-no-prefetch are excluded.
+   Notes: The application must mark only routes that are safe to fetch. Call the returned function when disabling it. */
 const SKIP = '[target], [download], [data-plx-no-prefetch], [href^="#"]';
+const active = new WeakMap();
 
-function speculationRules(doc) {
-  if (!(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return false;
-  const rules = { prerender: [{ where: { and: [{ href_matches: '/*' }, { not: { selector_matches: SKIP } }] }, eagerness: 'moderate' }] };
-  const s = doc.createElement('script');
-  s.type = 'speculationrules';
-  s.textContent = JSON.stringify(rules);
-  doc.head.appendChild(s);
-  return true;
-}
-
-function hoverPrefetch(doc) {
-  const done = new Set();
-  doc.addEventListener('pointerover', (e) => {
-    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-    if (!a || a.matches(SKIP)) return;
-    const url = new URL(a.href, location.href);
-    if (url.origin !== location.origin || url.pathname === location.pathname || done.has(url.pathname)) return;
-    done.add(url.pathname);
-    const link = doc.createElement('link');
-    link.rel = 'prefetch'; link.href = url.origin + url.pathname + url.search;
-    doc.head.appendChild(link);
-  }, { passive: true });
-}
-
-if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.head && /^https?:$/.test(location.protocol)) {
-  if (!speculationRules(document)) hoverPrefetch(document);
+export function enablePrefetch({ selector = 'a[data-plx-prefetch]', eagerness = 'conservative', document: doc = typeof document === 'undefined' ? null : document } = {}) {
+  if (typeof selector !== 'string' || !selector.trim()) throw new TypeError('enablePrefetch needs a non-empty link selector');
+  if (eagerness !== 'conservative') throw new TypeError('enablePrefetch supports only conservative eagerness');
+  if (!doc || !doc.head || !doc.defaultView || !/^https?:$/.test(doc.defaultView.location.protocol)) return () => {};
+  // Validate before registering, so a malformed application selector fails at the explicit opt-in call.
+  doc.querySelector(selector);
+  let registrations = active.get(doc);
+  if (!registrations) { registrations = new Map(); active.set(doc, registrations); }
+  if (registrations.has(selector)) return registrations.get(selector);
+  const done = new Set(), links = new Set();
+  const press = event => {
+    const target = event.target && event.target.closest ? event.target : event.target && event.target.parentElement;
+    const link = target && target.closest('a[href]');
+    if (!link || !link.matches(selector) || link.matches(SKIP)) return;
+    let current, url;
+    try { current = new URL(doc.defaultView.location.href); url = new URL(link.href, current); } catch (_) { return; }
+    if (!/^https?:$/.test(url.protocol) || url.origin !== current.origin || (url.pathname === current.pathname && url.search === current.search)) return;
+    url.hash = '';
+    if (done.has(url.href)) return;
+    done.add(url.href);
+    const hint = doc.createElement('link');
+    hint.rel = 'prefetch'; hint.href = url.href;
+    links.add(hint); doc.head.appendChild(hint);
+  };
+  doc.addEventListener('pointerdown', press, { passive: true });
+  let stopped = false;
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    doc.removeEventListener('pointerdown', press);
+    links.forEach(link => link.remove()); links.clear();
+    registrations.delete(selector);
+    if (!registrations.size) active.delete(doc);
+  };
+  registrations.set(selector, stop);
+  return stop;
 }
