@@ -17,9 +17,9 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 
 ## Batches
 
-1. **Sticky offsets and heights**: `[data-plx-sticky="…"]` on frozen cells and columns, `[data-plx-height="…"]` on the
+1. **Sticky offsets and heights** (done: 3b8cdd21): `[data-plx-sticky="…"]` on frozen cells and columns, `[data-plx-height="…"]` on the
    root reaching the table holder (a context value read by the holder).
-2. **Header**: columns, titles, contents, the sort arrow and sorter, the header menu button. Sort direction, filtered and
+2. **Header** (done: 993fe052): columns, titles, contents, the sort arrow and sorter, the header menu button. Sort direction, filtered and
    sortable become the column's own classes from the engine; the column's hover reaches its parts as context values.
 3. **Rows and cells**: cell kinds, frozen and row-label cells, the selected and hover row (the row's state as context
    values for its cells), values, links in cells, editors, tree cells and their controls.
@@ -34,3 +34,17 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
   test's "vertical alignment not middle". It predates Phase 4; it is fixed in batch 3 by geometry (never a nudge).
 - **Phase 4 text roles** for the 8 DataGrid and Table parts still on the migration backlog
   (`check-system.text-contract.json`).
+
+## Lessons from batches 1 and 2
+
+- Prove each batch by computed values before and after, in every state the part has (rest, hover of each column, sorted
+  both ways), not only the strict overlap audit: the audit keys pairs by selector text, so renamed rules show as new and
+  gone, and Table's duplicates of its base only became visible once the base selectors changed.
+- Old rules can be dead: classes the engine never renders (cell--view, cell--select, grid-moving, drop, hidden,
+  grid-frozen-left, __resize in the header) and selectors CSS rejects (:has() nested in :has()). Check the JSX before
+  carrying a rule over.
+- table.css repeats much of its base with the same values; where it overrides a flat base it wins by specificity, so
+  remove the duplicate declarations rather than keep them.
+- A media condition may only set tokens (condition-not-token). Reduced motion is the duration tokens (0s); a
+  transition-property:none rule is not carried over.
+- The test browser runs with prefers-reduced-motion: reduce.
