@@ -9,6 +9,7 @@
      items: [{ src, alt, title, meta, kind: "image" | "video", poster, audio, tracks }]
        Videos use MediaPlayer; audio is a separate sound URL. Leaving or closing an item pauses its playback.
      items[].meta: an array of short technical values shown under the title
+     count, getItem(index): optional lazy collection; only the shown item is requested while open. Overrides items.
      index: the shown item, when controlled
      defaultIndex: the first shown item, when uncontrolled (default 0)
      onIndexChange(next): runs with the new index when the item changes
@@ -25,7 +26,7 @@
      Escape closes.
      Focus stays inside and returns to the opener.
      A counter ("2 of 5") describes the viewer.
-     With no items nothing renders.
+     With no items nothing renders. Out-of-range indexes are clamped after the collection changes.
    Notes:
      The viewer renders in a portal on document.body.
 */
@@ -40,19 +41,21 @@ import { arrowStep } from '../../utils/direction.js';
 
 const STRINGS = { label: 'Preview', close: 'Close preview', previous: 'Previous', next: 'Next', counter: '{index} of {total}' };
 
-export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onIndexChange, label, actions, strings, className }) {
+export function MediaViewer({ open, onClose, items = [], count, getItem, index, defaultIndex = 0, onIndexChange, label, actions, strings, className }) {
   const t = Object.assign({}, STRINGS, strings);
   const ref = React.useRef(null);
   const id = useUid('plx-mv');
   const [own, setOwn] = React.useState(defaultIndex);
-  const at = index !== undefined ? index : own;
+  const total = typeof getItem === 'function' ? Math.max(0, Math.floor(Number.isFinite(Number(count)) ? Number(count) : 0)) : items.length;
+  const requested = index !== undefined ? index : own;
+  const at = total ? Math.max(0, Math.min(total - 1, Math.floor(Number(requested) || 0))) : 0;
   useLayer(ref, open, { modal: true, onEscape: onClose });
-  const go = (n) => { const next = (n + items.length) % items.length; if (index === undefined) setOwn(next); if (onIndexChange) onIndexChange(next); };
-  const item = items[at] || items[0];
-  const many = items.length > 1;
+  const go = (n) => { const next = (n + total) % total; if (index === undefined) setOwn(next); if (onIndexChange) onIndexChange(next); };
+  const item = open && total ? (typeof getItem === 'function' ? getItem(at) : items[at]) : null;
+  const many = total > 1;
   const stage = React.useRef(null);
   useGesture(stage, { disabled: !open || !many, axis: 'x', onSwipe: gesture => go(at + (gesture.inline === 'start' ? 1 : -1)) });
-  if (!open || !items.length) return null;
+  if (!open || !total || !item) return null;
   const onKeyDown = (e) => {
     if (!many || e.defaultPrevented || e.target.closest('video,audio,input,select,textarea,[contenteditable="true"]')) return;
     const step = arrowStep(e, e.currentTarget, { vertical: false });
@@ -61,7 +64,7 @@ export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onI
   return createPortal(
     <div ref={ref} role="dialog" aria-modal="true" aria-label={label || t.label} aria-describedby={id + 'c'} tabIndex={-1}
       className={cx('plx-media-viewer', className)} onKeyDown={onKeyDown}>
-      <div id={id + 'c'} className="plx-media-viewer__counter">{t.counter.split('{index}').join(String(at + 1)).split('{total}').join(String(items.length))}</div>
+      <div id={id + 'c'} className="plx-media-viewer__counter">{t.counter.split('{index}').join(String(at + 1)).split('{total}').join(String(total))}</div>
       <button type="button" className="plx-media-viewer__control plx-media-viewer__close" aria-label={t.close} onClick={onClose}><Icon name="close" size="md" /></button>
       {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--previous" aria-label={t.previous} onClick={() => go(at - 1)}><Icon name="chevron-down" size="md" /></button> : null}
       <figure className="plx-media-viewer__figure">
