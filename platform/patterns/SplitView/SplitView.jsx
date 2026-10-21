@@ -5,7 +5,7 @@
      ReadingPane is the second panel's surface: the table's frame, an actions row with a thin line under it that stops
      short of the edges, and the item below.
    Usage:
-     <AppShell page="master-detail" …>
+     <AppShell …>
        <SplitView label="Inbox" orientation="side-by-side" firstLabel="Message list" defaultSize={560}
          first={<DataGrid label="Inbox" … />}
          second={<ReadingPane label={item.subject} actions={<Toolbar …/>}>…</ReadingPane>} />
@@ -18,14 +18,16 @@
        ReadingPane)
      label: the split view's accessible name (a group); firstLabel: what the divider resizes ("Message list"; default
        "First panel"), its name is "{firstLabel} width" or "… height"
-     defaultSize: the first panel's starting width (side by side) or height (stacked), a size token in pixels; size /
+     defaultSize: the first panel's starting width (side by side) or height (stacked), in pixels; size /
        onSizeChange(px): the parent keeps it (keep it in the view to remember it per person)
      minSize, maxSize: its limits in pixels (defaults: 360–720 side by side, 200–500 stacked)
-     steps: the only sizes allowed, smallest first (size tokens); the divider snaps to them on release
+     steps: settled sizes allowed; the divider follows the pointer within its limits and snaps to these on release.
+       Without steps it settles on the 4px grid. Side by side, the other pane retains its token minimum width.
      className: more classes on the split view
      ReadingPane.label: its region's name (the item's title); actions: the actions row (a Toolbar); empty: what shows
        when nothing is chosen (an EmptyState); children: the item; className
    Behavior:
+     Claims master-detail through useAppLayout().claimPage while mounted inside AppShell; cleanup restores the shell page.
      Each panel scrolls on its own; the page never scrolls as a whole (the multi-pane page kind). The divider is the whole
        gap between the panels: the resize pointer anywhere along it, a thin line down its middle and a small pill
        centered on the line; the pill darkens on hover, line and pill take the focus color while focused or dragged.
@@ -39,6 +41,7 @@
      data grid's (data-grid-border, shape-md, border-width-thin).
 */
 import React from 'react';
+import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.js';
 import { Resizable } from '../../components/Resizable/Resizable.jsx';
 
@@ -46,13 +49,39 @@ const LIMITS = { 'side-by-side': [360, 720, 560], stacked: [200, 500, 320] };
 
 export function SplitView({ orientation = 'side-by-side', first, second, label, firstLabel = 'First panel', defaultSize, size, onSizeChange,
   minSize, maxSize, steps, className, ...rest }) {
+  const shell = useAppLayout();
+  const claim = shell && shell.claimPage;
+  React.useEffect(() => (claim ? claim('master-detail') : undefined), [claim]);
   const side = orientation !== 'stacked';
   const [lo, hi, start] = LIMITS[side ? 'side-by-side' : 'stacked'];
+  const container = React.useRef(null);
+  const [available, setAvailable] = React.useState(null);
+  React.useEffect(() => {
+    const element = container.current, win = element && element.ownerDocument.defaultView;
+    if (!element || !win) return;
+    const measure = () => {
+      const panels = element.firstElementChild, second = panels && panels.lastElementChild;
+      const horizontal = side && panels && win.getComputedStyle(panels).flexDirection === 'row';
+      if (!horizontal || !second) { setAvailable(null); return; }
+      const minimum = parseFloat(win.getComputedStyle(second).minInlineSize) || 0;
+      const gap = parseFloat(win.getComputedStyle(panels).columnGap) || 0;
+      const max = Math.max(minSize ?? lo, panels.getBoundingClientRect().width - gap - minimum);
+      setAvailable(previous => previous && previous.max === max && previous.minimum === minimum ? previous : { max, minimum });
+    };
+    measure();
+    const observer = win.ResizeObserver ? new win.ResizeObserver(measure) : null;
+    if (observer) observer.observe(element);
+    win.addEventListener('resize', measure);
+    return () => { if (observer) observer.disconnect(); win.removeEventListener('resize', measure); };
+  }, [side, minSize, lo]);
+  const requestedMax = maxSize ?? hi;
+  const constrained = side && available && available.max < requestedMax;
+  const widthMax = constrained ? available.max : requestedMax;
   const box = side
-    ? { axis: 'horizontal', defaultWidth: defaultSize != null ? defaultSize : start, width: size, minWidth: minSize || lo, maxWidth: maxSize || hi, onResize: onSizeChange ? (s) => onSizeChange(s.width) : undefined }
+    ? { axis: 'horizontal', defaultWidth: defaultSize != null ? defaultSize : start, width: size, minWidth: minSize || lo, maxWidth: widthMax, strings: constrained ? { maxWidth: "The other pane needs at least " + available.minimum + "px" } : undefined, onResize: onSizeChange ? (s) => onSizeChange(s.width) : undefined }
     : { axis: 'vertical', defaultHeight: defaultSize != null ? defaultSize : start, height: size, minHeight: minSize || lo, maxHeight: maxSize || hi, onResize: onSizeChange ? (s) => onSizeChange(s.height) : undefined };
   return (
-    <div role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>
+    <div ref={container} role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>
       <div className="plx-split-view__panels">
         <Resizable label={firstLabel} steps={steps} variant="divider" fill className="plx-split-view__first" {...box}>{first}</Resizable>
         <div className="plx-split-view__second">{second}</div>

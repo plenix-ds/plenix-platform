@@ -71,6 +71,7 @@ module.exports = function buildTypes(outFile, version) {
       const as = /^(\w+)\s+as\s+(\w+)$/.exec(raw);
       if (as) { names.push(as[2]); blocks.push(/^use[A-Z]|^[a-z]/.test(as[2]) ? 'export declare function ' + as[2] + '(...args: any[]): any;' : 'export declare const ' + as[2] + ': any;'); continue; }
       const name = raw; names.push(name);
+      if (name === 'useCollectionView') { blocks.push(fs.readFileSync(path.join(P, 'hooks', 'useCollectionView.types.d.ts'), 'utf8')); continue; }
       const isComponent = /^[A-Z]/.test(name) && /^[A-Z][a-z]/.test(name) && !/^[A-Z_]+$/.test(name) && new RegExp('export\\s+(const|function)\\s+' + name + '\\b').test(src) && /return\s*\(?\s*</.test(src);
       if (!isComponent) {
         // hooks, helpers and data: typed loosely (their headers describe behavior, not a signature)

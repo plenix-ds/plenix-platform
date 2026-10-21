@@ -1,0 +1,12 @@
+const assert = require('node:assert/strict'), fs = require('node:fs'), vm = require('node:vm');
+const source = fs.readFileSync(require('node:path').join(__dirname, '../platform/components/Resizable/resize-scale.js'), 'utf8').replace('export function', 'function');
+const context = vm.createContext({}); vm.runInContext(source, context);
+const scale = context.resizeScale(null, 360, 1400);
+assert.equal(scale.clamp(563.5), 563.5); assert.equal(scale.snap(563.5), 564);
+assert.equal(scale.snap(1500), 1400); assert.equal(scale.hi, 1400); assert.equal(scale.step(1396, 1), 1400);
+assert.equal(scale.clamp(50), 360); assert.equal(scale.step(360, -1), 360);
+const steps = context.resizeScale([720, 400, 560, 560, NaN, 2000], 360, 1400);
+assert.equal(steps.clamp(599), 599); assert.equal(steps.snap(599), 560);
+assert.equal(steps.step(560, 1), 720); assert.equal(steps.lo, 400); assert.equal(steps.hi, 720);
+console.log('RESIZE_SCALE_201_OK continuous pointer, release grid, sorted steps and limits beyond 900');
+const keyboard = context.resizeScale(null, 360, 1400, [360,400,500,560,600,720,900]); assert.equal(keyboard.step(568, 1),600); assert.equal(keyboard.step(568,-1),560); assert.equal(keyboard.step(900,1),904); assert.equal(keyboard.step(1400,-1),1396);
