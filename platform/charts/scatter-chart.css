@@ -1,11 +1,14 @@
 /* Plenix · ScatterChart (platform/charts/ScatterChart.jsx), drawn in ChartFrame (system/charts.css) with the chart parts.
    Points take their series' data-viz color (data-plx-dataviz) and are a little transparent so overlaps show; the frame
-   keeps room for both axis titles (its margin tokens, set here). Every value is a --plx-comp-scatter-* token. */
+   keeps room for both axis titles (its margin tokens, set here). Every value is a --plx-comp-scatter-* token.
+   Each point carries its own exclusive points/bubble kind. Color and bubble opacity select noninheriting state
+   values; fill, stroke and opacity are each declared once. */
+@property --plx-state-scatter-color{syntax:"*";inherits:false;}
+@property --plx-state-scatter-opacity{syntax:"*";inherits:false;}
 .plx-scatter{--plx-comp-chart-margin-block-end:var(--plx-comp-scatter-margin-block-end);--plx-comp-chart-margin-inline-start:var(--plx-comp-scatter-margin-inline-start);--plx-comp-chart-margin-block-start:var(--plx-comp-scatter-margin-block-start);--plx-comp-chart-margin-inline-end:var(--plx-comp-scatter-margin-inline-end);}
-.plx-scatter__point,.plx-scatter__trend{--plx-comp-scatter-color:var(--plx-comp-scatter-default-color);}
-.plx-scatter__point[data-plx-dataviz],.plx-scatter__trend[data-plx-dataviz]{--plx-comp-scatter-color:var(--plx-comp-data-color);}
-.plx-scatter__point{fill:var(--plx-comp-scatter-color);fill-opacity:var(--plx-comp-scatter-point-opacity);stroke:var(--plx-comp-scatter-color);stroke-width:var(--plx-comp-scatter-point-outline-width);}
+.plx-scatter__point[data-plx-dataviz],.plx-scatter__trend[data-plx-dataviz]{--plx-state-scatter-color:var(--plx-comp-data-color);}
+.plx-scatter__point{fill:var(--plx-state-scatter-color,var(--plx-comp-scatter-default-color));fill-opacity:var(--plx-state-scatter-opacity,var(--plx-comp-scatter-point-opacity));stroke:var(--plx-state-scatter-color,var(--plx-comp-scatter-default-color));stroke-width:var(--plx-comp-scatter-point-outline-width);}
 /* a scatter plot's points are one size (a token); a bubble's radius is its data (SVG geometry) */
-.plx-scatter--points .plx-scatter__point{r:var(--plx-comp-scatter-point-radius);}
-.plx-scatter--bubble .plx-scatter__point{fill-opacity:var(--plx-comp-scatter-bubble-opacity);}
-.plx-scatter__trend{fill:none;pointer-events:none;stroke:var(--plx-comp-scatter-color);stroke-dasharray:var(--plx-comp-scatter-trend-dash) var(--plx-comp-scatter-trend-gap);stroke-width:var(--plx-comp-scatter-trend-width);}
+.plx-scatter__point--points{r:var(--plx-comp-scatter-point-radius);}
+.plx-scatter__point--bubble{--plx-state-scatter-opacity:var(--plx-comp-scatter-bubble-opacity);}
+.plx-scatter__trend{fill:none;pointer-events:none;stroke:var(--plx-state-scatter-color,var(--plx-comp-scatter-default-color));stroke-dasharray:var(--plx-comp-scatter-trend-dash) var(--plx-comp-scatter-trend-gap);stroke-width:var(--plx-comp-scatter-trend-width);}
