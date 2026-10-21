@@ -16,9 +16,6 @@
    "combinator | .plx-gauge--sm .plx-gauge__meter": 1,
    "combinator | .plx-gauge--lg .plx-gauge__meter": 1
   },
-  "platform/charts/line-chart.css": {
-   "combinator | .plx-area-chart--stacked .plx-area-chart__area": 1
-  },
   "platform/charts/network-graph.css": {
    "combinator | .plx-network-graph__node--active .plx-network-graph__dot": 1,
    "combinator | .plx-network-graph__node--active .plx-network-graph__label": 1
