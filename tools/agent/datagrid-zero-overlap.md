@@ -38,12 +38,19 @@ the backlog (`node check-system.rules/selector-kinds.js --shrink`).
    `a.plx-data-grid__cell-content`); the row-menu cell sizes its button through Button's context hooks
    (`--plx-comp-button-context-width`, `--plx-comp-button-context-min-height`). Menus, popups, filters and the old footer
    were never rendered; the pages and load-more margins never matched. Data cells are `__grid-cell--data` (Phase 4).
-7. **Table**: `table.css` by hand; `table-base.css` and `table-steps.css` follow from build-steps.js.
+7. **Table** (done: c1a0d260): Table is the engine's static mode; its parts take `--static` from the engine and
+   data-grid.css styles the mode once (state variables in the base rules), generated for Table into table-base.css. table.css
+   keeps only `.plx-table__portal{display:contents}`. `check-system.selector-kinds.json` lists no DataGrid or Table file;
+   the strict audit on the 14 application pages reports no new overlap (ZERO_OVERLAP_OK).
 
 ## Also in this work
 
-- **Cells sitting 1.3 to 2px off center** (centered badge cells, DAM's checkbox columns, compact density): the behavior
-  test's "vertical alignment not middle". It predates Phase 4; it is fixed in batch 3 by geometry (never a nudge).
+- **Cells sitting 1.2 to 2.2px off center** (the behavior test's "vertical alignment not middle"): found, not applied (a
+  pixel change waits for the owner). Cause: a custom cell's content sits in the inline `__portal` wrapper, so a badge or
+  icon rides on the wrapper's text baseline instead of being centered by the cell (Table is exact: its portal is
+  `display: contents`). Fix by geometry: `.plx-data-grid__portal:where(:not(.plx-data-grid__portal--actions)){display:contents}`
+  (the actions wrapper keeps its box for its fade); badges and icons in custom cells move up 0.6 to 1.1px. Measured: a
+  centered badge, compact 6.6 / 5.4px above / below, standard 9.1 / 6.9, comfortable 13.1 / 10.9.
 - **Phase 4 text roles** for the 8 DataGrid and Table parts still on the migration backlog
   (`check-system.text-contract.json`). Done in batches 5 and 6: group count, summary value, value, the empty message and data cells (and Table's); the
   migration list holds no grid part.
