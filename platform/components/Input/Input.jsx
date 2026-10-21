@@ -90,7 +90,7 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
 export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, ...rest }, ref) {
   return (
     <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
-      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
+      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-input--width-fill', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
     </span>
