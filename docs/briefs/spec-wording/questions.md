@@ -407,3 +407,72 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.behavior.motion:** “The toast slides in and out (still with reduced motion)” can be read as “it still slides with reduced motion”. The Accessibility section says that with reduced motion the toast appears at once. Can Behavior say: “The toast slides in and out; with reduced motion it appears at once”?
 
+## overlays (25 questions)
+
+### confirmation-dialog
+
+- **rec.variantPages[0].text:** The page says a confirmation dialog is for destructive or irreversible actions, and that actions which can be undone should use a toast with Undo instead. But the "Confirm" variant says it is for "an action that can be undone or that others will see". Which is right: is the plain Confirm variant meant for undoable actions that others will see (publish, send, share), or only for irreversible ones?
+- **rec.variantPages[1].text:** The Destructive variant mentions "larger actions". Does this mean larger buttons than the Confirm variant? If so, which size? The rest of the page says the dialog is always the small size.
+
+### side-drawer
+
+- **rec.text:** The overview says the drawer "slides from a side" and the "Drawer at the end" page says it "slides in from the end edge", but the Motion row says "it does not slide". Should the wording say "docked to a side" (no animation), or does the drawer now slide in?
+- **rec.variantPages[3].avoid[0]:** The "Drawer at the end" page says navigation drawers come from the start edge, the "Drawer at the start" page says top-level navigation is never a drawer, and the Scrim page lists "a navigation drawer over a narrow window" as a use of the light scrim. Is a navigation drawer allowed (for example on narrow windows), or never?
+
+### overlays-full-height-sheet
+
+- **rec.text:** This page says that on Medium and Wide windows the same Sheet is a full-height side sheet. The Sheet write-up says that on Wide windows it becomes a dialog (unless a pane is shown). Which is right for Wide windows?
+
+### overlays-inspector-drawer
+
+- **rec.text:** This page says the inspector (SidePanel) opens as a drawer over the main region on narrow windows. The Bottom sheet page says that at Narrow the inspector opens as a bottom sheet. Which does the inspector become on a phone-width window: a drawer or a bottom sheet?
+- **docs.behavior.focus:** Below 1024px the open panel lies over the page with a scrim, but it does not take or trap focus (a non-modal layer). The Scrim page says a scrim belongs behind modal layers only. Should the overlaid panel be modal (take and trap focus), or should it have no scrim?
+- **docs.content.labels:** The title guidance says "Keep it to one line; long names wrap in the title." Should long titles wrap onto more lines, or stay on one line (cut off with an ellipsis)? The same text is on the Properties panel page.
+- **docs.content.actions:** The panel footer puts the primary action first ("Save", "Cancel"), while dialogs put Cancel before the primary action. Is the different order on purpose? The same text is on the Properties panel page.
+
+### overlays-dropdown-surface
+
+- **rec.text:** The overview calls the menu surface "a raised panel ... with the menu radius and elevation", but the Contrast row says it has "no shadow drawn (border only)". Is the menu raised with a shadow, or flat with a border only?
+- **docs.behavior.responsive:** The menu write-up says it "does not flip to fit the viewport", but the Floating positioning page says every anchored overlay, menus included, flips and shifts to stay in view. Which is current?
+
+### overlays-show-more-less
+
+- **rec.purpose:** Show more / less shows the Collapsible section write-up, whose purpose is about "a section of content under an accent uppercase title". Show more is a button under a list or a long text, with no such title. Should this page get its own purpose (and write-up), for example from ShowMore or Text? The Expand / collapse page has a similar mismatch (it also covers Panel and NavList group buttons).
+
+### overlays-truncate-expand
+
+- **rec.purpose:** Truncate / expand shows the Text write-up, whose purpose is about the type scale ("a style from one short scale ... one key figure, an opening paragraph"). Should this page get a purpose about cutting long text and showing more, or is the Text purpose intended here?
+
+### scrim
+
+- **docs.behavior.motion:** The Scrim says it "fades in with the layer above it (the fast duration)", but Dialog says it "appears and leaves without a transition" and has nothing to reduce. Does the dialog backdrop fade in or not?
+
+### hover-card
+
+- **docs.behavior.keyboard:** The Hover card page shows the Popover’s keyboard and focus write-up (Enter or Space opens it, Escape sends focus back to the trigger), but the Hover card’s own overview says keyboard focus opens it at once and Escape closes it without moving focus. Which is right for the hover card? Should the hover card get its own behavior write-up?
+
+### overlays-popup
+
+- **docs:** Popup, Inline dialog and Hover card show the Popover’s full write-up word for word. Is that intended (they are the Popover), or should each page link to the Popover page instead of repeating it?
+
+### rich-tooltip
+
+- **rec.text:** The overview says the rich tooltip has no arrow, but the placement variants on this page (Bottom, Top, Start) describe an arrow pointing at the trigger. Does the rich tooltip have an arrow or not?
+- **rec.variantPages:** The four placement variants (Tooltip below, above, at the start, at the end) and the overview’s last sentence describe the plain tooltip, not the rich tooltip. Should these placements move to the Tooltip page, or do they apply to the rich tooltip too?
+
+### teaching-bubble
+
+- **docs.anatomy:** The anatomy lists the spotlight as part of the bubble, while the overview calls the Spotlight a separate component the bubble uses. Should the spotlight stay in the bubble’s anatomy?
+
+### wizard-dialog
+
+- **rec.variantPages:** The three size variants (Medium, Large, Full screen) all say the same thing (“uses the same controls and persistence contract”) and share generic use and avoid lines that say nothing about when to pick each size. What should each size be for?
+- **docs.anatomy[2]:** The anatomy’s third part is “guarded close.” (lower case, with a period), and the anatomy names no step indicator or Back and Next buttons. What are the parts of a wizard dialog?
+- **docs:** The wizard dialog’s behavior, accessibility and content text is generic (it mentions “Save copy, Resume draft, Archive and Restore” and status badges) and the content “guidance” row repeats the When-to-use lines. Should this page get a write-up of its own before it is reworded?
+
+### help-panel
+
+- **docs:** The help panel’s write-up talks about things that are not in a help panel: matrix checkboxes, permission summaries, tours, teaching bubbles and the actions “Share” and “Save permissions”. It looks copied from other pages. Should the help panel get its own write-up?
+- **rec.variantPages:** The three variants (In the inspector, Search, Articles) share the same text, and their use and avoid lines (“Use this composition when it fits the task”, “Keep education optional and permissions explicit”) do not describe them. What does each variant show, and when should it be used?
+- **rec.text:** The overview repeats the purpose word for word. Should the overview describe the panel’s parts (a heading, a search field, results, an article with Back) instead?
+
