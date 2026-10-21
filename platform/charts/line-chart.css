@@ -1,11 +1,13 @@
 /* Plenix · LineChart and AreaChart (platform/charts/line-chart.css; the code is LineChart.jsx and AreaChart.jsx): the
    points on a line and the fill of an area. Lines, colors, axes and the focus ring are the frame's (system/charts.css)
-   and the chart interaction's; every value here is a --plx-comp-line-chart-* or --plx-comp-area-chart-* token. */
+   and the chart interaction's; every value here is a --plx-comp-line-chart-* or --plx-comp-area-chart-* token.
+   Each area carries its own stacked/percent kind; its opacity is assigned once from a noninheriting state value. */
+@property --plx-state-area-chart-opacity{syntax:"*";inherits:false;}
 
 /* a point on every value (points): a dot in the series' color with the frame's ring (plx-chart__point) */
 .plx-line-chart__point{r:var(--plx-comp-line-chart-point-radius);}
 
 /* an area: the series' data-viz color (plx-chart__mark), see-through so overlapping areas and the grid show */
-.plx-area-chart__area{fill-opacity:var(--plx-comp-area-chart-fill-opacity);stroke-width:0;}
+.plx-area-chart__area{fill-opacity:var(--plx-state-area-chart-opacity,var(--plx-comp-area-chart-fill-opacity));stroke-width:0;}
 /* stacked and percent: the areas touch, nearly solid; the line on top of each keeps the edges apart */
-.plx-area-chart--stacked .plx-area-chart__area{fill-opacity:var(--plx-comp-area-chart-stacked-fill-opacity);}
+.plx-area-chart__area--stacked{--plx-state-area-chart-opacity:var(--plx-comp-area-chart-stacked-fill-opacity);}

@@ -37,6 +37,7 @@
        xLabel); the frame's and the interaction's words are theirs (frameStrings, interactionStrings)
      className: more classes on the figure
    Behavior:
+     Area parts carry their own stacked kind; an outer chart never changes a nested chart's opacity.
      One Tab stop: ← → move the crosshair along the values, ↑ ↓ between the series, Home and End to the ends; each move
        says the values at that x in the live region (the series in focus first). The pointer does the same on hover.
      A missing value is a gap: the line is not drawn across it, and the table shows a dash.
@@ -182,7 +183,7 @@ export function SeriesChart({ kind = 'line', title, description, data = [], x = 
       const shape = (pts) => (curve === 'step' ? stepPoints(pts, step) : pts);
       return (
         <g key={s.id} className="plx-line-chart__series">
-          {area ? segs.map((seg, k) => <path key={'a' + k} className="plx-chart__mark plx-area-chart__area" data-plx-dataviz={s.color} d={pathOf(shape(top(seg)).concat(shape(bottom(seg)).reverse())) + 'Z'} />) : null}
+          {area ? segs.map((seg, k) => <path key={'a' + k} className={cx('plx-chart__mark', 'plx-area-chart__area', stacked && 'plx-area-chart__area--stacked')} data-plx-dataviz={s.color} d={pathOf(shape(top(seg)).concat(shape(bottom(seg)).reverse())) + 'Z'} />) : null}
           {segs.map((seg, k) => <path key={'l' + k} className="plx-chart__line" data-plx-dataviz={s.color} d={pathOf(shape(top(seg)))} />)}
           {points ? cols.map((c) => { const l = raw(i, c) === null ? null : level(i, c); return l ? <circle key={c} className="plx-chart__point plx-line-chart__point" data-plx-dataviz={s.color} cx={posOf(c)} cy={y(l[1])} /> : null; }) : null}
         </g>
