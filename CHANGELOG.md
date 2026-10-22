@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.60.3] - 2026-10-22
+
+### Changed
+- DataGrid: a column without a width fits its content up to 360px (`--plx-comp-data-grid-auto-max-width`); longer text
+  ends in an ellipsis with the full text on hover, and the last such column takes the room left, so the grid fills its
+  width instead of scrolling sideways. Column widths of existing grids change: the room that is left now goes to the
+  last column instead of being shared (owner, 2026-10-22).
+### Fixed
+- DataGrid header: the column menu button and the sort arrow overlapped by 6px; they now have a 4px gap, and the title
+  stops before the button (`--plx-comp-data-grid-popup-button-inset`, `--plx-comp-data-grid-title-reserve`).
+- DataGrid: a content-sized column measures its header in the header's font with its type icon, so its title fits.
+
 ## [0.60.2] - 2026-10-22
 
 ### Fixed

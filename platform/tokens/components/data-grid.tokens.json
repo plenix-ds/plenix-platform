@@ -1,6 +1,11 @@
 {
   "$description": "DataGrid (platform/components/DataGrid): its own tokens beside the shared set: the footer of the modes \"pages\" and \"load-more\" (owner, 2026-10-14), the row height steps, the padding and lines of taller rows, the Airtable-style group rows, the column header type icons and wrapped headers (owner, 2026-10-14). The grid's other tokens are in the shared set.",
   "plx-comp": {
+    "data-grid-auto-max-width": {
+      "$value": "{plx-ref.size-360px}",
+      "$type": "dimension",
+      "$description": "DataGrid: the widest a column grows to fit its content when it has no width of its own; longer text ends in an ellipsis with the full text on hover, and the last column takes the room that is left (owner, 2026-10-22)."
+    },
     "data-grid-footer-border-color": {
       "$value": "{plx-sys.data-grid-line}",
       "$type": "color",

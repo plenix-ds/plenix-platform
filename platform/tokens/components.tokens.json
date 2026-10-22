@@ -1447,7 +1447,8 @@
       "$type": "dimension"
     },
     "data-grid-popup-button-inset": {
-      "$value": "{plx-ref.space-20px}",
+      "$value": "calc({plx-comp.data-grid-cell-padding-inline} + {plx-comp.data-grid-sorter-inset} + {plx-comp.data-grid-header-icon-size} + {plx-ref.space-4px})",
+      "$description": "DataGrid header: the column menu button's distance from the column's end, clear of the sort arrow (which sits sorter-inset inside the title area, a cell padding from the end) with a 4px gap (owner, 2026-10-22: they overlapped by 6px).",
       "$type": "dimension"
     },
     "data-grid-popup-button-radius": {
@@ -1455,7 +1456,8 @@
       "$type": "dimension"
     },
     "data-grid-title-reserve": {
-      "$value": "{plx-ref.size-36px}",
+      "$value": "calc({plx-comp.data-grid-popup-button-inset} + {plx-comp.data-grid-cell-padding-inline} + {plx-comp.data-grid-header-icon-size} + {plx-ref.space-4px})",
+      "$description": "DataGrid header: the room the title leaves at its end for the menu button (the button's inset and width, less the cell padding the title area already stops short by, plus a 4px gap).",
       "$type": "dimension"
     },
     "data-grid-resize-mark-width": {

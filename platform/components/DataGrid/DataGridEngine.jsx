@@ -199,17 +199,22 @@ function NextEngine(props) {
     columns.forEach(c=>{
       const explicit=kinds(c).includes('icon')?metrics.lead:tokenPixels(c.width,at);if(explicit){widths[c.field]=explicit;return;}
       if(isStatic){widths[c.field]=Math.max(metrics.min,tokenPixels(c.minWidth,at));free.push(c.field);return;}
+      // the header: its title in the header's own font, after the type icon and its gap (owner, 2026-10-22: a column that
+      // gets no share of the room left must still show its whole title)
+      ctx.font=(cs.getPropertyValue('--plx-comp-data-grid-header-font-weight').trim()||'600')+' '+cs.getPropertyValue('--plx-comp-data-grid-header-font-size').trim()+' '+(cs.getPropertyValue('--plx-comp-data-grid-font-family').trim()||cs.fontFamily);ctx.wordSpacing='0px';
+      const head=ctx.measureText(c.title||c.field).width+tokenPixels('--plx-comp-data-grid-header-type-icon-size',at)+tokenPixels('--plx-comp-data-grid-header-type-icon-gap',at);
       const family=cs.getPropertyValue(kinds(c).includes('data')?'--plx-comp-data-grid-data-font-family':'--plx-comp-data-grid-font-family').trim()||cs.fontFamily;
       ctx.font=cs.getPropertyValue('--plx-comp-data-grid-font-size').trim()+' '+family;
       // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
       ctx.wordSpacing=kinds(c).includes('data')?(cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim()||'0px'):'0px';
-      let width=ctx.measureText(c.title||c.field).width;
+      let width=head;
       source.forEach(record=>{const value=valueAt(record,c.field);width=Math.max(width,ctx.measureText(valueText(value)).width);});
-      widths[c.field]=snapToGrid(Math.max(metrics.min,width+metrics.space*2),{round:'up',el:at});free.push(c.field);
+      widths[c.field]=snapToGrid(Math.max(metrics.min,Math.min(width+metrics.space*2,tokenPixels('--plx-comp-data-grid-auto-max-width',at)||Infinity)),{round:'up',el:at});free.push(c.field);
     });
     const available=metrics.room-(selectable?metrics.lead:0)-(rowMenu&&rowMenuButton?metrics.menu:0)-(props.viewMenu?metrics.lead:0),used=Object.values(widths).reduce((sum,width)=>sum+width,0),step=gridStep(at);
-    const units=Math.max(0,Math.floor((available-used)/step)),share=free.length?Math.floor(units/free.length):0;
-    free.forEach((field,i)=>widths[field]+=(share+(i<units-share*free.length?1:0))*step);
+    // the room that is left goes to the last column that sizes itself: it fills the grid (owner, 2026-10-22)
+    const units=Math.max(0,Math.floor((available-used)/step));
+    if(free.length)widths[free[free.length-1]]+=units*step;
     setAutoSizing(old=>JSON.stringify(old)===JSON.stringify(widths)?old:widths);
   },[columns,source,metrics.room,metrics.min,metrics.space,metrics.row,selectable,isStatic]);
 

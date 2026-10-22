@@ -16654,9 +16654,15 @@ function CellValue({
       icon: badge.icon || 'circle-info'
     }, badge.label);
   }
+  // the full text on hover, only when the cell cuts it off with an ellipsis (owner, 2026-10-22)
   return /*#__PURE__*/_react.default.createElement("span", {
-    className: own
+    className: own,
+    onMouseEnter: fullText
   }, valueText(value));
+}
+function fullText(event) {
+  const el = event.currentTarget;
+  if (el.scrollWidth > el.clientWidth) el.title = el.textContent;else el.removeAttribute('title');
 }
   } },
   "platform/components/DataGrid/adapter.js": { deps: {"./state.js":"platform/components/DataGrid/state.js","./cells.jsx":"platform/components/DataGrid/cells.jsx"}, externals: {  }, run: function (module, exports, require) {
@@ -17834,16 +17840,21 @@ function NextEngine(props) {
         free.push(c.field);
         return;
       }
+      // the header: its title in the header's own font, after the type icon and its gap (owner, 2026-10-22: a column that
+      // gets no share of the room left must still show its whole title)
+      ctx.font = (cs.getPropertyValue('--plx-comp-data-grid-header-font-weight').trim() || '600') + ' ' + cs.getPropertyValue('--plx-comp-data-grid-header-font-size').trim() + ' ' + (cs.getPropertyValue('--plx-comp-data-grid-font-family').trim() || cs.fontFamily);
+      ctx.wordSpacing = '0px';
+      const head = ctx.measureText(c.title || c.field).width + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-gap', at);
       const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family').trim() || cs.fontFamily;
       ctx.font = cs.getPropertyValue('--plx-comp-data-grid-font-size').trim() + ' ' + family;
       // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
       ctx.wordSpacing = kinds(c).includes('data') ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
-      let width = ctx.measureText(c.title || c.field).width;
+      let width = head;
       source.forEach(record => {
         const value = (0, _state.valueAt)(record, c.field);
         width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width);
       });
-      widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, width + metrics.space * 2), {
+      widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, Math.min(width + metrics.space * 2, (0, _environment.tokenPixels)('--plx-comp-data-grid-auto-max-width', at) || Infinity)), {
         round: 'up',
         el: at
       });
@@ -17852,9 +17863,9 @@ function NextEngine(props) {
     const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0),
       used = Object.values(widths).reduce((sum, width) => sum + width, 0),
       step = (0, _grid.gridStep)(at);
-    const units = Math.max(0, Math.floor((available - used) / step)),
-      share = free.length ? Math.floor(units / free.length) : 0;
-    free.forEach((field, i) => widths[field] += (share + (i < units - share * free.length ? 1 : 0)) * step);
+    // the room that is left goes to the last column that sizes itself: it fills the grid (owner, 2026-10-22)
+    const units = Math.max(0, Math.floor((available - used) / step));
+    if (free.length) widths[free[free.length - 1]] += units * step;
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
   }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic]);
   _react.default.useLayoutEffect(() => {
@@ -27331,7 +27342,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        filter: true (contains text) | "list" (one of the column's values); summary: "sum" | "count" | "average" | "min" |
          "max" in each group header; empty: the text for a missing value (zero and false are values)
        width: a CSS length or a size token ("--plx-ref-size-240px"; numbers snap to a size token); without it the column
-         fits its content and shares the room left; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
+         fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
+         text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
          the columns before it are the row header (pinned and shaded)
        hozAlign, headerHozAlign: "left" | "center" | "right"; headerSort: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which

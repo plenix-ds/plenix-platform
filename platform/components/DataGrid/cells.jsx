@@ -46,5 +46,7 @@ export function CellValue({ column, value, strings, record, pill = false, icon, 
   if (kinds.includes('avatar-name')) { const person = typeof value === 'object' ? value : { name: String(value) }, name=person.name||person.label||''; return <span className={`${block}__rich`}><Avatar name={name} src={person.src} size="2xs" aria-hidden="true" /><span className={own}>{name}</span></span>; }
   if (kinds.includes('tags')) return <span className={`${block}__rich`}>{[].concat(value).map((tag, i) => <Tag key={i} category={typeof tag === 'object' ? tag.category : undefined}>{typeof tag === 'object' ? tag.label : String(tag)}</Tag>)}</span>;
   if (kinds.includes('badge')) { const badge = typeof value === 'object' ? value : { label: String(value) }; return <Badge tone={badge.tone} icon={badge.icon||'circle-info'}>{badge.label}</Badge>; }
-  return <span className={own}>{valueText(value)}</span>;
+  // the full text on hover, only when the cell cuts it off with an ellipsis (owner, 2026-10-22)
+  return <span className={own} onMouseEnter={fullText}>{valueText(value)}</span>;
 }
+function fullText(event) { const el = event.currentTarget; if (el.scrollWidth > el.clientWidth) el.title = el.textContent; else el.removeAttribute('title'); }

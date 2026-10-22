@@ -34,7 +34,8 @@
        filter: true (contains text) | "list" (one of the column's values); summary: "sum" | "count" | "average" | "min" |
          "max" in each group header; empty: the text for a missing value (zero and false are values)
        width: a CSS length or a size token ("--plx-ref-size-240px"; numbers snap to a size token); without it the column
-         fits its content and shares the room left; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
+         fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
+         text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
          the columns before it are the row header (pinned and shaded)
        hozAlign, headerHozAlign: "left" | "center" | "right"; headerSort: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
