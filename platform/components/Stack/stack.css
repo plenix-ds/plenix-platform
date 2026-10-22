@@ -14,6 +14,11 @@
 .plx-stack--gap-lg{row-gap:var(--plx-comp-stack-gap-lg-row-gap);}
 .plx-stack--gap-xl{row-gap:var(--plx-comp-stack-gap-xl-row-gap);}
 .plx-stack--gap-section{row-gap:var(--plx-comp-stack-gap-section-row-gap);}
+/* equal: stacked buttons share the widest one's width (owner, 2026-10-22): the Stack is as wide as its widest child, and
+   Button's width hook, set on the Stack's own element, makes each button that whole width */
+.plx-stack--equal{--plx-comp-button-context-width:100%;inline-size:max-content;max-inline-size:100%;}
+.plx-stack--equal-end{margin-inline-start:auto;}
+.plx-stack--equal-center{margin-inline-end:auto;margin-inline-start:auto;}
 .plx-inline--gap-xs{column-gap:var(--plx-comp-inline-gap-xs-gap);}
 .plx-inline--gap-sm{column-gap:var(--plx-comp-inline-gap-sm-gap);}
 .plx-inline--gap-md{column-gap:var(--plx-comp-inline-gap-md-gap);}

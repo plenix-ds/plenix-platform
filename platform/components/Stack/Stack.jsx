@@ -11,6 +11,8 @@
      <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
    Props:
      Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
+       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
        Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
        holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
      Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
@@ -56,11 +58,11 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
-function layout(kind, { as: As = 'div', gap, align, justify, wrap, inset, grow, scroll, width, maxHeight, indent, push, reverse, reverseBelow, order, orderBelow, className, children, ...rest }, defaults) {
+function layout(kind, { as: As = 'div', gap, equal, align, justify, wrap, inset, grow, scroll, width, maxHeight, indent, push, reverse, reverseBelow, order, orderBelow, className, children, ...rest }, defaults) {
   return (
     <As className={cx('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align),
       justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push',
-      reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)} {...rest}>
+      equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)} {...rest}>
       {children}
     </As>
   );

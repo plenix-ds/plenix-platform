@@ -21227,6 +21227,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
    Props:
      Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
+       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
        Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
        holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
      Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
@@ -21272,6 +21274,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 function layout(kind, {
   as: As = 'div',
   gap,
+  equal,
   align,
   justify,
   wrap,
@@ -21291,7 +21294,7 @@ function layout(kind, {
   ...rest
 }, defaults) {
   return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
+    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
   }, rest), children);
 }
 function Stack(props) {
@@ -30433,7 +30436,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        primary, disabled }]; label is the tooltip and the accessible name; at most four buttons, More last. Never
        capability actions (New …)
      actionLabels: "icon" (default: icon buttons, the label as tooltip and name) | "text" (the icon and its label)
-     actionsLayout: "row" (default: side by side, folding into More from the end) | "column" (stacked, equal widths)
+     actionsLayout: "row" (default: side by side, folding into More from the end) | "column" (stacked at the end, each as
+       wide as the widest)
      control: a control that sets the entity's state, in the aside above the actions (a SegmentedControl for Draft · In
        session · Adjourned, a Select); it keeps its own label
      moreActions: items only in the More menu: [{ icon, label, onSelect, danger }]

@@ -29,7 +29,8 @@
        primary, disabled }]; label is the tooltip and the accessible name; at most four buttons, More last. Never
        capability actions (New …)
      actionLabels: "icon" (default: icon buttons, the label as tooltip and name) | "text" (the icon and its label)
-     actionsLayout: "row" (default: side by side, folding into More from the end) | "column" (stacked, equal widths)
+     actionsLayout: "row" (default: side by side, folding into More from the end) | "column" (stacked at the end, each as
+       wide as the widest)
      control: a control that sets the entity's state, in the aside above the actions (a SegmentedControl for Draft · In
        session · Adjourned, a Select); it keeps its own label
      moreActions: items only in the More menu: [{ icon, label, onSelect, danger }]

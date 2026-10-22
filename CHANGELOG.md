@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.63.0] - 2026-10-22
+
+### Added
+- `Stack` `equal`: every child as wide as the widest, for stacked buttons (owner, 2026-10-22). The Stack shrinks to its
+  widest child and each Button takes its whole width; with `align="end"` or `"center"` the Stack itself sits at the end
+  or in the middle.
+### Changed
+- EntityHeader `actionsLayout="column"`: the stacked actions sit at the end and are each as wide as the widest action
+  (they filled the aside's width).
+
 ## [0.62.0] - 2026-10-22
 
 ### Added
