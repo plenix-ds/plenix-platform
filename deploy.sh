@@ -18,6 +18,8 @@ cd "$(dirname "$0")/.."
 (cd Plenix && node check-system.js >/dev/null 2>&1) || { echo "check-system failed: fix it before publishing"; exit 1; }
 (cd Plenix && node build-packages.js >/dev/null) || { echo "build-packages failed: run node Plenix/build-packages.js"; exit 1; }
 VERSION=$(cd Plenix && node -p "require('./package.json').version")
+# the Material Symbols library, shared by every release (icons-all.css points at it): copied once per pinned commit
+MATERIAL=$(cd Plenix && node -p "require('./platform/icons/map.json')._commit.slice(0, 12)")
 
 PKG=$(mktemp -u).tgz
 tar -czf "$PKG" --force-local --exclude='*.bak' --exclude='node_modules' \
@@ -44,6 +46,7 @@ ssh "$HOST" "set -e
   sudo rm -rf /srv/plenix/api.new && sudo mv /srv/plenix/www.new/Plenix/release/api /srv/plenix/api.new
   sudo rm -rf /srv/plenix/api && sudo mv /srv/plenix/api.new /srv/plenix/api
   sudo mkdir -p /srv/plenix/cdn
+  if [ ! -d /srv/plenix/cdn/material/$MATERIAL ]; then sudo mkdir -p /srv/plenix/cdn/material && sudo cp -r /srv/plenix/www.new/Plenix/platform/icons/library /srv/plenix/cdn/material/$MATERIAL && echo 'Material library published at /cdn/material/$MATERIAL/'; fi
   if [ -d /srv/plenix/cdn/$VERSION ]; then echo 'CDN $VERSION is already published: kept as it was (raise the version to publish changes)'
     # unreleased Platform changes: this build's release files differ from the published ones
     for x in plenix.js plenix.css; do cmp -s /srv/plenix/www.new/Plenix/release/cdn/$VERSION/\$x /srv/plenix/cdn/$VERSION/\$x || echo \"NOTE: \$x has changes that are not released; the apps keep using release $VERSION. Raise the version in package.json to release them.\"; done

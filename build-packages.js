@@ -238,7 +238,7 @@ copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
 // The CDN and npm declarations share the same generated source, including its export-coverage gate.
 copy(path.join(R, 'index.d.ts'), path.join(CDN, 'plenix.d.ts'));
-write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
+write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. For every Material Symbols icon by its own name (<Icon name="person_cancel">), link icons-all.css after plenix.css. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
 // the RichTextEditor's engine (Tiptap, MIT): loaded by the editor from ./vendor/tiptap/ the same way, shipped in both places too
@@ -248,6 +248,17 @@ copyDir(path.join(P, 'vendor', 'tiptap'), path.join(R, 'dist', 'vendor', 'tiptap
 // same way (vendorBase), shipped in both places too; the manifest hashes it with the rest of vendor/ (issue #238)
 copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(CDN, 'vendor', 'pdfjs'));
 copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(R, 'dist', 'vendor', 'pdfjs'));
+// the whole Material Symbols library (owner, 2026-10-22): icons-all.css gives every symbol its Material name as an Icon
+// name (<Icon name="person_cancel">), outline and filled, optical sizes 20 and 24, drawn from /cdn/material/<commit>/
+// (deploy.sh copies platform/icons/library there once: it never changes). Plenix's own names keep their meaning: a symbol
+// whose name is already a Plenix name is left out. Optional: a page links it after plenix.css.
+{
+  const ICONS = path.join(P, 'icons'), map = JSON.parse(fs.readFileSync(path.join(ICONS, 'map.json'), 'utf8'));
+  const lib = JSON.parse(fs.readFileSync(path.join(ICONS, 'library', 'index.json'), 'utf8'));
+  const base = '../material/' + map._commit.slice(0, 12) + '/', taken = new Set(Object.keys(map.map));
+  const rules = [].concat(lib.symbols).filter((sym) => !taken.has(sym)).sort().map((sym) => '.plx-icon--' + sym + '{--plx-comp-icon-outline:url("' + base + sym + '.svg");--plx-comp-icon-filled:url("' + base + sym + '-fill.svg");--plx-comp-icon-outline-24:url("' + base + sym + '-24.svg");--plx-comp-icon-filled-24:url("' + base + sym + '-24-fill.svg");}');
+  write(path.join(CDN, 'icons-all.css'), '/* Plenix ' + VERSION + ' · every Material Symbols Sharp symbol (weight 300, unedited, ' + lib.source + ') as an Icon name: <Icon name="person_cancel">.\n   Load after plenix.css. The files are at ' + base + ' (shared by every release). ' + rules.length + ' symbols; Plenix names keep their own symbol. */\n' + rules.join('\n') + '\n');
+}
 copyDir(path.join(T, 'css'), path.join(CDN, 'tokens'));
 copy(path.join(T, 'tokens.json'), path.join(CDN, 'tokens', 'tokens.json'));
 // the native outputs (build-mobile.js) and the platform sets they come from (Platforms Standard 7.1 and 7.2, batch 297)
@@ -347,7 +358,7 @@ function cdnOfflineBundle() {
     if (fs.statSync(file).isDirectory()) for (const name of fs.readdirSync(file).sort()) add(relative + '/' + name);
     else assets.set(relative, fs.readFileSync(file));
   };
-  for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix.css', 'plenix.min.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
+  for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix.css', 'plenix.min.css', 'icons-all.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
   const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
   const manifest = { version: VERSION, algorithm: 'sha256', description: 'Hashes cover every runtime file, TypeScript declarations and the README. This manifest is excluded from its own list; the CDN index hashes the complete archive.', files: [...assets].map(([name, data]) => ({ path: name, bytes: data.length, sha256: hash(data) })) };
   const manifestName = 'bundle-manifest.json';

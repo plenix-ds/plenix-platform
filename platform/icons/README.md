@@ -26,3 +26,12 @@ the same commit, and `library/index.json` lists them. Hosted with the site:
 https://plenix.lighthouseway.org/Plenix/platform/icons/library/<symbol>.svg (and design-system.lighthouseway.org at the
 same path). To use a symbol, add its Plenix name to `map.json`: build-icons.js takes a file from this folder first, then
 from `library/`, so nothing needs copying.
+
+## The whole library on the CDN (2026-10-22)
+
+`/cdn/material/<commit>/` (on design-system.lighthouseway.org, open to other sites with CORS) holds every symbol's four
+files; deploy.sh copies `library/` there once per pinned commit. Each release's `/cdn/<version>/icons-all.css` (written by
+build-packages.js) gives every symbol its Material name as an Icon name: link it after `plenix.css` and use
+`<Icon name="person_cancel">`. A Material name that is already a Plenix name keeps the Plenix meaning (`check`, `home`).
+It is optional: `plenix.css` carries only the Plenix set as data: URIs (nothing to download); icons-all.css (about 1.4 MB,
+4,106 rules) loads each file from the CDN the first time it is drawn.

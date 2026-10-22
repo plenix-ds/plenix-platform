@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.67.0] - 2026-10-22
+
+### Added
+- The whole Material Symbols library on the CDN (owner, 2026-10-22): every symbol (outline and filled, optical sizes 20 and
+  24, unedited) at `/cdn/material/737e33243058/`, and `/cdn/<version>/icons-all.css`, which gives each symbol its Material
+  name as an Icon name: link it after `plenix.css` and use `<Icon name="person_cancel">`. Optional; a Material name that is
+  already a Plenix name keeps the Plenix meaning (`check`, `home`).
+- Icons `person-cancel`, `document-search`, `folder-eye`, `check-square` and `edit` in the Plenix set (CTM).
+
 ## [0.66.0] - 2026-10-22
 
 ### Changed

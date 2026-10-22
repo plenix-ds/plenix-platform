@@ -7,7 +7,8 @@
      <StatusIcon tone="warning" />
      <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:
-     name: the Plenix icon name (platform/icons/map.json)
+     name: the Plenix icon name (platform/icons/map.json); with the CDN's icons-all.css on the page, also any Material
+       Symbols name (person_cancel, folder_eye): the whole library, drawn from /cdn/material/<commit>/
      size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
        grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
      filled: the filled version (default false)
