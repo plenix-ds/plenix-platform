@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Uniform pill verification</title><link rel="stylesheet" href="/platform/platform.css"><script src="/platform/vendor/react.production.min.js"></script><script src="/platform/vendor/react-dom.production.min.js"></script><script src="/platform/dist/platform.js"></script><body><div id="root"></div><script>
+const h=React.createElement,P=Plenix;
+function Demo(){const [short,setShort]=React.useState(false),[rtl,setRtl]=React.useState(false);return h('main',{dir:rtl?'rtl':'ltr'},h(P.Button,{onClick:()=>setShort(!short)},'Toggle rows'),h(P.Button,{onClick:()=>setRtl(!rtl)},'Toggle Arabic'),h(P.DataGrid,{label:'Uniform test',uniformPillWidths:true,cells:'pill',mode:'pages',pageSize:25,data:short?[{id:1,name:'Amy',code:7}]:[{id:1,name:'Amy',code:7},{id:2,name:'Charlotte Bennett',code:123}],columns:[{title:'Spouse',field:'name',type:'person'},{title:'Number',field:'code',type:'number'}]}));}
+ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+</script></body></html>

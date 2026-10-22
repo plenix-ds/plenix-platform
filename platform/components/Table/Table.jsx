@@ -5,6 +5,7 @@
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
        minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
+     uniformPillWidths: true makes standard pills equally wide per rendered column (default false); rounds up to a size token, limited by the column. Custom renderers remain unchanged.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
        icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with

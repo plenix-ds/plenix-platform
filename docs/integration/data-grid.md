@@ -22,3 +22,10 @@ Written for CTM's grid report (2026-10-22), checked on Plenix 0.63.1 and fixed i
 | The same look in every view | Use one column definition per kind of value (case number `kind: 'data'`, people `type: 'person'` with `cells="pill"`, dates `type: 'date'`), so every grid sizes and draws them alike. |
 | No type icons | `typeIcons={false}` on a DataGrid; a static `Table` has none. |
 | Avoid local styles | Do not override `.plx-data-grid` or `.plx-table` rules: widths, wrapping and hover come from the component. |
+
+
+## Uniform pill widths
+
+Opt in with `uniformPillWidths={true}` and `cells="pill"` on DataGrid or Table. Standard pills in each currently rendered column share the widest natural value width, rounded up to an existing size token and bounded by the cell. Different columns remain independent. Filtering, pagination, virtual scrolling and font loading remeasure the current rendered window, so widths can change as that window changes. This is not a full-dataset measurement.
+
+Custom renderers remain unchanged. Explicit `column.pill` fill keeps filling the cell and is excluded. No runtime style attributes or application CSS overrides are needed.

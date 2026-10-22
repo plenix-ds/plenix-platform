@@ -63,6 +63,7 @@
      movableRows with onRowMove(records), movableColumns: drag, with the same moves in the menus
      rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
        button (default false: the page's ViewMenu sets these)
+     uniformPillWidths: true makes standard pills equally wide per rendered column (default false); rounds up to a size token, limited by the column. Custom renderers remain unchanged.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value is a DataPill with its column's type
        icon (a calendar for a date, a person for a person; a person's value.gender makes it blue or pink with the male or
        female icon); technical values (numbers, currency, dates, sizes, kind data) in the data font. A column chooses per value
