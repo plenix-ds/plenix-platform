@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.62.0] - 2026-10-22
+
+### Added
+- EntityHeader `actionLabels="text"`: the actions as buttons with their icon and label (default `"icon"`: icon buttons
+  with the label as tooltip). The More button takes its label too.
+- EntityHeader `actionsLayout="column"`: the actions stacked, each as wide as the aside (default `"row"`: side by side).
+- EntityHeader `control`: a control that sets the entity's state (a SegmentedControl for Draft · In session ·
+  Adjourned, a Select), in the aside above the actions.
+- Menu context hook `--plx-comp-menu-context-anchor-width` (a full-width trigger).
+### Fixed
+- EntityHeader: actions that do not fit now fold into More (the row never wrapped, so nothing folded).
+
 ## [0.61.0] - 2026-10-22
 
 ### Added

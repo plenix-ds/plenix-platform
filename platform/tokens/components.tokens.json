@@ -8357,6 +8357,21 @@
       "$value": "{plx-ref.line-height-tight}",
       "$type": "number"
     },
+    "entity-header-actions-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the actions row, one button high (md buttons); what does not fit folds into More."
+    },
+    "entity-header-section-actions-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "EntityHeader, section: the actions row, one sm button high."
+    },
+    "entity-header-actions-clip-margin": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: how far past the clipped actions row a focus ring still shows (as FilterBar's)."
+    },
     "entity-header-actions-gap": {
       "$value": "{plx-sys.space-cluster-sm}",
       "$type": "dimension"

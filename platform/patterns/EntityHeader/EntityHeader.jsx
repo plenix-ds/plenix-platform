@@ -28,6 +28,10 @@
      actions: the actions that act on this entity, 32px icon buttons at the end of the aside: [{ icon, label, onClick,
        primary, disabled }]; label is the tooltip and the accessible name; at most four buttons, More last. Never
        capability actions (New …)
+     actionLabels: "icon" (default: icon buttons, the label as tooltip and name) | "text" (the icon and its label)
+     actionsLayout: "row" (default: side by side, folding into More from the end) | "column" (stacked, equal widths)
+     control: a control that sets the entity's state, in the aside above the actions (a SegmentedControl for Draft · In
+       session · Adjourned, a Select); it keeps its own label
      moreActions: items only in the More menu: [{ icon, label, onSelect, danger }]
      headingLevel: the title's heading level (default 1; 2 in a section)
      className: more classes on the header
@@ -95,39 +99,44 @@ function Details({ status, facts, strings }) {
   return tiles.length ? <dl className="plx-entity-header__details">{tiles}</dl> : null;
 }
 
-function Actions({ actions, moreActions, size, strings }) {
+function Actions({ actions, moreActions, size, strings, labels = 'icon', layout = 'row' }) {
+  const text = labels === 'text', column = layout === 'column';
   const ref = React.useRef(null);
   const extra = moreActions || [];
   let list = actions || [];
   let folded = [];
   if (list.length > MAX_BUTTONS - 1) { folded = list.slice(MAX_BUTTONS - 1); list = list.slice(0, MAX_BUTTONS - 1); }
-  const fit = useOverflow(ref, list.length, list.map((a) => a.label).join('|'));
+  const none = React.useRef(null);   // a column is not measured: the helper would hide what sits below the first row
+  const measured = useOverflow(column ? none : ref, list.length, list.map((a) => a.label).join('|') + labels + layout);
+  const fit = column ? list.length : measured;   // a column has room for every action: nothing folds
   const items = list.map((a) => (
-    <span key={a.label} data-plx-overflow-item="" className="plx-entity-header__action">
-      <Button size={size} iconOnly icon={a.icon} label={a.label} title={a.label} variant={a.primary ? 'primary' : 'secondary'} disabled={a.disabled} onClick={a.onClick} />
+    <span key={a.label} data-plx-overflow-item="" className={cx('plx-entity-header__action', column && 'plx-entity-header__action--stretch')}>
+      {text
+        ? <Button size={size} icon={a.icon} variant={a.primary ? 'primary' : 'secondary'} disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>
+        : <Button size={size} iconOnly icon={a.icon} label={a.label} title={a.label} variant={a.primary ? 'primary' : 'secondary'} disabled={a.disabled} onClick={a.onClick} />}
     </span>
   ));
   const hidden = list.slice(fit).concat(folded);
   const more = (
-    <span key="plx-more" data-plx-overflow-more="" className="plx-entity-header__action">
-      <Menu label={strings.more} placement="bottom-end" trigger={<Button size={size} iconOnly icon="more" label={strings.more} title={strings.more} variant="secondary" />}>
+    <span key="plx-more" data-plx-overflow-more="" className={cx('plx-entity-header__action', column && 'plx-entity-header__action--stretch')}>
+      <Menu label={strings.more} placement="bottom-end" trigger={text ? <Button size={size} icon="more" variant="secondary">{strings.more}</Button> : <Button size={size} iconOnly icon="more" label={strings.more} title={strings.more} variant="secondary" />}>
         {hidden.map((a) => <MenuItem key={a.label} icon={a.icon} disabled={a.disabled} onSelect={a.onClick}>{a.label}</MenuItem>)}
         {extra.map((a) => <MenuItem key={a.label} icon={a.icon} danger={a.danger} onSelect={a.onSelect}>{a.label}</MenuItem>)}
       </Menu>
     </span>
   );
-  return <div ref={ref} className="plx-entity-header__actions">{splitAt(items, fit, more)}</div>;
+  return <div ref={ref} className={cx('plx-entity-header__actions', column && 'plx-entity-header__actions--column', size === 'sm' && 'plx-entity-header__actions--sm')}>{splitAt(items, fit, more)}</div>;
 }
 
 export function EntityHeader({ kind = 'page', title, subtitle, media, status, facts, summary, next, actions, moreActions,
-  description, context, live, headingLevel, className, strings }) {
+  actionLabels = 'icon', actionsLayout = 'row', control, description, context, live, headingLevel, className, strings }) {
   const section = kind === 'section';
   const H = 'h' + (headingLevel || (section ? 2 : 1));
   const s = { more: 'More actions', status: 'Status', next: 'Next step', ...strings };
   const sub = subtitle !== undefined ? subtitle : (description !== undefined ? description : context);
   const st = status || live;
   const hasActions = (actions && actions.length) || (moreActions && moreActions.length);
-  const aside = !!(next && !section) || !!hasActions;
+  const aside = !!(next && !section) || !!hasActions || !!control;
   return (
     <header className={cx('plx-entity-header', section && 'plx-entity-header--section', !aside && 'plx-entity-header--solo', className)}>
       <div className="plx-entity-header__layout">
@@ -153,7 +162,12 @@ export function EntityHeader({ kind = 'page', title, subtitle, media, status, fa
                 {next.detail ? <p className="plx-entity-header__next-detail">{next.detail}</p> : null}
               </div>
             ) : null}
-            {hasActions ? <Actions actions={actions} moreActions={moreActions} size={section ? 'sm' : 'md'} strings={s} /> : null}
+            {control || hasActions ? (
+              <div className="plx-entity-header__tools">
+                {control ? <div className="plx-entity-header__control">{control}</div> : null}
+                {hasActions ? <Actions actions={actions} moreActions={moreActions} size={section ? 'sm' : 'md'} strings={s} labels={actionLabels} layout={actionsLayout} /> : null}
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>

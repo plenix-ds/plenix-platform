@@ -20,6 +20,7 @@
      Menu.label: the accessible name of the menu
      Menu.placement: "bottom-start" (default) | "bottom-end" | "top-start" | "top-end"
      Menu.className: more classes on the anchor around the trigger and menu
+     Context hook: a container sets --plx-comp-menu-context-anchor-width on its own element (100% for a full-width trigger)
      Menu.children: the items: MenuItem, MenuGroup, MenuDivider
      MenuItem.icon: an icon name or element before the label
      MenuItem.danger: shows the item in the danger color (a destructive action); default false

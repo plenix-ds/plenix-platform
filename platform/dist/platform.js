@@ -4053,6 +4053,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Menu.label: the accessible name of the menu
      Menu.placement: "bottom-start" (default) | "bottom-end" | "top-start" | "top-end"
      Menu.className: more classes on the anchor around the trigger and menu
+     Context hook: a container sets --plx-comp-menu-context-anchor-width on its own element (100% for a full-width trigger)
      Menu.children: the items: MenuItem, MenuGroup, MenuDivider
      MenuItem.icon: an icon name or element before the label
      MenuItem.danger: shows the item in the danger color (a destructive action); default false
@@ -30431,6 +30432,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      actions: the actions that act on this entity, 32px icon buttons at the end of the aside: [{ icon, label, onClick,
        primary, disabled }]; label is the tooltip and the accessible name; at most four buttons, More last. Never
        capability actions (New …)
+     actionLabels: "icon" (default: icon buttons, the label as tooltip and name) | "text" (the icon and its label)
+     actionsLayout: "row" (default: side by side, folding into More from the end) | "column" (stacked, equal widths)
+     control: a control that sets the entity's state, in the aside above the actions (a SegmentedControl for Draft · In
+       session · Adjourned, a Select); it keeps its own label
      moreActions: items only in the More menu: [{ icon, label, onSelect, danger }]
      headingLevel: the title's heading level (default 1; 2 in a section)
      className: more classes on the header
@@ -30531,8 +30536,12 @@ function Actions({
   actions,
   moreActions,
   size,
-  strings
+  strings,
+  labels = 'icon',
+  layout = 'row'
 }) {
+  const text = labels === 'text',
+    column = layout === 'column';
   const ref = _react.default.useRef(null);
   const extra = moreActions || [];
   let list = actions || [];
@@ -30541,12 +30550,20 @@ function Actions({
     folded = list.slice(MAX_BUTTONS - 1);
     list = list.slice(0, MAX_BUTTONS - 1);
   }
-  const fit = (0, _overflow.useOverflow)(ref, list.length, list.map(a => a.label).join('|'));
+  const none = _react.default.useRef(null); // a column is not measured: the helper would hide what sits below the first row
+  const measured = (0, _overflow.useOverflow)(column ? none : ref, list.length, list.map(a => a.label).join('|') + labels + layout);
+  const fit = column ? list.length : measured; // a column has room for every action: nothing folds
   const items = list.map(a => /*#__PURE__*/_react.default.createElement("span", {
     key: a.label,
     "data-plx-overflow-item": "",
-    className: "plx-entity-header__action"
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    className: (0, _cx.cx)('plx-entity-header__action', column && 'plx-entity-header__action--stretch')
+  }, text ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: size,
+    icon: a.icon,
+    variant: a.primary ? 'primary' : 'secondary',
+    disabled: a.disabled,
+    onClick: a.onClick
+  }, a.label) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: size,
     iconOnly: true,
     icon: a.icon,
@@ -30560,11 +30577,15 @@ function Actions({
   const more = /*#__PURE__*/_react.default.createElement("span", {
     key: "plx-more",
     "data-plx-overflow-more": "",
-    className: "plx-entity-header__action"
+    className: (0, _cx.cx)('plx-entity-header__action', column && 'plx-entity-header__action--stretch')
   }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
     label: strings.more,
     placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    trigger: text ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: size,
+      icon: "more",
+      variant: "secondary"
+    }, strings.more) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: size,
       iconOnly: true,
       icon: "more",
@@ -30585,7 +30606,7 @@ function Actions({
   }, a.label))));
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: ref,
-    className: "plx-entity-header__actions"
+    className: (0, _cx.cx)('plx-entity-header__actions', column && 'plx-entity-header__actions--column', size === 'sm' && 'plx-entity-header__actions--sm')
   }, (0, _overflow.splitAt)(items, fit, more));
 }
 function EntityHeader({
@@ -30599,6 +30620,9 @@ function EntityHeader({
   next,
   actions,
   moreActions,
+  actionLabels = 'icon',
+  actionsLayout = 'row',
+  control,
   description,
   context,
   live,
@@ -30617,7 +30641,7 @@ function EntityHeader({
   const sub = subtitle !== undefined ? subtitle : description !== undefined ? description : context;
   const st = status || live;
   const hasActions = actions && actions.length || moreActions && moreActions.length;
-  const aside = !!(next && !section) || !!hasActions;
+  const aside = !!(next && !section) || !!hasActions || !!control;
   return /*#__PURE__*/_react.default.createElement("header", {
     className: (0, _cx.cx)('plx-entity-header', section && 'plx-entity-header--section', !aside && 'plx-entity-header--solo', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -30658,12 +30682,18 @@ function EntityHeader({
     className: "plx-entity-header__next-title"
   }, next.title), next.detail ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-entity-header__next-detail"
-  }, next.detail) : null) : null, hasActions ? /*#__PURE__*/_react.default.createElement(Actions, {
+  }, next.detail) : null) : null, control || hasActions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__tools"
+  }, control ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__control"
+  }, control) : null, hasActions ? /*#__PURE__*/_react.default.createElement(Actions, {
     actions: actions,
     moreActions: moreActions,
     size: section ? 'sm' : 'md',
-    strings: s
-  }) : null) : null));
+    strings: s,
+    labels: actionLabels,
+    layout: actionsLayout
+  }) : null) : null) : null));
 }
   } },
   "platform/patterns/NotificationList/NotificationList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

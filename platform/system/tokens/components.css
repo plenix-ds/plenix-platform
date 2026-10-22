@@ -1891,6 +1891,9 @@
   --plx-comp-entity-header-title-font-size: var(--plx-ref-font-size-18);
   --plx-comp-entity-header-title-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-entity-header-title-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-entity-header-actions-height: var(--plx-sys-control-height-standard);
+  --plx-comp-entity-header-section-actions-height: var(--plx-sys-control-height-toolbar);
+  --plx-comp-entity-header-actions-clip-margin: var(--plx-ref-space-4px);
   --plx-comp-entity-header-actions-gap: var(--plx-sys-space-cluster-sm);
   --plx-comp-filter-bar-gap: var(--plx-sys-space-cluster-sm);
   --plx-comp-filter-bar-filters-height: var(--plx-sys-control-height-toolbar);

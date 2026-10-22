@@ -8,6 +8,7 @@
    .plx-entity-header__rule        3 the accent rule (6px; 4px in a section)
    .plx-entity-header__details     4 the Status tile first, then up to four fact tiles (a section: its summary)
    .plx-entity-header__aside       5 the divider, 6 the aside: next step (eyebrow, title, detail) over the actions
+   .plx-entity-header__tools       the state control (__control) over the actions; __actions--column stacks them
    .plx-entity-header--section     a section header: the same anatomy one step smaller (32px icon, 15px title, 4px rule)
    The background follows the user's settings on the page root: data-plx-header-tint (default none: white) and
    data-plx-header-tint-style (default fade). */
@@ -66,8 +67,22 @@
 .plx-entity-header__eyebrow{color:var(--plx-comp-entity-header-eyebrow-text);font-size:var(--plx-comp-entity-header-eyebrow-font-size);margin-block-end:0;margin-block-start:0;}
 .plx-entity-header__next-title{color:var(--plx-comp-entity-header-title-text);font-size:var(--plx-comp-entity-header-next-font-size);margin-block-end:0;margin-block-start:0;}
 .plx-entity-header__next-detail{color:var(--plx-comp-entity-header-subtitle-text);font-size:var(--plx-comp-entity-header-subtitle-font-size);margin-block-end:0;margin-block-start:0;}
-.plx-entity-header__actions{align-items:center;column-gap:var(--plx-comp-entity-header-actions-gap);display:flex;flex-wrap:nowrap;justify-content:flex-end;min-inline-size:0;}
+.plx-entity-header__actions{align-items:var(--plx-state-entity-header-actions-align,center);column-gap:var(--plx-comp-entity-header-actions-gap);block-size:var(--plx-state-entity-header-actions-block,var(--plx-state-entity-header-actions-height,var(--plx-comp-entity-header-actions-height)));display:flex;flex-direction:var(--plx-state-entity-header-actions-direction,row);flex-wrap:var(--plx-state-entity-header-actions-wrap,wrap);justify-content:flex-end;min-inline-size:0;overflow-clip-margin:var(--plx-comp-entity-header-actions-clip-margin);overflow-x:var(--plx-state-entity-header-actions-overflow,clip);overflow-y:var(--plx-state-entity-header-actions-overflow,clip);row-gap:var(--plx-comp-entity-header-actions-gap);}
 .plx-entity-header__action{align-items:center;display:inline-flex;}
+/* actionsLayout="column": the actions stacked, each as wide as the column (Button's width hook on the action's own slot) */
+@property --plx-state-entity-header-actions-align{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-actions-direction{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-actions-block{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-actions-height{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-actions-wrap{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-actions-overflow{syntax:"*";inherits:false;}
+.plx-entity-header__actions--column{--plx-state-entity-header-actions-align:stretch;--plx-state-entity-header-actions-block:auto;--plx-state-entity-header-actions-direction:column;--plx-state-entity-header-actions-overflow:visible;--plx-state-entity-header-actions-wrap:nowrap;}
+/* a section header's actions are a step smaller (sm buttons): its row is their height */
+.plx-entity-header__actions--sm{--plx-state-entity-header-actions-height:var(--plx-comp-entity-header-section-actions-height);}
+.plx-entity-header__action--stretch{--plx-comp-button-context-width:100%;--plx-comp-menu-context-anchor-width:100%;}
+/* the state control and the actions: one column at the end of the aside, the control above */
+.plx-entity-header__tools{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-entity-header-actions-gap);}
+.plx-entity-header__control{display:flex;justify-content:flex-end;min-inline-size:0;}
 
 /* a section header: the same anatomy one step smaller */
 .plx-entity-header--section{border-bottom-left-radius:var(--plx-comp-entity-header-section-radius);border-bottom-right-radius:var(--plx-comp-entity-header-section-radius);border-top-left-radius:var(--plx-comp-entity-header-section-radius);border-top-right-radius:var(--plx-comp-entity-header-section-radius);padding-block-end:var(--plx-comp-entity-header-section-padding-block);padding-block-start:var(--plx-comp-entity-header-section-padding-block);padding-inline-end:var(--plx-comp-entity-header-section-padding-inline);padding-inline-start:var(--plx-comp-entity-header-section-padding-inline);}
@@ -83,4 +98,5 @@
   .plx-entity-header__layout{grid-template-columns:minmax(0,1fr);}
   .plx-entity-header__aside{border-block-start-color:var(--plx-comp-entity-header-aside-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-entity-header-border-width);border-inline-start-style:none;border-inline-start-width:0;margin-block-start:var(--plx-comp-entity-header-stacked-padding-block);padding-block-start:var(--plx-comp-entity-header-stacked-padding-block);padding-inline-start:0;text-align:start;}
   .plx-entity-header__actions{justify-content:flex-start;}
+  .plx-entity-header__control{justify-content:flex-start;}
 }
