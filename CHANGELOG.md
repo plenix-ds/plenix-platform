@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.63.1] - 2026-10-22
+
+### Fixed
+- CommandBar: no gray band. A bar at the top of a page has no background until content scrolls under it; only then it
+  takes the page canvas (data-plx-stuck), so it no longer draws a gray strip on a white page (CTM, RedSave P-30, #162).
+
 ## [0.63.0] - 2026-10-22
 
 ### Added

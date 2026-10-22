@@ -26543,7 +26543,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
      sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
-       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow.
+       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow. It has no background
+       until content scrolls under it (data-plx-stuck); then the page canvas, so the content does not show through.
      narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
        decides)
      strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
@@ -26763,6 +26764,42 @@ function CommandBar({
   const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
   // the swap is announced (the focus stays where it is, on the table)
   const was = _react.default.useRef(selecting);
+  // stuck: the bar is sticky, pinned at its scroll container's top, with content scrolled under it
+  _react.default.useEffect(() => {
+    const el = root.current;
+    if (!el || typeof window === 'undefined') return undefined;
+    const scrollerOf = node => {
+      for (let p = node.parentElement; p; p = p.parentElement) {
+        const o = getComputedStyle(p).overflowY;
+        if (o === 'auto' || o === 'scroll') return p;
+      }
+      return null;
+    };
+    // the scroll container is found on each check: on the first render the page's stylesheets may not have applied yet
+    const check = () => {
+      const scroller = scrollerOf(el);
+      const sticky = getComputedStyle(el).position === 'sticky';
+      const top = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).paddingTop) || 0) : 0,
+        scrolled = scroller ? scroller.scrollTop > 0 : window.scrollY > 0;
+      const stuck = sticky && scrolled && el.getBoundingClientRect().top <= top + 1;
+      if (stuck) el.setAttribute('data-plx-stuck', '');else el.removeAttribute('data-plx-stuck');
+    };
+    // scroll events come at most once a frame already: the check runs on each
+    const schedule = check;
+    // scroll does not bubble: listening in the capture phase on the document hears every scroll container
+    document.addEventListener('scroll', schedule, {
+      capture: true,
+      passive: true
+    });
+    window.addEventListener('resize', schedule);
+    check();
+    return () => {
+      document.removeEventListener('scroll', schedule, {
+        capture: true
+      });
+      window.removeEventListener('resize', schedule);
+    };
+  }, [sticky]);
   _react.default.useEffect(() => {
     if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
       n: (0, _format.formatNumber)(selCount)
