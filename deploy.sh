@@ -8,7 +8,7 @@
 # in package.json), so a broken release shows in our own apps first. Platform changes reach them only through a new version.
 # Both names serve /srv/plenix/www on the VM (Nginx, site file /etc/nginx/sites-available/plenix); Nginx Proxy Manager
 # (CT 102) gives them HTTPS. Only the folders listed below are published: never the build tools, archives or databases.
-# The owner's study pages (docs/font-study, docs/composition, docs/reading-pane-study) are published too, at /Plenix/docs/<study>/.
+# The owner's study pages (docs/font-study, docs/composition, docs/reading-pane-study, docs/page-headers) are published too, at /Plenix/docs/<study>/.
 # Run from Git Bash:  bash deploy.sh   (needs this PC's SSH key on plenix@10.0.0.30)
 set -euo pipefail
 HOST=plenix@10.0.0.30
@@ -23,7 +23,7 @@ PKG=$(mktemp -u).tgz
 tar -czf "$PKG" --force-local --exclude='*.bak' --exclude='node_modules' \
   Plenix/platform Plenix/suite Plenix/bookmarks Plenix/calendar Plenix/contacts Plenix/dam Plenix/dashboard Plenix/files \
   Plenix/messages Plenix/notes Plenix/projects Plenix/settings Plenix/tasks Plenix/check-system.js \
-  Plenix/docs/font-study Plenix/docs/composition Plenix/docs/reading-pane-study \
+  Plenix/docs/font-study Plenix/docs/composition Plenix/docs/reading-pane-study Plenix/docs/page-headers \
   "Plenix - DAM/audit/batches/15-26.md" Plenix/release Plenix/packages/styles/plenix.css
 
 gzip -t "$PKG" || { echo "package is damaged; nothing published"; rm -f "$PKG"; exit 1; }
