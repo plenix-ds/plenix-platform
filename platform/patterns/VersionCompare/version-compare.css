@@ -2,14 +2,13 @@
    With, and the views at the end; they wrap on a narrow view), then the comparison: ComparisonView's panes or slider, or
    the text diff: its bar (the summary, Previous and Next change) and its lines in the data font, each with the line
    numbers before and after, a sign, and the added and removed lines on the success and danger soft surfaces. Anatomy and
-   API: VersionCompare.jsx. */
+   API: VersionCompare.jsx. The diff exists only in text mode; signs carry their own line kind. Field owns picker minimum width. */
 .plx-version-compare{container-type:inline-size;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-version-compare-gap);}
-.plx-version-compare--columns,.plx-version-compare--slider{row-gap:var(--plx-comp-version-compare-gap);}
 .plx-version-compare__pickers{align-items:flex-end;column-gap:var(--plx-comp-version-compare-pickers-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-version-compare-pickers-gap);}
-.plx-version-compare__picker{flex-basis:var(--plx-comp-version-compare-picker-width);flex-grow:0;min-inline-size:0;}
+.plx-version-compare__picker{flex-basis:var(--plx-comp-version-compare-picker-width);flex-grow:0;}
 .plx-version-compare__modes{margin-inline-start:auto;}
 /* the text diff */
-.plx-version-compare--text .plx-version-compare__diff{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-version-compare-diff-gap);}
+.plx-version-compare__diff{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-version-compare-diff-gap);}
 .plx-version-compare__diff-bar{align-items:center;column-gap:var(--plx-comp-version-compare-pickers-gap);display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:var(--plx-comp-version-compare-diff-gap);}
 .plx-version-compare__summary{color:var(--plx-comp-version-compare-summary-text);font-size:var(--plx-comp-version-compare-summary-font-size);line-height:var(--plx-comp-version-compare-summary-line-height);margin-block-end:0;margin-block-start:0;}
 .plx-version-compare__steps{column-gap:var(--plx-comp-version-compare-steps-gap);display:inline-flex;}
@@ -22,7 +21,7 @@
 .plx-version-compare__line--removed{background-color:var(--plx-comp-version-compare-removed-background);}
 .plx-version-compare__number{color:var(--plx-comp-version-compare-number-text);text-align:end;}
 .plx-version-compare__sign{text-align:center;}
-.plx-version-compare__line--added .plx-version-compare__sign{color:var(--plx-comp-version-compare-added-sign-text);}
-.plx-version-compare__line--removed .plx-version-compare__sign{color:var(--plx-comp-version-compare-removed-sign-text);}
+.plx-version-compare__sign--added:where(:not(.plx-version-compare__sign--removed)){color:var(--plx-comp-version-compare-added-sign-text);}
+.plx-version-compare__sign--removed{color:var(--plx-comp-version-compare-removed-sign-text);}
 .plx-version-compare__text{white-space:pre-wrap;overflow-wrap:anywhere;}
 .plx-version-compare__fold{background-color:var(--plx-comp-version-compare-fold-background);padding-inline-start:var(--plx-comp-version-compare-line-padding-inline);}

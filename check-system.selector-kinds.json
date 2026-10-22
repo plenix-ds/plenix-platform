@@ -1029,11 +1029,6 @@
    "combinator | .plx-user-card--compact .plx-user-card__secondary": 1,
    "combinator | .plx-user-card--compact .plx-user-card__actions": 1
   },
-  "platform/patterns/VersionCompare/version-compare.css": {
-   "combinator | .plx-version-compare--text .plx-version-compare__diff": 1,
-   "combinator | .plx-version-compare__line--added .plx-version-compare__sign": 1,
-   "combinator | .plx-version-compare__line--removed .plx-version-compare__sign": 1
-  },
   "platform/patterns/WidgetGrid/widget-grid.css": {
    "combinator | .plx-widget-grid__item.is-dragging *": 1,
    "cross-block | .plx-widget-grid__menu.plx-menu-anchor:not(.plx-widget-grid__menu--inline)": 1
