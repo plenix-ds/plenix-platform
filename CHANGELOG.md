@@ -6,6 +6,44 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.59.0] - 2026-10-22
+
+Released on the owner's word before the Styling program's final checks; the full proof and the visual check of every
+change run at the end of the program.
+
+### Added
+- Typography: text roles as typography tokens, declared text contracts and the text-contract check (Styling Standard,
+  Phase 4). Every text part sets one whole role; Mono is a switch on every role.
+- Zero overlap (Styling Standard 3.5): flat selectors, one declaration per property per element and condition, state
+  variables, and context values (`--plx-comp-*-context-*`). New: the selector-kinds check, the strict clash audit and
+  `--plx-sys-scrollbar-width`, `--plx-sys-touch-hidden`, `--plx-comp-button-context-min-height`.
+- DataGrid: grouping across collection field types; collection-owned view state shared with the header actions.
+- Design spec: the native guidance for collection view state; the Web page template check.
+
+### Changed
+- DataGrid and Table carry no overlapping rules (batches 1-7). Table is the engine's static mode: its base stylesheet
+  is generated from the DataGrid's. No visual change, proved grid by grid in every state.
+- Context hooks replace every rule that reached into another component (Styling Standard, Phase 2): Icon, Field,
+  Button, Tag (Chip and the tag-input add button are Tag modifiers), joined controls, content that follows the
+  surrounding text (`data-plx-text-follow`).
+- Each component owns its motion and its selected icon; layout modes, theme, density, interaction, print, forced colors
+  and more contrast are exclusive token blocks. `nesting.css` is retired.
+- Design spec: plain, direct wording on every page by the owner's seven rules; the owner's 322 decisions on the open
+  questions applied; rows that only say "Not applicable" are hidden. Merged pages: Audio player into Media player,
+  Presence indicator into Availability indicator, Modal trigger into Dialog trigger (the old addresses open the home).
+- The Table and DataGrid rule: a dynamic table (sort, filter, group, search) is the DataGrid; a static table is the
+  Table, which looks the same.
+- DataGrid performance: search predicates evaluated once per record; overlapping rows, custom cells and sort and width
+  work reused; row menus built on demand; SplitView grids measured and bounded on their own.
+
+### Fixed
+- DataGrid: a custom cell's content (badges, icons, switches) sits in the middle of its cell; it sat 0.5 to 1.1px low
+  (owner-approved visual change).
+- DataGrid: the row-menu column is solid with a start line; the checkbox column ends in its own line.
+- Text body and caption follow their context's weight and line height again.
+
+Apps to check: CSS that set a component's internals from outside (now context hooks), and custom DataGrid cells.
+
 ## [0.58.0] - 2026-10-19
 
 ### Added
