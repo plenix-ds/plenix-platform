@@ -16,6 +16,8 @@
      variant: "soft" (default: a soft fill, a 1px border two shades darker, the text in the darkest shade) | "solid" (the
        color as the fill, its own text color: a strong value such as a price band) | "plain" (no box: the icon and the
        text in the color, a name in running text)
+     size: (default) the height of the text line it sits in (the density's inline control height) | "md": 24px tall, 6px
+       before the icon and 10px after the value, at every density (owner, 2026-10-22; a DataGrid or Table cell's pill)
      icon: an icon name before the value (a calendar for a date, the sun or the moon for a time); false: no icon at all,
        not even the gender's: a name beside the person's avatar or picture never repeats its icon (owner, 2026-10-19)
      data: a technical value (a code, a number, a time, a price): the data font
@@ -42,7 +44,7 @@ import { Icon } from '../Icon/Icon.jsx';
 const STRINGS = { male: 'male', female: 'female' };
 const GENDER = { male: { tone: 'blue', icon: 'person-male' }, female: { tone: 'pink', icon: 'person-female' } };
 
-export function DataPill({ children, tone, variant = 'soft', icon, data = false, fill = false, gender, person = false, strings, className, ...rest }) {
+export function DataPill({ children, tone, variant = 'soft', size, icon, data = false, fill = false, gender, person = false, strings, className, ...rest }) {
   devWarn('DataPill', { variant }, { variant: ['soft', 'solid', 'plain'] });
   const t = Object.assign({}, STRINGS, strings);
   const g = GENDER[gender];
@@ -50,7 +52,7 @@ export function DataPill({ children, tone, variant = 'soft', icon, data = false,
   const glyph = icon === false ? null : g ? g.icon : (icon || (person ? 'person' : null));   // icon={false}: a picture beside it already says it
   const title = fill && (typeof children === 'string' || typeof children === 'number') ? String(children) : undefined;
   return (
-    <span className={cx('plx-data-pill', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className)} data-plx-category={color} title={title} {...rest}>
+    <span className={cx('plx-data-pill', size === 'md' && variant !== 'plain' && 'plx-data-pill--md', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className)} data-plx-category={color} title={title} {...rest}>
       {glyph ? <Icon name={glyph} size="sm" className="plx-data-pill__icon" filled={!!g} /> : null}
       <span className="plx-data-pill__value">{children}</span>
       {g ? <span className="plx-visually-hidden">{', ' + t[gender]}</span> : null}

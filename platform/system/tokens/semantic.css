@@ -193,8 +193,8 @@
   --plx-ctx-density-plx-sys-space-region-space-sm: var(--plx-ref-space-24px);
   --plx-ctx-density-plx-sys-space-region-space-md: var(--plx-ref-space-32px);
   --plx-ctx-density-plx-sys-space-region-space-lg: var(--plx-ref-space-48px);
-  --plx-ctx-density-plx-sys-data-grid-row-height: var(--plx-ref-size-32px);
-  --plx-ctx-density-plx-sys-table-row-height: var(--plx-ref-size-32px);
+  --plx-ctx-density-plx-sys-data-grid-row-height: var(--plx-ref-size-40px);
+  --plx-ctx-density-plx-sys-table-row-height: var(--plx-ref-size-40px);
   --plx-ctx-density-plx-sys-data-grid-font-size: var(--plx-ref-font-size-13);
   --plx-ctx-density-plx-sys-table-font-size: var(--plx-ref-font-size-13);
 }
@@ -231,8 +231,8 @@
   --plx-ctx-density-plx-sys-space-region-space-sm: var(--plx-ref-space-16px);
   --plx-ctx-density-plx-sys-space-region-space-md: var(--plx-ref-space-24px);
   --plx-ctx-density-plx-sys-space-region-space-lg: var(--plx-ref-space-32px);
-  --plx-ctx-density-plx-sys-data-grid-row-height: var(--plx-ref-size-28px);
-  --plx-ctx-density-plx-sys-table-row-height: var(--plx-ref-size-28px);
+  --plx-ctx-density-plx-sys-data-grid-row-height: var(--plx-ref-size-36px);
+  --plx-ctx-density-plx-sys-table-row-height: var(--plx-ref-size-36px);
   --plx-ctx-density-plx-sys-data-grid-font-size: var(--plx-ref-font-size-12);
   --plx-ctx-density-plx-sys-table-font-size: var(--plx-ref-font-size-12);
 }
@@ -268,8 +268,8 @@
   --plx-ctx-density-plx-sys-space-region-space-sm: var(--plx-ref-space-32px);
   --plx-ctx-density-plx-sys-space-region-space-md: var(--plx-ref-space-48px);
   --plx-ctx-density-plx-sys-space-region-space-lg: var(--plx-ref-space-64px);
-  --plx-ctx-density-plx-sys-data-grid-row-height: var(--plx-ref-size-40px);
-  --plx-ctx-density-plx-sys-table-row-height: var(--plx-ref-size-40px);
+  --plx-ctx-density-plx-sys-data-grid-row-height: var(--plx-ref-size-48px);
+  --plx-ctx-density-plx-sys-table-row-height: var(--plx-ref-size-48px);
   --plx-ctx-density-plx-sys-data-grid-font-size: var(--plx-ref-font-size-13);
   --plx-ctx-density-plx-sys-table-font-size: var(--plx-ref-font-size-13);
 }

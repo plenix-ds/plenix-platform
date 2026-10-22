@@ -54,7 +54,7 @@
     "data-grid-record-height": {
       "$value": "{plx-sys.data-grid-row-height}",
       "$type": "dimension",
-      "$description": "DataGrid: a record row's height. The row height step Short is the density's row height (28 / 32 / 40); the grid's rowHeight sets the other steps on its frame (data-plx-row-height). Only record rows take it: the header row, group rows, the add row and the group gap keep their own heights."
+      "$description": "DataGrid: a record row's height. The row height step Short is the density's row height (36 / 40 / 48; owner, 2026-10-22); the grid's rowHeight sets the other steps on its frame (data-plx-row-height). Only record rows take it: the header row, group rows, the add row and the group gap keep their own heights."
     },
     "data-grid-row-height-medium": {
       "$value": "{plx-ref.size-56px}",

@@ -182,11 +182,11 @@
       "$type": "dimension"
     },
     "data-grid-row-height": {
-      "$value": "{plx-ref.size-32px}",
+      "$value": "{plx-ref.size-40px}",
       "$type": "dimension"
     },
     "table-row-height": {
-      "$value": "{plx-ref.size-32px}",
+      "$value": "{plx-ref.size-40px}",
       "$type": "dimension"
     },
     "data-grid-font-size": {

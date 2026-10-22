@@ -16452,6 +16452,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "soft" (default: a soft fill, a 1px border two shades darker, the text in the darkest shade) | "solid" (the
        color as the fill, its own text color: a strong value such as a price band) | "plain" (no box: the icon and the
        text in the color, a name in running text)
+     size: (default) the height of the text line it sits in (the density's inline control height) | "md": 24px tall, 6px
+       before the icon and 10px after the value, at every density (owner, 2026-10-22; a DataGrid or Table cell's pill)
      icon: an icon name before the value (a calendar for a date, the sun or the moon for a time); false: no icon at all,
        not even the gender's: a name beside the person's avatar or picture never repeats its icon (owner, 2026-10-19)
      data: a technical value (a code, a number, a time, a price): the data font
@@ -16488,6 +16490,7 @@ function DataPill({
   children,
   tone,
   variant = 'soft',
+  size,
   icon,
   data = false,
   fill = false,
@@ -16508,7 +16511,7 @@ function DataPill({
   const glyph = icon === false ? null : g ? g.icon : icon || (person ? 'person' : null); // icon={false}: a picture beside it already says it
   const title = fill && (typeof children === 'string' || typeof children === 'number') ? String(children) : undefined;
   return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-data-pill', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className),
+    className: (0, _cx.cx)('plx-data-pill', size === 'md' && variant !== 'plain' && 'plx-data-pill--md', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className),
     "data-plx-category": color,
     title: title
   }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -16606,6 +16609,7 @@ function CellValue({
     const own = typeof column.pill === 'function' ? column.pill(value, record) || {} : {};
     const text = column.type === 'bytes' ? (0, _format.formatBytes)(Number(value)) : person ? person.name || person.label || '' : valueText(value);
     return /*#__PURE__*/_react.default.createElement(_DataPill.DataPill, {
+      size: "md",
       tone: own.tone,
       variant: own.variant,
       icon: own.icon || (isPerson ? undefined : icon),
@@ -17380,6 +17384,7 @@ function NextEngine(props) {
     cells = 'text',
     headerMenu = true,
     typeIcons: typeIconsProp,
+    density = 'compact',
     rowMenu: suppliedRowMenu,
     rowMenuButton = true,
     columnMenu,
@@ -17850,7 +17855,8 @@ function NextEngine(props) {
       let width = head;
       const k = kinds(c),
         pill = cells === 'pill' && c.pill !== false && !k.includes('tags') && !k.includes('badge') && !k.includes('deleted');
-      const chrome = pill ? 2 * (0, _environment.tokenPixels)('--plx-comp-data-pill-padding-inline', at) + 2 * (0, _environment.tokenPixels)('--plx-comp-data-pill-border-width', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-gap', at) : 0;
+      if (pill) ctx.font = (cs.getPropertyValue('--plx-comp-data-pill-font-weight').trim() || '500') + ' ' + ctx.font; // a pill's text is medium weight
+      const chrome = pill ? (0, _environment.tokenPixels)('--plx-comp-data-pill-md-padding-inline-start', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-md-padding-inline-end', at) + 2 * (0, _environment.tokenPixels)('--plx-comp-data-pill-border-width', at) + (c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text' ? (0, _environment.tokenPixels)('--plx-comp-data-pill-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-gap', at) : 0) : 0; // the icon only where the pill has one
       source.forEach(record => {
         const value = (0, _state.valueAt)(record, c.field);
         width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width + chrome);
@@ -18569,9 +18575,9 @@ function NextEngine(props) {
           strings: S,
           record,
           pill: cells === 'pill',
-          icon: typeIcons[typeOf(c)],
+          icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
           mods
-        });
+        }); // a pill carries a type icon only when it says something (a date, a number)
       const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && /*#__PURE__*/_react.default.isValidElement(shown) && shown.type === 'span' && String(shown.props.className).split(' ').includes(B + '__value');
       return /*#__PURE__*/_react.default.createElement(Width, {
         key: c.field,
@@ -18721,6 +18727,7 @@ function NextEngine(props) {
     ref: frame,
     className: (0, _cx.cx)(B, isStatic && B + '--static', pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
+    "data-plx-density": density === 'page' ? undefined : density,
     "data-plx-render": virtualized ? 'virtual' : undefined,
     "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : undefined,
     "data-plx-wrap-headers": effectiveWrap ? '' : undefined,
@@ -27399,6 +27406,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
+       page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
      typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
        false hides them
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:

@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.65.0] - 2026-10-22
+
+### Added
+- DataPill `size="md"`: 24px tall at every density, 6px before the icon and 10px after the value (owner, 2026-10-22).
+  Without `size` a pill keeps the height of the text line it sits in.
+- DataGrid and Table `density`: `"compact"` (default) | `"standard"` | `"comfortable"` | `"page"` (follow the page). Set on
+  the grid itself, so its rows, header and pills follow it.
+### Changed
+- Table row heights: Compact 36px, Standard 40px, Comfortable 48px (were 28 / 32 / 40), and every DataGrid and Table
+  starts in Compact (owner, 2026-10-22).
+- DataGrid pills (`cells="pill"`) are size md, and carry a type icon only where it says something (a date, a number),
+  never the generic text icon ("Tt").
+### Fixed
+- DataGrid: a pill column measures its text in the pill's medium weight, so names are not cut.
+
 ## [0.64.0] - 2026-10-22
 
 ### Added
