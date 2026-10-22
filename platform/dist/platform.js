@@ -938,6 +938,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Panel.surface, Panel.elevation: as Card's
      Panel.strings: the words it announces, for other languages: { collapse: "Collapse {title}", expand: "Expand {title}",
        section: "section" } ({title} is the title, or the section word when the title is not text)
+     Card.icon: the icon of what the card is (an icon name or element), before the title, like Panel.icon (owner,
+       batch 272: a card's icon always sits on the left of its heading); decorative (the title names the card)
      Card.title: the card title; with onOpen or href it is the card's link or button
      Card.meta: a line of details under the title
      Card.actions: controls at the end of the header
@@ -1119,6 +1121,7 @@ function Opener({
   }, children);
 }
 function Card({
+  icon,
   title,
   meta,
   actions,
@@ -1160,7 +1163,12 @@ function Card({
     "data-plx-title-wrap": titleWrap || undefined
   }), title || expandable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__header"
-  }, title ? /*#__PURE__*/_react.default.createElement(H, {
+  }, icon && title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-card__icon",
+    "aria-hidden": "true"
+  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  }) : icon) : null, title ? /*#__PURE__*/_react.default.createElement(H, {
     level: headingLevel,
     className: "plx-card__title"
   }, /*#__PURE__*/_react.default.createElement(Opener, {
@@ -5843,7 +5851,7 @@ exports.stepSize = stepSize;
    Props:
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
-const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 280, 300, 320, 360, 400, 500, 560, 600, 720, 900];
+const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900];
 const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
 // the size token nearest to px within [min, max] (the limit itself when no token lies between them)
 function snapSize(px, min, max) {
@@ -66883,7 +66891,7 @@ function RenditionList({
   }));
 }
   } },
-  "platform/components/DocumentViewer/DocumentViewer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Image/Image.jsx":"platform/components/Image/Image.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DocumentViewer/DocumentViewer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Image/Image.jsx":"platform/components/Image/Image.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66900,6 +66908,7 @@ var _Notice = require("../Notice/Notice.jsx");
 var _Image = require("../Image/Image.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _cx = require("../../utils/cx.js");
+var _vendorBase = require("../../utils/vendorBase.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DocumentViewer
    Summary: Read PDF, image pages or text with page navigation, thumbnails and stepped zoom.
@@ -66907,11 +66916,18 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Props: kind: pdf | images | text; src: PDF URL or Uint8Array; pages: [{id,src,alt,thumbnail}]; text;
      label; thumbnails: true; initialPage: 1; initialZoom: 100 (50,75,100,125,150,200);
      pdfModuleUrl/pdfWorkerUrl: optional URLs when serving the vendor files separately; strings: previous,next,page,zoom,
-       thumbnails,loading,failed,empty,retry; onPageChange(page); className.
+       thumbnails,loading,failed,failedEngine,failedAccess,failedParse,failedRender,empty,retry; onPageChange(page);
+       onError({ reason, cause }): reason "engine" (PDF.js did not load), "access" (missing, denied or blocked document),
+       "parse" (not a readable PDF) or "render" (a page could not be drawn); className.
    Behavior: Image zoom is published on the viewport; the zoom Select uses its own data prop.
      Navigation clamps to available pages. PDF loading and rendering are cancellable; stale loads cannot replace
-     a newer document. Errors offer Retry. PDF text is exposed alongside the canvas for assistive technology.
-   Notes: PDF.js 4.10.38 (Apache-2.0) is vendored beside this component. URLs must obey the application CSP/CORS policy.
+     a newer document. Each failure has its own message (strings.failed replaces all four) and offers Retry; the
+     message never shows the document's address or the server's error. The page counter, page buttons and zoom show
+     once a document has pages. PDF text is exposed alongside the canvas for assistive technology.
+   Notes: PDF.js 4.10.38 (Apache-2.0) is in the shared vendor folder (platform/vendor/pdfjs/; on the CDN
+     /cdn/<version>/vendor/pdfjs/), found by vendorBase() like the rich-text engine; window.PlenixVendorBase overrides.
+     Its module is an ES module: serve it as text/javascript, allow it in script-src and its worker in worker-src, and
+     send CORS headers when it is on another origin. URLs must obey the application CSP/CORS policy.
      PDF canvas dimensions are document geometry, never an inline style. No remote PDF code is downloaded.
 */
 
@@ -66924,13 +66940,21 @@ const STRINGS = {
   thumbnails: 'Page thumbnails',
   loading: 'Loading document',
   failed: 'The document could not be opened.',
+  failedEngine: 'The document viewer could not start. Try again later.',
+  failedAccess: 'The document could not be opened. It may have moved, or you may not have access to it.',
+  failedParse: 'This file could not be read as a PDF.',
+  failedRender: 'This page could not be shown.',
   empty: 'No document.',
   retry: 'Try again'
 };
 const ZOOMS = [50, 75, 100, 125, 150, 200];
 function vendorUrl(name) {
-  const script = Array.from(document.scripts).find(s => /\/platform\/(?:dist\/)?platform(?:\.min)?\.js(?:[?#]|$)/.test(s.src));
-  return new URL(script ? (script.src.includes('/dist/') ? '../components/' : 'components/') + 'DocumentViewer/vendor/' + name : '../components/DocumentViewer/vendor/' + name, script ? script.src : document.baseURI).href;
+  return (0, _vendorBase.vendorBase)() + 'pdfjs/' + name;
+}
+// why a PDF failed, from PDF.js's error names: the engine, the document's address (missing, denied, blocked) or its content
+function reasonOf(e) {
+  const n = e && e.name || '';
+  return /Missing|UnexpectedResponse|Password|Abort/.test(n) || /fetch|network|cors/i.test(String(e && e.message)) ? 'access' : 'parse';
 }
 function PdfThumbnail({
   pdf,
@@ -66990,6 +67014,7 @@ function DocumentViewer({
   pdfWorkerUrl,
   strings,
   onPageChange,
+  onError,
   className
 }) {
   const t = {
@@ -67004,6 +67029,18 @@ function DocumentViewer({
     [attempt, setAttempt] = _react.default.useState(0),
     [accessible, setAccessible] = _react.default.useState(''),
     canvas = _react.default.useRef(null);
+  const errorRef = _react.default.useRef(onError);
+  errorRef.current = onError;
+  // one message per reason; strings.failed (an app's own wording) replaces them all unless the reason's own string is given
+  const fail = (reason, cause) => {
+    const own = 'failed' + reason.charAt(0).toUpperCase() + reason.slice(1);
+    setError(strings && strings[own] || strings && strings.failed || t[own]);
+    setLoading(false);
+    errorRef.current?.({
+      reason,
+      cause
+    });
+  };
   _react.default.useEffect(() => {
     let live = true,
       task,
@@ -67019,11 +67056,17 @@ function DocumentViewer({
     }
     setLoading(true);
     (async () => {
+      let engine;
       try {
         const moduleUrl = pdfModuleUrl || vendorUrl('pdf.js');
-        const engine = await import(moduleUrl);
+        engine = await import(moduleUrl);
         if (!live) return;
         engine.GlobalWorkerOptions.workerSrc = pdfWorkerUrl || new URL('pdf.worker.js', moduleUrl).href;
+      } catch (e) {
+        if (live) fail('engine', e);
+        return;
+      }
+      try {
         task = engine.getDocument(typeof src === 'string' ? {
           url: src
         } : {
@@ -67035,10 +67078,7 @@ function DocumentViewer({
           setLoading(false);
         } else doc.destroy();
       } catch (e) {
-        if (live) {
-          setError(t.failed);
-          setLoading(false);
-        }
+        if (live) fail(reasonOf(e), e);
       }
     })();
     return () => {
@@ -67077,10 +67117,7 @@ function DocumentViewer({
           setLoading(false);
         }
       } catch (e) {
-        if (live && e.name !== 'RenderingCancelledException') {
-          setError(t.failed);
-          setLoading(false);
-        }
+        if (live && e.name !== 'RenderingCancelledException') fail('render', e);
       }
     })();
     return () => {
@@ -67097,7 +67134,7 @@ function DocumentViewer({
     className: (0, _cx.cx)('plx-document-viewer', className),
     "aria-label": label || t.document,
     role: "region"
-  }, /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+  }, count ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
     wrap: true
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
     onClick: () => move(current - 1),
@@ -67118,7 +67155,7 @@ function DocumentViewer({
       value: z,
       label: z + '%'
     }))
-  }))), loading ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+  }))) : null, loading ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     role: "status"
   }, t.loading) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
     tone: "danger",

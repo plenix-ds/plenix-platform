@@ -4349,6 +4349,16 @@
         }
       }
     },
+    "card-icon-size": {
+      "$value": "{plx-sys.control-icon-standard}",
+      "$type": "dimension",
+      "$description": "Card: the size of the icon before the title (Card.icon), the same as Panel's heading icon."
+    },
+    "card-icon-color": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Card: the color of the icon before the title, the title's color."
+    },
     "card-header-gap": {
       "$value": "{plx-sys.space-inline-sm}",
       "$type": "dimension"

@@ -960,6 +960,8 @@
   --plx-comp-card-interactive-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-card-interactive-easing: var(--plx-sys-motion-ease-standard);
   --plx-comp-card-interactive-hover-shadow: var(--plx-sys-shadow-md);
+  --plx-comp-card-icon-size: var(--plx-sys-control-icon-standard);
+  --plx-comp-card-icon-color: var(--plx-sys-content-default);
   --plx-comp-card-header-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-card-title-text: var(--plx-sys-content-default);
   --plx-comp-card-title-font-size: var(--plx-ref-font-size-13);

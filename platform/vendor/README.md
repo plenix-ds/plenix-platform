@@ -11,6 +11,9 @@ rebuilt 2026-10-14), and `LICENSES.txt`
 (the license of every bundled package). The RichTextEditor component loads it the first time an editor mounts. Its
 packages, checksums, build and update steps are in `tiptap/README.md`.
 
+`pdfjs/` holds the DocumentViewer's PDF engine (PDF.js 4.10.38, Apache-2.0: `pdf.js`, `pdf.worker.js`, `LICENSE`), loaded the
+first time a PDF opens. Its checksums and serving requirements (MIME type, CSP, CORS) are in `pdfjs/README.md`.
+
 | File | Package | Version | Build | License | Source | SHA-256 |
 |---|---|---|---|---|---|---|
 | `react.development.js` | react | 18.2.0 | UMD, development | MIT | https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js | `857364e2b982318417025fb9b4b8355c09f75fa46ba0be93f520f769f6757a78` |

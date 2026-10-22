@@ -60,6 +60,7 @@
 /* a card's icon (owner, batch 272): before the heading, at the control icon size, in the heading's color */
 .plx-panel__title--icon{align-items:center;column-gap:var(--plx-comp-panel-title-icon-gap);display:flex;}
 .plx-panel__icon{display:inline-flex;flex-shrink:0;}
+.plx-card__icon{color:var(--plx-comp-card-icon-color);display:inline-flex;flex-shrink:0;--plx-comp-icon-size:var(--plx-comp-card-icon-size);}
 .plx-panel__icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
 /* a selectable media card (owner, batch 272): a click on the card selects it, so the title's link no longer covers the card;
    the title alone opens it (or a double-click) */

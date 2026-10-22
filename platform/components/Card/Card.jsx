@@ -26,6 +26,8 @@
      Panel.surface, Panel.elevation: as Card's
      Panel.strings: the words it announces, for other languages: { collapse: "Collapse {title}", expand: "Expand {title}",
        section: "section" } ({title} is the title, or the section word when the title is not text)
+     Card.icon: the icon of what the card is (an icon name or element), before the title, like Panel.icon (owner,
+       batch 272: a card's icon always sits on the left of its heading); decorative (the title names the card)
      Card.title: the card title; with onOpen or href it is the card's link or button
      Card.meta: a line of details under the title
      Card.actions: controls at the end of the header
@@ -147,7 +149,7 @@ function Opener({ href, onOpen, current, className, children }) {
   return <span className={className}>{children}</span>;
 }
 
-export function Card({ title, meta, actions, surface = 'flat', elevation = 'outline', selected = false, href, onOpen, headingLevel = 3, accent, expandable = false, defaultExpanded = false, expanded, onToggle,
+export function Card({ icon, title, meta, actions, surface = 'flat', elevation = 'outline', selected = false, href, onOpen, headingLevel = 3, accent, expandable = false, defaultExpanded = false, expanded, onToggle,
   strings, className, children, layout = 'default', bodyLayout = 'default', titleWrap = false, ...rest }) {
   const interactive = !!(href || onOpen);
   const t = Object.assign({}, CARD_STRINGS, strings);
@@ -160,6 +162,7 @@ export function Card({ title, meta, actions, surface = 'flat', elevation = 'outl
     <article className={cx('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)} data-plx-color={accent || undefined} {...rest} data-plx-layout={layout} data-plx-body-layout={bodyLayout} data-plx-title-wrap={titleWrap || undefined}>
       {title || expandable ? (
         <div className="plx-card__header">
+          {icon && title ? <span className="plx-card__icon" aria-hidden="true">{typeof icon === 'string' ? <Icon name={icon} /> : icon}</span> : null}
           {title ? <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} current={selected} className="plx-card__opener">{title}</Opener></H> : null}
           {actions ? <div className="plx-card__actions">{actions}</div> : null}
           {expandable ? (

@@ -1,1 +1,0 @@
-PDF.js 4.10.38, from the official pdfjs-dist npm package. Apache-2.0; license in LICENSE. build/pdf.mjs and build/pdf.worker.mjs renamed to .js for JavaScript MIME serving. The only source addition is a Plenix provenance header; original upstream code is unchanged. Loaded lazily; applications serving the runtime separately can supply pdfModuleUrl and pdfWorkerUrl.

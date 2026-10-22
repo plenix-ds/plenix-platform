@@ -244,6 +244,10 @@ copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vend
 // the RichTextEditor's engine (Tiptap, MIT): loaded by the editor from ./vendor/tiptap/ the same way, shipped in both places too
 copyDir(path.join(P, 'vendor', 'tiptap'), path.join(CDN, 'vendor', 'tiptap'));
 copyDir(path.join(P, 'vendor', 'tiptap'), path.join(R, 'dist', 'vendor', 'tiptap'));
+// the DocumentViewer's PDF engine (PDF.js 4.10.38, Apache-2.0: module, worker, LICENSE): loaded from ./vendor/pdfjs/ the
+// same way (vendorBase), shipped in both places too; the manifest hashes it with the rest of vendor/ (issue #238)
+copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(CDN, 'vendor', 'pdfjs'));
+copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(R, 'dist', 'vendor', 'pdfjs'));
 copyDir(path.join(T, 'css'), path.join(CDN, 'tokens'));
 copy(path.join(T, 'tokens.json'), path.join(CDN, 'tokens', 'tokens.json'));
 // the native outputs (build-mobile.js) and the platform sets they come from (Platforms Standard 7.1 and 7.2, batch 297)
