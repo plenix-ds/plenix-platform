@@ -21225,7 +21225,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Center maxWidth="sm" text><EmptyState … /></Center>
      <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
    Props:
-     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*)
+     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
+       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
      Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
      Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
      Inline.align: the same values; default "center"
@@ -22392,7 +22394,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The chevron turns with expanded.
      The size follows the level (plx-section-heading--level-2, -3, -4), so pick the level from the outline, never for a size.
    Notes:
-     It sets no outer margin: the list or panel it sits in spaces it.
+     It sets no outer margin: the list or panel it sits in spaces it. Unframed peer sections: <Stack gap="section"> of
+     <Stack gap="sm"> (the heading and its content), see Stack.gap.
 */
 // the levels with their own size (section-heading.css); the others keep the base size
 const LEVELS = [2, 3, 4];
@@ -28928,6 +28931,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      AppHeader.Account.density: true adds the Display density choices with their icons (Compact, Standard, Comfortable;
        the current one checked); default false
      AppHeader.Account.extra: further items after a divider (Sign out)
+     AppHeader.Account.strings: the menu's words for another language: trigger (the avatar button's name, {name}), menu,
+       myAccount, settings, appSettings ({app}), app, density, compact, standard, comfortable, signOut; English by default
      AppHeader.Action.icon: an icon name (such as "hdr-upload") or an icon element, header-sized
      AppHeader.Action.children: the action's label: its tooltip and accessible name (or label)
      AppHeader.Action.onClick: runs on click
@@ -29259,8 +29264,11 @@ AppHeader.Account = function AppHeaderAccount({
     href: SIGN_OUT
   },
   density = false,
-  extra
+  extra,
+  strings
 }) {
+  const t = Object.assign({}, ACCOUNT_STRINGS, strings);
+  const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => values[k] != null ? values[k] : m);
   const {
     account
   } = (0, _SessionProvider.useSession)(); // who is signed in: the session, unless the application names someone
@@ -29269,7 +29277,9 @@ AppHeader.Account = function AppHeaderAccount({
     src = srcProp || account.src;
   const [dens, setDens] = (0, _useDensity.useDensity)();
   const inPane = placement === 'pane';
-  const label = 'Account and settings for ' + name;
+  const label = fill(t.trigger, {
+    name
+  });
   // no tooltip: it would cover the open menu, which names itself
   const trigger = inPane ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
@@ -29296,7 +29306,7 @@ AppHeader.Account = function AppHeaderAccount({
   const has = o => !!(o.href || o.onSelect);
   const choices = typeof window !== 'undefined' && window.PlenixWorkspace ? window.PlenixWorkspace.densities() : DENSITY_CHOICES;
   return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: "Account",
+    label: t.menu,
     placement: inPane ? 'top-start' : 'bottom-end',
     trigger: trigger
   }, /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
@@ -29306,29 +29316,45 @@ AppHeader.Account = function AppHeaderAccount({
     href: myAccount.href,
     onSelect: myAccount.onSelect,
     "aria-current": current === 'account' ? 'page' : undefined
-  }, "My account") : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, t.myAccount) : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     icon: "gear",
     href: settings.href,
     onSelect: settings.onSelect,
     "aria-current": current === 'settings' ? 'page' : undefined
-  }, "Plenix settings") : null, has(appSettings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, t.settings) : null, has(appSettings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     icon: appSettings.icon || 'settings-customize',
     href: appSettings.href,
     onSelect: appSettings.onSelect,
     "aria-current": current === 'app-settings' ? 'page' : undefined
-  }, (appSettings.app || 'App') + ' settings') : null), density ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
-    label: "Display density"
+  }, fill(t.appSettings, {
+    app: appSettings.app || t.app
+  })) : null), density ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
+    label: t.density
   }, choices.map(d => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: d.value,
     role: "menuitemradio",
     icon: 'density-' + d.value,
     checked: dens === d.value,
     onSelect: () => setDens(d.value)
-  }, d.label)))) : null, extra ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), extra) : null, has(signOut) ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, t[d.value] || d.label)))) : null, extra ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), extra) : null, has(signOut) ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     icon: "sign-out",
     href: signOut.href,
     onSelect: signOut.onSelect
-  }, "Sign out")) : null);
+  }, t.signOut)) : null);
+};
+// the account menu's words, in English; AppHeader.Account strings replaces any of them (issue #245)
+const ACCOUNT_STRINGS = {
+  trigger: 'Account and settings for {name}',
+  menu: 'Account',
+  myAccount: 'My account',
+  settings: 'Plenix settings',
+  appSettings: '{app} settings',
+  app: 'App',
+  density: 'Display density',
+  compact: 'Compact',
+  standard: 'Standard',
+  comfortable: 'Comfortable',
+  signOut: 'Sign out'
 };
 // the density choices when the workspace script is not on the page
 const DENSITY_CHOICES = [{

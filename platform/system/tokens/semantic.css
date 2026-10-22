@@ -75,6 +75,7 @@
   --plx-sys-space-stack-md: var(--plx-ref-space-12px);
   --plx-sys-space-stack-lg: var(--plx-ref-space-16px);
   --plx-sys-space-stack-xl: var(--plx-ref-space-24px);
+  --plx-sys-space-section: var(--plx-ref-space-24px);
   --plx-sys-space-stack-2xl: var(--plx-ref-space-32px);
   --plx-sys-space-inset-xs: var(--plx-ref-space-4px);
   --plx-sys-space-inset-sm: var(--plx-ref-space-8px);

@@ -13,6 +13,7 @@
 .plx-stack--gap-md{row-gap:var(--plx-comp-stack-gap-md-row-gap);}
 .plx-stack--gap-lg{row-gap:var(--plx-comp-stack-gap-lg-row-gap);}
 .plx-stack--gap-xl{row-gap:var(--plx-comp-stack-gap-xl-row-gap);}
+.plx-stack--gap-section{row-gap:var(--plx-comp-stack-gap-section-row-gap);}
 .plx-inline--gap-xs{column-gap:var(--plx-comp-inline-gap-xs-gap);}
 .plx-inline--gap-sm{column-gap:var(--plx-comp-inline-gap-sm-gap);}
 .plx-inline--gap-md{column-gap:var(--plx-comp-inline-gap-md-gap);}

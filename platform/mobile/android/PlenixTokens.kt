@@ -160,8 +160,8 @@ object PlenixColors {
     val fieldBackground = Pair(Color(0xFFFCFCFC), Color(0xFF444444))
     val fieldBorder = Pair(Color(0xFFA3A6AD), Color(0xFFA3A6AD))
     val controlBorder = Pair(Color(0xFF8E9094), Color(0xFFA3A6AD))
-    val avatarBackground = Pair(Color(0xFFFFFFFF), Color(0xFFA2C0E3))
-    val avatarContent = Pair(Color(0xFF56585E), Color(0xFF000000))
+    val avatarBackground = Pair(Color(0xFFFFFFFF), Color(0xFF444444))
+    val avatarContent = Pair(Color(0xFF56585E), Color(0xFFD0D0D0))
     val brandPrimary = Pair(Color(0xFF2A6FDB), Color(0xFFA2C0E3))
     val brandOnPrimary = Pair(Color(0xFFFFFFFF), Color(0xFF1E1F22))
     val accentSurface = Pair(Color(0xFF2A6FDB), Color(0xFF000000))
@@ -393,6 +393,7 @@ object PlenixSpace {
     val spaceStackMd = 12.dp
     val spaceStackLg = 16.dp
     val spaceStackXl = 24.dp
+    val spaceSection = 24.dp
     val spaceStack2xl = 32.dp
     val spaceInsetXs = 4.dp
     val spaceInsetSm = 8.dp

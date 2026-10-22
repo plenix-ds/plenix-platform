@@ -1190,8 +1190,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     fieldBackground: Color(0xFF444444),
     fieldBorder: Color(0xFFA3A6AD),
     controlBorder: Color(0xFFA3A6AD),
-    avatarBackground: Color(0xFFA2C0E3),
-    avatarContent: Color(0xFF000000),
+    avatarBackground: Color(0xFF444444),
+    avatarContent: Color(0xFFD0D0D0),
     brandPrimary: Color(0xFFA2C0E3),
     brandOnPrimary: Color(0xFF1E1F22),
     accentSurface: Color(0xFF000000),
@@ -1430,6 +1430,7 @@ class PlenixSpace {
   static const double spaceStackMd = 12;
   static const double spaceStackLg = 16;
   static const double spaceStackXl = 24;
+  static const double spaceSection = 24;
   static const double spaceStack2xl = 32;
   static const double spaceInsetXs = 4;
   static const double spaceInsetSm = 8;

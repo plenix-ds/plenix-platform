@@ -164,8 +164,8 @@ public enum Plenix {
         public static let fieldBackground = Plenix.color(light: 0xFFFCFCFC, dark: 0xFF444444)
         public static let fieldBorder = Plenix.color(light: 0xFFA3A6AD, dark: 0xFFA3A6AD)
         public static let controlBorder = Plenix.color(light: 0xFF8E9094, dark: 0xFFA3A6AD)
-        public static let avatarBackground = Plenix.color(light: 0xFFFFFFFF, dark: 0xFFA2C0E3)
-        public static let avatarContent = Plenix.color(light: 0xFF56585E, dark: 0xFF000000)
+        public static let avatarBackground = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF444444)
+        public static let avatarContent = Plenix.color(light: 0xFF56585E, dark: 0xFFD0D0D0)
         public static let brandPrimary = Plenix.color(light: 0xFF2A6FDB, dark: 0xFFA2C0E3)
         public static let brandOnPrimary = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF1E1F22)
         public static let accentSurface = Plenix.color(light: 0xFF2A6FDB, dark: 0xFF000000)
@@ -393,6 +393,7 @@ public enum Plenix {
         public static let spaceStackMd: CGFloat = 12
         public static let spaceStackLg: CGFloat = 16
         public static let spaceStackXl: CGFloat = 24
+        public static let spaceSection: CGFloat = 24
         public static let spaceStack2xl: CGFloat = 32
         public static let spaceInsetXs: CGFloat = 4
         public static let spaceInsetSm: CGFloat = 8

@@ -59,6 +59,8 @@
      AppHeader.Account.density: true adds the Display density choices with their icons (Compact, Standard, Comfortable;
        the current one checked); default false
      AppHeader.Account.extra: further items after a divider (Sign out)
+     AppHeader.Account.strings: the menu's words for another language: trigger (the avatar button's name, {name}), menu,
+       myAccount, settings, appSettings ({app}), app, density, compact, standard, comfortable, signOut; English by default
      AppHeader.Action.icon: an icon name (such as "hdr-upload") or an icon element, header-sized
      AppHeader.Action.children: the action's label: its tooltip and accessible name (or label)
      AppHeader.Action.onClick: runs on click
@@ -255,12 +257,14 @@ AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon: iconProp, label
 
 // the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session, then signs in again
 export const SIGN_OUT = '/outpost.goauthentik.io/sign_out';
-AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp, src: srcProp, placement = 'header', current, myAccount = {}, settings = {}, appSettings = {}, signOut = { href: SIGN_OUT }, density = false, extra }) {
+AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp, src: srcProp, placement = 'header', current, myAccount = {}, settings = {}, appSettings = {}, signOut = { href: SIGN_OUT }, density = false, extra, strings }) {
+  const t = Object.assign({}, ACCOUNT_STRINGS, strings);
+  const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => (values[k] != null ? values[k] : m));
   const { account } = useSession();   // who is signed in: the session, unless the application names someone
   const name = nameProp || account.name, email = emailProp || account.email, src = srcProp || account.src;
   const [dens, setDens] = useDensity();
   const inPane = placement === 'pane';
-  const label = 'Account and settings for ' + name;
+  const label = fill(t.trigger, { name });
   // no tooltip: it would cover the open menu, which names itself
   const trigger = inPane
     ? <Button size="sm" variant="ghost" caret labelRow className="plx-app-header__account-row" aria-label={label}><Avatar name={name} src={src} size="2xs" />{name}</Button>
@@ -268,21 +272,24 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
   const has = (o) => !!(o.href || o.onSelect);
   const choices = typeof window !== 'undefined' && window.PlenixWorkspace ? window.PlenixWorkspace.densities() : DENSITY_CHOICES;
   return (
-    <Menu label="Account" placement={inPane ? 'top-start' : 'bottom-end'} trigger={trigger}>
+    <Menu label={t.menu} placement={inPane ? 'top-start' : 'bottom-end'} trigger={trigger}>
       <MenuGroup label={email ? <>{name}<br />{email}</> : name}>
         <MenuDivider />
-        {has(myAccount) ? <MenuItem icon="settings-profile" href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>My account</MenuItem> : null}
-        {has(settings) ? <MenuItem icon="gear" href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>Plenix settings</MenuItem> : null}
-        {has(appSettings) ? <MenuItem icon={appSettings.icon || 'settings-customize'} href={appSettings.href} onSelect={appSettings.onSelect} aria-current={current === 'app-settings' ? 'page' : undefined}>{(appSettings.app || 'App') + ' settings'}</MenuItem> : null}
+        {has(myAccount) ? <MenuItem icon="settings-profile" href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>{t.myAccount}</MenuItem> : null}
+        {has(settings) ? <MenuItem icon="gear" href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>{t.settings}</MenuItem> : null}
+        {has(appSettings) ? <MenuItem icon={appSettings.icon || 'settings-customize'} href={appSettings.href} onSelect={appSettings.onSelect} aria-current={current === 'app-settings' ? 'page' : undefined}>{fill(t.appSettings, { app: appSettings.app || t.app })}</MenuItem> : null}
       </MenuGroup>
-      {density ? <><MenuDivider /><MenuGroup label="Display density">
-        {choices.map((d) => <MenuItem key={d.value} role="menuitemradio" icon={'density-' + d.value} checked={dens === d.value} onSelect={() => setDens(d.value)}>{d.label}</MenuItem>)}
+      {density ? <><MenuDivider /><MenuGroup label={t.density}>
+        {choices.map((d) => <MenuItem key={d.value} role="menuitemradio" icon={'density-' + d.value} checked={dens === d.value} onSelect={() => setDens(d.value)}>{t[d.value] || d.label}</MenuItem>)}
       </MenuGroup></> : null}
       {extra ? <><MenuDivider />{extra}</> : null}
-      {has(signOut) ? <><MenuDivider /><MenuItem icon="sign-out" href={signOut.href} onSelect={signOut.onSelect}>Sign out</MenuItem></> : null}
+      {has(signOut) ? <><MenuDivider /><MenuItem icon="sign-out" href={signOut.href} onSelect={signOut.onSelect}>{t.signOut}</MenuItem></> : null}
     </Menu>
   );
 };
+// the account menu's words, in English; AppHeader.Account strings replaces any of them (issue #245)
+const ACCOUNT_STRINGS = { trigger: 'Account and settings for {name}', menu: 'Account', myAccount: 'My account', settings: 'Plenix settings',
+  appSettings: '{app} settings', app: 'App', density: 'Display density', compact: 'Compact', standard: 'Standard', comfortable: 'Comfortable', signOut: 'Sign out' };
 // the density choices when the workspace script is not on the page
 const DENSITY_CHOICES = [{ value: 'compact', label: 'Compact' }, { value: 'standard', label: 'Standard' }, { value: 'comfortable', label: 'Comfortable' }];
 

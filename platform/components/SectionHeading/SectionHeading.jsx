@@ -18,7 +18,8 @@
      The chevron turns with expanded.
      The size follows the level (plx-section-heading--level-2, -3, -4), so pick the level from the outline, never for a size.
    Notes:
-     It sets no outer margin: the list or panel it sits in spaces it.
+     It sets no outer margin: the list or panel it sits in spaces it. Unframed peer sections: <Stack gap="section"> of
+     <Stack gap="sm"> (the heading and its content), see Stack.gap.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';

@@ -385,6 +385,11 @@
       "$value": "{plx-ref.space-24px}",
       "$type": "dimension"
     },
+    "space-section": {
+      "$value": "{plx-ref.space-24px}",
+      "$type": "dimension",
+      "$description": "The space between peer sections (a heading and its content, then the next) that are not framed: twice a heading's distance to its content, the same in a page or a split pane, at every density, in either reading direction and on phones (owner, 2026-10-22, issue #242)."
+    },
     "space-stack-2xl": {
       "$value": "{plx-ref.space-32px}",
       "$type": "dimension"

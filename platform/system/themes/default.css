@@ -537,8 +537,8 @@
   --plx-sys-control-background: var(--plx-ref-color-gray-800);
   --plx-sys-field-background: var(--plx-ref-color-gray-800);
   --plx-sys-field-border: var(--plx-ref-color-gray-400);
-  --plx-sys-avatar-background: var(--plx-ref-color-blue-300);
-  --plx-sys-avatar-content: var(--plx-ref-color-black);
+  --plx-sys-avatar-background: var(--plx-ref-color-gray-800);
+  --plx-sys-avatar-content: var(--plx-ref-color-gray-300);
   /* brand: the Plenix brand color (owner, 2026-10-13) */
   --plx-sys-brand-primary: var(--plx-ref-color-blue-300);
   --plx-sys-brand-on-primary: var(--plx-ref-color-gray-950);

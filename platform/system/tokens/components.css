@@ -1650,6 +1650,7 @@
   --plx-comp-stack-gap-sm-row-gap: var(--plx-sys-space-stack-sm);
   --plx-comp-stack-gap-md-row-gap: var(--plx-sys-space-stack-md);
   --plx-comp-stack-gap-lg-row-gap: var(--plx-sys-space-stack-lg);
+  --plx-comp-stack-gap-section-row-gap: var(--plx-sys-space-section);
   --plx-comp-stack-gap-xl-row-gap: var(--plx-sys-space-stack-xl);
   --plx-comp-inline-gap-xs-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-inline-gap-sm-gap: var(--plx-sys-space-inline-sm);

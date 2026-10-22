@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.61.0] - 2026-10-22
+
+### Added
+- `AppHeader.Account` `strings`: the account menu's words for another language (`trigger` with `{name}`, `menu`,
+  `myAccount`, `settings`, `appSettings` with `{app}`, `app`, `density`, `compact`, `standard`, `comfortable`,
+  `signOut`); English by default. Issue #245.
+- Icons `mic`, `mic-off`, `audio`, `volume`, `volume-off`, `headphones` and `voice` (Material Symbols Sharp, unedited).
+  Issue #246.
+- `Stack` `gap="section"` and `--plx-sys-space-section` (24px): the space between unframed peer sections, each a
+  heading over its content in `<Stack gap="sm">`; the same in a page or a split pane, at every density, in either
+  reading direction and on phones. Issue #242.
+### Changed
+- Avatar in the dark theme: an avatar with no color of its own is gray-800 (the dark surface) with gray-300 initials in
+  its gray border, as it is white with gray initials in light (was blue-300 with black initials). Issue #205.
+
 ## [0.60.3] - 2026-10-22
 
 ### Changed

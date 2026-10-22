@@ -7346,6 +7346,11 @@
       "$value": "{plx-sys.space-stack-lg}",
       "$type": "dimension"
     },
+    "stack-gap-section-row-gap": {
+      "$value": "{plx-sys.space-section}",
+      "$type": "dimension",
+      "$description": "Stack gap=\"section\": between peer sections."
+    },
     "stack-gap-xl-row-gap": {
       "$value": "{plx-sys.space-stack-xl}",
       "$type": "dimension"

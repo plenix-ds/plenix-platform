@@ -10,7 +10,9 @@
      <Center maxWidth="sm" text><EmptyState … /></Center>
      <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
    Props:
-     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*)
+     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
+       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
      Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
      Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
      Inline.align: the same values; default "center"
