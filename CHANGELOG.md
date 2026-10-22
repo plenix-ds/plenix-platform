@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.60.1] - 2026-10-22
+
+### Changed
+- Avatar: an avatar with no color of its own is white with gray-700 initials inside its 1px `border-default` gray
+  border (was blue-600 with white initials), in the light theme (owner, issue #241). Avatars with `color`, `category` or
+  `gender` keep their soft fills. The dark theme is unchanged until the dark-mode pass.
+
 ## [0.60.0] - 2026-10-22
 
 ### Added

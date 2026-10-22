@@ -1248,22 +1248,22 @@
       }
     },
     "avatar-background": {
-      "$value": "{plx-ref.color-blue-600}",
-      "$type": "color",
-      "$extensions": {
-        "plenix": {
-          "group": "component",
-          "purpose": "The fill of an avatar with initials."
-        }
-      }
-    },
-    "avatar-content": {
       "$value": "{plx-ref.color-white}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "The initials on an avatar."
+          "purpose": "The fill of an avatar with initials and no color of its own: white, inside the avatar's 1px border-default border (owner, 2026-10-22, issue #241)."
+        }
+      }
+    },
+    "avatar-content": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The initials on an avatar with no color of its own: gray-700 on white (owner, 2026-10-22)."
         }
       }
     },
