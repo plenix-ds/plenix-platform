@@ -10,6 +10,8 @@
      Select.size: as Input.size; numeric values retain the native select size attribute.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
+       A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
+       leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
      Select.width: the same values
      Input.data: the data font, for codes, hex values, links to copy (default false)
      Input.emphasis: semibold, for a record's title (default false)

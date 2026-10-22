@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.60.2] - 2026-10-22
+
+### Fixed
+- Input: a date or a time (`type` date, time, datetime-local, month, week) is never narrower than its value, whatever
+  its `width` or column; `width="sm"` used to cut a date to "mm/d". Text and number fields keep their widths.
+- Design spec: the SM text field no longer says it is for dates; a date or a time goes in a Field at full width, or
+  `width="lg"`. Input's documentation says the same.
+
 ## [0.60.1] - 2026-10-22
 
 ### Changed
