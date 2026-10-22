@@ -218,9 +218,26 @@ for (const dir of ['components', 'patterns', 'providers', 'hooks']) {
   }
 }
 
+// sizes: every size token the spec names must exist. A preview width (box(860, …), W(860)) becomes
+// var(--plx-ref-size-860px); a missing token makes the width invalid, and the preview shrinks to its content
+// (EntityHeader, a size container, collapsed to a 41px strip).
+{
+  const defined = new Set(Object.keys((JSON.parse(read(path.join(PLATFORM, 'tokens', 'reference.tokens.json'))).ref || {}).size || {}).map((k) => '--plx-ref-' + k));
+  if (!defined.size) JSON.stringify(JSON.parse(read(path.join(PLATFORM, 'tokens', 'reference.tokens.json'))), (k, v) => { if (/^size-\d+px$/.test(k)) defined.add('--plx-ref-' + k); return v; });
+  const dsDir = path.join(PLATFORM, 'design-system');
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((f) => f.isDirectory() ? (f.name === 'node_modules' ? [] : walk(path.join(d, f.name))) : [path.join(d, f.name)]);
+  const seen = {};
+  for (const f of walk(dsDir).filter((x) => /\.(js|css|html)$/.test(x) && !/(^|[\\/])(spec-parts|reviewed)\.js$/.test(x))) {
+    const t = read(f), rel = path.relative(PLATFORM, f).split(path.sep).join('/');
+    const names = [...(t.match(/--plx-ref-size-\d+px/g) || []), ...[...t.matchAll(/\b(?:box|W)\((\d+)[,)]/g)].map((m) => '--plx-ref-size-' + m[1] + 'px')];
+    for (const n of names) if (!defined.has(n)) (seen[n] = seen[n] || new Set()).add(rel);
+  }
+  for (const [n, files] of Object.entries(seen)) add('sizes', n + ' is not a token (platform/tokens/reference.tokens.json), used in ' + [...files].slice(0, 4).join(', ') + (files.size > 4 ? ' and ' + (files.size - 4) + ' more' : ''));
+}
+
 // report
 let failed = 0;
-for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api']) {
+for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api', 'sizes']) {
   const list = findings[rule] || [];
   const pending = PENDING[rule];
   if (!list.length) { console.log('ok       ' + rule); continue; }

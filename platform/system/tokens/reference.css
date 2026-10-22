@@ -94,15 +94,26 @@
   --plx-ref-size-200px: 200px;
   --plx-ref-size-220px: 220px;
   --plx-ref-size-240px: 240px;
+  --plx-ref-size-260px: 260px;
   --plx-ref-size-280px: 280px;
   --plx-ref-size-300px: 300px;
   --plx-ref-size-320px: 320px;
   --plx-ref-size-360px: 360px;
+  --plx-ref-size-380px: 380px;
   --plx-ref-size-400px: 400px;
+  --plx-ref-size-420px: 420px;
+  --plx-ref-size-440px: 440px;
+  --plx-ref-size-460px: 460px;
+  --plx-ref-size-480px: 480px;
   --plx-ref-size-500px: 500px;
+  --plx-ref-size-520px: 520px;
   --plx-ref-size-560px: 560px;
   --plx-ref-size-600px: 600px;
+  --plx-ref-size-640px: 640px;
   --plx-ref-size-720px: 720px;
+  --plx-ref-size-760px: 760px;
+  --plx-ref-size-800px: 800px;
+  --plx-ref-size-860px: 860px;
   --plx-ref-size-900px: 900px;
   /* ── GLYPHS: optical sizes of icons, dots, checkmarks, carets and separators ── */
   --plx-ref-glyph-size-6px: 6px;

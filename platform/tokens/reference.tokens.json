@@ -395,6 +395,10 @@
       "$value": "240px",
       "$type": "dimension"
     },
+    "size-260px": {
+      "$value": "260px",
+      "$type": "dimension"
+    },
     "size-280px": {
       "$value": "280px",
       "$type": "dimension"
@@ -411,12 +415,36 @@
       "$value": "360px",
       "$type": "dimension"
     },
+    "size-380px": {
+      "$value": "380px",
+      "$type": "dimension"
+    },
     "size-400px": {
       "$value": "400px",
       "$type": "dimension"
     },
+    "size-420px": {
+      "$value": "420px",
+      "$type": "dimension"
+    },
+    "size-440px": {
+      "$value": "440px",
+      "$type": "dimension"
+    },
+    "size-460px": {
+      "$value": "460px",
+      "$type": "dimension"
+    },
+    "size-480px": {
+      "$value": "480px",
+      "$type": "dimension"
+    },
     "size-500px": {
       "$value": "500px",
+      "$type": "dimension"
+    },
+    "size-520px": {
+      "$value": "520px",
       "$type": "dimension"
     },
     "size-560px": {
@@ -427,8 +455,24 @@
       "$value": "600px",
       "$type": "dimension"
     },
+    "size-640px": {
+      "$value": "640px",
+      "$type": "dimension"
+    },
     "size-720px": {
       "$value": "720px",
+      "$type": "dimension"
+    },
+    "size-760px": {
+      "$value": "760px",
+      "$type": "dimension"
+    },
+    "size-800px": {
+      "$value": "800px",
+      "$type": "dimension"
+    },
+    "size-860px": {
+      "$value": "860px",
       "$type": "dimension"
     },
     "size-900px": {
