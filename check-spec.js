@@ -184,7 +184,9 @@ recs.forEach((r) => {
   if (!blocks || (!r.blocks && claimedMods.has(blocks[0]))) return;
   const css = cssOf(r);
   const mods = new Set();
-  blocks.forEach((b) => { for (const m of css.matchAll(new RegExp('\\.(' + b + '--[a-z0-9-]+)', 'g'))) mods.add(m[1]); });
+  // a class name runs to its end: an underscore keeps it whole (Icon's Material spellings, plx-icon--chevron_left), and
+  // those aliases are names of the same icons, not variants of their own
+  blocks.forEach((b) => { for (const m of css.matchAll(new RegExp('\\.(' + b + '--[a-z0-9_-]+)', 'g'))) if (!m[1].includes('_')) mods.add(m[1]); });
   const shown = new Set();
   (r.examples || []).forEach((e) => { if (Array.isArray(e[1])) e[1].forEach((v) => { if (v[2]) [].concat(v[2]).forEach((c) => shown.add(c)); }); });
   const own = r.variantClasses ? new Set(r.variantClasses) : null;

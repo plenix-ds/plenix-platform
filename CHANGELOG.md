@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.68.0] - 2026-10-22
+
+### Added
+- DataGrid and Table `uniformPillWidths` (CTM): with `cells="pill"`, every standard pill of a column is as wide as that
+  column's widest pill in the current view (filtered and sorted, the current page, every row of it, so scrolling a long
+  list never changes it). Columns stay independent; custom cells are left alone; default false. The widths are rules in a
+  stylesheet the grid owns, never style attributes.
+- The icon naming contract: Plenix names use dashes; a Plenix name that is its Material symbol with dashes also answers
+  to the underscore spelling (`mic_off`, `person_cancel`) without icons-all.css; the build fails when a name has no rule.
+- `/cdn/<version>/examples/acceptance.html`: a standalone page on the release's own files (densities, pills, uniform
+  widths, wrapped headers, resize, icon names, right to left).
+### Fixed
+- DataGrid: pill columns measure in the font the pill draws in (the mono font's size-adjust and spacing included), so
+  dates and other data pills are no longer cut by a few pixels.
+- DocumentViewer in a right-to-left interface: a PDF or image page is laid out left to right, centered when narrower
+  than the viewer and opening at its top left when wider, and again at each page; text documents keep their direction.
+
 ## [0.67.0] - 2026-10-22
 
 ### Added

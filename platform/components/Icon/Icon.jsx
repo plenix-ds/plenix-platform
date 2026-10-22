@@ -7,8 +7,10 @@
      <StatusIcon tone="warning" />
      <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:
-     name: the Plenix icon name (platform/icons/map.json); with the CDN's icons-all.css on the page, also any Material
-       Symbols name (person_cancel, folder_eye): the whole library, drawn from /cdn/material/<commit>/
+     name: the naming contract (2026-10-22): a Plenix name, with dashes (platform/icons/map.json: mic-off, person-cancel);
+       a Plenix name that is its Material symbol with dashes also answers to the underscore spelling (mic_off,
+       person_cancel); with the CDN's icons-all.css on the page, any other Material Symbols name (rocket_launch) too. A
+       Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
      size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
        grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
      filled: the filled version (default false)

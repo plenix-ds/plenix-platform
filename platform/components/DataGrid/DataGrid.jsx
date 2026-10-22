@@ -49,6 +49,8 @@
        onCellEdit(record, { field, value, previous })
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
+     uniformPillWidths: with cells="pill", every standard pill of a column as wide as that column's widest pill in the
+       current view (filtered and sorted, the current page, every row of it); columns stay independent; default false
      typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
        false hides them
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:

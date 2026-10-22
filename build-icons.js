@@ -9,6 +9,10 @@ const fs = require('fs');
 const path = require('path');
 
 const ident = (sym) => sym.replace(/_/g, '-');
+// the naming contract (owner, 2026-10-22): Plenix names use dashes; a name that is its Material symbol with dashes
+// (mic-off = mic_off) also answers to the symbol's own spelling, so both work in every Icon slot
+const aliasOf = (M, n) => { const sym = M.map[n].split('#')[0]; return n.includes('-') && n.replace(/-/g, '_') === sym && !M.map[sym] ? sym : null; };
+const selectors = (M, n) => '.plx-icon--' + n + (aliasOf(M, n) ? ',.plx-icon--' + aliasOf(M, n) : '');
 // an SVG as a CSS url(): double quotes become single quotes; only the characters CSS and URLs need are escaped
 const dataUri = (svg) => 'url("data:image/svg+xml,' + svg.trim().replace(/\s+/g, ' ').replace(/"/g, "'")
   .replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/\{/g, '%7B').replace(/\}/g, '%7D') + '")';
@@ -33,7 +37,7 @@ module.exports = function buildIcons(root) {
     const v = M.map[n], s = ident(v.split('#')[0]), fill = v.endsWith('#fill');
     const o = '--plx-comp-icon-glyph-' + s + (fill ? '-fill' : ''), f = '--plx-comp-icon-glyph-' + s + '-fill';
     const auto = (g) => 'var(' + g.replace('--plx-comp-icon-glyph-', '--plx-comp-icon-auto-') + ',var(' + g + '))';
-    return '.plx-icon--' + n + '{--plx-comp-icon-filled:' + auto(f) + ';--plx-comp-icon-filled-24:var(' + f.replace(/-fill$/, '-24-fill') + ');--plx-comp-icon-outline:' + auto(o) + ';--plx-comp-icon-outline-24:var(' + o.replace(/(-fill)?$/, '-24$1') + ');}';
+    return selectors(M, n) + '{--plx-comp-icon-filled:' + auto(f) + ';--plx-comp-icon-filled-24:var(' + f.replace(/-fill$/, '-24-fill') + ');--plx-comp-icon-outline:' + auto(o) + ';--plx-comp-icon-outline-24:var(' + o.replace(/(-fill)?$/, '-24$1') + ');}';
   });
   // the symbols that point along the reading direction: mirrored in right to left
   const MIRROR = ['arrow_back', 'arrow_right', 'chevron_left', 'chevron_right', 'left_panel_close', 'left_panel_open', 'right_panel_close', 'right_panel_open', 'undo', 'redo'];
@@ -74,8 +78,10 @@ module.exports = function buildIcons(root) {
     })(),
     ...names,
     '/* right to left: the directional icons mirror (Material Symbols\' bidirectional set); scale, so a rotation on the icon still applies (batch 213) */',
-    Object.keys(M.map).filter((n) => MIRROR.indexOf(M.map[n].split('#')[0]) >= 0).sort().map((n) => '.plx-icon--' + n + ':dir(rtl)').join(',') + '{scale:-1 1;}',
+    Object.keys(M.map).filter((n) => MIRROR.indexOf(M.map[n].split('#')[0]) >= 0).sort().map((n) => selectors(M, n).split(',').map((sel) => sel + ':dir(rtl)').join(',')).join(',') + '{scale:-1 1;}',
   ].join('\n') + '\n';
+  const missing = Object.keys(M.map).filter((n) => !css.includes('.plx-icon--' + n + '{') && !css.includes('.plx-icon--' + n + ','));
+  if (missing.length) throw new Error('icon names without a rule: ' + missing.join(', '));
   fs.writeFileSync(out, css);
   return { symbols: symbols.length, names: names.length, bytes: Buffer.byteLength(css) };
 };

@@ -39,6 +39,28 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Menu, MenuItem, MenuDivider, ContextMenu } from '../Menu/Menu.jsx';
 import { Text } from '../Text/Text.jsx';
+
+// a pill's text measured as the page draws it: a hidden probe pill (md, data or not) inside the grid gives its font, size,
+// weight and word spacing, and the ratio between the page's width of a sample and the canvas's (the mono font's
+// size-adjust and fitted spaces are not the canvas's); the canvas is left set to that font
+const PROBE='0123456789 ABCDEFGHIJ abcdefghij';
+function pillFont(at, ctx, data) {
+  const doc=at.ownerDocument,box=doc.createElement('span'),pill=doc.createElement('span'),value=doc.createElement('span');
+  box.className='plx-visually-hidden';pill.className='plx-data-pill plx-data-pill--md'+(data?' plx-data-pill--data':'');value.className='plx-data-pill__value';
+  value.textContent=PROBE;pill.appendChild(value);box.appendChild(pill);
+  (at.querySelector('.plx-data-grid__grid-row .plx-data-grid__grid-cell')||at).appendChild(box);   // in a body cell: the cell's own text size
+  const cs=getComputedStyle(value),page=value.scrollWidth;
+  ctx.font=cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;ctx.wordSpacing=cs.wordSpacing||'0px';
+  const canvas=ctx.measureText(PROBE).width;box.remove();
+  return canvas?page/canvas:1;
+}
+// uniformPillWidths: the widths live in one constructed sheet per document, one entry per grid
+function pillSheet(doc) {
+  if (doc.__plxPillWidths) return doc.__plxPillWidths;
+  const sheet = new doc.defaultView.CSSStyleSheet(), rules = new Map();
+  doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
+  return (doc.__plxPillWidths = { rules, flush: () => sheet.replaceSync([...rules.values()].join('\n')) });
+}
 import { Input, Select } from '../Input/Input.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Pagination } from '../Pagination/Pagination.jsx';
@@ -88,7 +110,7 @@ function NextEngine(props) {
   const inPane=React.useContext(GridPane);
   const { label, data=EMPTY_ROWS, columns, index='id', selectable=false, selected, keepHiddenSelection=true, onSelectionChange,
     options={}, mode='fill', height, narrow:requestedNarrow, narrowAt='--plx-ref-size-600px', keyColumns, storageKey,
-    isStatic=false, cells='text', headerMenu=true, typeIcons:typeIconsProp, density='compact', rowMenu: suppliedRowMenu, rowMenuButton=true, columnMenu, onReady, on={}, className, empty, error, onRetry } = props;
+    isStatic=false, cells='text', headerMenu=true, typeIcons:typeIconsProp, density='compact', uniformPillWidths=false, rowMenu: suppliedRowMenu, rowMenuButton=true, columnMenu, onReady, on={}, className, empty, error, onRetry } = props;
   const showTypes=typeIconsProp??!isStatic;   // the column type icons: a DataGrid's sort and filter cue, not a static Table's
   const narrow=requestedNarrow===undefined?(inPane&&!isStatic?'table':'list'):requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID;   // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
@@ -175,6 +197,31 @@ function NextEngine(props) {
     getExpandedRowModel:getExpandedRowModel(),getCoreRowModel:getCoreRowModel(),getFilteredRowModel:getFilteredRowModel(),getSortedRowModel:getSortedRowModel(),
     getPaginationRowModel:mode==='pages'?getPaginationRowModel():undefined,autoResetPageIndex:false});
   const allRows=(printing?table.getPrePaginationRowModel():table.getRowModel()).rows;
+  // uniformPillWidths (CTM, 2026-10-22): every standard pill of a column as wide as the column's widest pill in the current
+  // view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling a long list never changes it.
+  // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid.
+  const gridKey=React.useId(),[fontsReady,setFontsReady]=React.useState(0);
+  React.useEffect(()=>{const fonts=frame.current?.ownerDocument.fonts;if(fonts&&fonts.ready)fonts.ready.then(()=>setFontsReady(n=>n+1));},[]);
+  React.useLayoutEffect(()=>{
+    const at=frame.current;if(!at||typeof CSSStyleSheet==='undefined')return undefined;
+    const store=pillSheet(at.ownerDocument);
+    if(!uniformPillWidths||cells!=='pill'||!metrics.row){if(store.rules.delete(gridKey))store.flush();return undefined;}
+    const cs=getComputedStyle(at),ctx=at.ownerDocument.createElement('canvas').getContext('2d'),px=(name)=>tokenPixels(name,at);
+    const sides=px('--plx-comp-data-pill-md-padding-inline-start')+px('--plx-comp-data-pill-md-padding-inline-end')+2*px('--plx-comp-data-pill-border-width'),glyph=px('--plx-comp-data-pill-icon-size')+px('--plx-comp-data-pill-gap');
+    const key=CSS.escape(gridKey),rules=[];
+    columns.forEach(c=>{
+      const k=kinds(c);if(c.render||c.pill===false||k.includes('tags')||k.includes('badge')||k.includes('deleted')||k.includes('icon'))return;
+      const data=k.includes('data')||['number','currency','date','bytes'].includes(c.type);
+      const scale=pillFont(at,ctx,data);
+      let widest=0;allRows.forEach(r=>{if(!r.original)return;const v=valueAt(r.original,c.field);if(v==null||v==='')return;widest=Math.max(widest,ctx.measureText(valueText(v)).width*scale);});
+      if(!widest)return;
+      const icon=c.type==='person'||k.includes('avatar-name')||(showTypes&&typeOf(c)!=='text');
+      rules.push('[data-plx-grid-key="'+key+'"] .plx-data-pill[data-plx-pill-field="'+CSS.escape(c.field)+'"]{inline-size:'+snapToGrid(widest+sides+(icon?glyph:0),{round:'up',el:at})+'px;}');
+    });
+    store.rules.set(gridKey,rules.join('\n'));store.flush();
+    return undefined;
+  },[uniformPillWidths,cells,columns,allRows,metrics.row,metrics.space,showTypes,fontsReady]);
+  React.useEffect(()=>()=>{const doc=frame.current?.ownerDocument||(typeof document!=='undefined'?document:null);if(doc&&doc.__plxPillWidths&&doc.__plxPillWidths.rules.delete(gridKey))doc.__plxPillWidths.flush();},[]);
   const loadedRows=React.useMemo(()=>mode==='load-more'&&!remoteMode?allRows.slice(0,loaded):allRows,[allRows,mode,remoteMode,loaded]);
   const groups=React.useMemo(()=>groupedRows(loadedRows,groupBy,columns),[loadedRows,groupBy,columns]);
   const model=React.useMemo(()=>groups.length?groupDisplay(groups,printing?new Set():collapsed,!!props.onAddToGroup):loadedRows,[groups,collapsed,loadedRows,!!props.onAddToGroup,printing]),virtualized=!isStatic&&mode!=='pages'&&!isNarrow&&!printing;
@@ -217,9 +264,9 @@ function NextEngine(props) {
       ctx.wordSpacing=kinds(c).includes('data')?(cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim()||'0px'):'0px';
       let width=head;
       const k=kinds(c),pill=cells==='pill'&&c.pill!==false&&!k.includes('tags')&&!k.includes('badge')&&!k.includes('deleted');
-      if(pill)ctx.font=(cs.getPropertyValue('--plx-comp-data-pill-font-weight').trim()||'500')+' '+ctx.font;   // a pill's text is medium weight
+      const scale=pill?pillFont(at,ctx,k.includes('data')||['number','currency','date','bytes'].includes(c.type)):1;   // a pill: its own font, as drawn
       const chrome=pill?tokenPixels('--plx-comp-data-pill-md-padding-inline-start',at)+tokenPixels('--plx-comp-data-pill-md-padding-inline-end',at)+2*tokenPixels('--plx-comp-data-pill-border-width',at)+((c.type==='person'||k.includes('avatar-name')||(showTypes&&typeOf(c)!=='text'))?tokenPixels('--plx-comp-data-pill-icon-size',at)+tokenPixels('--plx-comp-data-pill-gap',at):0):0;   // the icon only where the pill has one
-      source.forEach(record=>{const value=valueAt(record,c.field);width=Math.max(width,ctx.measureText(valueText(value)).width+chrome);});
+      source.forEach(record=>{const value=valueAt(record,c.field);width=Math.max(width,ctx.measureText(valueText(value)).width*scale+chrome);});
       widths[c.field]=snapToGrid(Math.max(metrics.min,Math.min(width+metrics.space*2,tokenPixels('--plx-comp-data-grid-auto-max-width',at)||Infinity)),{round:'up',el:at});free.push(c.field);
     });
     const available=metrics.room-(selectable?metrics.lead:0)-(rowMenu&&rowMenuButton?metrics.menu:0)-(props.viewMenu?metrics.lead:0),used=Object.values(widths).reduce((sum,width)=>sum+width,0),step=gridStep(at);
@@ -308,7 +355,7 @@ function NextEngine(props) {
     className={cx(''+B+'__grid-row',(selectable||options.selectableRows||props.onRowClick||on.rowClick)&&B+'__grid-selectable',childField&&''+B+'__grid-tree-level-'+Math.min(12,row.depth),selection[row.id]&&''+B+'__grid-selected',isStatic&&B+'__grid-row--static',isNarrow&&B+'__grid-row--narrow',virtualized&&B+'__grid-row--virtual')} onClick={e=>{if(e.target.closest(interactive))return;if(selectable)pickCheckbox(row,{target:{checked:!selection[row.id]},nativeEvent:e.nativeEvent,shiftKey:e.shiftKey});else if(options.selectableRows)pick(row.id,!selection[row.id]);emit('rowClick',e,rowApi);props.onRowClick?.(record,e);if(props.onRowClick||on.rowClick)unread.open(record);}} onDoubleClick={e=>{if(!e.target.closest(interactive)){props.onRowDoubleClick?.(record,e);emit('rowDblClick',e,rowApi);}}} onKeyDown={e=>{if(e.key==='Enter'&&!e.defaultPrevented&&(e.target===e.currentTarget||e.target.getAttribute('role')==='gridcell')){e.preventDefault();if(selectable)pickCheckbox(row,{target:{checked:!selection[row.id]},nativeEvent:e.nativeEvent,shiftKey:e.shiftKey});else if(options.selectableRows)pick(row.id,!selection[row.id]);emit('rowClick',e,rowApi);props.onRowClick?.(record,e);if(props.onRowClick||on.rowClick)unread.open(record);}if((e.key==='ArrowDown'||e.key==='ArrowUp')&&e.target===e.currentTarget){e.preventDefault();const step=e.key==='ArrowDown'?1:-1;focusCell(model.indexOf(row)+step,null,step);}}}>
     {selectable?<div className={cx(`${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,modes)} role="gridcell"><Check label={S.selectRow+' '+record[index]} checked={selection[row.id]} onChange={e=>pickCheckbox(row,e)}/></div>:null}
     {ordered.map(column=>{const c=column.columnDef.meta,k=kinds(c),pinned=frozen.has(c.field),sticky=offset;if(pinned)offset+=column.getSize();const cell=api.cell(row.id,c.field),canEdit=!!c.editor&&(typeof c.editable==='function'?c.editable(cell):c.editable!==false);const value=valueAt(record,c.field),isTree=!!childField&&c.field===(props.treeColumn||options.dataTreeElementColumn||columns[0]?.field),isEditing=editing?.key===row.id&&editing.field===c.field,handled=c.rowHandle&&(recordPositions.get(record)??-1)>=0,actions=k.includes('actions');
-      const mods=cx(isStatic&&B+'__value--static',k.includes('wrap')&&B+'__value--wrap',sized&&B+'__value--sized',lines&&B+'__value--lines')||undefined,shown=CellValue({block:B,column:c,value,strings:S,record,pill:cells==='pill',icon:showTypes&&typeOf(c)!=='text'?typeIcons[typeOf(c)]:undefined,mods});   // a pill carries a type icon only when it says something (a date, a number)
+      const mods=cx(isStatic&&B+'__value--static',k.includes('wrap')&&B+'__value--wrap',sized&&B+'__value--sized',lines&&B+'__value--lines')||undefined,shown=CellValue({block:B,column:c,value,strings:S,record,pill:cells==='pill',pillField:uniformPillWidths?c.field:undefined,icon:showTypes&&typeOf(c)!=='text'?typeIcons[typeOf(c)]:undefined,mods});   // a pill carries a type icon only when it says something (a date, a number)
       const bare=!isEditing&&!handled&&!c.render&&!actions&&!(pinned&&!isStatic)&&React.isValidElement(shown)&&shown.type==='span'&&String(shown.props.className).split(' ').includes(B+'__value');
       return <Width key={c.field} width={isNarrow?null:widths[c.field]} frozenOffset={pinned&&!isNarrow?sticky:undefined} role={isStatic?c.rowLabel?'rowheader':'cell':'gridcell'} tabIndex={isStatic?undefined:-1} data-plx-field={c.field} data-plx-unread={unread.has(record)||undefined} dir={pinned&&!isStatic?undefined:'auto'} onDoubleClick={()=>{if(canEdit)setEditing({key:row.id,field:c.field,value});}} onKeyDown={event=>{
         if(isStatic||event.target!==event.currentTarget)return;if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='c'){if(document.getSelection()?.toString())return;event.preventDefault();navigator.clipboard.writeText(valueText(value));return;}if(event.key==='Enter'&&canEdit){event.preventDefault();setEditing({key:row.id,field:c.field,value});return;}const index=model.indexOf(row),at=ordered.indexOf(column),keys={ArrowDown:[index+1,at],ArrowUp:[index-1,at],ArrowLeft:[index,at+(isRtl(frame.current)?1:-1)],ArrowRight:[index,at+(isRtl(frame.current)?-1:1)]};
@@ -324,7 +371,7 @@ function NextEngine(props) {
   const priorGroups=model.slice(0,first).filter(row=>row.__group).map(row=>row.__group),currentGroup=model[first]?.__group||priorGroups[priorGroups.length-1];
   const stickyGroups=currentGroup?priorGroups.filter((group,i)=>group.path.every((part,depth)=>JSON.stringify(part)===JSON.stringify(currentGroup.path[depth]))&&!priorGroups.slice(i+1).some(next=>next.depth===group.depth)):[];
   const failed=error||remoteError;
-  return <WidthPixels.Provider value={widthPixels}><div ref={frame} className={cx(B,isStatic&&B+'--static',pinnedAt>=0&&B+'--row-header',listed&&B+'--list',isNarrow&&B+'--narrow',height==='100%'&&B+'--fill',mode==='pages'&&B+'--pages',mode==='load-more'&&B+'--load-more',className)} data-plx-engine="next" data-plx-density={density==='page'?undefined:density} data-plx-render={virtualized?'virtual':undefined} data-plx-row-height={!isStatic&&!isNarrow?effectiveStep:undefined} data-plx-wrap-headers={effectiveWrap?'':undefined} data-plx-height={lengthName(height)} data-plx-fit={!isStatic&&!height&&mode!=='pages'?'':undefined}>
+  return <WidthPixels.Provider value={widthPixels}><div ref={frame} className={cx(B,isStatic&&B+'--static',pinnedAt>=0&&B+'--row-header',listed&&B+'--list',isNarrow&&B+'--narrow',height==='100%'&&B+'--fill',mode==='pages'&&B+'--pages',mode==='load-more'&&B+'--load-more',className)} data-plx-engine="next" data-plx-grid-key={uniformPillWidths?gridKey:undefined} data-plx-density={density==='page'?undefined:density} data-plx-render={virtualized?'virtual':undefined} data-plx-row-height={!isStatic&&!isNarrow?effectiveStep:undefined} data-plx-wrap-headers={effectiveWrap?'':undefined} data-plx-height={lengthName(height)} data-plx-fit={!isStatic&&!height&&mode!=='pages'?'':undefined}>
     {failed?<EmptyState className={B+'__error'} tone="error" title={S.failed} action={onRetry||remoteError?<Button size="sm" onClick={()=>{setRetry(n=>n+1);onRetry?.();}}>{S.retry}</Button>:null}>{String(failed===true?'':failed.message||failed)}</EmptyState>:null}
     {unread.enabled&&!isStatic?<><Button variant="ghost" aria-pressed={unreadOnly} onClick={()=>{setUnreadOnly(!unreadOnly);props.onUnreadOnlyChange?.(!unreadOnly);}}>Show unread only ({unread.count})</Button>{selectable?<Menu label="Change selected rows" trigger={<Button variant="ghost">Change selected rows</Button>}><MenuItem disabled={!Object.keys(selection).some(key=>selection[key])} onSelect={()=>unread.mark(canonical.filter(record=>selection[recordKey(record[index])]),false)}>Mark as read</MenuItem><MenuItem disabled={!Object.keys(selection).some(key=>selection[key])} onSelect={()=>unread.mark(canonical.filter(record=>selection[recordKey(record[index])]),true)}>Mark as unread</MenuItem></Menu>:null}</>:null}
     <div className={cx(B+'__table',B+'__grid',height==='100%'&&B+'__grid--fill',isStatic&&B+'__grid--static')} role={isStatic?'table':groups.length||childField?'treegrid':'grid'} aria-label={label} aria-busy={remoteMode&&remoteBusy?true:undefined} aria-rowcount={groups.length||childField?semanticRows.length+1:(remoteMode?remote?.total||0:table.getFilteredRowModel().rows.length)+1} aria-colcount={ordered.length+(selectable?1:0)+(rowMenu&&rowMenuButton?1:0)+(props.viewMenu?1:0)} hidden={!!failed}>

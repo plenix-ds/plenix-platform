@@ -248,6 +248,8 @@ copyDir(path.join(P, 'vendor', 'tiptap'), path.join(R, 'dist', 'vendor', 'tiptap
 // same way (vendorBase), shipped in both places too; the manifest hashes it with the rest of vendor/ (issue #238)
 copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(CDN, 'vendor', 'pdfjs'));
 copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(R, 'dist', 'vendor', 'pdfjs'));
+// a standalone acceptance page on this release's own files (CTM, 2026-10-22): /cdn/<version>/examples/acceptance.html
+copy(path.join(ROOT, 'docs', 'integration', 'acceptance.html'), path.join(CDN, 'examples', 'acceptance.html'));
 // the whole Material Symbols library (owner, 2026-10-22): icons-all.css gives every symbol its Material name as an Icon
 // name (<Icon name="person_cancel">), outline and filled, optical sizes 20 and 24, drawn from /cdn/material/<commit>/
 // (deploy.sh copies platform/icons/library there once: it never changes). Plenix's own names keep their meaning: a symbol
@@ -256,6 +258,7 @@ copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(R, 'dist', 'vendor', 'pdfjs')
   const ICONS = path.join(P, 'icons'), map = JSON.parse(fs.readFileSync(path.join(ICONS, 'map.json'), 'utf8'));
   const lib = JSON.parse(fs.readFileSync(path.join(ICONS, 'library', 'index.json'), 'utf8'));
   const base = '../material/' + map._commit.slice(0, 12) + '/', taken = new Set(Object.keys(map.map));
+  Object.keys(map.map).forEach((n) => { const sym = map.map[n].split('#')[0]; if (n.includes('-') && n.replace(/-/g, '_') === sym) taken.add(sym); });   // the underscore aliases are Plenix names
   const rules = [].concat(lib.symbols).filter((sym) => !taken.has(sym)).sort().map((sym) => '.plx-icon--' + sym + '{--plx-comp-icon-outline:url("' + base + sym + '.svg");--plx-comp-icon-filled:url("' + base + sym + '-fill.svg");--plx-comp-icon-outline-24:url("' + base + sym + '-24.svg");--plx-comp-icon-filled-24:url("' + base + sym + '-24-fill.svg");}');
   write(path.join(CDN, 'icons-all.css'), '/* Plenix ' + VERSION + ' · every Material Symbols Sharp symbol (weight 300, unedited, ' + lib.source + ') as an Icon name: <Icon name="person_cancel">.\n   Load after plenix.css. The files are at ' + base + ' (shared by every release). ' + rules.length + ' symbols; Plenix names keep their own symbol. */\n' + rules.join('\n') + '\n');
 }

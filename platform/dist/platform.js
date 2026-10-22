@@ -82,8 +82,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <StatusIcon tone="warning" />
      <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:
-     name: the Plenix icon name (platform/icons/map.json); with the CDN's icons-all.css on the page, also any Material
-       Symbols name (person_cancel, folder_eye): the whole library, drawn from /cdn/material/<commit>/
+     name: the naming contract (2026-10-22): a Plenix name, with dashes (platform/icons/map.json: mic-off, person-cancel);
+       a Plenix name that is its Material symbol with dashes also answers to the underscore spelling (mic_off,
+       person_cancel); with the CDN's icons-all.css on the page, any other Material Symbols name (rocket_launch) too. A
+       Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
      size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
        grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
      filled: the filled version (default false)
@@ -16598,6 +16600,7 @@ function CellValue({
   strings,
   record,
   pill = false,
+  pillField,
   icon,
   block = 'plx-data-grid',
   mods
@@ -16611,6 +16614,7 @@ function CellValue({
     const text = column.type === 'bytes' ? (0, _format.formatBytes)(Number(value)) : person ? person.name || person.label || '' : valueText(value);
     return /*#__PURE__*/_react.default.createElement(_DataPill.DataPill, {
       size: "md",
+      "data-plx-pill-field": pillField,
       tone: own.tone,
       variant: own.variant,
       icon: own.icon || (isPerson ? undefined : icon),
@@ -17094,6 +17098,41 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      own element takes __cell-content (a link alone in a cell fills it); a data cell (kind data, type bytes) is
      __grid-cell--data, the data role in Mono. Table (isStatic) marks its parts --static: the root, grid, header, headers, columns, their
      contents and titles, the body, the table, rows, cells, values and the placeholder. */
+// a pill's text measured as the page draws it: a hidden probe pill (md, data or not) inside the grid gives its font, size,
+// weight and word spacing, and the ratio between the page's width of a sample and the canvas's (the mono font's
+// size-adjust and fitted spaces are not the canvas's); the canvas is left set to that font
+const PROBE = '0123456789 ABCDEFGHIJ abcdefghij';
+function pillFont(at, ctx, data) {
+  const doc = at.ownerDocument,
+    box = doc.createElement('span'),
+    pill = doc.createElement('span'),
+    value = doc.createElement('span');
+  box.className = 'plx-visually-hidden';
+  pill.className = 'plx-data-pill plx-data-pill--md' + (data ? ' plx-data-pill--data' : '');
+  value.className = 'plx-data-pill__value';
+  value.textContent = PROBE;
+  pill.appendChild(value);
+  box.appendChild(pill);
+  (at.querySelector('.plx-data-grid__grid-row .plx-data-grid__grid-cell') || at).appendChild(box); // in a body cell: the cell's own text size
+  const cs = getComputedStyle(value),
+    page = value.scrollWidth;
+  ctx.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+  ctx.wordSpacing = cs.wordSpacing || '0px';
+  const canvas = ctx.measureText(PROBE).width;
+  box.remove();
+  return canvas ? page / canvas : 1;
+}
+// uniformPillWidths: the widths live in one constructed sheet per document, one entry per grid
+function pillSheet(doc) {
+  if (doc.__plxPillWidths) return doc.__plxPillWidths;
+  const sheet = new doc.defaultView.CSSStyleSheet(),
+    rules = new Map();
+  doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
+  return doc.__plxPillWidths = {
+    rules,
+    flush: () => sheet.replaceSync([...rules.values()].join('\n'))
+  };
+}
 // Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
 const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
   className: GRID + '__cell-direction',
@@ -17386,6 +17425,7 @@ function NextEngine(props) {
     headerMenu = true,
     typeIcons: typeIconsProp,
     density = 'compact',
+    uniformPillWidths = false,
     rowMenu: suppliedRowMenu,
     rowMenuButton = true,
     columnMenu,
@@ -17731,6 +17771,57 @@ function NextEngine(props) {
     autoResetPageIndex: false
   });
   const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
+  // uniformPillWidths (CTM, 2026-10-22): every standard pill of a column as wide as the column's widest pill in the current
+  // view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling a long list never changes it.
+  // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid.
+  const gridKey = _react.default.useId(),
+    [fontsReady, setFontsReady] = _react.default.useState(0);
+  _react.default.useEffect(() => {
+    const fonts = frame.current?.ownerDocument.fonts;
+    if (fonts && fonts.ready) fonts.ready.then(() => setFontsReady(n => n + 1));
+  }, []);
+  _react.default.useLayoutEffect(() => {
+    const at = frame.current;
+    if (!at || typeof CSSStyleSheet === 'undefined') return undefined;
+    const store = pillSheet(at.ownerDocument);
+    if (!uniformPillWidths || cells !== 'pill' || !metrics.row) {
+      if (store.rules.delete(gridKey)) store.flush();
+      return undefined;
+    }
+    const cs = getComputedStyle(at),
+      ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
+      px = name => (0, _environment.tokenPixels)(name, at);
+    const sides = px('--plx-comp-data-pill-md-padding-inline-start') + px('--plx-comp-data-pill-md-padding-inline-end') + 2 * px('--plx-comp-data-pill-border-width'),
+      glyph = px('--plx-comp-data-pill-icon-size') + px('--plx-comp-data-pill-gap');
+    const key = CSS.escape(gridKey),
+      rules = [];
+    columns.forEach(c => {
+      const k = kinds(c);
+      if (c.render || c.pill === false || k.includes('tags') || k.includes('badge') || k.includes('deleted') || k.includes('icon')) return;
+      const data = k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type);
+      const scale = pillFont(at, ctx, data);
+      let widest = 0;
+      allRows.forEach(r => {
+        if (!r.original) return;
+        const v = (0, _state.valueAt)(r.original, c.field);
+        if (v == null || v === '') return;
+        widest = Math.max(widest, ctx.measureText((0, _cells.valueText)(v)).width * scale);
+      });
+      if (!widest) return;
+      const icon = c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text';
+      rules.push('[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + (0, _grid.snapToGrid)(widest + sides + (icon ? glyph : 0), {
+        round: 'up',
+        el: at
+      }) + 'px;}');
+    });
+    store.rules.set(gridKey, rules.join('\n'));
+    store.flush();
+    return undefined;
+  }, [uniformPillWidths, cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
+  _react.default.useEffect(() => () => {
+    const doc = frame.current?.ownerDocument || (typeof document !== 'undefined' ? document : null);
+    if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
+  }, []);
   const loadedRows = _react.default.useMemo(() => mode === 'load-more' && !remoteMode ? allRows.slice(0, loaded) : allRows, [allRows, mode, remoteMode, loaded]);
   const groups = _react.default.useMemo(() => (0, _records.groupedRows)(loadedRows, groupBy, columns), [loadedRows, groupBy, columns]);
   const model = _react.default.useMemo(() => groups.length ? (0, _records.groupDisplay)(groups, printing ? new Set() : collapsed, !!props.onAddToGroup) : loadedRows, [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]),
@@ -17873,11 +17964,11 @@ function NextEngine(props) {
       let width = head;
       const k = kinds(c),
         pill = cells === 'pill' && c.pill !== false && !k.includes('tags') && !k.includes('badge') && !k.includes('deleted');
-      if (pill) ctx.font = (cs.getPropertyValue('--plx-comp-data-pill-font-weight').trim() || '500') + ' ' + ctx.font; // a pill's text is medium weight
+      const scale = pill ? pillFont(at, ctx, k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type)) : 1; // a pill: its own font, as drawn
       const chrome = pill ? (0, _environment.tokenPixels)('--plx-comp-data-pill-md-padding-inline-start', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-md-padding-inline-end', at) + 2 * (0, _environment.tokenPixels)('--plx-comp-data-pill-border-width', at) + (c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text' ? (0, _environment.tokenPixels)('--plx-comp-data-pill-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-gap', at) : 0) : 0; // the icon only where the pill has one
       source.forEach(record => {
         const value = (0, _state.valueAt)(record, c.field);
-        width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width + chrome);
+        width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width * scale + chrome);
       });
       widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, Math.min(width + metrics.space * 2, (0, _environment.tokenPixels)('--plx-comp-data-grid-auto-max-width', at) || Infinity)), {
         round: 'up',
@@ -18594,6 +18685,7 @@ function NextEngine(props) {
           strings: S,
           record,
           pill: cells === 'pill',
+          pillField: uniformPillWidths ? c.field : undefined,
           icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
           mods
         }); // a pill carries a type icon only when it says something (a date, a number)
@@ -18746,6 +18838,7 @@ function NextEngine(props) {
     ref: frame,
     className: (0, _cx.cx)(B, isStatic && B + '--static', pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
+    "data-plx-grid-key": uniformPillWidths ? gridKey : undefined,
     "data-plx-density": density === 'page' ? undefined : density,
     "data-plx-render": virtualized ? 'virtual' : undefined,
     "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : undefined,
@@ -27427,6 +27520,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        onCellEdit(record, { field, value, previous })
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
+     uniformPillWidths: with cells="pill", every standard pill of a column as wide as that column's widest pill in the
+       current view (filtered and sorted, the current page, every row of it); columns stay independent; default false
      typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
        false hides them
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
@@ -67062,7 +67157,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        "parse" (not a readable PDF) or "render" (a page could not be drawn); className.
    Behavior: Image zoom is published on the viewport; the zoom Select uses its own data prop.
      Navigation clamps to available pages. PDF loading and rendering are cancellable; stale loads cannot replace
-     a newer document. Each failure has its own message (strings.failed replaces all four) and offers Retry; the
+     a newer document. A PDF or image page is laid out left to right in any interface direction (owner, 2026-10-22: CTM's
+     Arabic UI): centered when narrower than the viewer, opening at its top left when wider, and again at each page; a
+     text document keeps its own direction. Each failure has its own message (strings.failed replaces all four) and offers Retry; the
      message never shows the document's address or the server's error. The page counter, page buttons and zoom show
      once a document has pages. PDF text is exposed alongside the canvas for assistive technology.
    Notes: PDF.js 4.10.38 (Apache-2.0) is in the shared vendor folder (platform/vendor/pdfjs/; on the CDN
@@ -67169,7 +67266,8 @@ function DocumentViewer({
     [error, setError] = _react.default.useState(''),
     [attempt, setAttempt] = _react.default.useState(0),
     [accessible, setAccessible] = _react.default.useState(''),
-    canvas = _react.default.useRef(null);
+    canvas = _react.default.useRef(null),
+    viewport = _react.default.useRef(null);
   const errorRef = _react.default.useRef(onError);
   errorRef.current = onError;
   // one message per reason; strings.failed (an app's own wording) replaces them all unless the reason's own string is given
@@ -67266,6 +67364,13 @@ function DocumentViewer({
       render?.cancel();
     };
   }, [kind, pdf, current, zoom]);
+  // a new page opens at its top and its start (a page is laid out left to right, whatever the interface direction)
+  _react.default.useEffect(() => {
+    viewport.current?.scrollTo({
+      top: 0,
+      left: 0
+    });
+  }, [current]);
   const move = n => {
     const next = Math.max(1, Math.min(count, n));
     setPage(next);
@@ -67324,7 +67429,9 @@ function DocumentViewer({
     as: "span",
     kind: "data"
   }, i + 1))))) : null, /*#__PURE__*/_react.default.createElement("div", {
+    ref: viewport,
     className: "plx-document-viewer__viewport",
+    dir: kind === 'text' ? undefined : 'ltr',
     "data-zoom": zoom,
     tabIndex: 0,
     role: "region",

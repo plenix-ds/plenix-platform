@@ -35,3 +35,14 @@ build-packages.js) gives every symbol its Material name as an Icon name: link it
 `<Icon name="person_cancel">`. A Material name that is already a Plenix name keeps the Plenix meaning (`check`, `home`).
 It is optional: `plenix.css` carries only the Plenix set as data: URIs (nothing to download); icons-all.css (about 1.4 MB,
 4,106 rules) loads each file from the CDN the first time it is drawn.
+
+## The naming contract (2026-10-22)
+
+| Spelling | Works | Example |
+|---|---|---|
+| Plenix name, dashes | always (plenix.css) | `mic-off`, `person-cancel`, `check-square` |
+| The same name with underscores, where the Plenix name is its Material symbol with dashes | always (plenix.css) | `mic_off`, `person_cancel` |
+| Any other Material Symbols name | with icons-all.css | `rocket_launch`, `10k` |
+| A Material name that is also a Plenix name | draws the Plenix icon | `check` (check_small), `home` |
+
+build-icons.js fails when a name in map.json has no rule in icon.css.
