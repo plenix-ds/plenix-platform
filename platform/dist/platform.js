@@ -17433,7 +17433,8 @@ function NextEngine(props) {
     [orderOwner, setOrderOwner] = _react.default.useState(null),
     [hiddenOwner, setHiddenOwner] = _react.default.useState(null);
   const [sizing, setSizing] = _react.default.useState(() => Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)])));
-  const [autoSizing, setAutoSizing] = _react.default.useState({});
+  const [autoSizing, setAutoSizing] = _react.default.useState({}),
+    [floors, setFloors] = _react.default.useState({});
   const widthsSignal = JSON.stringify(props.columnWidths || {});
   _react.default.useEffect(() => {
     if (!props.onViewChange) return;
@@ -17596,7 +17597,7 @@ function NextEngine(props) {
   const resize = (field, value) => {
     const definition = columns.find(c => c.field === field),
       at = frame.current;
-    const min = (0, _environment.tokenPixels)(definition?.minWidth || '--plx-ref-size-80px', at),
+    const min = Math.max(floors[field] || 0, (0, _environment.tokenPixels)(definition?.minWidth || '--plx-ref-size-80px', at)),
       max = definition?.maxWidth ? (0, _environment.tokenPixels)(definition.maxWidth, at) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
     const width = (0, _grid.snapToGrid)((0, _sizeSteps.snapSize)((0, _environment.tokenPixels)(value, at), min, max), {
       el: at
@@ -17676,11 +17677,11 @@ function NextEngine(props) {
     enableSorting: c.headerSort !== false,
     filterFn: c.type === 'bytes' ? _cells.byteFilter : c.filter === 'list' ? _cells.listFilter : _cells.textFilter,
     sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sortingRef.current.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
-    size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, (0, _environment.tokenPixels)(c.width, frame.current) || autoSizing[c.field] || metrics.min),
-    minSize: kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min,
+    size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, floors[c.field] || 0, autoSizing[c.field] || (0, _environment.tokenPixels)(c.width, frame.current) || metrics.min),
+    minSize: kinds(c).includes('icon') ? metrics.lead : Math.max(floors[c.field] || 0, (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min),
     maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
     meta: c
-  })), [columns, metrics.min, metrics.lead, autoSizing]);
+  })), [columns, metrics.min, metrics.lead, autoSizing, floors]);
   const table = (0, _reactTable.useReactTable)({
     data: source,
     columns: leafDefs,
@@ -17836,18 +17837,34 @@ function NextEngine(props) {
     const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
       cs = getComputedStyle(at),
       widths = {},
-      free = [];
+      free = [],
+      floor = {};
     columns.forEach(c => {
-      const explicit = kinds(c).includes('icon') ? metrics.lead : (0, _environment.tokenPixels)(c.width, at);
-      if (explicit) {
-        widths[c.field] = explicit;
+      if (kinds(c).includes('icon')) {
+        widths[c.field] = metrics.lead;
         return;
       }
       // the header: its title in the header's own font, after the type icon and its gap (owner, 2026-10-22: a column that
       // gets no share of the room left must still show its whole title)
       ctx.font = (cs.getPropertyValue('--plx-comp-data-grid-header-font-weight').trim() || '600') + ' ' + cs.getPropertyValue('--plx-comp-data-grid-header-font-size').trim() + ' ' + (cs.getPropertyValue('--plx-comp-data-grid-font-family').trim() || cs.fontFamily);
       ctx.wordSpacing = '0px';
-      const head = ctx.measureText(c.title || c.field).width + (showTypes ? (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-gap', at) : 0) + (!isStatic && headerMenu ? (0, _environment.tokenPixels)('--plx-comp-data-grid-title-reserve', at) : 0); // a hovered header keeps its whole title
+      // at rest the title follows the type icon; hovered, the icon steps aside and the menu button takes its room at the end:
+      // the header needs the larger of the two (owner, 2026-10-22). Wrapped headers need their longest word on a line.
+      const title = String(c.title || c.field),
+        words = title.split(/\s+/);
+      // wrapped headers show two lines: the narrowest width that holds the title in two (never a word broken)
+      let text = ctx.measureText(title).width;
+      if (effectiveWrap) for (let i = 1; i < words.length; i += 1) text = Math.min(text, Math.max(ctx.measureText(words.slice(0, i).join(' ')).width, ctx.measureText(words.slice(i).join(' ')).width));
+      const head = text + Math.max(showTypes ? (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-gap', at) : 0, !isStatic && headerMenu ? (0, _environment.tokenPixels)('--plx-comp-data-grid-title-reserve', at) : 0);
+      floor[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, head + metrics.space * 2), {
+        round: 'up',
+        el: at
+      });
+      const explicit = (0, _environment.tokenPixels)(c.width, at);
+      if (explicit) {
+        widths[c.field] = Math.max(explicit, floor[c.field]);
+        return;
+      }
       const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family').trim() || cs.fontFamily;
       ctx.font = cs.getPropertyValue('--plx-comp-data-grid-font-size').trim() + ' ' + family;
       // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
@@ -17874,7 +17891,8 @@ function NextEngine(props) {
     const units = Math.max(0, Math.floor((available - used) / step));
     if (free.length) widths[free[free.length - 1]] += units * step;
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
-  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells]);
+    setFloors(old => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
+  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells, effectiveWrap]);
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -18247,7 +18265,7 @@ function NextEngine(props) {
     })) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__title-text', effectiveWrap && B + '__title-text--wrap')
     }, c.title || c.field))), /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-col-sorter', sorted && B + '__grid-col-sorter--on', column.getCanSort() && B + '__grid-col-sorter--sortable', icon && B + '__grid-col-sorter--icon'),
+      className: (0, _cx.cx)(B + '__grid-col-sorter', sorted && B + '__grid-col-sorter--on', column.getCanSort() && B + '__grid-col-sorter--sortable', icon && B + '__grid-col-sorter--icon', headerMenu && !isStatic && B + '__grid-col-sorter--joined'),
       "aria-hidden": "true"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-arrow', sorted === 'asc' && B + '__grid-arrow--asc', sorted === 'desc' && B + '__grid-arrow--desc')
@@ -18261,7 +18279,7 @@ function NextEngine(props) {
         className: B + '__menu-chevron',
         "aria-label": c.title + ' column actions'
       }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-        name: "chevron-down"
+        name: column.getIsSorted() === 'asc' ? 'sort-ascending' : column.getIsSorted() === 'desc' ? 'sort-descending' : 'chevron-down'
       }))
     }, headerItems(column))) : null, c.filter || filterField === c.field || column.getIsFiltered() ? /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__grid-header-popup-button', filtered && B + '__grid-header-popup-button--filtered', headerMenu && B + '__grid-header-popup-button--shift')

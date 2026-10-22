@@ -101,7 +101,7 @@ function NextEngine(props) {
   const sortSignal=JSON.stringify(props.sort),orderSignal=JSON.stringify(props.columnOrder),hiddenSignal=JSON.stringify(props.hiddenColumns);
   const [sortOwner,setSortOwner]=React.useState(null),[orderOwner,setOrderOwner]=React.useState(null),[hiddenOwner,setHiddenOwner]=React.useState(null);
   const [sizing,setSizing]=React.useState(()=>Object.fromEntries(Object.entries(initial.widths).map(([k,v])=>[k,parseFloat(v)])));
-  const [autoSizing,setAutoSizing]=React.useState({});
+  const [autoSizing,setAutoSizing]=React.useState({}),[floors,setFloors]=React.useState({});
   const widthsSignal=JSON.stringify(props.columnWidths||{});
   React.useEffect(()=>{if(!props.onViewChange)return;const known=new Set(columns.map(column=>column.field)),next=Object.fromEntries(Object.entries(props.columnWidths||{}).filter(([field,value])=>known.has(field)&&Number.isFinite(parseFloat(value))&&parseFloat(value)>0).map(([field,value])=>[field,parseFloat(value)]));setSizing(old=>JSON.stringify(old)===JSON.stringify(next)?old:next);},[widthsSignal,!!props.onViewChange,columns]);
   const [rowHeight,setRowHeight]=React.useState(initial.rowHeight),[wrapHeaders,setWrapHeaders]=React.useState(initial.wrapHeaders);
@@ -151,7 +151,7 @@ function NextEngine(props) {
   api.getUnreadCount=()=>unread.count;
   api.markRead=keys=>unread.mark(canonical.filter(record=>[].concat(keys).includes(record[index])),false);
   api.markUnread=keys=>unread.mark(canonical.filter(record=>[].concat(keys).includes(record[index])),true);
-  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=tokenPixels(definition?.minWidth||'--plx-ref-size-80px',at),max=definition?.maxWidth?tokenPixels(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1];const width=snapToGrid(snapSize(tokenPixels(value,at),min,max),{el:at});setSizing(s=>({...s,[field]:width}));props.onViewChange?.({widths:{...sizing,[field]:width}});};
+  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=Math.max(floors[field]||0,tokenPixels(definition?.minWidth||'--plx-ref-size-80px',at)),max=definition?.maxWidth?tokenPixels(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1];const width=snapToGrid(snapSize(tokenPixels(value,at),min,max),{el:at});setSizing(s=>({...s,[field]:width}));props.onViewChange?.({widths:{...sizing,[field]:width}});};
   const changeOrder=next=>{setOrderOwner(orderSignal);setOrder(next);props.onViewChange?.({columnOrder:next});};
   const changeVisibility=next=>{setHiddenOwner(hiddenSignal);setVisibility(next);props.onViewChange?.({hiddenColumns:Object.keys(next).filter(field=>next[field]===false)});};
   const move=(field,target,after)=>{const current=live.current.table.getAllLeafColumns().map(c=>c.id).filter(id=>!id.startsWith('__')&&id!==field);const at=current.indexOf(target);current.splice(Math.max(0,at+(after?1:0)),0,field);changeOrder(current);emit('columnMoved',api.column(field),current.map(api.column));};
@@ -164,8 +164,8 @@ function NextEngine(props) {
   const changeSort=update=>{const next=typeof update==='function'?update(sorting):update;setSortOwner(sortSignal);setSorting(next);setPage(0);props.onViewChange?.({sort:sorted(next)});emit('dataSorted',next.map(s=>({field:s.id,dir:s.desc?'desc':'asc'})));};
   const leafDefs=React.useMemo(()=>columns.map(c=>({id:c.field,accessorFn:r=>valueAt(r,c.field),header:c.title||c.field,
     enableSorting:c.headerSort!==false,filterFn:c.type==='bytes'?byteFilter:c.filter==='list'?listFilter:textFilter,sortingFn:typeof c.sorter==='function'?(a,b,id)=>c.sorter(a.getValue(id),b.getValue(id),a.original,b.original,id,sortingRef.current.find(s=>s.id===id)?.desc?'desc':'asc'):c.sorter==='number'||c.type==='bytes'?'basic':compare,
-    size:kinds(c).includes('icon')?metrics.lead:Math.max(metrics.min,tokenPixels(c.width,frame.current)||autoSizing[c.field]||metrics.min),minSize:kinds(c).includes('icon')?metrics.lead:tokenPixels(c.minWidth,frame.current)||metrics.min,
-    maxSize:kinds(c).includes('icon')?metrics.lead:c.maxWidth?tokenPixels(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],meta:c})),[columns,metrics.min,metrics.lead,autoSizing]);
+    size:kinds(c).includes('icon')?metrics.lead:Math.max(metrics.min,floors[c.field]||0,autoSizing[c.field]||tokenPixels(c.width,frame.current)||metrics.min),minSize:kinds(c).includes('icon')?metrics.lead:Math.max(floors[c.field]||0,tokenPixels(c.minWidth,frame.current)||metrics.min),
+    maxSize:kinds(c).includes('icon')?metrics.lead:c.maxWidth?tokenPixels(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],meta:c})),[columns,metrics.min,metrics.lead,autoSizing,floors]);
   const table=useReactTable({data:source,columns:leafDefs,getRowId:r=>recordKey(r[index]),getSubRows:childField?r=>r[childField]:undefined,onExpandedChange:setExpanded,filterFromLeafRows:true,
     state:{expanded:printing?true:expanded,sorting,columnOrder,columnVisibility,columnSizing:sizing,columnFilters:filters,globalFilter:activeFilter,pagination:{pageIndex:page,pageSize},rowSelection:selection},
     onSortingChange:changeSort,
@@ -196,14 +196,21 @@ function NextEngine(props) {
 
   React.useLayoutEffect(()=>{
     const at=frame.current;if(!at||!metrics.min)return;
-    const ctx=at.ownerDocument.createElement('canvas').getContext('2d'),cs=getComputedStyle(at),widths={},free=[];
+    const ctx=at.ownerDocument.createElement('canvas').getContext('2d'),cs=getComputedStyle(at),widths={},free=[],floor={};
     columns.forEach(c=>{
-      const explicit=kinds(c).includes('icon')?metrics.lead:tokenPixels(c.width,at);if(explicit){widths[c.field]=explicit;return;}
+      if(kinds(c).includes('icon')){widths[c.field]=metrics.lead;return;}
       // the header: its title in the header's own font, after the type icon and its gap (owner, 2026-10-22: a column that
       // gets no share of the room left must still show its whole title)
       ctx.font=(cs.getPropertyValue('--plx-comp-data-grid-header-font-weight').trim()||'600')+' '+cs.getPropertyValue('--plx-comp-data-grid-header-font-size').trim()+' '+(cs.getPropertyValue('--plx-comp-data-grid-font-family').trim()||cs.fontFamily);ctx.wordSpacing='0px';
-      const head=ctx.measureText(c.title||c.field).width+(showTypes?tokenPixels('--plx-comp-data-grid-header-type-icon-size',at)+tokenPixels('--plx-comp-data-grid-header-type-icon-gap',at):0)
-        +(!isStatic&&headerMenu?tokenPixels('--plx-comp-data-grid-title-reserve',at):0);   // a hovered header keeps its whole title
+      // at rest the title follows the type icon; hovered, the icon steps aside and the menu button takes its room at the end:
+      // the header needs the larger of the two (owner, 2026-10-22). Wrapped headers need their longest word on a line.
+      const title=String(c.title||c.field),words=title.split(/\s+/);
+      // wrapped headers show two lines: the narrowest width that holds the title in two (never a word broken)
+      let text=ctx.measureText(title).width;
+      if(effectiveWrap)for(let i=1;i<words.length;i+=1)text=Math.min(text,Math.max(ctx.measureText(words.slice(0,i).join(' ')).width,ctx.measureText(words.slice(i).join(' ')).width));
+      const head=text+Math.max(showTypes?tokenPixels('--plx-comp-data-grid-header-type-icon-size',at)+tokenPixels('--plx-comp-data-grid-header-type-icon-gap',at):0,!isStatic&&headerMenu?tokenPixels('--plx-comp-data-grid-title-reserve',at):0);
+      floor[c.field]=snapToGrid(Math.max(metrics.min,head+metrics.space*2),{round:'up',el:at});
+      const explicit=tokenPixels(c.width,at);if(explicit){widths[c.field]=Math.max(explicit,floor[c.field]);return;}
       const family=cs.getPropertyValue(kinds(c).includes('data')?'--plx-comp-data-grid-data-font-family':'--plx-comp-data-grid-font-family').trim()||cs.fontFamily;
       ctx.font=cs.getPropertyValue('--plx-comp-data-grid-font-size').trim()+' '+family;
       // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
@@ -220,7 +227,8 @@ function NextEngine(props) {
     const units=Math.max(0,Math.floor((available-used)/step));
     if(free.length)widths[free[free.length-1]]+=units*step;
     setAutoSizing(old=>JSON.stringify(old)===JSON.stringify(widths)?old:widths);
-  },[columns,source,metrics.room,metrics.min,metrics.space,metrics.row,selectable,isStatic,showTypes,headerMenu,cells]);
+    setFloors(old=>JSON.stringify(old)===JSON.stringify(floor)?old:floor);
+  },[columns,source,metrics.room,metrics.min,metrics.space,metrics.row,selectable,isStatic,showTypes,headerMenu,cells,effectiveWrap]);
 
   React.useLayoutEffect(()=>{
     const at=frame.current;if(!at)return;const doc=at.ownerDocument;
@@ -279,8 +287,8 @@ function NextEngine(props) {
   const headerCell=column=>{const c=column.columnDef.meta,pinned=frozen.has(c.field),sorted=column.getIsSorted(),filtered=column.getIsFiltered(),icon=kinds(c).includes('icon'),hasFilter=!!(c.filter||filterField===c.field||filtered),align=c.headerHozAlign||(c.type==='bytes'?'right':null),titleFixed=icon?'flush':(sorted||filtered)?'reserve':null,offset=(selectable?metrics.lead:0)+ordered.slice(0,ordered.indexOf(column)).filter(col=>frozen.has(col.id)).reduce((sum,col)=>sum+col.getSize(),0);const node=<Width key={c.field} {...columnDnd.itemProps(ordered.indexOf(column))} onAttach={node=>{if(node)headerElements.current.set(c.field,node);else headerElements.current.delete(c.field);}} width={widths[c.field]} frozenOffset={pinned?offset:undefined} role="columnheader" tabIndex={isStatic?undefined:0} data-plx-field={c.field} aria-sort={column.getIsSorted()?(column.getIsSorted()==='desc'?'descending':'ascending'):undefined}
     className={cx(''+B+'__grid-col',isStatic&&B+'__grid-col--static',selectable&&ordered.indexOf(column)===0&&B+'__grid-col--after-lead',column.getCanSort()&&B+'__grid-sortable',column.getCanSort()&&B+'__grid-col-sorter-element',kinds(c).includes('icon')&&B+'__cell--icon',kinds(c).includes('icon')&&B+'__w-lead',column.getIsFiltered()&&B+'__filtered',pinned&&''+B+'__grid-frozen',[].concat(groupBy||[]).some(level=>(typeof level==='object'?level.field:level)===c.field)&&B+'__cell--grouped',(c.headerHozAlign||c.type==='bytes')&&B+'__head-align-'+(c.headerHozAlign||'right'))} data-plx-sticky={pinned&&offset?offset+'px':undefined}
     onClick={e=>{if(!e.target.closest(interactive)&&column.getCanSort())column.toggleSorting();}} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&e.target===e.currentTarget){e.preventDefault();column.toggleSorting();}}}>
-    <div className={cx(B+'__grid-col-content',isStatic&&B+'__grid-col-content--static',icon&&B+'__grid-col-content--icon',!icon&&align==='center'&&B+'__grid-col-content--center',effectiveWrap&&B+'__grid-col-content--wrap')}><div className={`${B}__grid-col-title-holder`}><div className={cx(B+'__grid-col-title',isStatic&&B+'__grid-col-title--static',titleFixed&&B+'__grid-col-title--'+titleFixed,icon&&B+'__grid-col-title--icon',align&&B+'__grid-col-title--align-'+align)} title={c.title}>{kinds(c).includes('icon')?<span className={B+'__header-icon'}><Icon name={c.icon||'circle-info'} label={c.title}/></span>:<span className={B+'__title'}>{(props.movableColumns??options.movableColumns)?<DragHandle disabled={frozen.has(column.id)} dnd={columnDnd.handleProps(ordered.indexOf(column))}/>:null}{showTypes?<span className={B+'__type-icon'}><Icon name={typeIcons[typeOf(c)]||'ed-text'}/></span>:null}<span className={cx(B+'__title-text',effectiveWrap&&B+'__title-text--wrap')}>{c.title||c.field}</span></span>}</div><div className={cx(B+'__grid-col-sorter',sorted&&B+'__grid-col-sorter--on',column.getCanSort()&&B+'__grid-col-sorter--sortable',icon&&B+'__grid-col-sorter--icon')} aria-hidden="true"><div className={cx(B+'__grid-arrow',sorted==='asc'&&B+'__grid-arrow--asc',sorted==='desc'&&B+'__grid-arrow--desc')}/></div></div>
-    {headerMenu?<span className={cx(B+'__grid-header-popup-button',B+'__grid-header-popup-button--menu')}><Menu label={c.title+' column actions'} trigger={<span role="button" tabIndex={0} className={B+'__menu-chevron'} aria-label={c.title+' column actions'}><Icon name="chevron-down"/></span>}>{headerItems(column)}</Menu></span>:null}
+    <div className={cx(B+'__grid-col-content',isStatic&&B+'__grid-col-content--static',icon&&B+'__grid-col-content--icon',!icon&&align==='center'&&B+'__grid-col-content--center',effectiveWrap&&B+'__grid-col-content--wrap')}><div className={`${B}__grid-col-title-holder`}><div className={cx(B+'__grid-col-title',isStatic&&B+'__grid-col-title--static',titleFixed&&B+'__grid-col-title--'+titleFixed,icon&&B+'__grid-col-title--icon',align&&B+'__grid-col-title--align-'+align)} title={c.title}>{kinds(c).includes('icon')?<span className={B+'__header-icon'}><Icon name={c.icon||'circle-info'} label={c.title}/></span>:<span className={B+'__title'}>{(props.movableColumns??options.movableColumns)?<DragHandle disabled={frozen.has(column.id)} dnd={columnDnd.handleProps(ordered.indexOf(column))}/>:null}{showTypes?<span className={B+'__type-icon'}><Icon name={typeIcons[typeOf(c)]||'ed-text'}/></span>:null}<span className={cx(B+'__title-text',effectiveWrap&&B+'__title-text--wrap')}>{c.title||c.field}</span></span>}</div><div className={cx(B+'__grid-col-sorter',sorted&&B+'__grid-col-sorter--on',column.getCanSort()&&B+'__grid-col-sorter--sortable',icon&&B+'__grid-col-sorter--icon',headerMenu&&!isStatic&&B+'__grid-col-sorter--joined')} aria-hidden="true"><div className={cx(B+'__grid-arrow',sorted==='asc'&&B+'__grid-arrow--asc',sorted==='desc'&&B+'__grid-arrow--desc')}/></div></div>
+    {headerMenu?<span className={cx(B+'__grid-header-popup-button',B+'__grid-header-popup-button--menu')}><Menu label={c.title+' column actions'} trigger={<span role="button" tabIndex={0} className={B+'__menu-chevron'} aria-label={c.title+' column actions'}><Icon name={column.getIsSorted()==='asc'?'sort-ascending':column.getIsSorted()==='desc'?'sort-descending':'chevron-down'}/></span>}>{headerItems(column)}</Menu></span>:null}
     {c.filter||filterField===c.field||column.getIsFiltered()?<span className={cx(B+'__grid-header-popup-button',filtered&&B+'__grid-header-popup-button--filtered',headerMenu&&B+'__grid-header-popup-button--shift')}><Popover open={filterField===c.field} onOpenChange={open=>setFilterField(open?c.field:null)} title={S.filter+' '+c.title} size="sm" trigger={<span role="button" tabIndex={0} aria-label={S.filter+' '+c.title}><Icon name="filter"/></span>}>
       {c.filter==='list'?<Select aria-label={S.filter+' '+c.title} value={column.getFilterValue()||''} options={[{value:'',label:S.any},...[...new Set(source.map(r=>String(valueAt(r,c.field)??'')))].filter(Boolean).map(value=>({value,label:value}))]} onChange={e=>column.setFilterValue(e.target.value||undefined)}/>:<Input aria-label={S.filter+' '+c.title} value={column.getFilterValue()||''} onChange={e=>column.setFilterValue(e.target.value)}/>}
       <Button variant="ghost" size="sm" onClick={()=>column.setFilterValue(undefined)}>{S.clearFilter}</Button>

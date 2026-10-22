@@ -331,7 +331,7 @@
   --plx-comp-table-mark-size: var(--plx-ref-size-16px);
   --plx-comp-data-grid-header-icon-size: var(--plx-ref-glyph-size-14px);
   --plx-comp-data-grid-sorter-inset: var(--plx-ref-space-6px);
-  --plx-comp-data-grid-popup-button-inset: calc(var(--plx-comp-data-grid-cell-padding-inline) + var(--plx-comp-data-grid-sorter-inset) + var(--plx-comp-data-grid-header-icon-size) + var(--plx-ref-space-4px));
+  --plx-comp-data-grid-popup-button-inset: var(--plx-comp-data-grid-cell-padding-inline);
   --plx-comp-data-grid-popup-button-radius: var(--plx-sys-shape-xs);
   --plx-comp-data-grid-title-reserve: calc(var(--plx-comp-data-grid-popup-button-inset) + var(--plx-comp-data-grid-cell-padding-inline) + var(--plx-comp-data-grid-header-icon-size) + var(--plx-ref-space-4px));
   --plx-comp-data-grid-resize-mark-width: var(--plx-sys-border-width-medium);

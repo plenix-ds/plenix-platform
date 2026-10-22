@@ -1447,8 +1447,8 @@
       "$type": "dimension"
     },
     "data-grid-popup-button-inset": {
-      "$value": "calc({plx-comp.data-grid-cell-padding-inline} + {plx-comp.data-grid-sorter-inset} + {plx-comp.data-grid-header-icon-size} + {plx-ref.space-4px})",
-      "$description": "DataGrid header: the column menu button's distance from the column's end, clear of the sort arrow (which sits sorter-inset inside the title area, a cell padding from the end) with a 4px gap (owner, 2026-10-22: they overlapped by 6px).",
+      "$value": "{plx-comp.data-grid-cell-padding-inline}",
+      "$description": "DataGrid header: the column menu button's distance from the column's end; while hovered it carries the sort direction, so the arrow does not need room beside it (owner, 2026-10-22).",
       "$type": "dimension"
     },
     "data-grid-popup-button-radius": {

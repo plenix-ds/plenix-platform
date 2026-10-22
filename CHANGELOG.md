@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.66.0] - 2026-10-22
+
+### Changed
+- DataGrid header hover: the type icon steps aside and, in a column with a menu, the sort direction shows in the menu
+  button (the separate arrow shows at rest only). The hover controls take about 34px instead of 58px (owner, 2026-10-22).
+- DataGrid: every column, set widths and resized ones included, is at least as wide as its heading needs at rest and on
+  hover; a wrapped heading needs the narrowest width that holds it in two lines, never a word broken.
+### Fixed
+- DataGrid `wrapHeaders`: the header row stays the normal height and grows only as far as a wrapped heading needs (it was
+  always taller, even when every heading fit on one line).
+
 ## [0.65.0] - 2026-10-22
 
 ### Added
