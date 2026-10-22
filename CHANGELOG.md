@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.64.0] - 2026-10-22
+
+### Added
+- DataGrid `typeIcons`: the column type icon before each header title; on in a DataGrid, off in the static Table;
+  `typeIcons={false}` hides them.
+### Fixed
+- DataGrid with `cells="pill"`: a column measures each pill with its padding, border and icon, so names are not cut.
+- Table: columns fit their content like a DataGrid's (they took the minimum width and cut their headers).
+- DataGrid: a content-sized column leaves room for the column menu button, so a hovered header is not cut.
+### Changed
+- Table: no column type icons (the "Tt" markers) by default.
+- DataGrid: short content-sized columns are wider by the menu button's room; a grid scrolls inside itself sooner.
+
+See docs/integration/data-grid.md for what the CDN does and what an application does (CTM, 2026-10-22).
+
 ## [0.63.1] - 2026-10-22
 
 ### Fixed

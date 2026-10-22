@@ -47,6 +47,8 @@
      unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
+       false hides them
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
        the application's field actions first in it ([{ label, icon, onSelect(column), danger, disabled, separator }])
      rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the

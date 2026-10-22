@@ -17379,6 +17379,7 @@ function NextEngine(props) {
     isStatic = false,
     cells = 'text',
     headerMenu = true,
+    typeIcons: typeIconsProp,
     rowMenu: suppliedRowMenu,
     rowMenuButton = true,
     columnMenu,
@@ -17389,6 +17390,7 @@ function NextEngine(props) {
     error,
     onRetry
   } = props;
+  const showTypes = typeIconsProp ?? !isStatic; // the column type icons: a DataGrid's sort and filter cue, not a static Table's
   const narrow = requestedNarrow === undefined ? inPane && !isStatic ? 'table' : 'list' : requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
   const S = {
@@ -17836,24 +17838,22 @@ function NextEngine(props) {
         widths[c.field] = explicit;
         return;
       }
-      if (isStatic) {
-        widths[c.field] = Math.max(metrics.min, (0, _environment.tokenPixels)(c.minWidth, at));
-        free.push(c.field);
-        return;
-      }
       // the header: its title in the header's own font, after the type icon and its gap (owner, 2026-10-22: a column that
       // gets no share of the room left must still show its whole title)
       ctx.font = (cs.getPropertyValue('--plx-comp-data-grid-header-font-weight').trim() || '600') + ' ' + cs.getPropertyValue('--plx-comp-data-grid-header-font-size').trim() + ' ' + (cs.getPropertyValue('--plx-comp-data-grid-font-family').trim() || cs.fontFamily);
       ctx.wordSpacing = '0px';
-      const head = ctx.measureText(c.title || c.field).width + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-gap', at);
+      const head = ctx.measureText(c.title || c.field).width + (showTypes ? (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-gap', at) : 0) + (!isStatic && headerMenu ? (0, _environment.tokenPixels)('--plx-comp-data-grid-title-reserve', at) : 0); // a hovered header keeps its whole title
       const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family').trim() || cs.fontFamily;
       ctx.font = cs.getPropertyValue('--plx-comp-data-grid-font-size').trim() + ' ' + family;
       // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
       ctx.wordSpacing = kinds(c).includes('data') ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
       let width = head;
+      const k = kinds(c),
+        pill = cells === 'pill' && c.pill !== false && !k.includes('tags') && !k.includes('badge') && !k.includes('deleted');
+      const chrome = pill ? 2 * (0, _environment.tokenPixels)('--plx-comp-data-pill-padding-inline', at) + 2 * (0, _environment.tokenPixels)('--plx-comp-data-pill-border-width', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-gap', at) : 0;
       source.forEach(record => {
         const value = (0, _state.valueAt)(record, c.field);
-        width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width);
+        width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width + chrome);
       });
       widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, Math.min(width + metrics.space * 2, (0, _environment.tokenPixels)('--plx-comp-data-grid-auto-max-width', at) || Infinity)), {
         round: 'up',
@@ -17868,7 +17868,7 @@ function NextEngine(props) {
     const units = Math.max(0, Math.floor((available - used) / step));
     if (free.length) widths[free[free.length - 1]] += units * step;
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
-  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic]);
+  }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells]);
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -18234,11 +18234,11 @@ function NextEngine(props) {
     }, props.movableColumns ?? options.movableColumns ? /*#__PURE__*/_react.default.createElement(_DragHandle.DragHandle, {
       disabled: frozen.has(column.id),
       dnd: columnDnd.handleProps(ordered.indexOf(column))
-    }) : null, /*#__PURE__*/_react.default.createElement("span", {
+    }) : null, showTypes ? /*#__PURE__*/_react.default.createElement("span", {
       className: B + '__type-icon'
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: typeIcons[typeOf(c)] || 'ed-text'
-    })), /*#__PURE__*/_react.default.createElement("span", {
+    })) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__title-text', effectiveWrap && B + '__title-text--wrap')
     }, c.title || c.field))), /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-col-sorter', sorted && B + '__grid-col-sorter--on', column.getCanSort() && B + '__grid-col-sorter--sortable', icon && B + '__grid-col-sorter--icon'),
@@ -27399,6 +27399,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
+       false hides them
      headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
        the application's field actions first in it ([{ label, icon, onSelect(column), danger, disabled, separator }])
      rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the
