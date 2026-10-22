@@ -29,7 +29,7 @@ export function byteFilter(row, field, search) {
 }
 const DATA_TYPES = ['number', 'currency', 'date', 'bytes'];
 
-export function CellValue({ column, value, strings, record, pill = false, icon, block = 'plx-data-grid', mods }) {
+export function CellValue({ column, value, strings, record, pill = false, pillWidth, uniformPillWidths = false, icon, block = 'plx-data-grid', mods }) {
   const own = block + '__value' + (mods ? ' ' + mods : '');
   const kinds = [].concat(column.kind || []);
   if (pill && column.pill !== false && value !== null && value !== undefined && value !== '' && !kinds.includes('tags') && !kinds.includes('badge') && !kinds.includes('deleted')) {
@@ -37,7 +37,7 @@ export function CellValue({ column, value, strings, record, pill = false, icon, 
     const person = isPerson && typeof value === 'object' ? value : null;
     const own = typeof column.pill === 'function' ? column.pill(value, record) || {} : {};
     const text = column.type === 'bytes' ? formatBytes(Number(value)) : person ? (person.name || person.label || '') : valueText(value);
-    return <DataPill size="md" tone={own.tone} variant={own.variant} icon={own.icon || (isPerson ? undefined : icon)} person={isPerson} gender={own.gender || (person ? person.gender : undefined)}
+    return <DataPill size="md" data-plx-pill-field={uniformPillWidths && !own.fill ? column.field : undefined} data-plx-uniform-width={!own.fill ? pillWidth : undefined} tone={own.tone} variant={own.variant} icon={own.icon || (isPerson ? undefined : icon)} person={isPerson} gender={own.gender || (person ? person.gender : undefined)}
       data={own.data !== undefined ? own.data : kinds.includes('data') || DATA_TYPES.includes(column.type)} fill={own.fill}>{text}</DataPill>;
   }
   if (value === null || value === undefined || value === '') return <span className={own+(kinds.includes('deleted')?' '+block+'__deleted':'')}>{column.empty??(kinds.includes('deleted')?strings?.deleted||'Deleted':'')}</span>;
