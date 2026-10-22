@@ -6,6 +6,29 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.60.0] - 2026-10-22
+
+### Added
+- `Card` `icon`: an icon name or element before the title, like `Panel`'s (decorative; tokens
+  `--plx-comp-card-icon-size`, `--plx-comp-card-icon-color`). Issue #240.
+- `DocumentViewer` `onError({ reason, cause })`: `reason` is `engine` (PDF.js did not load), `access` (the document is
+  missing, denied or blocked), `parse` (not a readable PDF) or `render` (a page could not be drawn). Issue #239.
+- Size tokens `--plx-ref-size-260px`, `380px`, `420px`, `440px`, `460px`, `480px`, `520px`, `640px`, `760px`, `800px`,
+  `860px`, and a spec check (`check-spec.js` `sizes`) that fails on a size token the spec names but does not define.
+### Fixed
+- `DocumentViewer` on the CDN: PDF.js 4.10.38 (module, worker, license) is published at `/cdn/<version>/vendor/pdfjs/`
+  (hashed in the manifest) and in the npm package, and is found beside `plenix.js` instead of on the consuming app's
+  server. Serve it as `text/javascript`; allow it in `script-src` and `worker-src`. Issue #238.
+- `DocumentViewer`: one message per failure (never the document's address or the server's error); no "Page 1 / 0":
+  the page counter, page buttons and zoom show once a document has pages. Issue #239.
+- Design spec: the Object / record page previews (EntityHeader drew as a 41px strip) and about 250 other previews
+  get the width they ask for. Issue #243.
+### Changed
+- Resizable panes and DataGrid column widths snap to the nearest size token, so drags and arrow-key steps now also
+  stop at the new sizes (for example 420 and 440px between 400 and 480). Default sizes do not change.
+
+Apps to check: a PDF viewer that set `pdfModuleUrl`/`pdfWorkerUrl` only to work around the CDN can drop them.
+
 ## [0.59.0] - 2026-10-22
 
 Released on the owner's word before the Styling program's final checks; the full proof and the visual check of every
