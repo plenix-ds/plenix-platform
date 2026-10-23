@@ -63,12 +63,15 @@
      The tiles wrap on narrow screens; under 640px of the header's own width the aside moves under the main column (its
        divider above it, at the start edge).
      The actions fold from the end into More when the aside is too narrow.
+     Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
+       their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useOverflow, splitAt } from '../../utils/overflow.js';
+import { useBarFit } from '../../utils/barFit.js';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
@@ -93,7 +96,7 @@ function Media({ media, section }) {
 
 // header style 2 (owner, 2026-10-23): the entity's state as a box of its own, each state with its icon and tone, the
 // current one filled; a radio group (arrow keys move and select)
-function States({ states, label }) {
+function States({ states, label, iconOnly }) {
   const opts = (states.options || []).filter(Boolean);
   const refs = React.useRef([]);
   const pick = (i) => { const o = opts[(i + opts.length) % opts.length]; if (o && states.onChange) states.onChange(o.value); refs.current[(i + opts.length) % opts.length]?.focus(); };
@@ -110,9 +113,10 @@ function States({ states, label }) {
           return (
             <button key={o.value} ref={(el) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={on} tabIndex={on || (!opts.some((x) => x.value === states.value) && i === 0) ? 0 : -1}
               disabled={states.disabled} onClick={() => states.onChange && states.onChange(o.value)} onKeyDown={(e) => key(e, i)}
+              aria-label={iconOnly && o.icon ? o.label : undefined} title={iconOnly && o.icon ? o.label : undefined}
               className={cx('plx-entity-header__state', 'plx-entity-header__state--' + tone, on && 'is-selected')}>
               {o.icon ? <span className={cx('plx-entity-header__state-icon', 'plx-entity-header__state-icon--' + tone, on && 'plx-entity-header__state-icon--on')}><Icon name={o.icon} /></span> : null}
-              <span className="plx-entity-header__state-label">{o.label}</span>
+              {iconOnly && o.icon ? null : <span className="plx-entity-header__state-label">{o.label}</span>}
             </button>
           );
         })}
@@ -123,7 +127,7 @@ function States({ states, label }) {
 
 // a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon
 // before the label, the value large, and the action right after the value
-function Fact({ f }) {
+function Fact({ f, iconOnly }) {
   const value = f.data ? <Text variant="data">{f.value}</Text> : f.value;
   if (f.action) {
     const a = f.action;
@@ -132,7 +136,9 @@ function Fact({ f }) {
         <dt className="plx-entity-header__fact-label plx-entity-header__fact-label--icon">{f.icon ? <span className="plx-entity-header__fact-label-icon" aria-hidden="true"><Icon name={f.icon} /></span> : null}{f.label}</dt>
         <dd className="plx-entity-header__fact-line">
           <span className="plx-entity-header__fact-value plx-entity-header__fact-value--count">{f.data ? <span className="plx-entity-header__count-data">{f.value}</span> : f.value}</span>
-          <Button size="xs" variant="secondary" icon={a.icon || 'add'} aria-label={a.name} disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>
+          {iconOnly
+            ? <Button size="xs" variant="secondary" iconOnly icon={a.icon || 'add'} label={a.name || a.label} title={a.label} disabled={a.disabled} onClick={a.onClick} />
+            : <Button size="xs" variant="secondary" icon={a.icon || 'add'} aria-label={a.name} disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>}
         </dd>
       </div>
     );
@@ -153,7 +159,7 @@ function Fact({ f }) {
   );
 }
 
-function Details({ status, states, facts, strings }) {
+function Details({ status, states, facts, strings, step = 0 }) {
   const tiles = [];
   if (status && React.isValidElement(status)) tiles.push(<div key="st" className="plx-entity-header__fact">{status}</div>);
   else if (status) {
@@ -169,9 +175,9 @@ function Details({ status, states, facts, strings }) {
     const plain = typeof f === 'string' || typeof f === 'number' || React.isValidElement(f);
     tiles.push(plain
       ? <div key={'f' + i} className="plx-entity-header__fact"><dd className="plx-entity-header__fact-value">{f}</dd></div>
-      : <Fact key={'f' + i} f={f} />);
+      : <Fact key={'f' + i} f={f} iconOnly={step >= 1} />);
   });
-  if (states) tiles.push(<States key="states" states={states} label={strings.status} />);
+  if (states) tiles.push(<States key="states" states={states} label={strings.status} iconOnly={step >= 2} />);
   return tiles.length ? <dl className="plx-entity-header__details">{tiles}</dl> : null;
 }
 
@@ -213,8 +219,14 @@ export function EntityHeader({ kind = 'page', title, subtitle, media, status, st
   const st = status || live;
   const hasActions = (actions && actions.length) || (moreActions && moreActions.length);
   const aside = !!(next && !section) || !!hasActions || !!control;
+  // header style 2, the button rule (as in a command bar): while the facts would wrap, step 1 shows the count buttons as
+  // their icons, step 2 the states too (each keeps its words as its tooltip and name); past that the boxes wrap
+  const root = React.useRef(null);
+  const fitted = !section && ((facts || []).some((f) => f && f.action) || !!states);
+  const fitKey = (facts || []).map((f) => (f && (f.label || '') + (f.value || '') + (f.action ? f.action.label : ''))).join('|') + '§' + (states ? states.value + (states.options || []).map((o) => o.label).join(',') : '');
+  const step = useBarFit(root, fitKey, fitted ? 2 : 0, 0, '.plx-entity-header__details');
   return (
-    <header className={cx('plx-entity-header', section && 'plx-entity-header--section', !aside && 'plx-entity-header--solo', className)}>
+    <header ref={root} className={cx('plx-entity-header', section && 'plx-entity-header--section', !aside && 'plx-entity-header--solo', className)}>
       <div className="plx-entity-header__layout">
         <div className="plx-entity-header__main">
           <div className="plx-entity-header__lead">
@@ -226,7 +238,7 @@ export function EntityHeader({ kind = 'page', title, subtitle, media, status, st
               </div>
             </div>
             <div className="plx-entity-header__rule" aria-hidden="true" />
-            {section ? (summary || sub ? <p className="plx-entity-header__summary">{summary || sub}</p> : null) : <Details status={st} states={states} facts={facts} strings={s} />}
+            {section ? (summary || sub ? <p className="plx-entity-header__summary">{summary || sub}</p> : null) : <Details status={st} states={states} facts={facts} strings={s} step={step} />}
           </div>
         </div>
         {aside ? (

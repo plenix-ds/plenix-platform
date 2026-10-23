@@ -30616,7 +30616,7 @@ function RecordPage({
 }
 RecordPage.Header = Header;
   } },
-  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30626,6 +30626,7 @@ exports.EntityHeader = EntityHeader;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _overflow = require("../../utils/overflow.js");
+var _barFit = require("../../utils/barFit.js");
 var _Avatar = require("../../components/Avatar/Avatar.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
@@ -30697,6 +30698,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The tiles wrap on narrow screens; under 640px of the header's own width the aside moves under the main column (its
        divider above it, at the start edge).
      The actions fold from the end into More when the aside is too narrow.
+     Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
+       their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
@@ -30742,7 +30745,8 @@ function Media({
 // current one filled; a radio group (arrow keys move and select)
 function States({
   states,
-  label
+  label,
+  iconOnly
 }) {
   const opts = (states.options || []).filter(Boolean);
   const refs = _react.default.useRef([]);
@@ -30786,12 +30790,14 @@ function States({
       disabled: states.disabled,
       onClick: () => states.onChange && states.onChange(o.value),
       onKeyDown: e => key(e, i),
+      "aria-label": iconOnly && o.icon ? o.label : undefined,
+      title: iconOnly && o.icon ? o.label : undefined,
       className: (0, _cx.cx)('plx-entity-header__state', 'plx-entity-header__state--' + tone, on && 'is-selected')
     }, o.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)('plx-entity-header__state-icon', 'plx-entity-header__state-icon--' + tone, on && 'plx-entity-header__state-icon--on')
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: o.icon
-    })) : null, /*#__PURE__*/_react.default.createElement("span", {
+    })) : null, iconOnly && o.icon ? null : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-entity-header__state-label"
     }, o.label));
   })));
@@ -30800,7 +30806,8 @@ function States({
 // a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon
 // before the label, the value large, and the action right after the value
 function Fact({
-  f
+  f,
+  iconOnly
 }) {
   const value = f.data ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "data"
@@ -30822,7 +30829,16 @@ function Fact({
       className: "plx-entity-header__fact-value plx-entity-header__fact-value--count"
     }, f.data ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-entity-header__count-data"
-    }, f.value) : f.value), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    }, f.value) : f.value), iconOnly ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      variant: "secondary",
+      iconOnly: true,
+      icon: a.icon || 'add',
+      label: a.name || a.label,
+      title: a.label,
+      disabled: a.disabled,
+      onClick: a.onClick
+    }) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "xs",
       variant: "secondary",
       icon: a.icon || 'add',
@@ -30859,7 +30875,8 @@ function Details({
   status,
   states,
   facts,
-  strings
+  strings,
+  step = 0
 }) {
   const tiles = [];
   if (status && /*#__PURE__*/_react.default.isValidElement(status)) tiles.push(/*#__PURE__*/_react.default.createElement("div", {
@@ -30889,13 +30906,15 @@ function Details({
       className: "plx-entity-header__fact-value"
     }, f)) : /*#__PURE__*/_react.default.createElement(Fact, {
       key: 'f' + i,
-      f: f
+      f: f,
+      iconOnly: step >= 1
     }));
   });
   if (states) tiles.push(/*#__PURE__*/_react.default.createElement(States, {
     key: "states",
     states: states,
-    label: strings.status
+    label: strings.status,
+    iconOnly: step >= 2
   }));
   return tiles.length ? /*#__PURE__*/_react.default.createElement("dl", {
     className: "plx-entity-header__details"
@@ -31012,7 +31031,14 @@ function EntityHeader({
   const st = status || live;
   const hasActions = actions && actions.length || moreActions && moreActions.length;
   const aside = !!(next && !section) || !!hasActions || !!control;
+  // header style 2, the button rule (as in a command bar): while the facts would wrap, step 1 shows the count buttons as
+  // their icons, step 2 the states too (each keeps its words as its tooltip and name); past that the boxes wrap
+  const root = _react.default.useRef(null);
+  const fitted = !section && ((facts || []).some(f => f && f.action) || !!states);
+  const fitKey = (facts || []).map(f => f && (f.label || '') + (f.value || '') + (f.action ? f.action.label : '')).join('|') + '§' + (states ? states.value + (states.options || []).map(o => o.label).join(',') : '');
+  const step = (0, _barFit.useBarFit)(root, fitKey, fitted ? 2 : 0, 0, '.plx-entity-header__details');
   return /*#__PURE__*/_react.default.createElement("header", {
+    ref: root,
     className: (0, _cx.cx)('plx-entity-header', section && 'plx-entity-header--section', !aside && 'plx-entity-header--solo', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-entity-header__layout"
@@ -31042,7 +31068,8 @@ function EntityHeader({
     status: st,
     states: states,
     facts: facts,
-    strings: s
+    strings: s,
+    step: step
   }))), aside ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-entity-header__aside"
   }, next && !section ? /*#__PURE__*/_react.default.createElement("div", {
