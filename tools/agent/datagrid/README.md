@@ -19,3 +19,17 @@ tree, in the same browser, page by page.
 5. Remove the baseline's `node_modules` junction with `cmd /c rmdir` before `git worktree remove`.
 
 The test browser runs with prefers-reduced-motion: reduce.
+
+## Performance
+
+Measured in a headless Chrome, usually with `--cpu 4` (the page's CPU slowed four times, a typical office laptop).
+
+- `node tools/agent/datagrid/bench.js 600,5000 --cpu 4 [--out file.json]`: bench.html (N records, pills, checkboxes,
+  driven by useCollectionView): mount, three search keystrokes, clearing, sorting, select all, grouping and the longest
+  frame while scrolling. Median of three runs.
+- `node tools/agent/datagrid/profile.js <rows> <mount|scroll|sort|selectAll|search> --cpu 4`: the functions with the most
+  self and total time during one action.
+- `node tools/agent/datagrid/trace.js <rows> <action> --cpu 4 [--css "rules"]`: the main thread's time by kind (script,
+  style, layout, paint) during one action; `--css` adds rules first, to find what a cost belongs to.
+- `node tools/agent/datagrid/icon-paint.js [icons] [--inline]`: the paint cost of freshly inserted icons, as masks (the
+  Icon component) or as inline SVG paths.

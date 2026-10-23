@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>DataGrid bench</title>
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react.production.min.js"></script>
+<script src="../../../platform/vendor/react-dom.production.min.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head><body><div id="root"></div>
+<script>
+// The DataGrid benchmark page (bench.js drives it): N records, the pill view, a checkbox column; the page exposes setters
+// so each action can be timed from the change to the second animation frame after it (React committed and painted).
+const h = React.createElement, P = window.Plenix, N = Number(new URLSearchParams(location.search).get('n') || 600);
+const first = ['Michael', 'Marina', 'Peter', 'Irene', 'Samuel', 'Martha', 'George', 'Mary', 'Antony', 'Sarah'];
+const last = ['Hanna', 'Abdel-Malik', 'Tawfik', 'Girgis', 'Boulos', 'Saad', 'Ibrahim', 'Attallah', 'Mikhail', 'Youssef'];
+const status = ['Open', 'Closed', 'Adjourned', 'In session', 'Draft'];
+const rows = Array.from({ length: N }, (_, i) => ({ id: i + 1, n: '2026' + String(100000 + i), who: { name: first[i % 10] + ' ' + last[(i * 7) % 10], gender: i % 2 ? 'female' : 'male' },
+  date: '2026-' + String(1 + (i % 12)).padStart(2, '0') + '-' + String(1 + (i % 28)).padStart(2, '0'), amount: (i * 37) % 5000, status: status[i % 5], note: 'Note ' + ((i * 13) % 997) }));
+const cols = [{ title: 'Case number', field: 'n', kind: 'data' }, { title: 'Person', field: 'who', type: 'person' }, { title: 'Date', field: 'date', type: 'date' },
+  { title: 'Amount', field: 'amount', type: 'number' }, { title: 'Status', field: 'status' }, { title: 'Note', field: 'note' }];
+// the way applications drive a grid: useCollectionView owns search, sort and grouping and hands the grid its props
+const fields = [{ value: 'n', label: 'Case number', kind: 'text' }, { value: 'who', label: 'Person', kind: 'text', get: (r) => r.who.name }, { value: 'date', label: 'Date', kind: 'date' },
+  { value: 'amount', label: 'Amount', kind: 'number' }, { value: 'status', label: 'Status', kind: 'select', options: status.map((s) => ({ value: s, label: s })) }, { value: 'note', label: 'Note', kind: 'text' }];
+function App() {
+  const v = P.useCollectionView(fields, { data: rows, text: (r) => r.n + ' ' + r.who.name + ' ' + r.status + ' ' + r.note, quick: { status: 'list' } });
+  const [sel, setSel] = React.useState([]);
+  window.__set = { search: v.setSearch, groupBy: (f) => v.setGroup(f ? [{ field: f, dir: 'asc' }] : []) };
+  return h('div', { id: 'host' }, h(P.DataGrid, Object.assign({ label: 'Bench', data: rows, columns: cols, cells: 'pill', selectable: true, selected: sel, onSelectionChange: setSel, height: '--plx-ref-size-600px' }, v.tableProps)));
+}
+window.__t0 = performance.now();
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script></body></html>

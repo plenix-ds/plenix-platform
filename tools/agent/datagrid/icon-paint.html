@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Icon paint</title>
+<link rel="stylesheet" href="../../../platform/platform.css">
+</head><body><div id="root"></div>
+<script>
+// Icon paint probe (icon-paint.js drives it): adds N icons per step and reports how long the next frame took, so the
+// cost of painting freshly inserted mask icons can be compared between ways of giving them their picture.
+const names = ['calendar', 'field-number', 'person-female', 'person-male'];
+window.__add = (n) => {
+  const root = document.getElementById('root'), box = document.createElement('div');
+  for (let i = 0; i < n; i += 1) { const s = document.createElement('span'); s.className = 'plx-icon plx-icon--' + names[i % 4] + ' plx-icon--size-sm ' + (i % 4 > 1 ? 'plx-icon--filled' : 'plx-icon--outline'); box.appendChild(s); }
+  root.replaceChildren(box);
+};
+</script></body></html>

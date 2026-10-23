@@ -35,7 +35,7 @@ export function gridStep(el) {
 }
 
 export function snapToGrid(px, opts) {
-  const o = opts || {}, step = gridStep(o.el), n = Number(px) || 0;
+  const o = opts || {}, step = o.step || gridStep(o.el), n = Number(px) || 0;   // opts.step: a step already read (a loop reads it once)
   const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
   const q = n / step;
   return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;

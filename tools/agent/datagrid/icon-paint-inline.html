@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Icon paint inline</title>
+<link rel="stylesheet" href="../../../platform/platform.css">
+</head><body><div id="root"></div>
+<script>
+// The same probe as icon-paint.html, with each icon drawn as an inline SVG path in the text color (the comparison case).
+const d = 'M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Z';
+const NS = 'http://www.w3.org/2000/svg';
+window.__add = (n) => {
+  const root = document.getElementById('root'), box = document.createElement('div');
+  for (let i = 0; i < n; i += 1) { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 -960 960 960'); s.setAttribute('width', '16'); s.setAttribute('height', '16'); s.setAttribute('fill', 'currentColor'); const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); s.appendChild(p); box.appendChild(s); }
+  root.replaceChildren(box);
+};
+</script></body></html>

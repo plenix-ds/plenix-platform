@@ -5143,8 +5143,8 @@ function gridStep(el) {
 }
 function snapToGrid(px, opts) {
   const o = opts || {},
-    step = gridStep(o.el),
-    n = Number(px) || 0;
+    step = o.step || gridStep(o.el),
+    n = Number(px) || 0; // opts.step: a step already read (a loop reads it once)
   const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
   const q = n / step;
   return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
@@ -15645,6 +15645,7 @@ exports.tokenPixels = tokenPixels;
    Props: A token/length and optional element.
    Behavior: Reads dimensions from inherited CSS tokens.
    Notes: Contains no engine loader or runtime stylesheet requests. */
+const measured = new WeakMap(); // document → (length and context → pixels)
 function tokenPixels(token, el) {
   if (!token || typeof document === 'undefined') return 0;
   const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());
@@ -15654,16 +15655,32 @@ function tokenPixels(token, el) {
       doc = host.ownerDocument || document,
       win = doc.defaultView;
     if (!win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
+    // a measured length is kept for the context it depends on (the font sizes, the window and, for a percentage, the
+    // container's width): adding the probe's sheet restyles the whole document, so it runs once per length and context
+    const text = String(token),
+      rootFont = getComputedStyle(doc.documentElement).fontSize,
+      ownFont = getComputedStyle(host).fontSize;
+    const key = text + '|' + ownFont + '|' + rootFont + '|' + win.innerWidth + 'x' + win.innerHeight + (/%/.test(text) ? '|' + host.clientWidth : '');
+    let known = measured.get(doc);
+    if (!known) {
+      known = new Map();
+      measured.set(doc, known);
+    }
+    // only a container on screen measures (a hidden one reads 0), so only its lengths are kept and reused
+    const shown = host.getClientRects().length > 0;
+    if (shown && known.has(key)) return known.get(key);
     // Measure a caller CSS length in the container's inherited font and available width, without an inline style or a retained rule.
     const sheet = new win.CSSStyleSheet(),
       before = doc.adoptedStyleSheets,
       probe = doc.createElement('span');
-    sheet.replaceSync('.plx-data-grid__length-probe{inline-size:' + String(token) + ';}');
+    sheet.replaceSync('.plx-data-grid__length-probe{inline-size:' + text + ';}');
     probe.className = 'plx-data-grid__length-probe';
     try {
       doc.adoptedStyleSheets = before.concat(sheet);
       host.appendChild(probe);
-      return probe.getBoundingClientRect().width || 0;
+      const px = probe.getBoundingClientRect().width || 0;
+      if (shown && px > 0) known.set(key, px);
+      return px;
     } finally {
       probe.remove();
       doc.adoptedStyleSheets = before;
@@ -17120,7 +17137,11 @@ function pillFont(at, ctx, data) {
   ctx.wordSpacing = cs.wordSpacing || '0px';
   const canvas = ctx.measureText(PROBE).width;
   box.remove();
-  return canvas ? page / canvas : 1;
+  return {
+    scale: canvas ? page / canvas : 1,
+    font: ctx.font,
+    wordSpacing: ctx.wordSpacing
+  };
 }
 // uniformPillWidths: the widths live in one constructed sheet per document, one entry per grid
 function pillSheet(doc) {
@@ -17237,6 +17258,30 @@ const compare = (a, b, id) => {
   if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
   return sortCollator.compare((0, _cells.valueText)(x), (0, _cells.valueText)(y));
 };
+// TanStack Virtual, unmodified, driven like its React adapter but redrawing only when the window of rows changes: the
+// rows sit between gaps (no position per row), so a scroll inside the same window needs no render at all
+function useVirtualizer(options) {
+  const rerender = _react.default.useReducer(x => x + 1, 0)[1],
+    shownRange = _react.default.useRef('');
+  const resolved = {
+    observeElementRect: _reactVirtual.observeElementRect,
+    observeElementOffset: _reactVirtual.observeElementOffset,
+    scrollToFn: _reactVirtual.elementScroll,
+    ...options,
+    onChange: (instance, sync) => {
+      const r = instance.range,
+        key = r ? r.startIndex + ':' + r.endIndex : '';
+      if (key === shownRange.current) return;
+      shownRange.current = key;
+      if (sync) (0, _reactDom.flushSync)(rerender);else rerender();
+    }
+  };
+  const [instance] = _react.default.useState(() => new _reactVirtual.Virtualizer(resolved));
+  instance.setOptions(resolved);
+  _react.default.useLayoutEffect(() => instance._didMount(), []);
+  _react.default.useLayoutEffect(() => instance._willUpdate());
+  return instance;
+}
 function Gap({
   count,
   kind = 'record'
@@ -17788,9 +17833,13 @@ function NextEngine(props) {
       if (store.rules.delete(gridKey)) store.flush();
       return undefined;
     }
-    const cs = getComputedStyle(at),
-      ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
-      px = name => (0, _environment.tokenPixels)(name, at);
+    const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
+      faces = {
+        data: pillFont(at, ctx, true),
+        text: pillFont(at, ctx, false)
+      },
+      px = name => (0, _environment.tokenPixels)(name, at),
+      step = (0, _grid.gridStep)(at);
     const sides = px('--plx-comp-data-pill-md-padding-inline-start') + px('--plx-comp-data-pill-md-padding-inline-end') + 2 * px('--plx-comp-data-pill-border-width'),
       glyph = px('--plx-comp-data-pill-icon-size') + px('--plx-comp-data-pill-gap');
     const key = CSS.escape(gridKey),
@@ -17799,7 +17848,10 @@ function NextEngine(props) {
       const k = kinds(c);
       if (c.render || c.pill === false || k.includes('tags') || k.includes('badge') || k.includes('deleted') || k.includes('icon')) return;
       const data = k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type);
-      const scale = pillFont(at, ctx, data);
+      const face = faces[data ? 'data' : 'text'],
+        scale = face.scale;
+      ctx.font = face.font;
+      ctx.wordSpacing = face.wordSpacing;
       let widest = 0;
       allRows.forEach(r => {
         if (!r.original) return;
@@ -17811,7 +17863,7 @@ function NextEngine(props) {
       const icon = c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text';
       rules.push('[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + (0, _grid.snapToGrid)(widest + sides + (icon ? glyph : 0), {
         round: 'up',
-        el: at
+        step
       }) + 'px;}');
     });
     store.rules.set(gridKey, rules.join('\n'));
@@ -17827,7 +17879,7 @@ function NextEngine(props) {
   const model = _react.default.useMemo(() => groups.length ? (0, _records.groupDisplay)(groups, printing ? new Set() : collapsed, !!props.onAddToGroup) : loadedRows, [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]),
     virtualized = !isStatic && mode !== 'pages' && !isNarrow && !printing;
   const estimate = row => row?.__group ? metrics.group + metrics.line * (row.__group.separated ? 2 : 1) : row?.__gap ? metrics.groupGap : row?.__add ? metrics.add + metrics.line : metrics.row + metrics.line;
-  const virtual = (0, _reactVirtual.useVirtualizer)({
+  const virtual = useVirtualizer({
     count: model.length,
     getScrollElement: () => holder.current,
     estimateSize: i => estimate(model[i]),
@@ -17927,10 +17979,25 @@ function NextEngine(props) {
     const at = frame.current;
     if (!at || !metrics.min) return;
     const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
-      cs = getComputedStyle(at),
       widths = {},
       free = [],
       floor = {};
+    // the probe pills are the only writes: measured first, so the reads below find the styles already computed
+    const scales = cells === 'pill' ? {
+        data: pillFont(at, ctx, true),
+        text: pillFont(at, ctx, false)
+      } : null,
+      cs = getComputedStyle(at),
+      step = (0, _grid.gridStep)(at);
+    const known = new Map(),
+      tokenPx = name => {
+        if (!known.has(name)) known.set(name, (0, _environment.tokenPixels)(name, at));
+        return known.get(name);
+      },
+      snapUp = px => (0, _grid.snapToGrid)(px, {
+        round: 'up',
+        step
+      });
     columns.forEach(c => {
       if (kinds(c).includes('icon')) {
         widths[c.field] = metrics.lead;
@@ -17947,12 +18014,9 @@ function NextEngine(props) {
       // wrapped headers show two lines: the narrowest width that holds the title in two (never a word broken)
       let text = ctx.measureText(title).width;
       if (effectiveWrap) for (let i = 1; i < words.length; i += 1) text = Math.min(text, Math.max(ctx.measureText(words.slice(0, i).join(' ')).width, ctx.measureText(words.slice(i).join(' ')).width));
-      const head = text + Math.max(showTypes ? (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-grid-header-type-icon-gap', at) : 0, !isStatic && headerMenu ? (0, _environment.tokenPixels)('--plx-comp-data-grid-title-reserve', at) : 0);
-      floor[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, head + metrics.space * 2), {
-        round: 'up',
-        el: at
-      });
-      const explicit = (0, _environment.tokenPixels)(c.width, at);
+      const head = text + Math.max(showTypes ? tokenPx('--plx-comp-data-grid-header-type-icon-size') + tokenPx('--plx-comp-data-grid-header-type-icon-gap') : 0, !isStatic && headerMenu ? tokenPx('--plx-comp-data-grid-title-reserve') : 0);
+      floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
+      const explicit = tokenPx(c.width);
       if (explicit) {
         widths[c.field] = Math.max(explicit, floor[c.field]);
         return;
@@ -17964,21 +18028,22 @@ function NextEngine(props) {
       let width = head;
       const k = kinds(c),
         pill = cells === 'pill' && c.pill !== false && !k.includes('tags') && !k.includes('badge') && !k.includes('deleted');
-      const scale = pill ? pillFont(at, ctx, k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type)) : 1; // a pill: its own font, as drawn
-      const chrome = pill ? (0, _environment.tokenPixels)('--plx-comp-data-pill-md-padding-inline-start', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-md-padding-inline-end', at) + 2 * (0, _environment.tokenPixels)('--plx-comp-data-pill-border-width', at) + (c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text' ? (0, _environment.tokenPixels)('--plx-comp-data-pill-icon-size', at) + (0, _environment.tokenPixels)('--plx-comp-data-pill-gap', at) : 0) : 0; // the icon only where the pill has one
+      const face = pill ? scales[k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type) ? 'data' : 'text'] : null,
+        scale = face ? face.scale : 1; // a pill: its own font, as drawn
+      if (face) {
+        ctx.font = face.font;
+        ctx.wordSpacing = face.wordSpacing;
+      }
+      const chrome = pill ? tokenPx('--plx-comp-data-pill-md-padding-inline-start') + tokenPx('--plx-comp-data-pill-md-padding-inline-end') + 2 * tokenPx('--plx-comp-data-pill-border-width') + (c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text' ? tokenPx('--plx-comp-data-pill-icon-size') + tokenPx('--plx-comp-data-pill-gap') : 0) : 0; // the icon only where the pill has one
       source.forEach(record => {
         const value = (0, _state.valueAt)(record, c.field);
         width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width * scale + chrome);
       });
-      widths[c.field] = (0, _grid.snapToGrid)(Math.max(metrics.min, Math.min(width + metrics.space * 2, (0, _environment.tokenPixels)('--plx-comp-data-grid-auto-max-width', at) || Infinity)), {
-        round: 'up',
-        el: at
-      });
+      widths[c.field] = snapUp(Math.max(metrics.min, Math.min(width + metrics.space * 2, tokenPx('--plx-comp-data-grid-auto-max-width') || Infinity)));
       free.push(c.field);
     });
     const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0),
-      used = Object.values(widths).reduce((sum, width) => sum + width, 0),
-      step = (0, _grid.gridStep)(at);
+      used = Object.values(widths).reduce((sum, width) => sum + width, 0);
     // the room that is left goes to the last column that sizes itself: it fills the grid (owner, 2026-10-22)
     const units = Math.max(0, Math.floor((available - used) / step));
     if (free.length) widths[free[free.length - 1]] += units * step;

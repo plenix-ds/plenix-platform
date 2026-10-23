@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.68.1] - 2026-10-23
+
+### Fixed
+- DataGrid opens about twice as fast (600 rows: 4.4 s → 2.0 s; 5000 rows: 5.2 s → 2.6 s on a CPU slowed four times).
+  Column measuring reads every length once, after its probe pills, instead of restyling the page for each read; a
+  measured length is kept for the context it depends on, only from a grid on screen.
+- DataGrid scrolling draws again only when the window of rows changes, not on every scroll event (TanStack Virtual,
+  unmodified, driven through the grid's own adapter). No visual change: 229,556 computed values compared before and
+  after across every grid of the applications and the spec, in every state.
+
 ## [0.68.0] - 2026-10-22
 
 ### Added

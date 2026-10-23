@@ -27,7 +27,7 @@ import { Scrollbars } from './scrollbars.jsx';
 import { useSortable } from '../../utils/dnd.js';
 import { DragHandle } from '../DragHandle/DragHandle.jsx';
 import { useReactTable, getCoreRowModel, getFilteredRowModel, getSortedRowModel, getPaginationRowModel, getExpandedRowModel } from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { Virtualizer, elementScroll, observeElementOffset, observeElementRect } from '@tanstack/react-virtual';
 import { isRtl } from '../../utils/direction.js';
 import { formatNumber } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
@@ -52,7 +52,7 @@ function pillFont(at, ctx, data) {
   const cs=getComputedStyle(value),page=value.scrollWidth;
   ctx.font=cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;ctx.wordSpacing=cs.wordSpacing||'0px';
   const canvas=ctx.measureText(PROBE).width;box.remove();
-  return canvas?page/canvas:1;
+  return { scale:canvas?page/canvas:1, font:ctx.font, wordSpacing:ctx.wordSpacing };
 }
 // uniformPillWidths: the widths live in one constructed sheet per document, one entry per grid
 function pillSheet(doc) {
@@ -86,6 +86,22 @@ const sorted = s => s.map(x => ({ field: x.id, dir: x.desc ? 'desc' : 'asc' }));
 const lengthName = v => { const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || '')); return match?.[1]; };
 const sortCollator = new Intl.Collator(undefined, { numeric: true });
 const compare = (a, b, id) => { const x=a.getValue(id), y=b.getValue(id); if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1; return sortCollator.compare(valueText(x),valueText(y)); };
+// TanStack Virtual, unmodified, driven like its React adapter but redrawing only when the window of rows changes: the
+// rows sit between gaps (no position per row), so a scroll inside the same window needs no render at all
+function useVirtualizer(options) {
+  const rerender = React.useReducer((x) => x + 1, 0)[1], shownRange = React.useRef('');
+  const resolved = { observeElementRect, observeElementOffset, scrollToFn: elementScroll, ...options, onChange: (instance, sync) => {
+    const r = instance.range, key = r ? r.startIndex + ':' + r.endIndex : '';
+    if (key === shownRange.current) return;
+    shownRange.current = key;
+    if (sync) flushSync(rerender); else rerender();
+  } };
+  const [instance] = React.useState(() => new Virtualizer(resolved));
+  instance.setOptions(resolved);
+  React.useLayoutEffect(() => instance._didMount(), []);
+  React.useLayoutEffect(() => instance._willUpdate());
+  return instance;
+}
 function Gap({ count, kind='record' }) { return count > 0 ? <div className={'plx-data-grid__gap plx-data-grid__gap--'+kind} aria-hidden="true">{gapPieces(count).map((n,i)=><div key={i} className="plx-virtual-gap__piece" data-plx-span={String(n)} />)}</div> : null; }
 function RowGap({ rows }) { const counts=rows.reduce((all,row)=>{all[row.__group?row.__group.separated?'separated':'group':row.__gap?'band':row.__add?'add':'record']++;return all;},{record:0,group:0,separated:0,band:0,add:0});return <div aria-hidden="true">{Object.entries(counts).map(([kind,count])=><Gap key={kind} kind={kind} count={count}/>)}</div>; }
 function CellEditor({ column,value,onCommit,onCancel }) { const [draft,setDraft]=React.useState(value??''),done=React.useRef(false);const finish=()=>{if(done.current)return;done.current=true;onCommit(column.editor==='number'?draft===''?null:Number(draft):draft);};return <input autoFocus className="plx-data-grid__editor" aria-label={'Edit '+column.title} type={column.editor==='number'?'number':'text'} value={draft} onChange={e=>setDraft(e.target.value)} onBlur={finish} onKeyDown={e=>{e.stopPropagation();if(e.key==='Escape'){done.current=true;onCancel();}else if(e.key==='Enter'){e.preventDefault();finish();}}}/>; }
@@ -206,17 +222,17 @@ function NextEngine(props) {
     const at=frame.current;if(!at||typeof CSSStyleSheet==='undefined')return undefined;
     const store=pillSheet(at.ownerDocument);
     if(!uniformPillWidths||cells!=='pill'||!metrics.row){if(store.rules.delete(gridKey))store.flush();return undefined;}
-    const cs=getComputedStyle(at),ctx=at.ownerDocument.createElement('canvas').getContext('2d'),px=(name)=>tokenPixels(name,at);
+    const ctx=at.ownerDocument.createElement('canvas').getContext('2d'),faces={data:pillFont(at,ctx,true),text:pillFont(at,ctx,false)},px=(name)=>tokenPixels(name,at),step=gridStep(at);
     const sides=px('--plx-comp-data-pill-md-padding-inline-start')+px('--plx-comp-data-pill-md-padding-inline-end')+2*px('--plx-comp-data-pill-border-width'),glyph=px('--plx-comp-data-pill-icon-size')+px('--plx-comp-data-pill-gap');
     const key=CSS.escape(gridKey),rules=[];
     columns.forEach(c=>{
       const k=kinds(c);if(c.render||c.pill===false||k.includes('tags')||k.includes('badge')||k.includes('deleted')||k.includes('icon'))return;
       const data=k.includes('data')||['number','currency','date','bytes'].includes(c.type);
-      const scale=pillFont(at,ctx,data);
+      const face=faces[data?'data':'text'],scale=face.scale;ctx.font=face.font;ctx.wordSpacing=face.wordSpacing;
       let widest=0;allRows.forEach(r=>{if(!r.original)return;const v=valueAt(r.original,c.field);if(v==null||v==='')return;widest=Math.max(widest,ctx.measureText(valueText(v)).width*scale);});
       if(!widest)return;
       const icon=c.type==='person'||k.includes('avatar-name')||(showTypes&&typeOf(c)!=='text');
-      rules.push('[data-plx-grid-key="'+key+'"] .plx-data-pill[data-plx-pill-field="'+CSS.escape(c.field)+'"]{inline-size:'+snapToGrid(widest+sides+(icon?glyph:0),{round:'up',el:at})+'px;}');
+      rules.push('[data-plx-grid-key="'+key+'"] .plx-data-pill[data-plx-pill-field="'+CSS.escape(c.field)+'"]{inline-size:'+snapToGrid(widest+sides+(icon?glyph:0),{round:'up',step})+'px;}');
     });
     store.rules.set(gridKey,rules.join('\n'));store.flush();
     return undefined;
@@ -243,7 +259,10 @@ function NextEngine(props) {
 
   React.useLayoutEffect(()=>{
     const at=frame.current;if(!at||!metrics.min)return;
-    const ctx=at.ownerDocument.createElement('canvas').getContext('2d'),cs=getComputedStyle(at),widths={},free=[],floor={};
+    const ctx=at.ownerDocument.createElement('canvas').getContext('2d'),widths={},free=[],floor={};
+    // the probe pills are the only writes: measured first, so the reads below find the styles already computed
+    const scales=cells==='pill'?{data:pillFont(at,ctx,true),text:pillFont(at,ctx,false)}:null,cs=getComputedStyle(at),step=gridStep(at);
+    const known=new Map(),tokenPx=(name)=>{if(!known.has(name))known.set(name,tokenPixels(name,at));return known.get(name);},snapUp=(px)=>snapToGrid(px,{round:'up',step});
     columns.forEach(c=>{
       if(kinds(c).includes('icon')){widths[c.field]=metrics.lead;return;}
       // the header: its title in the header's own font, after the type icon and its gap (owner, 2026-10-22: a column that
@@ -255,21 +274,22 @@ function NextEngine(props) {
       // wrapped headers show two lines: the narrowest width that holds the title in two (never a word broken)
       let text=ctx.measureText(title).width;
       if(effectiveWrap)for(let i=1;i<words.length;i+=1)text=Math.min(text,Math.max(ctx.measureText(words.slice(0,i).join(' ')).width,ctx.measureText(words.slice(i).join(' ')).width));
-      const head=text+Math.max(showTypes?tokenPixels('--plx-comp-data-grid-header-type-icon-size',at)+tokenPixels('--plx-comp-data-grid-header-type-icon-gap',at):0,!isStatic&&headerMenu?tokenPixels('--plx-comp-data-grid-title-reserve',at):0);
-      floor[c.field]=snapToGrid(Math.max(metrics.min,head+metrics.space*2),{round:'up',el:at});
-      const explicit=tokenPixels(c.width,at);if(explicit){widths[c.field]=Math.max(explicit,floor[c.field]);return;}
+      const head=text+Math.max(showTypes?tokenPx('--plx-comp-data-grid-header-type-icon-size')+tokenPx('--plx-comp-data-grid-header-type-icon-gap'):0,!isStatic&&headerMenu?tokenPx('--plx-comp-data-grid-title-reserve'):0);
+      floor[c.field]=snapUp(Math.max(metrics.min,head+metrics.space*2));
+      const explicit=tokenPx(c.width);if(explicit){widths[c.field]=Math.max(explicit,floor[c.field]);return;}
       const family=cs.getPropertyValue(kinds(c).includes('data')?'--plx-comp-data-grid-data-font-family':'--plx-comp-data-grid-font-family').trim()||cs.fontFamily;
       ctx.font=cs.getPropertyValue('--plx-comp-data-grid-font-size').trim()+' '+family;
       // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
       ctx.wordSpacing=kinds(c).includes('data')?(cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim()||'0px'):'0px';
       let width=head;
       const k=kinds(c),pill=cells==='pill'&&c.pill!==false&&!k.includes('tags')&&!k.includes('badge')&&!k.includes('deleted');
-      const scale=pill?pillFont(at,ctx,k.includes('data')||['number','currency','date','bytes'].includes(c.type)):1;   // a pill: its own font, as drawn
-      const chrome=pill?tokenPixels('--plx-comp-data-pill-md-padding-inline-start',at)+tokenPixels('--plx-comp-data-pill-md-padding-inline-end',at)+2*tokenPixels('--plx-comp-data-pill-border-width',at)+((c.type==='person'||k.includes('avatar-name')||(showTypes&&typeOf(c)!=='text'))?tokenPixels('--plx-comp-data-pill-icon-size',at)+tokenPixels('--plx-comp-data-pill-gap',at):0):0;   // the icon only where the pill has one
+      const face=pill?scales[k.includes('data')||['number','currency','date','bytes'].includes(c.type)?'data':'text']:null,scale=face?face.scale:1;   // a pill: its own font, as drawn
+      if(face){ctx.font=face.font;ctx.wordSpacing=face.wordSpacing;}
+      const chrome=pill?tokenPx('--plx-comp-data-pill-md-padding-inline-start')+tokenPx('--plx-comp-data-pill-md-padding-inline-end')+2*tokenPx('--plx-comp-data-pill-border-width')+((c.type==='person'||k.includes('avatar-name')||(showTypes&&typeOf(c)!=='text'))?tokenPx('--plx-comp-data-pill-icon-size')+tokenPx('--plx-comp-data-pill-gap'):0):0;   // the icon only where the pill has one
       source.forEach(record=>{const value=valueAt(record,c.field);width=Math.max(width,ctx.measureText(valueText(value)).width*scale+chrome);});
-      widths[c.field]=snapToGrid(Math.max(metrics.min,Math.min(width+metrics.space*2,tokenPixels('--plx-comp-data-grid-auto-max-width',at)||Infinity)),{round:'up',el:at});free.push(c.field);
+      widths[c.field]=snapUp(Math.max(metrics.min,Math.min(width+metrics.space*2,tokenPx('--plx-comp-data-grid-auto-max-width')||Infinity)));free.push(c.field);
     });
-    const available=metrics.room-(selectable?metrics.lead:0)-(rowMenu&&rowMenuButton?metrics.menu:0)-(props.viewMenu?metrics.lead:0),used=Object.values(widths).reduce((sum,width)=>sum+width,0),step=gridStep(at);
+    const available=metrics.room-(selectable?metrics.lead:0)-(rowMenu&&rowMenuButton?metrics.menu:0)-(props.viewMenu?metrics.lead:0),used=Object.values(widths).reduce((sum,width)=>sum+width,0);
     // the room that is left goes to the last column that sizes itself: it fills the grid (owner, 2026-10-22)
     const units=Math.max(0,Math.floor((available-used)/step));
     if(free.length)widths[free[free.length-1]]+=units*step;
