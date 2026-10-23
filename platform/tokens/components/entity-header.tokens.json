@@ -310,6 +310,236 @@
       "$value": "{plx-sys.space-inset-lg}",
       "$type": "dimension",
       "$description": "EntityHeader: between the divider and a section header's actions."
+    },
+    "entity-header-fact-icon-tile-size": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the square holding a fact's identifying icon (Presiding)."
+    },
+    "entity-header-fact-icon-size": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the icon in a fact's square."
+    },
+    "entity-header-fact-icon-tile-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the fact icon's square."
+    },
+    "entity-header-fact-icon-tile-border-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the fact icon square's edge."
+    },
+    "entity-header-fact-icon-tile-radius": {
+      "$value": "{plx-sys.radius-detail-4px}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the fact icon square's corners."
+    },
+    "entity-header-fact-icon-tile-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the icon in a fact's square."
+    },
+    "entity-header-fact-icon-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): between a fact's icon square and its label and value."
+    },
+    "entity-header-fact-label-icon-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a count box's icon, before its label."
+    },
+    "entity-header-fact-label-icon-text": {
+      "$value": "{plx-sys.data-color-blue-on-soft}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a count box's icon, before its label."
+    },
+    "entity-header-fact-label-icon-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): between a count box's icon and its label."
+    },
+    "entity-header-fact-stack-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): between a count box's label and its number line (and the status box's label and states)."
+    },
+    "entity-header-fact-count-font-size": {
+      "$value": "{plx-ref.font-size-24}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a count box's number."
+    },
+    "entity-header-fact-count-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a count box's number."
+    },
+    "entity-header-fact-count-line-height": {
+      "$value": "{plx-ref.line-height-tight}",
+      "$type": "number",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a count box's number."
+    },
+    "entity-header-fact-line-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): between a count box's number and its action."
+    },
+    "entity-header-state-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): between the states in the status box."
+    },
+    "entity-header-state-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state's padding top and bottom."
+    },
+    "entity-header-state-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state's padding left and right."
+    },
+    "entity-header-state-radius": {
+      "$value": "{plx-sys.radius-control-4px}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state's corners."
+    },
+    "entity-header-state-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state that is not the current one."
+    },
+    "entity-header-state-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state's edge."
+    },
+    "entity-header-state-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state's edge."
+    },
+    "entity-header-state-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state that is not the current one."
+    },
+    "entity-header-state-icon-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): between a state's icon and its label."
+    },
+    "entity-header-state-icon-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a state's icon (every state's icon is this size)."
+    },
+    "entity-header-state-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current state's label."
+    },
+    "entity-header-state-waiting-icon": {
+      "$value": "{plx-ref.color-yellow-500}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a waiting state's icon: yellow (Draft)."
+    },
+    "entity-header-state-waiting-selected-background": {
+      "$value": "{plx-ref.color-yellow-300}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current waiting state, filled: yellow (Draft)."
+    },
+    "entity-header-state-waiting-selected-border": {
+      "$value": "{plx-ref.color-yellow-500}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current waiting state's edge."
+    },
+    "entity-header-state-waiting-selected-text": {
+      "$value": "{plx-ref.color-gray-950}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current waiting state's label and icon."
+    },
+    "entity-header-state-success-icon": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a success state's icon: green (In progress)."
+    },
+    "entity-header-state-success-selected-background": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current success state, filled: green (In progress)."
+    },
+    "entity-header-state-success-selected-border": {
+      "$value": "{plx-sys.feedback-success-solid-border}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current success state's edge."
+    },
+    "entity-header-state-success-selected-text": {
+      "$value": "{plx-sys.feedback-success-on-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current success state's label and icon."
+    },
+    "entity-header-state-negative-icon": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a negative state's icon: red (Adjourned); solid, never the soft pink of a person's pill."
+    },
+    "entity-header-state-negative-selected-background": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current negative state, filled: red (Adjourned); solid, never the soft pink of a person's pill."
+    },
+    "entity-header-state-negative-selected-border": {
+      "$value": "{plx-sys.feedback-danger-solid-border}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current negative state's edge."
+    },
+    "entity-header-state-negative-selected-text": {
+      "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current negative state's label and icon."
+    },
+    "entity-header-state-active-icon": {
+      "$value": "{plx-sys.feedback-info-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a active state's icon: blue."
+    },
+    "entity-header-state-active-selected-background": {
+      "$value": "{plx-sys.feedback-info-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current active state, filled: blue."
+    },
+    "entity-header-state-active-selected-border": {
+      "$value": "{plx-sys.feedback-info-solid-border}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current active state's edge."
+    },
+    "entity-header-state-active-selected-text": {
+      "$value": "{plx-sys.feedback-info-on-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current active state's label and icon."
+    },
+    "entity-header-state-neutral-icon": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): a neutral state's icon: gray."
+    },
+    "entity-header-state-neutral-selected-background": {
+      "$value": "{plx-sys.feedback-neutral-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current neutral state, filled: gray."
+    },
+    "entity-header-state-neutral-selected-border": {
+      "$value": "{plx-sys.feedback-neutral-solid-border}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current neutral state's edge."
+    },
+    "entity-header-state-neutral-selected-text": {
+      "$value": "{plx-sys.feedback-neutral-on-solid}",
+      "$type": "color",
+      "$description": "EntityHeader (header style 2, owner 2026-10-23): the current neutral state's label and icon."
     }
   }
 }

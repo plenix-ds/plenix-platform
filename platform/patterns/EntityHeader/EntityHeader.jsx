@@ -3,6 +3,9 @@
      section inside it. Header style 1, Structured · Top row · Small (owner, 2026-10-19, "Plenix page headers"): the media
      beside the title and subtitle, an accent rule, a row of fact tiles with the Status tile first, and an aside with the
      next step over the entity's actions. A section header is the same anatomy one step smaller.
+     Header style 2, Facts with actions (owner, 2026-10-23): the same anatomy, but each fact box carries its own action
+     (the count large, its button right after it) and the entity's state is a box of its own among the facts (states);
+     with every action in a box there is no aside.
    Usage:
      <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} title="Maya Chen" subtitle="Creative Director · Apex Co"
        status={{ tone: 'action-required', icon: 'alert', label: 'Reconnect due' }}
@@ -11,9 +14,16 @@
        actions={[{ icon: 'phone', label: 'Call' }, { icon: 'message', label: 'Message', primary: true }, { icon: 'share', label: 'Share' }]} />
      <EntityHeader kind="section" media={{ icon: 'message', hue: 'blue' }} title="Comments" summary="3 open · 5 resolved"
        actions={[{ icon: 'plus', label: 'Add comment' }]} />
+     Header style 2 (the fact boxes carry their actions):
+     <EntityHeader media={{ icon: 'calendar', hue: 'surface' }} title="Council Session 2026-10-22" subtitle="Thursday, October 22, 2026 at 10:00 AM"
+       facts={[{ icon: 'person', label: 'Presiding', value: 'H.E. Metropolitan Serapion' },
+         { icon: 'person', label: 'Council Attendance', value: 12, data: true, action: { label: 'Attendance', icon: 'edit', name: 'Take council attendance' } },
+         { icon: 'folder', label: 'Cases to assign', value: 10, data: true, action: { label: 'Add more', name: 'Add cases to assign' } }]}
+       states={{ value: 'in-progress', onChange: setState, options: [{ value: 'draft', label: 'Draft', icon: 'pencil', tone: 'waiting' },
+         { value: 'in-progress', label: 'In progress', icon: 'clock', tone: 'success' }, { value: 'adjourned', label: 'Adjourned', icon: 'do-not-disturb', tone: 'negative' }] }} />
    Props:
      kind: "page" (default) | "section": a section header (32px icon, 15px title, 4px rule, a summary instead of tiles)
-     title: the entity's name; 18px medium (15px in a section); a long name wraps, never cut off
+     title: the entity's name, in the Title role (20px bold; 15px in a section); a long name wraps, never cut off
      subtitle: the line under the title: the entity's description, where it belongs or who it involves; wraps
      media: the entity's picture, always shown: { person, src, color, gender } an Avatar (gender: its icon when there is no
        picture); { icon, hue } a generic icon for the
@@ -21,8 +31,14 @@
        (hue: surface, a white tile); or an element. 44px square (32px in a section)
      status: the Status tile, first in the details, in its tone as a whole: { tone, label, icon } (tone: a Badge tone:
        neutral, success, active, waiting, action-required, negative; info, warning and danger still work)
-     facts: up to four fact tiles after the Status tile, each as wide as its content: [{ label, value, data }] (data: a
-       technical value, in the data font); a plain string or element is a tile with no label
+     facts: up to four fact tiles after the Status tile, each as wide as its content: [{ label, value, data, icon, action }]
+       (data: a technical value, in the data font); a plain string or element is a tile with no label. icon: the fact's
+       identifying icon, in a 40px square at its start. action (header style 2): { label, icon (default add), name,
+       onClick, disabled }: the fact becomes a count box, its icon before the label, the value large, the action's button
+       right after the value (name: the button's accessible name, which says what it adds)
+     states (header style 2): the entity's state as a box among the facts, after them: { value, onChange, label (default
+       strings.status), disabled, options: [{ value, label, icon, tone }] } (tone: waiting, success, negative, active,
+       neutral): each state with its icon in its tone, the current one filled; a radio group
      summary: a section header's summary under its rule (a count, a state): text
      next: the aside's next step: { title, detail, label } (label: the eyebrow; default strings.next, "Next step")
      actions: the actions that act on this entity, 32px icon buttons at the end of the aside: [{ icon, label, onClick,
@@ -75,7 +91,69 @@ function Media({ media, section }) {
   return <span className="plx-entity-header__media">{inner}</span>;
 }
 
-function Details({ status, facts, strings }) {
+// header style 2 (owner, 2026-10-23): the entity's state as a box of its own, each state with its icon and tone, the
+// current one filled; a radio group (arrow keys move and select)
+function States({ states, label }) {
+  const opts = (states.options || []).filter(Boolean);
+  const refs = React.useRef([]);
+  const pick = (i) => { const o = opts[(i + opts.length) % opts.length]; if (o && states.onChange) states.onChange(o.value); refs.current[(i + opts.length) % opts.length]?.focus(); };
+  const key = (e, i) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (step) { e.preventDefault(); pick(i + step); }
+  };
+  return (
+    <div className="plx-entity-header__fact plx-entity-header__fact--states">
+      <dt className="plx-entity-header__fact-label">{states.label || label}</dt>
+      <dd className="plx-entity-header__states" role="radiogroup" aria-label={states.label || label}>
+        {opts.map((o, i) => {
+          const on = o.value === states.value, tone = TONES.indexOf(ALIASES[o.tone] || o.tone) >= 0 ? (ALIASES[o.tone] || o.tone) : 'neutral';
+          return (
+            <button key={o.value} ref={(el) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={on} tabIndex={on || (!opts.some((x) => x.value === states.value) && i === 0) ? 0 : -1}
+              disabled={states.disabled} onClick={() => states.onChange && states.onChange(o.value)} onKeyDown={(e) => key(e, i)}
+              className={cx('plx-entity-header__state', 'plx-entity-header__state--' + tone, on && 'is-selected')}>
+              {o.icon ? <span className={cx('plx-entity-header__state-icon', 'plx-entity-header__state-icon--' + tone, on && 'plx-entity-header__state-icon--on')}><Icon name={o.icon} /></span> : null}
+              <span className="plx-entity-header__state-label">{o.label}</span>
+            </button>
+          );
+        })}
+      </dd>
+    </div>
+  );
+}
+
+// a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon
+// before the label, the value large, and the action right after the value
+function Fact({ f }) {
+  const value = f.data ? <Text variant="data">{f.value}</Text> : f.value;
+  if (f.action) {
+    const a = f.action;
+    return (
+      <div className="plx-entity-header__fact plx-entity-header__fact--action">
+        <dt className="plx-entity-header__fact-label plx-entity-header__fact-label--icon">{f.icon ? <span className="plx-entity-header__fact-label-icon" aria-hidden="true"><Icon name={f.icon} /></span> : null}{f.label}</dt>
+        <dd className="plx-entity-header__fact-line">
+          <span className="plx-entity-header__fact-value plx-entity-header__fact-value--count">{f.data ? <span className="plx-entity-header__count-data">{f.value}</span> : f.value}</span>
+          <Button size="xs" variant="secondary" icon={a.icon || 'add'} aria-label={a.name} disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>
+        </dd>
+      </div>
+    );
+  }
+  if (f.icon) {
+    return (
+      <div className="plx-entity-header__fact plx-entity-header__fact--icon">
+        <dt className="plx-entity-header__fact-label plx-entity-header__fact-label--tile"><span className="plx-entity-header__fact-icon" aria-hidden="true"><Icon name={f.icon} /></span><span className="plx-entity-header__fact-name">{f.label}</span></dt>
+        <dd className="plx-entity-header__fact-value plx-entity-header__fact-value--tile">{value}</dd>
+      </div>
+    );
+  }
+  return (
+    <div className="plx-entity-header__fact">
+      {f.label ? <dt className="plx-entity-header__fact-label">{f.label}</dt> : null}
+      <dd className="plx-entity-header__fact-value">{value}</dd>
+    </div>
+  );
+}
+
+function Details({ status, states, facts, strings }) {
   const tiles = [];
   if (status && React.isValidElement(status)) tiles.push(<div key="st" className="plx-entity-header__fact">{status}</div>);
   else if (status) {
@@ -89,14 +167,11 @@ function Details({ status, facts, strings }) {
   }
   (facts || []).filter(Boolean).slice(0, 4).forEach((f, i) => {
     const plain = typeof f === 'string' || typeof f === 'number' || React.isValidElement(f);
-    const value = plain ? f : (f.data ? <Text variant="data">{f.value}</Text> : f.value);
-    tiles.push(
-      <div key={'f' + i} className="plx-entity-header__fact">
-        {!plain && f.label ? <dt className="plx-entity-header__fact-label">{f.label}</dt> : null}
-        <dd className="plx-entity-header__fact-value">{value}</dd>
-      </div>
-    );
+    tiles.push(plain
+      ? <div key={'f' + i} className="plx-entity-header__fact"><dd className="plx-entity-header__fact-value">{f}</dd></div>
+      : <Fact key={'f' + i} f={f} />);
   });
+  if (states) tiles.push(<States key="states" states={states} label={strings.status} />);
   return tiles.length ? <dl className="plx-entity-header__details">{tiles}</dl> : null;
 }
 
@@ -129,7 +204,7 @@ function Actions({ actions, moreActions, size, strings, labels = 'icon', layout 
   return <div ref={ref} className={cx('plx-entity-header__actions', column && 'plx-entity-header__actions--column', size === 'sm' && 'plx-entity-header__actions--sm')}>{splitAt(items, fit, more)}</div>;
 }
 
-export function EntityHeader({ kind = 'page', title, subtitle, media, status, facts, summary, next, actions, moreActions,
+export function EntityHeader({ kind = 'page', title, subtitle, media, status, states, facts, summary, next, actions, moreActions,
   actionLabels = 'icon', actionsLayout = 'row', control, description, context, live, headingLevel, className, strings }) {
   const section = kind === 'section';
   const H = 'h' + (headingLevel || (section ? 2 : 1));
@@ -151,7 +226,7 @@ export function EntityHeader({ kind = 'page', title, subtitle, media, status, fa
               </div>
             </div>
             <div className="plx-entity-header__rule" aria-hidden="true" />
-            {section ? (summary || sub ? <p className="plx-entity-header__summary">{summary || sub}</p> : null) : <Details status={st} facts={facts} strings={s} />}
+            {section ? (summary || sub ? <p className="plx-entity-header__summary">{summary || sub}</p> : null) : <Details status={st} states={states} facts={facts} strings={s} />}
           </div>
         </div>
         {aside ? (

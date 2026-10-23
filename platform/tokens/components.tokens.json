@@ -8342,19 +8342,19 @@
       "$type": "color"
     },
     "entity-header-title-font-family": {
-      "$value": "{plx-sys.font-heading}",
+      "$value": "{plx-sys.text-title-font-family}",
       "$type": "fontFamily"
     },
     "entity-header-title-font-size": {
-      "$value": "{plx-ref.font-size-18}",
+      "$value": "{plx-sys.text-title-font-size}",
       "$type": "dimension"
     },
     "entity-header-title-font-weight": {
-      "$value": "{plx-sys.font-weight-medium}",
+      "$value": "{plx-sys.text-title-font-weight}",
       "$type": "fontWeight"
     },
     "entity-header-title-line-height": {
-      "$value": "{plx-ref.line-height-tight}",
+      "$value": "{plx-sys.text-title-line-height}",
       "$type": "number"
     },
     "entity-header-actions-height": {

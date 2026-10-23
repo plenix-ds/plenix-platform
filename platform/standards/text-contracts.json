@@ -1217,9 +1217,25 @@
    "role": "title",
    "font": "sans",
    "adjusts": [
-    "font-size",
-    "font-weight",
+    "font-size"
+   ]
+  },
+  "plx-entity-header__fact-value--count": {
+   "contract": "adjusts",
+   "props": [
     "line-height"
+   ]
+  },
+  "plx-entity-header__count-data": {
+   "contract": "follows",
+   "font": "mono"
+  },
+  "plx-entity-header__state": {
+   "contract": "establishes",
+   "role": "caption",
+   "font": "sans",
+   "adjusts": [
+    "font-weight"
    ]
   },
   "plx-entity-picker__description": {
