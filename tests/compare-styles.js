@@ -3,7 +3,7 @@
 // documentation changes with the stylesheet (tests/clash-audit.js --check reports it as DIFFERS), this proves the
 // component's own elements are unchanged.
 //   node tests/compare-styles.js <before-root> "<selector>" <route-or-page> [<route-or-page>…]
-//   e.g. node tests/compare-styles.js ../Plenix-rel ".plx-split-view" "#/page-structures/split-view"
+//   e.g. node tests/compare-styles.js ../Plenix-rel ".plx-split-view" "#/layout/secondary-pane"
 //   HOSTS=n compares only the first n elements the selector matches (a page whose later examples changed)
 //   Elements with display: contents (slots that only pass context to what they hold) are left out on both sides.
 //   WAIT=ms waits longer before reading (default 4000; a lab draws its cards in an iframe after the page)

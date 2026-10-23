@@ -52,6 +52,22 @@ speed-up) is all on `styling/phase-2` in both repositories and is the starting p
   robust navigation of the spec scans: check the h1, reload, about 2.5s per route).
 - `rg` for every retired id finds nothing outside archived files.
 
+## Done (2026-10-23)
+
+- The merged values are written in each home record's source; the 80 copies are deleted; the written sections of the
+  copies (inventory-docs.js and parts docs) are deleted with them (no page showed them since the merge).
+- Examples that need their part's own helpers (demo factories) are added from that part with `H.addExamples(id, groups)`
+  (inventory.js HELPERS; throws on an unknown id): grid (w01C), secondary-pane (w00B, w16A), navigation-menu (w05A),
+  pagination (w07B), the page templates (w15A). Every other example moved into its home's source.
+- Labs registered under a copy's name now carry the home's: navigation-menu, pagination, page-actions; Sticky's extra
+  lab is `fixed`. platforms.js names the homes.
+- Removed: w99M.merges.js, applyMerges, window.DSRedirects and its use in spec.js, the merges part kind.
+- Against the merged spec: identical except (1) six example groups the home already drew are not drawn twice
+  (application-header Header · Tone and Global navigation · Tone, product-switcher The switcher, navigation-rail Rail ·
+  Labels, empty-state Empty application state · Size, media-player Audio player); (2) search-input and search-workspace
+  list one moved group in another place; (3) thin pages built from a home (thin()/T()) now read its merged plenix, src,
+  related and also: data-display-grouped-list, foundations-fluid-sizing, foundations-adaptive-patterns.
+
 Snapshot method: puppeteer on the spec index, `window.DSInventory` serialized with functions as `'fn:' + String(f)`;
 to load without the layer, `evaluateOnNewDocument(() => { window.DSParts = { records: [], docs: [], errors: [],
 merges: { push() {}, length: 0, forEach() {} } }; })`.
