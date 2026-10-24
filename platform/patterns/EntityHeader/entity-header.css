@@ -14,7 +14,7 @@
    .plx-entity-header--section     a section header: the same anatomy one step smaller (32px icon, 15px title, 4px rule)
    The background follows the user's settings on the page root: data-plx-header-tint (default none: white) and
    data-plx-header-tint-style (default fade). */
-.plx-entity-header{background-color:var(--plx-comp-entity-header-background);background-image:linear-gradient(to bottom,var(--plx-comp-entity-header-tint) 0%,var(--plx-sys-surface-default) 100%);border-bottom-color:var(--plx-comp-entity-header-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-radius);border-bottom-right-radius:var(--plx-comp-entity-header-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-border-width);border-left-color:var(--plx-comp-entity-header-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-border-width);border-right-color:var(--plx-comp-entity-header-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-border-width);border-top-color:var(--plx-comp-entity-header-border-color);border-top-left-radius:var(--plx-comp-entity-header-radius);border-top-right-radius:var(--plx-comp-entity-header-radius);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-border-width);container-name:plx-entity-header;container-type:inline-size;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;padding-block-end:var(--plx-comp-entity-header-padding-block);padding-block-start:var(--plx-comp-entity-header-padding-block);padding-inline-end:var(--plx-comp-entity-header-padding-inline-end);padding-inline-start:var(--plx-comp-entity-header-padding-inline-start);}
+.plx-entity-header{background-color:var(--plx-comp-entity-header-background);background-image:linear-gradient(to bottom,var(--plx-comp-entity-header-tint) 0%,var(--plx-sys-surface-default) 100%);border-bottom-color:var(--plx-comp-entity-header-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-radius);border-bottom-right-radius:var(--plx-comp-entity-header-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-border-width);border-left-color:var(--plx-comp-entity-header-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-border-width);border-right-color:var(--plx-comp-entity-header-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-border-width);border-top-color:var(--plx-comp-entity-header-border-color);border-top-left-radius:var(--plx-comp-entity-header-radius);border-top-right-radius:var(--plx-comp-entity-header-radius);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-border-width);container-name:plx-entity-header;container-type:inline-size;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;padding-block-end:var(--plx-state-entity-header-padding-block,var(--plx-comp-entity-header-padding-block));padding-block-start:var(--plx-state-entity-header-padding-block,var(--plx-comp-entity-header-padding-block));padding-inline-end:var(--plx-state-entity-header-padding-inline-end,var(--plx-comp-entity-header-padding-inline-end));padding-inline-start:var(--plx-state-entity-header-padding-inline-start,var(--plx-comp-entity-header-padding-inline-start));}
 /* the user's header background (Settings › Appearance): a soft fill from the existing palette, faded (default) or flat */
 :root[data-plx-header-tint="gray"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-data-color-gray-soft);}
 :root[data-plx-header-tint="blue"] .plx-entity-header{--plx-comp-entity-header-tint:var(--plx-sys-data-color-blue-soft);}
@@ -46,6 +46,7 @@
    32), top row large 72px (48), column small 44px in its own column (32), column large spanning both rows (at least
    112px; 64), edge to edge filling the start edge (at least 128px; 80). A stretched media is a square as tall as its row:
    Media measures the row and sets data-plx-size, a size token (system/steps.css sets --plx-comp-entity-header-media-measured) */
+.plx-entity-header__media--page-streamlined{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-streamlined-media-icon-size);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-streamlined-media-size);}
 .plx-entity-header__media--page-top-large{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-media-icon-size-large);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-size-large);}
 .plx-entity-header__media--page-column-large{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-media-icon-size-column-large);--plx-state-entity-header-media-min-block:var(--plx-comp-entity-header-media-size-column-large);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-measured,var(--plx-comp-entity-header-media-size-column-large));}
 .plx-entity-header__media--page-edge{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-media-icon-size-edge);--plx-state-entity-header-media-min-block:var(--plx-comp-entity-header-media-size-edge);--plx-state-entity-header-media-pull-block:var(--plx-comp-entity-header-padding-block);--plx-state-entity-header-media-pull-inline:var(--plx-comp-entity-header-padding-inline-start);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-measured,var(--plx-comp-entity-header-media-size-edge));}
@@ -75,13 +76,13 @@
 .plx-entity-header__tile[data-plx-media-hue="gray"]{background-color:var(--plx-comp-entity-header-tile-gray-background);color:var(--plx-comp-entity-header-tile-gray-text);}
 .plx-entity-header__text{display:flex;flex-direction:column;min-inline-size:0;}
 .plx-entity-header__title{break-after:var(--plx-sys-print-keep,auto);color:var(--plx-comp-entity-header-title-text);font-family:var(--plx-comp-entity-header-title-font-family);font-size:var(--plx-comp-entity-header-title-font-size);font-weight:var(--plx-comp-entity-header-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-comp-entity-header-title-line-height);margin-block-end:0;margin-block-start:0;overflow-wrap:anywhere;word-spacing:normal;}
-.plx-entity-header__subtitle{color:var(--plx-comp-entity-header-subtitle-text);font-size:var(--plx-comp-entity-header-subtitle-font-size);margin-block-end:0;margin-block-start:0;}
+.plx-entity-header__subtitle{color:var(--plx-comp-entity-header-subtitle-text);font-size:var(--plx-comp-entity-header-subtitle-font-size);margin-block-end:0;margin-block-start:var(--plx-state-entity-header-subtitle-gap,0);}
 
 /* 3 the accent rule: 10% past the wider of the heading and the details */
 .plx-entity-header__rule{background-color:var(--plx-comp-entity-header-rule-color);block-size:var(--plx-comp-entity-header-rule-height);inline-size:var(--plx-comp-entity-header-rule-extent);margin-block-end:var(--plx-comp-entity-header-rule-margin-block);margin-block-start:var(--plx-comp-entity-header-rule-margin-block);}
 
 /* 4 the details: tiles as wide as their content, 12px apart; the Status tile takes its tone as a whole */
-.plx-entity-header__details{align-items:stretch;display:flex;flex-wrap:wrap;gap:var(--plx-comp-entity-header-details-gap);margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+.plx-entity-header__details{align-items:stretch;display:flex;flex-wrap:wrap;gap:var(--plx-comp-entity-header-details-gap);margin-block-end:0;margin-block-start:var(--plx-state-entity-header-details-margin,0);padding-inline-start:0;}
 @property --plx-state-entity-header-fact-display{syntax:"*";inherits:false;}
 @property --plx-state-entity-header-value-size{syntax:"*";inherits:false;}
 @property --plx-state-entity-header-value-weight{syntax:"*";inherits:false;}
@@ -171,6 +172,43 @@
 .plx-entity-header--section .plx-entity-header__title{font-size:var(--plx-comp-entity-header-section-title-font-size);}
 .plx-entity-header--section .plx-entity-header__rule{block-size:var(--plx-comp-entity-header-section-rule-height);margin-block-end:var(--plx-comp-entity-header-section-rule-margin-block);margin-block-start:var(--plx-comp-entity-header-section-rule-margin-block);}
 .plx-entity-header--section .plx-entity-header__aside{justify-content:center;padding-inline-start:var(--plx-comp-entity-header-section-aside-padding-inline);}
+
+/* header style Streamlined (the owner's study "Plenix page headers"): the media and the heading (the title with its
+   badges, status first, over the subtitle) at the start; the people, an inline progress and the actions at the end; the
+   details strip under a divider (Detailed view). The parts wrap: the end moves under the start when there is no room. */
+@property --plx-state-entity-header-padding-block{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-padding-inline-start{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-padding-inline-end{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-compact-block{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-subtitle-gap{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-details-margin{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-item-text{syntax:"*";inherits:false;}
+.plx-entity-header--streamlined{--plx-state-entity-header-padding-block:var(--plx-state-entity-header-compact-block,var(--plx-comp-entity-header-streamlined-padding-block));--plx-state-entity-header-padding-inline-end:var(--plx-comp-entity-header-streamlined-padding-inline-end);--plx-state-entity-header-padding-inline-start:var(--plx-comp-entity-header-streamlined-padding-inline-start);}
+.plx-entity-header--compact{--plx-state-entity-header-compact-block:var(--plx-comp-entity-header-streamlined-compact-padding-block);}
+.plx-entity-header__top{align-items:center;column-gap:var(--plx-comp-entity-header-streamlined-top-gap);display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:var(--plx-comp-entity-header-streamlined-top-gap);}
+.plx-entity-header__start{align-items:center;column-gap:var(--plx-comp-entity-header-streamlined-start-gap);display:flex;min-inline-size:0;}
+.plx-entity-header__head{display:flex;flex-direction:column;min-inline-size:0;}
+.plx-entity-header__title-row{align-items:center;column-gap:var(--plx-comp-entity-header-streamlined-title-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-entity-header-streamlined-title-gap);}
+.plx-entity-header__badges{column-gap:var(--plx-comp-entity-header-streamlined-title-gap);display:inline-flex;flex-wrap:wrap;row-gap:var(--plx-comp-entity-header-streamlined-title-gap);}
+.plx-entity-header__subtitle--streamlined{--plx-state-entity-header-subtitle-gap:var(--plx-comp-entity-header-streamlined-subtitle-gap);}
+.plx-entity-header__strong{color:var(--plx-comp-entity-header-title-text);font-weight:var(--plx-comp-entity-header-fact-value-font-weight);}
+.plx-entity-header__end{align-items:center;column-gap:var(--plx-comp-entity-header-streamlined-end-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-entity-header-streamlined-end-gap);}
+.plx-entity-header__buttons{align-items:center;column-gap:var(--plx-comp-entity-header-streamlined-buttons-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-entity-header-streamlined-buttons-gap);}
+.plx-entity-header__mini-progress{display:flex;flex-direction:column;row-gap:var(--plx-comp-entity-header-streamlined-mini-progress-gap);text-align:end;}
+.plx-entity-header__mini-progress-label{color:var(--plx-comp-entity-header-streamlined-mini-progress-text);font-size:var(--plx-comp-entity-header-streamlined-mini-progress-font-size);font-weight:var(--plx-comp-entity-header-streamlined-mini-progress-font-weight);}
+.plx-entity-header__mini-progress-bar{display:block;inline-size:var(--plx-comp-entity-header-streamlined-mini-progress-width);}
+.plx-entity-header__strip{align-items:center;border-block-start-color:var(--plx-comp-entity-header-streamlined-strip-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-entity-header-border-width);color:var(--plx-comp-entity-header-streamlined-strip-text);column-gap:var(--plx-comp-entity-header-streamlined-strip-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-entity-header-streamlined-strip-font-size);margin-block-start:var(--plx-comp-entity-header-streamlined-strip-margin);padding-block-start:var(--plx-comp-entity-header-streamlined-strip-padding);row-gap:var(--plx-comp-entity-header-streamlined-strip-gap);}
+.plx-entity-header__item{align-items:center;color:var(--plx-state-entity-header-item-text,inherit);column-gap:var(--plx-comp-entity-header-streamlined-item-gap);display:inline-flex;}
+.plx-entity-header__item--success{--plx-state-entity-header-item-text:var(--plx-comp-entity-header-streamlined-item-success-text);}
+.plx-entity-header__item--warning{--plx-state-entity-header-item-text:var(--plx-comp-entity-header-streamlined-item-warning-text);}
+.plx-entity-header__item-icon{--plx-comp-icon-size:var(--plx-comp-entity-header-streamlined-item-icon-size);display:inline-flex;}
+.plx-entity-header__strip-end{display:inline-flex;margin-inline-start:auto;}
+/* the progress: its label and value over the bar, then the fact tiles (as in Structured; a tile with a tone is a status tile) */
+.plx-entity-header__progress{display:flex;flex-direction:column;inline-size:100%;row-gap:var(--plx-comp-entity-header-streamlined-progress-row-gap);}
+.plx-entity-header__progress-row{column-gap:var(--plx-comp-entity-header-streamlined-strip-gap);display:flex;justify-content:space-between;}
+.plx-entity-header__progress-label{color:var(--plx-comp-entity-header-streamlined-progress-label-text);font-weight:var(--plx-comp-entity-header-streamlined-progress-label-font-weight);}
+.plx-entity-header__progress-value{color:var(--plx-comp-entity-header-streamlined-progress-value-text);font-weight:var(--plx-comp-entity-header-streamlined-progress-value-font-weight);}
+.plx-entity-header__details--strip{--plx-state-entity-header-details-margin:var(--plx-comp-entity-header-streamlined-tiles-margin);}
 
 /* narrow: the aside moves under the main column, its divider above it, at the start edge */
 @container plx-entity-header (max-width: 640px){

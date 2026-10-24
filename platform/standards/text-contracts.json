@@ -3639,6 +3639,37 @@
     "font-size",
     "font-weight"
    ]
+  },
+  "plx-entity-header__strong": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-entity-header__mini-progress-label": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-entity-header__strip": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-entity-header__progress-label": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-entity-header__progress-value": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
   }
  }
 }

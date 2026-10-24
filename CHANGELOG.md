@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- EntityHeader `headerStyle="streamlined"`: header style 2 of the owner's page-header study (#244). One line holds the
+  media (48px), the title with its badges (status first) over the subtitle (`**names**` in bold), and at the end the
+  people (AvatarGroup), an inline progress and the actions (icon buttons, labeled buttons, one primary). Under a divider
+  the details strip shows a progress with fact tiles, tags, items, text and an end badge or link (`detail`). It hides in
+  `view="compact"`. A section header shows its icon, title and summary badge with its actions. Built from Badge,
+  AvatarGroup, ProgressBar, Tag, Link and Button; new tokens `--plx-comp-entity-header-streamlined-*`. The default
+  (Structured) is unchanged. Review page: `docs/briefs/header-layouts/streamlined.html`.
+
 ## [0.69.2] - 2026-10-24
 
 ### Fixed

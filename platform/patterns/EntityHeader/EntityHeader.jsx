@@ -22,6 +22,20 @@
        states={{ value: 'in-progress', onChange: setState, options: [{ value: 'draft', label: 'Draft', icon: 'pencil', tone: 'waiting' },
          { value: 'in-progress', label: 'In progress', icon: 'clock', tone: 'success' }, { value: 'adjourned', label: 'Adjourned', icon: 'do-not-disturb', tone: 'negative' }] }} />
    Props:
+     headerStyle: "structured" (default: header style 1, the props below) | "streamlined" (the study's header style 2,
+       Streamlined: one line of media, title with badges and subtitle, then people, inline progress and actions; under a
+       divider the details strip). Streamlined reads media (null: none), title, subtitle (**names** in bold), status (the
+       first badge), and:
+       badges: more badges after the status: [{ label, tone, icon }]
+       people: { label, list: [{ name, src }], max (default 3), onMore }: an AvatarGroup (32px, stacked, +N)
+       progress: { label, value, max }: an inline progress, its label over a 4px bar
+       actions: [{ icon, label, onClick, text, primary }]: icon buttons, then labeled ones (text), then one primary button
+       detail: the details strip: { progress: { label, valueText, value, max }, facts: [{ label, value, data, tone }]
+         (tiles under the bar; a tone makes a status tile), tags: [{ label, category }], items: [{ icon, label, tone
+         (success | warning), data }], text, end: { badge: { tone, icon, label } } | { link: { label, href } } | an element
+         (at the end of the strip) }
+       view: "detailed" (default) | "compact" (the top line only)
+       kind "section": its icon, title and summary (a badge), with its actions
      kind: "page" (default) | "section": a section header (32px icon, 15px title, 4px rule, a summary instead of tiles)
      layout: where the media sits and how big it is (header style 1, the owner's study "Plenix page headers"):
        "top-small" (default): a 44px square beside the title (a section: 32px);
@@ -85,6 +99,11 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Text } from '../../components/Text/Text.jsx';
+import { Badge } from '../../components/Badge/Badge.jsx';
+import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
+import { ProgressBar } from '../../components/ProgressBar/ProgressBar.jsx';
+import { Tag } from '../../components/Tag/Tag.jsx';
+import { Link } from '../../components/Link/Link.jsx';
 
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
 const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
@@ -257,7 +276,106 @@ function Actions({ actions, moreActions, size, strings, labels = 'icon', layout 
   return <div ref={ref} className={cx('plx-entity-header__actions', column && 'plx-entity-header__actions--column', size === 'sm' && 'plx-entity-header__actions--sm')}>{splitAt(items, fit, more)}</div>;
 }
 
-export function EntityHeader({ kind = 'page', layout = 'top-small', title, subtitle, media, status, states, facts, summary, next, actions, moreActions,
+// a subtitle written with **names** in bold (a string); an element passes as it is
+function strongText(text) {
+  if (typeof text !== 'string' || text.indexOf('**') < 0) return text;
+  return text.split('**').map((part, i) => (i % 2 ? <strong key={i} className="plx-entity-header__strong">{part}</strong> : part));
+}
+const toneOf = (t) => (TONES.indexOf(ALIASES[t] || t) >= 0 ? (ALIASES[t] || t) : 'neutral');
+
+// a detail item: its icon and text, colored when it is on track (success) or needs attention (warning)
+function Item({ it }) {
+  return (
+    <span className={cx('plx-entity-header__item', it.tone === 'success' && 'plx-entity-header__item--success', it.tone === 'warning' && 'plx-entity-header__item--warning')}>
+      {it.icon ? <span className="plx-entity-header__item-icon" aria-hidden="true"><Icon name={it.icon} /></span> : null}
+      {it.data ? <Text variant="data">{it.label}</Text> : it.label}
+    </span>
+  );
+}
+
+// header style Streamlined (the owner's study "Plenix page headers", 2026-10-19): the media, the title with its badges
+// (status first) over the subtitle; at the end the people, an inline progress and the actions (one primary); under a
+// divider the details strip (Detailed view only). A section: its icon, title and summary badge, with its actions.
+function Streamlined({ section, H, title, sub, media, status, badges, summary, people, progress, actions, detail, view, className, strings }) {
+  const list = (actions || []).filter(Boolean);
+  const icons = list.filter((a) => !a.primary && !a.text), labeled = list.filter((a) => !a.primary && a.text), primary = list.filter((a) => a.primary).slice(0, 1);
+  const allBadges = (section ? (summary || sub ? [{ label: summary || sub, tone: 'neutral' }] : [])
+    : [status && !React.isValidElement(status) ? status : null].concat(badges || [])).filter(Boolean);
+  const d = !section && view !== 'compact' ? detail : null;
+  const endItem = d && d.end ? (d.end.link
+    ? <Link href={d.end.link.href} variant="standalone">{d.end.link.label}</Link>
+    : d.end.badge ? <Badge tone={toneOf(d.end.badge.tone)} icon={d.end.badge.icon}>{d.end.badge.label}</Badge> : d.end) : null;
+  return (
+    <header className={cx('plx-entity-header', 'plx-entity-header--streamlined', section && 'plx-entity-header--section', view === 'compact' && 'plx-entity-header--compact', className)}>
+      <div className="plx-entity-header__top">
+        <div className="plx-entity-header__start">
+          {media === null ? null : <Media media={media || { icon: 'doc-text' }} section={section} layout={section ? 'top-small' : 'streamlined'} />}
+          <div className="plx-entity-header__head">
+            <div className="plx-entity-header__title-row">
+              <H className="plx-entity-header__title">{title}</H>
+              {allBadges.length ? <span className="plx-entity-header__badges">{allBadges.map((b, i) => <Badge key={i} tone={toneOf(b.tone)} icon={b.icon}>{b.label}</Badge>)}</span> : null}
+            </div>
+            {sub && !section ? <p className="plx-entity-header__subtitle plx-entity-header__subtitle--streamlined">{strongText(sub)}</p> : null}
+          </div>
+        </div>
+        {people || progress || list.length ? (
+          <div className="plx-entity-header__end">
+            {people && !section ? <AvatarGroup label={people.label || strings.people} people={people.list || []} max={people.max || 3} size="md" onMore={people.onMore} /> : null}
+            {progress && !section ? (
+              <div className="plx-entity-header__mini-progress">
+                <span className="plx-entity-header__mini-progress-label">{progress.label}</span>
+                <span className="plx-entity-header__mini-progress-bar"><ProgressBar value={progress.value} max={progress.max} size="sm" label={progress.label} labelHidden /></span>
+              </div>
+            ) : null}
+            {list.length ? (
+              <div className="plx-entity-header__buttons">
+                {icons.map((a) => <Button key={a.label} size={section ? 'sm' : 'md'} iconOnly icon={a.icon} label={a.label} title={a.label} variant="secondary" disabled={a.disabled} onClick={a.onClick} />)}
+                {labeled.map((a) => <Button key={a.label} size="sm" icon={a.icon} variant="secondary" disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>)}
+                {primary.map((a) => <Button key={a.label} size={section ? 'sm' : 'md'} icon={a.icon} variant="primary" disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>)}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+      {d ? (
+        <div className="plx-entity-header__strip">
+          {d.progress ? (
+            <div className="plx-entity-header__progress">
+              <div className="plx-entity-header__progress-row">
+                <span className="plx-entity-header__progress-label">{d.progress.label}</span>
+                <span className="plx-entity-header__progress-value">{d.progress.valueText}</span>
+              </div>
+              <ProgressBar value={d.progress.value} max={d.progress.max} label={d.progress.label} labelHidden />
+              {d.facts && d.facts.length ? (
+                <dl className="plx-entity-header__details plx-entity-header__details--strip">
+                  {d.facts.map((f, i) => (f.tone
+                    ? <div key={i} className="plx-entity-header__fact plx-entity-header__fact--status" data-plx-tone={toneOf(f.tone)}><dt className="plx-entity-header__fact-label">{f.label}</dt><dd className="plx-entity-header__fact-value">{f.value}</dd></div>
+                    : <Fact key={i} f={f} />))}
+                </dl>
+              ) : null}
+            </div>
+          ) : null}
+          {(d.tags || []).map((t, i) => <Tag key={'t' + i} category={t.category}>{t.label}</Tag>)}
+          {(d.items || []).map((it, i) => <Item key={'i' + i} it={it} />)}
+          {d.text ? <span className="plx-entity-header__strip-text">{d.text}</span> : null}
+          {endItem ? <span className="plx-entity-header__strip-end">{endItem}</span> : null}
+        </div>
+      ) : null}
+    </header>
+  );
+}
+
+// the header style picks the component: Structured (style 1, default) or Streamlined
+export function EntityHeader(props) {
+  if (props.headerStyle !== 'streamlined') return <Structured {...props} />;
+  const { kind = 'page', title, subtitle, description, context, media, status, live, badges, summary, people, progress, actions, detail, view = 'detailed', headingLevel, className, strings } = props;
+  const section = kind === 'section';
+  return <Streamlined section={section} H={'h' + (headingLevel || (section ? 2 : 1))} title={title} sub={subtitle !== undefined ? subtitle : (description !== undefined ? description : context)}
+    media={media} status={status || live} badges={badges} summary={summary} people={people} progress={progress} actions={actions} detail={detail} view={view}
+    className={className} strings={{ people: 'People', ...strings }} />;
+}
+
+function Structured({ kind = 'page', layout = 'top-small', title, subtitle, media, status, states, facts, summary, next, actions, moreActions,
   actionLabels = 'icon', actionsLayout = 'row', control, description, context, live, headingLevel, className, strings }) {
   const section = kind === 'section';
   const lay = LAYOUTS.indexOf(layout) >= 0 ? layout : 'top-small';

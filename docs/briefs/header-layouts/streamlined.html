@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streamlined header: the real component</title>
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<style>
+/* a review page (not Platform code): the real EntityHeader, header style Streamlined, with the study's data */
+body{background:var(--plx-sys-surface-canvas);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);}
+h1,h2{color:var(--plx-sys-content-default);font-size:var(--plx-sys-text-label-font-size);margin:var(--plx-sys-space-stack-lg) 0 var(--plx-sys-space-stack-xs);}
+.rv-stack{display:flex;flex-direction:column;gap:var(--plx-sys-space-stack-sm);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var P = window.Plenix, R = window.React, h = R.createElement;
+  var view = new URLSearchParams(location.search).get('view') || 'detailed';
+  var team = [{ name: 'Sarah Lee' }, { name: 'Delilah Ortiz' }, { name: 'Michael Chen' }, { name: 'Ana Kim' }, { name: 'Leo Park' }, { name: 'Sam Patel' }];
+  var CAPS = [
+    ['Projects', { media: { icon: 'folder', hue: 'blue' }, title: 'Website relaunch', status: { tone: 'active', icon: 'clock', label: 'In progress' }, badges: [{ label: 'Marketing' }],
+      subtitle: 'Lead: **Sam Patel** · Target: Nov 30, 2026', people: { label: 'Team', list: team, max: 3 },
+      actions: [{ icon: 'star', label: 'Favorite' }, { icon: 'add', label: 'Add task', primary: true }],
+      detail: { progress: { label: 'Completion', valueText: '62% (38 of 61 tasks)', value: 62 }, facts: [{ label: 'Budget', value: '$42,000 / $60,000', data: true }, { label: 'Sprint', value: 'Sprint 4 of 6' }, { label: 'Next milestone', value: 'Homepage copy (Nov 6)' }, { label: 'Risk level', value: 'Low', tone: 'success' }] } },
+      [['Milestones', 'flag', '3 of 5 done', true], ['Files', 'folder', '24 files', false]]],
+    ['Email', { media: null, title: 'Revised quote for the Q4 campaign', status: { tone: 'waiting', icon: 'clock', label: 'Awaiting reply' }, badges: [{ label: '6 messages in thread', tone: 'active' }],
+      subtitle: 'From: **leo.park@terrapin.com** · To: you, Sam Patel',
+      actions: [{ icon: 'forward', label: 'Forward' }, { icon: 'archive', label: 'Archive' }, { icon: 'reply', label: 'Reply', primary: true }],
+      detail: { items: [{ icon: 'attachment', label: '2 attachments (Q4_quote_v2.pdf, Terms.docx)' }], end: { badge: { tone: 'negative', icon: 'clock', label: 'Reply by Friday' } } } },
+      [['Attachments', 'attachment', '2 files', true]]],
+    ['Documents', { media: { icon: 'folder', hue: 'purple' }, title: 'Legal shared drive', status: { tone: 'success', icon: 'check', label: 'Synced' }, badges: [{ label: 'Legal' }],
+      subtitle: 'Shared drive · **128 items** · 1.2 GB', people: { label: 'Shared with', list: team.slice(1), max: 2 },
+      actions: [{ icon: 'folder', label: 'New folder' }, { icon: 'share', label: 'Share', text: true }, { icon: 'upload', label: 'Upload', primary: true }],
+      detail: { items: [{ icon: 'edit', label: '2 files need signatures' }], end: { badge: { tone: 'waiting', icon: 'clock', label: 'Oldest sent 5 days ago' } } } },
+      [['Contracts', 'doc-text', '42 files', true]]],
+    ['Article', { media: { icon: 'doc-text', hue: 'green' }, title: 'Designing a calm interface', status: { tone: 'neutral', icon: 'edit', label: 'Draft' }, badges: [{ label: 'Design blog' }],
+      subtitle: 'By **Ana Kim** · 1,840 words · 8 min read', people: { label: 'Reviewers', list: team.slice(1, 4), max: 2 },
+      actions: [{ icon: 'star', label: 'Favorite' }, { icon: 'visibility', label: 'Preview', text: true }, { icon: 'send', label: 'Publish', primary: true }],
+      detail: { tags: [{ label: '# design-system', category: 'blue' }, { label: '# writing' }], end: h(P.Inline, { gap: 'xs' }, h(P.Icon, { name: 'clock', size: 'sm' }), 'Editor review due Thursday') } },
+      [['Comments', 'message', '4 open', true]]],
+    ['Capture', { media: { icon: 'mic', hue: 'red' }, title: 'Voice note: homepage ideas', status: { tone: 'active', icon: 'bolt', label: 'New' },
+      subtitle: 'Captured by **voice** · Today 8:12 AM · 0:42', progress: { label: 'Transcribed 80%', value: 80 },
+      actions: [{ icon: 'ed-copy', label: 'Copy text' }, { icon: 'tag', label: 'Tag', text: true }, { icon: 'folder', label: 'File it', primary: true }],
+      detail: { text: 'Suggested destination: Projects / Website relaunch', end: { link: { label: 'Open the suggestion', href: '#projects' } } } },
+      []]];
+  function Cap(p) {
+    var c = p.c, d = c[1];
+    return h('section', null, h('h2', null, c[0]), h('div', { className: 'rv-stack' },
+      h(P.EntityHeader, Object.assign({ headerStyle: 'streamlined', view: view, headingLevel: 2 }, d)),
+      c[2].map(function (s) { return h(P.EntityHeader, { key: s[0], headerStyle: 'streamlined', kind: 'section', headingLevel: 3, title: s[0], summary: s[2], media: { icon: s[1], hue: (d.media && d.media.hue) || 'gray' }, actions: s[3] ? [{ icon: 'add', label: 'Add' }, { icon: 'filter', label: 'Filter' }] : undefined }); })));
+  }
+  function Demo() { return h('div', null, h('h1', null, 'EntityHeader, header style Streamlined (' + view + ' view)'), CAPS.map(function (c) { return h(Cap, { key: c[0], c: c }); })); }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+})();
+</script>
+</body>
+</html>
