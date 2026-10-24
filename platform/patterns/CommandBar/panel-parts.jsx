@@ -28,7 +28,7 @@ export const toggle = (list, v) => (list.indexOf(v) >= 0 ? list.filter((x) => x 
 export const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 // the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
-export function PanelTrigger({ icon, label, count = 0, active, caret = false, size = 'auto', title, footer, inline = false, placement, className, children }) {
+export function PanelTrigger({ icon, label, count = 0, active, caret = false, size = 'auto', title, footer, inline = false, placement, className, open, onOpenChange, children }) {
   const ctx = useCommandBar();
   const box = React.useRef(null);
   // the focus goes to the panel's first row control, else its Add button: not the info button of its head
@@ -36,7 +36,7 @@ export function PanelTrigger({ icon, label, count = 0, active, caret = false, si
   const body = <div ref={box} className={cx('plx-find-panel-body', className)}>{children}</div>;
   if (inline) return <div className="plx-find-panel-frame">{children}</div>;
   const trigger = <CommandBarButton icon={icon} label={label} count={count} active={active} caret={caret} />;
-  const pop = <Popover label={title ? undefined : label} title={title} size={size} trigger={trigger} footer={footer} placement={placement} initialFocus={first}>{body}</Popover>;
+  const pop = <Popover label={title ? undefined : label} title={title} size={size} trigger={trigger} footer={footer} placement={placement} initialFocus={first} {...(open === undefined ? null : { open })} onOpenChange={onOpenChange}>{body}</Popover>;
   return ctx.iconOnly ? <Tooltip content={label}>{pop}</Tooltip> : pop;
 }
 

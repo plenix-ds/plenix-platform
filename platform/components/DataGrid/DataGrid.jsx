@@ -83,6 +83,8 @@
        { rows, total }; search: the page's search text
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+     onFilterField(field): the header menu's "Filter by this field" calls it instead of opening the header filter box; useCollectionView
+       sets it so the command bar's Filter panel opens on that field (one filter state, shown in one place)
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
