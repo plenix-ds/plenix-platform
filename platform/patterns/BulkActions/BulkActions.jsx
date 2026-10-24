@@ -47,7 +47,7 @@
      buttons), never tinted by a selection. */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { useBarFit } from '../../utils/barFit.js';
+import { useBarFit } from '../../utils/overflow.js';
 import { formatNumber } from '../../utils/format.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
@@ -106,14 +106,14 @@ export function BulkActions({ count, total, noun = 'item', plural, onSelectAll, 
   const words = { noun, plural: plural || noun + 's' };
   const root = React.useRef(null);
   const folds = foldOrder(actions).length;
-  const step = useBarFit(root, actions.map((a) => a.label).join('|') + '§' + count, 1 + folds, 0, ':scope > [data-plx-bar-row]');
+  const step = useBarFit(root, actions.map(a => [a.id, a.label, a.icon, a.primary, a.disabled, a.loading, a.value].join(':')).join('|') + '§' + count, 1 + folds, 0, ':scope > [data-plx-bar-row]');
   const why = (a) => a.why || fill(count && a.single && count > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words));
   return (
     <div ref={root} className={cx('plx-bulk-actions', !count && 'plx-bulk-actions--empty', className)}>
       <Toolbar variant="bar" label={label || t.label} className="plx-bulk-actions__row" data-plx-bar-row="">
-        <Toolbar.Group className="plx-bulk-actions__actions">
+        <Toolbar.Group className="plx-bulk-actions__actions" data-plx-fit-more={2}>
           {actions.length ? (
-            <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 1)} off={(a) => off(a, count)} why={why}
+            <BarActions foldStart={1} actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 1)} off={(a) => off(a, count)} why={why}
               moreLabel={t.more} dangerClass="plx-command-bar__danger" />
           ) : null}
           {actions.length && (onSelectAll || onClear) ? <span className="plx-bulk-actions__divider" aria-hidden="true" /> : null}
