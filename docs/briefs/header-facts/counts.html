@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-plx-theme="default" data-plx-mode="light" data-plx-density="compact">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header counts: label on top</title>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<style>
+/* A study page (not Platform code): each count box has its label on top (with its icon), the number at the start of the
+   row below, and "Add more" at the end of that row. Plenix tokens and Buttons only. */
+body{background:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-default);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);}
+h1{font-size:var(--plx-sys-text-heading-font-size);margin:0 0 var(--plx-sys-space-stack-lg);}
+.v{margin-block-end:var(--plx-sys-space-layout-md);}
+.v h2{font-size:var(--plx-sys-text-label-font-size);font-weight:var(--plx-sys-text-label-font-weight);margin:0 0 var(--plx-sys-space-stack-xs);}
+.v p.note{color:var(--plx-sys-content-subtle);font-size:var(--plx-sys-text-caption-font-size);margin:var(--plx-sys-space-stack-xs) 0 0;}
+.hdr{background:var(--plx-sys-surface-default);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-card-12px);display:grid;gap:var(--plx-sys-space-layout-sm);grid-template-columns:1.7fr 1fr;max-inline-size:var(--plx-ref-size-900px);padding:var(--plx-sys-space-inset-lg);}
+.main{display:flex;flex-direction:column;gap:var(--plx-sys-space-stack-sm);}
+.head{align-items:center;display:flex;gap:var(--plx-sys-space-inline-md);}
+.tile{align-items:center;background:var(--plx-sys-surface-canvas);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-surface-8px);color:var(--plx-sys-action-primary-background);display:flex;block-size:var(--plx-ref-size-44px);inline-size:var(--plx-ref-size-44px);justify-content:center;}
+.tile .plx-icon{--plx-comp-icon-size:var(--plx-ref-size-24px);}
+.title{font-size:var(--plx-ref-font-size-18);font-weight:var(--plx-sys-font-weight-medium);}
+.sub{color:var(--plx-sys-content-muted);}
+.rule{background:var(--plx-sys-action-primary-background);block-size:var(--plx-sys-border-width-thick);}
+.aside{align-items:flex-end;border-inline-start:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-divider);display:flex;flex-direction:column;justify-content:space-between;padding-inline-start:var(--plx-sys-space-inset-lg);}
+.seg{border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-4px);display:inline-flex;font-size:var(--plx-sys-text-caption-font-size);overflow:hidden;}
+.seg span{padding:var(--plx-sys-space-inset-xs) var(--plx-sys-space-inset-sm);white-space:nowrap;}
+.seg span+span{border-inline-start:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-default);}
+.seg .on{background:var(--plx-sys-data-color-blue-soft);color:var(--plx-sys-data-color-blue-on-soft);}
+.mono{font-family:var(--plx-sys-text-mono-font-family);word-spacing:var(--plx-sys-text-mono-word-spacing);}
+.lbl{align-items:center;color:var(--plx-sys-content-muted);display:flex;font-size:var(--plx-sys-text-caption-font-size);gap:var(--plx-sys-space-inline-xs);white-space:nowrap;}
+.lbl .plx-icon{--plx-comp-icon-size:var(--plx-ref-size-16px);color:var(--plx-sys-data-color-blue-on-soft);}
+.val{font-size:var(--plx-ref-font-size-15);font-weight:var(--plx-sys-font-weight-semibold);white-space:nowrap;}
+.big{font-size:var(--plx-ref-font-size-24);font-weight:var(--plx-sys-font-weight-semibold);line-height:var(--plx-ref-line-height-tight);}
+.row{align-items:stretch;display:flex;gap:var(--plx-sys-space-inline-sm);}
+.f{background:var(--plx-sys-surface-canvas);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-surface-8px);padding:var(--plx-sys-space-inset-sm);}
+/* Presiding, as you showed it */
+.p{align-items:center;display:flex;gap:var(--plx-sys-space-inline-sm);}
+.ib{align-items:center;background:var(--plx-sys-surface-default);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-detail-4px);color:var(--plx-sys-content-muted);display:flex;flex-shrink:0;block-size:var(--plx-ref-size-32px);inline-size:var(--plx-ref-size-32px);justify-content:center;}
+.ib .plx-icon{--plx-comp-icon-size:var(--plx-ref-size-16px);}
+/* a count: the label on top; the number at the start and Add more at the end of the row below */
+.c{display:flex;flex-direction:column;gap:var(--plx-sys-space-stack-xs);min-inline-size:var(--plx-ref-size-200px);}
+.c .line{align-items:center;display:flex;gap:var(--plx-sys-space-inline-md);justify-content:space-between;}
+</style>
+</head>
+<body>
+<h1>Session header: the counts with the label on top, the number left and Add more right</h1>
+<div id="out"></div>
+<script>
+var I = function (n) { return '<span class="plx-icon plx-icon--' + n + '" aria-hidden="true"></span>'; };
+var btn = function (kind, name) { return '<button type="button" class="plx-button plx-button--' + kind + ' plx-button--size-xs" aria-label="' + name + '"><span class="plx-button__icon">' + I('add') + '</span><span class="plx-button__label">Add more</span></button>'; };
+var presiding = '<div class="f p"><span class="ib">' + I('person') + '</span><div><div class="lbl">Presiding</div><div class="val">H.E. Metropolitan Serapion</div></div></div>';
+var count = function (kind, icon, label, n, name) { return '<div class="f c"><div class="lbl">' + I(icon) + label + '</div><div class="line"><span class="big mono">' + n + '</span>' + btn(kind, name) + '</div></div>'; };
+var V = [
+  ['secondary', 'A · Add more as an outlined button', 'The button has its frame: it reads as an action at once.'],
+  ['ghost', 'B · Add more as a quiet button', 'No frame until it is hovered: the number leads; the action is there when you look for it.']
+];
+var out = document.getElementById('out');
+V.forEach(function (v) {
+  var s = document.createElement('section'); s.className = 'v';
+  s.innerHTML = '<h2>' + v[1] + '</h2><div class="hdr"><div class="main">'
+    + '<div class="head"><span class="tile">' + I('calendar') + '</span><div><div class="title">Council Session 2026-10-22</div><div class="sub">Thursday, October 22, 2026 at 10:00 AM</div></div></div>'
+    + '<div class="rule"></div><div class="row">' + presiding
+    + count(v[0], 'folder', 'Cases to assign', 10, 'Add cases to assign')
+    + count(v[0], 'calendar', 'Scheduled for hearing', 10, 'Add cases scheduled for hearing') + '</div></div>'
+    + '<div class="aside"><button type="button" class="plx-button plx-button--secondary plx-button--size-sm"><span class="plx-button__icon">' + I('person') + '</span><span class="plx-button__label">Council Attendance</span></button>'
+    + '<span class="seg"><span>Draft</span><span class="on">In progress</span><span>Adjourned</span></span></div></div>'
+    + '<p class="note">' + v[2] + ' Each Add more has its own accessible name ("Add cases to assign", "Add cases scheduled for hearing").</p>';
+  out.appendChild(s);
+});
+</script>
+</body>
+</html>

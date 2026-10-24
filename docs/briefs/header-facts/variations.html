@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" data-plx-theme="default" data-plx-mode="light" data-plx-density="compact">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header fact tiles: variations</title>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<style>
+/* A study page (not Platform code): eight ways to show the session header's facts. Plenix tokens only. */
+body{background:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-default);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);}
+h1{font-size:var(--plx-sys-text-heading-font-size);margin:0 0 var(--plx-sys-space-stack-lg);}
+.v{margin-block-end:var(--plx-sys-space-layout-md);}
+.v h2{color:var(--plx-sys-content-muted);font-size:var(--plx-sys-text-label-font-size);font-weight:var(--plx-sys-text-label-font-weight);margin:0 0 var(--plx-sys-space-stack-xs);}
+.v h2 b{color:var(--plx-sys-content-default);}
+.v p.note{color:var(--plx-sys-content-subtle);font-size:var(--plx-sys-text-caption-font-size);margin:var(--plx-sys-space-stack-xs) 0 0;}
+/* the header around the facts (as today) */
+.hdr{background:var(--plx-sys-surface-default);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-card-12px);display:grid;gap:var(--plx-sys-space-layout-sm);grid-template-columns:1.7fr 1fr;max-inline-size:var(--plx-ref-size-900px);padding:var(--plx-sys-space-inset-lg);}
+.main{display:flex;flex-direction:column;gap:var(--plx-sys-space-stack-sm);}
+.head{align-items:center;display:flex;gap:var(--plx-sys-space-inline-md);}
+.tile{align-items:center;background:var(--plx-sys-surface-canvas);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-surface-8px);color:var(--plx-sys-action-primary-background);display:flex;block-size:var(--plx-ref-size-44px);inline-size:var(--plx-ref-size-44px);justify-content:center;}
+.tile .plx-icon{--plx-comp-icon-size:var(--plx-ref-size-24px);}
+.title{font-size:var(--plx-ref-font-size-18);font-weight:var(--plx-sys-font-weight-medium);}
+.sub{color:var(--plx-sys-content-muted);font-size:var(--plx-sys-text-body-font-size);}
+.rule{background:var(--plx-sys-action-primary-background);block-size:var(--plx-sys-border-width-thick);inline-size:100%;}
+.aside{border-inline-start:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-divider);color:var(--plx-sys-content-subtle);font-size:var(--plx-sys-text-caption-font-size);padding-inline-start:var(--plx-sys-space-inset-lg);}
+.mono{font-family:var(--plx-sys-text-mono-font-family);word-spacing:var(--plx-sys-text-mono-word-spacing);}
+.lbl{color:var(--plx-sys-content-subtle);font-size:var(--plx-ref-font-size-11);}
+.val{font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-sys-font-weight-semibold);white-space:nowrap;}
+.row{display:flex;flex-wrap:wrap;gap:var(--plx-sys-space-inline-sm);}
+.ic{--plx-comp-icon-size:var(--plx-ref-size-16px);color:var(--plx-sys-content-muted);}
+/* A today */
+.a .f{background:var(--plx-sys-surface-canvas);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-detail-4px);padding:var(--plx-sys-space-inset-xs) var(--plx-sys-space-inset-sm);}
+/* B open facts, dividers */
+.b .row{gap:0;}
+.b .f{border-inline-start:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-divider);padding:0 var(--plx-sys-space-inset-md);}
+.b .f:first-child{border-inline-start:0;padding-inline-start:0;}
+/* C one strip */
+.c .row{border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-surface-8px);display:inline-flex;gap:0;overflow:hidden;}
+.c .f{background:var(--plx-sys-surface-canvas);border-inline-start:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);padding:var(--plx-sys-space-inset-xs) var(--plx-sys-space-inset-md);}
+.c .f:first-child{border-inline-start:0;}
+/* D accent start bar */
+.d .f{background:var(--plx-sys-surface-default);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-inline-start:var(--plx-sys-border-width-thick) solid var(--plx-sys-action-primary-background);border-radius:var(--plx-sys-radius-detail-4px);padding:var(--plx-sys-space-inset-xs) var(--plx-sys-space-inset-sm);}
+/* E value first (metric) */
+.e .f{background:var(--plx-sys-surface-canvas);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-surface-8px);min-inline-size:var(--plx-ref-size-120px);padding:var(--plx-sys-space-inset-sm) var(--plx-sys-space-inset-md);}
+.e .big{font-size:var(--plx-ref-font-size-24);font-weight:var(--plx-sys-font-weight-semibold);line-height:var(--plx-ref-line-height-tight);}
+.e .person{align-items:center;display:flex;gap:var(--plx-sys-space-inline-sm);}
+/* F icon tiles */
+.f2 .f{align-items:center;background:var(--plx-sys-surface-canvas);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-detail-4px);display:flex;gap:var(--plx-sys-space-inline-sm);padding:var(--plx-sys-space-inset-xs) var(--plx-sys-space-inset-sm);}
+.f2 .badge{align-items:center;background:var(--plx-sys-data-color-blue-soft);border-radius:var(--plx-sys-radius-detail-4px);color:var(--plx-sys-data-color-blue-on-soft);display:flex;block-size:var(--plx-ref-size-28px);inline-size:var(--plx-ref-size-28px);justify-content:center;}
+.f2 .row{flex-wrap:nowrap;gap:var(--plx-sys-space-inline-xs);}
+.f2 .ic{color:inherit;}
+.f2 .badge{block-size:var(--plx-ref-size-24px);inline-size:var(--plx-ref-size-24px);}
+/* G one facts line */
+.g .line{color:var(--plx-sys-content-muted);font-size:var(--plx-sys-text-body-font-size);}
+.g .line b{color:var(--plx-sys-content-default);font-weight:var(--plx-sys-font-weight-semibold);}
+.g .dot{color:var(--plx-sys-content-subtle);padding:0 var(--plx-sys-space-inline-xs);}
+/* H person + counts as pills */
+.h .row{align-items:center;gap:var(--plx-sys-space-inline-md);}
+.h .person{align-items:center;display:flex;gap:var(--plx-sys-space-inline-sm);}
+.h .pill{align-items:center;background:var(--plx-sys-status-pill-neutral-background);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-status-pill-neutral-border);border-radius:var(--plx-sys-radius-pill-4px);color:var(--plx-sys-status-pill-neutral-text);display:inline-flex;font-size:var(--plx-sys-text-caption-font-size);gap:var(--plx-sys-space-inline-xs);padding:var(--plx-sys-space-inset-xs) var(--plx-sys-space-inset-sm);}
+.h .pill b{color:var(--plx-sys-content-default);}
+.av{align-items:center;background:var(--plx-sys-data-color-blue-soft);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:50%;color:var(--plx-sys-data-color-blue-on-soft);display:inline-flex;font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-sys-font-weight-semibold);block-size:var(--plx-ref-size-28px);inline-size:var(--plx-ref-size-28px);justify-content:center;}
+</style>
+</head>
+<body>
+<h1>Session header: the fact tiles, eight variations</h1>
+<template id="hdr">
+  <div class="hdr"><div class="main">
+    <div class="head"><span class="tile"><span class="plx-icon plx-icon--calendar"></span></span><div><div class="title">Council Session 2026-10-22</div><div class="sub">Thursday, October 22, 2026 at 10:00 AM</div></div></div>
+    <div class="rule"></div><div class="facts"></div></div>
+    <div class="aside">Actions and status, unchanged</div></div>
+</template>
+<div id="out"></div>
+<script>
+// a study page: the facts of each variation, drawn into the same header
+var V = [
+  ['a', 'A · Today', 'Gray tiles, label over value, each its own box.',
+    '<div class="row"><div class="f"><div class="lbl">Presiding</div><div class="val">H.E. Metropolitan Serapion</div></div><div class="f"><div class="lbl">Cases to assign</div><div class="val mono">10</div></div><div class="f"><div class="lbl">Scheduled Cases for Hearing</div><div class="val mono">10</div></div></div>'],
+  ['b', 'B · Open facts', 'No boxes: label over value, a thin divider between facts. Lightest; reads as one row of data.',
+    '<div class="row"><div class="f"><div class="lbl">Presiding</div><div class="val">H.E. Metropolitan Serapion</div></div><div class="f"><div class="lbl">Cases to assign</div><div class="val mono">10</div></div><div class="f"><div class="lbl">Scheduled for hearing</div><div class="val mono">10</div></div></div>'],
+  ['c', 'C · One strip', 'The three facts joined in one framed strip with inner dividers. Groups them as one unit.',
+    '<div class="row"><div class="f"><div class="lbl">Presiding</div><div class="val">H.E. Metropolitan Serapion</div></div><div class="f"><div class="lbl">Cases to assign</div><div class="val mono">10</div></div><div class="f"><div class="lbl">Scheduled for hearing</div><div class="val mono">10</div></div></div>'],
+  ['d', 'D · Accent start bar', 'White tiles with the 3px accent bar at the start (the bar width the UI already uses). Ties the tiles to the header rule.',
+    '<div class="row"><div class="f"><div class="lbl">Presiding</div><div class="val">H.E. Metropolitan Serapion</div></div><div class="f"><div class="lbl">Cases to assign</div><div class="val mono">10</div></div><div class="f"><div class="lbl">Scheduled for hearing</div><div class="val mono">10</div></div></div>'],
+  ['e', 'E · Value first', 'Counts as large numbers over a small label (metric style); the presiding person with an avatar. Best when the counts are what people scan for.',
+    '<div class="row"><div class="f"><div class="person"><span class="av">MS</span><div><div class="val">H.E. Metropolitan Serapion</div><div class="lbl">Presiding</div></div></div></div><div class="f"><div class="big mono">10</div><div class="lbl">Cases to assign</div></div><div class="f"><div class="big mono">10</div><div class="lbl">Scheduled for hearing</div></div></div>'],
+  ['f2', 'F · Icon tiles', 'Each fact with a small tinted icon: who presides, what to assign, what is scheduled. Faster to recognize at a glance.',
+    '<div class="row"><div class="f"><span class="badge"><span class="plx-icon plx-icon--person ic"></span></span><div><div class="lbl">Presiding</div><div class="val">H.E. Metropolitan Serapion</div></div></div><div class="f"><span class="badge"><span class="plx-icon plx-icon--folder ic"></span></span><div><div class="lbl">Cases to assign</div><div class="val mono">10</div></div></div><div class="f"><span class="badge"><span class="plx-icon plx-icon--schedule ic"></span></span><div><div class="lbl">Scheduled for hearing</div><div class="val mono">10</div></div></div></div>'],
+  ['g', 'G · One facts line', 'No tiles: one sentence under the rule. Most compact; the header becomes title, rule, line.',
+    '<div class="line">Presided by <b>H.E. Metropolitan Serapion</b><span class="dot">·</span><b class="mono">10</b> cases to assign<span class="dot">·</span><b class="mono">10</b> scheduled for hearing</div>'],
+  ['h', 'H · Person and count pills', 'The presiding person as an avatar and name; the two counts as pills beside it. Separates who from how many.',
+    '<div class="row"><div class="person"><span class="av">MS</span><div><div class="lbl">Presiding</div><div class="val">H.E. Metropolitan Serapion</div></div></div><span class="pill"><b class="mono">10</b> to assign</span><span class="pill"><b class="mono">10</b> scheduled for hearing</span></div>']
+];
+var out = document.getElementById('out'), tpl = document.getElementById('hdr');
+V.forEach(function (v) {
+  var s = document.createElement('section'); s.className = 'v ' + v[0];
+  s.innerHTML = '<h2><b>' + v[1] + '</b></h2>';
+  var h = tpl.content.cloneNode(true); h.querySelector('.facts').innerHTML = v[3]; s.appendChild(h);
+  var p = document.createElement('p'); p.className = 'note'; p.textContent = v[2]; s.appendChild(p);
+  out.appendChild(s);
+});
+</script>
+</body>
+</html>

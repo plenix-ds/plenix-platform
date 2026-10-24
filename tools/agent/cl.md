@@ -1,10 +1,13 @@
+### Added
+- `Resizable` `variant="divider"`: the edge is the whole gap to the next panel, with a line down its middle and a pill
+  on it (`--plx-comp-resizable-divider-*`; its width is `--plx-comp-resizable-divider-size`, which a container may set
+  on its own element). `Resizable` `fill`: the content is a column its children fill.
+- `tests/compare-styles.js`: compares one component's elements, property by property, between two copies of the
+  repository, for pages whose documentation changes with the stylesheet.
 ### Changed
-- **The code and data font is Reddit Mono** (owner, 2026-10-18; docs/font-study/playground: the closest monospace match
-  to DM Sans, 98.8%). DM Sans never changes and every element keeps its px size: Reddit Mono's @font-face has
-  `size-adjust: 97.1%`, so at the same font-size its x-height, capitals and figures match DM Sans's (99–100% on a 1.5×
-  screen), and its stroke matches at Regular (99.8%; 92–94% at Medium and Semibold). Reddit Mono is variable (200–900),
-  so no weight is faked. Self-hosted in platform/fonts (OFL 1.1).
-- Every rule that sets the monospace font also sets `word-spacing: var(--plx-sys-font-data-word-spacing)` (−0.279em,
-  `--plx-ref-word-spacing-mono-fit`): a space as wide as DM Sans's. check-system rule `mono-spacing` keeps it so.
-- `--plx-ref-font-mono` starts with "Reddit Mono"; the docs, standards, native design data and tests name it. DM Mono
-  stays declared only for the font study. Apps to check: an app that names "DM Mono" itself should use the token.
+- SplitView no longer styles Resizable's parts (Styling Standard, Phase 2): its first panel is
+  `<Resizable variant="divider" fill>`, and it sets the divider's width to its gap. Tokens
+  `--plx-comp-split-view-line-*`, `-handle-*` and `-active-color` are now `--plx-comp-resizable-divider-*`.
+  No visual change: SplitView's and Resizable's examples are identical (tests/compare-styles.js against 0.57.4).
+  Apps to check: CSS that set the old SplitView divider tokens.
+- `tests/clash-audit.js --check` reads a differing design-system page once more on its own before reporting it.
