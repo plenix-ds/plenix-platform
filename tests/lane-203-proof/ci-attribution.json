@@ -1,0 +1,654 @@
+{
+  "base": "0c6dd191",
+  "head": "39bc611f",
+  "mode": "light",
+  "runtime": {
+    "elements": 16,
+    "computedStylesIdentical": true
+  },
+  "docChanges": [
+    {
+      "index": 1138,
+      "baseLabel": "div.ds-stack",
+      "headLabel": "div.ds-stack",
+      "text": "UI Inventory09 Overlays & DisclosureOverlay surfacesMedia lightboxMedia lightboxA full-screen preview of images and videos, one at a time (the lightbox).StatusActiveLevelComponentO",
+      "ancestors": [
+        "ds-page-scroll",
+        "ds-page-row",
+        "plx-app-shell__main"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "5766.22px",
+          "head": "5833.41px"
+        },
+        {
+          "property": "height",
+          "base": "5766.22px",
+          "head": "5833.41px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "466px 2883.11px",
+          "head": "466px 2916.7px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "466px 2883.11px",
+          "head": "466px 2916.7px"
+        }
+      ]
+    },
+    {
+      "index": 1910,
+      "baseLabel": "section.plx-panel",
+      "headLabel": "section.plx-panel",
+      "panel": "Development and API",
+      "text": "Development and APIFrom the source file's header comment and its code.A full-screen preview of images and videos, one at a time (the lightbox).UsageCopy<MediaViewer open={open} onC",
+      "ancestors": [
+        "ds-stack",
+        "ds-page-scroll",
+        "ds-page-row"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "1194.12px",
+          "head": "1261.31px"
+        },
+        {
+          "property": "height",
+          "base": "1194.12px",
+          "head": "1261.31px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "466px 597.062px",
+          "head": "466px 630.656px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "466px 597.062px",
+          "head": "466px 630.656px"
+        }
+      ]
+    },
+    {
+      "index": 1919,
+      "baseLabel": "div.plx-panel__body",
+      "headLabel": "div.plx-panel__body",
+      "panel": "Development and API",
+      "text": "A full-screen preview of images and videos, one at a time (the lightbox).UsageCopy<MediaViewer open={open} onClose={close} items={[{ src, alt, title, meta: ['JPG', '2.4 MB'] }]}\n  ",
+      "ancestors": [
+        "plx-panel",
+        "ds-stack",
+        "ds-page-scroll"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "1124.12px",
+          "head": "1191.31px"
+        },
+        {
+          "property": "height",
+          "base": "1124.12px",
+          "head": "1191.31px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "465px 562.062px",
+          "head": "465px 595.656px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "465px 562.062px",
+          "head": "465px 595.656px"
+        }
+      ]
+    },
+    {
+      "index": 1940,
+      "baseLabel": "div.plx-table.plx-table--row-header",
+      "headLabel": "div.plx-table.plx-table--row-header",
+      "panel": "Development and API",
+      "text": "PropTypeDefaultDescriptionopen——whether the viewer is shownonClose()——runs from the close button and Escapeitemsarray[][{ src, alt, title, meta, kind: \"image\" | \"video\", poster, au",
+      "ancestors": [
+        "plx-panel__body",
+        "plx-panel",
+        "ds-stack"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "618.625px",
+          "head": "685.812px"
+        },
+        {
+          "property": "height",
+          "base": "618.625px",
+          "head": "685.812px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "449px 309.312px",
+          "head": "449px 342.906px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "449px 309.312px",
+          "head": "449px 342.906px"
+        }
+      ]
+    },
+    {
+      "index": 1941,
+      "baseLabel": "div.plx-table__table.plx-table__grid",
+      "headLabel": "div.plx-table__table.plx-table__grid",
+      "panel": "Development and API",
+      "text": "PropTypeDefaultDescriptionopen——whether the viewer is shownonClose()——runs from the close button and Escapeitemsarray[][{ src, alt, title, meta, kind: \"image\" | \"video\", poster, au",
+      "ancestors": [
+        "plx-table plx-table--row-header",
+        "plx-panel__body",
+        "plx-panel"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "616.625px",
+          "head": "683.812px"
+        },
+        {
+          "property": "height",
+          "base": "616.625px",
+          "head": "683.812px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "448px 308.312px",
+          "head": "448px 341.906px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "448px 308.312px",
+          "head": "448px 341.906px"
+        }
+      ]
+    },
+    {
+      "index": 1985,
+      "baseLabel": "div.plx-table__grid-tableholder",
+      "headLabel": "div.plx-table__grid-tableholder",
+      "panel": "Development and API",
+      "text": "open——whether the viewer is shownonClose()——runs from the close button and Escapeitemsarray[][{ src, alt, title, meta, kind: \"image\" | \"video\", poster, audio, tracks }] Videos use ",
+      "ancestors": [
+        "plx-table__table plx-table__grid",
+        "plx-table plx-table--row-header",
+        "plx-panel__body"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "587.625px",
+          "head": "654.812px"
+        },
+        {
+          "property": "height",
+          "base": "587.625px",
+          "head": "654.812px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "448px 293.812px",
+          "head": "448px 327.406px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "448px 293.812px",
+          "head": "448px 327.406px"
+        }
+      ]
+    },
+    {
+      "index": 1986,
+      "baseLabel": "div.plx-table__grid-table",
+      "headLabel": "div.plx-table__grid-table",
+      "panel": "Development and API",
+      "text": "open——whether the viewer is shownonClose()——runs from the close button and Escapeitemsarray[][{ src, alt, title, meta, kind: \"image\" | \"video\", poster, audio, tracks }] Videos use ",
+      "ancestors": [
+        "plx-table__grid-tableholder",
+        "plx-table__table plx-table__grid",
+        "plx-table plx-table--row-header"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "587.625px",
+          "head": "654.812px"
+        },
+        {
+          "property": "height",
+          "base": "587.625px",
+          "head": "654.812px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "448px 293.812px",
+          "head": "448px 327.406px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "448px 293.812px",
+          "head": "448px 327.406px"
+        }
+      ]
+    },
+    {
+      "index": 2010,
+      "baseLabel": "span.plx-table__value",
+      "headLabel": "span.plx-table__value",
+      "panel": "Development and API",
+      "text": "array",
+      "ancestors": [
+        "plx-table__grid-cell plx-table__cell--key",
+        "plx-table__grid-row",
+        "plx-table__grid-table"
+      ],
+      "properties": [
+        {
+          "property": "inline-size",
+          "base": "10.4688px",
+          "head": "28.7188px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "5.23438px 14px",
+          "head": "14.3594px 14px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "5.23438px 14px",
+          "head": "14.3594px 14px"
+        },
+        {
+          "property": "width",
+          "base": "10.4688px",
+          "head": "28.7188px"
+        }
+      ]
+    },
+    {
+      "index": 2012,
+      "baseLabel": "span.plx-table__value",
+      "headLabel": "span.plx-table__value",
+      "panel": "Development and API",
+      "text": "[]",
+      "ancestors": [
+        "plx-table__grid-cell plx-table__cell--data plx-table__cell--key",
+        "plx-table__grid-row",
+        "plx-table__grid-table"
+      ],
+      "properties": [
+        {
+          "property": "inline-size",
+          "base": "6.5625px",
+          "head": "13.1094px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "3.28125px 14px",
+          "head": "6.54688px 14px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "3.28125px 14px",
+          "head": "6.55469px 14px"
+        },
+        {
+          "property": "width",
+          "base": "6.5625px",
+          "head": "13.1094px"
+        }
+      ]
+    },
+    {
+      "index": 2015,
+      "baseLabel": "div.plx-table__grid-row",
+      "headLabel": "div.plx-table__grid-row",
+      "panel": "Development and API",
+      "text": "items[].meta——an array of short technical values shown under the title count, getItem(index): optional lazy collection; only the shown item is requested while open. Overrides items",
+      "ancestors": [
+        "plx-table__grid-table",
+        "plx-table__grid-tableholder",
+        "plx-table__table plx-table__grid"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "45.7812px",
+          "head": "112.969px"
+        },
+        {
+          "property": "height",
+          "base": "45.7812px",
+          "head": "112.969px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "448px 22.8906px",
+          "head": "448px 56.4844px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "448px 22.8906px",
+          "head": "448px 56.4844px"
+        }
+      ]
+    },
+    {
+      "index": 2016,
+      "baseLabel": "div.plx-table__grid-cell.plx-table__cell--data.plx-table__grid-frozen",
+      "headLabel": "div.plx-table__grid-cell.plx-table__cell--data.plx-table__grid-frozen",
+      "panel": "Development and API",
+      "text": "items[].meta",
+      "ancestors": [
+        "plx-table__grid-row",
+        "plx-table__grid-table",
+        "plx-table__grid-tableholder"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "height",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "120px 22.3906px",
+          "head": "120px 55.9844px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "120px 22.3906px",
+          "head": "120px 55.9844px"
+        }
+      ]
+    },
+    {
+      "index": 2018,
+      "baseLabel": "div.plx-table__grid-cell.plx-table__cell--key",
+      "headLabel": "div.plx-table__grid-cell.plx-table__cell--key",
+      "panel": "Development and API",
+      "text": "—",
+      "ancestors": [
+        "plx-table__grid-row",
+        "plx-table__grid-table",
+        "plx-table__grid-tableholder"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "height",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "110px 22.3906px",
+          "head": "110px 55.9844px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "110px 22.3906px",
+          "head": "110px 55.9844px"
+        }
+      ]
+    },
+    {
+      "index": 2020,
+      "baseLabel": "div.plx-table__grid-cell.plx-table__cell--data.plx-table__cell--key",
+      "headLabel": "div.plx-table__grid-cell.plx-table__cell--data.plx-table__cell--key",
+      "panel": "Development and API",
+      "text": "—",
+      "ancestors": [
+        "plx-table__grid-row",
+        "plx-table__grid-table",
+        "plx-table__grid-tableholder"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "height",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "110px 22.3906px",
+          "head": "110px 55.9844px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "110px 22.3906px",
+          "head": "110px 55.9844px"
+        }
+      ]
+    },
+    {
+      "index": 2022,
+      "baseLabel": "div.plx-table__grid-cell.plx-table__cell--wrap",
+      "headLabel": "div.plx-table__grid-cell.plx-table__cell--wrap",
+      "panel": "Development and API",
+      "text": "an array of short technical values shown under the title count, getItem(index): optional lazy collection; only the shown item is requested while open. Overrides items.",
+      "ancestors": [
+        "plx-table__grid-row",
+        "plx-table__grid-table",
+        "plx-table__grid-tableholder"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "height",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "108px 22.3906px",
+          "head": "108px 55.9844px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "108px 22.3906px",
+          "head": "108px 55.9844px"
+        }
+      ]
+    },
+    {
+      "index": 2023,
+      "baseLabel": "span.plx-table__value",
+      "headLabel": "span.plx-table__value",
+      "panel": "Development and API",
+      "text": "an array of short technical values shown under the title count, getItem(index): optional lazy collection; only the shown item is requested while open. Overrides items.",
+      "ancestors": [
+        "plx-table__grid-cell plx-table__cell--wrap",
+        "plx-table__grid-row",
+        "plx-table__grid-table"
+      ],
+      "properties": [
+        {
+          "property": "block-size",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "height",
+          "base": "44.7812px",
+          "head": "111.969px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "100px 22.3906px",
+          "head": "100px 55.9844px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "100px 22.3906px",
+          "head": "100px 55.9844px"
+        }
+      ]
+    },
+    {
+      "index": 2106,
+      "baseLabel": "span.plx-list__text",
+      "headLabel": "span.plx-list__text",
+      "panel": "Development and API",
+      "text": "With no items nothing renders. Out-of-range indexes are clamped after the collection changes.",
+      "ancestors": [
+        "plx-list__item plx-list__item--neutral",
+        "plx-list",
+        "plx-panel__body"
+      ],
+      "properties": [
+        {
+          "property": "inline-size",
+          "base": "185.391px",
+          "head": "574.422px"
+        },
+        {
+          "property": "perspective-origin",
+          "base": "92.6875px 10px",
+          "head": "287.203px 10px"
+        },
+        {
+          "property": "transform-origin",
+          "base": "92.6953px 10px",
+          "head": "287.211px 10px"
+        },
+        {
+          "property": "width",
+          "base": "185.391px",
+          "head": "574.422px"
+        }
+      ]
+    }
+  ],
+  "typography": {
+    "overlays/media-lightbox": {
+      "base": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 2
+      },
+      "head": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 2
+      }
+    },
+    "layout/responsive-grid": {
+      "base": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 0
+      },
+      "head": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 0
+      }
+    },
+    "layout/masonry-layout": {
+      "base": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 0
+      },
+      "head": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 0
+      }
+    },
+    "patterns/columns-menu": {
+      "base": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 1
+      },
+      "head": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 1
+      }
+    },
+    "patterns/delete-flow": {
+      "base": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 0
+      },
+      "head": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 0
+      }
+    },
+    "data-display/data-grid": {
+      "base": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 3
+      },
+      "head": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 1
+      }
+    },
+    "implementation/css-architecture": {
+      "base": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 7
+      },
+      "head": {
+        "role": 0,
+        "prose": 0,
+        "pattern": 0,
+        "baseline": 7
+      }
+    }
+  }
+}

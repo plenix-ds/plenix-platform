@@ -1,29 +1,38 @@
-/* Plenix · ContentGrid. */
-.plx-content-grid{column-gap:var(--plx-comp-content-grid-gap);display:grid;grid-template-columns:repeat(auto-fill, minmax(var(--plx-comp-content-grid-min), 1fr));list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-content-grid-row-gap);}
-.plx-content-grid--xs{--plx-comp-content-grid-min:var(--plx-ref-size-100px);}
-.plx-content-grid--sm{--plx-comp-content-grid-min:var(--plx-ref-size-140px);}
-.plx-content-grid--md{--plx-comp-content-grid-min:var(--plx-ref-size-180px);}
-.plx-content-grid--lg{--plx-comp-content-grid-min:var(--plx-ref-size-240px);}
+/* Plenix · ContentGrid. Each part owns its properties; layout and size states are exclusive.
+   Virtual rows use the measured card height and existing viewport-height tokens; no card colors or text roles change. */
+@property --plx-state-content-grid-row-height{syntax:"*";inherits:false;}
+@property --plx-state-content-grid-min{syntax:"*";inherits:false;}
+@property --plx-state-content-grid-display{syntax:"*";inherits:false;}
+@property --plx-state-content-grid-height{syntax:"*";inherits:false;}
+.plx-content-grid{--plx-comp-content-grid-context-min:var(--plx-state-content-grid-min,var(--plx-ref-size-180px));column-gap:var(--plx-comp-content-grid-gap);display:var(--plx-state-content-grid-display,grid);grid-template-columns:repeat(auto-fill,minmax(var(--plx-comp-content-grid-context-min),1fr));list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-content-grid-row-gap);}
+.plx-content-grid--xs{--plx-state-content-grid-min:var(--plx-ref-size-100px);}
+.plx-content-grid--sm{--plx-state-content-grid-min:var(--plx-ref-size-140px);}
+.plx-content-grid--lg{--plx-state-content-grid-min:var(--plx-ref-size-240px);}
 .plx-content-grid__item{display:flex;flex-direction:column;min-inline-size:0;}
-.plx-content-grid__item>*{flex-grow:1;}
-/* masonry: columns of the card width, each item at its own height, filled top to bottom (CSS columns); a masonry grid
-   where the browser has one (it fills row by row) */
-.plx-content-grid--masonry{column-gap:var(--plx-comp-content-grid-gap);column-width:var(--plx-comp-content-grid-min);display:block;}
-.plx-content-grid--masonry>.plx-content-grid__item{break-inside:avoid;margin-block-end:var(--plx-comp-content-grid-masonry-row-gap);}
-@supports (grid-template-rows: masonry){
-.plx-content-grid--masonry{display:grid;grid-template-rows:masonry;}
-.plx-content-grid--masonry>.plx-content-grid__item{margin-block-end:0;}
+.plx-content-grid__content:where(:not(.plx-content-grid__content--justified)){flex-grow:1;}
+/* CSS columns and native masonry use mutually exclusive support conditions. */
+.plx-content-grid--masonry{column-width:var(--plx-comp-content-grid-context-min);}
+@supports not (grid-template-rows:masonry){
+.plx-content-grid--masonry{--plx-state-content-grid-display:block;}
+.plx-content-grid__item--masonry{break-inside:avoid;margin-block-end:var(--plx-comp-content-grid-masonry-row-gap);}
 }
-/* justified rows: rows of the size's height that fill the width, each item widened by its ratio; the last row keeps its
-   items at their own width (the spacer after it takes the rest) */
-.plx-content-grid--justified{column-gap:var(--plx-comp-content-grid-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-content-grid-row-gap);}
+@supports (grid-template-rows:masonry){
+.plx-content-grid--masonry{grid-template-rows:masonry;}
+.plx-content-grid__item--masonry{break-inside:avoid;}
+}
+.plx-content-grid--justified{--plx-state-content-grid-display:flex;flex-wrap:wrap;}
 .plx-content-grid--justified::after{content:"";flex-grow:var(--plx-comp-content-grid-justified-last-row-grow);}
-.plx-content-grid--justified>.plx-content-grid__item{block-size:var(--plx-comp-content-grid-min);overflow:hidden;}
-.plx-content-grid--justified>.plx-content-grid__item>*{block-size:100%;min-block-size:0;}
-.plx-content-grid--justified>[data-plx-ratio="1-1"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-1-1));flex-grow:var(--plx-comp-content-grid-ratio-1-1);}
-.plx-content-grid--justified>[data-plx-ratio="4-3"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-4-3));flex-grow:var(--plx-comp-content-grid-ratio-4-3);}
-.plx-content-grid--justified>[data-plx-ratio="3-2"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-3-2));flex-grow:var(--plx-comp-content-grid-ratio-3-2);}
-.plx-content-grid--justified>[data-plx-ratio="16-9"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-16-9));flex-grow:var(--plx-comp-content-grid-ratio-16-9);}
-.plx-content-grid--justified>[data-plx-ratio="21-9"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-21-9));flex-grow:var(--plx-comp-content-grid-ratio-21-9);}
-.plx-content-grid--justified>[data-plx-ratio="3-4"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-3-4));flex-grow:var(--plx-comp-content-grid-ratio-3-4);}
-.plx-content-grid--justified>[data-plx-ratio="9-16"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-9-16));flex-grow:var(--plx-comp-content-grid-ratio-9-16);}
+.plx-content-grid__item--justified{block-size:var(--plx-comp-content-grid-context-min);overflow-x:hidden;overflow-y:hidden;}
+.plx-content-grid__content--justified{block-size:100%;flex-grow:1;min-block-size:0;}
+.plx-content-grid__item[data-plx-ratio="1-1"]{flex-basis:calc(var(--plx-comp-content-grid-context-min) * var(--plx-comp-content-grid-ratio-1-1));flex-grow:var(--plx-comp-content-grid-ratio-1-1);}
+.plx-content-grid__item[data-plx-ratio="4-3"]{flex-basis:calc(var(--plx-comp-content-grid-context-min) * var(--plx-comp-content-grid-ratio-4-3));flex-grow:var(--plx-comp-content-grid-ratio-4-3);}
+.plx-content-grid__item[data-plx-ratio="3-2"]{flex-basis:calc(var(--plx-comp-content-grid-context-min) * var(--plx-comp-content-grid-ratio-3-2));flex-grow:var(--plx-comp-content-grid-ratio-3-2);}
+.plx-content-grid__item[data-plx-ratio="16-9"]{flex-basis:calc(var(--plx-comp-content-grid-context-min) * var(--plx-comp-content-grid-ratio-16-9));flex-grow:var(--plx-comp-content-grid-ratio-16-9);}
+.plx-content-grid__item[data-plx-ratio="21-9"]{flex-basis:calc(var(--plx-comp-content-grid-context-min) * var(--plx-comp-content-grid-ratio-21-9));flex-grow:var(--plx-comp-content-grid-ratio-21-9);}
+.plx-content-grid__item[data-plx-ratio="3-4"]{flex-basis:calc(var(--plx-comp-content-grid-context-min) * var(--plx-comp-content-grid-ratio-3-4));flex-grow:var(--plx-comp-content-grid-ratio-3-4);}
+.plx-content-grid__item[data-plx-ratio="9-16"]{flex-basis:calc(var(--plx-comp-content-grid-context-min) * var(--plx-comp-content-grid-ratio-9-16));flex-grow:var(--plx-comp-content-grid-ratio-9-16);}
+.plx-content-grid__item--virtual{min-block-size:var(--plx-comp-content-grid-context-row-height,max-content);}
+.plx-content-grid--virtual{--plx-comp-content-grid-context-row-height:var(--plx-state-content-grid-row-height,max-content);--plx-sys-virtual-item-size:var(--plx-state-content-grid-row-height,var(--plx-comp-content-grid-context-min));--plx-sys-virtual-item-gap:var(--plx-comp-content-grid-row-gap);block-size:var(--plx-state-content-grid-height,var(--plx-comp-virtual-list-height-md));align-content:start;overflow-anchor:none;min-block-size:0;overflow-x:hidden;overflow-y:auto;position:relative;}
+.plx-content-grid--virtual[data-plx-height="sm"]{--plx-state-content-grid-height:var(--plx-comp-virtual-list-height-sm);}
+.plx-content-grid--virtual[data-plx-height="lg"]{--plx-state-content-grid-height:var(--plx-comp-virtual-list-height-lg);}
+.plx-content-grid--virtual[data-plx-height="fill"]{--plx-state-content-grid-height:100%;}

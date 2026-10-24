@@ -1,7 +1,6 @@
 /* Plenix · ColumnsMenu, ManageColumnsDialog
    Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
-     dropdown listing every column with its handle, a checkbox (shown or hidden), "Make first column" (or the pinned mark
-     of the first) and Move up / Move down; ManageColumnsDialog is the same list, larger, with a find field, Show all,
+     dropdown with one First column select and every column with its handle and shown/hidden checkbox; ManageColumnsDialog is the same list, larger, with a find field, Show all,
      Hide all and a First column select, applied with Apply.
    Usage:
      const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
@@ -22,8 +21,7 @@
        Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
    Behavior:
      Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
-     A row moves by drag, by Move up and Move down, or by Alt + Arrow Up / Down on the focused row; Make first column moves
-       it to the top. Each change is announced politely. The first column cannot be hidden.
+     A row moves by drag or Alt + Arrow Up / Down on the focused row; the First column select moves it to the top. Each change is announced politely. The first column cannot be hidden.
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
        their count. */
 import React from 'react';
@@ -36,7 +34,6 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { PanelTrigger, toggle, fill } from '../CommandBar/panel-parts.jsx';
 
@@ -48,7 +45,7 @@ const moveTo = (order, f, i) => { const rest = order.filter((x) => x !== f); res
 const nameIn = (fields) => (f) => { const x = fields.find((y) => y.value === f); return x ? x.label : f; };
 
 // the list: one row per column
-export function ColumnsList({ fields, value, onChange, filter = '', t }) {
+export function ColumnsList({ fields, value, onChange, filter = '', t, firstControl = true }) {
   const [msg, setMsg] = React.useState('');
   const [drag, setDrag] = React.useState(null);
   const box = React.useRef(null);
@@ -68,6 +65,8 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
   const shown = order.filter((f) => !q || name(f).toLowerCase().indexOf(q) >= 0);
   return (
     <div className="plx-columns-list" ref={box}>
+      {firstControl ? <Field label={t.first}><Select value={order[0] || ''} options={order.map(f => ({ value: f, label: name(f) }))}
+        onChange={e => move(e.target.value, 0)} /></Field> : null}
       {shown.length ? null : <Text variant="secondary">{t.none}</Text>}
       {shown.map((f) => {
         const i = order.indexOf(f);
@@ -81,10 +80,7 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
             <span className="plx-columns-list__handle" aria-hidden="true"><Icon name="drag" /></span>
             <Checkbox label={name(f)} checked={hidden.indexOf(f) < 0} disabled={i === 0}
               onChange={() => put(order, toggle(hidden, f), fill(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, { name: name(f) }))} />
-            {i === 0 ? <span className="plx-columns-list__first"><Icon name="pin-filled" /><Text variant="secondary">{t.first}</Text></span>
-              : <Button size="xs" variant="ghost" icon="pin" onClick={() => move(f, 0, true)}>{t.makeFirst}</Button>}
-            <Tooltip content={t.up}><Button size="xs" variant="ghost" icon="chevron-up" iconOnly label={fill(t.moveUp, { name: name(f) })} disabled={i === 0} onClick={() => move(f, i - 1)} /></Tooltip>
-            <Tooltip content={t.down}><Button size="xs" variant="ghost" icon="chevron-down" iconOnly label={fill(t.moveDown, { name: name(f) })} disabled={i === order.length - 1} onClick={() => move(f, i + 1)} /></Tooltip>
+
           </div>
         );
       })}
@@ -126,7 +122,7 @@ export function ManageColumnsDialog({ fields = [], value, onChange, strings, tri
             <Button size="sm" variant="ghost" icon="visibility" onClick={() => setDraft({ order: draft.order, hidden: [] })}>{t.showAll}</Button>
             <Button size="sm" variant="ghost" icon="visibility-off" onClick={() => setDraft({ order: draft.order, hidden: draft.order.slice(1) })}>{t.hideAll}</Button>
           </div>
-          <ColumnsList fields={fields} value={draft} onChange={setDraft} filter={q} t={t} />
+          <ColumnsList fields={fields} value={draft} onChange={setDraft} filter={q} t={t} firstControl={false} />
         </div>
       </Dialog>
     </>

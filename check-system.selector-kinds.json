@@ -906,19 +906,6 @@
   "platform/patterns/ComparisonView/comparison-view.css": {
    "relational | .plx-comparison-view__pane:has(.plx-comparison-view__body--scroll:focus-visible)": 1
   },
-  "platform/patterns/ContentGrid/content-grid.css": {
-   "combinator | .plx-content-grid__item>*": 1,
-   "combinator | .plx-content-grid--masonry>.plx-content-grid__item": 2,
-   "combinator | .plx-content-grid--justified>.plx-content-grid__item": 1,
-   "combinator | .plx-content-grid--justified>.plx-content-grid__item>*": 1,
-   "combinator | .plx-content-grid--justified>[data-plx-ratio=\"1-1\"]": 1,
-   "combinator | .plx-content-grid--justified>[data-plx-ratio=\"4-3\"]": 1,
-   "combinator | .plx-content-grid--justified>[data-plx-ratio=\"3-2\"]": 1,
-   "combinator | .plx-content-grid--justified>[data-plx-ratio=\"16-9\"]": 1,
-   "combinator | .plx-content-grid--justified>[data-plx-ratio=\"21-9\"]": 1,
-   "combinator | .plx-content-grid--justified>[data-plx-ratio=\"3-4\"]": 1,
-   "combinator | .plx-content-grid--justified>[data-plx-ratio=\"9-16\"]": 1
-  },
   "platform/patterns/EntityHeader/entity-header.css": {
    "combinator | :root[data-plx-header-tint=\"gray\"] .plx-entity-header": 1,
    "combinator | :root[data-plx-header-tint=\"blue\"] .plx-entity-header": 1,

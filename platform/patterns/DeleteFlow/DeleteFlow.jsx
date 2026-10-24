@@ -34,7 +34,10 @@
        "{what} deleted", trashed: "{what} moved to the trash", undo: "Undo", retention: "Restore {them} from the trash
        within {days} days." }
      className: more classes on the dialog's content
+     duration: undo window in milliseconds (default and minimum 10000); 0 keeps Undo until dismissal or leaving.
+       The action toast pauses on hover or focus and restarts when they leave.
    Behavior:
+     Pending undo deletions commit once on pagehide, hidden visibility, unmount or toast dismissal, unless undone.
      Confirm and type: an alert dialog with the destructive look; focus starts on Cancel (confirm) or the field (type);
        Escape, Cancel and the veil close it without deleting. Up to five names are listed, then "and N more".
      Type: the typed words are checked when Delete is pressed; a mismatch keeps the dialog open with the error under the
@@ -57,6 +60,8 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Text } from '../../components/Text/Text.jsx';
+import { UndoMessage } from './UndoMessage.jsx';
+import { pendingDelete } from './pending-delete.js';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 
 const STRINGS = {
@@ -70,7 +75,7 @@ const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undef
 const SHOWN = 5;
 
 export function DeleteFlow({ items = [], noun = 'item', plural, variant = 'confirm', consequence, confirmPhrase, retention,
-  onDelete, onRestore, onCommit, trigger, open, onClose, strings, className }) {
+  onDelete, onRestore, onCommit, duration = 10000, trigger, open, onClose, strings, className }) {
   devWarn('DeleteFlow', { variant }, { variant: ['confirm','type','undo','trash'] });
   const t = Object.assign({}, STRINGS, strings);
   const toast = useOptionalToast();
@@ -87,6 +92,16 @@ export function DeleteFlow({ items = [], noun = 'item', plural, variant = 'confi
   const say = (text, options) => { if (toast) toast.show(text, options); else announce(text); };
   const close = () => { setShown(false); setTyped(''); setError(''); if (onClose) onClose(); };
 
+  const pending = React.useRef(new Set()), lifecycle = React.useRef(0);
+  React.useEffect(() => {
+    const generation = ++lifecycle.current;
+    const commit = () => { for (const entry of pending.current) entry.commit(); };
+    const hide = () => { if (document.visibilityState === 'hidden') commit(); };
+    window.addEventListener('pagehide', commit);
+    document.addEventListener('visibilitychange', hide);
+    return () => { window.removeEventListener('pagehide', commit); document.removeEventListener('visibilitychange', hide); queueMicrotask(() => { if (lifecycle.current === generation) commit(); }); };
+  }, []);
+
   // undo and trash: no question; the toast offers Undo
   const runNow = () => {
     const list = items.slice();
@@ -94,9 +109,18 @@ export function DeleteFlow({ items = [], noun = 'item', plural, variant = 'confi
     let text = fill(variant === 'trash' ? t.trashed : t.deleted, { what: n === 1 ? name : what });
     if (variant === 'trash' && retention) text += ' ' + fill(t.retention, { them: n === 1 ? t.it : t.them, days: formatNumber(retention) });
     if (toast) {
-      toast.show(text, {
-        action: onRestore ? { label: t.undo, onAction: () => onRestore(list) } : undefined,
-        onClose: (reason) => { if (reason !== 'action' && variant === 'undo' && onCommit) onCommit(list); },
+      let toastId;
+      const entry = pendingDelete({
+        commit: () => { if (variant === 'undo' && onCommit) onCommit(list); },
+        restore: () => { if (onRestore) onRestore(list); },
+        settled: () => { pending.current.delete(entry); if (toastId !== undefined) toast.dismiss(toastId); },
+      });
+      pending.current.add(entry);
+      const wait = duration === 0 ? 0 : Number.isFinite(Number(duration)) ? Math.max(10000, Number(duration)) : 10000;
+      toastId = toast.show(<UndoMessage duration={wait} entry={entry}>{text}</UndoMessage>, {
+        duration: 0,
+        action: onRestore ? { label: t.undo, onAction: entry.undo } : undefined,
+        onClose: (reason) => { if (reason !== 'action') entry.commit(); },
       });
     } else { announce(text); if (variant === 'undo' && onCommit) onCommit(list); }
     if (onClose) onClose();
