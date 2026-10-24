@@ -8,7 +8,7 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 
 - Branch: `styling/phase-2` in both repositories (`plenix-ds/plenix-platform` and its submodule
   `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
-- Last release: 0.68.1 (2026-10-23). Not released yet on the branch: header style 2 and the spec's permanent merge.
+- Last release: 0.69.1 (2026-10-23; 0.68.1 grid speed, 0.69.0 the new grid look and header menus, 0.69.1 grouping on TanStack). Not released yet on the branch: header style 2, the spec's permanent merge, and the icon fix (#268, planned as 0.69.2).
 - **No release unless the owner declares it.**
 
 ## Done
@@ -24,6 +24,7 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 | Legacy table removed, apps on DataGrid (Phase 7, first half) | #145 / #146 |
 | Zero overlap for DataGrid, Table and the foundations | 0.59.0 |
 | Header style 2: fact boxes carry their buttons, states among the facts, Title role on every header, buttons go icon-only when the facts would wrap | commits dec70d26, b888c727 |
+| DataGrid: twice as fast to open (0.68.1); silver header, Explorer header menus, R2 row hover, S2 selection (0.69.0); sorting, filtering, grouping, selection, pinning, sizing and the row window on TanStack (0.69.0–0.69.1); #190 closed | v0.68.1, v0.69.0, v0.69.1 |
 | Spec: one page per component, the duplicate merge permanent, no redirects | spec 095bb26, parent 89cb85b3; `tools/agent/spec-merge-permanent.md` |
 
 ## Left to do
@@ -46,6 +47,9 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 | #255 | DataGrid: badges and icons in custom cells 0.5 to 1.1px below center | waits for the owner's decision (fix measured) |
 | #257 | Spec wording: choose the rules (`docs/briefs/spec-wording/proposal.md`), then one cleanup after the styling work | waits for the owner's decision |
 | #258 | Housekeeping: stale scratch copies and worktrees (remove `node_modules` junctions first) | not started |
+| #268 | Icons: the gray-square fix, built and checked | release as 0.69.2 when its tests pass |
+| #269, #270, #271, #272 | Grid follow-ups: Filter by this field to the command bar's Filter panel; a plain right arrow icon; five grid tests that failed before today; link and publish the grid studies | not started |
+| #236, #237 | The stand-in account's real name and email; SplitView's divider after stacking | not started |
 | #263 | Bug: the color references no longer show in the spec | could not reproduce; the owner names the page |
 | #264 | The design system as a PostgreSQL database (tables, links, mappings to other systems); children #265 Web/iOS/Android split, #266 a record per variation, #267 styling per variation (base, variations, themes apart) | needs the owner (schema review, hosting, tool choice) |
 | #220 | Spec mappings: Django and Frappe as source systems | open |
