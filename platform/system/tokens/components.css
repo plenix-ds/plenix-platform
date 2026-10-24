@@ -3622,7 +3622,7 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-entity-header-tile-surface-background: var(--plx-sys-surface-default);
   --plx-comp-entity-header-tile-surface-text: var(--plx-sys-content-link);
-  --plx-comp-entity-header-columns: minmax(63%, max-content) minmax(var(--plx-comp-entity-header-aside-min-width), 1fr);
+  --plx-comp-entity-header-columns: minmax(0, 1.7fr) minmax(0, 1fr);
   --plx-comp-entity-header-column-gap: var(--plx-ref-space-20px);
   --plx-comp-entity-header-heading-gap: var(--plx-sys-space-inline-md);
   --plx-comp-entity-header-media-size: var(--plx-ref-size-44px);
@@ -3776,7 +3776,6 @@
   --plx-comp-entity-header-streamlined-progress-value-text: var(--plx-sys-content-link);
   --plx-comp-entity-header-streamlined-progress-value-font-weight: var(--plx-ref-font-weight-bold-700);
   --plx-comp-entity-header-streamlined-tiles-margin: var(--plx-ref-space-12px);
-  --plx-comp-entity-header-aside-min-width: var(--plx-ref-size-220px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-entity-picker-max-width: var(--plx-ref-size-400px);
