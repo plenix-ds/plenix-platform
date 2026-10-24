@@ -434,6 +434,8 @@ function setIconLibrary(url) {
 }
 function base() {
   if (libraryBase) return libraryBase;
+  // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
+  if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/');
   if (typeof document === 'undefined') return null;
   const at = [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map(el => el.src || el.href).find(url => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url));
   if (!at) return null;

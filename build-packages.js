@@ -238,7 +238,7 @@ copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
 // The CDN and npm declarations share the same generated source, including its export-coverage gate.
 copy(path.join(R, 'index.d.ts'), path.join(CDN, 'plenix.d.ts'));
-write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. Icon draws every Material Symbols icon by its own name (<Icon name="rocket_launch">): Plenix icons are bundled, any other symbol loads once from /cdn/material/ (setIconLibrary(url) points elsewhere); an unknown name draws nothing and warns in the console. icons-all.css is only for icons written as bare class names (plx-icon plx-icon--<name>) without the component. TypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
+write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. Icon draws every Material Symbols icon by its own name (<Icon name="rocket_launch">): Plenix icons are bundled, any other symbol loads once from /cdn/material/ (setIconLibrary(url) points elsewhere); an unknown name draws nothing and warns in the console. icons-all.css is only for icons written as bare class names (plx-icon plx-icon--<name>) without the component.\n\n## Self-hosting (an extension, an offline app)\n\nThe archive (plenix-' + VERSION + '.tgz) carries everything the documented APIs need, the icon library included (icons/library/; icons-all.css points at it). Serve its files together: Icon finds icons/library/ beside plenix.js or plenix.css. When your bundler renames those files, name the folder before Plenix draws: window.PlenixIconLibrary = chrome.runtime.getURL(\'plenix/icons/library/\') (or setIconLibrary(url)). The icon files are SVG data, parsed into paths and never run as code.\n\nTypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
 // the RichTextEditor's engine (Tiptap, MIT): loaded by the editor from ./vendor/tiptap/ the same way, shipped in both places too
@@ -362,6 +362,14 @@ function cdnOfflineBundle() {
     else assets.set(relative, fs.readFileSync(file));
   };
   for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix.css', 'plenix.min.css', 'icons-all.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
+  // the icon library inside the bundle (#59; packaging fix for the 0.69.2 regression, the full icon architecture is #277):
+  // every Material Symbols file under icons/library/, where <Icon> looks by default when Plenix is served from these files,
+  // and icons-all.css pointing at that copy instead of the CDN's shared /cdn/material/<commit>/
+  const LIB = path.join(P, 'icons', 'library'), shared = '../material/' + JSON.parse(fs.readFileSync(path.join(P, 'icons', 'map.json'), 'utf8'))._commit.slice(0, 12) + '/';
+  for (const name of fs.readdirSync(LIB).filter((f) => /\.(svg|json)$/.test(f)).sort()) assets.set('icons/library/' + name, fs.readFileSync(path.join(LIB, name)));
+  const allCss = assets.get('icons-all.css').toString('utf8');
+  if (!allCss.includes(shared)) throw new Error('icons-all.css does not point at ' + shared + ': the bundle copy cannot be rewritten');
+  assets.set('icons-all.css', Buffer.from(allCss.split(shared).join('icons/library/')));
   const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
   const manifest = { version: VERSION, algorithm: 'sha256', description: 'Hashes cover every runtime file, TypeScript declarations and the README. This manifest is excluded from its own list; the CDN index hashes the complete archive.', files: [...assets].map(([name, data]) => ({ path: name, bytes: data.length, sha256: hash(data) })) };
   const manifestName = 'bundle-manifest.json';

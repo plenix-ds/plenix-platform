@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.69.4] - 2026-10-24
+
+### Fixed
+- The self-hosting archive (`/cdn/<version>/plenix-<version>.tgz`) carries the whole icon library (#59, a packaging fix for
+  the 0.69.2 regression).
+  - **What changed:** the files are under `icons/library/` (16,601 files; the archive is about 6 MB), and the archive's
+    `icons-all.css` points at that copy.
+  - **Effect:** served from the archive's own files (an extension, an offline app), every icon draws with no network:
+    Plenix icons, other Material names and bare classes.
+  - **Override:** `window.PlenixIconLibrary` (or `setIconLibrary(url)`) names the folder when a bundler renames the
+    Plenix files. The CDN README explains it.
+  - **What an app should check:** an extension built with a bundler sets `window.PlenixIconLibrary` to its copy of
+    `icons/library/`.
+  - The complete icon architecture (assets apart from CSS, one resolver, static modules, offline tests) is #277.
+
 ## [0.69.3] - 2026-10-24
 
 ### Added
