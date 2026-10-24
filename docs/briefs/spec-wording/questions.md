@@ -964,3 +964,44 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.content.guidance:** The "guidance" row repeats the page’s purpose word for word. Should it be removed, or should it say something else?
 
+
+## Written since 2026-10-21 (11 questions)
+
+
+### wizard-dialog
+
+- **docs.anatomy[4]:** "Unsaved-changes check — closing asks before losing work" is the only anatomy entry without (required) or (optional). Which is it?
+
+### interaction-accessible-names
+
+- **rec.anatomy[2]:** "VisuallyHidden adds words a screen reader needs that the layout shows" reads backwards — should it be words the layout does *not* show?
+- **rec.anatomy[1]:** The `label` part has no "(required)" or "(optional)" marker, unlike the other parts; which is it?
+
+### tabs
+
+- **rec.text / rec.use[0]:** The overview defines contained tabs as "folder tabs joined to a bordered panel", while use[0] names "Folder tabs" as a separate choice for when the whole page body switches. Are contained tabs a kind of folder tab, or are Contained and Folder two different variants (and which name should the overview use)?
+
+### swatch-picker
+
+- **variantPages[0].text:** It lists "brown (drawn in orange)" among the data hues; is brown still a data hue name, or should it read orange (the Brown category was retired in the color consolidation)?
+
+### typing-indicator
+
+- **variantPages[0].text, variantPages[1].text:** Both describe chat message bubbles (someone else's message on the start side; the person's own in the action color), not a typing indicator. Are these variant pages on the wrong item, or should the text describe the indicator?
+
+### docs/back-to-top
+
+- **docs.anatomy[1]:** The sentinel is called "a very thin strip" yet "one window tall"; which is right (thin strip, or a strip one window tall)?
+
+### data-grid
+
+- **docs.anatomy[25]:** The string ends "The row menu on a row's button or right-click:" followed only by tokens; the row menu's items seem to be missing. What does the row menu contain?
+- **docs.content.labels:** It names `hozAlign "right"`, a Tabulator option, while the grid is now TanStack. Is `hozAlign` still the column prop, or should it name the TanStack-era prop?
+
+### design-system-mcp
+
+- **docs.behavior.error:** "Initialize first; arguments are checked." is too terse to simplify safely — does it mean a call before initialization is refused with an error, and invalid arguments are rejected? Which wording is right?
+
+### document-viewer
+
+- **docs.behavior.pointer:** The text describes loading PDF.js, cancelling outdated renders and exposing text/keyboard scrolling/errors — none of it is pointer behavior. Should it move to loading/a11y, and what is the pointer behavior?
