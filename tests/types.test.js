@@ -1,0 +1,18 @@
+// Plenix tests · types: correct application code compiles, strict, against the generated TypeScript definitions
+// (packages/react/index.d.ts, published as plenix.d.ts): tests/fixtures/redsave-types.tsx (#170, #171).
+const path = require('path');
+const ts = require('typescript');
+const root = path.resolve(__dirname, '..');
+require('../build-types')(path.join(root, 'packages/react/index.d.ts'), require('../package.json').version);
+const program = ts.createProgram([path.join(__dirname, 'fixtures/redsave-types.tsx')], {
+  noEmit: true, strict: true, skipLibCheck: false, esModuleInterop: true, jsx: ts.JsxEmit.React,
+  target: ts.ScriptTarget.ES2020, moduleResolution: ts.ModuleResolutionKind.Node10,
+  types: ['react'], typeRoots: [path.join(root, 'node_modules/@types')],
+});
+const errors = ts.getPreEmitDiagnostics(program);
+if (errors.length) {
+  console.error(ts.formatDiagnosticsWithColorAndContext(errors, { getCurrentDirectory: () => root, getCanonicalFileName: (x) => x, getNewLine: () => '\n' }));
+  console.error('TYPES_FAIL ' + errors.length + ' errors');
+  process.exit(1);
+}
+console.log('TYPES_OK DataGrid columns, Tabs onChange(value), collection panels, MediaCard 4/3, Text as span/h2–h4, MediaViewer, useAppLayout');

@@ -49,7 +49,7 @@ jobs:
           node build-packages.js
 
       - name: "Tests without a browser (contrast, formats, brand rules, login)"
-        run: node tests/run.js contrast formats brand-rules login
+        run: node tests/run.js contrast formats brand-rules login types
 
   browser:
     name: Full ${{ matrix.name }}

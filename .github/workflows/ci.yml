@@ -81,7 +81,7 @@ jobs:
         run: node tests/changed.js
 
       - name: "Tests without a browser (contrast, formats, brand rules, login)"
-        run: node tests/run.js contrast formats brand-rules login
+        run: node tests/run.js contrast formats brand-rules login types
 
   browser:
     name: Browser tests (${{ matrix.name }})
