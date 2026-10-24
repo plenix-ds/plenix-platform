@@ -43,7 +43,6 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 | #144, #53, #54 | Figma: the Web component library; native designs for newer components; the 24 iOS drawings | blocked / open |
 | #198–#203, #147–#195 | RedSave lanes and DataGrid findings (Codex) | PRs #206, #211, #212, #215, #219 open |
 | #217 | Touch targets that are undersized | waits for the owner's decision |
-| #255 | DataGrid: badges and icons in custom cells 0.5 to 1.1px below center | waits for the owner's decision (fix measured) |
 | #257 | Spec wording: choose the rules (`docs/briefs/spec-wording/proposal.md`), then one cleanup after the styling work | waits for the owner's decision |
 | #258 | Housekeeping: stale scratch copies and worktrees (remove `node_modules` junctions first) | not started |
 | #269, #270, #271 | Grid follow-ups: Filter by this field to the command bar's Filter panel; a plain right arrow icon; five grid tests that failed before today | not started |
