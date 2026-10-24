@@ -3,7 +3,7 @@
    Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
    Props:
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
-       minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
+       minWidth, maxWidth, rowLabel, frozen, align and headerAlign. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
@@ -18,8 +18,8 @@ import React from 'react';
 import { DataGridEngine } from '../DataGrid/DataGridEngine.jsx';
 
 export function Table({ label, data, columns = [], index, empty, narrow = 'table', headerVisible = true, cells = 'text', className, unread, unreadKeys, onUnreadChange }) {
-  const staticColumns = React.useMemo(() => columns.map(({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty }) =>
-    ({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, hozAlign, headerHozAlign, empty, headerSort: false, resizable: false })), [columns]);
+  const staticColumns = React.useMemo(() => columns.map(({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, align, headerAlign, empty }) =>
+    ({ title, field, kind, type, pill, render, width, minWidth, maxWidth, rowLabel, frozen, align, headerAlign, empty, sortable: false, resizable: false })), [columns]);
   return <DataGridEngine isStatic unread={unread} unreadKeys={unreadKeys} onUnreadChange={onUnreadChange} label={label} data={data} columns={staticColumns} index={index} empty={empty} narrow={narrow} headerVisible={headerVisible} cells={cells} className={className} headerMenu={false} />;
 }
 Table.preload = () => {};

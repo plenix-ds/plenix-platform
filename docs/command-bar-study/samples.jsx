@@ -539,9 +539,9 @@ const STORAGE = [
 ];
 const STORAGE_COLUMNS = [
   { title: 'File type', field: 'type', kind: 'name', rowLabel: true },
-  { title: 'Files', field: 'files', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },
-  { title: 'Size', field: 'size', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },
-  { title: 'Share of storage', field: 'share', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },
+  { title: 'Files', field: 'files', kind: 'data', align: 'right', headerAlign: 'right' },
+  { title: 'Size', field: 'size', kind: 'data', align: 'right', headerAlign: 'right' },
+  { title: 'Share of storage', field: 'share', kind: 'data', align: 'right', headerAlign: 'right' },
 ];
 
 function StorageByType() {

@@ -71,7 +71,7 @@ export function GanttChart({ title, description, tasks = [], today, range, color
     + (r.dependsOn.length ? ', ' + t.dependsOn.toLowerCase() + ' ' + waits(r) : '');
   const keys = useChartPoints({ count: rows.length, describe: (i) => say(rows[i]) });
   const table = { columns: [{ title: t.task, field: 'label', kind: 'name', rowLabel: true }, { title: t.start, field: 'start', kind: 'data' }, { title: t.end, field: 'end', kind: 'data' },
-    { title: t.progress, field: 'progress', kind: 'data', hozAlign: 'right' }, { title: t.status, field: 'status', kind: 'name' }, { title: t.dependsOn, field: 'waits', kind: 'name' }],
+    { title: t.progress, field: 'progress', kind: 'data', align: 'right' }, { title: t.status, field: 'status', kind: 'name' }, { title: t.dependsOn, field: 'waits', kind: 'name' }],
     data: rows.map((r, i) => ({ id: i + 1, label: r.label, start: date(r.start), end: r.milestone ? '' : date(r.end), progress: r.progress === null ? '' : formatPercent(r.progress, { decimals: 0 }), status: r.status || '', waits: waits(r) })) };
   const lo = range ? toDate(range[0]) : new Date(Math.min.apply(null, rows.map((r) => r.start.getTime()).concat(now ? [now.getTime()] : [])));
   const hi = range ? toDate(range[1]) : new Date(Math.max.apply(null, rows.map((r) => r.end.getTime()).concat(now ? [now.getTime()] : [])));

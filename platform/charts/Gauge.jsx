@@ -65,7 +65,7 @@ export function Gauge({ title, description, value, min = 0, max = 100, format, l
   const valueText = [fmt(v), label, status && status.label].filter(Boolean).join(', ');
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const table = {
-    columns: [{ title: t.measure, field: 'm', kind: 'name', rowLabel: true }, { title: t.value, field: 'v', kind: 'data', hozAlign: 'right' }],
+    columns: [{ title: t.measure, field: 'm', kind: 'name', rowLabel: true }, { title: t.value, field: 'v', kind: 'data', align: 'right' }],
     data: [{ id: 1, m: t.value, v: fmt(v) }, { id: 2, m: t.min, v: fmt(min) }, { id: 3, m: t.max, v: fmt(max) }]
       .concat(bands.map((b, i) => ({ id: 4 + i, m: b.label || b.level, v: fmt(b.value) }))),
   };

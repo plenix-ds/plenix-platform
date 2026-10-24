@@ -287,8 +287,8 @@ function Posts() {
       title: 'Score',
       field: 'score',
       kind: 'data',
-      hozAlign: 'right',
-      headerHozAlign: 'right',
+      align: 'right',
+      headerAlign: 'right',
       sorter: 'number'
     }, {
       title: 'Posted',

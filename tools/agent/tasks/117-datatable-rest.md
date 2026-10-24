@@ -20,7 +20,7 @@ high-impact fixes (#101, released in 0.38.0). Each keeps today's behavior when t
 | #84 (DT-13) | No file-size column type | `type: "bytes"`: formatBytes in Reddit Mono, right-aligned, sorted and filtered on bytes; the filter accepts "> 2 MB" |
 | #85 (DT-14) | No undo for destructive row and selection actions | an `undo` handler on row-menu and selection actions: the action runs, a toast says what happened with Undo (useUndo and the toast, as DeleteFlow does) |
 | #86 (DT-15) | Rich cells are one React portal per cell | portals only for rows in view (the virtual rows), plus built-in cell kinds that need no portal: avatar + name, tag chips, badge |
-| #89 (DT-18) | Column `width` only takes numbers | a CSS length string or a size token name (`"--plx-ref-size-120px"`, `"12ch"`), converted for Tabulator |
+| #89 (DT-18) | Column `width` only takes numbers | a CSS length string or a size token name (`"--plx-ref-size-120px"`, `"12ch"`), converted for the legacy grid |
 | — | Wave 13 A found: a selectable DataTable that is off-screen and receives `sort`, `groupBy` or `columnOrder` loses its row checkbox labels (axe: missing labels) | Keep the checkbox labels through those updates |
 
 Write each fix where the code already lives; keep the style of the files. New tokens go in a new
@@ -28,7 +28,7 @@ Write each fix where the code already lives; keep the style of the files. New to
 
 ### Files you own
 
-- `platform/components/DataTable/` (DataTable.jsx, data-table.css, tabulator.js, strict.js, floatingScroll.js)
+- `platform/components/DataTable/` (DataTable.jsx, data-table.css, legacy-grid.js, strict.js, floatingScroll.js)
 - `platform/hooks/useCollectionView.js`
 - `platform/patterns/CommandBar/panel-parts.jsx` and the GroupPanel/QuickFilter code it holds (only for DT-5 and DT-6)
 - `platform/tokens/components/data-table-cells.tokens.json` (new)

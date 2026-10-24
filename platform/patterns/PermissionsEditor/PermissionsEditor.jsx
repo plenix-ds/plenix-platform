@@ -37,7 +37,7 @@ export function PermissionsEditor({ subjects = [], capabilities = [], value = {}
     onChange(next);
   };
   const columns = [{ title: t.capability, field: 'label', kind: 'wrap', rowLabel: true }].concat(subjects.map((s) => ({
-    title: s.label, field: 'permission-' + s.id, kind: 'center', headerSort: false,
+    title: s.label, field: 'permission-' + s.id, kind: 'center', sortable: false,
     render: (cap) => <Checkbox label={s.label + ': ' + cap.label} checked={(value[s.id] || []).includes(cap.id)}
       disabled={readOnly || busy || s.locked || !onChange} onChange={(e) => change(s, cap.id, e.target.checked)} />
   })));

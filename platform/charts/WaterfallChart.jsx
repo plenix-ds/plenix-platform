@@ -74,7 +74,7 @@ export function WaterfallChart({ title, description, data = [], endLabel, format
     describe: (cell) => chartTooltipText({ title: bars[cell.c].label, items: items(bars[cell.c]) }),
   });
   const table = {
-    columns: [{ title: t.step, field: 's', kind: 'name', rowLabel: true }, { title: t.change, field: 'c', kind: 'data', hozAlign: 'right' }, { title: t.running, field: 'r', kind: 'data', hozAlign: 'right' }],
+    columns: [{ title: t.step, field: 's', kind: 'name', rowLabel: true }, { title: t.change, field: 'c', kind: 'data', align: 'right' }, { title: t.running, field: 'r', kind: 'data', align: 'right' }],
     data: bars.map((b, i) => ({ id: i + 1, s: b.label, c: b.kind === 'total' ? t.total : signed(b.change), r: fmt(b.to) })),
   };
   const legendNode = legend ? <ChartLegend items={[{ id: 'up', label: t.increase, color: COLORS.up }, { id: 'down', label: t.decrease, color: COLORS.down }, { id: 'total', label: t.total, color: COLORS.total }]} /> : null;

@@ -18,7 +18,7 @@ const implicit=groupedRows(rows.map(row=>({...row,getValue:()=>{throw Error('Fie
 const display = groupDisplay(groups, new Set(), true); assert.equal(new Set(display.map(row => row.displayKey)).size, display.length);
 assert.equal(display.filter(row => row.id === 'number:1').length, 2); assert.equal(groupDisplay(groups, new Set([groups[0].id]), false).filter(row => row.id === 'string:1').length, 0);
 const changed = setField(records[0], 'nested.name', 'Changed'); assert.equal(changed.nested.name, 'Changed'); assert.equal(records[0].nested.name, 'First'); assert.throws(() => setField(records[0], '__proto__.bad', true), /Unsupported/);
-const tree = [{ id: 5, _children: [records[0], records[1]] }]; assert.equal(recordsOf(tree, 'id', '_children').length, 3);
-const updated = changeRecord(tree, 'number:1', record => ({ ...record, cost: 99 }), 'id', '_children'); assert.equal(updated[0]._children[0].cost, 99); assert.equal(tree[0]._children[0].cost, 10);
-assert.equal(changeRecord(tree, 'number:1', () => null, 'id', '_children')[0]._children.length, 1);
+const tree = [{ id: 5, children: [records[0], records[1]] }]; assert.equal(recordsOf(tree, 'id', 'children').length, 3);
+const updated = changeRecord(tree, 'number:1', record => ({ ...record, cost: 99 }), 'id', 'children'); assert.equal(updated[0].children[0].cost, 99); assert.equal(tree[0].children[0].cost, 10);
+assert.equal(changeRecord(tree, 'number:1', () => null, 'id', 'children')[0].children.length, 1);
 console.log('DATA_GRID_NEXT_RECORDS_OK memberships, typed canonical IDs, summaries, display keys and immutable tree edits');

@@ -56,15 +56,15 @@ Work:
 
 ## 2. DataTable scrollbar: floating — DECIDED
 
-Cause: Tabulator writes `margin-right: 10px` (the scrollbar's width) inline on `div.tabulator-headers` so the header
+Cause: the legacy grid writes `margin-right: 10px` (the scrollbar's width) inline on `div.legacy-grid-headers` so the header
 lines up with the body above a classic scrollbar. The style audit flags it ("10px is off the grid") on every table.
 Owner: "for the scroll bar, solution is floating".
 
 - Make the table body's scrollbar an overlay (floating) scrollbar that takes no layout width, matching the Platform's
   hover-only scrollbars (memory `plenix-consistent-chrome.md`). Then the header needs no compensation.
-- Stop Tabulator's header margin: no inline style may remain (check `data-table.css` and the engine options; if
-  Tabulator still writes `margin-right: 0px`, either is fine for the audit as 0 is on the grid, but prefer none).
-- Check: the style audit shows no `tabulator-headers` errors on any page; column lines stay aligned between header and
+- Stop the legacy grid's header margin: no inline style may remain (check `data-table.css` and the engine options; if
+  the legacy grid still writes `margin-right: 0px`, either is fine for the audit as 0 is on the grid, but prefer none).
+- Check: the style audit shows no `legacy-grid-headers` errors on any page; column lines stay aligned between header and
   body with and without vertical overflow; Windows Chrome and macOS.
 
 ## 3. NavPane: padding smaller than it should be — ASK BEFORE FIXING

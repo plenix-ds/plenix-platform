@@ -900,12 +900,12 @@ const facts = (label, rows) => {
       kind: "wrap",
       rowLabel: true,
       width: "--plx-ref-size-240px",
-      headerSort: false
+      sortable: false
     }, {
       title: "Value",
       field: "value",
       kind: "wrap",
-      headerSort: false,
+      sortable: false,
       render: d => {
         const r = list[d.id];
         return r ? r[2] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
@@ -1457,8 +1457,8 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       title: "Files",
       field: "files",
       kind: "data",
-      hozAlign: "right",
-      headerHozAlign: "right"
+      align: "right",
+      headerAlign: "right"
     }],
     rows: () => _shared.PROJECTS.map(p => ({
       key: "p" + p.id,
@@ -1744,8 +1744,8 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       title: "Size",
       field: "s",
       kind: "data",
-      hozAlign: "right",
-      headerHozAlign: "right"
+      align: "right",
+      headerAlign: "right"
     }, {
       title: "Folder",
       field: "folder"
@@ -2552,12 +2552,12 @@ const facts = (label, rows) => {
       kind: "wrap",
       rowLabel: true,
       width: "--plx-ref-size-240px",
-      headerSort: false
+      sortable: false
     }, {
       title: "Value",
       field: "value",
       kind: "wrap",
-      headerSort: false,
+      sortable: false,
       render: d => {
         const r = list[d.id];
         return r ? r[2] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {

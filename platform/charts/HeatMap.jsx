@@ -112,10 +112,10 @@ export function HeatMap({ title, description, variant = 'matrix', rows = [], col
   });
 
   const table = calendar ? {
-    columns: [{ title: t.date, field: 'd', kind: 'data', rowLabel: true }, { title: vLabel, field: 'v', kind: 'data', hozAlign: 'right' }],
+    columns: [{ title: t.date, field: 'd', kind: 'data', rowLabel: true }, { title: vLabel, field: 'v', kind: 'data', align: 'right' }],
     data: cal.cells.filter((x) => x.inside).map((x, i) => ({ id: i + 1, d: formatDate(x.date), v: valueOf(x) })),
   } : {
-    columns: [{ title: t.row, field: 'r', kind: 'name', rowLabel: true }, { title: t.column, field: 'c', kind: 'name' }, { title: vLabel, field: 'v', kind: 'data', hozAlign: 'right' }],
+    columns: [{ title: t.row, field: 'r', kind: 'name', rowLabel: true }, { title: t.column, field: 'c', kind: 'name' }, { title: vLabel, field: 'v', kind: 'data', align: 'right' }],
     data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({ id: r * columns.length + c + 1, r: rn, c: cn, v: valueOf(cellAt(r, c)) })))),
   };
   const hasMissing = (() => { for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) { const x = cellAt(r, c); if (x && x.inside && x.value === null) return true; } return false; })();

@@ -4723,7 +4723,7 @@
           "property": "Hierarchy",
           "ios": "OutlineGroup or List(_:children:) / — (macOS: NSOutlineView)",
           "android": "custom expandable rows in LazyColumn",
-          "web": "Tree nodes, or DataGrid with options.dataTree"
+          "web": "Tree nodes, or DataGrid with tree"
         },
         {
           "property": "Expanded rows",

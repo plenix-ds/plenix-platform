@@ -5,7 +5,7 @@ Its own Plenix markup and stylesheet use the existing table tokens and establish
 
 Public event callbacks receive records: onRowClick(record,event), onRowDoubleClick(record,event),
 onCellEdit(record,{field,value,previous,row}). Grouping uses groupBy; trees use tree, childrenField
-(default _children) and treeColumn. Existing callers retain a private compatibility adapter.
+(default children) and treeColumn. Existing callers retain a private compatibility adapter.
 
 Capabilities include virtual scrolling; saved sorting, column order, widths, visibility and collapsed groups;
 canonical selection; nested and multi-value grouping with summaries; tree rows; input/number editing;

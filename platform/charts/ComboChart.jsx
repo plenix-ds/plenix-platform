@@ -71,8 +71,8 @@ export function ComboChart({ title, description, hideCaption, size, categories =
   Object.keys(m).forEach((k) => { if (m[k] === undefined) delete m[k]; });
   const table = {
     columns: [{ title: categoryLabel || t.category, field: 'category', kind: 'name', rowLabel: true }]
-      .concat(cols.map((s, i) => ({ title: s.label, field: 'b' + i, kind: 'data', hozAlign: 'right' })))
-      .concat(lns.map((s, i) => ({ title: s.label, field: 'l' + i, kind: 'data', hozAlign: 'right' }))),
+      .concat(cols.map((s, i) => ({ title: s.label, field: 'b' + i, kind: 'data', align: 'right' })))
+      .concat(lns.map((s, i) => ({ title: s.label, field: 'l' + i, kind: 'data', align: 'right' }))),
     data: categories.map((c, ci) => {
       const row = { id: ci + 1, category: String(c) };
       cols.forEach((s, i) => { const v = s.values[ci]; row['b' + i] = v === null || v === undefined ? '' : fb(v); });

@@ -100,7 +100,7 @@ export function SankeyDiagram({ title, description, hideCaption, size = 'lg', no
   const nameOf = {};
   nodes.forEach((n, i) => { nameOf[n.id === undefined ? String(i) : n.id] = n.label; });
   const table = {
-    columns: [{ title: t.source, field: 'source', kind: 'name', rowLabel: true }, { title: t.target, field: 'target', kind: 'name' }, { title: t.value, field: 'value', kind: 'data', hozAlign: 'right' }],
+    columns: [{ title: t.source, field: 'source', kind: 'name', rowLabel: true }, { title: t.target, field: 'target', kind: 'name' }, { title: t.value, field: 'value', kind: 'data', align: 'right' }],
     data: links.filter((l) => nameOf[l.source] !== undefined && nameOf[l.target] !== undefined).map((l, i) => ({ id: i + 1, source: nameOf[l.source], target: nameOf[l.target], value: fmt(finite(l.value)) }))
   };
   return (

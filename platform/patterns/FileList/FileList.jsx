@@ -183,7 +183,7 @@ export function FileList({ files = [], label, view = 'list', sortable = false, s
     };
     const cols = [{ title: t.name, field: 'name', kind: 'name', type: 'file', width: '--plx-ref-size-280px', sorter: byName,
       render: (f) => <File name={f.name} kind={f.kind} type={f.type} src={f.src} icon={f.icon} href={hrefFor ? hrefFor(f) : undefined} onOpen={!hrefFor && onOpen ? () => onOpen(f) : undefined} /> }];
-    if (facts.indexOf('size') >= 0) cols.push({ title: t.size, field: 'size', kind: 'data', type: 'number', sorter: 'number', hozAlign: 'right', headerHozAlign: 'right', render: (f) => sizeText(f) });
+    if (facts.indexOf('size') >= 0) cols.push({ title: t.size, field: 'size', kind: 'data', type: 'number', sorter: 'number', align: 'right', headerAlign: 'right', render: (f) => sizeText(f) });
     if (facts.indexOf('modified') >= 0) cols.push({ title: t.modified, field: 'modified', kind: 'data', type: 'date', render: (f) => (f.modified ? formatDate(day(f.modified), { dateStyle: 'medium' }) : '') });
     if (facts.indexOf('owner') >= 0) cols.push({ title: t.owner, field: 'owner', type: 'person' });
     if (facts.indexOf('status') >= 0) cols.push({ title: t.status, field: 'statusLabel', kind: 'center', type: 'select', render: (f) => (f.status ? <Badge tone={f.status.tone} icon={f.status.icon}>{f.status.label}</Badge> : null) });

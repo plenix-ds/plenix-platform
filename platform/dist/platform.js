@@ -21019,7 +21019,7 @@ function NextEngine(props) {
     [managing, setManaging] = _react.default.useState(false);
   const [edited, setEdited] = _react.default.useState(null),
     [editing, setEditing] = _react.default.useState(null),
-    [expanded, setExpanded] = _react.default.useState(props.treeExpanded ?? options.dataTreeStartExpanded ?? false);
+    [expanded, setExpanded] = _react.default.useState(props.treeExpanded ?? false);
   const [localGroups, setGroups] = _react.default.useState(() => initial.groupBy),
     [groupOwner, setGroupOwner] = _react.default.useState(null),
     [collapsed, setCollapsed] = _react.default.useState(() => new Set(initial.collapsed));
@@ -21031,7 +21031,7 @@ function NextEngine(props) {
   }, [collapsedSignal, !!props.onViewChange]);
   const groupSignal = JSON.stringify(props.groupBy),
     groupBy = props.onViewChange ? props.groupBy ?? false : groupOwner === groupSignal ? localGroups : props.groupBy ?? options.groupBy ?? localGroups;
-  const childField = props.tree ?? options.dataTree ? props.childrenField || options.dataTreeChildField || '_children' : null;
+  const childField = props.tree ? props.childrenField || 'children' : null;
   const [ownSelection, setSelection] = _react.default.useState({}),
     [filters, setFilters] = _react.default.useState([]),
     [page, setPage] = _react.default.useState(0),
@@ -21261,7 +21261,7 @@ function NextEngine(props) {
     id: c.field,
     accessorFn: r => (0, _state.valueAt)(r, c.field),
     header: c.title || c.field,
-    enableSorting: c.headerSort !== false,
+    enableSorting: c.sortable !== false,
     filterFn: c.type === 'bytes' ? _cells.byteFilter : c.filter === 'list' ? _cells.listFilter : _cells.textFilter,
     sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sortingRef.current.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
     size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, floors[c.field] || 0, autoSizing[c.field] || (0, _environment.tokenPixels)(c.width, frame.current) || metrics.min),
@@ -21992,7 +21992,7 @@ function NextEngine(props) {
       filtered = column.getIsFiltered(),
       icon = kinds(c).includes('icon'),
       hasFilter = !!(c.filter || filterField === c.field || filtered),
-      align = c.headerHozAlign || (c.type === 'bytes' ? 'right' : null),
+      align = c.headerAlign || (c.type === 'bytes' ? 'right' : null),
       titleFixed = icon ? 'flush' : null,
       offset = pinned ? pinStart(column) : 0;
     const node = /*#__PURE__*/_react.default.createElement(Width, _extends({
@@ -22007,7 +22007,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -22251,7 +22251,7 @@ function NextEngine(props) {
         field
       } = pendingEdit.current;
       pendingEdit.current = null;
-      emit('cellEdited', api.cell(key, field));
+      emit('cellEdit', api.cell(key, field));
     }
   }, [source]);
   const rowNode = row => {
@@ -22355,7 +22355,7 @@ function NextEngine(props) {
       const cell = api.cell(row.id, c.field),
         canEdit = !!c.editor && (typeof c.editable === 'function' ? c.editable(cell) : c.editable !== false);
       const value = (0, _state.valueAt)(record, c.field),
-        isTree = !!childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field),
+        isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field),
         isEditing = editing?.key === row.id && editing.field === c.field,
         handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
         actions = k.includes('actions');
@@ -22420,8 +22420,8 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
-      }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+      }, childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
       }, row.getCanExpand() ? /*#__PURE__*/_react.default.createElement("button", {
@@ -22762,7 +22762,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
    Props:
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
-       minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
+       minWidth, maxWidth, rowLabel, frozen, align and headerAlign. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
@@ -22800,8 +22800,8 @@ function Table({
     maxWidth,
     rowLabel,
     frozen,
-    hozAlign,
-    headerHozAlign,
+    align,
+    headerAlign,
     empty
   }) => ({
     title,
@@ -22815,10 +22815,10 @@ function Table({
     maxWidth,
     rowLabel,
     frozen,
-    hozAlign,
-    headerHozAlign,
+    align,
+    headerAlign,
     empty,
-    headerSort: false,
+    sortable: false,
     resizable: false
   })), [columns]);
   return /*#__PURE__*/_react.default.createElement(_DataGridEngine.DataGridEngine, {
@@ -23062,7 +23062,7 @@ function Gauge({
       title: t.value,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: [{
       id: 1,
@@ -23895,12 +23895,12 @@ function PieChart({
       title: t.value,
       field: 'value',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.share,
       field: 'share',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: slices.map((d, i) => ({
       id: i + 1,
@@ -28527,7 +28527,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
          fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
          text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
          the columns before it are the row header (pinned and shaded)
-       hozAlign, headerHozAlign: "left" | "center" | "right"; headerSort: false turns sorting off; resizable: false
+       align, headerAlign: "left" | "center" | "right"; sortable: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
@@ -28558,7 +28558,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The page's view (the command bar drives it; each applies when it changes): filter(record), sort [{ field, dir }],
        groupBy (a field, or a list for nested groups), columnOrder, hiddenColumns; onAddToGroup(value, path): the add row
        at the end of each group
-     tree: rows nest (children in childrenField, default "_children"; the toggle in treeColumn; treeExpanded: start open)
+     tree: rows nest (children in childrenField, default "children"; the toggle in treeColumn; treeExpanded: start open)
      movableRows with onRowMove(records), movableColumns: drag, with the same moves in the menus
      rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
        button (default false: the page's ViewMenu sets these)
@@ -51871,7 +51871,7 @@ function SeriesChart({
       title: s.label,
       field: 's' + i,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))),
     data: data.map((row, c) => {
       const o = {
@@ -52371,7 +52371,7 @@ function HeatMap({
       title: vLabel,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: cal.cells.filter(x => x.inside).map((x, i) => ({
       id: i + 1,
@@ -52392,7 +52392,7 @@ function HeatMap({
       title: vLabel,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({
       id: r * columns.length + c + 1,
@@ -52723,12 +52723,12 @@ function WaterfallChart({
       title: t.change,
       field: 'c',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.running,
       field: 'r',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: bars.map((b, i) => ({
       id: i + 1,
@@ -53084,7 +53084,7 @@ function WordCloud({
       title: vLabel,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }]),
     data: sorted.map((w, i) => ({
       id: i + 1,
@@ -54456,7 +54456,7 @@ function BarChart({
       title: valueLabel || t.count,
       field: 'count',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: bins.map((b, i) => ({
       id: i + 1,
@@ -54473,12 +54473,12 @@ function BarChart({
       title: s.label,
       field: 's' + si,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))).concat(mode !== 'grouped' && list.length > 1 ? [{
       title: t.total,
       field: 'total',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }] : []),
     data: cats.map((c, ci) => {
       const row = {
@@ -54844,12 +54844,12 @@ function ComboChart({
       title: s.label,
       field: 'b' + i,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))).concat(lns.map((s, i) => ({
       title: s.label,
       field: 'l' + i,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))),
     data: categories.map((c, ci) => {
       const row = {
@@ -55131,12 +55131,12 @@ function BulletChart({
       title: t.value,
       field: 'value',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.target,
       field: 'target',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.ranges,
       field: 'ranges',
@@ -55416,7 +55416,7 @@ function BoxPlot({
       title: t[k],
       field: k,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))).concat([{
       title: t.outliers,
       field: 'outliers',
@@ -55425,7 +55425,7 @@ function BoxPlot({
       title: t.n,
       field: 'n',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }]),
     data: list.map((g, i) => ({
       id: i + 1,
@@ -55666,7 +55666,7 @@ function RadarChart({
       title: s.label,
       field: 's' + si,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))),
     data: axes.map((a, ai) => {
       const row = {
@@ -56021,7 +56021,7 @@ function SankeyDiagram({
       title: t.value,
       field: 'value',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: links.filter(l => nameOf[l.source] !== undefined && nameOf[l.target] !== undefined).map((l, i) => ({
       id: i + 1,
@@ -56790,7 +56790,7 @@ function LollipopChart({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: rows.map(r => ({
       id: r.id,
@@ -57082,17 +57082,17 @@ function ScatterChart({
     title: xTitle,
     field: 'x',
     kind: 'data',
-    hozAlign: 'right'
+    align: 'right'
   }, {
     title: yTitle,
     field: 'y',
     kind: 'data',
-    hozAlign: 'right'
+    align: 'right'
   }], v === 'bubble' ? [{
     title: sizeTitle || '',
     field: 'size',
     kind: 'data',
-    hozAlign: 'right'
+    align: 'right'
   }] : []);
   const table = {
     columns,
@@ -57333,17 +57333,17 @@ function FunnelChart({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.kept,
       field: 'kept',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.ofFirst,
       field: 'share',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: rows.map(r => ({
       id: r.id,
@@ -57677,12 +57677,12 @@ function Treemap({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.share,
       field: 'share',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }]),
     data: tiles.map((p, i) => ({
       id: i + 1,
@@ -57945,7 +57945,7 @@ function GanttChart({
       title: t.progress,
       field: 'progress',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.status,
       field: 'status',
@@ -58286,7 +58286,7 @@ function GeoMap({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }] : []),
     data: regions.map((r, i) => ({
       id: i + 1,
@@ -58303,12 +58303,12 @@ function GeoMap({
       title: t.latitude,
       field: 'lat',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.longitude,
       field: 'lon',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: places.map((m, i) => ({
       id: i + 1,
@@ -64031,7 +64031,7 @@ function PermissionsEditor({
     title: s.label,
     field: 'permission-' + s.id,
     kind: 'center',
-    headerSort: false,
+    sortable: false,
     render: cap => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
       label: s.label + ': ' + cap.label,
       checked: (value[s.id] || []).includes(cap.id),
@@ -65863,8 +65863,8 @@ function FileList({
       kind: 'data',
       type: 'number',
       sorter: 'number',
-      hozAlign: 'right',
-      headerHozAlign: 'right',
+      align: 'right',
+      headerAlign: 'right',
       render: f => sizeText(f)
     });
     if (facts.indexOf('modified') >= 0) cols.push({
@@ -71287,16 +71287,16 @@ function OrderManagement({
     field: 'count',
     kind: 'data',
     sorter: 'number',
-    hozAlign: 'right',
-    headerHozAlign: 'right',
+    align: 'right',
+    headerAlign: 'right',
     width: '--plx-ref-size-80px'
   }, {
     title: t.total,
     field: 'total',
     kind: 'data',
     sorter: 'number',
-    hozAlign: 'right',
-    headerHozAlign: 'right',
+    align: 'right',
+    headerAlign: 'right',
     render: o => (0, _shared.money)(o.total, o.currency || currency)
   }, {
     title: t.status,
@@ -71713,8 +71713,8 @@ function SubscriptionManagement({
     field: 'amount',
     kind: 'data',
     sorter: 'number',
-    hozAlign: 'right',
-    headerHozAlign: 'right',
+    align: 'right',
+    headerAlign: 'right',
     render: r => (0, _shared.money)(r.amount, r.currency || currency)
   }, {
     title: t.status,
@@ -71725,7 +71725,7 @@ function SubscriptionManagement({
     title: t.invoice,
     field: 'invoice',
     kind: 'center',
-    headerSort: false,
+    sortable: false,
     render: r => r.invoice ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
       href: r.invoice,
       variant: "subtle"
@@ -73048,7 +73048,7 @@ function AuditLog({
     field: 'changes',
     title: t.changes,
     kind: 'center',
-    headerSort: false,
+    sortable: false,
     render: a => a.changes?.length ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "xs",
       onClick: () => setActive(a.id)

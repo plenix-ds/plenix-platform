@@ -1058,7 +1058,7 @@ const switchCol = title => ({
   title,
   field: 'on',
   kind: 'center',
-  headerSort: false,
+  sortable: false,
   render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
     label: r.name + ': ' + title,
     labelHidden: true,
@@ -1089,12 +1089,12 @@ const facts = (label, list) => /*#__PURE__*/_react.default.createElement(_plenix
     field: 'name',
     kind: 'name',
     rowLabel: true,
-    headerSort: false
+    sortable: false
   }, {
     title: 'Value',
     field: 'value',
     kind: 'data',
-    headerSort: false
+    sortable: false
   }]
 });
 // the form's buttons: in an ActionBar (on the right, sticky at the bottom), a destructive action first, the primary last
@@ -1303,7 +1303,7 @@ function Properties({
       title: 'Status',
       field: 'status',
       kind: 'center',
-      headerSort: false,
+      sortable: false,
       render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
         tone: "success"
       }, "Active")
@@ -1754,7 +1754,7 @@ function EmailTemplates({
       title: 'Actions',
       field: 'actions',
       kind: 'center',
-      headerSort: false,
+      sortable: false,
       render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "xs",
         variant: "ghost",
@@ -3382,7 +3382,7 @@ function FieldVisibilityDialog({
       kind: 'icon',
       icon: 'menu-lines',
       rowHandle: true,
-      headerSort: false,
+      sortable: false,
       render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
         name: "menu-lines",
         size: "sm"
@@ -3391,19 +3391,19 @@ function FieldVisibilityDialog({
       title: 'Field',
       field: 'name',
       kind: 'name',
-      headerSort: false
+      sortable: false
     }, {
       title: 'Type',
       field: 'type',
       kind: 'data',
-      headerSort: false
+      sortable: false
     }, {
       title: 'Show',
       field: 'show',
       kind: 'center',
-      hozAlign: 'right',
-      headerHozAlign: 'right',
-      headerSort: false,
+      align: 'right',
+      headerAlign: 'right',
+      sortable: false,
       render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
         label: 'Show ' + r.name,
         labelHidden: true,
@@ -3496,7 +3496,7 @@ function CatEditFieldsDialog({
       kind: 'icon',
       icon: 'menu-lines',
       rowHandle: true,
-      headerSort: false,
+      sortable: false,
       render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
         name: "menu-lines",
         size: "sm"
@@ -3505,19 +3505,19 @@ function CatEditFieldsDialog({
       title: 'Field',
       field: 'name',
       kind: 'name',
-      headerSort: false
+      sortable: false
     }, {
       title: 'Type',
       field: 'type',
       kind: 'data',
-      headerSort: false
+      sortable: false
     }, {
       title: 'Remove',
       field: 'remove',
       kind: 'center',
-      hozAlign: 'right',
-      headerHozAlign: 'right',
-      headerSort: false,
+      align: 'right',
+      headerAlign: 'right',
+      sortable: false,
       render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "xs",
         variant: "ghost",
@@ -6814,8 +6814,8 @@ function HomePage() {
         title: 'Size',
         field: 'size',
         kind: 'data',
-        hozAlign: 'right',
-        headerHozAlign: 'right',
+        align: 'right',
+        headerAlign: 'right',
         sorter: bySize
       }, {
         title: 'Date added',

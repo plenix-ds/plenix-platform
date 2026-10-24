@@ -28,7 +28,7 @@ export function AuditLog({ entries = [], variant = 'table', label, strings, clas
     { field: 'at', title: t.at, kind: 'data', type: 'date', render: (a) => <Time value={a.at} /> },
     { field: 'action', title: t.action, kind: 'wrap' }, { field: 'target', title: t.target, kind: 'wrap' }
   ];
-  if (variant === 'diff') columns.push({ field: 'changes', title: t.changes, kind: 'center', headerSort: false,
+  if (variant === 'diff') columns.push({ field: 'changes', title: t.changes, kind: 'center', sortable: false,
     render: (a) => a.changes?.length ? <Button size="xs" onClick={() => setActive(a.id)}>{t.view}</Button> : null });
   const changes = (entry?.changes || []).map((a, i) => ({ id: i, field: a.field, before: display(a.before), after: display(a.after) }));
   return <Stack className={cx('plx-audit-log', className)}>
