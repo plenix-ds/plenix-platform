@@ -12,10 +12,6 @@
    "combinator | .plx-diagram__node--active .plx-diagram__shape": 1,
    "combinator | .plx-diagram__node--selected .plx-diagram__shape": 1
   },
-  "platform/charts/gauge.css": {
-   "combinator | .plx-gauge--sm .plx-gauge__meter": 1,
-   "combinator | .plx-gauge--lg .plx-gauge__meter": 1
-  },
   "platform/charts/line-chart.css": {
    "combinator | .plx-area-chart--stacked .plx-area-chart__area": 1
   },
@@ -42,10 +38,6 @@
    "combinator | .plx-chart-annotation--top .plx-chart-annotation__label": 1,
    "combinator | .plx-chart-annotation--bottom .plx-chart-annotation__label": 1,
    "combinator | .plx-chart-annotation--range .plx-chart-annotation__label": 1
-  },
-  "platform/charts/pie-chart.css": {
-   "combinator | .plx-pie-chart--half .plx-pie-chart__center-label": 1,
-   "combinator | .plx-pie-chart--half .plx-pie-chart__center-value": 1
   },
   "platform/charts/radar-chart.css": {
    "cross-block | .plx-radar-chart__area.plx-chart__line": 1

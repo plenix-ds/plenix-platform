@@ -1,9 +1,11 @@
 /* Plenix · PieChart (platform/charts/pie-chart.css): slices are the frame's marks (plx-chart__mark, their data-viz
    color: system/charts.css), parted by a thin line in the surface color; the donut's and the half ring's center value
-   (the data font) and its label. Every value is a --plx-comp-pie-chart-* token on an existing role. */
+   (the data font) and its label. Every value is a --plx-comp-pie-chart-* token on an existing role.
+   Half-ring center parts carry their own variant; the label baseline has one assignment per condition. */
+@property --plx-state-pie-chart-center-baseline{syntax:"*";inherits:false;}
 .plx-pie-chart__slice{stroke:var(--plx-comp-pie-chart-slice-outline-color);stroke-linejoin:round;stroke-width:var(--plx-comp-pie-chart-slice-outline-width);}
 .plx-pie-chart__center-value{dominant-baseline:text-after-edge;fill:var(--plx-comp-pie-chart-center-value-text);font-family:var(--plx-comp-pie-chart-center-value-font-family);font-size:var(--plx-comp-pie-chart-center-value-font-size);font-weight:var(--plx-comp-pie-chart-center-value-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-sys-text-label-line-height);text-anchor:middle;word-spacing:var(--plx-sys-font-data-word-spacing);}
-.plx-pie-chart__center-label{dominant-baseline:hanging;fill:var(--plx-comp-pie-chart-center-label-text);font-family:var(--plx-comp-pie-chart-center-label-font-family);font-size:var(--plx-comp-pie-chart-center-label-font-size);text-anchor:middle;word-spacing:normal;}
+.plx-pie-chart__center-label{dominant-baseline:var(--plx-state-pie-chart-center-baseline,hanging);fill:var(--plx-comp-pie-chart-center-label-text);font-family:var(--plx-comp-pie-chart-center-label-font-family);font-size:var(--plx-comp-pie-chart-center-label-font-size);text-anchor:middle;word-spacing:normal;}
 /* the half ring: the label sits on the ring's baseline and the value above it */
-.plx-pie-chart--half .plx-pie-chart__center-label{dominant-baseline:text-after-edge;}
-.plx-pie-chart--half .plx-pie-chart__center-value{transform:translateY(calc(-1 * var(--plx-comp-pie-chart-center-label-line-height)));}
+.plx-pie-chart__center-label--half{--plx-state-pie-chart-center-baseline:text-after-edge;}
+.plx-pie-chart__center-value--half{transform:translateY(calc(-1 * var(--plx-comp-pie-chart-center-label-line-height)));}
