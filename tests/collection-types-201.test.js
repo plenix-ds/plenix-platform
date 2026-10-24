@@ -1,7 +1,8 @@
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const deps = process.env.TYPECHECK_DEPS;
-if (!deps) throw Error('Set TYPECHECK_DEPS to an isolated install containing typescript and @types/react');
+// typescript and @types/react are dev dependencies of the repo (#291); TYPECHECK_DEPS points at another install
+const deps = process.env.TYPECHECK_DEPS || root;
+if (!require('node:fs').existsSync(path.join(deps, 'node_modules/typescript'))) throw Error('typescript is not installed: run npm install (dev dependencies), or set TYPECHECK_DEPS');
 const ts = require(path.join(deps, 'node_modules/typescript'));
 require('../build-types')(path.join(root, 'packages/react/index.d.ts'), require('../package.json').version);
 const program = ts.createProgram([path.join(__dirname, 'fixtures/collection-types-201.ts')], {
