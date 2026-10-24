@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Narrow side panel stage · Plenix review</title>
+<!-- The stage for #276 / #274 pictures: a 360px side panel with the real SegmentedControl (RedSave's "Show" control)
+     and a CommandBar, drawn with the Platform. capture.js photographs it with each option. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head>
+<body class="rv-page">
+<div id="root"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix;
+  const show = [{ value: 'all', label: 'Everyone (17)' }, { value: 'new', label: 'Not saved yet' }, { value: 'saved', label: 'Already saved' }];
+  function Stage() {
+    const [v, setV] = React.useState('all'), [q, setQ] = React.useState('');
+    return h('div', { className: 'rv-narrow', id: 'stage' },
+      h(P.Panel, { title: 'People' }, h(P.Card, null,
+        h(P.Stack, { gap: 'sm' },
+          h('div', { id: 'seg' }, h(P.Stack, { gap: 'xs' }, h(P.Text, { variant: 'label' }, 'Show'),
+            h(P.SegmentedControl, { label: 'Show', options: show, value: v, onChange: setV }))),
+          h('div', { id: 'select' }, h(P.Field, { label: 'Show' }, h(P.Select, { value: v, onChange: (e) => setV(e.target.value) },
+            show.map((o) => h('option', { key: o.value, value: o.value }, o.label))))),
+          h('div', { id: 'bar' }, h(P.CommandBar, { label: 'People', count: '17 people',
+            actions: [{ id: 'add', label: 'Add person', icon: 'plus', onSelect: () => {} }],
+            find: h(P.CommandBarSearch, { value: q, onChange: (e) => setQ(e.target.value), onClear: () => setQ(''), placeholder: 'Search people' }) }))))));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Stage));
+})();
+</script>
+</body>
+</html>

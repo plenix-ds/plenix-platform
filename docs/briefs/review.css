@@ -13,4 +13,5 @@
 .rv-fig figcaption{border-block-start:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-divider);font-size:var(--plx-ref-font-size-13);padding:var(--plx-sys-space-inset-sm) var(--plx-sys-space-inset-md);}
 .rv-tag{font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-12);color:var(--plx-sys-content-muted);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .rv-stage{background:var(--plx-sys-surface-raised);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control);display:grid;padding:var(--plx-sys-space-inset-md);row-gap:var(--plx-sys-space-stack-sm);}
+.rv-narrow{box-sizing:border-box;inline-size:var(--plx-ref-size-360px,22.5rem);padding:var(--plx-sys-space-inset-md);}
 .rv-rec{background:var(--plx-sys-status-success-background,var(--plx-sys-surface-raised));border:var(--plx-sys-border-width-thin) solid var(--plx-sys-status-success-border,var(--plx-sys-border-default));border-radius:var(--plx-sys-radius-control);font-size:var(--plx-ref-font-size-13);margin:0;padding:var(--plx-sys-space-inset-md);}

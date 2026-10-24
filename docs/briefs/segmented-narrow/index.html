@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented control, narrow · Plenix review</title>
+<!-- Owner review for #276 (with #274): RedSave's "Show" SegmentedControl in a 360px side panel, today and the three
+     options; the CommandBar at the same width. Pictures of the real components (stage.html); options applied for the
+     picture only. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Segmented control in a narrow side panel (#276, with #274)</h1>
+  <p class="rv-lead">RedSave's people panel is 360px wide, with a card inside it. Its "Show" control has three options:
+    Everyone (17), Not saved yet, Already saved. The control never shrinks, so the last option runs past the card's edge.
+    The same layout is drawn below with the real Platform components.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Today</h2>
+    <figure class="rv-fig"><img src="today.png" alt="The segmented control runs past the card's right edge"><figcaption><span class="rv-tag">TODAY</span> · "Already saved" sticks out past the card</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The options</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="shrink.png" alt="Option A: the options share the width and cut their labels with an ellipsis"><figcaption><span class="rv-tag">A · SHRINK AND TRUNCATE</span> · fits, but "Everyone …" hides the count; a tooltip shows the full label</figcaption></figure>
+      <figure class="rv-fig"><img src="select.png" alt="Option B: a select showing Everyone (17)"><figcaption><span class="rv-tag">B · SWITCH TO A SELECT</span> · when the options don't fit, the same choice as a Select: full labels, one row</figcaption></figure>
+      <figure class="rv-fig"><img src="wrap.png" alt="Option C: the options wrap to two rows"><figcaption><span class="rv-tag">C · WRAP TO ROWS</span> · fits, but it no longer reads as one control (corners and borders break)</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">#274 · the CommandBar at the same width</h2>
+    <figure class="rv-fig"><img src="commandbar.png" alt="The CommandBar in the narrow card: the add button and the search icon fit"><figcaption><span class="rv-tag">TODAY</span> · the find side folds to a search icon and the bar fits (the overflow RedSave reported may already be fixed; to confirm in RedSave)</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">What mainstream systems do</h2>
+    <ul class="rv-list">
+      <li><strong>Apple HIG:</strong> segmented controls keep short labels and few segments; when they don't fit, use a pop-up button (a menu) instead.</li>
+      <li><strong>Material 3:</strong> segmented buttons hold 2 to 5 short options; for more or longer choices, use a menu or chips.</li>
+      <li><strong>Carbon:</strong> the content switcher truncates long labels with an ellipsis.</li>
+    </ul>
+  </section>
+  <p class="rv-rec"><strong>Recommendation:</strong> B. The control measures itself; when its options don't fit, it draws the
+    same choice as a Select (same label, same value, same keyboard rules of a select). Labels stay whole, so counts like
+    "(17)" stay visible, as Apple and Material advise. A loses the counts; C breaks the control's shape. Apps to check: any
+    SegmentedControl in a side panel or a narrow card (RedSave People).</p>
+</main>
+</body>
+</html>
