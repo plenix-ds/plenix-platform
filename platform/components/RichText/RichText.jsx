@@ -11,7 +11,7 @@
    Props:
      variant: "article" (default: a page of reading: 14px text, 24px lines, a reading width of about 80 characters) |
        "compact" (notes, comments and help in a panel: the body size, 20px lines, the container's width)
-     html: HTML to show, already sanitized by the application (see Notes); without it, the children
+     html: HTML to show; RichText cleans it through the rich-text allow-list (cleanRichText) first; without it, the children
      as: the element: "div" (default) | "article" | "section"
      label: names the region for assistive technology when it is a landmark (as="section")
      children: the content, as plain elements (h1–h6, p, ul, ol, li, a, strong, em, u, s, sub, sup, mark, code, pre,
@@ -24,8 +24,8 @@
        overflows (give it tabindex="0" and a name in the content).
      Lists take their markers from the writing direction; the quote's rule sits at the start side.
    Notes:
-     It sanitizes nothing: HTML from people (comments, imported documents) must be cleaned by the application first (an
-       allow-list of the elements above, no scripts, no event attributes, no style attributes).
+     html is always cleaned by cleanRichText (the RichTextEditor's allow-list): the elements above, no scripts, no event
+       attributes, no style attributes except the person's text formatting, safe link and picture addresses only.
      With html, the container carries plx-user-content: the HTML is a person's content, whose own formatting (color,
        background-color, font-family, font-size and text-align on its text, as the RichTextEditor stores them) the style
        audit and the page checks allow there; the rest follows the type styles.
@@ -38,10 +38,12 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
+import { cleanRichText } from '../../utils/richTextClean.js';
 
 export function RichText({ variant = 'article', html, as: Tag = 'div', label, className, children, ...rest }) {
   devWarn('RichText', { variant }, { variant: ['article','compact'] });
-  const content = html != null ? { dangerouslySetInnerHTML: { __html: html } } : null;
+  const clean = React.useMemo(() => (html != null ? cleanRichText(html) : null), [html]);
+  const content = clean != null ? { dangerouslySetInnerHTML: { __html: clean } } : null;
   return (
     <Tag aria-label={label} {...content} {...rest}
       className={cx('plx-rich-text', 'plx-rich-text--' + (variant === 'compact' ? 'compact' : 'article'), html != null && 'plx-user-content', className)}>

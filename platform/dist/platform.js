@@ -35675,7 +35675,171 @@ function Blockquote({
   }, citation) : null);
 }
   } },
-  "platform/components/RichText/RichText.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/richTextClean.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SAFE_HREF = exports.RICH_TEXT_STYLE_PROPERTIES = void 0;
+exports.cleanRichText = cleanRichText;
+/* Plenix · richTextClean
+   Summary: The rich-text allow-list: a clean copy of HTML from people (comments, imported documents, the RichTextEditor's
+     output), with only the prose elements, safe links and pictures, and the person's own text formatting.
+   Usage: import { cleanRichText } from '../utils/richTextClean.js'; const safe = cleanRichText(html);
+   Behavior: Elements outside the list are unwrapped (their text stays); scripts, event and style attributes are dropped,
+     except the person's color, background color, font, size and alignment on their text; links keep http(s), mailto and
+     relative addresses only; pictures keep http(s) and relative sources only. Returns '' with no document (server).
+   Notes: Used by RichText (its html prop) and RichTextEditor (its value and onChange); published as cleanRichText. */
+const MENTION_CLASS = 'plx-rich-text-editor__mention';
+const CHECK_CLASS = 'plx-check__input';
+const ALLOWED = {
+  P: 1,
+  BR: 1,
+  STRONG: 1,
+  EM: 1,
+  U: 1,
+  S: 1,
+  CODE: 1,
+  SUB: 1,
+  SUP: 1,
+  MARK: 1,
+  A: 1,
+  SPAN: 1,
+  H1: 1,
+  H2: 1,
+  H3: 1,
+  H4: 1,
+  H5: 1,
+  H6: 1,
+  UL: 1,
+  OL: 1,
+  LI: 1,
+  BLOCKQUOTE: 1,
+  PRE: 1,
+  HR: 1,
+  IMG: 1,
+  FIGURE: 1,
+  FIGCAPTION: 1,
+  TABLE: 1,
+  THEAD: 1,
+  TBODY: 1,
+  TR: 1,
+  TH: 1,
+  TD: 1,
+  LABEL: 1,
+  INPUT: 1,
+  DIV: 1
+};
+const RENAME = {
+  B: 'strong',
+  I: 'em',
+  STRIKE: 's',
+  DEL: 's',
+  DIV: 'p'
+};
+// the person's own formatting kept on their content: these style properties only, on these elements
+const USER_STYLE = {
+  SPAN: ['color', 'background-color', 'font-family', 'font-size'],
+  MARK: ['color', 'background-color'],
+  P: ['text-align'],
+  H1: ['text-align'],
+  H2: ['text-align'],
+  H3: ['text-align'],
+  H4: ['text-align'],
+  H5: ['text-align'],
+  H6: ['text-align'],
+  TH: ['text-align'],
+  TD: ['text-align']
+};
+const RICH_TEXT_STYLE_PROPERTIES = exports.RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
+const SAFE_HREF = exports.SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
+const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
+
+// the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped, styles kept to the person's formatting)
+function cleanRichText(html) {
+  if (typeof document === 'undefined') return '';
+  const from = document.createElement('template');
+  from.innerHTML = String(html || '');
+  const copy = (node, into, task) => {
+    node.childNodes.forEach(n => {
+      if (n.nodeType === 3) {
+        const text = n.nodeValue.replace(/​/g, '');
+        if (text) into.appendChild(document.createTextNode(text));
+        return;
+      }
+      if (n.nodeType !== 1) return;
+      // inside a task item its label, checkbox and content div stay as Tiptap writes them
+      const inTask = task && n.parentNode && n.parentNode.getAttribute && n.parentNode.getAttribute('data-type') === 'taskItem';
+      let tag = RENAME[n.tagName] && !(inTask && n.tagName === 'DIV') ? RENAME[n.tagName].toUpperCase() : n.tagName;
+      if ((tag === 'LABEL' || tag === 'DIV') && !inTask) {
+        copy(n, into, task);
+        return;
+      }
+      if (tag === 'INPUT') {
+        if (!(task && n.closest('li[data-type="taskItem"]') && /^checkbox$/i.test(n.getAttribute('type') || ''))) return;
+        const box = document.createElement('input');
+        const item = n.closest('li[data-type="taskItem"]'),
+          body = item && item.querySelector(':scope > div');
+        box.setAttribute('type', 'checkbox');
+        box.setAttribute('class', CHECK_CLASS);
+        box.setAttribute('disabled', '');
+        if (n.hasAttribute('checked') || item && item.getAttribute('data-checked') === 'true') box.setAttribute('checked', 'checked');
+        box.setAttribute('aria-label', ((body ? body.textContent : '') || '').trim().slice(0, 200));
+        into.appendChild(box);
+        return;
+      }
+      const mention = tag === 'SPAN' && n.hasAttribute('data-mention');
+      const styles = (USER_STYLE[tag] || []).map(p => [p, n.style ? n.style.getPropertyValue(p) : '']).filter(s => s[1] && !/url\(|expression|[<>]/i.test(s[1]));
+      if (!ALLOWED[tag] || tag === 'SPAN' && !mention && !styles.length) {
+        copy(n, into, task);
+        return;
+      }
+      const el = document.createElement(tag.toLowerCase());
+      if (tag === 'A') {
+        const href = (n.getAttribute('href') || '').trim();
+        if (SAFE_HREF.test(href)) el.setAttribute('href', href);
+      }
+      if (tag === 'IMG') {
+        const src = (n.getAttribute('src') || '').trim();
+        if (!src || !SAFE_SRC.test(src)) return;
+        el.setAttribute('src', src);
+        el.setAttribute('alt', n.getAttribute('alt') || '');
+        if (n.getAttribute('title')) el.setAttribute('title', n.getAttribute('title'));
+      }
+      if (tag === 'OL' && /^\d+$/.test(n.getAttribute('start') || '') && n.getAttribute('start') !== '1') el.setAttribute('start', n.getAttribute('start'));
+      if (tag === 'TD' || tag === 'TH') ['colspan', 'rowspan'].forEach(a => {
+        const v = n.getAttribute(a);
+        if (/^\d+$/.test(v || '') && v !== '1') el.setAttribute(a, v);
+      });
+      if (tag === 'UL' && n.getAttribute('data-type') === 'taskList') el.setAttribute('data-type', 'taskList');
+      const isTask = tag === 'LI' && n.getAttribute('data-type') === 'taskItem';
+      if (isTask) {
+        el.setAttribute('data-type', 'taskItem');
+        el.setAttribute('data-checked', n.getAttribute('data-checked') === 'true' ? 'true' : 'false');
+      }
+      if (tag === 'MARK' && n.getAttribute('data-color')) el.setAttribute('data-color', n.getAttribute('data-color'));
+      if (mention) {
+        el.setAttribute('data-mention', n.getAttribute('data-mention'));
+        el.setAttribute('class', MENTION_CLASS);
+        el.setAttribute('contenteditable', 'false');
+      }
+      styles.forEach(s => el.style.setProperty(s[0], s[1]));
+      if (tag === 'LABEL') el.setAttribute('contenteditable', 'false');
+      if (tag === 'IMG' || tag === 'HR' || tag === 'BR') {
+        into.appendChild(el);
+        return;
+      }
+      copy(n, el, task || isTask);
+      into.appendChild(el);
+    });
+  };
+  const out = document.createElement('div');
+  copy(from.content, out, false);
+  return out.innerHTML;
+}
+  } },
+  "platform/components/RichText/RichText.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35685,6 +35849,7 @@ exports.RichText = RichText;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _richTextClean = require("../../utils/richTextClean.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichText
    Summary: A block of formatted reading text (prose): paragraphs, headings, lists, links, quotes, inline code and code
@@ -35699,7 +35864,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      variant: "article" (default: a page of reading: 14px text, 24px lines, a reading width of about 80 characters) |
        "compact" (notes, comments and help in a panel: the body size, 20px lines, the container's width)
-     html: HTML to show, already sanitized by the application (see Notes); without it, the children
+     html: HTML to show; RichText cleans it through the rich-text allow-list (cleanRichText) first; without it, the children
      as: the element: "div" (default) | "article" | "section"
      label: names the region for assistive technology when it is a landmark (as="section")
      children: the content, as plain elements (h1–h6, p, ul, ol, li, a, strong, em, u, s, sub, sup, mark, code, pre,
@@ -35712,8 +35877,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        overflows (give it tabindex="0" and a name in the content).
      Lists take their markers from the writing direction; the quote's rule sits at the start side.
    Notes:
-     It sanitizes nothing: HTML from people (comments, imported documents) must be cleaned by the application first (an
-       allow-list of the elements above, no scripts, no event attributes, no style attributes).
+     html is always cleaned by cleanRichText (the RichTextEditor's allow-list): the elements above, no scripts, no event
+       attributes, no style attributes except the person's text formatting, safe link and picture addresses only.
      With html, the container carries plx-user-content: the HTML is a person's content, whose own formatting (color,
        background-color, font-family, font-size and text-align on its text, as the RichTextEditor stores them) the style
        audit and the page checks allow there; the rest follows the type styles.
@@ -35737,9 +35902,10 @@ function RichText({
   }, {
     variant: ['article', 'compact']
   });
-  const content = html != null ? {
+  const clean = _react.default.useMemo(() => html != null ? (0, _richTextClean.cleanRichText)(html) : null, [html]);
+  const content = clean != null ? {
     dangerouslySetInnerHTML: {
-      __html: html
+      __html: clean
     }
   } : null;
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
@@ -41840,15 +42006,26 @@ function loadTiptap(win) {
   return p;
 }
   } },
-  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RICH_TEXT_STYLE_PROPERTIES = exports.RICH_TEXT_SIZES = exports.RICH_TEXT_FONTS = void 0;
+exports.RICH_TEXT_SIZES = exports.RICH_TEXT_FONTS = void 0;
+Object.defineProperty(exports, "RICH_TEXT_STYLE_PROPERTIES", {
+  enumerable: true,
+  get: function () {
+    return _richTextClean.RICH_TEXT_STYLE_PROPERTIES;
+  }
+});
 exports.RichTextEditor = RichTextEditor;
-exports.cleanRichText = cleanRichText;
+Object.defineProperty(exports, "cleanRichText", {
+  enumerable: true,
+  get: function () {
+    return _richTextClean.cleanRichText;
+  }
+});
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
@@ -41864,6 +42041,7 @@ var _ColorSwatch = require("../ColorSwatch/ColorSwatch.jsx");
 var _categoryColors = require("../ColorSwatch/categoryColors.js");
 var _hotkey = require("../../utils/hotkey.js");
 var _tiptap = require("./tiptap.js");
+var _richTextClean = require("../../utils/richTextClean.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichTextEditor
    Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar, Buttons and Menus) over an editing
@@ -42085,154 +42263,13 @@ const keysAria = binding => binding.replace('Mod', (0, _hotkey.isMac)() ? 'Meta'
 // the person's fonts and sizes to choose from (content, not interface: any family or size can be typed in too)
 const RICH_TEXT_FONTS = exports.RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '"Reddit Mono", monospace'], ['Arial', 'Arial, sans-serif'], ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'], ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
 const RICH_TEXT_SIZES = exports.RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
-const ALLOWED = {
-  P: 1,
-  BR: 1,
-  STRONG: 1,
-  EM: 1,
-  U: 1,
-  S: 1,
-  CODE: 1,
-  SUB: 1,
-  SUP: 1,
-  MARK: 1,
-  A: 1,
-  SPAN: 1,
-  H1: 1,
-  H2: 1,
-  H3: 1,
-  H4: 1,
-  H5: 1,
-  H6: 1,
-  UL: 1,
-  OL: 1,
-  LI: 1,
-  BLOCKQUOTE: 1,
-  PRE: 1,
-  HR: 1,
-  IMG: 1,
-  TABLE: 1,
-  TBODY: 1,
-  TR: 1,
-  TH: 1,
-  TD: 1,
-  LABEL: 1,
-  INPUT: 1,
-  DIV: 1
-};
-const RENAME = {
-  B: 'strong',
-  I: 'em',
-  STRIKE: 's',
-  DEL: 's',
-  DIV: 'p'
-};
-// the person's own formatting kept on their content: these style properties only, on these elements
-const USER_STYLE = {
-  SPAN: ['color', 'background-color', 'font-family', 'font-size'],
-  MARK: ['color', 'background-color'],
-  P: ['text-align'],
-  H1: ['text-align'],
-  H2: ['text-align'],
-  H3: ['text-align'],
-  H4: ['text-align'],
-  H5: ['text-align'],
-  H6: ['text-align'],
-  TH: ['text-align'],
-  TD: ['text-align']
-};
-const RICH_TEXT_STYLE_PROPERTIES = exports.RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
-const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
-const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
+
 // the mention list goes to the top layer only where the browser also places it by anchor (as Menu and Popover): without
 // anchor positioning it stays inline, beside the text, where useFloating's inline placement works (RedSave P-48)
 const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const MENTION_CLASS = 'plx-rich-text-editor__mention';
 const CHECK_CLASS = 'plx-check__input';
 const USER_CONTENT = 'plx-user-content';
-
-// the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped, styles kept to the person's formatting)
-function cleanRichText(html) {
-  if (typeof document === 'undefined') return '';
-  const from = document.createElement('template');
-  from.innerHTML = String(html || '');
-  const copy = (node, into, task) => {
-    node.childNodes.forEach(n => {
-      if (n.nodeType === 3) {
-        const text = n.nodeValue.replace(/​/g, '');
-        if (text) into.appendChild(document.createTextNode(text));
-        return;
-      }
-      if (n.nodeType !== 1) return;
-      // inside a task item its label, checkbox and content div stay as Tiptap writes them
-      const inTask = task && n.parentNode && n.parentNode.getAttribute && n.parentNode.getAttribute('data-type') === 'taskItem';
-      let tag = RENAME[n.tagName] && !(inTask && n.tagName === 'DIV') ? RENAME[n.tagName].toUpperCase() : n.tagName;
-      if ((tag === 'LABEL' || tag === 'DIV') && !inTask) {
-        copy(n, into, task);
-        return;
-      }
-      if (tag === 'INPUT') {
-        if (!(task && n.closest('li[data-type="taskItem"]') && /^checkbox$/i.test(n.getAttribute('type') || ''))) return;
-        const box = document.createElement('input');
-        const item = n.closest('li[data-type="taskItem"]'),
-          body = item && item.querySelector(':scope > div');
-        box.setAttribute('type', 'checkbox');
-        box.setAttribute('class', CHECK_CLASS);
-        box.setAttribute('disabled', '');
-        if (n.hasAttribute('checked') || item && item.getAttribute('data-checked') === 'true') box.setAttribute('checked', 'checked');
-        box.setAttribute('aria-label', ((body ? body.textContent : '') || '').trim().slice(0, 200));
-        into.appendChild(box);
-        return;
-      }
-      const mention = tag === 'SPAN' && n.hasAttribute('data-mention');
-      const styles = (USER_STYLE[tag] || []).map(p => [p, n.style ? n.style.getPropertyValue(p) : '']).filter(s => s[1] && !/url\(|expression|[<>]/i.test(s[1]));
-      if (!ALLOWED[tag] || tag === 'SPAN' && !mention && !styles.length) {
-        copy(n, into, task);
-        return;
-      }
-      const el = document.createElement(tag.toLowerCase());
-      if (tag === 'A') {
-        const href = (n.getAttribute('href') || '').trim();
-        if (SAFE_HREF.test(href)) el.setAttribute('href', href);
-      }
-      if (tag === 'IMG') {
-        const src = (n.getAttribute('src') || '').trim();
-        if (!src || !SAFE_SRC.test(src)) return;
-        el.setAttribute('src', src);
-        el.setAttribute('alt', n.getAttribute('alt') || '');
-        if (n.getAttribute('title')) el.setAttribute('title', n.getAttribute('title'));
-      }
-      if (tag === 'OL' && /^\d+$/.test(n.getAttribute('start') || '') && n.getAttribute('start') !== '1') el.setAttribute('start', n.getAttribute('start'));
-      if (tag === 'TD' || tag === 'TH') ['colspan', 'rowspan'].forEach(a => {
-        const v = n.getAttribute(a);
-        if (/^\d+$/.test(v || '') && v !== '1') el.setAttribute(a, v);
-      });
-      if (tag === 'UL' && n.getAttribute('data-type') === 'taskList') el.setAttribute('data-type', 'taskList');
-      const isTask = tag === 'LI' && n.getAttribute('data-type') === 'taskItem';
-      if (isTask) {
-        el.setAttribute('data-type', 'taskItem');
-        el.setAttribute('data-checked', n.getAttribute('data-checked') === 'true' ? 'true' : 'false');
-      }
-      if (tag === 'MARK' && n.getAttribute('data-color')) el.setAttribute('data-color', n.getAttribute('data-color'));
-      if (mention) {
-        el.setAttribute('data-mention', n.getAttribute('data-mention'));
-        el.setAttribute('class', MENTION_CLASS);
-        el.setAttribute('contenteditable', 'false');
-      }
-      styles.forEach(s => el.style.setProperty(s[0], s[1]));
-      if (tag === 'LABEL') el.setAttribute('contenteditable', 'false');
-      if (tag === 'IMG' || tag === 'HR' || tag === 'BR') {
-        into.appendChild(el);
-        return;
-      }
-      copy(n, el, task || isTask);
-      into.appendChild(el);
-    });
-  };
-  const out = document.createElement('div');
-  copy(from.content, out, false);
-  return out.innerHTML;
-}
 
 // what the toolbar shows for the text at the caret, read from the editor
 const MARKS = {
@@ -42473,7 +42510,7 @@ function makeEditor(T, el, o) {
           rel: null,
           class: null
         },
-        isAllowedUri: url => SAFE_HREF.test(String(url || '').trim())
+        isAllowedUri: url => _richTextClean.SAFE_HREF.test(String(url || '').trim())
       }
     }), T.TaskList, PlenixTaskItem.configure({
       nested: true
@@ -42583,7 +42620,7 @@ function RichTextEditor({
   _react.default.useLayoutEffect(() => {
     const el = area.current;
     if (!el) return undefined;
-    const content = cleanRichText(defaultValue);
+    const content = (0, _richTextClean.cleanRichText)(defaultValue);
     el.innerHTML = content;
     let gone = false;
     (0, _tiptap.loadTiptap)(el.ownerDocument.defaultView).then(T => {
@@ -42682,7 +42719,7 @@ function RichTextEditor({
       ed.on('transaction', sync);
       ed.on('update', () => {
         const cb = live.current.onChange;
-        if (cb) cb(ed.isEmpty ? '' : cleanRichText(ed.getHTML()));
+        if (cb) cb(ed.isEmpty ? '' : (0, _richTextClean.cleanRichText)(ed.getHTML()));
       });
       ed.on('blur', () => setMention(null));
       sync();
@@ -42864,7 +42901,7 @@ function RichTextEditor({
       if (!v) return;
       let to = v;
       if (!/^[a-z][a-z0-9+.-]*:/i.test(to) && !/^[/#.]/.test(to)) to = 'https://' + to;
-      if (!SAFE_HREF.test(to)) return;
+      if (!_richTextClean.SAFE_HREF.test(to)) return;
       if (ed.state.selection.empty) ed.chain().focus().insertContent({
         type: 'text',
         text: v,
