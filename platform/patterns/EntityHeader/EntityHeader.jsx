@@ -175,7 +175,7 @@ function States({ states, label, iconOnly }) {
   return (
     <div className="plx-entity-header__fact plx-entity-header__fact--states">
       <dt className="plx-entity-header__fact-label">{states.label || label}</dt>
-      <dd className="plx-entity-header__states" role="radiogroup" aria-label={states.label || label}>
+      <dd className="plx-entity-header__fact-line"><div className="plx-entity-header__states" role="radiogroup" aria-label={states.label || label}>
         {opts.map((o, i) => {
           const on = o.value === states.value, tone = TONES.indexOf(ALIASES[o.tone] || o.tone) >= 0 ? (ALIASES[o.tone] || o.tone) : 'neutral';
           return (
@@ -188,7 +188,7 @@ function States({ states, label, iconOnly }) {
             </button>
           );
         })}
-      </dd>
+      </div></dd>
     </div>
   );
 }
