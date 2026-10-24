@@ -1,6 +1,6 @@
-# Plenix: what is done and what is left (2026-10-23)
+# Plenix: what is done and what is left (2026-10-24)
 
-Start here in a new session (Claude or Codex). TODO.md now only points here: new work is a GitHub issue. Then read `AGENTS.md` (Codex) or `CLAUDE.md` and the memory index
+Start with [HANDOFF.md](HANDOFF.md) in a new session (Claude or Codex). TODO.md now only points here: new work is a GitHub issue. Then read `AGENTS.md` (Codex) or `CLAUDE.md` and the memory index
 (Claude), and the issue for the task you take. Every remaining item below has a GitHub issue in
 `plenix-ds/plenix-platform`; the tracking issue #252 lists them all.
 
@@ -8,7 +8,7 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 
 - Branch: `styling/phase-2` in both repositories (`plenix-ds/plenix-platform` and its submodule
   `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
-- Last release: 0.69.2 (2026-10-24): icons drawn inline with no gray squares (#268), the grid studies linked and published (#272), the tag picker fix (#261), the EntityHeader layouts (#244, header style 1). Before it: 0.68.1 grid speed, 0.69.0 the new grid look, 0.69.1 grouping on TanStack.
+- Last release: 0.69.4 (2026-10-24; 0.69.3 the Streamlined header style, 0.69.4 the icon library in the self-hosting archive). Before: 0.69.2 (2026-10-24): icons drawn inline with no gray squares (#268), the grid studies linked and published (#272), the tag picker fix (#261), the EntityHeader layouts (#244, header style 1). Before it: 0.68.1 grid speed, 0.69.0 the new grid look, 0.69.1 grouping on TanStack.
 - **No release unless the owner declares it.**
 
 ## Done

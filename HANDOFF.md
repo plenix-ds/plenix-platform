@@ -1,63 +1,88 @@
-> **Out of date (2026-10-15).** Start from [STATUS.md](STATUS.md) (2026-10-23): what is done, what is left, and the working rules.
+# Plenix: handoff for a new session (2026-10-24)
 
-# Plenix: handoff to VM 101 (2026-10-15)
+Read this first, then [STATUS.md](STATUS.md) (what is done and left), then `CLAUDE.md` (Claude) or `AGENTS.md` (Codex).
+Everything still to do is a GitHub issue in `plenix-ds/plenix-platform`; **issue #252 is the tracking list**. Nothing
+is kept in TODO.md any more.
 
-Read this first in the new Claude Code session, then the memory index (MEMORY.md). The owner's decisions are in the
-memory folder; this file says where the work stands and how to run it on the VM.
+## What Plenix is
+
+One design system and the suite of applications built on it, owned by one person (the "owner"; GitHub org
+`plenix-ds`). Applications outside this repository (RedSave, CTM Council, others) load Plenix from its CDN.
+
+| Part | Where | What |
+|---|---|---|
+| Platform | `platform/` | React components (`components/`), patterns (`patterns/`), hooks, providers; `plx-` CSS classes; tokens in three tiers (`--plx-ref-` values, `--plx-sys-` roles, `--plx-comp-` component settings) as W3C JSON in `platform/tokens/` |
+| Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 688 records, 1,172 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
+| Standards | `platform/standards/` | `styling.md` (the Styling Standard: ownership, zero overlap, text contracts, layers), `text-contracts.json`, themes, layout, native design |
+| Apps | `dashboard/ projects/ messages/ contacts/ calendar/ tasks/ notes/ bookmarks/ files/ settings/ dam/` | The suite, each `main.jsx` → generated `app.js` |
+| Checks | `check-system.js` (+ `check-system.rules/`), `check-spec.js`, `tests/` | The gates |
+| Agent tools | `tools/agent/` | Work notes, proof log (`proof-log.md`), release script (`release.sh`), the spec-merge record |
 
 ## Where things stand
 
-- Latest release: 0.31.65 (live, tagged).
-- Just shipped:
-  - 0.31.64: status and category pills (soft 100/300 + dark text, 4px corners), yellow and orange scales, warnings
-    orange, away yellow, SegmentedControl look A. Spec: `docs/pills-and-colors.md`.
-  - 0.31.65: the command bar standard: `platform/patterns/CommandBar/`, the find panels (Filter, Sort, Group, Columns,
-    View, QuickFilter), the selection bar (BulkActions: actions, Select all, Clear, "N selected" at the end), the
-    search rule (240px, collapses to an icon when narrow), the thin chevron caret, no view button on DataGrid.
-- The decision study: `docs/command-bar-study/` (open `index.html` through a local server; "Decided so far" lists
-  every rule). Decision record: memory `plenix-command-bar-study.md`.
+- **Branch**: `styling/phase-2` in both repositories; everything is committed and pushed (2026-10-24). `main` is behind.
+- **Last release: 0.69.4** (tag `v0.69.4`, live at `https://design-system.lighthouseway.org/cdn/0.69.4/`).
+  - 0.69.3 shipped EntityHeader's Streamlined header style (`headerStyle="streamlined"`).
+  - 0.69.2 shipped the five Structured layouts (`layout`), the tag picker fix and the icon fix.
+- **Hosting**: VM 130 "Plenix" (10.0.0.30) behind Nginx Proxy Manager; `plenix.lighthouseway.org` (apps), `design-system.lighthouseway.org` (spec, CDN `/cdn/<version>/`, API `/api/v1/`, behind Authentik except `/cdn/`).
+- **Unfinished work saved on a branch**: `wip/data-grid-lines-as-borders` (an unverified DataGrid change found on disk): #290.
 
-## Next, in order
+## The owner's rules (non-negotiable)
 
-1. Small release: unread counters (`Count variant="pill"`) become soft pills; `Tabs variant="segmented"` takes
-   SegmentedControl look A (owner said ok, 2026-10-14).
-2. Open question for the owner: at narrow widths the command bar hides its count; keep hidden or show?
-3. Adoption: move the DAM toolbar (DataToolbar) and the other apps' list screens onto CommandBar; badges use the six
-   variant names (not the info/warning/danger aliases).
-4. Native designs for the new components (`tools/agent/native/`, check.js then merge.js).
-5. Library waves 7–15 (`tools/agent/library/plan.json`, `plan.md`, lane brief `BRIEF-lane.md`), 3 lanes per wave.
-   The owner is considering cloud writers (Agent isolation "remote") with decisions batched per wave.
-6. Composition rules (handoff in memory: controls in one row share one height; the "what is this region" guide).
-7. Smaller: last touch targets (coarse 18), RedSave issues (types, unknown-icon warnings, vendor bundle download).
-8. Final: the full system-wide test run (`npm run test:full` / the manual full.yml workflow), only when all is done.
+- **No release unless the owner says so.** When they do, see "Releasing" below.
+- **Ask before fixing** something the owner reports: explain the cause and the options; fix after they choose.
+- **Pixel changes wait for the owner's look** (screenshots of the real component; review pages in `docs/briefs/`).
+- Styling Standard (`platform/standards/styling.md`): no `!important`, no inline styles (not even a style attribute),
+  tokens only, no new colors (existing palette), flat selectors (a parent never styles a child; context values and
+  state variables instead), every text part declares a text contract, no exceptions.
+- **Dark mode last** (#205). American English. Statuses are badges with an icon, never a dot. No action links.
+- Write documentation as definitive rules, plain words, bullets for two sentences or more.
+- **Other sessions share this folder.** Commit only your own files; build generated files in a clean copy; never `git add -A`.
+- Proofs: prove only the pages you touch (`tests/clash-audit.js --check --pages …`, `tests/compare-styles.js`), log
+  them in `tools/agent/proof-log.md`, never wait on them; the full suite (#58) only at the very end.
+- Commits: author "Coptic Collection" <frraphaelmaher@gmail.com>, trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. This machine has **no git identity**: pass `-c user.name=… -c user.email=…` or export `GIT_AUTHOR_*`/`GIT_COMMITTER_*`.
 
-## Owner-side items (not code)
+## How to work
 
-Package mirror (Verdaccio) deploy + DNS; SMTP account; Proxmox backups; Authentik approval for "Save in the design
-system"; replacing the faulty i9-13900KS (it corrupted builds, uploads and git objects on the old PC).
+- Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-spec.js` (SPEC_OK).
+  After a spec change, `node build-spec-parts.js` (build-app runs it).
+- Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
+  `platform/system/tokens/*.css`, `platform/tokens/tokens.index.json`, `platform/components/Icon/icon.css`,
+  `platform/design-system/spec-parts.js`, `reviewed.js`, `usage.js`.
+- Clean copy for builds and proofs: a detached `git worktree` (for example `../Plenix-b0`) with `node_modules` linked
+  as a junction; copy in only your changed files; for build-app, write `platform/design-system/.git` as
+  `gitdir: C:/Users/Administrator/Documents/Plenix/.git/modules/platform/design-system` and remove it after.
+- Local server for the spec and apps: `http://localhost:8767/Plenix/…` (the `plenix-static` preview), or `tests/lib.js` `serve()` in scripts.
+- Shell quoting: `node -e` and heredocs eat backslashes and quotes; write scripts to files (the Write tool) and run them.
 
-## How to work on the VM
+## Releasing (only when the owner says so)
 
-Layout on VM 101 (set up by `tools/agent/setup-vm.ps1`):
+1. Move the "Unreleased" entries of `CHANGELOG.md` into a file (the release script inserts that file as the new
+   version's entry; leaving them under Unreleased duplicates them).
+2. Export the git identity, then:
+   `bash tools/agent/release.sh "<subject>" <changelog-entry.md> <work-log-entry.md> platform/dist platform/system platform/tokens/tokens.index.json platform/components/Icon/icon.css platform/exports`
+   (the work log is `../Plenix - DAM/audit/batches/15-26.md`; the entry may use `{V}` for the version; take the next batch number).
+3. **The script's deploy step runs `check-system` on the folder named `Plenix` beside the deploy copy, which is the
+   working folder.** If it stops ("check-system failed" with an OK check in the clean copy), deploy from a temporary
+   folder named `Plenix`: `git worktree add --detach <tmp>/Plenix <release commit>`, `git submodule update --init`,
+   a `node_modules` junction, `<tmp>/Plenix - DAM/audit/batches/15-26.md` beside it, then `bash deploy.sh` there,
+   then `git tag v<version> && git push origin v<version>`. Remove the junction before removing the worktree.
+4. Verify: `curl https://design-system.lighthouseway.org/cdn/<version>/plenix.js | grep <something new>`; close the issues with the version.
 
-```
-C:\Users\Administrator\Documents\
-  Plenix\                         the repo; open Claude Code here
-  Plenix - DAM\audit\batches\     the work log every release appends to (release.sh writes ../Plenix - DAM/...)
-  Plenix-rel\                     clean worktree that deploys run from
-C:\Users\Administrator\.claude\projects\C--Users-Administrator-Documents-Plenix\memory\   the memory
-```
+## Where to start
 
-- Release (Git Bash): `bash tools/agent/release.sh "<subject>" tools/agent/cl.md tools/agent/log.md <paths>`. Write
-  cl.md (changelog entry) and log.md (work log entry; `{V}` becomes the version) fresh per release. The script builds,
-  commits the submodule and the given paths, pushes, deploys from Plenix-rel (8 tries) and tags. If it stops silently:
-  push, then in Plenix-rel `git checkout --detach <sha>; git submodule update --init; bash deploy.sh`, then tag `vX`
-  and push the tag.
-- The old PC's git mirrors (alternates) existed only because of its faulty CPU; not used here.
-- Tools in `tools/agent/`: `build-study.js` (compiles a docs study's samples.jsx), `library/` (wave plan + lane brief),
-  `web/BRIEF-web.md` (house rules every writer reads), `native/` (native design fragments, check.js, merge.js).
-- Deploy needs the SSH key for the Plenix VM (10.0.0.30); the owner installs it.
-- Tests run in changed mode by default (`node tests/run.js`; `CHANGED_BASE=HEAD~1` for one commit). Full suite only at
-  the very end.
-- Rules that save time: at most 2 local writers, each in its own git worktree; small fixes ship alone; release per
-  piece with build + targeted checks; the owner reviews live.
+Issue #252 lists everything. The current front of the work:
+- **Header study** #244: both styles are shipped; left are the 30 capability headers (spec and apps).
+- **Styling Standard**: zero overlap for 137 stylesheets (#207–#210, open Codex PRs #222–#234), Phase 5 cascade layers
+  and no `!important` (#249), Phase 7 unused classes (#250), Phase 8 bundle size (#152), Phase 4 rest (#253).
+- **Icons architecture** epic #277 (#278–#286).
+- **The design system as a database** #264 (+ #265 Web/iOS/Android split, #266 a record per variation, #267 styling per variation): needs the owner's schema review.
+- **Apps connected to the CDN both ways** #273: needs the owner's choice of channel.
+- **Owner decisions waiting**: #217 touch targets, #257 spec wording, #259 black, #260 Mono numbers, #263 the color references bug (page to confirm).
+- RedSave and DataGrid findings (P-xx, DT-xx issues), the variant block #251 (Figma limit), the complete library #45.
+
+## Housekeeping you will meet
+
+- Many old worktrees under `.claude/worktrees/` and `../Plenix-*` copies (#258: remove the `node_modules` junctions first).
+- `memory/` in the repo root is a stray worktree folder, not project content; do not commit it.
+- The older handoff (2026-10-15) is in git history (`git log -p HANDOFF.md`).
