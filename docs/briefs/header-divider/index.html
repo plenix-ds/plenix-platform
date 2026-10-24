@@ -20,6 +20,8 @@ p,li{font-size:var(--plx-sys-text-body-font-size);max-inline-size:var(--plx-ref-
 .dv-today{--plx-comp-entity-header-columns:minmax(0, 1.7fr) minmax(0, 1fr);}
 .dv-a{--plx-comp-entity-header-columns:minmax(0, 1fr) max-content;}
 .dv-b{--plx-comp-entity-header-columns:minmax(63%, max-content) minmax(var(--plx-ref-size-220px), 1fr);}
+.dv-box-400 .plx-entity-header__fact--states{border-color:var(--plx-ref-color-gray-400);}
+.dv-btn-500 .plx-entity-header__state:not(.is-selected){border-color:var(--plx-ref-color-gray-500);}
 .dv-c{--plx-comp-entity-header-columns:minmax(0, 1.7fr) minmax(var(--plx-ref-size-220px), 1fr);}
 </style>
 </head>
@@ -52,6 +54,11 @@ p,li{font-size:var(--plx-sys-text-body-font-size);max-inline-size:var(--plx-ref-
     option('dv-a', 'Option A: the right side takes only what it needs', 'The line sits as far right as the next step and the actions allow. The title almost never wraps, but the line moves with every header, so headers next to each other do not line up.'),
     option('dv-b', 'Option B (our suggestion): a default position that gives way', 'The line starts at the same place as today (63%). When the title needs more room, it pushes the line to the right, but the right side always keeps at least 220px (a new token, entity-header-aside-min-width). Past that point the title wraps. Headers with short titles line up as today; only headers that need it move. When the right side gets narrow, its actions fold into More (as they already do) and its next step wraps.'),
     option('dv-c', 'Option C: a fixed share with a floor for the right side', 'As today, but the right side never gets narrower than 220px. The line never moves for the title; it only protects the actions on narrow screens.'),
+    h('h2', { id: 'status' }, 'The status box outline (#300): today and two shades darker'),
+    h('p', null, 'The same Option B header three times. Only the status box (Draft, In progress, Adjourned) changes; every color is an existing palette color.'),
+    h('h2', null, 'Today: the box outline gray 200, the state buttons gray 300'), h('div', { className: 'dv-b' }, hdr(SHORT)),
+    h('h2', null, 'Two shades darker: the box outline gray 400'), h('div', { className: 'dv-b dv-box-400' }, hdr(SHORT)),
+    h('h2', null, 'Two shades darker, box and buttons: the box outline gray 400, the state buttons gray 500'), h('div', { className: 'dv-b dv-box-400 dv-btn-500' }, hdr(SHORT)),
     h('h2', null, 'The minimum padding'),
     h('p', null, 'In every option the space before the line (column gap) and after it (aside padding) stay 20px each: tokens entity-header-column-gap and entity-header-aside-padding-inline. Option B adds one token, the right side’s smallest width (220px). How others do it: Carbon and Atlassian page headers size the action area to its content (Option A); Fluent and Material keep fixed regions; none move a divider for the title, which is why Option B keeps a default position.')));
 })();
