@@ -1005,3 +1005,66 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 ### document-viewer
 
 - **docs.behavior.pointer:** The text describes loading PDF.js, cancelling outdated renders and exposing text/keyboard scrolling/errors — none of it is pointer behavior. Should it move to loading/a11y, and what is the pointer behavior?
+
+## Guidance for items not built yet (19 questions)
+
+### data-display: charts with no axes
+
+- **Choropleth map, Donut chart, Pie chart, Gauge, Sankey diagram, Treemap, Word cloud (content[1]):** These pages carry the shared chart line "Label axes with the measure and its unit, and avoid acronyms.", but none of these charts has axes. Should each drop the line, or get its own rule (a choropleth labels its color scale legend; a donut or pie labels slices with the part name and share; a gauge labels the value with its unit and range; a Sankey labels nodes with totals; a treemap labels tiles; a word cloud explains size in a legend)?
+- **Gantt chart (content[1]):** The Gantt axis is time, not a measure. Should it read "Label the time scale with its unit (days, weeks or months)"?
+- **Radar chart (content[1]):** Radar spokes are axes that share one scale. Keep the shared line, or say "Label spokes with the measure name"?
+- **Gauge (content[0]):** The shared title line ("the question the chart answers") may not fit a single-value meter. Keep it, or replace it with a gauge rule?
+
+### data-display|Sparkline
+
+- **content[0]:** The shared chart rule asks for a title written as a question or finding, but a sparkline is word-sized, sits next to the number it describes and has no title. Drop or replace this line for sparklines?
+- **content[1]:** "Label axes with the measure and its unit" contradicts behavior[1] "Do not show axes, grid lines or legends." Which is right?
+
+### data-display|Object list
+
+- **commonGround:** "none names a distinct object list, and SAP Fiori is the main system that defines one" reads as a contradiction. Does "none" mean none of the compared systems, with SAP Fiori outside that set?
+
+### content|Version label
+
+- **use[1]:** use[1] names the qualifiers "Current" or "Draft"; anatomy[1] and content[1] say "Latest". Which qualifier is right?
+
+### feedback|Circular progress
+
+- **content[1]:** "Do not end the label with an ellipsis-only message." Does it ban a label that is only "…", or ending labels with an ellipsis?
+
+### forms|Field style variants
+
+- **anatomy[1]:** "Filled — tinted background with a bottom line" conflicts with the Plenix field rule (a filled field has a border; no underline). Which is right?
+- **behavior[1]:** "Change only the border color on focus and error" conflicts with the Plenix invalid state (2px danger border plus the lightest red fill). Should focus recolor the border only, with error following the invalid rule?
+
+### foundations|Text alternatives
+
+- **behavior[1]:** "Provide data grids or summaries for charts": does "data grids" mean the DataGrid component, or a static Table as the chart's text alternative?
+
+### foundations|Style and grammar
+
+- **anatomy[0] / commonGround:** The anatomy lists "serial comma use" as a Plenix rule, but commonGround says systems differ and no string says whether Plenix uses the serial comma. Does it?
+
+### foundations|Contrast rules
+
+- **avoid[1]:** "Do not treat disabled controls as a reason to pass off unreadable active content." Does it mean active content never borrows the disabled-control contrast exemption?
+
+### interaction|Portal
+
+- **content[0]:** "Not applicable; content rules follow the overlay rendered inside." reads as placeholder text. Keep it, or drop it and keep only content[1]?
+
+### interaction|Scroll lock
+
+- **content[1]:** "Not applicable beyond the overlay's own text." reads as placeholder text. Keep it, or replace it with a content rule?
+
+### navigation|Navigation bar
+
+- **use[1]:** "At the bottom on compact screens; as a rail on wider ones" overlaps Bottom navigation, whose avoid[1] says not to use it on wide screens. Are these one item, or should the rail case be named differently?
+
+### navigation|Previous / next navigation
+
+- **behavior[0]:** The overview calls the parts links, but behavior says "Disable or hide the control" at the start and end; links cannot be disabled. Should the end state be "hide" only?
+
+### patterns|Delete flow
+
+- **text:** It says "permanently removing an object" but also "with recovery when possible", and use[1] prefers undo when the item can be restored. Is deletion permanent, or should "permanently" go?
