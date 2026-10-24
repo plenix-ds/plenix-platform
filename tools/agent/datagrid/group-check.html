@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>DataGrid grouping check</title>
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react.production.min.js"></script>
+<script src="../../../platform/vendor/react-dom.production.min.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head><body><div id="root"></div>
+<script>
+// Grouping check (group-check.js drives it): ?case= picks the grouping; the page lists every group header (its level,
+// text and count) and the records under each, so two builds can be compared line by line.
+const h = React.createElement, P = window.Plenix, q = new URLSearchParams(location.search);
+const tags = [['Urgent', 'Legal'], ['Legal'], [], ['Urgent'], ['Finance', 'Legal', 'Urgent'], ['Finance'], ['Legal', 'Legal'], null];
+const rows = Array.from({ length: 40 }, (_, i) => ({ id: i + 1, name: 'Record ' + (i + 1), tags: tags[i % tags.length], status: ['Open', 'Closed', 'Draft'][i % 3],
+  when: '2026-' + String(1 + (i % 6)).padStart(2, '0') + '-' + String(1 + ((i * 3) % 27)).padStart(2, '0') + 'T10:00:00Z', amount: (i * 37) % 250, done: i % 4 === 0 }));
+const columns = [{ title: 'Name', field: 'name' }, { title: 'Tags', field: 'tags', type: 'multi' }, { title: 'Status', field: 'status' },
+  { title: 'When', field: 'when', type: 'date' }, { title: 'Amount', field: 'amount', type: 'number', summary: 'sum' }, { title: 'Done', field: 'done', type: 'checkbox', summary: 'count' }];
+const cases = { multi: 'tags', status: 'status', month: [{ field: 'when', interval: 'month' }], range: [{ field: 'amount', range: 100 }], nested: ['status', 'tags'], bool: 'done' };
+function App() { return h(P.DataGrid, { label: 'Grouping', data: rows, columns, groupBy: cases[q.get('case') || 'multi'], height: '--plx-ref-size-900px', mode: 'fill' }); }
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script></body></html>

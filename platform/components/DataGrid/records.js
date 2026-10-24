@@ -24,7 +24,7 @@ export function changeRecord(rows, key, change, index = 'id', children = null) {
     return [record];
   });
 }
-const valueKey = value => value == null || value === '' ? 'empty' : typeof value + ':' + JSON.stringify(value);
+export const valueKey = value => value == null || value === '' ? 'empty' : typeof value + ':' + JSON.stringify(value);
 // Calendar groups use UTC, so persisted group keys do not depend on the viewer's time zone.
 export function groupValue(value, level, column = {}) {
   if (value == null || value === '') return null;

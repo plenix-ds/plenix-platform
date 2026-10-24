@@ -61,7 +61,7 @@
      Look (owner, 2026-10-23): a silver header (gray 50 to gray 200, a gray 400 line under it) 28/32/40px tall by
        density; hovered, every header line shows and the column under the pointer deepens with both edges in gray 400;
        a hovered row tints gray 100 with its lines in gray 300; a selected row is blue 100 with blue-gray lines and a 3px
-       blue 600 bar at its start (blue 200 hovered); the sort arrow follows the title; an active filter shows a funnel
+       blue 600 bar at its start (blue 200 hovered); a click on a title sorts with no arrow drawn (aria-sort carries the order); an active filter shows a funnel
      rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the
        row's button (rowMenuButton, default true) or right-click; DataGrid.useActions(actions, selectedKeys, strings)
        wraps selection commands with Undo for the CommandBar

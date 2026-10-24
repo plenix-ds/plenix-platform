@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.69.1] - 2026-10-24
+
+### Changed
+- DataGrid grouping runs on TanStack Table's grouped row model (owner, 2026-10-23), in its own table so selection,
+  paging and counts keep the plain rows: each level's bucket (calendar periods in UTC, numeric ranges) is the column's
+  grouping value, and group summaries are TanStack's aggregations (sum, mean, min, max, count) over each record once.
+  A record of a multi-value column still shows in the group of each of its values (it enters TanStack once per
+  value). Groups, their order, counts and summaries are unchanged (tools/agent/datagrid/group-check.js: six cases,
+  identical to 0.68.0).
+- DataGrid header: no sort arrow is drawn; a click on a title sorts (aria-sort carries the order).
+- The design spec's Data grid and Table pages describe the 0.69 look and menus (silver header, options button,
+  right-click column chooser, row hover and selection) and what TanStack does.
+
 ## [0.69.0] - 2026-10-24
 
 ### Changed

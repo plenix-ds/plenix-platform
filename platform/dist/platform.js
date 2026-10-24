@@ -19925,6 +19925,7 @@ exports.groupValue = groupValue;
 exports.groupedRows = groupedRows;
 exports.recordsOf = recordsOf;
 exports.setField = setField;
+exports.valueKey = void 0;
 var _state = require("./state.js");
 /* Plenix · DataGridEngine records
    Summary: Canonical records, immutable edits and multi-membership grouping for the independent renderer.
@@ -19982,6 +19983,7 @@ function changeRecord(rows, key, change, index = 'id', children = null) {
 }
 const valueKey = value => value == null || value === '' ? 'empty' : typeof value + ':' + JSON.stringify(value);
 // Calendar groups use UTC, so persisted group keys do not depend on the viewer's time zone.
+exports.valueKey = valueKey;
 function groupValue(value, level, column = {}) {
   if (value == null || value === '') return null;
   if (typeof column.groupBucket === 'function') return column.groupBucket(value);
@@ -20973,9 +20975,99 @@ function NextEngine(props) {
     if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
   }, []);
   const loadedRows = _react.default.useMemo(() => mode === 'load-more' && !remoteMode ? allRows.slice(0, loaded) : allRows, [allRows, mode, remoteMode, loaded]);
-  // grouping stays Plenix's own (records.js): a record of a multi-value column belongs to every group of its values, and
-  // dates and numbers group in buckets, which TanStack's grouped row model (one group per row) cannot express
-  const groups = _react.default.useMemo(() => (0, _records.groupedRows)(loadedRows, groupBy, columns), [loadedRows, groupBy, columns]);
+  // grouping: TanStack's grouped row model (owner, 2026-10-23) over the rows in view (filtered, sorted, loaded), in its
+  // own table so selection, paging and counts keep the plain rows. Each level is a column whose grouping value is the
+  // row's bucket (records.js groupValue: calendar periods in UTC, numeric ranges); a record of a multi-value column
+  // enters once per value (owner: it belongs to every group of its values). Group summaries are TanStack aggregations.
+  const levels = _react.default.useMemo(() => typeof groupBy === 'string' || typeof groupBy === 'function' ? [groupBy] : Array.isArray(groupBy) ? groupBy.filter(Boolean) : [], [typeof groupBy === 'function' ? groupBy : JSON.stringify(groupBy)]); // the same levels keep one array (an app may pass a new one on every render)
+  const levelField = level => typeof level === 'object' ? level.field : level;
+  const groupInput = _react.default.useMemo(() => {
+    if (!levels.length) return EMPTY_ROWS;
+    const out = [];
+    for (const row of loadedRows) {
+      if (!row.original) continue;
+      let members = [[]];
+      levels.forEach(level => {
+        const field = levelField(level),
+          column = columns.find(c => c.field === field) || {},
+          raw = typeof field === 'function' ? field(row.original) : (0, _state.valueAt)(row.original, field);
+        const values = (column.multi || column.type === 'multi') && Array.isArray(raw) ? raw.length ? raw : [null] : [raw],
+          seen = new Set(),
+          buckets = [];
+        for (const value of values) {
+          const bucket = (0, _records.groupValue)(value, level, column),
+            key = (0, _records.valueKey)(bucket);
+          if (!seen.has(key)) {
+            seen.add(key);
+            buckets.push(bucket);
+          }
+        }
+        members = members.flatMap(member => buckets.map(bucket => member.concat([bucket])));
+      });
+      members.forEach(member => out.push({
+        row,
+        member
+      }));
+    }
+    return out;
+  }, [loadedRows, levels, columns]);
+  // TanStack's own aggregations over a group's records, each counted once (a record of a multi-value column enters a group more than once; sum, min and max read the records, not the subgroups)
+  const onceEach = name => (id, leafRows) => {
+    const once = [...new Map(leafRows.map(leaf => [leaf.original.row.id, leaf])).values()];
+    return _reactTable.aggregationFns[name](id, once, once);
+  };
+  const summaryColumns = _react.default.useMemo(() => columns.filter(c => c.summary), [columns]);
+  const groupColumns = _react.default.useMemo(() => levels.map((level, i) => ({
+    id: '__level' + i,
+    accessorFn: item => item.member[i],
+    getGroupingValue: item => (0, _records.valueKey)(item.member[i])
+  })).concat(summaryColumns.map(c => ({
+    id: '__summary:' + c.field,
+    accessorFn: item => (0, _state.valueAt)(item.row.original, c.field),
+    aggregationFn: onceEach({
+      sum: 'sum',
+      average: 'mean',
+      min: 'min',
+      max: 'max',
+      count: 'count'
+    }[c.summary] || 'count')
+  }))), [levels, summaryColumns]);
+  const groupingState = _react.default.useMemo(() => levels.map((level, i) => '__level' + i), [levels]);
+  const groupTable = (0, _reactTable.useReactTable)({
+    data: groupInput,
+    columns: groupColumns,
+    getCoreRowModel: (0, _reactTable.getCoreRowModel)(),
+    getGroupedRowModel: (0, _reactTable.getGroupedRowModel)(),
+    state: {
+      grouping: groupingState
+    },
+    groupedColumnMode: false
+  });
+  const groupedModel = groupTable.getRowModel();
+  const groups = _react.default.useMemo(() => {
+    if (!levels.length) return [];
+    const build = (rows, path) => rows.filter(row => row.getIsGrouped()).map((row, i) => {
+      const depth = row.depth,
+        field = levelField(levels[depth]),
+        value = row.leafRows[0].original.member[depth],
+        nextPath = path.concat({
+          field,
+          value
+        });
+      return {
+        id: 'group:' + JSON.stringify(nextPath.map(part => [part.field, (0, _records.valueKey)(part.value)])),
+        field,
+        value,
+        depth,
+        separated: i > 0,
+        path: nextPath,
+        rows: [...new Map(row.leafRows.map(leaf => [leaf.original.row.id, leaf.original.row])).values()],
+        groups: build(row.subRows, nextPath),
+        summary: Object.fromEntries(summaryColumns.map(c => [c.field, row.getValue('__summary:' + c.field)]))
+      };
+    });
+    return build(groupedModel.rows, []);
+  }, [groupedModel, levels, summaryColumns]);
   const model = _react.default.useMemo(() => groups.length ? (0, _records.groupDisplay)(groups, printing ? new Set() : collapsed, !!props.onAddToGroup) : loadedRows, [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]),
     virtualized = !isStatic && mode !== 'pages' && !isNarrow && !printing;
   const estimate = row => row?.__group ? metrics.group + metrics.line * (row.__group.separated ? 2 : 1) : row?.__gap ? metrics.groupGap : row?.__add ? metrics.add + metrics.line : metrics.row + metrics.line;
@@ -21113,9 +21205,9 @@ function NextEngine(props) {
       // wrapped headers show two lines: the narrowest width that holds the title in two (never a word broken)
       let text = ctx.measureText(title).width;
       if (effectiveWrap) for (let i = 1; i < words.length; i += 1) text = Math.min(text, Math.max(ctx.measureText(words.slice(0, i).join(' ')).width, ctx.measureText(words.slice(i).join(' ')).width));
-      // hovered, a header shows its type icon, its title, the sort arrow after it and the options button at the edge: the floor holds all of them (owner, 2026-10-23: the arrow follows the title)
+      // hovered, a header shows its type icon, its title and the options button at the edge: the floor holds them (owner, 2026-10-23: no sort arrow; a click on the title sorts, aria-sort tells assistive technology)
       const gap = tokenPx('--plx-comp-data-grid-header-type-icon-gap'),
-        arrow = c.headerSort !== false && !isStatic ? 2 * tokenPx('--plx-comp-data-grid-sorter-inset') + gap : 0;
+        arrow = 0;
       const head = text + (showTypes ? tokenPx('--plx-comp-data-grid-header-type-icon-size') + gap : 0) + arrow + (!isStatic && headerMenu ? tokenPx('--plx-comp-data-grid-title-reserve') : 0);
       floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
       const explicit = tokenPx(c.width);
@@ -21515,12 +21607,7 @@ function NextEngine(props) {
       name: typeIcons[typeOf(c)] || 'ed-text'
     })) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__title-text', effectiveWrap && B + '__title-text--wrap')
-    }, c.title || c.field))), /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-col-sorter', sorted && B + '__grid-col-sorter--on', column.getCanSort() && B + '__grid-col-sorter--sortable', icon && B + '__grid-col-sorter--icon'),
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-arrow', sorted === 'asc' && B + '__grid-arrow--asc', sorted === 'desc' && B + '__grid-arrow--desc')
-    })), filtered || filterField === c.field ? /*#__PURE__*/_react.default.createElement("span", {
+    }, c.title || c.field))), filtered || filterField === c.field ? /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__title-filter', filtered && B + '__title-filter--on')
     }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
       open: filterField === c.field,
@@ -21681,7 +21768,7 @@ function NextEngine(props) {
     max: S.max
   }[column.columnDef.meta.summary]), /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__group-summary-value'
-  }, (0, _records.groupSummary)(group, column.columnDef.meta) == null ? null : (0, _format.formatNumber)((0, _records.groupSummary)(group, column.columnDef.meta)))) : null))));
+  }, group.summary?.[column.columnDef.meta.field] == null ? null : (0, _format.formatNumber)(group.summary[column.columnDef.meta.field]))) : null))));
   const rememberRow = (row, node) => {
     const displayKey = row.displayKey || row.id,
       previous = displayElements.current.get(displayKey),
@@ -28019,7 +28106,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Look (owner, 2026-10-23): a silver header (gray 50 to gray 200, a gray 400 line under it) 28/32/40px tall by
        density; hovered, every header line shows and the column under the pointer deepens with both edges in gray 400;
        a hovered row tints gray 100 with its lines in gray 300; a selected row is blue 100 with blue-gray lines and a 3px
-       blue 600 bar at its start (blue 200 hovered); the sort arrow follows the title; an active filter shows a funnel
+       blue 600 bar at its start (blue 200 hovered); a click on a title sorts with no arrow drawn (aria-sort carries the order); an active filter shows a funnel
      rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the
        row's button (rowMenuButton, default true) or right-click; DataGrid.useActions(actions, selectedKeys, strings)
        wraps selection commands with Undo for the CommandBar
