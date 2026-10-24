@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Table wrap stage · Plenix review</title>
+<!-- A static Table whose plain cells wrap (no kind: "wrap"), drawn with the Platform, for the #table-wrap-spacing pictures. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head>
+<body class="rv-page">
+<div id="root" class="rv-doc"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix;
+  const facts = [
+    { id: 1, part: 'Header', grid: 'Click to sort, open the menu, resize and move columns', table: 'Titles only' },
+    { id: 2, part: 'First column', grid: 'Can stay in place while the rest scrolls sideways', table: 'Names the row' },
+    { id: 3, part: 'Rows', grid: 'Select, open, hover, row menus', table: 'Read only' }];
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { id: 'stage' },
+    h(P.Table, { label: 'Wrapping cells', data: facts, columns: [{ title: 'Part', field: 'part', rowLabel: true, width: '--plx-ref-size-120px' },
+      { title: 'DataGrid', field: 'grid', width: '--plx-ref-size-240px' }, { title: 'Table', field: 'table' }] })));
+})();
+</script>
+</body>
+</html>
