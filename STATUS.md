@@ -46,6 +46,8 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 | #255 | DataGrid: badges and icons in custom cells 0.5 to 1.1px below center | waits for the owner's decision (fix measured) |
 | #257 | Spec wording: choose the rules (`docs/briefs/spec-wording/proposal.md`), then one cleanup after the styling work | waits for the owner's decision |
 | #258 | Housekeeping: stale scratch copies and worktrees (remove `node_modules` junctions first) | not started |
+| #263 | Bug: the color references no longer show in the spec | could not reproduce; the owner names the page |
+| #264 | The design system as a PostgreSQL database (tables, links, mappings to other systems); children #265 Web/iOS/Android split, #266 a record per variation, #267 styling per variation (base, variations, themes apart) | needs the owner (schema review, hosting, tool choice) |
 | #220 | Spec mappings: Django and Frappe as source systems | open |
 | #262 | Library adoption: components onto the foundation hooks (moved from TODO.md) | not started |
 | #244 | The page-header study into the CDN | waits for the owner |
