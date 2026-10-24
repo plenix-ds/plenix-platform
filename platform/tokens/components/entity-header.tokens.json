@@ -781,10 +781,10 @@
       "$type": "dimension",
       "$description": "EntityHeader, header style Streamlined: above the fact tiles under the progress bar."
     },
-    "entity-header-states-border-color": {
-      "$value": "{plx-ref.color-gray-400}",
+    "entity-header-states-background": {
+      "$value": "{plx-ref.color-gray-75}",
       "$type": "color",
-      "$description": "EntityHeader: the status box’s outline, two shades darker than the fact tiles’ (gray 200 → 400; owner, 2026-10-24, #300)."
+      "$description": "EntityHeader: the status box’s inner background, gray 75; its outline stays the fact tiles’ gray 200 (owner, 2026-10-24, #300)."
     }
   }
 }
