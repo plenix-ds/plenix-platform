@@ -23,6 +23,13 @@
          { value: 'in-progress', label: 'In progress', icon: 'clock', tone: 'success' }, { value: 'adjourned', label: 'Adjourned', icon: 'do-not-disturb', tone: 'negative' }] }} />
    Props:
      kind: "page" (default) | "section": a section header (32px icon, 15px title, 4px rule, a summary instead of tiles)
+     layout: where the media sits and how big it is (header style 1, the owner's study "Plenix page headers"):
+       "top-small" (default): a 44px square beside the title (a section: 32px);
+       "top-large": a 72px square beside the title (48px);
+       "column-small": a 44px square in a column of its own, at its top (32px);
+       "column-large": a square in its own column spanning the title and the details, as tall as they are (at least 112px;
+         64px), on the size tokens;
+       "edge": the media fills the card's start edge, top to bottom, with one line at its inner side (at least 128px; 80px)
      title: the entity's name, in the Title role (20px bold; 15px in a section); a long name wraps, never cut off
      subtitle: the line under the title: the entity's description, where it belongs or who it involves; wraps
      media: the entity's picture, always shown: { person, src, color, gender } an Avatar (gender: its icon when there is no
@@ -72,6 +79,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useOverflow, splitAt } from '../../utils/overflow.js';
 import { useBarFit } from '../../utils/barFit.js';
+import { SIZE_STEPS } from '../../utils/sizeSteps.js';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
@@ -83,15 +91,54 @@ const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'ne
 const ALIASES = { info: 'active', warning: 'waiting', danger: 'negative' };
 const MAX_BUTTONS = 4;   // at most four buttons in the aside: three actions, then More (always last)
 
-function Media({ media, section }) {
+const LAYOUTS = ['top-small', 'top-large', 'column-small', 'column-large', 'edge'];
+const STRETCH = { 'column-large': 1, edge: 1 };
+// the stretched media's smallest square, by kind (the size tokens entity-header-[section-]media-size-column-large, -edge)
+const STRETCH_MIN = { page: { 'column-large': 112, edge: 128 }, section: { 'column-large': 64, edge: 80 } };
+// and its largest: the size tokens up to here, and never more than a quarter of the header's width (so a narrow header,
+// whose text wraps taller, does not grow the square without end)
+const STRETCH_MAX = { page: { 'column-large': 160, edge: 180 }, section: { 'column-large': 96, edge: 112 } };
+
+// the media: its size by kind and layout (a class of its own); a stretched media (column, large and edge to edge) is a
+// square as tall as its row, on the size tokens (data-plx-size, system/steps.css), measured here
+function Media({ media, section, layout }) {
+  const kind = section ? 'section' : 'page';
+  const stretch = !!STRETCH[layout];
+  const ref = React.useRef(null);
+  const [size, setSize] = React.useState(null);
+  React.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!stretch || !el || typeof ResizeObserver === 'undefined') { setSize(null); return undefined; }
+    const min = STRETCH_MIN[kind][layout];
+    const body = el.nextElementSibling, card = el.closest('.plx-entity-header');
+    // the largest size token that fits its row's height, within the layout's limits
+    const fit = () => {
+      const h = el.getBoundingClientRect().height;   // stretched: the row's height (edge: with the card's padding it covers)
+      const max = Math.min(STRETCH_MAX[kind][layout], card ? card.getBoundingClientRect().width / 4 : Infinity);
+      const s = SIZE_STEPS.filter((x) => x >= min && x <= h && x <= max).pop() || min;
+      setSize((v) => (v === s ? v : s));
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    if (body) ro.observe(body);
+    if (card) ro.observe(card);
+    return () => ro.disconnect();
+  }, [stretch, kind, layout]);
   let inner;
   if (React.isValidElement(media)) inner = media;
   else if (media.person || media.src) inner = <Avatar className="plx-entity-header__avatar" name={media.person} src={media.src} color={media.color} gender={media.gender} size={section ? 'md' : 'xl'} />;
   else {
     const hue = HUES.indexOf(media.hue) >= 0 ? media.hue : 'gray';
-    inner = <span className="plx-entity-header__tile" data-plx-media-hue={hue} aria-hidden="true"><Icon name={media.icon} size={section ? 'md' : 'lg'} /></span>;
+    const optical = !(section && (layout === 'top-small' || layout === 'column-small'));
+    inner = <span className="plx-entity-header__tile" data-plx-media-hue={hue} data-plx-icon-optical={optical ? '24' : undefined} aria-hidden="true"><Icon name={media.icon} /></span>;
   }
-  return <span className="plx-entity-header__media">{inner}</span>;
+  return (
+    <span ref={ref} data-plx-size={size ? size + 'px' : undefined}
+      className={cx('plx-entity-header__media', 'plx-entity-header__media--' + kind + '-' + layout, stretch && 'plx-entity-header__media--stretch', layout === 'edge' && 'plx-entity-header__media--edge', layout === 'column-small' && 'plx-entity-header__media--start')}>
+      {inner}
+    </span>
+  );
 }
 
 // header style 2 (owner, 2026-10-23): the entity's state as a box of its own, each state with its icon and tone, the
@@ -210,9 +257,11 @@ function Actions({ actions, moreActions, size, strings, labels = 'icon', layout 
   return <div ref={ref} className={cx('plx-entity-header__actions', column && 'plx-entity-header__actions--column', size === 'sm' && 'plx-entity-header__actions--sm')}>{splitAt(items, fit, more)}</div>;
 }
 
-export function EntityHeader({ kind = 'page', title, subtitle, media, status, states, facts, summary, next, actions, moreActions,
+export function EntityHeader({ kind = 'page', layout = 'top-small', title, subtitle, media, status, states, facts, summary, next, actions, moreActions,
   actionLabels = 'icon', actionsLayout = 'row', control, description, context, live, headingLevel, className, strings }) {
   const section = kind === 'section';
+  const lay = LAYOUTS.indexOf(layout) >= 0 ? layout : 'top-small';
+  const top = lay === 'top-small' || lay === 'top-large';
   const H = 'h' + (headingLevel || (section ? 2 : 1));
   const s = { more: 'More actions', status: 'Status', next: 'Next step', ...strings };
   const sub = subtitle !== undefined ? subtitle : (description !== undefined ? description : context);
@@ -225,21 +274,31 @@ export function EntityHeader({ kind = 'page', title, subtitle, media, status, st
   const fitted = !section && ((facts || []).some((f) => f && f.action) || !!states);
   const fitKey = (facts || []).map((f) => (f && (f.label || '') + (f.value || '') + (f.action ? f.action.label : ''))).join('|') + '§' + (states ? states.value + (states.options || []).map((o) => o.label).join(',') : '');
   const step = useBarFit(root, fitKey, fitted ? 2 : 0, 0, '.plx-entity-header__details');
+  // top row: the media beside the title; column and edge: the media in a column of its own, before the text
+  const mediaEl = <Media media={media || { icon: 'doc-text' }} section={section} layout={lay} />;
+  const lead = (
+    <div className="plx-entity-header__lead">
+      <div className="plx-entity-header__heading">
+        {top ? mediaEl : null}
+        <div className="plx-entity-header__text">
+          <H className="plx-entity-header__title">{title}</H>
+          {sub && !section ? <p className="plx-entity-header__subtitle">{sub}</p> : null}
+        </div>
+      </div>
+      <div className="plx-entity-header__rule" aria-hidden="true" />
+      {section ? (summary || sub ? <p className="plx-entity-header__summary">{summary || sub}</p> : null) : <Details status={st} states={states} facts={facts} strings={s} step={step} />}
+    </div>
+  );
   return (
     <header ref={root} className={cx('plx-entity-header', section && 'plx-entity-header--section', !aside && 'plx-entity-header--solo', className)}>
       <div className="plx-entity-header__layout">
         <div className="plx-entity-header__main">
-          <div className="plx-entity-header__lead">
-            <div className="plx-entity-header__heading">
-              <Media media={media || { icon: 'doc-text' }} section={section} />
-              <div className="plx-entity-header__text">
-                <H className="plx-entity-header__title">{title}</H>
-                {sub && !section ? <p className="plx-entity-header__subtitle">{sub}</p> : null}
-              </div>
+          {top ? lead : (
+            <div className={cx('plx-entity-header__split', section && 'plx-entity-header__split--section')}>
+              {mediaEl}
+              <div className="plx-entity-header__body">{lead}</div>
             </div>
-            <div className="plx-entity-header__rule" aria-hidden="true" />
-            {section ? (summary || sub ? <p className="plx-entity-header__summary">{summary || sub}</p> : null) : <Details status={st} states={states} facts={facts} strings={s} step={step} />}
-          </div>
+          )}
         </div>
         {aside ? (
           <div className="plx-entity-header__aside">

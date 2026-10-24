@@ -540,6 +540,81 @@
       "$value": "{plx-sys.feedback-neutral-on-solid}",
       "$type": "color",
       "$description": "EntityHeader (header style 2, owner 2026-10-23): the current neutral state's label and icon."
+    },
+    "entity-header-media-size-large": {
+      "$value": "{plx-ref.size-72px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the media square (top row, large)."
+    },
+    "entity-header-media-size-column-large": {
+      "$value": "{plx-ref.size-112px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the media square at its smallest (column, large: it spans both rows and grows to their height, on the size tokens)."
+    },
+    "entity-header-media-size-edge": {
+      "$value": "{plx-ref.size-128px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the media at its smallest (edge to edge: it fills the start edge, its width on the size tokens nearest the header height)."
+    },
+    "entity-header-section-media-size-large": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header’s media square (top row, large)."
+    },
+    "entity-header-section-media-size-column-large": {
+      "$value": "{plx-ref.size-64px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header’s media at its smallest (column, large)."
+    },
+    "entity-header-section-media-size-edge": {
+      "$value": "{plx-ref.size-80px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: a section header’s media at its smallest (edge to edge)."
+    },
+    "entity-header-media-icon-size": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the icon in the media tile (top row and column, small)."
+    },
+    "entity-header-media-icon-size-large": {
+      "$value": "{plx-ref.size-36px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the icon in the media tile (top row, large)."
+    },
+    "entity-header-media-icon-size-column-large": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the icon in the media tile (column, large)."
+    },
+    "entity-header-media-icon-size-edge": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the icon in the media tile (edge to edge)."
+    },
+    "entity-header-section-media-icon-size": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the icon in a section header’s media tile (small)."
+    },
+    "entity-header-section-media-icon-size-large": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the icon in a section header’s media tile (top row, large; column, large)."
+    },
+    "entity-header-section-media-icon-size-edge": {
+      "$value": "{plx-ref.size-28px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the icon in a section header’s media tile (edge to edge)."
+    },
+    "entity-header-split-gap": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the media column and the text (column and edge layouts)."
+    },
+    "entity-header-section-split-gap": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: between the media column and the text in a section header."
     }
   }
 }

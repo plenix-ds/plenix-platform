@@ -931,8 +931,6 @@
    "combinator | .plx-entity-header__fact--status .plx-entity-header__fact-label": 1,
    "combinator | .plx-entity-header__fact--status .plx-entity-header__fact-value": 1,
    "combinator | .plx-entity-header--section .plx-entity-header__layout": 1,
-   "combinator | .plx-entity-header--section .plx-entity-header__media": 1,
-   "combinator | .plx-entity-header--section .plx-entity-header__tile": 1,
    "combinator | .plx-entity-header--section .plx-entity-header__title": 1,
    "combinator | .plx-entity-header--section .plx-entity-header__rule": 1,
    "combinator | .plx-entity-header--section .plx-entity-header__aside": 1

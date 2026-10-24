@@ -4,7 +4,9 @@
    .plx-entity-header__layout      two columns: main 1.7 · aside 1, with a divider between them
    .plx-entity-header__main        heading, accent rule, details
    .plx-entity-header__lead        as wide as the wider of the heading and the details (the rule runs 10% past it)
-   .plx-entity-header__heading     1 media (44px square) beside 2 the title and subtitle
+   .plx-entity-header__heading     1 media (44px square) beside 2 the title and subtitle (the top row layouts)
+   .plx-entity-header__split       column and edge layouts: 1 the media in a column of its own, then __body (heading, rule,
+                                   details); __media--<kind>-<layout> sizes it; --stretch and --edge are as tall as the row
    .plx-entity-header__rule        3 the accent rule (6px; 4px in a section)
    .plx-entity-header__details     4 the Status tile first, then up to four fact tiles (a section: its summary)
    .plx-entity-header__aside       5 the divider, 6 the aside: next step (eyebrow, title, detail) over the actions
@@ -30,8 +32,40 @@
 
 /* 1 media and 2 the heading: the media beside the title and subtitle */
 .plx-entity-header__heading{align-items:center;column-gap:var(--plx-comp-entity-header-heading-gap);display:flex;min-inline-size:0;}
-.plx-entity-header__media{--plx-comp-avatar-context-radius:var(--plx-comp-entity-header-media-radius);--plx-comp-avatar-context-size:var(--plx-comp-entity-header-media-size);display:inline-flex;flex-shrink:0;}
-.plx-entity-header__tile{align-items:center;block-size:var(--plx-comp-entity-header-tile-height);border-bottom-color:var(--plx-comp-entity-header-tile-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-tile-radius);border-bottom-right-radius:var(--plx-comp-entity-header-tile-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-tile-border-width);border-left-color:var(--plx-comp-entity-header-tile-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-tile-border-width);border-right-color:var(--plx-comp-entity-header-tile-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-tile-border-width);border-top-color:var(--plx-comp-entity-header-tile-border-color);border-top-left-radius:var(--plx-comp-entity-header-tile-radius);border-top-right-radius:var(--plx-comp-entity-header-tile-radius);border-top-style:solid;border-top-width:var(--plx-comp-entity-header-tile-border-width);display:inline-flex;inline-size:var(--plx-comp-entity-header-tile-width);justify-content:center;}
+@property --plx-state-entity-header-media-size{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-icon{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-block{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-min-block{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-self{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-radius{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-edge-width{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-pull-block{syntax:"*";inherits:false;}
+@property --plx-state-entity-header-media-pull-inline{syntax:"*";inherits:false;}
+.plx-entity-header__media{--plx-comp-avatar-context-radius:var(--plx-state-entity-header-media-radius,var(--plx-comp-entity-header-media-radius));--plx-comp-avatar-context-size:var(--plx-state-entity-header-media-size,var(--plx-comp-entity-header-media-size));--plx-comp-entity-header-context-media-size:var(--plx-state-entity-header-media-size);--plx-comp-entity-header-context-media-icon:var(--plx-state-entity-header-media-icon);--plx-comp-entity-header-context-media-block:var(--plx-state-entity-header-media-block);align-items:center;align-self:var(--plx-state-entity-header-media-self,auto);border-inline-end-color:var(--plx-comp-entity-header-tile-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-state-entity-header-media-edge-width,0px);display:inline-flex;flex-shrink:0;justify-content:center;margin-block-end:calc(-1 * var(--plx-comp-entity-header-context-edge-end,var(--plx-state-entity-header-media-pull-block,0px)));margin-block-start:calc(-1 * var(--plx-state-entity-header-media-pull-block,0px));margin-inline-start:calc(-1 * var(--plx-state-entity-header-media-pull-inline,0px));min-block-size:var(--plx-state-entity-header-media-min-block,auto);}
+/* the media by kind and layout (the owner's study "Plenix page headers", header style 1): top row small 44px (a section
+   32), top row large 72px (48), column small 44px in its own column (32), column large spanning both rows (at least
+   112px; 64), edge to edge filling the start edge (at least 128px; 80). A stretched media is a square as tall as its row:
+   Media measures the row and sets data-plx-size, a size token (system/steps.css sets --plx-comp-entity-header-media-measured) */
+.plx-entity-header__media--page-top-large{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-media-icon-size-large);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-size-large);}
+.plx-entity-header__media--page-column-large{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-media-icon-size-column-large);--plx-state-entity-header-media-min-block:var(--plx-comp-entity-header-media-size-column-large);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-measured,var(--plx-comp-entity-header-media-size-column-large));}
+.plx-entity-header__media--page-edge{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-media-icon-size-edge);--plx-state-entity-header-media-min-block:var(--plx-comp-entity-header-media-size-edge);--plx-state-entity-header-media-pull-block:var(--plx-comp-entity-header-padding-block);--plx-state-entity-header-media-pull-inline:var(--plx-comp-entity-header-padding-inline-start);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-measured,var(--plx-comp-entity-header-media-size-edge));}
+.plx-entity-header__media--section-top-small{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-section-media-icon-size);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-section-media-size);}
+.plx-entity-header__media--section-column-small{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-section-media-icon-size);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-section-media-size);}
+.plx-entity-header__media--section-top-large{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-section-media-icon-size-large);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-section-media-size-large);}
+.plx-entity-header__media--section-column-large{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-section-media-icon-size-large);--plx-state-entity-header-media-min-block:var(--plx-comp-entity-header-section-media-size-column-large);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-measured,var(--plx-comp-entity-header-section-media-size-column-large));}
+.plx-entity-header__media--section-edge{--plx-state-entity-header-media-icon:var(--plx-comp-entity-header-section-media-icon-size-edge);--plx-state-entity-header-media-min-block:var(--plx-comp-entity-header-section-media-size-edge);--plx-state-entity-header-media-pull-block:var(--plx-comp-entity-header-section-padding-block);--plx-state-entity-header-media-pull-inline:var(--plx-comp-entity-header-section-padding-inline);--plx-state-entity-header-media-size:var(--plx-comp-entity-header-media-measured,var(--plx-comp-entity-header-section-media-size-edge));}
+/* column, small: at the top of its column; column, large and edge: as tall as the row (the tile fills it) */
+.plx-entity-header__media--start{--plx-state-entity-header-media-self:flex-start;}
+.plx-entity-header__media--stretch{--plx-state-entity-header-media-block:100%;--plx-state-entity-header-media-self:stretch;}
+/* edge to edge: out to the card's start edge, top and bottom; one line at its inner side; the picture keeps no corners
+   (the card's own corners clip it) */
+.plx-entity-header__media--edge{--plx-comp-entity-header-context-tile-border-width:0px;--plx-comp-entity-header-context-tile-radius:0px;--plx-state-entity-header-media-edge-width:var(--plx-comp-entity-header-tile-border-width);--plx-state-entity-header-media-radius:0px;}
+/* column and edge: the media in a column of its own, before the text */
+@property --plx-state-entity-header-split-gap{syntax:"*";inherits:false;}
+.plx-entity-header__split{align-items:stretch;column-gap:var(--plx-state-entity-header-split-gap,var(--plx-comp-entity-header-split-gap));display:flex;min-inline-size:0;}
+.plx-entity-header__split--section{--plx-state-entity-header-split-gap:var(--plx-comp-entity-header-section-split-gap);}
+.plx-entity-header__body{display:flex;flex-direction:column;justify-content:center;min-inline-size:0;}
+.plx-entity-header__tile{--plx-comp-icon-size:var(--plx-comp-entity-header-context-media-icon,var(--plx-comp-entity-header-media-icon-size));align-items:center;block-size:var(--plx-comp-entity-header-context-media-block,var(--plx-comp-entity-header-context-media-size,var(--plx-comp-entity-header-tile-height)));border-bottom-color:var(--plx-comp-entity-header-tile-border-color);border-bottom-left-radius:var(--plx-comp-entity-header-context-tile-radius,var(--plx-comp-entity-header-tile-radius));border-bottom-right-radius:var(--plx-comp-entity-header-context-tile-radius,var(--plx-comp-entity-header-tile-radius));border-bottom-style:solid;border-bottom-width:var(--plx-comp-entity-header-context-tile-border-width,var(--plx-comp-entity-header-tile-border-width));border-left-color:var(--plx-comp-entity-header-tile-border-color);border-left-style:solid;border-left-width:var(--plx-comp-entity-header-context-tile-border-width,var(--plx-comp-entity-header-tile-border-width));border-right-color:var(--plx-comp-entity-header-tile-border-color);border-right-style:solid;border-right-width:var(--plx-comp-entity-header-context-tile-border-width,var(--plx-comp-entity-header-tile-border-width));border-top-color:var(--plx-comp-entity-header-tile-border-color);border-top-left-radius:var(--plx-comp-entity-header-context-tile-radius,var(--plx-comp-entity-header-tile-radius));border-top-right-radius:var(--plx-comp-entity-header-context-tile-radius,var(--plx-comp-entity-header-tile-radius));border-top-style:solid;border-top-width:var(--plx-comp-entity-header-context-tile-border-width,var(--plx-comp-entity-header-tile-border-width));display:inline-flex;inline-size:var(--plx-comp-entity-header-context-media-size,var(--plx-comp-entity-header-tile-width));justify-content:center;}
 .plx-entity-header__tile[data-plx-media-hue="surface"]{background-color:var(--plx-comp-entity-header-tile-surface-background);color:var(--plx-comp-entity-header-tile-surface-text);}
 .plx-entity-header__tile[data-plx-media-hue="blue"]{background-color:var(--plx-comp-entity-header-tile-blue-background);color:var(--plx-comp-entity-header-tile-blue-text);}
 .plx-entity-header__tile[data-plx-media-hue="green"]{background-color:var(--plx-comp-entity-header-tile-green-background);color:var(--plx-comp-entity-header-tile-green-text);}
@@ -134,15 +168,13 @@
 /* a section header: the same anatomy one step smaller */
 .plx-entity-header--section{border-bottom-left-radius:var(--plx-comp-entity-header-section-radius);border-bottom-right-radius:var(--plx-comp-entity-header-section-radius);border-top-left-radius:var(--plx-comp-entity-header-section-radius);border-top-right-radius:var(--plx-comp-entity-header-section-radius);padding-block-end:var(--plx-comp-entity-header-section-padding-block);padding-block-start:var(--plx-comp-entity-header-section-padding-block);padding-inline-end:var(--plx-comp-entity-header-section-padding-inline);padding-inline-start:var(--plx-comp-entity-header-section-padding-inline);}
 .plx-entity-header--section .plx-entity-header__layout{column-gap:var(--plx-comp-entity-header-section-column-gap);}
-.plx-entity-header--section .plx-entity-header__media{--plx-comp-avatar-context-size:var(--plx-comp-entity-header-section-media-size);}
-.plx-entity-header--section .plx-entity-header__tile{block-size:var(--plx-comp-entity-header-section-media-size);inline-size:var(--plx-comp-entity-header-section-media-size);}
 .plx-entity-header--section .plx-entity-header__title{font-size:var(--plx-comp-entity-header-section-title-font-size);}
 .plx-entity-header--section .plx-entity-header__rule{block-size:var(--plx-comp-entity-header-section-rule-height);margin-block-end:var(--plx-comp-entity-header-section-rule-margin-block);margin-block-start:var(--plx-comp-entity-header-section-rule-margin-block);}
 .plx-entity-header--section .plx-entity-header__aside{justify-content:center;padding-inline-start:var(--plx-comp-entity-header-section-aside-padding-inline);}
 
 /* narrow: the aside moves under the main column, its divider above it, at the start edge */
 @container plx-entity-header (max-width: 640px){
-  .plx-entity-header__layout{grid-template-columns:minmax(0,1fr);}
+  .plx-entity-header__layout{--plx-comp-entity-header-context-edge-end:0px;grid-template-columns:minmax(0,1fr);}
   .plx-entity-header__aside{border-block-start-color:var(--plx-comp-entity-header-aside-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-entity-header-border-width);border-inline-start-style:none;border-inline-start-width:0;margin-block-start:var(--plx-comp-entity-header-stacked-padding-block);padding-block-start:var(--plx-comp-entity-header-stacked-padding-block);padding-inline-start:0;text-align:start;}
   .plx-entity-header__actions{justify-content:flex-start;}
   .plx-entity-header__control{justify-content:flex-start;}

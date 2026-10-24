@@ -16,6 +16,8 @@
 //               the static Table (column widths belong to React)
 //   Category    [data-plx-category="<name>"]: the category colors (their own palette, batch 290), as data colors, and the
 //               category pill colors (--plx-comp-category-soft, -soft-border, -on-soft; 2026-10-14)
+//   EntityHeader [data-plx-size] on the media of the column, large and edge-to-edge layouts: every --plx-ref-size-*
+//               token (the square follows its row height)
 //   TimeGrid    [data-plx-hours] 1..24 and [data-plx-days] 1..7 on the grid; an event's [data-plx-start] and
 //               [data-plx-span] in quarter hours (0..95, 1..96)
 // Run by build-app.js; node build-steps.js also writes it alone.
@@ -43,6 +45,8 @@ module.exports = function buildSteps(root) {
     out.push('.plx-skeleton[data-plx-width="' + s + '"]{--plx-comp-skeleton-inline-size:var(--plx-ref-size-' + s + ');}');
     out.push('.plx-skeleton[data-plx-height="' + s + '"]{--plx-comp-skeleton-block-size:var(--plx-ref-size-' + s + ');}');
   });
+  // EntityHeader's stretched media (column, large and edge to edge): a square as tall as its row, on the size tokens
+  sizes.forEach((s) => out.push('.plx-entity-header__media[data-plx-size="' + s + '"]{--plx-comp-entity-header-media-measured:var(--plx-ref-size-' + s + ');}'));
   // pane widths: the size tokens (a dragged pane snaps to one)
   sizes.forEach((s) => {
     out.push('.plx-nav-pane[data-plx-width="' + s + '"]{--plx-comp-nav-pane-width:var(--plx-ref-size-' + s + ');}');

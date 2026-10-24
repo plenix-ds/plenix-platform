@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- EntityHeader `layout`: the five layouts of the owner's page-header study (header style 1, #244): `top-small` (default,
+  unchanged), `top-large` (a 72px image beside the title), `column-small` (a 44px image in its own column),
+  `column-large` (a square spanning the title and the details, at least 112px) and `edge` (the image fills the card's
+  start edge, at least 128px); section headers follow at 32, 48, 32, 64 and 80px. The stretched squares take the largest
+  size token that fits their row (`data-plx-size`, system/steps.css), at most a quarter of the header's width. New
+  tokens: `--plx-comp-entity-header-media-size-*`, `-media-icon-size-*`, `-split-gap`. The section header's media sizes
+  are now the media's own classes (two parent-to-child rules fewer). Review page: `docs/briefs/header-layouts/`.
+
 ### Fixed
 - Combobox as a tag picker (`multiple` without `marks`): the list offers only the tags not chosen yet, so Enter on a
   suggestion always adds one and never removes it; a tag is removed only by its remove button (or Backspace in the empty

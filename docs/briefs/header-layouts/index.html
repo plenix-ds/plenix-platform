@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header layouts: the real component</title>
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<style>
+/* a review page (not Platform code): the real EntityHeader in the five layouts of the owner's study, page and section */
+body{background:var(--plx-sys-surface-canvas);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);}
+h1,h2{color:var(--plx-sys-content-default);font-size:var(--plx-sys-text-label-font-size);margin:var(--plx-sys-space-stack-lg) 0 var(--plx-sys-space-stack-xs);}
+.rv-stack{display:flex;flex-direction:column;gap:var(--plx-sys-space-stack-sm);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// the study's Projects capability in each layout: its page header, then two of its section headers
+(function () {
+  var P = window.Plenix, R = window.React, h = R.createElement;
+  var LAYOUTS = [['top-small', 'Top row, small: a 44px image beside the title'], ['top-large', 'Top row, large: a 72px image beside the title'],
+    ['column-small', 'Column, small: a 44px image in its own column'], ['column-large', 'Column, large: the image spans both rows'], ['edge', 'Edge to edge: the image fills the start edge']];
+  var media = new URLSearchParams(location.search).get('media') === 'person' ? { person: 'Maya Chen', color: 'blue' } : { icon: 'folder', hue: 'blue' };
+  function Layout(p) {
+    return h('section', null, h('h2', null, p.name),
+      h('div', { className: 'rv-stack' },
+        h(P.EntityHeader, { layout: p.layout, headingLevel: 2, title: 'Website relaunch', subtitle: 'Marketing · Owned by Sam Patel', media: media,
+          status: { tone: 'active', icon: 'clock', label: 'In progress' },
+          facts: [{ label: 'Due', value: 'Nov 14', data: true }, { label: 'Tasks', value: '18 of 31', data: true }, { label: 'Budget', value: '$42,000', data: true }],
+          next: { title: 'Approve homepage copy', detail: 'Due tomorrow · Ana Kim' },
+          actions: [{ icon: 'share', label: 'Share' }, { icon: 'star', label: 'Favorite' }, { icon: 'edit', label: 'Edit', primary: true }] }),
+        h(P.EntityHeader, { kind: 'section', layout: p.layout, title: 'Milestones', summary: '3 of 5 done', media: { icon: 'flag', hue: 'blue' }, actions: [{ icon: 'add', label: 'Add milestone' }] }),
+        h(P.EntityHeader, { kind: 'section', layout: p.layout, title: 'Files', summary: '24 files · 1.2 GB', media: { icon: 'folder', hue: 'blue' } })));
+  }
+  function Demo() { return h('div', null, h('h1', null, 'EntityHeader layouts (header style 1, the owner’s study)'), LAYOUTS.map(function (l) { return h(Layout, { key: l[0], layout: l[0], name: l[1] }); })); }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+})();
+</script>
+</body>
+</html>
