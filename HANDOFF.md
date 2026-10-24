@@ -1,3 +1,5 @@
+> **Out of date (2026-10-15).** Start from [STATUS.md](STATUS.md) (2026-10-23): what is done, what is left, and the working rules.
+
 # Plenix: handoff to VM 101 (2026-10-15)
 
 Read this first in the new Claude Code session, then the memory index (MEMORY.md). The owner's decisions are in the

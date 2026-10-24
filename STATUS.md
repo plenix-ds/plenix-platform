@@ -1,0 +1,53 @@
+# Plenix: what is done and what is left (2026-10-23)
+
+Start here in a new session (Claude or Codex). Then read `AGENTS.md` (Codex) or `CLAUDE.md` and the memory index
+(Claude), and the issue for the task you take. Every remaining item below has a GitHub issue in
+`plenix-ds/plenix-platform`; the tracking issue #252 lists them all.
+
+## Where the code is
+
+- Branch: `styling/phase-2` in both repositories (`plenix-ds/plenix-platform` and its submodule
+  `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
+- Last release: 0.68.1 (2026-10-23). Not released yet on the branch: header style 2 and the spec's permanent merge.
+- **No release unless the owner declares it.**
+
+## Done
+
+| Work | Where |
+|---|---|
+| Styling Standard written and enforced (Phase 0) | `platform/standards/styling.md`; check-system rule `ownership` (0.55.0) |
+| App Header slice (Phase 1) | 0.55.x |
+| No component styles another one (Phase 2) | 0.59.0; `check-system.exceptions.json` has 0 cross-component entries |
+| Redundant declarations, order and element styles (Phase 3) | proof logged 2026-10-19 |
+| Typography roles as tokens, text contracts per component (Phase 4) | 0.59.0; `platform/standards/text-contracts.json`, rule `text-contract` |
+| Framing: containers nest two deep, never three (Phase 6) | `nesting.css` retired 2026-10-20; `tests/pages.test.js` fails a third frame |
+| Legacy table removed, apps on DataGrid (Phase 7, first half) | #145 / #146 |
+| Zero overlap for DataGrid, Table and the foundations | 0.59.0 |
+| Header style 2: fact boxes carry their buttons, states among the facts, Title role on every header, buttons go icon-only when the facts would wrap | commits dec70d26, b888c727 |
+| Spec: one page per component, the duplicate merge permanent, no redirects | spec 095bb26, parent 89cb85b3; `tools/agent/spec-merge-permanent.md` |
+
+## Left to do
+
+| # | Work | State |
+|---|---|---|
+| #207–#210 | Zero overlap for the rest: 137 stylesheets (Z1 charts and patterns 40, Z2 components A–L 39, Z3 M–Z and services 37, Z4 the design-system site 21) | 13 Z1 PRs (#222–#234) open, not merged |
+| #249 | Phase 5: cascade layers, and remove `!important` (413 in `utilities.css`, 44 in `services/auth/brand.css`) | not started |
+| #250 | Phase 7, rest: unused classes and duplicate utilities, with a check | not started |
+| #152 | Phase 8: shrink the 2 MB stylesheet bundle | not started |
+| #251 | Spec: the variant block on every variant page (1,612 pending; each needs its Figma design) | blocked by the Figma Starter plan's call limit |
+| #45 | Complete library: recount the leaves with no record, classify, plan the remaining waves | not started |
+| #144, #53, #54 | Figma: the Web component library; native designs for newer components; the 24 iOS drawings | blocked / open |
+| #198–#203, #147–#195 | RedSave lanes and DataGrid findings (Codex) | PRs #206, #211, #212, #215, #219 open |
+| #217 | Touch targets that are undersized | waits for the owner's decision |
+| #220 | Spec mappings: Django and Frappe as source systems | open |
+| #58 | Final full system-wide test run | last, when everything else is done |
+| #205, #218, #221 | Dark mode, Arabic UI, iOS/Android page template | later (owner: last) |
+
+## How to work (the owner's rules)
+
+- Prove only the pages you touch (`tests/clash-audit.js --check --pages …`, `tests/compare-styles.js`); dispatch the
+  styling-proof CI with **full** commit hashes, log it in `tools/agent/proof-log.md`, and never wait for it.
+- No exceptions to the Styling Standard; no `!important`; no inline styles; tokens only; no new colors.
+- Pixel changes wait for the owner. Dark mode comes last.
+- Other sessions edit the same folder: commit only your own files, and build generated files in a clean copy.
+- Before finishing: `node build-app.js`, `node check-system.js`, `node check-spec.js`.
